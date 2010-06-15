@@ -1,0 +1,90 @@
+/* line 2, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .canvas {
+  float: left;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  background: transparent url(../images/pixie/pixel_bg.png);
+  -moz-user-select: none;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  position: relative;
+}
+/* line 12, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .layer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+/* line 17, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .pixel {
+  float: left;
+  width: 15px;
+  height: 15px;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  margin: 0;
+  padding: 0;
+}
+/* line 27, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions {
+  display: block;
+  margin-left: 70px;
+  margin-bottom: 10px;
+}
+/* line 32, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions a.tool {
+  font-size: 0.8em;
+  color: black;
+}
+/* line 36, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions a.tool:hover {
+  text-decoration: none;
+}
+/* line 40, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .toolbar {
+  float: left;
+  width: 55px;
+  height: 200px;
+  margin-right: 1em;
+}
+/* line 47, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool {
+  padding: 0 2px;
+  margin-left: 2px;
+}
+/* line 51, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool:hover {
+  background-color: #cccccc;
+}
+/* line 54, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool.active {
+  background-color: #1084ce;
+}
+/* line 57, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool img {
+  border: none;
+}
+/* line 60, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie img.tool {
+  padding: 2px;
+  margin: 2px;
+}
+/* line 64, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .swatch {
+  float: left;
+  margin: 4px;
+  width: 16px;
+  height: 16px;
+}
+/* line 71, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie input.color {
+  border: 2px solid;
+  border-color: #cccccc;
+  margin: 7px 2px 0 0;
+  width: 50px;
+}
+/* line 78, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .preview {
+  float: left;
+  margin: 0 1em;
+}

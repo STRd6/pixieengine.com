@@ -1,0 +1,2 @@
+class SpritesController < ApplicationController
+end

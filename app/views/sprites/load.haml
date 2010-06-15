@@ -1,0 +1,42 @@
+= stylesheet_link_tag 'pixie/pixie'
+= javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
+
+- width = sprite.width
+- height = sprite.height
+- data = sprite.json_data
+
+#pixie
+
+:javascript
+  (function($){
+    $(function() {
+      $('#pixie').pixie({
+        width: 16,
+        height: 16,
+        initializer: function(canvas) {
+          c = canvas;
+          canvas.addAction({
+            name: "Save to Game",
+            perform: function(canvas) {
+              $.post('/sprites', {
+                'format': 'js',
+                'sprite[file_base64_encoded]': canvas.toBase64()
+              }, function(data){
+                eval(data);
+              },"script");
+            }
+          });
+
+
+
+          (function(data) {
+            canvas.eachPixel(function(pixel, x, y) {
+              var pos = x + y*canvas.width;
+              pixel.color(data[pos], true);
+            });
+          }(#{data}));
+
+        }
+      });
+    });
+  })(jQuery);

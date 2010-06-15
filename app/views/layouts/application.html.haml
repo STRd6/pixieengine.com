@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+%html
+  %head
+    %title Pixie - Where pixels become heroes, together.
+    %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
+    = csrf_meta_tag
+    = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'print.css', :media => 'print'
+    /[if lt IE 8]
+      = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
+
+    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+    = javascript_include_tag 'application'
+
+  %body.three-col
+    #container
+      = render :partial => "/shared/header"
+
+      #content
+        #flashes
+          - flash.each do |key, msg|
+            %div{ :class => key }= msg
+
+        %h2 Pixie
+
+        = yield
+
+      = render :partial => "/shared/sidebar"
+      = render :partial => "/shared/footer"
+    = render :partial => "/shared/analytics"
