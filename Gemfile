@@ -22,8 +22,9 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
-gem 'haml'
+gem 'authlogic', ">= 2.1.5"
 gem "compass", ">= 0.10.2"
+gem 'haml'
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
