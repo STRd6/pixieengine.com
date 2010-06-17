@@ -395,8 +395,8 @@
     options = options || {};
     var width = options.width || 16;
     var height = options.height || 16;
-    var pixelWidth = 16;
-    var pixelHeight = 16;
+    var pixelWidth = 8;
+    var pixelHeight = 8;
     var initializer = options.initializer;
     var layers = options.layers || 2;
 
@@ -494,8 +494,12 @@
           e.preventDefault();
         })
         .bind("mousedown mousemove", function(event) {
-          var row = Math.floor((event.pageY - this.offsetTop) / pixelHeight);
-          var col = Math.floor((event.pageX - this.offsetLeft) / pixelWidth);
+          var offset = $(this).offset();
+          var localY = event.pageY - offset.top;
+          var localX = event.pageX - offset.left;
+
+          var row = Math.floor(localY / pixelHeight);
+          var col = Math.floor(localX / pixelWidth);
 
           var pixel = canvas.getPixel(col, row, layer);
           var eventType = undefined;

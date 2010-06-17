@@ -1,0 +1,207 @@
+/* Main css file for Boomstick.
+  Copyright STRd6 2008
+
+@import constants
+@import icon
+
+// Basic layout and font styles
+body
+  font-family: Verdana, Helvetica, Arial, sans-serif
+  background-color= !main_color_light
+  margin: 0
+  padding: 0
+
+h1
+  font-size: 22px
+  color= !main_color_dark
+  
+h2
+  font-size: 18px
+
+// Holds home/character/etc. buttons at top of every page
+#header 
+  position: relative
+  top: 0
+  left: 0
+  width: 100%
+  height: 40px
+  background: url(images/headerbg.png) repeat-x
+  
+  p, a
+    display: inline
+    font-size: 12px
+    color= !dark_gray
+    margin: 0
+    padding: 10px
+    
+  a
+    text-decoration: underline
+    padding: 0
+    &:hover
+      text-decoration: none
+      
+  img
+    padding: 6px
+    padding-top: 0
+    margin-right: 10px
+  
+  p.left, p.right
+    clear: none
+    margin: 0
+    padding: 0
+  
+  p.left
+    float: left
+    width: 70%
+    
+  p.right
+    float: right
+    margin-right: 10px
+    padding-top: 10px
+    width: 25%
+    text-align: right
+    
+  a.button
+    display: inline-block
+    font-weight: bold
+    color= !dark_gray
+    padding: 1em
+    text-decoration: none
+    &:hover
+      background-color= !secondary_color_light
+
+.border
+  border-color: black
+  border-style: solid
+  border-width: 1px
+
+a
+  img
+    border: none
+
+.left
+  float: left
+
+.right
+  float: right
+
+div.clear
+  clear: both
+
+.content
+  padding: 1em
+
+// Holds all main site content
+#content
+  position: relative
+  margin-left: auto
+  margin-right: auto
+  padding: 2em
+  width: 75%
+  background-color= !white
+  
+  // Fix to make #content enclose elements floated inside it 
+  &:after
+    content: "."
+    display: block
+    height: 0
+    clear: both
+    visibility: hidden
+
+  p
+    margin-top: 0.4em
+
+  label
+    display: inline-block
+    width: 11em
+    margin-right: .5em
+    text-align: right
+    font-size: 12px
+    color= !dark_gray
+    padding-bottom: .4em
+  
+  // Basic form styling for all #content forms
+  form
+    width: 30em
+
+    label.image
+      width: 5em
+      
+    input, input.text, input.checkbox
+      border: 2pt solid
+      border-color= !light_gray
+      color= !dark_gray
+      
+    input.text
+      font-size: 16px
+      font-weight: bold
+      width: 20em
+      &:hover
+        border-color= !dark_gray
+      &:focus
+        border-color= !main_color
+        
+    input.checkbox
+      width: 22px
+      height: 22px
+      padding: 2px
+  
+  form.images
+    float: left
+    width: auto
+    margin: 5px
+    
+    .formControlsHolder
+      float: left
+      width: 25px
+      
+    img
+      float: left
+      
+    &:after
+      content: "."
+      display: block
+      height: 0
+      clear: both
+      visibility: hidden
+
+// Hack to make the window appear with floated elements inside it.
+.clear
+  clear: both
+  
+// TODO: Good these up, embetter and embiggen
+// Error and notice styling
+.notification
+  padding: 4px
+  border-style: groove double
+  margin-bottom: 8px
+  width: 70%
+
+#notice
+  color= !p1
+  border-color= !main_color
+  background-color= !s2
+
+#error
+  color= !error_color
+  border-color= !error_color
+  background-color= !s2
+
+#errorExplanation, .errorExplanation
+  color= !error_color
+
+input#openid_url
+  background: url(http://openid.net/login-bg.gif) no-repeat
+  background-color: #fff
+  background-position: 0 50%
+  color: #000
+  padding-left: 18px
+
+// Specifics
+.chunk
+  width: 20em
+  float: left
+  margin-right: 2em
+  margin-bottom: 2em
+  padding: 0.5em
+  background-color: #8FBC8F
