@@ -2,6 +2,7 @@ set :application, "pixie.strd6.com"
 
 set :scm, "git"
 set :repository, "git@github.com:STRd6//#{application}.git"
+set :branch, "master"
 set :deploy_via, :remote_cache
 
 # If you aren't deploying to /u/apps/#{application} on the target
