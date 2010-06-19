@@ -9,7 +9,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100607211342) do
+ActiveRecord::Schema.define(:version => 20100619220502) do
+
+  create_table "feedbacks", :force => true do |t|
+    t.integer  "user_id"
+    t.text     "body",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "sprites", :force => true do |t|
     t.datetime "created_at",                 :null => false
