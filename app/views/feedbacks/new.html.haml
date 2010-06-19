@@ -1,2 +1,6 @@
-%h1 Feedback#new
-%p Find me in app/views/feedback/new.html.haml
+%h3 Feedback
+
+- form_for :feedback do |form|
+  = form.error_messages
+  = form.text_area :body
+  = form.submit "Send Feedback"
