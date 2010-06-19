@@ -393,10 +393,10 @@
     };
     
     options = options || {};
-    var width = options.width || 16;
-    var height = options.height || 16;
-    var pixelWidth = 8;
-    var pixelHeight = 8;
+    var width = options.width || 8;
+    var height = options.height || 8;
+    var pixelWidth = 16;
+    var pixelHeight = 16;
     var initializer = options.initializer;
     var layers = options.layers || 2;
 
@@ -416,6 +416,7 @@
       var mode = undefined;
       var primaryColorPicker = ColorPicker();
       var secondaryColorPicker = ColorPicker();
+      var tilePreview = true;
 
       colorbar.append(
         primaryColorPicker
@@ -435,6 +436,9 @@
         .bind("mouseup", function(e) {
           active = false;
           mode = undefined;
+
+          // Update Preview
+          canvas.showPreview();
         });
 
       var pixels = [];
@@ -722,7 +726,12 @@
         },
 
         showPreview: function() {
-          preview.css('backgroundImage', this.toCSSImageURL());
+          var tileCount = tilePreview ? 4 : 1;
+          preview.css({
+            backgroundImage: this.toCSSImageURL(),
+            width: tileCount * width,
+            height: tileCount * height
+          });
         },
 
         undo: function() {
