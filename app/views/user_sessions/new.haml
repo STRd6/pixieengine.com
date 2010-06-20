@@ -1,5 +1,5 @@
 %h2 Login
-- form_for @user_session do |f|
+- form_for @user_session, :url => "/user_sessions" do |f|
   = f.error_messages
   %p
     = f.label :email
