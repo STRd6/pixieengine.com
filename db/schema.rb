@@ -13,9 +13,10 @@ ActiveRecord::Schema.define(:version => 20100619220502) do
 
   create_table "feedbacks", :force => true do |t|
     t.integer  "user_id"
-    t.text     "body",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.text     "body",          :null => false
+    t.string   "email_address"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "sprites", :force => true do |t|

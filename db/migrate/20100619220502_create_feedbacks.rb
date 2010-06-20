@@ -3,6 +3,7 @@ class CreateFeedbacks < ActiveRecord::Migration
     create_table :feedbacks do |t|
       t.references :user
       t.text :body, :null => false
+      t.string :email_address
 
       t.timestamps :null => false
     end

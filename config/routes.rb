@@ -1,5 +1,9 @@
 PixieStrd6Com::Application.routes.draw do |map|
-  resources :feedbacks
+  resources :feedbacks do
+    collection do
+      get :thanks
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
