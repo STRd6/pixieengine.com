@@ -48,7 +48,8 @@
       name: "Download Image",
       hotkeys: ["ctrl+s"],
       perform: function(canvas) {
-        document.location.href = canvas.toDataURL();
+        var w = window.open();
+        w.document.location = canvas.toDataURL();
       }
     },
 
