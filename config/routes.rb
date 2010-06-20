@@ -5,6 +5,8 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
+  match 'creation/images/new' => "sprites#new"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

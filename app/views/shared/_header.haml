@@ -1,5 +1,6 @@
 #header
   %p.left
-    .button= link_to_unless_current "Draw", new_sprite_path
-    .button= link_to_unless_current "Browse", sprites_path
+    = link_to "Draw", new_sprite_path, :class => "button"
+    = link_to "Browse", sprites_path, :class => "button"
+    = link_to "Feedback", new_feedback_path, :class => "button"
     

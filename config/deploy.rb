@@ -1,3 +1,5 @@
+default_run_options[:pty] = true
+
 set :application, "pixie.strd6.com"
 
 set :scm, "git"

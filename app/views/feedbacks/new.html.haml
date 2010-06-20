@@ -1,6 +1,6 @@
 %h3 Feedback
 
-- form_for :feedback do |form|
+- form_for @feedback do |form|
   = form.error_messages
   = form.text_area :body
   = form.submit "Send Feedback"
