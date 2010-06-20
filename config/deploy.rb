@@ -22,6 +22,7 @@ after "deploy", "deploy:cleanup"
 
 task :after_setup do
   run "mkdir #{shared_path}/production"
+  run "mkdir #{shared_path}/production/images"
   run "mkdir #{shared_path}/db"
   run "mkdir #{shared_path}/backups"
   run "touch #{shared_path}/log/nginx.log"

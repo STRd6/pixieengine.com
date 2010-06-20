@@ -7,6 +7,9 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'creation/images/new' => "sprites#new"
 
+  match "login" => "user_sessions#new", :as => :login
+  match "logout" => "user_sessions#destroy", :as => :logout
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -21,7 +24,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  resources :sprites
+  resources :sprites, :users, :user_sessions
 
   # Sample resource route with options:
   #   resources :products do

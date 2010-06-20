@@ -1,0 +1,6 @@
+- if current_user
+  == Logged in as #{link_to current_user, current_user }
+  (#{link_to "Log out", logout_path, { :title => "Log out" }})
+
+-else
+  = link_to "Log in",  login_path,  { :title => "Log in" }

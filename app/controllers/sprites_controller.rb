@@ -5,6 +5,16 @@ class SpritesController < ResourceController::Base
     @sprite.user = current_user
   end
 
+  create.flash nil
+
+  create.wants.js do
+    render :update do |page|
+      link = link_to "Sprite #{@sprite.id}", @sprite
+
+      page.call "notify", "Saved as #{link}"
+    end
+  end
+
   def load
 
   end
