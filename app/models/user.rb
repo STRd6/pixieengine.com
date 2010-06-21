@@ -5,6 +5,10 @@ class User < ActiveRecord::Base
     self.reset_password
   end
 
+  after_create do
+    Notifier.email_password(self)
+  end
+
   def to_s
     display_name
   end
