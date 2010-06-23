@@ -4,6 +4,7 @@ class NotifierTest < ActionMailer::TestCase
   setup do
     @feedback = Feedback.create(:email_address => "testy@testy.com", :body => "Help I'm A test!")
   end
+
   test "received_feedback" do
     mail = Notifier.received_feedback(@feedback)
     assert_equal "Received feedback", mail.subject
