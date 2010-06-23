@@ -6,6 +6,6 @@ class Feedback < ActiveRecord::Base
   after_create :send_email
 
   def send_email
-    Notifier.received_feedback(self)
+    Notifier.received_feedback(self).deliver
   end
 end

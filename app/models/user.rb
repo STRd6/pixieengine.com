@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   end
 
   after_create do
-    Notifier.email_password(self)
+    Notifier.email_password(self).deliver
   end
 
   def to_s
