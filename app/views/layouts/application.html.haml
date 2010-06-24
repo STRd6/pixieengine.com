@@ -24,6 +24,8 @@
         %h2 Pixie
 
         - if ab_test "test" #Dummy test
+          -#nothing
+
         = yield
 
       = render :partial => "/shared/sidebar"
