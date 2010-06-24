@@ -7,6 +7,8 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'creation/images/new' => "sprites#new"
 
+  match 'about' => "about#index"
+
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
 
