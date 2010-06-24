@@ -12,9 +12,8 @@ class Notifier < ActionMailer::Base
     mail :to => "yahivin@gmail.com", :reply_to => feedback.email_address
   end
 
-  def email_password(user)
-    @password = user.password
-
+  def welcome_email(user)
+    @user = user
     mail :to => user.email
   end
 end
