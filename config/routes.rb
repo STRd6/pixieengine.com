@@ -10,6 +10,10 @@ PixieStrd6Com::Application.routes.draw do |map|
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
 
+  namespace :abingo do
+    match "dashboard" => 'dashboard#index'
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

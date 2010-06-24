@@ -9,10 +9,13 @@ class ApplicationController < ActionController::Base
   before_filter :set_abingo_identity
 
   def set_abingo_identity
-    if (session[:abingo_identity])
-      Abingo.identity = session[:abingo_identity]
+    if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg)\b/i
+      Abingo.identity = "robot"
+    elsif current_user
+      Abingo.identity = current_user.id
     else
-      session[:abingo_identity] = Abingo.identity = rand(10 ** 10).to_i
+      session[:abingo_identity] ||= rand(10 ** 10)
+      Abingo.identity = session[:abingo_identity]
     end
   end
 
