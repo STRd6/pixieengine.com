@@ -72,9 +72,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   #     resources :products
   #   end
 
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  root :to => "home#index"
+  root :to => "sprites#new"
 
   # See how all your routes lay out with "rake routes"
 
