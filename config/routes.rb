@@ -5,7 +5,8 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  match 'creation/images/new' => "sprites#new"
+  # Catch old urls
+  match 'creation(/:dummy(/:dummy))' => "sprites#new"
 
   match 'about' => "home#about"
 
