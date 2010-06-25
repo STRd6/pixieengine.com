@@ -1,1 +1,11 @@
-TODO - Profile
+%h2
+  = "#{user}'s profile"
+
+%p
+  = link_to "Create something!", new_sprite_path
+
+- if user.sprites.size > 0
+  %h3
+    = "#{user}'s creations"
+  - user.sprites.each do |sprite|
+    = render :partial => sprite

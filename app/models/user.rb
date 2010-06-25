@@ -1,9 +1,9 @@
 class User < ActiveRecord::Base
-  acts_as_authentic
-
-  before_validation(:on => :create) do
-    self.reset_password
+  acts_as_authentic do |c|
+    c.require_password_confirmation = false
   end
+
+  has_many :sprites
 
   after_create do
     Notifier.welcome_email(self).deliver

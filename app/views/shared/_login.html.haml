@@ -3,4 +3,6 @@
   (#{link_to "Log out", logout_path, { :title => "Log out" }})
 
 -else
+  = link_to "Register", register_path, {:title => "Register"}
+  or
   = link_to "Log in",  login_path,  { :title => "Log in" }

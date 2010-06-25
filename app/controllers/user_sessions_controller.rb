@@ -4,7 +4,8 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    @user_session = UserSession.new(params[:user_session])
+    # Default to remember me
+    @user_session = UserSession.new(params[:user_session].merge(:remember_me => true))
     if @user_session.save
       flash[:notice] = "Successfully logged in."
       redirect_to root_url

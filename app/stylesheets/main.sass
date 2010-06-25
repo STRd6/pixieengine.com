@@ -112,6 +112,9 @@ div.clear
   p
     margin-top: 0.4em
 
+  form
+    width: 38em
+
   label
     display: inline-block
     width: 11em
@@ -120,32 +123,6 @@ div.clear
     font-size: 12px
     color= !dark_gray
     padding-bottom: .4em
-  
-  // Basic form styling for all #content forms
-  form
-    width: 30em
-
-    label.image
-      width: 5em
-      
-    input, input.text, input.checkbox
-      border: 2pt solid
-      border-color= !light_gray
-      color= !dark_gray
-      
-    input.text
-      font-size: 16px
-      font-weight: bold
-      width: 20em
-      &:hover
-        border-color= !dark_gray
-      &:focus
-        border-color= !main_color
-        
-    input.checkbox
-      width: 22px
-      height: 22px
-      padding: 2px
   
   form.images
     float: left
