@@ -7,7 +7,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'creation/images/new' => "sprites#new"
 
-  match 'about' => "about#index"
+  match 'about' => "home#about"
 
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
@@ -67,7 +67,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => "welcome#index"
+  root :to => "home#index"
 
   # See how all your routes lay out with "rake routes"
 
