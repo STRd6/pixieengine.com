@@ -9,6 +9,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'about' => "home#about"
 
+  match "register" => "users#new", :as => :register
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
 
@@ -30,7 +31,12 @@ PixieStrd6Com::Application.routes.draw do |map|
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 
-  resources :sprites, :users, :user_sessions
+  resources :sprites do
+    member do
+      get :load
+    end
+  end
+  resources :users, :user_sessions
 
   # Sample resource route with options:
   #   resources :products do
