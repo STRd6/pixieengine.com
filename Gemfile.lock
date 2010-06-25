@@ -8,20 +8,20 @@ dependencies:
     group: 
     - :default
     version: = 3.0.0.beta4
+  haml: 
+    group: 
+    - :default
+    version: ">= 0"
+  authlogic: 
+    group: 
+    - :default
+    version: ">= 2.1.5"
   sqlite3-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - sqlite3
-  authlogic: 
-    group: 
-    - :default
-    version: ">= 2.1.5"
-  haml: 
-    group: 
-    - :default
-    version: ">= 0"
   shoulda: 
     group: 
     - :test
@@ -34,6 +34,12 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  rmagick: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - RMagick
   capistrano: 
     group: 
     - :default
@@ -96,22 +102,24 @@ specs:
 - capistrano: 
     version: 2.5.19
 - haml: 
-    version: 3.0.12
+    version: 3.0.13
 - compass: 
     version: 0.10.2
 - factory_girl: 
-    version: 1.3.0
+    version: 1.3.1
 - thor: 
     version: 0.13.6
 - railties: 
     version: 3.0.0.beta4
 - rails: 
     version: 3.0.0.beta4
+- rmagick: 
+    version: 2.13.1
 - shoulda: 
-    version: 2.11.0
+    version: 2.11.1
 - sqlite3-ruby: 
     version: 1.3.0
-hash: ea5b91aa6b1d31c85bdff67be3e8e02a224b1763
+hash: 286b5fad7afb25a593113284da0415d5d2e4ff7f
 sources: 
 - Rubygems: 
     uri: http://rubygems.org

@@ -20,6 +20,7 @@ gem 'authlogic', ">= 2.1.5"
 gem "compass", ">= 0.10.2"
 gem 'haml'
 gem 'mail'
+gem 'rmagick', :require => 'RMagick'
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
