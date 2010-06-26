@@ -20,14 +20,14 @@
             perform: function(canvas) {
               $.post('/sprites', {
                 'format': 'js',
-                'sprite[file_base64_encoded]': canvas.toBase64()
+                'sprite[file_base64_encoded]': canvas.toBase64(),
+                'sprite[width]': #{width},
+                'sprite[height]': #{height}
               }, function(data){
                 eval(data);
               },"script");
             }
           });
-
-
 
           (function(data) {
             canvas.eachPixel(function(pixel, x, y) {
