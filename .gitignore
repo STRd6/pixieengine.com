@@ -4,3 +4,4 @@ log/*.log
 tmp/**/*
 nbproject
 public/stylesheets/*.css
+public/production
