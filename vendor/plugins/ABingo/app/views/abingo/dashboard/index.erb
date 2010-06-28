@@ -13,7 +13,7 @@ the view templates.  Hack them to pieces -- please!
   <h2>All Experiments</h2>
   
 <% @experiments.each do |experiment| %>
-  <%= render :partial => "dashboard/experiment", :locals => {:experiment => experiment} %>
+  <%= render :partial => "experiment", :locals => {:experiment => experiment} %>
   <br/>
 <% end %>
 </p>
