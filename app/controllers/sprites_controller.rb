@@ -16,7 +16,23 @@ class SpritesController < ResourceController::Base
   end
 
   def load
+    @width = sprite.width
+    @height = sprite.height
+    @data = sprite.json_data
+  end
 
+  def load_url
+    if params[:url].blank?
+      # Render form
+    else
+      sprite = Sprite.data_from_url(params[:url])
+
+      @width = sprite[:width]
+      @height = sprite[:height]
+      @data = sprite[:json_data]
+
+      render :action => :load
+    end
   end
 
   def import

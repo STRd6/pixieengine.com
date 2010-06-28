@@ -36,6 +36,10 @@ PixieStrd6Com::Application.routes.draw do |map|
     member do
       get :load
     end
+
+    collection do
+      get :load_url
+    end
   end
   resources :users, :user_sessions
 
