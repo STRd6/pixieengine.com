@@ -48,7 +48,7 @@ class Sprite < ActiveRecord::Base
   end
 
   def self.hex_color_to_rgba(color, opacity)
-    int_opacity = ((Magick::QuantumRange - opacity) / 256).floor
+    int_opacity = (Magick::QuantumRange - opacity) / Magick::QuantumRange.to_f
 
     match_data = /^#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})/.match(color)[1..3].map(&:hex)
 
