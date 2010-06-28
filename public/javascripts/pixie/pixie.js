@@ -179,7 +179,7 @@
         this.color(color);
       }
     },
-    
+
     brush: {
       name: "Brush",
       hotkeys: ['B'],
@@ -392,7 +392,7 @@
         }
       });
     };
-    
+
     options = options || {};
     var width = options.width || 8;
     var height = options.height || 8;
@@ -408,6 +408,31 @@
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
+//      var previewLabel = $('<label>Tiled Preview</label>').live('click', function() {
+//        if (previewToggle.attr('checked') == 'true') {
+//          previewToggle.attr('checked', 'true');
+//        }
+//        else if (previewToggle.attr('checked') == 'false') {
+//          previewToggle.attr('checked', 'false')
+//        }
+//      })
+      var previewToggle = $('<input type="checkbox"></input>').change(function() {
+        if($(this).attr('checked')) {
+          tilePreview = true;
+        } else {
+          tilePreview = false;
+        }
+        canvas.showPreview();
+      }).attr("checked", "true");
+
+      var guideToggle = $('<input type="checkbox"></input>').change(function() {
+        if(!$(this).attr('checked')) {
+          guideLayer.clear();
+        } else {
+          guideLayer.drawGuide();
+        }
+      }).attr("checked", "true");
+
       var layerMenu = $(div).addClass('actions');
 
       var undoStack = UndoStack();
@@ -429,7 +454,7 @@
         .bind('contextmenu', falseFn)
         .bind("mousedown", function(e){
           var target = $(e.target);
-          
+
           if(target.is(".swatch")) {
             canvas.color(target.css('backgroundColor'), e.button !== 0);
           }
@@ -554,7 +579,7 @@
 
           return undefined;
         },
-        
+
         getNeighbors: function(x, y, z) {
           if(z === undefined) {
             z = layer;
@@ -567,7 +592,7 @@
             this.getPixel(x, y-1, z)
           ];
         },
-        
+
         toHex: function(bits) {
           var s = parseInt(bits).toString(16);
           if(s.length == 1) {
@@ -593,7 +618,7 @@
           // Handle cases where nothing, or only true or false is passed in
           // i.e. when getting the alternate color `canvas.color(true)`
           if(arguments.length === 0 || color === false) {
-            return mode == "S" ? 
+            return mode == "S" ?
               secondaryColorPicker.css('backgroundColor') :
               primaryColorPicker.css('backgroundColor');
           } else if(color === true) {
@@ -628,7 +653,7 @@
               .css({backgroundColor: color})
           );
         },
-        
+
         addAction: function(action) {
           var titleText = action.name;
           var undoable = action.undoable;
@@ -786,6 +811,9 @@
         .append(canvas)
         .append(colorbar)
         .append(preview)
+        .append(previewToggle)
+        .append(guideToggle)
+        //.append(previewLabel)
         .append(clear)
         .append(layerMenu);
 
