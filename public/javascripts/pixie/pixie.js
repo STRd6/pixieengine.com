@@ -408,14 +408,17 @@
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
-//      var previewLabel = $('<label>Tiled Preview</label>').live('click', function() {
-//        if (previewToggle.attr('checked') == 'true') {
-//          previewToggle.attr('checked', 'true');
-//        }
-//        else if (previewToggle.attr('checked') == 'false') {
-//          previewToggle.attr('checked', 'false')
-//        }
-//      })
+      var previewLabel = $('<label>Tiled Preview</label>').click(function() {
+        if (previewToggle.attr('checked')) {
+          previewToggle.removeAttr('checked');
+          tilePreview = false;
+        }
+        else {
+          previewToggle.attr('checked', 'true');
+          tilePreview = true;
+        }
+        canvas.showPreview();
+      })
       var previewToggle = $('<input type="checkbox"></input>').change(function() {
         if($(this).attr('checked')) {
           tilePreview = true;
@@ -424,6 +427,17 @@
         }
         canvas.showPreview();
       }).attr("checked", "true");
+
+      var guideLabel = $('<label>Display Guides</label>').click(function() {
+        if (guideToggle.attr('checked')) {
+          guideToggle.removeAttr('checked');
+          guideLayer.clear();
+        }
+        else {
+          guideToggle.attr('checked', 'true');
+          guideLayer.drawGuide();
+        }
+      })
 
       var guideToggle = $('<input type="checkbox"></input>').change(function() {
         if(!$(this).attr('checked')) {
@@ -812,8 +826,9 @@
         .append(colorbar)
         .append(preview)
         .append(previewToggle)
+        .append(previewLabel)
         .append(guideToggle)
-        //.append(previewLabel)
+        .append(guideLabel)
         .append(clear)
         .append(layerMenu);
 
