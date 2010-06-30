@@ -428,21 +428,29 @@
         canvas.showPreview();
       }).attr("checked", "true");
 
+      canvas.addClass('grid');
+
       var guideLabel = $('<label>Display Guides</label>').click(function() {
+
         if (guideToggle.attr('checked')) {
           guideToggle.removeAttr('checked');
+
+          canvas.removeClass('grid').addClass('nogrid');
           guideLayer.clear();
         }
         else {
           guideToggle.attr('checked', 'true');
+          canvas.removeClass('nogrid').addClass('grid');
           guideLayer.drawGuide();
         }
       })
 
       var guideToggle = $('<input type="checkbox"></input>').change(function() {
         if(!$(this).attr('checked')) {
+          canvas.removeClass('grid').addClass('nogrid');
           guideLayer.clear();
         } else {
+          canvas.removeClass('nogrid').addClass('grid');
           guideLayer.drawGuide();
         }
       }).attr("checked", "true");
