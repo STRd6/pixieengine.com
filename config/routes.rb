@@ -14,6 +14,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
 
+  match 'users/remove_favorite/:id' => 'users#remove_favorite'
+
   namespace :abingo do
     match "dashboard" => 'dashboard#index'
   end
@@ -42,6 +44,8 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
   resources :users, :user_sessions
+
+  resources :favorites
 
   # Sample resource route with options:
   #   resources :products do

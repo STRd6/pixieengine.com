@@ -419,7 +419,7 @@
         }
         canvas.showPreview();
       })
-      var previewToggle = $('<input type="checkbox"></input>').change(function() {
+      var previewToggle = $('<input class="preview-control" type="checkbox"></input>').change(function() {
         if($(this).attr('checked')) {
           tilePreview = true;
         } else {
@@ -445,7 +445,7 @@
         }
       })
 
-      var guideToggle = $('<input type="checkbox"></input>').change(function() {
+      var guideToggle = $('<input class="guide-control" type="checkbox"></input>').change(function() {
         if(!$(this).attr('checked')) {
           canvas.removeClass('grid').addClass('nogrid');
           guideLayer.clear();

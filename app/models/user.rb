@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   end
 
   has_many :sprites
+  has_many :favorites
 
   after_create do
     Notifier.welcome_email(self).deliver
@@ -11,6 +12,10 @@ class User < ActiveRecord::Base
 
   def to_s
     display_name
+  end
+
+  def remove_favorite(sprite)
+    favorites.find_by_sprite_id(sprite.id).destroy
   end
 
   def display_name

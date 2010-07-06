@@ -97,4 +97,14 @@
 .pixie .preview {
   float: left;
   margin: 0 1em;
+  width: 150px;
+  height: 150px;
+}
+/* line 92, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .preview-control {
+  display: block;
+}
+/* line 95, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .guide-control {
+  display: block;
 }
