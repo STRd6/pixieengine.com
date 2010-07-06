@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100630071152) do
+ActiveRecord::Schema.define(:version => 20100706224644) do
 
   create_table "alternatives", :force => true do |t|
     t.integer "experiment_id"
@@ -32,13 +32,6 @@ ActiveRecord::Schema.define(:version => 20100630071152) do
 
   add_index "experiments", ["test_name"], :name => "index_experiments_on_test_name"
 
-  create_table "favorites", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "sprite_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "feedbacks", :force => true do |t|
     t.integer  "user_id"
     t.text     "body",          :null => false
@@ -46,6 +39,17 @@ ActiveRecord::Schema.define(:version => 20100630071152) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "links", :force => true do |t|
+    t.integer  "user_id",                   :null => false
+    t.integer  "target_id",                 :null => false
+    t.string   "target_type",               :null => false
+    t.string   "token",       :limit => 16, :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "links", ["token"], :name => "index_links_on_token", :unique => true
 
   create_table "sprites", :force => true do |t|
     t.datetime "created_at",                 :null => false
@@ -75,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20100630071152) do
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
     t.string   "display_name"
+    t.integer  "referrer_id"
   end
 
 end
