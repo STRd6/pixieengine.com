@@ -1,2 +1,21 @@
 - sprites.each do |sprite|
   = render :partial => sprite
+
+- if current_user
+  :javascript
+    $(function() {
+      $('.favorites').change(function() {
+        var spriteId = $(this).attr('data-id');
+        if ($(this).attr('checked')) {
+          $.post('/favorites', {
+            'format': 'js',
+            'favorite[user_id]': #{current_user.id},
+            'favorite[sprite_id]': spriteId
+          },"script");
+        } else {
+          $.get('/users/remove_favorite/' + spriteId);
+        }
+      });
+    });
+
+/ - if find_by_user(current_user.id, )

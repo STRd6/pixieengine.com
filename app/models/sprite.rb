@@ -1,4 +1,5 @@
 class Sprite < ActiveRecord::Base
+  has_many :favorite
   belongs_to :user
 
   attr_accessor :file_base64_encoded

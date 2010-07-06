@@ -3,6 +3,12 @@ class UsersController < ResourceController::Base
 
   before_filter :require_current_user, :only => [:edit, :update]
 
+  def remove_favorite
+    sprite = Sprite.find(params[:id])
+    current_user.remove_favorite(sprite)
+    render :nothing => true
+  end
+
   private
 
   def require_current_user

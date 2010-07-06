@@ -1,13 +1,21 @@
 .pixie
   .canvas
     float: left
-    border-bottom: 1px solid black
-    border-right: 1px solid black
     background: transparent url(../images/pixie/pixel_bg.png)
     -moz-user-select: none
     margin-right: 1em
     margin-bottom: 1em
     position: relative
+
+.pixie
+  .canvas.grid
+    border-bottom: 1px solid black
+    border-right: 1px solid black
+
+.pixie
+  .canvas.nogrid
+    border-bottom: 0px
+    border-right: 0px
 
   .layer
     position: absolute
@@ -78,3 +86,11 @@
   .preview
     float: left
     margin: 0 1em
+    width: 150px
+    height: 150px
+
+  .preview-control
+    display: block
+
+  .guide-control
+    display: block
