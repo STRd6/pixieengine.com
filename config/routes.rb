@@ -8,6 +8,9 @@ PixieStrd6Com::Application.routes.draw do |map|
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
 
+  # Link Tracking
+  match 'r/:token' => "links#track"
+
   match 'about' => "home#about", :as => :about
 
   match "register" => "users#new", :as => :register
