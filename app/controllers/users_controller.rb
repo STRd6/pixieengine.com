@@ -9,6 +9,27 @@ class UsersController < ResourceController::Base
     render :nothing => true
   end
 
+  create do
+    after do
+      bingo!("registration_popup")
+    end
+
+    wants.json do
+      flash[:notice] = nil
+      render :json => {:status => "ok"}
+    end
+
+    failure do
+      wants.json do
+        flash[:error] = nil
+        render :json => {
+          :status => "error",
+          :errors => user.errors.full_messages
+        }
+      end
+    end
+  end
+
   private
 
   def require_current_user

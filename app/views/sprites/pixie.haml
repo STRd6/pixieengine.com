@@ -7,46 +7,56 @@
 
 #pixie
 
+= render :partial => 'shared/register_modal'
+
 :javascript
-  (function($){
-    $(function() {
-      $('#pixie').pixie({
-        width: #{width},
-        height: #{height},
-        initializer: function(canvas) {
-          c = canvas;
-          canvas.addAction({
-            name: "Save to Game",
-            perform: function(canvas) {
-              notify("Saving, please wait...");
+  (function($) {
+    function postImage() {
+      notify("Saving, please wait...");
 
-              $.post('/sprites', {
-                'format': 'js',
-                'sprite[file_base64_encoded]': canvas.toBase64(),
-                'sprite[width]': #{width},
-                'sprite[height]': #{height}
-              }, function(data) {
-                eval(data);
-                canvas.dirty(false);
-              }, "script");
-            }
-          });
+      $.post('/sprites', {
+        'format': 'js',
+        'sprite[file_base64_encoded]': canvas.toBase64(),
+        'sprite[width]': #{width},
+        'sprite[height]': #{height}
+      }, function(data) {
+        eval(data);
+        canvas.dirty(false);
+      }, "script");
+    }
 
-          (function(data) {
-            if(data) {
-              canvas.eachPixel(function(pixel, x, y) {
-                var pos = x + y*canvas.width;
-                pixel.color(data[pos], true);
-              });
+    $('#pixie').pixie({
+      width: #{width},
+      height: #{height},
+      initializer: function(canvas) {
+        // HAX: Global ref of canvas
+        window.canvas = canvas;
+        canvas.addAction({
+          name: "Save to Game",
+          perform: function(canvas) {
+            if(#{!current_user && ab_test("registration_popup")}) {
+              requireLogin(postImage);
+            } else {
+              postImage();
             }
-          }(#{data}));
+          }
+        });
 
-          window.onbeforeunload = function() {
-            if (canvas.dirty()) {
-              return "Your changes haven't yet been saved, if you leave now you will lose your work.";
-            }
-          };
-        }
-      });
+        (function(data) {
+          if(data) {
+            canvas.eachPixel(function(pixel, x, y) {
+              var pos = x + y*canvas.width;
+              pixel.color(data[pos], true);
+            });
+          }
+        }(#{data}));
+
+        window.onbeforeunload = function() {
+          if (canvas.dirty()) {
+            return "Your changes haven't yet been saved, if you leave now you will lose your work.";
+          }
+        };
+      }
     });
+
   })(jQuery);

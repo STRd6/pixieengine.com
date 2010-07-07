@@ -1,0 +1,44 @@
+#registerModal
+  = render :partial => 'users/form', :locals => {:user => User.new}
+
+:javascript
+  var loggedIn = #{!!current_user};
+  var logInCallback;
+
+  function requireLogin(callback) {
+    if(!loggedIn) {
+      logInCallback = callback;
+      $("#registerModal").modal();
+    } else {
+      callback();
+    }
+  }
+
+  $(function() {
+    $("#new_user").ajaxForm({
+      dataType: 'json',
+      success: function(data) {
+        if(data.status == "ok") {
+          $.modal.close();
+          loggedIn = true;
+          logInCallback();
+        } else {
+          var errorExplanation = $("#new_user #errorExplanation");
+          if(errorExplanation.length == 0) {
+            errorExplanation = $("<div id='errorExplanation' />");
+          }
+
+          var errorList = $("<ul />");
+          $.each(data.errors, function(i, error) {
+            errorList.append($("<li />").text(error));
+          });
+
+          errorExplanation.html('');
+          errorExplanation.append(errorList);
+
+          $("#new_user").prepend(errorExplanation);
+          console.log(data.errors);
+        }
+      }
+    });
+  });
