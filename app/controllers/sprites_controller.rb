@@ -15,10 +15,16 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  new_action.wants.html do
+    render :action => :pixie
+  end
+
   def load
     @width = sprite.width
     @height = sprite.height
     @data = sprite.json_data
+
+    render :action => :pixie
   end
 
   def load_url
@@ -31,7 +37,7 @@ class SpritesController < ResourceController::Base
       @height = sprite[:height]
       @data = sprite[:json_data]
 
-      render :action => :load
+      render :action => :pixie
     end
   end
 

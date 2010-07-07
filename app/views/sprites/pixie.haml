@@ -1,8 +1,8 @@
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
 
-- width = @width
-- height = @height
+- width = @width || 32
+- height = @height || 32
 - data = @data
 
 #pixie
@@ -23,17 +23,19 @@
                 'sprite[file_base64_encoded]': canvas.toBase64(),
                 'sprite[width]': #{width},
                 'sprite[height]': #{height}
-              }, function(data){
+              }, function(data) {
                 eval(data);
-              },"script");
+              }, "script");
             }
           });
 
           (function(data) {
-            canvas.eachPixel(function(pixel, x, y) {
-              var pos = x + y*canvas.width;
-              pixel.color(data[pos], true);
-            });
+            if(data) {
+              canvas.eachPixel(function(pixel, x, y) {
+                var pos = x + y*canvas.width;
+                pixel.color(data[pos], true);
+              });
+            }
           }(#{data}));
 
         }
