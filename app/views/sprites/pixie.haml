@@ -25,6 +25,7 @@
                 'sprite[height]': #{height}
               }, function(data) {
                 eval(data);
+                canvas.dirty(false);
               }, "script");
             }
           });
@@ -38,6 +39,11 @@
             }
           }(#{data}));
 
+          window.onbeforeunload = function() {
+            if (canvas.dirty()) {
+              return "Your changes haven't yet been saved, if you leave now you will lose your work.";
+            }
+          }
         }
       });
     });

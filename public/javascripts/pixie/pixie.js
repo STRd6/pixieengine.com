@@ -283,6 +283,10 @@
     var empty = true;
 
     return {
+      last: function() {
+        return undos[undos.length - 1];
+      },
+
       popUndo: function() {
         var undo = undos.pop();
 
@@ -304,7 +308,7 @@
       },
 
       next: function() {
-        var last = undos[undos.length - 1];
+        var last = this.last();
         if(!last || !empty) {
           undos.push({});
           empty = true;
@@ -400,6 +404,7 @@
     var pixelHeight = 16;
     var initializer = options.initializer;
     var layers = options.layers || 2;
+    var lastClean;
 
     return this.each(function() {
       var pixie = $(div).addClass('pixie');
@@ -668,6 +673,19 @@
           return this;
         },
 
+        dirty: function(newDirty) {
+          if(newDirty !== undefined) {
+            if(newDirty === false) {
+              // Clear dirty
+              lastClean = undoStack.last();
+            }
+
+            return this;
+          } else {
+            return lastClean != undoStack.last();
+          }
+        },
+
         addSwatch: function(color) {
           colorbar.append(
             $(div)
@@ -843,6 +861,8 @@
       if(initializer) {
         initializer(canvas);
       }
+
+      lastClean = undoStack.last();
 
       $(this).append(pixie);
     });
