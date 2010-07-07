@@ -83,8 +83,7 @@ class Abingo
     #Set this user to participate in this experiment, and increment participants count.
     if options[:multiple_participation] || !(participating_tests.include?(test_name))
       unless participating_tests.include?(test_name)
-        participating_tests << test_name
-        Abingo.cache.write("Abingo::participating_tests::#{Abingo.identity}", participating_tests)
+        Abingo.cache.write("Abingo::participating_tests::#{Abingo.identity}", participating_tests + [test_name])
       end
       Abingo::Alternative.score_participation(test_name)
     end
