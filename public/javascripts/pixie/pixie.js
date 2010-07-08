@@ -12,6 +12,7 @@
   var actions = {
     undo: {
       name: "Undo",
+      icon: "/images/icons/arrow_undo.png",
       undoable: false,
       hotkeys: ["ctrl+z"],
       perform: function(canvas) {
@@ -21,6 +22,7 @@
 
     redo: {
       name: "Redo",
+      icon: "/images/icons/arrow_redo.png",
       undoable: false,
       hotkeys: ["ctrl+y"],
       perform: function(canvas) {
@@ -30,6 +32,7 @@
 
     clear: {
       name: "Clear Layer",
+      icon: "/images/icons/application.png",
       perform: function(canvas) {
         canvas.eachPixel(function(pixel) {
           pixel.color(transparent);
@@ -39,13 +42,15 @@
 
     preview: {
       name: "Preview",
+      menu: false,
       perform: function(canvas) {
         canvas.showPreview();
       }
     },
 
     save: {
-      name: "Download Image",
+      name: "Download",
+      icon: "/images/icons/disk.png",
       hotkeys: ["ctrl+s"],
       perform: function(canvas) {
         var w = window.open();
@@ -55,6 +60,7 @@
 
     left: {
       name: "Move Left",
+      icon: "/images/icons/arrow_left.png",
       menu: false,
       hotkeys: ['left'],
       perform: function(canvas) {
@@ -72,6 +78,7 @@
 
     right: {
       name: "Move Right",
+      icon: "/images/icons/arrow_right.png",
       menu: false,
       hotkeys: ['right'],
       perform: function(canvas) {
@@ -94,6 +101,7 @@
 
     up: {
       name: "Move Up",
+      icon: "/images/icons/arrow_up.png",
       menu: false,
       hotkeys: ['up'],
       perform: function(canvas) {
@@ -111,6 +119,7 @@
 
     down: {
       name: "Move Down",
+      icon: "/images/icons/arrow_down.png",
       menu: false,
       hotkeys: ['down'],
       perform: function(canvas) {
@@ -717,9 +726,15 @@
           }
 
           if(action.menu !== false) {
+            if(action.icon) {
+              var iconImg = new Image();
+              iconImg.src = action.icon;
+            }
+
             actionsMenu.append(
               $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
-                .addClass('tool')
+                .prepend(iconImg)
+                .addClass('tool button')
                 .click(function(e) {
                   doIt();
                 })
