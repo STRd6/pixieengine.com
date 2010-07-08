@@ -737,6 +737,7 @@
                 .addClass('tool button')
                 .click(function(e) {
                   doIt();
+                  return false;
                 })
             );
           }
@@ -766,6 +767,7 @@
             .addClass('tool')
             .click(function(e) {
               setMe();
+              return false;
             });
 
           toolbar.append(toolDiv);

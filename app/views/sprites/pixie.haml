@@ -32,7 +32,7 @@
         // HAX: Global ref of canvas
         window.canvas = canvas;
         canvas.addAction({
-          name: "Save to Game",
+          name: "Save",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
             if(#{!current_user && ab_test("registration_popup")}) {
