@@ -422,7 +422,7 @@
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
-      var previewLabel = $('<label>Tiled Preview</label>').click(function() {
+      var previewLabel = $('<label class=\'preview-control\'>Tiled Preview</label>').click(function() {
         if (previewToggle.attr('checked')) {
           previewToggle.removeAttr('checked');
           tilePreview = false;
@@ -444,7 +444,7 @@
 
       canvas.addClass('grid');
 
-      var guideLabel = $('<label>Display Guides</label>').click(function() {
+      var guideLabel = $('<label class=\'guide-control\'>Display Guides</label>').click(function() {
 
         if (guideToggle.attr('checked')) {
           guideToggle.removeAttr('checked');
@@ -864,11 +864,11 @@
         .append(toolbar)
         .append(canvas)
         .append(colorbar)
-        .append(preview)
-        .append(previewToggle)
         .append(previewLabel)
-        .append(guideToggle)
+        .append(previewToggle)
         .append(guideLabel)
+        .append(guideToggle)
+        .append(preview)
         .append(clear)
         .append(layerMenu);
 
