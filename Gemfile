@@ -17,9 +17,11 @@ gem 'capistrano'
 # gem 'ruby-debug'
 
 gem 'authlogic', ">= 2.1.5"
+gem 'authlogic-oauth'
 gem "compass", ">= 0.10.2"
 gem 'haml'
 gem 'mail'
+gem 'oauth'
 gem 'rmagick', :require => 'RMagick'
 
 # Bundle gems for certain environments:
