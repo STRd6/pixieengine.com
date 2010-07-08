@@ -720,10 +720,9 @@
             actionsMenu.append(
               $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
                 .addClass('tool')
-                .bind("mousedown", function(e) {
+                .click(function(e) {
                   doIt();
                 })
-                .click(falseFn)
             );
           }
         },
@@ -750,7 +749,7 @@
 
           var toolDiv = $("<img src='"+ tool.icon +"' alt='"+ alt +"' title='"+ alt +"'></img>")
             .addClass('tool')
-            .bind('mousedown', function(e) {
+            .click(function(e) {
               setMe();
             });
 
