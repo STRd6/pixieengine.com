@@ -18,6 +18,7 @@ gem 'capistrano'
 
 gem 'authlogic', ">= 2.1.5"
 gem "compass", ">= 0.10.2"
+gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'mail'
 gem 'rmagick', :require => 'RMagick'
