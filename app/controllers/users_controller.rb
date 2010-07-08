@@ -12,6 +12,7 @@ class UsersController < ResourceController::Base
   create do
     after do
       bingo!("registration_popup")
+      bingo!("load_pic")
     end
 
     wants.json do

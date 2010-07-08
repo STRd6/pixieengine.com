@@ -83,7 +83,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   #     resources :products
   #   end
 
-  root :to => "sprites#new"
+  root :to => "home#index"
 
   # See how all your routes lay out with "rake routes"
 
