@@ -9,23 +9,30 @@ class UsersController < ResourceController::Base
     render :nothing => true
   end
 
-  create do
-    after do
-      bingo!("registration_popup")
-    end
+  def create
+    @object = User.new(params[:user])
+    @object.save do |result|
+      if result
+        bingo!("registration_popup")
 
-    wants.json do
-      flash[:notice] = nil
-      render :json => {:status => "ok"}
-    end
+        respond_to do |format|
+          format.html do
+            flash[:notice] = "Account registered!"
+            redirect_back_or_default account_url
+          end
+          format.json { render :json => {:status => "ok"} }
+        end
 
-    failure do
-      wants.json do
-        flash[:error] = nil
-        render :json => {
-          :status => "error",
-          :errors => user.errors.full_messages
-        }
+      else
+        respond_to do |format|
+          format.html { render :action => :new }
+          format.json do
+            render :json => {
+              :status => "error",
+              :errors => user.errors.full_messages
+            }
+          end
+        end
       end
     end
   end

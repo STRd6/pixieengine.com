@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100706224644) do
+ActiveRecord::Schema.define(:version => 20100708171827) do
 
   create_table "alternatives", :force => true do |t|
     t.integer "experiment_id"
@@ -63,9 +63,9 @@ ActiveRecord::Schema.define(:version => 20100706224644) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "email",                              :null => false
-    t.string   "crypted_password",                   :null => false
-    t.string   "password_salt",                      :null => false
+    t.string   "email"
+    t.string   "crypted_password"
+    t.string   "password_salt"
     t.string   "persistence_token",                  :null => false
     t.string   "single_access_token",                :null => false
     t.string   "perishable_token",                   :null => false
@@ -80,6 +80,10 @@ ActiveRecord::Schema.define(:version => 20100706224644) do
     t.datetime "updated_at",                         :null => false
     t.string   "display_name"
     t.integer  "referrer_id"
+    t.string   "oauth_token"
+    t.string   "oauth_secret"
   end
+
+  add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
 
 end
