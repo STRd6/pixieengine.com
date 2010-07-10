@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   has_many :favorites
 
   after_create do
-    Notifier.welcome_email(self).deliver email.blank?
+    Notifier.welcome_email(self).deliver unless email.blank?
   end
 
   def to_s
