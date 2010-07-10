@@ -18,6 +18,10 @@ class User < ActiveRecord::Base
     favorites.find_by_sprite_id(sprite.id).destroy
   end
 
+  def favorite?(sprite)
+    favorites.find_by_sprite_id sprite.id
+  end
+
   def display_name
     if super.blank?
       "Anonymous#{id}"
