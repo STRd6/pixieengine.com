@@ -5,25 +5,6 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  # Catch old urls
-  match 'creation(/:dummy(/:dummy))' => "sprites#new"
-
-  # Link Tracking
-  match 'r/:token' => "links#track"
-
-  match 'about' => "home#about", :as => :about
-
-  match "login" => "user_sessions#new", :as => :login
-  match "logout" => "user_sessions#destroy", :as => :logout
-  match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
-  match "sign_up" => "users#new", :as => :signup
-
-  match 'users/remove_favorite/:id' => 'users#remove_favorite'
-
-  namespace :abingo do
-    match "dashboard" => 'dashboard#index'
-  end
-
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -83,6 +64,25 @@ PixieStrd6Com::Application.routes.draw do |map|
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  # Catch old urls
+  match 'creation(/:dummy(/:dummy))' => "sprites#new"
+
+  # Link Tracking
+  match 'r/:token' => "links#track"
+
+  match 'about' => "home#about", :as => :about
+
+  match "login" => "user_sessions#new", :as => :login
+  match "logout" => "user_sessions#destroy", :as => :logout
+  match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
+  match "sign_up" => "users#new", :as => :signup
+
+  match 'users/remove_favorite/:id' => 'users#remove_favorite'
+
+  namespace :abingo do
+    match "dashboard" => 'dashboard#index'
+  end
 
   root :to => "sprites#new"
 

@@ -5,11 +5,19 @@
   %p Click your Oauth or OpenID provider
   .oauth_providers
     %ul
-      - %w(twitter facebook myspace yahoo google).each do |name|
+      - %w(twitter facebook myspace).each do |name|
         %li.oauth_provider
           = image_tag "/images/oauth/#{name}.png"
           = radio_button_tag :oauth_provider, name
       .clearfix
+
+- form_for @user_session, :url => authenticate_path do |form|
+  = form.label :email
+  = form.text_field :email
+  = form.label :password
+  = form.password_field :password
+
+  = form.submit "Log In"
 
 :javascript
   $(function() {
