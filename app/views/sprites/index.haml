@@ -16,6 +16,22 @@
           $.get('/users/remove_favorite/' + spriteId);
         }
       });
+
+      $('.favorites').click(function() {
+        var spriteId = $(this).attr('data-id');
+        if ($(this).hasClass('star')) {
+          $(this).removeClass('star').addClass('no-star');
+          $.get('/users/remove_favorite/' + spriteId);
+        } else {
+          $(this).removeClass('no-star').addClass('star');
+          $.post('/favorites', {
+            'format': 'js',
+            'favorite[user_id]': #{current_user.id},
+            'favorite[sprite_id]': spriteId
+          },"script");
+        }
+      });
     });
+
 
 / - if find_by_user(current_user.id, )
