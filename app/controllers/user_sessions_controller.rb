@@ -5,7 +5,7 @@ class UserSessionsController < ApplicationController
 
   def create
     # Default to remember me
-    @user_session = UserSession.new(params[:user_session].merge(:remember_me => true))
+    @user_session = UserSession.new((params[:user_session] || {}).merge(:remember_me => true))
     @user_session.save do |result|
       if result
         flash[:notice] = "Login successful!"

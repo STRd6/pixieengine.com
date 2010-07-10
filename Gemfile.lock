@@ -4,21 +4,29 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
+  authlogic-connect: 
+    group: 
+    - :default
+    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  authlogic: 
+  ruby-openid: 
     group: 
     - :default
-    version: ">= 2.1.5"
+    version: ">= 0"
+  haml: 
+    group: 
+    - :default
+    version: ">= 0"
   sqlite3-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - sqlite3
-  haml: 
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
@@ -30,10 +38,12 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  authlogic-oauth: 
+  rack-openid: 
     group: 
     - :default
-    version: ">= 0"
+    version: ">= 0.2.1"
+    require: 
+    - rack/openid
   mail: 
     group: 
     - :default
@@ -48,6 +58,10 @@ dependencies:
     version: ">= 0"
     require: 
     - RMagick
+  oauth2: 
+    group: 
+    - :default
+    version: ">= 0"
   capistrano: 
     group: 
     - :default
@@ -93,10 +107,27 @@ specs:
     version: 3.0.0.beta4
 - activeresource: 
     version: 3.0.0.beta4
+- addressable: 
+    version: 2.1.2
 - authlogic: 
-    version: 2.1.5
-- authlogic-oauth: 
-    version: 1.0.8
+    version: 2.1.3
+    source: 0
+- json: 
+    version: 1.4.3
+- oauth: 
+    version: 0.4.1
+- faraday: 
+    version: 0.4.6
+- multi_json: 
+    version: 0.0.4
+- oauth2: 
+    version: 0.0.10
+- ruby-openid: 
+    version: 2.1.7
+- rack-openid: 
+    version: 1.0.3
+- authlogic-connect: 
+    version: 0.0.5.1
 - bundler: 
     version: 0.9.26
 - highline: 
@@ -117,8 +148,6 @@ specs:
     version: 0.10.2
 - factory_girl: 
     version: 1.3.1
-- oauth: 
-    version: 0.4.1
 - thor: 
     version: 0.13.7
 - railties: 
@@ -131,7 +160,12 @@ specs:
     version: 2.11.1
 - sqlite3-ruby: 
     version: 1.3.0
-hash: 76530398d7b26706ea9afc813119977a927f975c
+hash: 63011ae68d0c8fcb1ee0ca7c012cb702d3ad8018
 sources: 
+- Git: 
+    uri: git://github.com/odorcicd/authlogic.git
+    branch: rails3
+    git: git://github.com/odorcicd/authlogic.git
+    ref: a087ad0cba3c165ba22fcf176c28b6f7517931e8
 - Rubygems: 
     uri: http://rubygems.org

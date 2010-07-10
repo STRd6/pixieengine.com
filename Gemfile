@@ -16,13 +16,16 @@ gem 'capistrano'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authlogic', ">= 2.1.5"
-gem 'authlogic-oauth'
+gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
+gem "authlogic-connect"
 gem "compass", ">= 0.10.2"
 gem 'haml'
 gem 'mail'
 gem 'oauth'
+gem "oauth2"
+gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem 'rmagick', :require => 'RMagick'
+gem "ruby-openid"
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test

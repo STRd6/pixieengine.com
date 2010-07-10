@@ -13,9 +13,10 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'about' => "home#about", :as => :about
 
-  match "register" => "users#new", :as => :register
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
+  match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
+  match "sign_up" => "users#new", :as => :signup
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
 

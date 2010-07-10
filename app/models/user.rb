@@ -1,13 +1,17 @@
 class User < ActiveRecord::Base
-  acts_as_authentic do |c|
-    c.require_password_confirmation = false
+  acts_as_authentic do |config|
+    config.validate_email_field = false
+    config.validate_password_field = false
+    config.require_password_confirmation = false
   end
+
+  include ExampleProfile
 
   has_many :sprites
   has_many :favorites
 
   after_create do
-    Notifier.welcome_email(self).deliver
+    Notifier.welcome_email(self).deliver email.blank?
   end
 
   def to_s

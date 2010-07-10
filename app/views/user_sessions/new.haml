@@ -1,12 +1,34 @@
-%h2 Login
-- form_for @user_session, :url => "/user_sessions" do |f|
-  = f.error_messages
-  %p
-    = f.label :email
-    = f.text_field :email
-  %p
-    = f.label :password
-    = f.password_field :password
 
-  .right
-    = f.submit "Submit"
+
+- form_for @user_session, :url => authenticate_path, :html => { :method => :post, :class => "authentication_form" } do |form|
+  = oauth_login_hidden_input
+  %fieldset
+    %legend Click your Oauth or OpenID provider
+    .oauth_providers
+      %ul
+        - %w(google facebook twitter yahoo myspace).each do |name|
+          %li.oauth_provider
+            = image_tag "/images/oauth/#{name}.png"
+            = radio_button_tag :oauth_provider, name
+        .clearfix
+
+:javascript
+  $(function() {
+    $form = $(".authentication_form");
+
+    // progressively enhance buttons
+    $("li.oauth_provider").each(function(index, element) {
+      var li = $(element);
+      var input = $("input", li);
+      input.css("display", "none");
+      li.css("cursor", "pointer");
+      li.data("oauth", input);
+      li.click(function(event) {
+        event.preventDefault();
+        li.data("oauth").attr("checked", "checked");
+        $form.submit();
+        $form.find('input[name=submit]').click();
+        return false;
+      });
+    });
+  });
