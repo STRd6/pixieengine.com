@@ -2,15 +2,14 @@
 
 - form_for @user_session, :url => authenticate_path, :html => { :method => :post, :class => "authentication_form" } do |form|
   = oauth_login_hidden_input
-  %fieldset
-    %legend Click your Oauth or OpenID provider
-    .oauth_providers
-      %ul
-        - %w(google facebook twitter yahoo myspace).each do |name|
-          %li.oauth_provider
-            = image_tag "/images/oauth/#{name}.png"
-            = radio_button_tag :oauth_provider, name
-        .clearfix
+  %p Click your Oauth or OpenID provider
+  .oauth_providers
+    %ul
+      - %w(twitter facebook myspace yahoo google).each do |name|
+        %li.oauth_provider
+          = image_tag "/images/oauth/#{name}.png"
+          = radio_button_tag :oauth_provider, name
+      .clearfix
 
 :javascript
   $(function() {
