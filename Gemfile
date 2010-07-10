@@ -19,6 +19,7 @@ gem 'capistrano'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "authlogic-connect"
 gem "compass", ">= 0.10.2"
+gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'mail'
 gem 'oauth'

@@ -4,19 +4,23 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  authlogic-connect: 
-    group: 
-    - :default
-    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
+  authlogic-connect: 
+    group: 
+    - :default
+    version: ">= 0"
   ruby-openid: 
     group: 
     - :default
     version: ">= 0"
   haml: 
+    group: 
+    - :default
+    version: ">= 0"
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
@@ -26,14 +30,16 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
-  authlogic: 
-    group: 
-    - :default
-    version: ">= 0"
   oauth: 
     group: 
     - :default
     version: ">= 0"
+  exception_notification: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - exception_notifier
   shoulda: 
     group: 
     - :test
@@ -111,7 +117,7 @@ specs:
     version: 2.1.2
 - authlogic: 
     version: 2.1.3
-    source: 0
+    source: 1
 - json: 
     version: 1.4.3
 - oauth: 
@@ -146,6 +152,9 @@ specs:
     version: 3.0.13
 - compass: 
     version: 0.10.2
+- exception_notification: 
+    version: 1.0.0
+    source: 0
 - factory_girl: 
     version: 1.3.1
 - thor: 
@@ -159,9 +168,14 @@ specs:
 - shoulda: 
     version: 2.11.1
 - sqlite3-ruby: 
-    version: 1.3.0
-hash: 63011ae68d0c8fcb1ee0ca7c012cb702d3ad8018
+    version: 1.3.1
+hash: 7bf773425332a85fa989cad1afadcfa3b4b6be9c
 sources: 
+- Git: 
+    uri: git://github.com/rails/exception_notification.git
+    require: exception_notifier
+    git: git://github.com/rails/exception_notification.git
+    ref: 006be779113698b351e335e9594d64b9d6ff8915
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git
     branch: rails3
