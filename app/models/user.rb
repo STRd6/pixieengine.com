@@ -22,6 +22,10 @@ class User < ActiveRecord::Base
     favorites.find_by_sprite_id(sprite.id).destroy
   end
 
+  def favorite?(sprite)
+    favorites.find_by_sprite_id sprite.id
+  end
+
   def broadcast(message)
     if twitter = authenticated_with?(:twitter)
       twitter.post("/statuses/update.json",
