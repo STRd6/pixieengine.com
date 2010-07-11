@@ -22,6 +22,14 @@ class User < ActiveRecord::Base
     favorites.find_by_sprite_id(sprite.id).destroy
   end
 
+  def broadcast(message)
+    if twitter = authenticated_with?(:twitter)
+      twitter.post("/statuses/update.json",
+        "status" => message
+      )
+    end
+  end
+
   def display_name
     if super.blank?
       "Anonymous#{id}"
