@@ -1,4 +1,5 @@
 .bundle
+config/authlogic.yml
 db/*.sqlite3
 log/*.log
 tmp/**/*
