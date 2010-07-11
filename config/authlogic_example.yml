@@ -1,7 +1,7 @@
 connect:
   twitter:
-    key: "hbiNg5D00liMFjtwLvGIw"
-    secret: "z7zaKWPSxv76eydVbUhnnlNa3SD8yyzI2FKyZ3F5Hdw"
+    key: "my_key"
+    secret: "my_secret"
     label: "Twitter"
   facebook:
     key: "my_key"
