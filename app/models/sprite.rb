@@ -5,6 +5,8 @@ class Sprite < ActiveRecord::Base
   attr_accessor :file_base64_encoded
   attr_accessor :file
 
+  before_save :gather_metadata
+
   after_save :save_file
 
   def self.data_from_url(url)
@@ -45,6 +47,15 @@ class Sprite < ActiveRecord::Base
       File.open(file_path, 'wb') do |f|
         f << file.read
       end
+    end
+  end
+
+  def gather_metadata
+    if file
+      image_data = Magick::Image.read(file.path).first
+
+      self.width = image_data.columns
+      self.height = image_data.rows
     end
   end
 

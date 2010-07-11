@@ -26,6 +26,8 @@ PixieStrd6Com::Application.routes.draw do |map|
 
     collection do
       get :load_url
+      get :upload
+      post :import
     end
   end
   resources :users, :user_sessions
