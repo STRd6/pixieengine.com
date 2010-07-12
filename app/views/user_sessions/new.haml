@@ -1,8 +1,6 @@
-
-
 - form_for @user_session, :url => authenticate_path, :html => { :method => :post, :class => "authentication_form" } do |form|
   = oauth_login_hidden_input
-  %p Click your Oauth or OpenID provider
+  %h3 Use one of your accounts from an existing site for authentication
   .oauth_providers
     %ul
       - %w(twitter facebook myspace).each do |name|
@@ -11,13 +9,22 @@
           = radio_button_tag :oauth_provider, name
       .clearfix
 
-- form_for @user_session, :url => authenticate_path do |form|
-  = form.label :email
-  = form.text_field :email
-  = form.label :password
-  = form.password_field :password
 
-  = form.submit "Log In"
+.div
+  %h4 Or use your Pixie account
+  = link_to_function "Create a new account with Pixie", "$('#create').show(); $('#logIn').hide()", :class => "button"
+  = link_to_function "Log in with your Pixie account", "$('#create').hide(); $('#logIn').show()", :class => "button"
+
+#create{:style => "display: none;"}
+  = render :partial => 'users/form', :locals => {:user => User.new}
+#logIn{:style => "display: none;"}
+  - form_for @user_session, :url => authenticate_path do |form|
+    = form.label :email
+    = form.text_field :email
+    = form.label :password
+    = form.password_field :password
+
+    = form.submit "Log In"
 
 :javascript
   $(function() {

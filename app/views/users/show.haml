@@ -1,14 +1,16 @@
 - profile = user.profile
-%h2 Hi #{profile[:name]}!
+%h2 Hi #{user.display_name}!
 
-%p
-  You have connected to your
-  = current_user.authenticated_with.collect(&:titleize).join(" and ")
-  = 'account'.send(current_user.authenticated_with.length > 1 ? 'pluralize' : 'singularize')
+- authenticated_accounts = current_user.authenticated_with
+- if authenticated_accounts.length > 0
+  %p
+    You have connected to your
+    = authenticated_accounts.collect(&:titleize).join(" and ")
+    = 'account'.send(authenticated_accounts.length > 1 ? 'pluralize' : 'singularize')
 
-%img.profile{:src => profile[:photo]}
-%p
-  = link_to "You're on #{profile[:title]}!", profile[:link]
+  %img.profile{:src => profile[:photo]}
+  %p
+    = link_to "You're on #{profile[:title]}!", profile[:link]
 
 %p
   = link_to "Create something!", new_sprite_path
