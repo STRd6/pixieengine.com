@@ -1,7 +1,7 @@
 #header
   %p.left
     = link_to "Draw", new_sprite_path, :class => "button"
-    = link_to "Upload", {:controller => :sprites, :action => :upload}, :class => "button"
+    = link_to "Upload", upload_sprites_path, :class => "button"
     = link_to "Browse", sprites_path, :class => "button"
     = link_to "Feedback", new_feedback_path, :class => "button"
     = link_to "About", about_path, :class => "button"
