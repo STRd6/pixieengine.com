@@ -3,7 +3,7 @@
   %h3 Use one of your accounts from an existing site for authentication
   .oauth_providers
     %ul
-      - %w(twitter facebook myspace).each do |name|
+      - %w(twitter facebook).each do |name|
         %li.oauth_provider
           = image_tag "/images/oauth/#{name}.png"
           = radio_button_tag :oauth_provider, name
