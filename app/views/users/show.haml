@@ -1,12 +1,8 @@
 - profile = user.profile
-%h2 Hi #{user.display_name}!
+%h2= user.display_name
 
-- authenticated_accounts = current_user.authenticated_with
+- authenticated_accounts = user.authenticated_with
 - if authenticated_accounts.length > 0
-  %p
-    You have connected to your
-    = authenticated_accounts.collect(&:titleize).join(" and ")
-    = 'account'.send(authenticated_accounts.length > 1 ? 'pluralize' : 'singularize')
 
   %img.profile{:src => profile[:photo]}
   %p
