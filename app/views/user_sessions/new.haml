@@ -18,13 +18,7 @@
 #create{:style => "display: none;"}
   = render :partial => 'users/form', :locals => {:user => User.new}
 #logIn{:style => "display: none;"}
-  - form_for @user_session, :url => authenticate_path do |form|
-    = form.label :email
-    = form.text_field :email
-    = form.label :password
-    = form.password_field :password
-
-    = form.submit "Log In"
+  = render :partial => "form"
 
 :javascript
   $(function() {
