@@ -31,6 +31,7 @@ end
 
 task :after_symlink do
   run "ln -nfs #{shared_path}/production #{release_path}/public/production"
+  run "ln -nfs #{shared_path}/system/authlogic.yml #{release_path}/config/authlogic.yml"
 end
 
 # Passenger start Tasks
