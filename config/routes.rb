@@ -28,7 +28,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
 
   # Link Tracking
-  match 'r/:token' => "links#track"
+  match 'r/:token' => "links#track", :as => :link_token
 
   match 'about' => "home#about", :as => :about
 

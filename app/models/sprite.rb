@@ -2,12 +2,12 @@ class Sprite < ActiveRecord::Base
   has_many :favorite
   belongs_to :user
 
-  attr_accessor :file_base64_encoded
-  attr_accessor :file
+  attr_accessor :broadcast, :file, :file_base64_encoded
 
   before_save :gather_metadata
 
   after_save :save_file
+  after_save :send_broadcast
 
   def self.data_from_url(url)
     image_data = Magick::Image.read(url).first
@@ -57,6 +57,17 @@ class Sprite < ActiveRecord::Base
       self.width = image_data.columns
       self.height = image_data.rows
     end
+  end
+
+  def send_broadcast
+    if broadcast && user
+      link = create_link
+      user.broadcast "Check out the sprite I made in Pixie #{link}"
+    end
+  end
+
+  def create_link
+    Link.create(:user => user, :target => self)
   end
 
   def self.hex_color_to_rgba(color, opacity)
