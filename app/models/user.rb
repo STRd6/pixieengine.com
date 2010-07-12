@@ -27,6 +27,11 @@ class User < ActiveRecord::Base
   end
 
   def broadcast(message)
+    if Rails.env.development?
+      logger.info("USER[#{id}] BROADCASTING: #{message}")
+      return
+    end
+
     if twitter = authenticated_with?(:twitter)
       twitter.post("/statuses/update.json",
         "status" => message
