@@ -8,10 +8,23 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new((params[:user_session] || {}).merge(:remember_me => true))
     @user_session.save do |result|
       if result
-        flash[:notice] = "Login successful!"
-        redirect_back_or_default root_url
+        respond_to do |format|
+          format.html do
+            flash[:notice] = "Login successful!"
+            redirect_back_or_default root_url
+          end
+          format.json { render :json => {:status => "ok"} }
+        end
       else
-        render :action => :new
+        respond_to do |format|
+          format.html { render :action => :new }
+          format.json do
+            render :json => {
+              :status => "error",
+              :errors => @user_session.errors.full_messages
+            }
+          end
+        end
       end
     end
   end
