@@ -14,6 +14,10 @@ class UsersController < ResourceController::Base
     @object.save do |result|
       if result
         bingo!("registration_popup")
+        bingo!("load_pic")
+        bingo!("login_after")
+
+        save_sprites_to_user
 
         respond_to do |format|
           format.html do
@@ -38,6 +42,18 @@ class UsersController < ResourceController::Base
   end
 
   private
+
+  def save_sprites_to_user
+    (session[:saved_sprites] || {}).each do |sprite_id, broadcast|
+      sprite = Sprite.find(sprite_id)
+      sprite.update_attribute(:user, user)
+      if broadcast == "1"
+        sprite.broadcast_link
+      end
+    end
+
+    session[:saved_sprites] = nil
+  end
 
   def require_current_user
     unless current_user == object

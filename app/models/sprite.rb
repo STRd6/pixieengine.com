@@ -33,6 +33,13 @@ class Sprite < ActiveRecord::Base
     end.to_json
   end
 
+  def broadcast_link
+    if user
+      link = create_link
+      user.broadcast "Check out the sprite I made in Pixie #{link}"
+    end
+  end
+
   private
   def file_path
     "#{Rails.root}/public/production/images/#{id}.png"
@@ -60,9 +67,8 @@ class Sprite < ActiveRecord::Base
   end
 
   def send_broadcast
-    if broadcast == "1" && user
-      link = create_link
-      user.broadcast "Check out the sprite I made in Pixie #{link}"
+    if broadcast == "1"
+      broadcast_link
     end
   end
 
