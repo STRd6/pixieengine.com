@@ -60,7 +60,7 @@ class Sprite < ActiveRecord::Base
   end
 
   def send_broadcast
-    if broadcast && user
+    if broadcast == "1" && user
       link = create_link
       user.broadcast "Check out the sprite I made in Pixie #{link}"
     end

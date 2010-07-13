@@ -7,6 +7,9 @@
 
 #pixie
 
+= label_tag "share"
+= check_box_tag "share", "1", true
+
 = render :partial => 'shared/register_modal'
 
 :javascript
@@ -18,7 +21,8 @@
         'format': 'js',
         'sprite[file_base64_encoded]': canvas.toBase64(),
         'sprite[width]': #{width},
-        'sprite[height]': #{height}
+        'sprite[height]': #{height},
+        'sprite[broadcast]': $("#share").val()
       }, function(data) {
         eval(data);
         canvas.dirty(false);
