@@ -14,13 +14,14 @@
     if(!loggedIn) {
       logInCallback = callback;
       $("#registerModal").modal();
+      trackPageview("/registration_goal/login_screen");
     } else {
       callback();
     }
   }
 
   $(function() {
-    function ajaxifyForm(selector) {
+    function ajaxifyForm(selector, registration) {
       var form = $(selector);
 
       form.ajaxForm({
@@ -29,6 +30,9 @@
           if(data.status == "ok") {
             $.modal.close();
             loggedIn = true;
+            if(registration) {
+              trackPageview("/registration_goal/registered");
+            }
             logInCallback();
           } else {
             var errorExplanation = form.find(".errorExplanation");
@@ -51,7 +55,6 @@
       });
     }
 
-    ajaxifyForm("#new_user");
+    ajaxifyForm("#new_user", true);
     ajaxifyForm("#new_user_session");
-
   });

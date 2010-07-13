@@ -7,3 +7,7 @@ function notify(message) {
     notice.html(message);
   }
 }
+
+function trackPageview(pageName) {
+  _gaq.push(['_trackPageview', pageName]);
+}

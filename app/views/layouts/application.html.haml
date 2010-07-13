@@ -30,3 +30,9 @@
       = render :partial => "/shared/footer"
       = render :partial => "/shared/fb_app"
     = render :partial => "/shared/analytics"
+
+    - if @registered
+      :javascript
+        $(function() {
+          trackPageview("/registration_goal/registered");
+        });
