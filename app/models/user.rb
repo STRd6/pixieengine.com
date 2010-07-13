@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   acts_as_authentic do |config|
-    config.validate_email_field = false
-    config.validate_password_field = false
+    config.validate_email_field :no_connected_sites?
+    config.validate_password_field :no_connected_sites?
     config.require_password_confirmation = false
   end
 
@@ -45,5 +45,11 @@ class User < ActiveRecord::Base
     else
       super
     end
+  end
+
+  private
+
+  def no_connected_sites?
+    authenticated_with.length == 0
   end
 end
