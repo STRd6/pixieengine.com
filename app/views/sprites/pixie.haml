@@ -7,8 +7,9 @@
 
 #pixie
 
-= label_tag "share"
-= check_box_tag "share", "1", true
+#sharing{:title => "Share this creation with your friends (requires having linked one of your social network sites to Pixie)"}
+  = label_tag "share"
+  = check_box_tag "share", "1", true
 
 = render :partial => 'shared/register_modal'
 
