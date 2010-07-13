@@ -1,3 +1,19 @@
 - form_for Sprite.new, :url => { :action => "import" }, :html => {:multipart => true} do |form|
   = form.file_field :file
   = form.submit "Upload"
+
+= render :partial => 'shared/register_modal'
+
+:javascript
+  (function($) {
+    $("#new_sprite").submit(function() {
+      if(loggedIn) {
+        return true;
+      } else {
+        requireLogin(function() {
+          $("#new_sprite").submit();
+        });
+        return false;
+      }
+    });
+  })(jQuery);
