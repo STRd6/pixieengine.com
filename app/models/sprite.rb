@@ -1,4 +1,6 @@
 class Sprite < ActiveRecord::Base
+  acts_as_archive
+
   has_many :favorite
   belongs_to :user
 

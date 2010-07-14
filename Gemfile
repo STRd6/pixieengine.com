@@ -25,6 +25,7 @@ gem 'mail'
 gem 'oauth'
 gem "oauth2"
 gem "rack-openid", ">=0.2.1", :require => "rack/openid"
+gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 
