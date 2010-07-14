@@ -8,10 +8,12 @@ class UserSessionsController < ApplicationController
     @user_session = UserSession.new((params[:user_session] || {}).merge(:remember_me => true))
     @user_session.save do |result|
       if result
+        new_user = @user_session.user.login_count == 1
+
         respond_to do |format|
           format.html do
             flash[:notice] = "Login successful!"
-            redirect_back_or_default root_url
+            redirect_back_or_default root_path
           end
           format.json { render :json => {:status => "ok"} }
         end
@@ -31,7 +33,7 @@ class UserSessionsController < ApplicationController
 
   def destroy
     @user_session = UserSession.find
-    @user_session.destroy
+    @user_session.destroy if @user_session
     flash[:notice] = "Successfully logged out."
     redirect_to root_url
   end
