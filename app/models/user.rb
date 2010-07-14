@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   has_many :sprites
   has_many :favorites
 
+  attr_accessible :display_name, :email, :password
+
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?
   end

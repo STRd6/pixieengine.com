@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100710050513) do
+ActiveRecord::Schema.define(:version => 20100714024038) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -86,23 +86,24 @@ ActiveRecord::Schema.define(:version => 20100710050513) do
     t.string   "email"
     t.string   "crypted_password"
     t.string   "password_salt"
-    t.string   "persistence_token",                  :null => false
-    t.string   "single_access_token",                :null => false
-    t.string   "perishable_token",                   :null => false
-    t.integer  "login_count",         :default => 0, :null => false
-    t.integer  "failed_login_count",  :default => 0, :null => false
+    t.string   "persistence_token",                      :null => false
+    t.string   "single_access_token",                    :null => false
+    t.string   "perishable_token",                       :null => false
+    t.integer  "login_count",         :default => 0,     :null => false
+    t.integer  "failed_login_count",  :default => 0,     :null => false
     t.datetime "last_request_at"
     t.datetime "current_login_at"
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.string   "display_name"
     t.integer  "referrer_id"
     t.string   "oauth_token"
     t.string   "oauth_secret"
     t.integer  "active_token_id"
+    t.boolean  "admin",               :default => false, :null => false
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
