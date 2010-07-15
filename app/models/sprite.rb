@@ -1,5 +1,6 @@
 class Sprite < ActiveRecord::Base
   acts_as_taggable
+  acts_as_taggable_on :dimension
 
   has_many :favorite
   belongs_to :user
@@ -11,6 +12,8 @@ class Sprite < ActiveRecord::Base
 
   after_save :save_file
   after_save :send_broadcast
+
+  after_create :update_dimension_tags!
 
   cattr_reader :per_page
   @@per_page = 40
@@ -128,6 +131,24 @@ class Sprite < ActiveRecord::Base
     if broadcast == "1"
       broadcast_link
     end
+  end
+
+  def update_dimension_tags!
+    tags = ["#{width}x#{height}"]
+
+    if width == height
+      tags << "Square"
+    end
+
+    if width <= 32 && height <= 32
+      tags << "Small"
+    elsif width <= 128 && height <= 128
+      tags << "Medium"
+    elsif width > 128 && height > 128
+      tags << "Large"
+    end
+
+    update_attribute(:dimension_list, tags.join(","))
   end
 
   def create_link
