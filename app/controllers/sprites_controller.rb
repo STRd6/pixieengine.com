@@ -45,6 +45,7 @@ class SpritesController < ResourceController::Base
     @width = sprite.width
     @height = sprite.height
     @data = sprite.json_data
+    @parent_id = sprite.id
 
     render :action => :pixie
   end
