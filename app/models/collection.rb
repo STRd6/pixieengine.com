@@ -5,4 +5,8 @@ class Collection < ActiveRecord::Base
   def items
     collection_items.map(&:item)
   end
+
+  def include?(item)
+    items.include?(item)
+  end
 end

@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
 
   include ExampleProfile
 
+  has_many :collections
   has_many :sprites
   has_many :favorites
 
@@ -18,6 +19,20 @@ class User < ActiveRecord::Base
 
   def to_s
     display_name
+  end
+
+  def add_to_collection(item, collection_name="favorites")
+    unless collection = collections.find_by_name(collection_name)
+      collection = collections.create :name => collection_name
+    end
+
+    collection.collection_items.create(:item => item)
+  end
+
+  def remove_from_collection(item, collection_name="favorites")
+    if collection = collections.find_by_name(collection_name)
+      collection.collection_items.find_by_item(item).each(&:destroy)
+    end
   end
 
   def remove_favorite(sprite)
