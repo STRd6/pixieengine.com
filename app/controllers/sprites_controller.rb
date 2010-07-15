@@ -74,6 +74,10 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  def collection
+    @collection ||= Sprite.paginate(:page => params[:page], :order => 'created_at DESC')
+  end
+
   helper_method :sprites
   def sprites
     return collection

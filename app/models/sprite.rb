@@ -9,6 +9,9 @@ class Sprite < ActiveRecord::Base
   after_save :save_file
   after_save :send_broadcast
 
+  cattr_reader :per_page
+  @@per_page = 40
+
   def self.data_from_url(url)
     #TODO Animations
     image_data = Magick::Image.read(url).first

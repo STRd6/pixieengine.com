@@ -1,7 +1,10 @@
 - @title = "Sprites"
 
+= will_paginate sprites
+
 - sprites.each do |sprite|
   = render :partial => sprite
+.clear
 
 - if current_user
   :javascript
@@ -22,5 +25,4 @@
       });
     });
 
-
-/ - if find_by_user(current_user.id, )
+= will_paginate sprites
