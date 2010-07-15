@@ -1,3 +1,13 @@
+Factory.define :collection do |collection|
+  collection.user {Factory :user}
+  collection.name "TEST"
+end
+
+Factory.define :collection_item do |collection_item|
+  collection_item.collection {Factory :collection}
+  collection_item.item {Factory :sprite}
+end
+
 Factory.sequence :email do |n|
   "test_#{n}@example.com"
 end

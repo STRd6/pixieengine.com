@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100715163134) do
+ActiveRecord::Schema.define(:version => 20100715164933) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -35,6 +35,26 @@ ActiveRecord::Schema.define(:version => 20100715163134) do
 
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
+
+  create_table "collection_items", :force => true do |t|
+    t.integer  "collection_id", :null => false
+    t.integer  "item_id",       :null => false
+    t.string   "item_type",     :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "collection_items", ["collection_id"], :name => "index_collection_items_on_collection_id"
+  add_index "collection_items", ["item_id", "item_type"], :name => "index_collection_items_on_item_id_and_item_type"
+
+  create_table "collections", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "collections", ["user_id"], :name => "index_collections_on_user_id"
 
   create_table "experiments", :force => true do |t|
     t.string   "test_name"
