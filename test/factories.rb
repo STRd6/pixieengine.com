@@ -8,7 +8,8 @@ Factory.define :user do |user|
 end
 
 Factory.define :sprite do |sprite|
-
+  sprite.width 16
+  sprite.height 16
 end
 
 Factory.define :link do |link|

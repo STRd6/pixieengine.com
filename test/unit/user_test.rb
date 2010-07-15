@@ -10,9 +10,9 @@ class UserTest < ActiveSupport::TestCase
     assert @user
   end
 
-#  should "send password email on create" do
-#    assert_difference 'ActionMailer::Base.deliveries.size', +1 do
-#      Factory :user
-#    end
-#  end
+  should "send password email on create" do
+    assert_difference 'ActionMailer::Base.deliveries.size', +1 do
+      Factory :user
+    end
+  end
 end
