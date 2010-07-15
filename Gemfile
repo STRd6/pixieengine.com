@@ -27,6 +27,7 @@ gem "oauth2"
 gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
+gem "will_paginate"
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test

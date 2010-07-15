@@ -4,15 +4,21 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
   authlogic-connect: 
     group: 
     - :default
     version: ">= 0"
-  ruby-openid: 
+  rails: 
+    group: 
+    - :default
+    version: = 3.0.0.beta4
+  sqlite3-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - sqlite3
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
@@ -20,17 +26,7 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  authlogic: 
-    group: 
-    - :default
-    version: ">= 0"
-  sqlite3-ruby: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - sqlite3
-  oauth: 
+  ruby-openid: 
     group: 
     - :default
     version: ">= 0"
@@ -40,9 +36,17 @@ dependencies:
     version: ">= 0"
     require: 
     - exception_notifier
+  oauth: 
+    group: 
+    - :default
+    version: ">= 0"
   shoulda: 
     group: 
     - :test
+    version: ">= 0"
+  mail: 
+    group: 
+    - :default
     version: ">= 0"
   rack-openid: 
     group: 
@@ -50,13 +54,13 @@ dependencies:
     version: ">= 0.2.1"
     require: 
     - rack/openid
-  mail: 
-    group: 
-    - :default
-    version: ">= 0"
   factory_girl: 
     group: 
     - :test
+    version: ">= 0"
+  will_paginate: 
+    group: 
+    - :default
     version: ">= 0"
   rmagick: 
     group: 
@@ -133,7 +137,7 @@ specs:
 - rack-openid: 
     version: 1.0.3
 - authlogic-connect: 
-    version: 0.0.5.1
+    version: 0.0.6
 - bundler: 
     version: 0.9.26
 - highline: 
@@ -169,13 +173,15 @@ specs:
     version: 2.11.1
 - sqlite3-ruby: 
     version: 1.3.1
-hash: 7bf773425332a85fa989cad1afadcfa3b4b6be9c
+- will_paginate: 
+    version: 2.3.14
+hash: c7241531ba1f767010a78432a35fe0c94bad7e24
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
     require: exception_notifier
     git: git://github.com/rails/exception_notification.git
-    ref: 006be779113698b351e335e9594d64b9d6ff8915
+    ref: e7fa5eab8c544419a57187a2ab340fae7a51e191
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git
     branch: rails3
