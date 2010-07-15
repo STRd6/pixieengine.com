@@ -1,6 +1,7 @@
 class Sprite < ActiveRecord::Base
   has_many :favorite
   belongs_to :user
+  belongs_to :parent, :class_name => "Sprite"
 
   attr_accessor :broadcast, :file, :file_base64_encoded
 
