@@ -10,6 +10,7 @@ class Sprite < ActiveRecord::Base
   after_save :send_broadcast
 
   def self.data_from_url(url)
+    #TODO Animations
     image_data = Magick::Image.read(url).first
     width = image_data.columns
     height = image_data.rows
@@ -40,6 +41,24 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def self.bulk_import_files(directory_path)
+    dir = Dir.new(directory_path)
+
+    dir.each do |file_name|
+      unless file_name =~ /^\./
+        file_path = File.expand_path(file_name, directory_path)
+        puts file_path
+
+        unless File.directory?(file_path)
+          puts "T"
+          file = File.new(file_path)
+          sprite = Sprite.new(:file => file)
+          sprite.save!
+        end
+      end
+    end
+  end
+
   private
   def file_path
     "#{Rails.root}/public/production/images/#{id}.png"
@@ -59,6 +78,7 @@ class Sprite < ActiveRecord::Base
 
   def gather_metadata
     if file
+      #TODO Animations
       image_data = Magick::Image.read(file.path).first
 
       self.width = image_data.columns
