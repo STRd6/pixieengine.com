@@ -16,6 +16,7 @@ gem 'capistrano'
 # To use debugger
 # gem 'ruby-debug'
 
+gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "authlogic-connect"
 gem "compass", ">= 0.10.2"

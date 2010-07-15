@@ -1,15 +1,8 @@
 require 'test_helper'
 
 class SpriteTest < ActiveSupport::TestCase
-  context "a sprite" do
-    setup do
-      @sprite = Factory :sprite
-    end
-
-    # Replace this with your real tests.
-    should "exist" do
-      assert @sprite
-    end
+  setup do
+    @sprite = Factory :sprite
   end
 
   context "derivation" do
@@ -23,6 +16,14 @@ class SpriteTest < ActiveSupport::TestCase
       @sprite = Sprite.find(@sprite)
 
       assert_equal @parent, @sprite.parent
+    end
+  end
+
+  context "tagging" do
+    should "be taggable" do
+      assert_difference "@sprite.tags.count", +1 do
+        @sprite.add_tag("cool")
+      end
     end
   end
 end

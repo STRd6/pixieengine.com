@@ -1,4 +1,6 @@
 class Sprite < ActiveRecord::Base
+  acts_as_taggable
+
   has_many :favorite
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
@@ -43,6 +45,11 @@ class Sprite < ActiveRecord::Base
       link = create_link
       user.broadcast "Check out the sprite I made in Pixie #{link}"
     end
+  end
+
+  def add_tag(tag)
+    self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
+    reload
   end
 
   def self.bulk_import_files(directory_path)
