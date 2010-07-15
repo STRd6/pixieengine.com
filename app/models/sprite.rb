@@ -62,10 +62,37 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  private
+  def self.splice_import_from_file(path, tile_width=32, tile_height=32)
+    pixel_format = "RGBA"
+
+    image = Magick::Image.read(path).first
+
+    tile_columns = image.columns / tile_width
+    tile_rows = image.rows / tile_height
+
+    tile_rows.times do |row|
+      tile_columns.times do |col|
+        pixel_data = image.export_pixels(
+          col * tile_width, row * tile_height,
+          tile_width, tile_height,
+          pixel_format
+        )
+
+        tile_image = Magick::Image.new(tile_width, tile_height)
+        tile_image.import_pixels(0, 0, tile_width, tile_height, pixel_format, pixel_data)
+
+        sprite = Sprite.create!(:width => tile_width, :height => tile_height)
+
+        tile_image.write(sprite.file_path)
+      end
+    end
+  end
+
   def file_path
     "#{Rails.root}/public/production/images/#{id}.png"
   end
+
+  private
 
   def save_file
     if file_base64_encoded
