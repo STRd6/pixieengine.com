@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
     display_name
   end
 
+  def send_forgot_password_email
+    Notifier.forgot_password(self).deliver
+  end
+
   def add_to_collection(item, collection_name="favorites")
     unless collection = collections.find_by_name(collection_name)
       collection = collections.create :name => collection_name

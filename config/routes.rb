@@ -31,7 +31,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :comments, :user_sessions
+  resources :comments, :password_resets, :user_sessions
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
