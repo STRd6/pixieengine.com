@@ -36,11 +36,11 @@ class User < ActiveRecord::Base
   end
 
   def remove_favorite(sprite)
-    favorites.find_by_sprite_id(sprite.id).destroy
+    remove_from_collection(sprite)
   end
 
   def favorite?(sprite)
-    favorites.find_by_sprite_id sprite.id
+    collections.find_or_create_by_name("favorites").collection_items.find_by_item(sprite).first
   end
 
   def broadcast(message)

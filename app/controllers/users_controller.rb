@@ -1,7 +1,7 @@
 class UsersController < ResourceController::Base
   actions :all, :except => :destroy
 
-  before_filter :require_current_user, :only => [:edit, :update]
+  before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
   def remove_favorite
     sprite = Sprite.find(params[:id])
@@ -40,6 +40,20 @@ class UsersController < ResourceController::Base
         end
       end
     end
+  end
+
+  def add_to_collection
+    collectables = [Sprite, Collection]
+
+    collectable_id = params[:collectable_id].to_i
+    collectable_type = params[:collectable_type].constantize
+    collection_name = params[:collection_name]
+
+    if collectables.include? collectable_type
+      user.add_to_collection(collectable_type.find(collectable_id), collection_name)
+    end
+
+    render :nothing => true
   end
 
   private
