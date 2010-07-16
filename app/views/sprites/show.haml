@@ -13,7 +13,12 @@
     Anonymous
 
 
-- sprite.dimension_list.each do |dimension|
-  = link_to dimension, sprites_path(:tagged => dimension)
+%p
+  - sprite.tag_list.each do |tag|
+    = link_to tag, sprites_path(:tagged => tag)
+
+%p
+  - sprite.dimension_list.each do |dimension|
+    = link_to dimension, sprites_path(:tagged => dimension)
 
 = display_comments sprite
