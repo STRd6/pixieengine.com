@@ -3,6 +3,11 @@ class UsersController < ResourceController::Base
 
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
+  new_action.before do
+    object.email ||= session[:email]
+    session[:email] = nil
+  end
+
   def remove_favorite
     sprite = Sprite.find(params[:id])
     current_user.remove_favorite(sprite)

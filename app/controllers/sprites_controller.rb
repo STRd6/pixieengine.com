@@ -8,7 +8,7 @@ class SpritesController < ResourceController::Base
   create.flash nil
 
   create.wants.html do
-    if !sprite.user && ab_test("login_after")
+    unless sprite.user
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
@@ -17,18 +17,18 @@ class SpritesController < ResourceController::Base
   end
 
   create.wants.js do
-    if !sprite.user && ab_test("login_after")
+    if sprite.user
+      render :update do |page|
+        link = link_to "Sprite #{@sprite.id}", @sprite
+
+        page.call "notify", "Saved as #{link}"
+      end
+    else
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
       render :update do |page|
         page.redirect_to login_path
-      end
-    else
-      render :update do |page|
-        link = link_to "Sprite #{@sprite.id}", @sprite
-
-        page.call "notify", "Saved as #{link}"
       end
     end
   end
