@@ -6,10 +6,10 @@ class User < ActiveRecord::Base
   end
 
   include ExampleProfile
+  include Commentable
 
   has_many :collections
   has_many :sprites
-  has_many :favorites
 
   attr_accessible :display_name, :email, :password
 

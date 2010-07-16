@@ -1,4 +1,6 @@
 class Collection < ActiveRecord::Base
+  include Commentable
+
   belongs_to :user
   has_many :collection_items
 
