@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  before_filter :set_abingo_identity
+  before_filter :set_abingo_identity, :track_landing
 
   def set_abingo_identity
     if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg)\b/i
@@ -17,6 +17,13 @@ class ApplicationController < ActionController::Base
     else
       session[:abingo_identity] ||= rand(10 ** 10)
       Abingo.identity = session[:abingo_identity]
+    end
+  end
+
+  def track_landing
+    unless session[:landing]
+      @landing = true
+      session[:landing] = true
     end
   end
 
