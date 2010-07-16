@@ -1,3 +1,17 @@
 - @title = sprite.title
 
-= render :partial => sprite
+%h2= sprite.title
+.sprite
+  = link_to image_tag(image_url(sprite)), load_sprite_path(sprite)
+
+.clear
+%p
+  By
+  - if sprite.user
+    = link_to sprite.user, sprite.user
+  - else
+    Anonymous
+
+
+- sprite.dimension_list.each do |dimension|
+  = link_to dimension, sprites_path(:tagged => dimension)

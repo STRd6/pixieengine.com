@@ -37,10 +37,6 @@ class SpritesController < ResourceController::Base
     render :action => :pixie
   end
 
-  def show
-    redirect_to :action => :load
-  end
-
   def load
     @width = sprite.width
     @height = sprite.height
