@@ -1,12 +1,8 @@
-- profile = user.profile
 %h2= user.display_name
 
-- authenticated_accounts = user.authenticated_with
-- if authenticated_accounts.length > 0
-
-  %img.profile{:src => profile[:photo]}
-  %p
-    = link_to "You're on #{profile[:title]}!", profile[:link]
+- unless user.profile.blank?
+  %h3 Profile
+  %p= user.profile
 
 %p
   = link_to "Create something!", new_sprite_path

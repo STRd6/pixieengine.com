@@ -29,7 +29,7 @@ task :after_setup do
   run "touch #{shared_path}/log/nginx.error.log"
 end
 
-task :after_symlink do
+task :after_update do
   run "ln -nfs #{shared_path}/production #{release_path}/public/production"
   run "ln -nfs #{shared_path}/system/authlogic.yml #{release_path}/config/authlogic.yml"
 end

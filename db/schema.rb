@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100716005002) do
+ActiveRecord::Schema.define(:version => 20100718221751) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -150,6 +150,7 @@ ActiveRecord::Schema.define(:version => 20100716005002) do
     t.integer  "active_token_id"
     t.boolean  "admin",               :default => false, :null => false
     t.integer  "comments_count",      :default => 0,     :null => false
+    t.text     "profile"
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
