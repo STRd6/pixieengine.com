@@ -4,8 +4,10 @@ class UsersController < ResourceController::Base
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
   new_action.before do
-    object.email ||= session[:email]
-    session[:email] = nil
+    email = session.delete(:email)
+
+    object.email ||= email
+    object.display_name = email[0..((email.index('@') || 0) - 1)]
   end
 
   def remove_favorite
