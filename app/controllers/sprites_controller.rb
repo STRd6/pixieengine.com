@@ -1,6 +1,8 @@
 class SpritesController < ResourceController::Base
   actions :all, :except => [:destroy]
 
+  before_filter :require_owner, :only => [:edit, :update]
+
   create.before do
     @sprite.user = current_user
   end
@@ -81,6 +83,14 @@ class SpritesController < ResourceController::Base
     end
 
     @collection ||= sprites.paginate(:page => params[:page], :order => 'created_at DESC')
+  end
+
+  def require_owner
+    unless current_user == sprite.user
+      flash[:notice] = "You can only edit your own sprites"
+      redirect_to root_url
+      return false
+    end
   end
 
   helper_method :sprites
