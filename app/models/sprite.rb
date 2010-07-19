@@ -52,8 +52,10 @@ class Sprite < ActiveRecord::Base
   end
 
   def add_tag(tag)
-    self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
-    reload
+    unless tag.blank?
+      self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
+      reload
+    end
   end
 
   def self.bulk_import_files(directory_path)
@@ -74,7 +76,10 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  def self.splice_import_from_file(path, tile_width=32, tile_height=32)
+  def self.splice_import_from_file(path, options={})
+    tile_width = options[:tile_width] || 32
+    tile_height = options[:tile_height] || 32
+    tags = options[:tags] || ''
     pixel_format = "RGBA"
 
     image = Magick::Image.read(path).first
@@ -94,6 +99,7 @@ class Sprite < ActiveRecord::Base
         tile_image.import_pixels(0, 0, tile_width, tile_height, pixel_format, pixel_data)
 
         sprite = Sprite.create!(:width => tile_width, :height => tile_height)
+        sprite.add_tag(tags)
 
         tile_image.write(sprite.file_path)
       end
