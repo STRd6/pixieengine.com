@@ -4,21 +4,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  authlogic-connect: 
-    group: 
-    - :default
-    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  sqlite3-ruby: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - sqlite3
-  authlogic: 
+  authlogic-connect: 
     group: 
     - :default
     version: ">= 0"
@@ -26,6 +16,16 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  authlogic: 
+    group: 
+    - :default
+    version: ">= 0"
+  sqlite3-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - sqlite3
   ruby-openid: 
     group: 
     - :default
@@ -73,6 +73,10 @@ dependencies:
     require: 
     - RMagick
   oauth2: 
+    group: 
+    - :default
+    version: ">= 0"
+  hpricot: 
     group: 
     - :default
     version: ">= 0"
@@ -147,7 +151,7 @@ specs:
 - bundler: 
     version: 0.9.26
 - highline: 
-    version: 1.5.2
+    version: 1.6.1
 - net-ssh: 
     version: 2.0.23
 - net-scp: 
@@ -167,8 +171,10 @@ specs:
     source: 0
 - factory_girl: 
     version: 1.3.1
+- hpricot: 
+    version: 0.8.2
 - thor: 
-    version: 0.13.7
+    version: 0.13.8
 - railties: 
     version: 3.0.0.beta4
 - rails: 
@@ -181,7 +187,7 @@ specs:
     version: 1.3.1
 - will_paginate: 
     version: 3.0.pre
-hash: 60754bd841caba1dcb46f0752af9957b1457e525
+hash: 22071c9691779c1947eb2a8af9e226a83b15d5c4
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git

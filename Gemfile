@@ -22,6 +22,7 @@ gem "authlogic-connect"
 gem "compass", ">= 0.10.2"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
+gem 'hpricot'
 gem 'mail'
 gem 'oauth'
 gem "oauth2"
