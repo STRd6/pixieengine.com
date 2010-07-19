@@ -77,32 +77,53 @@ class Sprite < ActiveRecord::Base
   end
 
   def self.splice_import_from_file(path, options={})
-    tile_width = options[:tile_width] || 32
-    tile_height = options[:tile_height] || 32
+    tile_width = options[:tile_width] || options[:tile_size] || 32
+    tile_height = options[:tile_height] || options[:tile_size] || 32
+    offset_x = options[:offset_x] || options[:offset] || 0
+    offset_y = options[:offset_y] || options[:offset] || 0
+    margin_x = options[:margin_x] || options[:margin] || 0
+    margin_y = options[:margin_y] || options[:margin] || 0
+    padding_x = options[:padding_x] || options[:padding] || 0
+    padding_y = options[:padding_y] || options[:padding] || 0
     tags = options[:tags] || ''
     pixel_format = "RGBA"
 
+    puts "importing #{path}"
+
     image = Magick::Image.read(path).first
 
-    tile_columns = image.columns / tile_width
-    tile_rows = image.rows / tile_height
+    tile_columns = (image.columns / (tile_width + 2 * padding_x + margin_x)).floor
+    tile_rows = (image.rows / (tile_height + 2 * padding_y + margin_y)).floor
 
     tile_rows.times do |row|
+      tile_count = 0
       tile_columns.times do |col|
         pixel_data = image.export_pixels(
-          col * tile_width, row * tile_height,
-          tile_width, tile_height,
+          offset_x + padding_x + col * (tile_width  + 2 * padding_x + margin_x),
+          offset_y + padding_y + row * (tile_height + 2 * padding_y + margin_y),
+          tile_width,
+          tile_height,
           pixel_format
         )
 
         tile_image = Magick::Image.new(tile_width, tile_height)
         tile_image.import_pixels(0, 0, tile_width, tile_height, pixel_format, pixel_data)
 
-        sprite = Sprite.create!(:width => tile_width, :height => tile_height)
-        sprite.add_tag(tags)
+        # Check for blank images
+        trimmed_image = tile_image.trim
+        if trimmed_image.rows == 1 && trimmed_image.columns == 1
+          puts "discarding blank image"
+          # next
+        else
+          sprite = Sprite.create!(:width => tile_width, :height => tile_height)
+          sprite.add_tag(tags)
 
-        tile_image.write(sprite.file_path)
+          tile_image.write(sprite.file_path)
+          tile_count += 1
+        end
       end
+
+      puts "imported row #{row}, #{tile_count} images"
     end
   end
 
