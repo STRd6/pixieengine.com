@@ -26,6 +26,7 @@ gem 'hpricot'
 gem 'mail'
 gem 'oauth'
 gem "oauth2"
+gem 'paperclip'
 gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100718221751) do
+ActiveRecord::Schema.define(:version => 20100719051803) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -151,6 +151,10 @@ ActiveRecord::Schema.define(:version => 20100718221751) do
     t.boolean  "admin",               :default => false, :null => false
     t.integer  "comments_count",      :default => 0,     :null => false
     t.text     "profile"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"

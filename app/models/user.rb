@@ -5,12 +5,14 @@ class User < ActiveRecord::Base
     config.require_password_confirmation = false
   end
 
+  has_attached_file :avatar, :styles => { :thumb => "128x128>" }
+
   include Commentable
 
   has_many :collections
   has_many :sprites
 
-  attr_accessible :display_name, :email, :password, :profile
+  attr_accessible :avatar, :display_name, :email, :password, :profile
 
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?

@@ -4,11 +4,21 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
+  authlogic-connect: 
+    group: 
+    - :default
+    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  authlogic-connect: 
+  sqlite3-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - sqlite3
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
@@ -16,17 +26,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  authlogic: 
-    group: 
-    - :default
-    version: ">= 0"
-  sqlite3-ruby: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - sqlite3
   ruby-openid: 
+    group: 
+    - :default
+    version: ">= 0"
+  oauth: 
     group: 
     - :default
     version: ">= 0"
@@ -36,10 +40,6 @@ dependencies:
     version: ">= 0"
     require: 
     - exception_notifier
-  oauth: 
-    group: 
-    - :default
-    version: ">= 0"
   shoulda: 
     group: 
     - :test
@@ -66,17 +66,21 @@ dependencies:
     group: 
     - :default
     version: = 3.0.pre
+  paperclip: 
+    group: 
+    - :default
+    version: ">= 0"
   rmagick: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - RMagick
-  oauth2: 
+  hpricot: 
     group: 
     - :default
     version: ">= 0"
-  hpricot: 
+  oauth2: 
     group: 
     - :default
     version: ">= 0"
@@ -173,6 +177,8 @@ specs:
     version: 1.3.1
 - hpricot: 
     version: 0.8.2
+- paperclip: 
+    version: 2.3.3
 - thor: 
     version: 0.13.8
 - railties: 
@@ -187,7 +193,7 @@ specs:
     version: 1.3.1
 - will_paginate: 
     version: 3.0.pre
-hash: 22071c9691779c1947eb2a8af9e226a83b15d5c4
+hash: 4796ef83b1bac981e019782e8a8fa01249c3ac13
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
