@@ -1,7 +1,11 @@
 - form_for @user_session || UserSession.new, :url => authenticate_path do |form|
-  = form.label :email
-  = form.text_field :email
-  = form.label :password
-  = form.password_field :password
+  .span-18.last
+    = form.label :email
+    = form.text_field :email
+  
+  .span-18.last
+    = form.label :password
+    = form.password_field :password
 
-  = form.submit "Log In"
+  .span-18.last.prepend-3
+    = form.submit "Log In"

@@ -12,29 +12,20 @@
 
 @import blueprint/buttons
 
-@import main
-@import modal
-@import button
-@import sprite
-@import oauth
+// CSS3 mix-ins
+@import "compass/css3/box-sizing"
 
 // To generate css equivalent to the blueprint css but with your
 // configuration applied, uncomment:
-// @include blueprint
+@include blueprint
 
 // But Compass recommends that you scope your blueprint styles
 // So that you can better control what pages use blueprint
 // when stylesheets are concatenated together.
-+blueprint-scaffolding("body")
+//+blueprint-scaffolding("body")
 
-body
-  +blueprint-typography(true)
-  +blueprint-utilities
-  +blueprint-debug
-  +blueprint-interaction
-  // Remove the scaffolding when you're ready to start doing visual design.
-  // Or leave it in if you're happy with how blueprint looks out-of-the-box
-
-form
-  +blueprint-form
-
+@import main
+//@import modal
+//@import button
+@import sprite
+@import oauth

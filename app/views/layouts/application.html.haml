@@ -16,11 +16,11 @@
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
     = javascript_include_tag 'application', 'jquery.simplemodal-1.3.5.min', 'jquery.form.js'
 
-  %body.three-col
-    #container
+  %body
+    .container.showgrid
       = render :partial => "/shared/header"
 
-      #content
+      #content.span-22.prepend-1.last
         #flashes
           - flash.each do |key, msg|
             %div{ :class => key }= msg
