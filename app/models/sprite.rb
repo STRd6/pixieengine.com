@@ -131,6 +131,10 @@ class Sprite < ActiveRecord::Base
     "#{Rails.root}/public/production/images/#{id}.png"
   end
 
+  def meta_desc
+    "#{tag_list.join(' ')} #{title} #{dimension_list.join(' ')} #{description}"
+  end
+
   private
 
   def save_file
