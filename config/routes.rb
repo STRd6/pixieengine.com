@@ -40,6 +40,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'r/:token' => "links#track", :as => :link_token
 
   match 'about' => "home#about", :as => :about
+  match 'sitemap' => "home#sitemap"
 
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
