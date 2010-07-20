@@ -9,6 +9,8 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
+  resources :collections
+
   resources :sprites do
     member do
       get :load
@@ -22,8 +24,6 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   resources :users do
-    resources :collections
-
     member do
       get :favorites
       post :add_to_collection
