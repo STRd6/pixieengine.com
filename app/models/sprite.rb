@@ -147,6 +147,7 @@ class Sprite < ActiveRecord::Base
         f << Base64.decode64(file_base64_encoded)
       end
     elsif file
+      file.rewind
       File.open(file_path, 'wb') do |f|
         f << file.read
       end
