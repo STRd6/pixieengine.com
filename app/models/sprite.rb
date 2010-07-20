@@ -19,6 +19,10 @@ class Sprite < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 40
 
+  scope :with_ids, lambda {|ids|
+    {:conditions => {:id => ids}}
+  }
+
   def self.data_from_url(url)
     #TODO Animations
     image_data = Magick::Image.read(url).first
