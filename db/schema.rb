@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100714024038) do
+ActiveRecord::Schema.define(:version => 20100719051803) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -36,6 +36,39 @@ ActiveRecord::Schema.define(:version => 20100714024038) do
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
 
+  create_table "collection_items", :force => true do |t|
+    t.integer  "collection_id", :null => false
+    t.integer  "item_id",       :null => false
+    t.string   "item_type",     :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "collection_items", ["collection_id"], :name => "index_collection_items_on_collection_id"
+  add_index "collection_items", ["item_id", "item_type"], :name => "index_collection_items_on_item_id_and_item_type"
+
+  create_table "collections", :force => true do |t|
+    t.integer  "user_id",                       :null => false
+    t.string   "name",                          :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.integer  "comments_count", :default => 0, :null => false
+  end
+
+  add_index "collections", ["user_id"], :name => "index_collections_on_user_id"
+
+  create_table "comments", :force => true do |t|
+    t.integer  "commenter_id",     :null => false
+    t.integer  "commentable_id",   :null => false
+    t.string   "commentable_type", :null => false
+    t.text     "body",             :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
+  add_index "comments", ["commenter_id"], :name => "index_comments_on_commenter_id"
+
   create_table "experiments", :force => true do |t|
     t.string   "test_name"
     t.string   "status"
@@ -44,13 +77,6 @@ ActiveRecord::Schema.define(:version => 20100714024038) do
   end
 
   add_index "experiments", ["test_name"], :name => "index_experiments_on_test_name"
-
-  create_table "favorites", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "sprite_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "feedbacks", :force => true do |t|
     t.integer  "user_id"
@@ -72,14 +98,33 @@ ActiveRecord::Schema.define(:version => 20100714024038) do
   add_index "links", ["token"], :name => "index_links_on_token", :unique => true
 
   create_table "sprites", :force => true do |t|
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
-    t.integer  "width",                      :null => false
-    t.integer  "height",                     :null => false
-    t.integer  "frames",      :default => 1, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+    t.integer  "width",                         :null => false
+    t.integer  "height",                        :null => false
+    t.integer  "frames",         :default => 1, :null => false
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
+    t.integer  "parent_id"
+    t.integer  "comments_count", :default => 0, :null => false
+  end
+
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id",        :null => false
+    t.integer  "taggable_id",   :null => false
+    t.string   "taggable_type", :null => false
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context",       :null => false
+    t.datetime "created_at",    :null => false
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.string "name", :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -104,6 +149,12 @@ ActiveRecord::Schema.define(:version => 20100714024038) do
     t.string   "oauth_secret"
     t.integer  "active_token_id"
     t.boolean  "admin",               :default => false, :null => false
+    t.integer  "comments_count",      :default => 0,     :null => false
+    t.text     "profile"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"

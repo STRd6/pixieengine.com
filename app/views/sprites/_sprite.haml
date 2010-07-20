@@ -3,4 +3,8 @@
   - if current_user
     .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
   .clear
-  = link_to_if sprite.user, sprite.user ? sprite.user : "Anonymous", url_for(sprite.user)
+
+  - if sprite.user
+    = link_to sprite.user, sprite.user
+  - else
+    Anonymous

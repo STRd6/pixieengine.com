@@ -20,9 +20,18 @@ PixieStrd6Com::Application.routes.draw do |map|
       post :import
     end
   end
-  resources :users, :user_sessions
 
-  resources :favorites
+  resources :users do
+    resources :collections
+
+    member do
+      get :favorites
+      post :add_to_collection
+      get :sprites
+    end
+  end
+
+  resources :comments, :password_resets, :user_sessions
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"

@@ -23,9 +23,11 @@
         'sprite[file_base64_encoded]': canvas.toBase64(),
         'sprite[width]': #{width},
         'sprite[height]': #{height},
-        'sprite[broadcast]': $("#share").val()
+        'sprite[broadcast]': $("#share").val(),
+        'sprite[parent_id]': #{@parent_id.to_json}
       }, function(data) {
         eval(data);
+        trackPageview("/event/save_drawing");
         canvas.dirty(false);
       }, "script");
     }
@@ -40,11 +42,7 @@
           name: "Save",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
-            if(#{!current_user && ab_test("registration_popup")}) {
-              requireLogin(postImage);
-            } else {
-              postImage();
-            }
+            postImage();
           }
         });
 

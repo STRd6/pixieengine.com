@@ -1,0 +1,4 @@
+%h2 #{user.display_name}'s #{@collection.name}
+
+- @collection.items.each do |item|
+  = render :partial => item

@@ -1,0 +1,6 @@
+- form_for Comment.new(:commentable => commentable) do |form|
+  = form.hidden_field :commentable_type
+  = form.hidden_field :commentable_id
+  = form.text_area :body
+  .clear
+  = submit_tag "Post"

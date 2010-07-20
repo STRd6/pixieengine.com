@@ -30,19 +30,23 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  oauth: 
+    group: 
+    - :default
+    version: ">= 0"
   exception_notification: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - exception_notifier
-  oauth: 
-    group: 
-    - :default
-    version: ">= 0"
   shoulda: 
     group: 
     - :test
+    version: ">= 0"
+  acts-as-taggable-on: 
+    group: 
+    - :default
     version: ">= 0"
   mail: 
     group: 
@@ -62,12 +66,20 @@ dependencies:
     group: 
     - :default
     version: = 3.0.pre
+  paperclip: 
+    group: 
+    - :default
+    version: ">= 0"
   rmagick: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - RMagick
+  hpricot: 
+    group: 
+    - :default
+    version: ">= 0"
   oauth2: 
     group: 
     - :default
@@ -117,6 +129,8 @@ specs:
     version: 3.0.0.beta4
 - activeresource: 
     version: 3.0.0.beta4
+- acts-as-taggable-on: 
+    version: 2.0.6
 - addressable: 
     version: 2.1.2
 - authlogic: 
@@ -141,7 +155,7 @@ specs:
 - bundler: 
     version: 0.9.26
 - highline: 
-    version: 1.5.2
+    version: 1.6.1
 - net-ssh: 
     version: 2.0.23
 - net-scp: 
@@ -161,8 +175,12 @@ specs:
     source: 0
 - factory_girl: 
     version: 1.3.1
+- hpricot: 
+    version: 0.8.2
+- paperclip: 
+    version: 2.3.3
 - thor: 
-    version: 0.13.7
+    version: 0.13.8
 - railties: 
     version: 3.0.0.beta4
 - rails: 
@@ -175,7 +193,7 @@ specs:
     version: 1.3.1
 - will_paginate: 
     version: 3.0.pre
-hash: 93fb000daedb6ce068e009ba157c2f9f4235822a
+hash: 4796ef83b1bac981e019782e8a8fa01249c3ac13
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git

@@ -1,6 +1,8 @@
 class SpritesController < ResourceController::Base
   actions :all, :except => [:destroy]
 
+  before_filter :require_owner, :only => [:edit, :update]
+
   create.before do
     @sprite.user = current_user
   end
@@ -8,7 +10,7 @@ class SpritesController < ResourceController::Base
   create.flash nil
 
   create.wants.html do
-    if !sprite.user && ab_test("login_after")
+    unless sprite.user
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
@@ -17,18 +19,18 @@ class SpritesController < ResourceController::Base
   end
 
   create.wants.js do
-    if !sprite.user && ab_test("login_after")
+    if sprite.user
+      render :update do |page|
+        link = link_to "Sprite #{@sprite.id}", @sprite
+
+        page.call "notify", "Saved as #{link}"
+      end
+    else
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
       render :update do |page|
         page.redirect_to login_path
-      end
-    else
-      render :update do |page|
-        link = link_to "Sprite #{@sprite.id}", @sprite
-
-        page.call "notify", "Saved as #{link}"
       end
     end
   end
@@ -37,14 +39,11 @@ class SpritesController < ResourceController::Base
     render :action => :pixie
   end
 
-  def show
-    redirect_to :action => :load
-  end
-
   def load
     @width = sprite.width
     @height = sprite.height
     @data = sprite.json_data
+    @parent_id = sprite.id
 
     render :action => :pixie
   end
@@ -74,8 +73,24 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  private
+
   def collection
-    @collection ||= Sprite.paginate(:page => params[:page], :order => 'created_at DESC')
+    sprites = Sprite
+
+    if params[:tagged]
+      sprites = Sprite.tagged_with(params[:tagged])
+    end
+
+    @collection ||= sprites.paginate(:page => params[:page], :order => 'created_at DESC')
+  end
+
+  def require_owner
+    unless current_user == sprite.user
+      flash[:notice] = "You can only edit your own sprites"
+      redirect_to root_url
+      return false
+    end
   end
 
   helper_method :sprites

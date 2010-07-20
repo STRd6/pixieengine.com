@@ -1,6 +1,11 @@
 class Sprite < ActiveRecord::Base
-  has_many :favorite
+  include Commentable
+
+  acts_as_taggable
+  acts_as_taggable_on :dimension
+
   belongs_to :user
+  belongs_to :parent, :class_name => "Sprite"
 
   attr_accessor :broadcast, :file, :file_base64_encoded
 
@@ -8,6 +13,8 @@ class Sprite < ActiveRecord::Base
 
   after_save :save_file
   after_save :send_broadcast
+
+  after_create :update_dimension_tags!
 
   cattr_reader :per_page
   @@per_page = 40
@@ -44,6 +51,13 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def add_tag(tag)
+    unless tag.blank?
+      self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
+      reload
+    end
+  end
+
   def self.bulk_import_files(directory_path)
     dir = Dir.new(directory_path)
 
@@ -62,29 +76,54 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  def self.splice_import_from_file(path, tile_width=32, tile_height=32)
+  def self.splice_import_from_file(path, options={})
+    tile_width = options[:tile_width] || options[:tile_size] || 32
+    tile_height = options[:tile_height] || options[:tile_size] || 32
+    offset_x = options[:offset_x] || options[:offset] || 0
+    offset_y = options[:offset_y] || options[:offset] || 0
+    margin_x = options[:margin_x] || options[:margin] || 0
+    margin_y = options[:margin_y] || options[:margin] || 0
+    padding_x = options[:padding_x] || options[:padding] || 0
+    padding_y = options[:padding_y] || options[:padding] || 0
+    tags = options[:tags] || ''
     pixel_format = "RGBA"
+
+    puts "importing #{path}"
 
     image = Magick::Image.read(path).first
 
-    tile_columns = image.columns / tile_width
-    tile_rows = image.rows / tile_height
+    tile_columns = (image.columns / (tile_width + 2 * padding_x + margin_x)).floor
+    tile_rows = (image.rows / (tile_height + 2 * padding_y + margin_y)).floor
 
     tile_rows.times do |row|
+      tile_count = 0
       tile_columns.times do |col|
         pixel_data = image.export_pixels(
-          col * tile_width, row * tile_height,
-          tile_width, tile_height,
+          offset_x + padding_x + col * (tile_width  + 2 * padding_x + margin_x),
+          offset_y + padding_y + row * (tile_height + 2 * padding_y + margin_y),
+          tile_width,
+          tile_height,
           pixel_format
         )
 
         tile_image = Magick::Image.new(tile_width, tile_height)
         tile_image.import_pixels(0, 0, tile_width, tile_height, pixel_format, pixel_data)
 
-        sprite = Sprite.create!(:width => tile_width, :height => tile_height)
+        # Check for blank images
+        trimmed_image = tile_image.trim
+        if trimmed_image.rows == 1 && trimmed_image.columns == 1
+          puts "discarding blank image"
+          # next
+        else
+          sprite = Sprite.create!(:width => tile_width, :height => tile_height)
+          sprite.add_tag(tags)
 
-        tile_image.write(sprite.file_path)
+          tile_image.write(sprite.file_path)
+          tile_count += 1
+        end
       end
+
+      puts "imported row #{row}, #{tile_count} images"
     end
   end
 
@@ -120,6 +159,24 @@ class Sprite < ActiveRecord::Base
     if broadcast == "1"
       broadcast_link
     end
+  end
+
+  def update_dimension_tags!
+    tags = ["#{width}x#{height}"]
+
+    if width == height
+      tags << "Square"
+    end
+
+    if width <= 32 && height <= 32
+      tags << "Small"
+    elsif width <= 128 && height <= 128
+      tags << "Medium"
+    elsif width > 128 && height > 128
+      tags << "Large"
+    end
+
+    update_attribute(:dimension_list, tags.join(","))
   end
 
   def create_link

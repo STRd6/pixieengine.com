@@ -1,13 +1,13 @@
 - form_for user do |form|
   = form.error_messages
   %p
+    = form.label :display_name
+    = form.text_field :display_name
+  %p
     = form.label :email
     = form.text_field :email
   %p
     = form.label :password
     = form.password_field :password
-  %p
-    = form.label :display_name
-    = form.text_field :display_name
 
   = form.submit "Sign Up"

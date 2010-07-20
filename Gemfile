@@ -16,14 +16,17 @@ gem 'capistrano'
 # To use debugger
 # gem 'ruby-debug'
 
+gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "authlogic-connect"
 gem "compass", ">= 0.10.2"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
+gem 'hpricot'
 gem 'mail'
 gem 'oauth'
 gem "oauth2"
+gem 'paperclip'
 gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"

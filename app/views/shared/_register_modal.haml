@@ -14,7 +14,7 @@
     if(!loggedIn) {
       logInCallback = callback;
       $("#registerModal").modal();
-      trackPageview("/registration_goal/login_screen");
+      trackPageview("/event/login_screen");
     } else {
       callback();
     }
@@ -31,7 +31,7 @@
             $.modal.close();
             loggedIn = true;
             if(registration) {
-              trackPageview("/registration_goal/registered");
+              trackPageview("/event/registered");
             }
             logInCallback();
           } else {

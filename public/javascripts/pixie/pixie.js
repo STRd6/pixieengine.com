@@ -395,11 +395,11 @@
         },
         drawGuide: function() {
           context.fillStyle = gridColor;
-          for(var i = 0; i < width; i++) {
+          for(var i = 0; i < height; i++) {
             context.fillRect(0, i * pixelHeight, layerWidth, 1);
           }
 
-          for(i = 0; i < height; i++) {
+          for(i = 0; i < width; i++) {
             context.fillRect(i * pixelWidth, 0, 1, layerHeight);
           }
         }

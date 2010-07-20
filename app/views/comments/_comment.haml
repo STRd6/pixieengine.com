@@ -1,0 +1,3 @@
+.comment
+  %p= comment.body
+  %p.small= "#{comment.commenter.display_name} - #{time_ago_in_words(comment.created_at)} ago."
