@@ -11,42 +11,72 @@ body
 // Grid container
 .container
   margin: 0
+  margin-left = $blueprint-grid-margin
 
 #header 
   height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
   
-  div
-    height: 100%
+  #logo_type
+    color = !main_color
+    font-size: 24pt
+    height: 30pt
+    letter-spacing: .25em
+    margin = 0 $blueprint-grid-width / 2
+    text-align: center
     
+    a
+      padding: 0
+      color: inherit
+      text-decoration: none
+    
+  // Apply to all header links (navigation and log in link)
   a
-    color= !dark_gray
-    margin: 0
-    padding: 0
-    padding-top: 1em
+    +box-sizing(border-box)
+    color = !dark_gray
     display: inline-block
     height: 100%
-    +box-sizing(border-box)
+    margin: 0
+    padding: 0
+    padding-top: 48px
     text-align: center
-  
-  .button
-    font-weight: bold
-    text-decoration: none
-    &:hover
-      background-color: #FFF3D6
+    
+  #nav
+    border-left = 1px solid !dark_gray
+    +box-sizing(border-box)
+    height: 100%
+    
+    a
+      display: inline-block
+      font-weight: bold
+      text-align: left
+      text-decoration: none
+      width: 100%
+      &:hover
+        border-bottom = 4px solid !dark_gray
       
   #login_link
     a
       width: 100%
       &:hover
         text-decoration: none
-
-.border
-  border-color: black
-  border-style: solid
-  border-width: 1px
+ 
+#description
+  color = !light_gray
+  font-size: 8pt
+  font-style: italic
+  //padding-left = $blueprint-grid-width / 2
   
 #content
+  border-top = 1px solid !dark_gray
+  border-right = 1px solid !dark_gray
+  +box-sizing(border-box)
   padding-top: 2em
+  
+  p
+    font-family: Verdana, sans-serif
+    font-size: 12px
+    letter-spacing: .5px
+    line-height: 18px
   
 #footer
   margin-top: 2em
@@ -57,9 +87,9 @@ body
 // Forms - move into separate file?
 label
   display: inline-block
-  margin-right: 10px
+  margin-right = $blueprint-grid-margin
   text-align: right
-  width: 110px
+  width = ($blueprint-grid-width + $blueprint-grid-margin) * 3 - $blueprint-grid-margin
   
 input[type=text], input[type=password]
   border-width: 2px
@@ -70,6 +100,7 @@ input[type=text], input[type=password]
 input[type=button], input[type=submit]
   display: block
   margin-top: 1em
+  margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 3
 
 // TODO: Good these up, embetter and embiggen
 // Error and notice styling

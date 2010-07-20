@@ -20,7 +20,7 @@
     .container.showgrid
       = render :partial => "/shared/header"
 
-      #content.span-22.prepend-1.last
+      #content.span-20.last
         #flashes
           - flash.each do |key, msg|
             %div{ :class => key }= msg
