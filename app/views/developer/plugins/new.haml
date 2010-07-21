@@ -1,0 +1,25 @@
+= javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
+
+- form_for [:developer, @plugin] do |form|
+  = form.error_messages
+
+  = form.label :title
+  = form.text_field :title
+
+
+  = form.label :code
+  .border
+    = form.text_area :code
+
+  = form.submit
+
+:javascript
+  var textarea = $('#plugin_code').get(0);
+  var editor = new CodeMirror.fromTextArea(textarea, {
+    height: "350px",
+    content: textarea.value,
+    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
+    stylesheet: "/stylesheets/codemirror/jscolors.css",
+    path: "/javascripts/codemirror/",
+    autoMatchParens: true
+  });

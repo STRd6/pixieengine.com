@@ -1,0 +1,64 @@
+/* line 1, ../../../app/stylesheets/codemirror/jscolors.sass */
+html {
+  cursor: text;
+}
+
+/* line 4, ../../../app/stylesheets/codemirror/jscolors.sass */
+.editbox {
+  margin: 0.4em;
+  padding: 0;
+  font-family: monospace;
+  font-size: 10pt;
+  color: black;
+}
+
+/* line 11, ../../../app/stylesheets/codemirror/jscolors.sass */
+pre.code {
+  color: #666666;
+}
+
+/* line 14, ../../../app/stylesheets/codemirror/jscolors.sass */
+.editbox {
+  color: #666666;
+}
+/* line 16, ../../../app/stylesheets/codemirror/jscolors.sass */
+.editbox p {
+  margin: 0;
+}
+
+/* line 20, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-punctuation, span.js-operator {
+  color: #666666;
+}
+/* line 22, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-keyword {
+  color: #770088;
+}
+/* line 24, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-atom {
+  color: #228811;
+}
+/* line 26, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-variable {
+  color: black;
+}
+/* line 28, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-variabledef {
+  color: blue;
+}
+/* line 30, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-localvariable {
+  color: #004499;
+}
+/* line 32, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-property {
+  color: black;
+}
+/* line 34, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-comment {
+  color: #aa7700;
+}
+/* line 36, ../../../app/stylesheets/codemirror/jscolors.sass */
+span.js-string {
+  color: #aa2222;
+}

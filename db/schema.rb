@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100719051803) do
+ActiveRecord::Schema.define(:version => 20100721020340) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -96,6 +96,17 @@ ActiveRecord::Schema.define(:version => 20100719051803) do
   end
 
   add_index "links", ["token"], :name => "index_links_on_token", :unique => true
+
+  create_table "plugins", :force => true do |t|
+    t.integer  "user_id"
+    t.boolean  "approved",    :default => false, :null => false
+    t.string   "plugin_type",                    :null => false
+    t.string   "title",                          :null => false
+    t.text     "description"
+    t.text     "code",                           :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+  end
 
   create_table "sprites", :force => true do |t|
     t.datetime "created_at",                    :null => false

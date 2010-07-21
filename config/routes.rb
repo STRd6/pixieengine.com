@@ -3,6 +3,10 @@ PixieStrd6Com::Application.routes.draw do |map|
     match "dashboard" => 'dashboard#index'
   end
 
+  namespace :developer do
+    resources :plugins
+  end
+
   resources :feedbacks do
     collection do
       get :thanks
