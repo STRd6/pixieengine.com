@@ -1,6 +1,7 @@
 class UsersController < ResourceController::Base
   actions :all, :except => :destroy
 
+  before_filter :require_user, :only => [:install_plugin]
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
   new_action.before do
@@ -61,6 +62,20 @@ class UsersController < ResourceController::Base
     end
 
     render :nothing => true
+  end
+
+  def install_plugin
+    current_user.install_plugin(Plugin.find(params[:plugin_id]))
+
+    flash[:notice] = "Plugin installed"
+    redirect_to :back
+  end
+
+  def uninstall_plugin
+    current_user.uninstall_plugin(Plugin.find(params[:plugin_id]))
+
+    flash[:notice] = "Plugin uninstalled"
+    redirect_to :back
   end
 
   private

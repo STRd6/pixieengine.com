@@ -37,4 +37,24 @@ class UserTest < ActiveSupport::TestCase
       assert !@user.collections.find_by_name(@collection_name).include?(item)
     end
   end
+
+  context "plugins" do
+    setup do
+      @installed_plugin = Factory :plugin
+
+      @user.install_plugin(@installed_plugin)
+    end
+
+    should "be able to install a plugin" do
+      assert_difference "@user.installed_plugins.size", +1 do
+        @user.install_plugin(Factory(:plugin))
+      end
+    end
+
+    should "be able to uninstall a plugin" do
+      assert_difference "@user.installed_plugins.size", -1 do
+        @user.uninstall_plugin(@installed_plugin)
+      end
+    end
+  end
 end

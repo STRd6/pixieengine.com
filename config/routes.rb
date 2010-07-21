@@ -37,6 +37,11 @@ PixieStrd6Com::Application.routes.draw do |map|
       post :add_to_collection
       get :sprites
     end
+
+    collection do
+      post :install_plugin
+      post :uninstall_plugin
+    end
   end
 
   resources :comments, :password_resets, :user_sessions

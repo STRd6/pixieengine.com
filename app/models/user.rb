@@ -12,6 +12,10 @@ class User < ActiveRecord::Base
   has_many :collections
   has_many :sprites
 
+  has_many :authored_plugins, :class_name => "Plugin"
+  has_many :user_plugins
+  has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
+
   attr_accessible :avatar, :display_name, :email, :password, :profile
 
   after_create do
@@ -67,6 +71,18 @@ class User < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def install_plugin(plugin)
+    installed_plugins << plugin
+  end
+
+  def uninstall_plugin(plugin)
+    user_plugins.find_by_plugin_id(plugin).destroy
+  end
+
+  def plugin_installed?(plugin)
+    installed_plugins.include? plugin
   end
 
   private

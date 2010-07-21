@@ -1,0 +1,13 @@
+.plugin
+  %h4= plugin.title
+  - if current_user
+    - if current_user.plugin_installed?(plugin)
+      - form_tag uninstall_plugin_users_path do
+        = hidden_field_tag :plugin_id, plugin.id, :id => nil
+        = submit_tag "Uninstall"
+    - else
+      - form_tag install_plugin_users_path do
+        = hidden_field_tag :plugin_id, plugin.id, :id => nil
+        = submit_tag "Install"
+  %p= plugin.description
+  %pre= plugin.code

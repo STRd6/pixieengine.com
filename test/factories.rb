@@ -26,3 +26,10 @@ Factory.define :link do |link|
   link.user {Factory :user}
   link.target {Factory :user}
 end
+
+Factory.define :plugin do |plugin|
+  plugin.user {Factory :user}
+  plugin.code "{}"
+  plugin.title "Test"
+  plugin.plugin_type "tool"
+end

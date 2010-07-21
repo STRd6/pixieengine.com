@@ -17,6 +17,8 @@
 
 :javascript
   (function($) {
+    installedTools = [#{installed_tools.map(&:code).join(',')}];
+
     function postImage() {
       notify("Saving, please wait...");
 
@@ -46,6 +48,10 @@
           perform: function(canvas) {
             postImage();
           }
+        });
+
+        $.each(installedTools, function(i, tool) {
+          canvas.addTool(tool);
         });
 
         (function(data) {

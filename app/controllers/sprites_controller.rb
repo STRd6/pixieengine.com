@@ -94,4 +94,13 @@ class SpritesController < ResourceController::Base
   def sprite
     return object
   end
+
+  helper_method :installed_tools
+  def installed_tools
+    if current_user
+      current_user.installed_plugins
+    else
+      []
+    end
+  end
 end

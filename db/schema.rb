@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100721041022) do
+ActiveRecord::Schema.define(:version => 20100721173637) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -138,6 +138,16 @@ ActiveRecord::Schema.define(:version => 20100721041022) do
   create_table "tags", :force => true do |t|
     t.string "name", :null => false
   end
+
+  create_table "user_plugins", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.integer  "plugin_id",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "user_plugins", ["user_id", "plugin_id"], :name => "index_user_plugins_on_user_id_and_plugin_id", :unique => true
+  add_index "user_plugins", ["user_id"], :name => "index_user_plugins_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email"

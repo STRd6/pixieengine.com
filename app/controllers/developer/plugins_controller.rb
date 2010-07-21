@@ -22,4 +22,10 @@ class Developer::PluginsController < ResourceController::Base
     object
   end
   helper_method :plugin
+
+  private
+  def plugins
+    collection
+  end
+  helper_method :plugins
 end
