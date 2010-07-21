@@ -4,7 +4,7 @@ class UsersController < ResourceController::Base
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
   new_action.before do
-    email = session.delete(:email)
+    email = session.delete(:email) || ''
 
     object.email ||= email
     object.display_name = email[0..((email.index('@') || 0) - 1)]
