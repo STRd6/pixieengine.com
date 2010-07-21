@@ -1,5 +1,8 @@
 %h2= plugin.title
 
+- if owner?
+  = link_to "Edit", edit_developer_plugin_path(plugin)
+
 %p= plugin.description
 
 %pre= plugin.code
