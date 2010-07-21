@@ -19,6 +19,10 @@ class Sprite < ActiveRecord::Base
   cattr_reader :per_page
   @@per_page = 40
 
+  scope :with_ids, lambda {|ids|
+    {:conditions => {:id => ids}}
+  }
+
   def self.data_from_url(url)
     #TODO Animations
     image_data = Magick::Image.read(url).first
@@ -131,6 +135,10 @@ class Sprite < ActiveRecord::Base
     "#{Rails.root}/public/production/images/#{id}.png"
   end
 
+  def meta_desc
+    "#{tag_list.join(' ')} #{title} #{dimension_list.join(' ')} #{description}"
+  end
+
   private
 
   def save_file
@@ -139,6 +147,7 @@ class Sprite < ActiveRecord::Base
         f << Base64.decode64(file_base64_encoded)
       end
     elsif file
+      file.rewind
       File.open(file_path, 'wb') do |f|
         f << file.read
       end

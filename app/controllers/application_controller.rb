@@ -55,6 +55,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_owner
+    unless (current_user == object.user) && current_user
+      flash[:notice] = "You can only edit your own dealies!"
+      redirect_to root_url
+      return false
+    end
+  end
+
   def store_location
     session[:return_to] = request.request_uri
   end

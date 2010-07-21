@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class SpritesControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  setup do
+    @sprite = Factory :sprite
+  end
+
+  should "not be able to edit another's sprite" do
+    get :edit, :id => @sprite.id
+
+    assert_response :redirect
   end
 end

@@ -5,7 +5,7 @@
       Pixel Editor, free online pixel editor - Pixie
       = @title ? "[#{@title}]" : ''
     %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
-    %meta{ :name => "description", :content => "This free online pixel editor is amazingly simple. Build on the work of others and share your creations, or start fresh and create something new." }
+    %meta{ :name => "description", :content => (@meta_desc || "This free online pixel editor is amazingly simple. Build on the work of others and share your creations, or start fresh and create something new.") }
     <meta name="google-site-verification" content="0FAurYC_rgKeOIIzTKuunYVGbrc9gCI9xPClgJvN5_w" />
     = csrf_meta_tag
     = stylesheet_link_tag 'screen.css', :media => 'screen, projection'

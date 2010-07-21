@@ -3,11 +3,17 @@ PixieStrd6Com::Application.routes.draw do |map|
     match "dashboard" => 'dashboard#index'
   end
 
+  namespace :developer do
+    resources :plugins
+  end
+
   resources :feedbacks do
     collection do
       get :thanks
     end
   end
+
+  resources :collections
 
   resources :sprites do
     member do
@@ -22,8 +28,6 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   resources :users do
-    resources :collections
-
     member do
       get :favorites
       post :add_to_collection
@@ -40,6 +44,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'r/:token' => "links#track", :as => :link_token
 
   match 'about' => "home#about", :as => :about
+  match 'sitemap' => "home#sitemap"
 
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout

@@ -1,4 +1,5 @@
-- @title = sprite.title
+- @title = sprite.title || "sprite#{sprite.id}"
+- @meta_desc = sprite.meta_desc
 
 %h2= sprite.title
 .sprite
@@ -17,7 +18,7 @@
 
 %p
   - sprite.tag_list.each do |tag|
-    = link_to tag, sprites_path(:tagged => tag)
+    = tag_link(tag)
 
 %p
   - sprite.dimension_list.each do |dimension|
