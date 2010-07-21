@@ -16,7 +16,7 @@ module ApplicationHelper
   end
 
   def tag_link(tag)
-    link_to tag, sprites_path(:tagged => tag)
+    link_to tag, sprites_path(:tagged => tag.to_s)
   end
 
   private
