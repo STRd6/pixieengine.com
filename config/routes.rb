@@ -4,7 +4,11 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   namespace :developer do
-    resources :plugins
+    resources :plugins do
+      member do
+        get :load
+      end
+    end
   end
 
   resources :feedbacks do

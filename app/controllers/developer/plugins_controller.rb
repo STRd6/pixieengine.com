@@ -8,6 +8,15 @@ class Developer::PluginsController < ResourceController::Base
     plugin.plugin_type = "tool"
   end
 
+  def load
+    @plugin = Plugin.new(
+      :parent => plugin,
+      :title => plugin.title,
+      :description => plugin.description,
+      :code => plugin.code
+    )
+  end
+
   private
   def plugin
     object
