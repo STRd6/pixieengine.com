@@ -7,27 +7,58 @@
 // Basic layout and font styles
 body
   background-color: white
+  
+h1, h2, h3, h4, h5, h6
+  color = !main_color
+  font-family: 'Josefin Sans Std Light', arial, serif
+  letter-spacing: .1em
 
 // Grid container
 .container
   margin: 0
   margin-left = $blueprint-grid-margin
 
-#header 
-  height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
+#sidebar
+  float: left
+  margin-right = $blueprint-grid-margin
+  +grid-width(4)
+
+  #logo
+    height: 70px
+    position: relative
   
-  #logo_type
-    color = !main_color
-    font-size: 24pt
-    height: 30pt
-    letter-spacing: .25em
-    margin = 0 $blueprint-grid-width / 2
-    text-align: center
+    #logo_type
+      bottom: 0
+      color = !main_color
+      font-size: 24pt
+      height: 30pt
+      letter-spacing: .25em
+      position: absolute
+      text-align: center
+      width: 100%
+      a
+        text-decoration: none
+        &:visited
+          color: inherit
     
-    a
-      padding: 0
-      color: inherit
-      text-decoration: none
+  #description
+    color = !light_gray
+    font-size: 8pt
+    font-style: italic
+    letter-spacing: .1em
+    margin-top: 2em
+    //padding-left = $blueprint-grid-width / 2
+    text-align: justify
+
+#header 
+  float: left
+  height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
+  +grid-width(20)
+  
+  a
+    padding: 0
+    color: inherit
+    text-decoration: none
     
   // Apply to all header links (navigation and log in link)
   a
@@ -55,16 +86,11 @@ body
         border-bottom = 4px solid !dark_gray
       
   #login_link
+    text-align: center
     a
-      width: 100%
+      text-decoration: underline
       &:hover
         text-decoration: none
- 
-#description
-  color = !light_gray
-  font-size: 8pt
-  font-style: italic
-  //padding-left = $blueprint-grid-width / 2
   
 #content
   border-top = 1px solid !dark_gray
@@ -87,9 +113,10 @@ body
 // Forms - move into separate file?
 label
   display: inline-block
+  font-family: Verdana, sans-serif
   margin-right = $blueprint-grid-margin
   text-align: right
-  width = ($blueprint-grid-width + $blueprint-grid-margin) * 3 - $blueprint-grid-margin
+  +grid-width(3)
   
 input[type=text], input[type=password]
   border-width: 2px

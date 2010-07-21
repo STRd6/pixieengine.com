@@ -1,11 +1,11 @@
 - form_for @user_session || UserSession.new, :url => authenticate_path do |form|
   = form.error_messages
 
-  %h3 What is your email address?
+  %h2 What is your email address?
   = form.label :email
   = form.text_field :email
 
-  %h3 Do you have a Pixie password?
+  %h2 Do you have a Pixie password?
   %p
     = form.label :login_no, "No, I am new"
     = form.radio_button :login, "no"

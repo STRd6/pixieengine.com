@@ -1,8 +1,12 @@
-#header
-  #logo.span-4
+#sidebar
+  #logo
     #logo_type
       = link_to "pixie", new_sprite_path
-  #nav.prepend-1.span-16
+  #description
+    On Pixie you can create amazing pixel art for free, from anywhere, and share it with the world.
+      
+#header
+  #nav.prepend-1.span-15
     .span-2
       = link_to "Pixel Editor", new_sprite_path
     .span-2
@@ -14,8 +18,5 @@
     .span-2
       = link_to "About Pixie", about_path
     
-  #login_link.span-4.last
+  #login_link.span-5.last
     = render :partial => "/shared/login"
-    
-#description.span-4
-  On Pixie you can create amazing pixel art for free, from anywhere, and share it with the world.
