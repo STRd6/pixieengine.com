@@ -1,5 +1,5 @@
 .sprite
-  = link_to image_tag(image_url(sprite)), load_sprite_path(sprite)
+  = link_to image_tag(image_url(sprite)), sprite_path(sprite)
   - if current_user
     .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
   .clear
