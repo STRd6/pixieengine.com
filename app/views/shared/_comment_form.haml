@@ -4,3 +4,21 @@
   = form.text_area :body
   .clear
   = submit_tag "Post"
+
+:javascript
+  $(function() {
+    var commentText;
+
+    var commentForm = $("#new_comment");
+
+    commentForm.submit(function() {
+      if(loggedIn) {
+        return true;
+      } else {
+        requireLogin(function() {
+          commentForm.submit();
+        });
+        return false;
+      }
+    });
+  });

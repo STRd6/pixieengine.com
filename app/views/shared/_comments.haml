@@ -1,5 +1,6 @@
-.comments
+.comments_area
   %h3 Comments
+  .comments
+    - commentable.comments.each do |comment|
+      = render :partial => comment
   = render :partial => "shared/comment_form", :locals => {:commentable => commentable}
-  - commentable.comments.each do |comment|
-    = render :partial => comment
