@@ -1,12 +1,16 @@
 - form_for @user_session || UserSession.new, :url => authenticate_path do |form|
+
   = form.error_messages
+  .span-18.last
+    = form.label :email
+    = form.text_field :email
+  
+  .span-18.last
+    = form.label :password
+    = form.password_field :password
 
-  = form.label :email
-  = form.text_field :email
-  = form.label :password
-  = form.password_field :password
-
-  .right= form.submit "Log In"
+  .span-18.last.prepend-3
+    = form.submit "Log In"
 
 = link_to "Forgot your password?", new_password_reset_path
 .clear

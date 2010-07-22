@@ -1,153 +1,134 @@
-/* Main css file for Boomstick.
-  Copyright STRd6 2008
+/* Main css file for Pixie.
+  Copyright STRd6 2010
 
 @import constants
 @import icon
 
 // Basic layout and font styles
 body
-  font-family: Verdana, Helvetica, Arial, sans-serif
-  background-color= !main_color_light
-  margin: 0
-  padding: 0
-
-h1
-  font-size: 22px
-  color= !main_color_dark
+  background-color: white
   
-h2
-  font-size: 18px
+h1, h2, h3, h4, h5, h6
+  color = !main_color
+  font-family: 'Josefin Sans Std Light', arial, serif
+  letter-spacing: .1em
+
+// Grid container
+.container
+  margin: 0
+  margin-left = $blueprint-grid-margin
+
+#sidebar
+  float: left
+  margin-right = $blueprint-grid-margin
+  +grid-width(4)
+
+  #logo
+    height: 70px
+    position: relative
+  
+    #logo_type
+      bottom: 0
+      color = !main_color
+      font-size: 24pt
+      height: 30pt
+      letter-spacing: .25em
+      position: absolute
+      text-align: center
+      width: 100%
+      a
+        text-decoration: none
+        &:visited
+          color: inherit
+    
+  #description
+    color = !light_gray
+    font-size: 8pt
+    font-style: italic
+    letter-spacing: .1em
+    margin-top: 2em
+    //padding-left = $blueprint-grid-width / 2
+    text-align: justify
 
 #header 
-  width: 75%
-  height: 40px
-  background: url(images/headerbg.png) repeat-x
-  margin-left: auto
-  margin-right: auto
-  padding-left: 2em
-  padding-right: 2em
-  
-  p, a
-    display: inline
-    font-size: 12px
-    color= !dark_gray
-    margin: 0
-    padding: 10px
-    
-  a
-    text-decoration: underline
-    padding: 0
-    &:hover
-      text-decoration: none
-      
-  img
-    padding: 6px
-    padding-top: 0
-    margin-right: 10px
-  
-  p.left, p.right
-    clear: none
-    margin: 0
-    padding: 0
-  
-  p.left
-    float: left
-    width: 70%
-    
-  p.right
-    float: right
-    margin-right: 10px
-    padding-top: 10px
-    width: 25%
-    text-align: right
-    
-  a.button
-    display: inline-block
-    color= !dark_gray
-    padding: 1em
-    &:hover
-      background-color= !secondary_color_light
-    font-weight: bold
-    text-decoration: none
-
-.border
-  border-color: black
-  border-style: solid
-  border-width: 1px
-
-a
-  img
-    border: none
-
-.left
   float: left
-
-.right
-  float: right
-
-div.clear
-  clear: both
-
-.content
-  padding: 1em
-
-// Holds all main site content
-#content
-  position: relative
-  margin-left: auto
-  margin-right: auto
-  min-height: 480px
-  padding: 2em
-  width: 75%
-  background-color= !white
+  height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
+  +grid-width(20)
   
-  // Fix to make #content enclose elements floated inside it 
-  &:after
-    content: "."
-    display: block
-    height: 0
-    clear: both
-    visibility: hidden
-
-#content, #simplemodal-container
-  p
-    margin-top: 0.4em
-
-  form
-    width: 38em
-
-  label
-    display: inline-block
-    width: 11em
-    margin-right: .5em
-    text-align: right
-    font-size: 12px
-    color= !dark_gray
-    padding-bottom: .4em
-  
-  form.images
-    float: left
-    width: auto
-    margin: 5px
+  a
+    padding: 0
+    color: inherit
+    text-decoration: none
     
-    .formControlsHolder
-      float: left
-      width: 25px
+  // Apply to all header links (navigation and log in link)
+  a
+    +box-sizing(border-box)
+    color = !dark_gray
+    display: inline-block
+    height: 100%
+    margin: 0
+    padding: 0
+    padding-top: 48px
+    text-align: center
+    
+  #nav
+    border-left = 1px solid !dark_gray
+    +box-sizing(border-box)
+    height: 100%
+    
+    a
+      display: inline-block
+      font-weight: bold
+      text-align: left
+      text-decoration: none
+      width: 100%
+      &:hover
+        border-bottom = 4px solid !dark_gray
       
-    img
-      float: left
-      
-    &:after
-      content: "."
-      display: block
-      height: 0
-      clear: both
-      visibility: hidden
-
-// Hack to make the window appear with floated elements inside it.
-.clear
-  clear: both
+  #login_link
+    text-align: center
+    a
+      text-decoration: underline
+      &:hover
+        text-decoration: none
   
+#content
+  border-top = 1px solid !dark_gray
+  border-right = 1px solid !dark_gray
+  +box-sizing(border-box)
+  padding-top: 2em
+  
+  p
+    font-family: Verdana, sans-serif
+    font-size: 12px
+    letter-spacing: .5px
+    line-height: 18px
+  
+#footer
+  margin-top: 2em
+  
+  center
+    height: 3em
+
+// Forms - move into separate file?
+label
+  display: inline-block
+  font-family: Verdana, sans-serif
+  margin-right = $blueprint-grid-margin
+  text-align: right
+  +grid-width(3)
+  
+input[type=text], input[type=password]
+  border-width: 2px
+  &:focus
+    border-width: 2px
+    border-color: !main_color
+    
+input[type=button], input[type=submit]
+  display: block
+  margin-top: 1em
+  margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 3
+
 // TODO: Good these up, embetter and embiggen
 // Error and notice styling
 .notification
@@ -169,13 +150,6 @@ div.clear
 #errorExplanation, .errorExplanation
   color= !error_color
 
-input#openid_url
-  background: url(http://openid.net/login-bg.gif) no-repeat
-  background-color: #fff
-  background-position: 0 50%
-  color: #000
-  padding-left: 18px
-
 // Specifics
 .chunk
   width: 20em
@@ -184,14 +158,6 @@ input#openid_url
   margin-bottom: 2em
   padding: 0.5em
   background-color: #8FBC8F
-
-#footer
-  background-color: #FFF
-  margin-left: auto
-  margin-right: auto
-  padding-left: 2em
-  padding-right: 2em
-  width: 75%
 
 div.star
   background-image: url(../images/icons/star.png)
