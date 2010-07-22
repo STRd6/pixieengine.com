@@ -3,11 +3,32 @@
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
 
-- width = @width || 32
-- height = @height || 32
+- width = params[:width] || 32
+- height = params[:height] || 32
 - data = @data
 
 #pixie
+
+#sharing{:title => "Share this creation with your friends (requires having linked one of your social network sites to Pixie)"}
+  = label_tag "share"
+  = check_box_tag "share", "1", true
+
+= render :partial => 'shared/register_modal'
+
+%label{:for => 'resize_width'} width:
+%input{:id => 'resize_width', :type => 'text', :title => 'width'}
+%br
+%label{:for => 'resize_height'} height:
+%input{:id => 'resize_height', :type => 'text', :title => 'height'}
+%input{:id => 'resize_new', :type => 'button', :value => 'New canvas', :onclick => 'newCanvas()'}
+
+:javascript
+  function newCanvas() {
+    var newWidth = $('#resize_width').val();
+    var newHeight = $('#resize_height').val();
+
+    window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
+  }
 
 :javascript
   (function($) {
