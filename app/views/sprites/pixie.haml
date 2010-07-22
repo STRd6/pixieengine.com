@@ -9,10 +9,6 @@
 
 #pixie
 
-#sharing{:title => "Share this creation with your friends (requires having linked one of your social network sites to Pixie)"}
-  = label_tag "share"
-  = check_box_tag "share", "1", true
-
 = render :partial => 'shared/register_modal'
 
 :javascript
@@ -27,7 +23,6 @@
         'sprite[file_base64_encoded]': canvas.toBase64(),
         'sprite[width]': #{width},
         'sprite[height]': #{height},
-        'sprite[broadcast]': $("#share").val(),
         'sprite[parent_id]': #{@parent_id.to_json}
       }, function(data) {
         eval(data);
