@@ -8,6 +8,25 @@ class Developer::PluginsController < ResourceController::Base
     plugin.plugin_type = "tool"
   end
 
+  new_action.before do
+    plugin.code = <<-eos
+{
+  name: "New Plugin",
+  icon: "/images/icons/wrench.png",
+  cursor: "url(/images/icons/wrench.png) 15 0, default",
+  mousedown: function() {
+    // TODO: Code your plugin here
+
+    // Example: reading the color of the clicked pixel
+    alert(this.color());
+
+    // Example: Pixel has referance to canvas
+    var canvas = this.canvas;
+  }
+}
+    eos
+  end
+
   def load
     @plugin = Plugin.new(
       :parent => plugin,

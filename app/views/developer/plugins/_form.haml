@@ -1,15 +1,18 @@
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
+%h2 New Plugin
 - form_for [:developer, @plugin] do |form|
   = form.error_messages
 
   = form.hidden_field :parent_id
 
-  = form.label :title
-  = form.text_field :title
+  %p
+    = form.label :title
+    = form.text_field :title
 
-  = form.label :description
-  = form.text_field :description
+  %p
+    = form.label :description
+    = form.text_field :description
 
   = form.label :code
   .border
