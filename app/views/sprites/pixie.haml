@@ -9,21 +9,15 @@
 
 #pixie
 
-#sharing{:title => "Share this creation with your friends (requires having linked one of your social network sites to Pixie)"}
-  = label_tag "share"
-  = check_box_tag "share", "1", true
-
-= render :partial => 'shared/register_modal'
-
 #newCanvasModal{ :style => 'display: none' }
-  %label{:for => 'resize_width'} width:
-  %input{:id => 'resize_width', :type => 'text', :title => 'width'}
-  %br
-  %label{:for => 'resize_height'} height:
-  %input{:id => 'resize_height', :type => 'text', :title => 'height'}
-  %input{:id => 'resize_new', :type => 'button', :value => 'New canvas', :onclick => 'newCanvas()'}
+  %p
+    = label_tag :resize_width, "width"
+    = text_field_tag :resize_width, 32, {:title => 'width'}
+  %p
+    = label_tag :resize_height, "height"
+    = text_field_tag :resize_height, 32, {:title => 'height'}
 
-%input{:id => 'new_canvas', :type => 'button', :value => 'New canvas', :onclick => 'setNewDimensions()'}
+  = button_to_function "New Canvas", "newCanvas()"
 
 :javascript
   function newCanvas() {
@@ -72,6 +66,15 @@
       initializer: function(canvas) {
         // HAX: Global ref of canvas
         window.canvas = canvas;
+
+        canvas.addAction({
+          name: "New",
+          icon: "/images/icons/page_white_add.png",
+          perform: function(canvas) {
+            setNewDimensions();
+          }
+        });
+
         canvas.addAction({
           name: "Save",
           icon: "/images/icons/database_save.png",
