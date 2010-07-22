@@ -36,6 +36,14 @@ class SpritesController < ResourceController::Base
   end
 
   new_action.wants.html do
+    unless params[:width].to_i <= 0
+      @width = params[:width].to_i
+    end
+
+    unless params[:height].to_i <= 0
+      @height = params[:height].to_i
+    end
+
     render :action => :pixie
   end
 
