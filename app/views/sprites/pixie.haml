@@ -15,12 +15,15 @@
 
 = render :partial => 'shared/register_modal'
 
-%label{:for => 'resize_width'} width:
-%input{:id => 'resize_width', :type => 'text', :title => 'width'}
-%br
-%label{:for => 'resize_height'} height:
-%input{:id => 'resize_height', :type => 'text', :title => 'height'}
-%input{:id => 'resize_new', :type => 'button', :value => 'New canvas', :onclick => 'newCanvas()'}
+#newCanvasModal{ :style => 'display: none' }
+  %label{:for => 'resize_width'} width:
+  %input{:id => 'resize_width', :type => 'text', :title => 'width'}
+  %br
+  %label{:for => 'resize_height'} height:
+  %input{:id => 'resize_height', :type => 'text', :title => 'height'}
+  %input{:id => 'resize_new', :type => 'button', :value => 'New canvas', :onclick => 'newCanvas()'}
+
+%input{:id => 'new_canvas', :type => 'button', :value => 'New canvas', :onclick => 'setNewDimensions()'}
 
 :javascript
   function newCanvas() {
@@ -28,6 +31,19 @@
     var newHeight = $('#resize_height').val();
 
     window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
+  }
+
+  function setNewDimensions() {
+    $("#newCanvasModal").removeAttr("style").modal({
+      containerCss: {
+        height: 200,
+        width: 400
+      },
+      onClose: function() {
+        $.modal.close();
+        $("#newCanvasModal").attr("style", "display: none");
+      }
+    });
   }
 
 :javascript
