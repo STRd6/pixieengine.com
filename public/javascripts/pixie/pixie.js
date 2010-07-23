@@ -542,7 +542,6 @@
 
       var guideLayer = Layer();
       guideLayer.drawGuide();
-      // TODO: Add guide layer
       canvas.append(guideLayer);
 
       var lastPixel = undefined;
