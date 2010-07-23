@@ -284,7 +284,7 @@
     return $('<input></input>').addClass('color').colorPicker();
   };
 
-  var rgbParser = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d{1,3})?\)$/;
+  var rgbParser = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/;
 
   var UndoStack = function() {
     var undos = [];
