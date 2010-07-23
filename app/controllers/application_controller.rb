@@ -63,10 +63,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_admin
+    unless admin?
+      flash[:notice] = "Admin required"
+      redirect_to root_url
+    end
+  end
+
   def owner?
     (current_user == object.user) && current_user
   end
   helper_method :owner?
+
+  def admin?
+    current_user && current_user.admin?
+  end
+  helper_method :admin?
 
   def store_location
     session[:return_to] = request.request_uri

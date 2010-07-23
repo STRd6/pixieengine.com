@@ -1,0 +1,5 @@
+.comment
+  %p= comment.body
+  %p.attribution
+    %span.name= comment.commenter.display_name
+    %span.time= "#{time_ago_in_words(comment.created_at)} ago."
