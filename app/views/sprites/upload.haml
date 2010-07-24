@@ -1,6 +1,7 @@
 - @title = "Upload"
 
 - form_for Sprite.new, :url => { :action => "import" }, :html => {:multipart => true} do |form|
+  = form.label :file, "Choose file"
   = form.file_field :file
   = form.submit "Upload"
 
