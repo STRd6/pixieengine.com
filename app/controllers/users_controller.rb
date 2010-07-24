@@ -93,12 +93,16 @@ class UsersController < ResourceController::Base
   end
 
   def require_current_user
-    unless current_user == object
+    unless current_user?
       flash[:notice] = "You can only edit your own account"
       redirect_to root_url
-      return false
     end
   end
+
+  def current_user?
+    current_user == object
+  end
+  helper_method :current_user?
 
   def object
     return @object if defined?(@object)

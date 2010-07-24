@@ -14,6 +14,8 @@
 
 %p
   = link_to "Create something!", new_sprite_path
+  - if current_user?
+    = link_to "Edit your profile", edit_user_path(current_user)
 
 - if user.sprites.size > 0
   %h3
