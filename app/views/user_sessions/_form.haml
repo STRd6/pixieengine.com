@@ -1,6 +1,8 @@
 - form_for @user_session || UserSession.new, :url => authenticate_path do |form|
 
   = form.error_messages
+
+  = form.hidden_field :login, :value => "yes"
   .span-18.last
     = form.label :email
     = form.text_field :email

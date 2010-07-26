@@ -341,18 +341,19 @@
   };
 
   $.fn.pixie = function(options) {
-    var Pixel = function(x, y, z, layerCanvas, canvas, undoStack) {
+    var Pixel = function(x, y, z, f, layerCanvas, canvas, undoStack) {
       var color = transparent;
 
       var self = {
         x: x,
         y: y,
         z: z,
+        f: f,
 
         canvas: canvas,
 
         toString: function() {
-          return "[Pixel: " + this.x + ", " + this.y + ", " + this.z + "]";
+          return "[Pixel: " + [this.x, this.y, this.z, + this.f].join(",") + "]";
         },
 
         color: function(newColor, skipUndo) {
@@ -413,6 +414,7 @@
     var pixelHeight = 16;
     var initializer = options.initializer;
     var layers = options.layers || 2;
+    var frames = options.frames || 1;
     var lastClean;
 
     return this.each(function() {
@@ -469,12 +471,15 @@
         }
       });
 
-      var layerMenu = $(div).addClass('actions');
+      var layerMenu = $(div).addClass('actions').prepend('Layer: ');
+      var frameMenu = $(div).addClass('actions').prepend('Frame: ');
 
       var undoStack = UndoStack();
 
       var currentTool = undefined;
       var active = false;
+      var layer = 0;
+      var frame = 0;
       var mode = undefined;
       var primaryColorPicker = ColorPicker();
       var secondaryColorPicker = ColorPicker();
@@ -505,41 +510,36 @@
 
       var pixels = [];
 
-      for(var layer = 0; layer < layers; layer++) {
-        var layerDiv = Layer();
-        if(layer == 0) {
-          layerDiv.addClass('bottom');
+      for(frame = 0; frame < frames; frame++) {
+        var frameDiv = $(div).addClass("frame");
+
+        if(frame == 0) {
+          frameDiv.addClass("current");
         }
 
-        pixels[layer] = [];
+        pixels[frame] = [];
 
-        (function(currentLayer) {
-          var layerSelection = $("<a href='#' title='Layer "+ currentLayer +"'>"+ currentLayer +"</a>")
-            .addClass('tool')
-            .bind("mousedown", function(e) {
-              layer = currentLayer;
-              layerMenu.children().removeClass("active");
-              $(this).addClass("active");
-            })
-            .click(falseFn)
-
-          if(currentLayer === 0) {
-            layerSelection.addClass("active");
+        for(layer = 0; layer < layers; layer++) {
+          var layerDiv = Layer();
+          if(layer == 0) {
+            layerDiv.addClass('bottom');
           }
 
-          layerMenu.append(layerSelection);
-        })(layer);
+          pixels[frame][layer] = [];
 
-        for(var row = 0; row < height; row++) {
-          pixels[layer][row] = [];
+          for(var row = 0; row < height; row++) {
+            pixels[frame][layer][row] = [];
 
-          for(var col = 0; col < width; col++) {
-            var pixel = Pixel(col, row, layer, layerDiv.get(0).getContext('2d'), canvas, undoStack);
-            pixels[layer][row][col] = pixel;
+            for(var col = 0; col < width; col++) {
+              var pixel = Pixel(col, row, layer, frame, layerDiv.get(0).getContext('2d'), canvas, undoStack);
+              pixels[frame][layer][row][col] = pixel;
+            }
           }
+
+          frameDiv.append(layerDiv);
         }
 
-        canvas.append(layerDiv);
+        canvas.append(frameDiv);
       }
 
       var guideLayer = Layer();
@@ -584,17 +584,22 @@
           lastPixel = pixel;
         });
 
-      layer = 0;
+      layer = layers - 1;
+      frame = 0;
 
       $.extend(canvas, {
-        eachPixel: function(fn, z) {
+        eachPixel: function(fn, z, f) {
           if(z === undefined) {
             z = layer;
           }
 
+          if(f === undefined) {
+            f = frame;
+          }
+
           for(row = 0; row < height; row++) {
             for(col = 0; col < width; col++) {
-              var pixel = pixels[z][row][col];
+              var pixel = pixels[f][z][row][col];
               fn.call(pixel, pixel, col, row);
             }
           }
@@ -602,30 +607,38 @@
           return canvas;
         },
 
-        getPixel: function(x, y, z) {
+        getPixel: function(x, y, z, f) {
           if(z === undefined) {
             z = layer;
           }
 
+          if(f === undefined) {
+            f = frame;
+          }
+
           if(y >= 0 && y < height) {
             if(x >= 0 && x < width) {
-              return pixels[z][y][x];
+              return pixels[f][z][y][x];
             }
           }
 
           return undefined;
         },
 
-        getNeighbors: function(x, y, z) {
+        getNeighbors: function(x, y, z, f) {
           if(z === undefined) {
             z = layer;
           }
 
+          if(f === undefined) {
+            f = frame
+          }
+
           return [
-            this.getPixel(x+1, y, z),
-            this.getPixel(x, y+1, z),
-            this.getPixel(x-1, y, z),
-            this.getPixel(x, y-1, z)
+            this.getPixel(x+1, y, z, f),
+            this.getPixel(x, y+1, z, f),
+            this.getPixel(x-1, y, z, f),
+            this.getPixel(x, y-1, z, f)
           ];
         },
 
@@ -786,7 +799,7 @@
           return 'url(' + this.toDataURL() + ')';
         },
 
-        toDataURL: function() {
+        toDataURL: function(f) {
           var canvas = $('<canvas width="' + width + '" height="' + height+ '"></canvas>').get(0);
           var context = canvas.getContext('2d');
 
@@ -796,15 +809,23 @@
 
               context.fillStyle = color;
               context.fillRect(x, y, 1, 1);
-            }, z);
+            }, z, f);
           }
 
           return canvas.toDataURL("image/png");
         },
 
-        toBase64: function() {
-          var data = this.toDataURL();
+        toBase64: function(f) {
+          var data = this.toDataURL(f);
           return data.substr(data.indexOf(',') + 1);
+        },
+
+        frameDataToBase64: function() {
+          var frameData = [];
+          for(var f = 0; f < frames; f++) {
+            frameData[f] = this.toBase64(f);
+          }
+          return frameData;
         },
 
         showPreview: function() {
@@ -861,6 +882,59 @@
       canvas.setTool(tools.pencil);
       toolbar.children().eq(0).addClass("active");
 
+      // Set up layer and frame menus
+      for(var i = 0; i < layers; i++) {
+        (function(currentLayer) {
+          var layerName;
+
+          if(currentLayer == 0) {
+            layerName = "Background";
+          } else if(currentLayer == 1) {
+            layerName = "Foreground";
+          } else {
+            layerName = "Layer " + currentLayer;
+          }
+
+          var layerSelection = $("<a href='#' title='Layer "+ currentLayer +"'>"+ layerName +"</a>")
+            .addClass('tool')
+            .bind("mousedown", function(e) {
+              layer = currentLayer;
+              layerMenu.children().removeClass("active");
+              $(this).addClass("active");
+            })
+            .click(falseFn)
+
+          if(currentLayer == layers - 1) {
+            layerSelection.addClass("active");
+          }
+
+          layerMenu.append(layerSelection);
+        })(i);
+      }
+
+      for(i = 0; i < frames; i++) {
+        (function(currentFrame) {
+          var frameSelection = $("<a href='#' title='Frame "+ currentFrame +"'>" + currentFrame + "</a>")
+            .addClass('tool')
+            .bind("mousedown", function(e) {
+              frame = currentFrame;
+              frameMenu.children().removeClass("active");
+              $(this).addClass("active");
+
+              var frameElement = canvas.children().eq(currentFrame);
+              frameElement.addClass("current");
+              frameElement.siblings().removeClass("current");
+            })
+            .click(falseFn)
+
+          if(currentFrame === 0) {
+            frameSelection.addClass("active");
+          }
+
+          frameMenu.append(frameSelection);
+        })(i);
+      }
+
       pixie
         .append(actionsMenu)
         .append(toolbar)
@@ -873,6 +947,10 @@
         .append(preview)
         .append(clear)
         .append(layerMenu);
+
+      if(frames > 1) {
+        pixie.append(frameMenu);
+      }
 
       if(initializer) {
         initializer(canvas);

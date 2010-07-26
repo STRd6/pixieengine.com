@@ -50,7 +50,7 @@ class SpritesController < ResourceController::Base
   def load
     @width = sprite.width
     @height = sprite.height
-    @data = sprite.json_data
+    @data = sprite.data[:frame_data]
     @parent_id = sprite.id
 
     render :action => :pixie
@@ -60,11 +60,11 @@ class SpritesController < ResourceController::Base
     if params[:url].blank?
       # Render form
     else
-      sprite = Sprite.data_from_url(params[:url])
+      sprite = Sprite.data_from_path(params[:url])
 
       @width = sprite[:width]
       @height = sprite[:height]
-      @data = sprite[:json_data]
+      @data = sprite[:frame_data]
 
       render :action => :pixie
     end
