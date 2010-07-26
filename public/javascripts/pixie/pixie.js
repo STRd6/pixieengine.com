@@ -284,7 +284,7 @@
     return $('<input></input>').addClass('color').colorPicker();
   };
 
-  var rgbParser = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d{1,3})?\)$/;
+  var rgbParser = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/;
 
   var UndoStack = function() {
     var undos = [];
@@ -442,7 +442,7 @@
         canvas.showPreview();
       }).attr("checked", "true");
 
-      canvas.addClass('grid');
+      canvas.addClass('nogrid');
 
       var guideLabel = $('<label class=\'guide-control\'>Display Guides</label>').click(function() {
 
@@ -457,7 +457,7 @@
           canvas.removeClass('nogrid').addClass('grid');
           guideLayer.drawGuide();
         }
-      })
+      });
 
       var guideToggle = $('<input class="guide-control" type="checkbox"></input>').change(function() {
         if(!$(this).attr('checked')) {
@@ -467,7 +467,7 @@
           canvas.removeClass('nogrid').addClass('grid');
           guideLayer.drawGuide();
         }
-      }).attr("checked", "true");
+      });
 
       var layerMenu = $(div).addClass('actions');
 
@@ -507,7 +507,9 @@
 
       for(var layer = 0; layer < layers; layer++) {
         var layerDiv = Layer();
-
+        if(layer == 0) {
+          layerDiv.addClass('bottom');
+        }
 
         pixels[layer] = [];
 
@@ -541,8 +543,6 @@
       }
 
       var guideLayer = Layer();
-      guideLayer.drawGuide();
-      // TODO: Add guide layer
       canvas.append(guideLayer);
 
       var lastPixel = undefined;

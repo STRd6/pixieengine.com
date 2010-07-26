@@ -50,8 +50,7 @@ class ApplicationController < ActionController::Base
     if current_user
       store_location
       flash[:notice] = "You must be logged out to access this page"
-      redirect_to account_url
-      return false
+      redirect_to root_url
     end
   end
 
@@ -59,7 +58,13 @@ class ApplicationController < ActionController::Base
     unless owner?
       flash[:notice] = "You can only edit your own dealies!"
       redirect_to root_url
-      return false
+    end
+  end
+
+  def require_admin
+    unless admin?
+      flash[:notice] = "Admin required"
+      redirect_to root_url
     end
   end
 
@@ -67,6 +72,11 @@ class ApplicationController < ActionController::Base
     (current_user == object.user) && current_user
   end
   helper_method :owner?
+
+  def admin?
+    current_user && current_user.admin?
+  end
+  helper_method :admin?
 
   def store_location
     session[:return_to] = request.request_uri
