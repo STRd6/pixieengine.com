@@ -7,7 +7,7 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  attr_accessor :broadcast, :file, :file_base64_encoded
+  attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data
 
   before_save :gather_metadata
 
@@ -151,6 +151,16 @@ class Sprite < ActiveRecord::Base
       File.open(file_path, 'wb') do |f|
         f << Base64.decode64(file_base64_encoded)
       end
+    elsif frame_data
+      image_list = Magick::ImageList.new
+
+      image_list.from_blob(*frame_data.sort do |a, b|
+        a[0].to_i <=> b[0].to_i
+      end.map do |i, frame|
+        Base64.decode64(frame)
+      end)
+
+      image_list.write(file_path)
     elsif file
       file.rewind
       File.open(file_path, 'wb') do |f|
@@ -167,6 +177,8 @@ class Sprite < ActiveRecord::Base
       self.width = first_image.columns
       self.height = first_image.rows
       self.frames = image_list.length
+    elsif frame_data
+      self.frames = frame_data.length
     end
   end
 
