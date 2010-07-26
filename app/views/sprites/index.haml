@@ -1,5 +1,17 @@
+- @title = "Sprites"
+
+= will_paginate sprites
+
+.tags
+  - tags = Sprite.with_ids(sprites).tag_counts
+  - tags.each do |tag|
+    = tag_link tag
+
 - sprites.each do |sprite|
   = render :partial => sprite
+.clear
+
+- @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
 - if current_user
   :javascript
@@ -11,14 +23,14 @@
           $.get('/users/remove_favorite/' + spriteId);
         } else {
           $(this).removeClass('no-star').addClass('star');
-          $.post('/favorites', {
+          $.post('/users/#{current_user.id}/add_to_collection', {
             'format': 'js',
-            'favorite[user_id]': #{current_user.id},
-            'favorite[sprite_id]': spriteId
-          },"script");
+            'collectable_type': "Sprite",
+            'collectable_id': spriteId,
+            'collection_name': "favorites"
+          }, "script");
         }
       });
     });
 
-
-/ - if find_by_user(current_user.id, )
+= will_paginate sprites

@@ -1,15 +1,21 @@
-- profile = user.profile
-%h2= user.display_name
+.profile
+  %h2= user.display_name
 
-- authenticated_accounts = user.authenticated_with
-- if authenticated_accounts.length > 0
+  .avatar.left
+    = image_tag user.avatar.url(:thumb)
 
-  %img.profile{:src => profile[:photo]}
-  %p
-    = link_to "You're on #{profile[:title]}!", profile[:link]
+  - unless user.profile.blank?
+    %h3 Profile
+    %p= user.profile
+  .clear
+
+- if favorites = user.collections.first
+  = link_to "Favorites", favorites
 
 %p
   = link_to "Create something!", new_sprite_path
+  - if current_user?
+    = link_to "Edit your profile", edit_user_path(current_user)
 
 - if user.sprites.size > 0
   %h3

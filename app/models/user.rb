@@ -5,12 +5,18 @@ class User < ActiveRecord::Base
     config.require_password_confirmation = false
   end
 
-  include ExampleProfile
+  has_attached_file :avatar, :styles => { :thumb => "128x128>" }
 
+  include Commentable
+
+  has_many :collections
   has_many :sprites
-  has_many :favorites
 
-  attr_accessible :display_name, :email, :password
+  has_many :authored_plugins, :class_name => "Plugin"
+  has_many :user_plugins
+  has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
+
+  attr_accessible :avatar, :display_name, :email, :password, :profile
 
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?
@@ -20,12 +26,30 @@ class User < ActiveRecord::Base
     display_name
   end
 
+  def send_forgot_password_email
+    Notifier.forgot_password(self).deliver
+  end
+
+  def add_to_collection(item, collection_name="favorites")
+    unless collection = collections.find_by_name(collection_name)
+      collection = collections.create :name => collection_name
+    end
+
+    collection.collection_items.create(:item => item)
+  end
+
+  def remove_from_collection(item, collection_name="favorites")
+    if collection = collections.find_by_name(collection_name)
+      collection.collection_items.find_by_item(item).each(&:destroy)
+    end
+  end
+
   def remove_favorite(sprite)
-    favorites.find_by_sprite_id(sprite.id).destroy
+    remove_from_collection(sprite)
   end
 
   def favorite?(sprite)
-    favorites.find_by_sprite_id sprite.id
+    collections.find_or_create_by_name("favorites").collection_items.find_by_item(sprite).first
   end
 
   def broadcast(message)
@@ -47,6 +71,18 @@ class User < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def install_plugin(plugin)
+    installed_plugins << plugin
+  end
+
+  def uninstall_plugin(plugin)
+    user_plugins.find_by_plugin_id(plugin).destroy
+  end
+
+  def plugin_installed?(plugin)
+    installed_plugins.include? plugin
   end
 
   private

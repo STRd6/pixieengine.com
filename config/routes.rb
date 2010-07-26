@@ -3,11 +3,25 @@ PixieStrd6Com::Application.routes.draw do |map|
     match "dashboard" => 'dashboard#index'
   end
 
+  namespace :admin do
+    resources :comments, :feedbacks, :sprites, :users
+  end
+
+  namespace :developer do
+    resources :plugins do
+      member do
+        get :load
+      end
+    end
+  end
+
   resources :feedbacks do
     collection do
       get :thanks
     end
   end
+
+  resources :collections
 
   resources :sprites do
     member do
@@ -20,9 +34,21 @@ PixieStrd6Com::Application.routes.draw do |map|
       post :import
     end
   end
-  resources :users, :user_sessions
 
-  resources :favorites
+  resources :users do
+    member do
+      get :favorites
+      post :add_to_collection
+      get :sprites
+    end
+
+    collection do
+      post :install_plugin
+      post :uninstall_plugin
+    end
+  end
+
+  resources :comments, :password_resets, :user_sessions
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
@@ -31,6 +57,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'r/:token' => "links#track", :as => :link_token
 
   match 'about' => "home#about", :as => :about
+  match 'sitemap' => "home#sitemap"
 
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
@@ -39,7 +66,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
 
-  root :to => "home#index"
+  root :to => "sprites#new"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

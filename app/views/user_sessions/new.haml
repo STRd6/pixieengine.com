@@ -1,16 +1,19 @@
 - form_for @user_session, :url => authenticate_path, :html => { :method => :post, :class => "authentication_form" } do |form|
-  = oauth_login_hidden_input
-  %h3 Use one of your accounts from an existing site for authentication
-  .oauth_providers
-    %ul
-      - %w(twitter facebook).each do |name|
-        %li.oauth_provider
-          = image_tag "/images/oauth/#{name}.png"
-          = radio_button_tag :oauth_provider, name
-      .clearfix
+  -#
+    = oauth_login_hidden_input
+    %h3 Use one of your accounts from an existing site for authentication
+    .oauth_providers
+      %ul
+        - %w(twitter facebook).each do |name|
+          %li.oauth_provider
+            = image_tag "/images/oauth/#{name}.png"
+            = radio_button_tag :oauth_provider, name
+        .clearfix
 
-.div
-  %h4 Or use your Pixie account
+%h3 Log In or Sign Up
+/= render :partial => 'users/form', :locals => {:user => User.new}
+= render :partial => 'form'
+-#
   = link_to_function "Create a new account with Pixie", "$('#create').show(); $('#logIn').hide()", :class => "button"
   = link_to_function "Log in with your Pixie account", "$('#create').hide(); $('#logIn').show()", :class => "button"
 
@@ -39,5 +42,5 @@
       });
     });
 
-    trackPageview("/registration_goal/login_screen");
+    trackPageview("/event/login_screen");
   });

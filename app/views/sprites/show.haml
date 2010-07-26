@@ -1,1 +1,28 @@
-= render :partial => sprite
+- @title = sprite.title || "sprite#{sprite.id}"
+- @meta_desc = sprite.meta_desc
+- @has_reg_popup = true
+
+.sprite
+  = link_to image_tag(image_url(sprite)), load_sprite_path(sprite)
+
+%p= sprite.description
+
+.clear
+%p
+  By
+  - if sprite.user
+    = link_to sprite.user, sprite.user
+  - else
+    Anonymous
+
+= link_to "Load in Editor #{image_tag "icons/pencil_go.png"}".html_safe, load_sprite_path(sprite), :class => "button"
+
+%p
+  - sprite.tag_list.each do |tag|
+    = tag_link(tag)
+
+%p
+  - sprite.dimension_list.each do |dimension|
+    = link_to dimension, sprites_path(:tagged => dimension)
+
+= display_comments sprite

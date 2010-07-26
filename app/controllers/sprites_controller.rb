@@ -1,6 +1,8 @@
 class SpritesController < ResourceController::Base
   actions :all, :except => [:destroy]
 
+  before_filter :require_owner, :only => [:edit, :update]
+
   create.before do
     @sprite.user = current_user
   end
@@ -8,7 +10,7 @@ class SpritesController < ResourceController::Base
   create.flash nil
 
   create.wants.html do
-    if !sprite.user && ab_test("login_after")
+    unless sprite.user
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
@@ -17,34 +19,39 @@ class SpritesController < ResourceController::Base
   end
 
   create.wants.js do
-    if !sprite.user && ab_test("login_after")
+    if sprite.user
+      render :update do |page|
+        link = link_to "Sprite #{@sprite.id}", @sprite
+
+        page.call "notify", "Saved as #{link}"
+      end
+    else
       session[:saved_sprites] ||= {}
       session[:saved_sprites][sprite.id] = sprite.broadcast
 
       render :update do |page|
         page.redirect_to login_path
       end
-    else
-      render :update do |page|
-        link = link_to "Sprite #{@sprite.id}", @sprite
-
-        page.call "notify", "Saved as #{link}"
-      end
     end
   end
 
   new_action.wants.html do
-    render :action => :pixie
-  end
+    unless params[:width].to_i <= 0
+      @width = params[:width].to_i
+    end
 
-  def show
-    redirect_to :action => :load
+    unless params[:height].to_i <= 0
+      @height = params[:height].to_i
+    end
+
+    render :action => :pixie
   end
 
   def load
     @width = sprite.width
     @height = sprite.height
-    @data = sprite.json_data
+    @data = sprite.data[:frame_data]
+    @parent_id = sprite.id
 
     render :action => :pixie
   end
@@ -53,11 +60,11 @@ class SpritesController < ResourceController::Base
     if params[:url].blank?
       # Render form
     else
-      sprite = Sprite.data_from_url(params[:url])
+      sprite = Sprite.data_from_path(params[:url])
 
       @width = sprite[:width]
       @height = sprite[:height]
-      @data = sprite[:json_data]
+      @data = sprite[:frame_data]
 
       render :action => :pixie
     end
@@ -74,6 +81,18 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  private
+
+  def collection
+    sprites = Sprite
+
+    if params[:tagged]
+      sprites = Sprite.tagged_with(params[:tagged])
+    end
+
+    @collection ||= sprites.paginate(:page => params[:page], :order => 'id DESC')
+  end
+
   helper_method :sprites
   def sprites
     return collection
@@ -82,5 +101,14 @@ class SpritesController < ResourceController::Base
   helper_method :sprite
   def sprite
     return object
+  end
+
+  helper_method :installed_tools
+  def installed_tools
+    if current_user
+      current_user.installed_plugins
+    else
+      []
+    end
   end
 end

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  before_filter :set_abingo_identity
+  before_filter :set_abingo_identity, :track_landing
 
   def set_abingo_identity
     if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg)\b/i
@@ -17,6 +17,13 @@ class ApplicationController < ActionController::Base
     else
       session[:abingo_identity] ||= rand(10 ** 10)
       Abingo.identity = session[:abingo_identity]
+    end
+  end
+
+  def track_landing
+    unless session[:landing]
+      @landing = true
+      session[:landing] = true
     end
   end
 
@@ -43,10 +50,33 @@ class ApplicationController < ActionController::Base
     if current_user
       store_location
       flash[:notice] = "You must be logged out to access this page"
-      redirect_to account_url
-      return false
+      redirect_to root_url
     end
   end
+
+  def require_owner
+    unless owner?
+      flash[:notice] = "You can only edit your own dealies!"
+      redirect_to root_url
+    end
+  end
+
+  def require_admin
+    unless admin?
+      flash[:notice] = "Admin required"
+      redirect_to root_url
+    end
+  end
+
+  def owner?
+    (current_user == object.user) && current_user
+  end
+  helper_method :owner?
+
+  def admin?
+    current_user && current_user.admin?
+  end
+  helper_method :admin?
 
   def store_location
     session[:return_to] = request.request_uri

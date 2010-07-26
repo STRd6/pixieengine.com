@@ -1,8 +1,10 @@
 .bundle
+.DS_Store
 config/authlogic.yml
 db/*.sqlite3
 log/*.log
 tmp/**/*
 nbproject
-public/stylesheets/*.css
+public/**/*.css
 public/production
+public/system

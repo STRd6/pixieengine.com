@@ -1,0 +1,24 @@
+- form_for Comment.new(:commentable => commentable) do |form|
+  = form.hidden_field :commentable_type
+  = form.hidden_field :commentable_id
+  = form.text_area :body
+  .clear
+  = submit_tag "Post Comment"
+
+:javascript
+  $(function() {
+    var commentText;
+
+    var commentForm = $("#new_comment");
+
+    commentForm.submit(function() {
+      if(loggedIn) {
+        return true;
+      } else {
+        requireLogin(function() {
+          commentForm.submit();
+        });
+        return false;
+      }
+    });
+  });

@@ -4,15 +4,21 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
   authlogic-connect: 
     group: 
     - :default
     version: ">= 0"
-  ruby-openid: 
+  rails: 
+    group: 
+    - :default
+    version: = 3.0.0.beta4
+  sqlite3-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - sqlite3
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
@@ -20,16 +26,10 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  authlogic: 
+  ruby-openid: 
     group: 
     - :default
     version: ">= 0"
-  sqlite3-ruby: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - sqlite3
   oauth: 
     group: 
     - :default
@@ -44,19 +44,31 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  acts-as-taggable-on: 
+    group: 
+    - :default
+    version: ">= 0"
+  mail: 
+    group: 
+    - :default
+    version: ">= 0"
   rack-openid: 
     group: 
     - :default
     version: ">= 0.2.1"
     require: 
     - rack/openid
-  mail: 
-    group: 
-    - :default
-    version: ">= 0"
   factory_girl: 
     group: 
     - :test
+    version: ">= 0"
+  will_paginate: 
+    group: 
+    - :default
+    version: = 3.0.pre
+  paperclip: 
+    group: 
+    - :default
     version: ">= 0"
   rmagick: 
     group: 
@@ -64,6 +76,10 @@ dependencies:
     version: ">= 0"
     require: 
     - RMagick
+  hpricot: 
+    group: 
+    - :default
+    version: ">= 0"
   oauth2: 
     group: 
     - :default
@@ -90,7 +106,7 @@ specs:
 - rack: 
     version: 1.1.0
 - rack-mount: 
-    version: 0.6.6
+    version: 0.6.9
 - rack-test: 
     version: 0.5.4
 - tzinfo: 
@@ -113,6 +129,8 @@ specs:
     version: 3.0.0.beta4
 - activeresource: 
     version: 3.0.0.beta4
+- acts-as-taggable-on: 
+    version: 2.0.6
 - addressable: 
     version: 2.1.2
 - authlogic: 
@@ -133,11 +151,11 @@ specs:
 - rack-openid: 
     version: 1.0.3
 - authlogic-connect: 
-    version: 0.0.5.1
+    version: 0.0.6
 - bundler: 
     version: 0.9.26
 - highline: 
-    version: 1.5.2
+    version: 1.6.1
 - net-ssh: 
     version: 2.0.23
 - net-scp: 
@@ -157,8 +175,12 @@ specs:
     source: 0
 - factory_girl: 
     version: 1.3.1
+- hpricot: 
+    version: 0.8.2
+- paperclip: 
+    version: 2.3.3
 - thor: 
-    version: 0.13.7
+    version: 0.13.8
 - railties: 
     version: 3.0.0.beta4
 - rails: 
@@ -169,13 +191,15 @@ specs:
     version: 2.11.1
 - sqlite3-ruby: 
     version: 1.3.1
-hash: 7bf773425332a85fa989cad1afadcfa3b4b6be9c
+- will_paginate: 
+    version: 3.0.pre
+hash: 4796ef83b1bac981e019782e8a8fa01249c3ac13
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
     require: exception_notifier
     git: git://github.com/rails/exception_notification.git
-    ref: 006be779113698b351e335e9594d64b9d6ff8915
+    ref: e7fa5eab8c544419a57187a2ab340fae7a51e191
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git
     branch: rails3
