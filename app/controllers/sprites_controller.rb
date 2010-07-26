@@ -90,7 +90,7 @@ class SpritesController < ResourceController::Base
       sprites = Sprite.tagged_with(params[:tagged])
     end
 
-    @collection ||= sprites.paginate(:page => params[:page], :order => 'created_at DESC')
+    @collection ||= sprites.paginate(:page => params[:page], :order => 'id DESC')
   end
 
   helper_method :sprites
