@@ -36,6 +36,21 @@ ActiveRecord::Schema.define(:version => 20100721173637) do
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
 
+  create_table "archived_sprites", :id => false, :force => true do |t|
+    t.integer  "id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "width"
+    t.integer  "height"
+    t.integer  "frames"
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "deleted_at"
+    t.integer  "parent_id"
+    t.integer  "comments_count", :default => 0, :null => false
+  end
+
   create_table "collection_items", :force => true do |t|
     t.integer  "collection_id", :null => false
     t.integer  "item_id",       :null => false

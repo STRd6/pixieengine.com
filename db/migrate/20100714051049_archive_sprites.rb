@@ -4,6 +4,5 @@ class ArchiveSprites < ActiveRecord::Migration
   end
 
   def self.down
-    ActsAsArchive.update Sprite
   end
 end

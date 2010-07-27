@@ -4,21 +4,15 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  authlogic-connect: 
-    group: 
-    - :default
-    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  sqlite3-ruby: 
+  pg: 
     group: 
     - :default
     version: ">= 0"
-    require: 
-    - sqlite3
-  authlogic: 
+  authlogic-connect: 
     group: 
     - :default
     version: ">= 0"
@@ -26,11 +20,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  ruby-openid: 
+  authlogic: 
     group: 
     - :default
     version: ">= 0"
-  oauth: 
+  ruby-openid: 
     group: 
     - :default
     version: ">= 0"
@@ -40,15 +34,15 @@ dependencies:
     version: ">= 0"
     require: 
     - exception_notifier
+  oauth: 
+    group: 
+    - :default
+    version: ">= 0"
   shoulda: 
     group: 
     - :test
     version: ">= 0"
   acts-as-taggable-on: 
-    group: 
-    - :default
-    version: ">= 0"
-  mail: 
     group: 
     - :default
     version: ">= 0"
@@ -58,6 +52,10 @@ dependencies:
     version: ">= 0.2.1"
     require: 
     - rack/openid
+  mail: 
+    group: 
+    - :default
+    version: ">= 0"
   factory_girl: 
     group: 
     - :test
@@ -76,11 +74,15 @@ dependencies:
     version: ">= 0"
     require: 
     - RMagick
-  hpricot: 
+  require: 
     group: 
     - :default
     version: ">= 0"
   oauth2: 
+    group: 
+    - :default
+    version: ">= 0"
+  hpricot: 
     group: 
     - :default
     version: ">= 0"
@@ -147,9 +149,9 @@ specs:
 - oauth2: 
     version: 0.0.10
 - ruby-openid: 
-    version: 2.1.7
+    version: 2.1.8
 - rack-openid: 
-    version: 1.0.3
+    version: 1.1.1
 - authlogic-connect: 
     version: 0.0.6
 - bundler: 
@@ -167,7 +169,7 @@ specs:
 - capistrano: 
     version: 2.5.19
 - haml: 
-    version: 3.0.13
+    version: 3.0.14
 - compass: 
     version: 0.10.2
 - exception_notification: 
@@ -179,21 +181,23 @@ specs:
     version: 0.8.2
 - paperclip: 
     version: 2.3.3
+- pg: 
+    version: 0.9.0
 - thor: 
     version: 0.13.8
 - railties: 
     version: 3.0.0.beta4
 - rails: 
     version: 3.0.0.beta4
+- require: 
+    version: 0.2.7
 - rmagick: 
     version: 2.13.1
 - shoulda: 
     version: 2.11.1
-- sqlite3-ruby: 
-    version: 1.3.1
 - will_paginate: 
     version: 3.0.pre
-hash: 4796ef83b1bac981e019782e8a8fa01249c3ac13
+hash: 29db686113efde30b8d00ff5527134c225db46b5
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
