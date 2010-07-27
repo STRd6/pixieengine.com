@@ -1,0 +1,130 @@
+/* line 2, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .canvas {
+  float: left;
+  -moz-user-select: none;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  position: relative;
+}
+
+/* line 10, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .canvas.grid {
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  padding-bottom: 0px;
+  padding-right: 0px;
+}
+
+/* line 17, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .canvas.nogrid {
+  border-bottom: 0px;
+  border-right: 0px;
+  padding-bottom: 1px;
+  padding-right: 1px;
+}
+/* line 23, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .frame {
+  display: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+/* line 28, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .frame.current {
+  display: block;
+}
+/* line 31, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .layer {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+/* line 35, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .layer.bottom {
+  background: transparent url(../images/pixie/pixel_bg.png);
+}
+/* line 38, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .pixel {
+  float: left;
+  width: 15px;
+  height: 15px;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  margin: 0;
+  padding: 0;
+}
+/* line 48, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions {
+  display: block;
+  margin-left: 70px;
+  margin-bottom: 10px;
+}
+/* line 53, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions a.tool {
+  font-size: 0.8em;
+  color: black;
+}
+/* line 57, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .actions a.tool:hover {
+  text-decoration: none;
+}
+/* line 61, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .toolbar {
+  float: left;
+  width: 55px;
+  height: 200px;
+  margin-right: 1em;
+}
+/* line 68, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool {
+  padding: 0 2px;
+  margin-left: 2px;
+}
+/* line 72, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool:hover {
+  background-color: #cccccc;
+}
+/* line 75, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool.active {
+  background-color: #1084ce;
+}
+/* line 78, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .tool img {
+  border: none;
+}
+/* line 81, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie img.tool {
+  padding: 2px;
+  margin: 2px;
+}
+/* line 85, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .swatch {
+  float: left;
+  margin: 4px;
+  width: 16px;
+  height: 16px;
+}
+/* line 92, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie input.color {
+  border: 2px solid;
+  border-color: #cccccc;
+  margin: 7px 2px 0 0;
+  width: 50px;
+}
+/* line 99, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .preview {
+  float: left;
+  margin: 0 1em;
+  width: 150px;
+  height: 150px;
+  margin-left: 40px;
+  margin-right: 90px;
+}
+/* line 107, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .preview-control {
+  float: left;
+}
+/* line 110, ../../../app/stylesheets/pixie/pixie.sass */
+.pixie .guide-control {
+  float: left;
+}

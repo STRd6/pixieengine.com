@@ -6,22 +6,16 @@
   = form.text_field :email
 
   %h2 Do you have a Pixie password?
-
-  %p
-    = form.label :login_yes, "Yes, I have a password"
-    = form.radio_button :login, "yes", { :checked => true }
   
   %p
     = form.label :login_no, "No, I am new"
-    = form.radio_button :login, "no", { :checked => false }
-  
-  #passwordZone
-    %p
-      = form.label :password
-      = form.password_field :password
-    %p
-      = form.label "placeholder", "-"
-      = link_to "Forgot your password?", new_password_reset_path
+    = form.radio_button :login, "no"
+    
+  %p
+    = form.label :login_yes, "Yes, I have a password"
+    = form.radio_button :login, "yes"
+    = form.password_field :password
+    = link_to "Forgot your password?", new_password_reset_path, :id => "forgot_password_link"
 
   = form.submit "Log In"
 
@@ -29,11 +23,9 @@
   $(function() {
     function loginMode(login) {
       if(login) {
-        $("#passwordZone").show();
         $("#user_session_password").removeAttr("disabled");
         $("#user_session_submit").val("Log In");
       } else {
-        $("#passwordZone").hide();
         $("#user_session_password").attr("disabled", true);
         $("#user_session_submit").val("Sign Up");
       }
