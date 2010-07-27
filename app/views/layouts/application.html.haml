@@ -41,11 +41,6 @@
       = render :partial => "/shared/fb_app"
     = render :partial => "/shared/analytics"
 
-    - if @landing
-      :javascript
-        $(function() {
-          trackPageview("/event/landing");
-        });
     - if @registered
       :javascript
         $(function() {
