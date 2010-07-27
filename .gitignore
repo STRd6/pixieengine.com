@@ -5,6 +5,7 @@ db/*.sqlite3
 log/*.log
 tmp/**/*
 nbproject
-public/**/*.css
+public/stylesheets/*.css
+public/stylesheets/pixie/*.css
 public/production
 public/system
