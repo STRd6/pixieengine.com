@@ -1,7 +1,8 @@
 class SpritesController < ResourceController::Base
-  actions :all, :except => [:destroy]
+  actions :all
 
   before_filter :require_owner, :only => [:edit, :update]
+  before_filter :require_owner_or_admin, :only => [:destroy]
 
   create.before do
     @sprite.user = current_user
