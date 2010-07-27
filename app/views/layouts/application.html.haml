@@ -29,8 +29,10 @@
         - if ab_test "test" #Dummy test
           -#nothing
 
-        %h2
-          = @title
+        - if @title
+          %h2
+            = @title
+            
         = yield
 
       - if @has_reg_popup
