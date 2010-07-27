@@ -2,6 +2,7 @@
 .DS_Store
 config/authlogic.yml
 db/*.sqlite3
+lib/tasks/local.rake
 log/*.log
 tmp/**/*
 nbproject

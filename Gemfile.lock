@@ -4,18 +4,18 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
-  pg: 
-    group: 
-    - :default
-    version: ">= 0"
   authlogic-connect: 
     group: 
     - :default
     version: ">= 0"
+  pg: 
+    group: 
+    - :default
+    version: ">= 0"
+  rails: 
+    group: 
+    - :default
+    version: = 3.0.0.beta4
   haml: 
     group: 
     - :default
@@ -82,6 +82,12 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  aws-s3: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - aws/s3
   hpricot: 
     group: 
     - :default
@@ -154,6 +160,10 @@ specs:
     version: 1.1.1
 - authlogic-connect: 
     version: 0.0.6
+- xml-simple: 
+    version: 1.0.12
+- aws-s3: 
+    version: 0.6.2
 - bundler: 
     version: 0.9.26
 - highline: 
@@ -197,12 +207,12 @@ specs:
     version: 2.11.1
 - will_paginate: 
     version: 3.0.pre
-hash: 29db686113efde30b8d00ff5527134c225db46b5
+hash: 859db98b77702fcca8dd76e798bd1408acfd386e
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
-    git: git://github.com/rails/exception_notification.git
     require: exception_notifier
+    git: git://github.com/rails/exception_notification.git
     ref: e7fa5eab8c544419a57187a2ab340fae7a51e191
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git
