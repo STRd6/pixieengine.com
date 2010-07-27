@@ -1,4 +1,4 @@
-- @meta_desc = "Load #{sprite.meta_desc}"
+- @meta_desc = "Load #{sprite.meta_desc if sprite}"
 
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
@@ -12,10 +12,10 @@
 #newCanvasModal{ :style => 'display: none' }
   %p
     = label_tag :resize_width, "width"
-    = text_field_tag :resize_width, 32, {:title => 'width'}
+    = text_field_tag :resize_width, width, {:title => 'width'}
   %p
     = label_tag :resize_height, "height"
-    = text_field_tag :resize_height, 32, {:title => 'height'}
+    = text_field_tag :resize_height, height, {:title => 'height'}
 
   = button_to_function "New Canvas", "newCanvas()"
 
@@ -47,13 +47,20 @@
     function postImage() {
       notify("Saving, please wait...");
 
-      $.post('/sprites', {
+      var postData = {
         'format': 'js',
-        'sprite[file_base64_encoded]': canvas.toBase64(),
         'sprite[width]': #{width},
         'sprite[height]': #{height},
         'sprite[parent_id]': #{@parent_id.to_json}
-      }, function(data) {
+      };
+
+      var frameData = canvas.frameDataToBase64();
+      $.each(frameData, function(i, data) {
+        postData["sprite[frame_data][" + i + "]"] = data;
+      });
+      postData["sprite[frames]"] = frameData.length;
+
+      $.post('/sprites', postData, function(data) {
         eval(data);
         trackPageview("/event/save_drawing");
         canvas.dirty(false);
@@ -63,6 +70,7 @@
     $('#pixie').pixie({
       width: #{width},
       height: #{height},
+      frames: #{data ? data.length : 1},
       initializer: function(canvas) {
         // HAX: Global ref of canvas
         window.canvas = canvas;
@@ -87,14 +95,16 @@
           canvas.addTool(tool);
         });
 
-        (function(data) {
-          if(data) {
-            canvas.eachPixel(function(pixel, x, y) {
-              var pos = x + y*canvas.width;
-              pixel.color(data[pos], true);
+        (function(frameData) {
+          if(frameData) {
+            $.each(frameData, function(f, data) {
+              canvas.eachPixel(function(pixel, x, y) {
+                var pos = x + y*canvas.width;
+                pixel.color(data[pos], true);
+              }, undefined, f);
             });
           }
-        }(#{data}));
+        }(#{data.to_json}));
 
         window.onbeforeunload = function() {
           if (canvas.dirty()) {

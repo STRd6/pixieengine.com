@@ -7,7 +7,7 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  attr_accessor :broadcast, :file, :file_base64_encoded
+  attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data
 
   before_save :gather_metadata
 
@@ -23,29 +23,30 @@ class Sprite < ActiveRecord::Base
     {:conditions => {:id => ids}}
   }
 
-  def self.data_from_url(url)
-    #TODO Animations
-    image_data = Magick::Image.read(url).first
-    width = image_data.columns
-    height = image_data.rows
+  def self.data_from_path(path)
+    image_list = Magick::Image.read(path)
+    frame_data = []
 
-    json_data = image_data.get_pixels(0, 0, width, height).map do |pixel|
-      Sprite.hex_color_to_rgba(pixel.to_color(Magick::AllCompliance, false, 8, true), pixel.opacity)
-    end.to_json
+    first_image = image_list.first
+
+    width = first_image.columns
+    height = first_image.rows
+
+    image_list.each do |image_data|
+      frame_data << image_data.get_pixels(0, 0, width, height).map do |pixel|
+        Sprite.hex_color_to_rgba(pixel.to_color(Magick::AllCompliance, false, 8, true), pixel.opacity)
+      end
+    end
 
     return {
       :width => width,
       :height => height,
-      :json_data => json_data,
+      :frame_data => frame_data
     }
   end
 
-  def json_data
-    image_data = Magick::Image.read(file_path).first
-
-    return image_data.get_pixels(0, 0, width, height).map do |pixel|
-      Sprite.hex_color_to_rgba(pixel.to_color(Magick::AllCompliance, false, 8, true), pixel.opacity)
-    end.to_json
+  def data
+    Sprite.data_from_path(file_path)
   end
 
   def broadcast_link
@@ -132,7 +133,11 @@ class Sprite < ActiveRecord::Base
   end
 
   def file_path
-    "#{Rails.root}/public/production/images/#{id}.png"
+    if frames > 1
+      "#{Rails.root}/public/production/images/#{id}.gif"
+    else
+      "#{Rails.root}/public/production/images/#{id}.png"
+    end
   end
 
   def meta_desc
@@ -146,6 +151,16 @@ class Sprite < ActiveRecord::Base
       File.open(file_path, 'wb') do |f|
         f << Base64.decode64(file_base64_encoded)
       end
+    elsif frame_data
+      image_list = Magick::ImageList.new
+
+      image_list.from_blob(*frame_data.sort do |a, b|
+        a[0].to_i <=> b[0].to_i
+      end.map do |i, frame|
+        Base64.decode64(frame)
+      end)
+
+      image_list.write(file_path)
     elsif file
       file.rewind
       File.open(file_path, 'wb') do |f|
@@ -156,11 +171,14 @@ class Sprite < ActiveRecord::Base
 
   def gather_metadata
     if file
-      #TODO Animations
-      image_data = Magick::Image.read(file.path).first
+      image_list = Magick::Image.read(file.path)
+      first_image = image_list.first
 
-      self.width = image_data.columns
-      self.height = image_data.rows
+      self.width = first_image.columns
+      self.height = first_image.rows
+      self.frames = image_list.length
+    elsif frame_data
+      self.frames = frame_data.length
     end
   end
 
