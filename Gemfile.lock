@@ -201,8 +201,8 @@ hash: 29db686113efde30b8d00ff5527134c225db46b5
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
-    require: exception_notifier
     git: git://github.com/rails/exception_notification.git
+    require: exception_notifier
     ref: e7fa5eab8c544419a57187a2ab340fae7a51e191
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git
