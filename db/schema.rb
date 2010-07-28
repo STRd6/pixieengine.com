@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20100728191702) do
     t.string   "title",                          :null => false
     t.text     "description"
     t.text     "code",                           :null => false
+    t.text     "test"
     t.integer  "parent_id"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false

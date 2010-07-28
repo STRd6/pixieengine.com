@@ -18,14 +18,28 @@
   .border
     = form.text_area :code
 
+  = form.label :test
+  .border
+    = form.text_area :test
+
   .right= form.submit
   .clear
 
 :javascript
-  var textarea = $('#script_code').get(0);
-  var editor = new CodeMirror.fromTextArea(textarea, {
+  var codeTextArea = $('#script_code').get(0);
+  var editor = new CodeMirror.fromTextArea(codeTextArea, {
     height: "350px",
-    content: textarea.value,
+    content: codeTextArea.value,
+    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
+    stylesheet: "/stylesheets/codemirror/jscolors.css",
+    path: "/javascripts/codemirror/",
+    autoMatchParens: true
+  });
+
+  var testTextArea = $('#script_test').get(0);
+  var editor = new CodeMirror.fromTextArea(testTextArea, {
+    height: "350px",
+    content: testTextArea.value,
     parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
     stylesheet: "/stylesheets/codemirror/jscolors.css",
     path: "/javascripts/codemirror/",

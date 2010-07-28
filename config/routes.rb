@@ -18,6 +18,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         get :load
         get :run
+        get :test
       end
     end
 

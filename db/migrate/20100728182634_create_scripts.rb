@@ -7,6 +7,7 @@ class CreateScripts < ActiveRecord::Migration
       t.string :title, :null => false
       t.text :description
       t.text :code, :null => false
+      t.text :test
       t.references :parent
 
       t.timestamps :null => false
