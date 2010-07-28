@@ -20,6 +20,15 @@ role :db,  "67.207.139.110", :primary => true
 
 after "deploy", "deploy:cleanup"
 
+after "deploy:symlink", "deploy:update_crontab"
+
+namespace :deploy do
+  desc "Update the crontab file"
+  task :update_crontab, :roles => :db do
+    run "cd #{release_path} && whenever --update-crontab #{application}"
+  end
+end
+
 task :after_setup do
   run "mkdir #{shared_path}/production"
   run "mkdir #{shared_path}/production/images"

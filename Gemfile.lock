@@ -4,19 +4,19 @@ dependencies:
     group: 
     - :default
     version: ">= 0.10.2"
-  authlogic-connect: 
-    group: 
-    - :default
-    version: ">= 0"
-  pg: 
-    group: 
-    - :default
-    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  haml: 
+  pg: 
+    group: 
+    - :default
+    version: ">= 0"
+  authlogic-connect: 
+    group: 
+    - :default
+    version: ">= 0"
+  ruby-openid: 
     group: 
     - :default
     version: ">= 0"
@@ -24,7 +24,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  ruby-openid: 
+  haml: 
+    group: 
+    - :default
+    version: ">= 0"
+  oauth: 
     group: 
     - :default
     version: ">= 0"
@@ -34,15 +38,19 @@ dependencies:
     version: ">= 0"
     require: 
     - exception_notifier
-  oauth: 
-    group: 
-    - :default
-    version: ">= 0"
   shoulda: 
     group: 
     - :test
     version: ">= 0"
+  whenever: 
+    group: 
+    - :default
+    version: ">= 0"
   acts-as-taggable-on: 
+    group: 
+    - :default
+    version: ">= 0"
+  mail: 
     group: 
     - :default
     version: ">= 0"
@@ -52,19 +60,19 @@ dependencies:
     version: ">= 0.2.1"
     require: 
     - rack/openid
-  mail: 
-    group: 
-    - :default
-    version: ">= 0"
   factory_girl: 
     group: 
     - :test
+    version: ">= 0"
+  paperclip: 
+    group: 
+    - :default
     version: ">= 0"
   will_paginate: 
     group: 
     - :default
     version: = 3.0.pre
-  paperclip: 
+  require: 
     group: 
     - :default
     version: ">= 0"
@@ -74,11 +82,7 @@ dependencies:
     version: ">= 0"
     require: 
     - RMagick
-  require: 
-    group: 
-    - :default
-    version: ">= 0"
-  oauth2: 
+  hpricot: 
     group: 
     - :default
     version: ">= 0"
@@ -88,7 +92,7 @@ dependencies:
     version: ">= 0"
     require: 
     - aws/s3
-  hpricot: 
+  oauth2: 
     group: 
     - :default
     version: ">= 0"
@@ -178,6 +182,14 @@ specs:
     version: 1.0.1
 - capistrano: 
     version: 2.5.19
+- json_pure: 
+    version: 1.4.3
+- rubyforge: 
+    version: 2.0.4
+- hoe: 
+    version: 2.6.1
+- chronic: 
+    version: 0.2.3
 - haml: 
     version: 3.0.14
 - compass: 
@@ -205,14 +217,16 @@ specs:
     version: 2.13.1
 - shoulda: 
     version: 2.11.1
+- whenever: 
+    version: 0.5.0
 - will_paginate: 
     version: 3.0.pre
-hash: 859db98b77702fcca8dd76e798bd1408acfd386e
+hash: 14961d7dd6e05395b567cb148fced06a520592f9
 sources: 
 - Git: 
     uri: git://github.com/rails/exception_notification.git
-    require: exception_notifier
     git: git://github.com/rails/exception_notification.git
+    require: exception_notifier
     ref: e7fa5eab8c544419a57187a2ab340fae7a51e191
 - Git: 
     uri: git://github.com/odorcicd/authlogic.git

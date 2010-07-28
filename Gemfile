@@ -33,6 +33,7 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "will_paginate", "3.0.pre"
+gem "whenever"
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
