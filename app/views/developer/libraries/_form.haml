@@ -1,0 +1,12 @@
+
+%h3 New Library
+- form_for [:developer, @library] do |form|
+  %p
+    = form.label :title
+    = form.text_field :title
+
+  %p
+    = form.label :description
+    = form.text_area :description
+
+  = form.submit

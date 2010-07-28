@@ -20,6 +20,12 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :run
       end
     end
+
+    resources :libraries do
+      member do
+        post :add_script
+      end
+    end
   end
 
   resources :feedbacks do
