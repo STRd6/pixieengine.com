@@ -1,0 +1,2 @@
+module Developer::ScriptsHelper
+end

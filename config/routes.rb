@@ -13,6 +13,13 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :load
       end
     end
+
+    resources :scripts do
+      member do
+        get :load
+        get :run
+      end
+    end
   end
 
   resources :feedbacks do

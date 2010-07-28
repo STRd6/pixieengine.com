@@ -1,0 +1,8 @@
+%h2= script.title
+
+- if owner?
+  = link_to "Edit", edit_developer_script_path(script)
+
+%p= script.description
+
+%pre= script.code
