@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(:version => 20100728191702) do
   end
 
   create_table "libraries", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",     :null => false
     t.string   "title",       :null => false
     t.text     "description"
     t.datetime "created_at",  :null => false

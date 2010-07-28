@@ -1,7 +1,7 @@
 class CreateLibraries < ActiveRecord::Migration
   def self.up
     create_table :libraries do |t|
-      t.references :user
+      t.references :user, :null => false
       t.string :title, :null => false
       t.text :description
 

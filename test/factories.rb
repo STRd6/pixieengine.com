@@ -14,6 +14,7 @@ end
 
 Factory.define :library do |library|
   library.title "TEST"
+  library.user { Factory(:user) }
 end
 
 Factory.define :user do |user|
