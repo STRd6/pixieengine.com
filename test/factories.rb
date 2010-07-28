@@ -12,9 +12,19 @@ Factory.sequence :email do |n|
   "test_#{n}@example.com"
 end
 
+Factory.define :library do |library|
+  library.title "TEST"
+end
+
 Factory.define :user do |user|
   user.email { Factory.next(:email) }
   user.password "TEST"
+end
+
+Factory.define :script do |script|
+  script.title "TEST"
+  script.script_type "test"
+  script.code "alert('test');"
 end
 
 Factory.define :sprite do |sprite|

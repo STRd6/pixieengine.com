@@ -51,7 +51,7 @@ class UsersController < ResourceController::Base
   end
 
   def add_to_collection
-    collectables = [Sprite, Collection]
+    collectables = [Sprite, Collection, Plugin, Script, User, Library]
 
     collectable_id = params[:collectable_id].to_i
     collectable_type = params[:collectable_type].constantize

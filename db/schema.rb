@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100728182634) do
+ActiveRecord::Schema.define(:version => 20100728191702) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -100,6 +100,36 @@ ActiveRecord::Schema.define(:version => 20100728182634) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "libraries", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "title",       :null => false
+    t.text     "description"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  create_table "library_components", :force => true do |t|
+    t.integer  "library_id",           :null => false
+    t.integer  "component_library_id", :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
+
+  add_index "library_components", ["component_library_id"], :name => "index_library_components_on_component_library_id"
+  add_index "library_components", ["library_id", "component_library_id"], :name => "index_library_components_on_library_id_and_component_library_id", :unique => true
+  add_index "library_components", ["library_id"], :name => "index_library_components_on_library_id"
+
+  create_table "library_scripts", :force => true do |t|
+    t.integer  "library_id", :null => false
+    t.integer  "script_id",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "library_scripts", ["library_id", "script_id"], :name => "index_library_scripts_on_library_id_and_script_id", :unique => true
+  add_index "library_scripts", ["library_id"], :name => "index_library_scripts_on_library_id"
+  add_index "library_scripts", ["script_id"], :name => "index_library_scripts_on_script_id"
 
   create_table "links", :force => true do |t|
     t.integer  "user_id",                   :null => false
