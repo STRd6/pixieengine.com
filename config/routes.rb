@@ -25,6 +25,9 @@ PixieStrd6Com::Application.routes.draw do |map|
     resources :libraries do
       member do
         post :add_script
+        post :remove_script
+
+        get :test
       end
     end
   end

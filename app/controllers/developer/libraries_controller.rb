@@ -6,6 +6,26 @@ class Developer::LibrariesController < ResourceController::Base
 
   def add_script
     library.add_script(Script.find(params[:script_id]))
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+      format.html do
+        flash[:notice] = "Script added"
+        redirect_to :back
+      end
+    end
+  end
+
+  def remove_script
+    library.remove_script(Script.find(params[:script_id]))
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+      format.html do
+        flash[:notice] = "Script removed"
+        redirect_to :back
+      end
+    end
   end
 
   create.before do

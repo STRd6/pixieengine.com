@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
 
   include Commentable
 
+  has_many :libraries
   has_many :collections
   has_many :sprites
 

@@ -6,9 +6,15 @@ class LibraryTest < ActiveSupport::TestCase
       @library = Factory :library
     end
 
-    should "be able to add a script" do
+    should "be able to add and remove a script" do
+      @script = Factory(:script)
+
       assert_difference "@library.scripts.count", +1 do
-        @library.add_script(Factory(:script))
+        @library.add_script(@script)
+      end
+
+      assert_difference "@library.scripts.count", -1 do
+        @library.remove_script(@script)
       end
     end
 

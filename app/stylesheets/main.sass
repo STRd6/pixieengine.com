@@ -114,32 +114,33 @@ h1, h2, h3, h4, h5, h6
     height: 3em
 
 // Forms - move into separate file?
-label
-  display: inline-block
-  font-family: Verdana, sans-serif
-  margin-right = $blueprint-grid-margin
-  text-align: right
-  +grid-width(4)
-  
-input[type=text], input[type=password]
-  border-width: 2px
-  +grid-width(8)
-  &:focus
+form
+  label
+    display: inline-block
+    font-family: Verdana, sans-serif
+    margin-right = $blueprint-grid-margin
+    text-align: right
+    +grid-width(4)
+
+  input[type=text], input[type=password]
     border-width: 2px
-    border-color: !main_color
-    
-input[type=button], input[type=submit]
-  display: block
-  margin-top: 1em
-  margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 4
-  
-input[type=radio], input[type=checkbox]
-  display: inline-block
-  +grid-width(1)
-  margin = 0 $blueprint-grid-margin 0 0
-  
-input[disabled]
-  background-color: #efefef
+    +grid-width(8)
+    &:focus
+      border-width: 2px
+      border-color: !main_color
+
+  input[type=button], input[type=submit]
+    display: block
+    margin-top: 1em
+    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 4
+
+  input[type=radio], input[type=checkbox]
+    display: inline-block
+    +grid-width(1)
+    margin = 0 $blueprint-grid-margin 0 0
+
+  input[disabled]
+    background-color: #efefef
   
 // Custom log in page spacing
 #user_session_password
