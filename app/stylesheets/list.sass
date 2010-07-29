@@ -1,5 +1,32 @@
-ul.actions
+ul
+  list-style: none
   margin: 0
   padding: 0
-  li
+  &.actions > li
     +inline-block
+
+  &.actions
+    .menu
+      .button
+        margin: 0 !important
+      ul
+        background-color: #FFF
+        border: 1px solid #666
+        margin-top: -1px
+        position: absolute
+        width: 200px
+        z-index: 1023
+
+        li
+          padding-left: 5px
+          &:hover
+            background-color: #666
+            color: #FFF
+
+          input[type="checkbox"]
+            +inline-block
+            color: #666
+            margin: 0
+            padding: 0
+            position: relative
+            vertical-align: top

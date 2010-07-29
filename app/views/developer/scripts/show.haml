@@ -5,7 +5,13 @@
     %li= link_to "#{image_tag "icons/pencil_go.png"} Edit".html_safe, edit_developer_script_path(script), :class => "button"
 
   - if current_user
-    %li.listMenu= link_to "#{image_tag "icons/book_add.png"} Add to Library".html_safe, '#', :class => "button"
+    %li.listMenu.menu
+      = link_to "#{image_tag "icons/book_add.png"} Add to Library".html_safe, '#', :class => "button"
+      %ul.round{:style => "display: none;"}
+        %li
+          = check_box_tag "library1", :checked => true
+          Library1
+        %li Library2
 
 
 %p= script.description
@@ -14,7 +20,23 @@
 
 :javascript
   $(function() {
-    $(".listMenu").one("click", function() {
+    var displayedMenu;
 
+    $(".listMenu .button").click(function() {
+      displayedMenu = $(this).next("ul");
+      displayedMenu.show();
+
+      setTimeout(function() {
+        $(document).one('click', function() {
+          displayedMenu.hide();
+        });
+      }, 0);
+
+      return false;
+    });
+
+    $(".menu li").live("click", function() {
+      var data = $(this).text();
+      console.log(data);
     });
   });
