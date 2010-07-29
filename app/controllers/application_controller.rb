@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_abingo_identity
 
+  after_filter :flash_to_headers
+
   def set_abingo_identity
     if request.user_agent =~ /\b(Baidu|Gigabot|Googlebot|libwww-perl|lwp-trivial|msnbot|SiteUptime|Slurp|WordPress|ZIBB|ZyBorg)\b/i
       Abingo.identity = "robot"
@@ -90,5 +92,14 @@ class ApplicationController < ActionController::Base
   def redirect_back_or_default(default)
     redirect_to(session[:return_to] || default)
     session[:return_to] = nil
+  end
+
+  def flash_to_headers
+    return unless request.xhr?
+
+    #TODO Use header magic to communicate flash messages to jQuery
+    # http://stackoverflow.com/questions/366311/how-do-you-handle-rails-flash-with-ajax-requests
+
+    flash.discard
   end
 end

@@ -9,9 +9,8 @@
       = link_to "#{image_tag "icons/book_add.png"} Add to Library".html_safe, '#', :class => "button", "data-script_id" => script.id
       %ul.round{:style => "display: none;"}
         - current_user.libraries.each do |library|
-          - id = "library_#{library.id}_script_#{script.id}"
           %li{ "data-library_id" => library.id }
-            = check_box_tag "library", "1", library.scripts.include?(script), :id => id, :name => nil
+            = check_box_tag "library", "1", library.scripts.include?(script), :id => nil, :name => nil
             = library.title
         %li{ "data-library_id" => "new" } New Library
 
@@ -20,8 +19,61 @@
 
 %pre= script.code
 
+#newLibraryModal
+  = render :partial => "developer/libraries/form"
+
 :javascript
   $(function() {
+    function ajaxifyForm(selector) {
+      var form = $(selector);
+
+      form.ajaxForm({
+        dataType: 'json',
+        beforeSerialize: function($form) {
+          $form.find("input[name=script_id]").val(scriptId);
+        },
+        success: function(data) {
+          if(data.status == "ok") {
+            $.modal.close();
+            newLibraryCallback(data.title, data.id);
+          } else {
+            var errorExplanation = form.find(".errorExplanation");
+            if(errorExplanation.length == 0) {
+              errorExplanation = $("<div class='errorExplanation' />");
+            }
+
+            var errorList = $("<ul />");
+            $.each(data.errors, function(i, error) {
+              errorList.append($("<li />").text(error));
+            });
+
+            errorExplanation.html('');
+            errorExplanation.append(errorList);
+
+            form.prepend(errorExplanation);
+          }
+        }
+      });
+    }
+
+    function newLibraryCallback(title, id) {
+      $(".listMenu ul li:last-child").each(function() {
+        var parentScriptId = $(this).parent().prev().attr("data-script_id");
+        var newElem = $("<li />").attr("data-library_id", id);
+        newElem.text(title);
+
+        if(parentScriptId == scriptId) {
+          newElem.prepend("<input type='checkbox', value='1' checked='checked' />");
+        } else {
+          newElem.prepend("<input type='checkbox', value='1' />");
+        }
+
+        $(this).before(newElem);
+      });
+    }
+
+    ajaxifyForm("#new_library");
+
     var displayedMenu;
     var scriptId;
 
@@ -49,12 +101,10 @@
       }
 
       if(libraryId == "new") {
-
+        $("#newLibraryModal").modal();
       } else {
         var checked = !(checkbox.attr("checked") ^ boxClick);
         checkbox.attr("checked", checked);
-
-        console.log(scriptId + " " + libraryId + " " + checked);
 
         if(checked) {
           $.post("/developer/libraries/" + libraryId + "/add_script", {

@@ -30,6 +30,14 @@ class Developer::LibrariesController < ResourceController::Base
 
   create.before do
     library.user = current_user
+
+    if params[:script_id]
+      library.library_scripts.build(:script_id => params[:script_id])
+    end
+  end
+
+  create.wants.json do
+    render :json => {:status => "ok", :id => library.id, :title => library.title}
   end
 
   private
