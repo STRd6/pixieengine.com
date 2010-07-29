@@ -1,8 +1,20 @@
 %h2= script.title
 
-- if owner?
-  = link_to "Edit", edit_developer_script_path(script)
+%ul.actions
+  - if owner?
+    %li= link_to "#{image_tag "icons/pencil_go.png"} Edit".html_safe, edit_developer_script_path(script), :class => "button"
+
+  - if current_user
+    %li.listMenu= link_to "#{image_tag "icons/book_add.png"} Add to Library".html_safe, '#', :class => "button"
+
 
 %p= script.description
 
 %pre= script.code
+
+:javascript
+  $(function() {
+    $(".listMenu").one("click", function() {
+
+    });
+  });
