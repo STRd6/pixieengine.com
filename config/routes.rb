@@ -8,6 +8,13 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   namespace :developer do
+    resources :apps do
+      member do
+        get :load
+        get :run
+      end
+    end
+
     resources :plugins do
       member do
         get :load

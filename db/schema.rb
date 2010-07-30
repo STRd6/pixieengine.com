@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100728191702) do
+ActiveRecord::Schema.define(:version => 20100730035438) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -35,6 +35,29 @@ ActiveRecord::Schema.define(:version => 20100728191702) do
 
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
+
+  create_table "app_libraries", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.integer  "library_id", :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "app_libraries", ["app_id", "library_id"], :name => "index_app_libraries_on_app_id_and_library_id", :unique => true
+  add_index "app_libraries", ["app_id"], :name => "index_app_libraries_on_app_id"
+  add_index "app_libraries", ["library_id"], :name => "index_app_libraries_on_library_id"
+
+  create_table "apps", :force => true do |t|
+    t.integer  "user_id",     :null => false
+    t.string   "title",       :null => false
+    t.text     "description"
+    t.text     "html"
+    t.text     "code"
+    t.text     "test"
+    t.integer  "parent_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "archived_sprites", :id => false, :force => true do |t|
     t.integer  "id"

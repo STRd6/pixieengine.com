@@ -1,0 +1,9 @@
+%h2= app.title
+
+- if owner?
+  = link_to "Edit", edit_developer_app_path(app)
+
+%p= app.description
+
+%pre= app.html
+%pre= app.code
