@@ -38,7 +38,12 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :collections
+  resources :collections do
+    member do
+      post :add
+      post :remove
+    end
+  end
 
   resources :sprites do
     member do
