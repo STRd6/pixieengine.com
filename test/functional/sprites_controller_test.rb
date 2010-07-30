@@ -10,4 +10,8 @@ class SpritesControllerTest < ActionController::TestCase
 
     assert_response :redirect
   end
+
+  should "be able to view a sprite" do
+    get :show, :id => @sprite.id
+  end
 end
