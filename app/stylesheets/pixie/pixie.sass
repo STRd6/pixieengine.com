@@ -1,15 +1,27 @@
+@import "compass/css3/box-sizing"
+
 .pixie
   .canvas
-    float: left
     -moz-user-select: none
     margin-right: 1em
     margin-bottom: 1em
     position: relative
+    background-color: #ccc
+    height: 100%
+    overflow: auto
+    width: 100%
+    +box-sizing(border-box)
+    
+  .viewport
+    border: 1px solid #666
+    float: left
+    width: 513px
+    height: 513px
+    margin-right: 1em
+    margin-bottom: 1em
 
 .pixie
   .canvas.grid
-    border-bottom: 1px solid black
-    border-right: 1px solid black
     padding-bottom: 0px
     padding-right: 0px
 
@@ -23,17 +35,15 @@
   .frame
     display: none
     position: absolute
-    top: 0px
-    left: 0px
     &.current
       display: block
 
   .layer
     position: absolute
-    top: 0px
-    left: 0px
+    border-right: 1px solid #666
+    border-bottom: 1px solid #666
     &.bottom
-      background: transparent url(../images/pixie/pixel_bg.png)
+      background: white url(../images/pixie/pixel_bg.png)
 
   .pixel
     float: left

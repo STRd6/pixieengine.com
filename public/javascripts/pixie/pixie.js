@@ -420,7 +420,8 @@
     return this.each(function() {
       var pixie = $(div).addClass('pixie');
       var actionsMenu = $(div).addClass('actions');
-      var canvas = $(div).addClass('canvas').css({width: pixelWidth*width, height: pixelHeight*height});
+      var viewport = $(div).addClass('viewport');
+      var canvas = $(div).addClass('canvas');
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
@@ -935,10 +936,12 @@
         })(i);
       }
 
+      viewport.append(canvas);
+      
       pixie
         .append(actionsMenu)
         .append(toolbar)
-        .append(canvas)
+        .append(viewport)
         .append(colorbar)
         .append(previewLabel)
         .append(previewToggle)
