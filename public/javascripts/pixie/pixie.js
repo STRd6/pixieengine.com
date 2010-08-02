@@ -425,6 +425,7 @@
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
+      var previewToggleHolder = $(div).addClass('toggle_holder');
       var previewLabel = $('<label class=\'preview-control\'>Tiled Preview</label>').click(function() {
         if (previewToggle.attr('checked')) {
           previewToggle.removeAttr('checked');
@@ -447,6 +448,7 @@
 
       canvas.addClass('nogrid');
 
+      var guideToggleHolder = $(div).addClass('toggle_holder');
       var guideLabel = $('<label class=\'guide-control\'>Display Guides</label>').click(function() {
 
         if (guideToggle.attr('checked')) {
@@ -777,7 +779,7 @@
             });
           }
 
-          var toolDiv = $("<img src='"+ tool.icon +"' alt='"+ alt +"' title='"+ alt +"'></img>")
+          var toolDiv = $("<div><img src='"+ tool.icon +"' alt='"+ alt +"' title='"+ alt +"'></img></div>")
             .addClass('tool')
             .click(function(e) {
               setMe();
@@ -937,19 +939,24 @@
       }
 
       viewport.append(canvas);
+      previewToggleHolder
+        .append(previewToggle)
+        .append(previewLabel);
+        
+      guideToggleHolder
+        .append(guideToggle)
+        .append(guideLabel);
       
       pixie
         .append(actionsMenu)
         .append(toolbar)
         .append(viewport)
         .append(colorbar)
-        .append(previewLabel)
-        .append(previewToggle)
-        .append(guideLabel)
-        .append(guideToggle)
-        .append(preview)
+        .append(previewToggleHolder)
+        .append(guideToggleHolder)
         .append(clear)
-        .append(layerMenu);
+        .append(layerMenu)
+        .append(preview);
 
       if(frames > 1) {
         pixie.append(frameMenu);
