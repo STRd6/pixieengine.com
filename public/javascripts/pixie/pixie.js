@@ -952,10 +952,9 @@
         .append(toolbar)
         .append(viewport)
         .append(colorbar)
+        .append(layerMenu)
         .append(previewToggleHolder)
         .append(guideToggleHolder)
-        .append(clear)
-        .append(layerMenu)
         .append(preview);
 
       if(frames > 1) {
