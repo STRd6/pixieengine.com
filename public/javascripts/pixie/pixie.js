@@ -874,7 +874,7 @@
         canvas.addAction(action);
       });
 
-      $.each(["#000", "#FFF", "#666", "#CCC", "#800", "#080", "#008", "#880", "#808", "#088"], function(i, color) {
+      $.each(["#000", "#FFF", "#666", "#DCDCDC", "#EB070E", "#388326", "#0246E3", "#FFDE49", "#563495", "#58C4F5", "#E5AC99", "#5B4635"], function(i, color) {
         canvas.addSwatch(color);
       });
 

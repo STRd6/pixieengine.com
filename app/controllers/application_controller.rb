@@ -102,4 +102,16 @@ class ApplicationController < ActionController::Base
 
     flash.discard
   end
+
+  def save_sprites_to_user(user)
+    (session[:saved_sprites] || {}).each do |sprite_id, broadcast|
+      sprite = Sprite.find(sprite_id)
+      sprite.update_attribute(:user, user)
+      if broadcast == "1"
+        sprite.broadcast_link
+      end
+    end
+
+    session[:saved_sprites] = nil
+  end
 end

@@ -13,6 +13,8 @@ class UserSessionsController < ApplicationController
 
           respond_to do |format|
             format.html do
+              save_sprites_to_user(@user_session.user)
+
               flash[:notice] = "Login successful!"
               redirect_back_or_default root_path
             end
