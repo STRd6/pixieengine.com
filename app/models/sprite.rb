@@ -10,6 +10,10 @@ class Sprite < ActiveRecord::Base
 
   attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data
 
+  MAX_LENGTH = 128
+  # Limit sizes to small pixel art for now
+  validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
+
   before_save :gather_metadata
 
   after_save :save_file

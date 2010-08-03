@@ -38,11 +38,11 @@ class SpritesController < ResourceController::Base
 
   new_action.wants.html do
     unless params[:width].to_i <= 0
-      @width = params[:width].to_i
+      @width = [params[:width].to_i, Sprite::MAX_LENGTH].min
     end
 
     unless params[:height].to_i <= 0
-      @height = params[:height].to_i
+      @height = [params[:height].to_i, Sprite::MAX_LENGTH].min
     end
 
     render :action => :pixie
@@ -79,6 +79,7 @@ class SpritesController < ResourceController::Base
       redirect_to @sprite
     else
       # Errors
+      render :action => :upload
     end
   end
 
