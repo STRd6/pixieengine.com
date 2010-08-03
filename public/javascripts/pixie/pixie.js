@@ -542,12 +542,8 @@
         canvas.append(frameDiv);
       }
 
-      var guideLayer = Layer();
-      canvas.append(guideLayer);
-
       var lastPixel = undefined;
-      // Only the top layer should be sensitive to events
-      canvas
+      var guideLayer = Layer()
         .bind("mousedown", function(e) {
           undoStack.next();
           active = true;
@@ -561,6 +557,7 @@
         })
         .bind("mousedown mousemove", function(event) {
           var offset = $(this).offset();
+
           var localY = event.pageY - offset.top;
           var localX = event.pageX - offset.left;
 
@@ -583,6 +580,8 @@
 
           lastPixel = pixel;
         });
+
+      canvas.append(guideLayer);
 
       layer = layers - 1;
       frame = 0;
