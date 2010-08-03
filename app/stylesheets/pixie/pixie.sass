@@ -111,17 +111,33 @@
     height: 16px
 
   // Current colors input field
+  .color_picker_holder
+    height: 76px
+    margin-bottom: 12px
+    position: relative
+    width: 74px
+  
   input.color
     border: 2px solid
     border-color= #CCC
-    margin: 0 0 10px 0
+    height: 50px
+    position: absolute
     width: 50px
+    
+    &.primary
+      left: 0
+      top: 0
+      z-index: 10
+    &.secondary
+      left: 20px
+      top: 20px
+      z-index: 1
 
   // Holds the preview image
   .preview
+    border: 1px solid #666
     height: 150px
-    margin: 0
-    margin-left: 70px
+    margin: 12px 0 0 70px
     position: relative
     width: 150px
 

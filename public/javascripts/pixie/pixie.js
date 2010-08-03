@@ -279,7 +279,6 @@
 
   var falseFn = function() {return false};
   var div = '<div></div>';
-  var clear = '<div class="clear"></div>';
   var ColorPicker = function() {
     return $('<input></input>').addClass('color').colorPicker();
   };
@@ -484,15 +483,16 @@
       var layer = 0;
       var frame = 0;
       var mode = undefined;
-      var primaryColorPicker = ColorPicker();
-      var secondaryColorPicker = ColorPicker();
+      var primaryColorPicker = ColorPicker().addClass('primary');
+      var secondaryColorPicker = ColorPicker().addClass('secondary');
       var tilePreview = true;
 
-      colorbar.append(
-        primaryColorPicker
-      ).append(
-        secondaryColorPicker
-      );
+      var colorPickerHolder = $(div)
+        .addClass('color_picker_holder')
+        .append(primaryColorPicker)
+        .append(secondaryColorPicker);
+
+      colorbar.append(colorPickerHolder);
 
       pixie
         .bind('contextmenu', falseFn)
@@ -953,8 +953,8 @@
         .append(viewport)
         .append(colorbar)
         .append(layerMenu)
-        .append(previewToggleHolder)
         .append(guideToggleHolder)
+        .append(previewToggleHolder)
         .append(preview);
 
       if(frames > 1) {
