@@ -8,7 +8,7 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data
+  attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data, :replay_data
 
   MAX_LENGTH = 128
   # Limit sizes to small pixel art for now
@@ -52,6 +52,10 @@ class Sprite < ActiveRecord::Base
 
   def data
     Sprite.data_from_path(file_path)
+  end
+
+  def load_replay_data
+    File.read(replay_path)
   end
 
   def broadcast_link
@@ -139,10 +143,14 @@ class Sprite < ActiveRecord::Base
 
   def file_path
     if frames > 1
-      "#{Rails.root}/public/production/images/#{id}.gif"
+      "#{base_path}images/#{id}.gif"
     else
-      "#{Rails.root}/public/production/images/#{id}.png"
+      "#{base_path}images/#{id}.png"
     end
+  end
+
+  def replay_path
+    "#{base_path}replays/#{id}.json"
   end
 
   def meta_desc
@@ -150,6 +158,10 @@ class Sprite < ActiveRecord::Base
   end
 
   private
+
+  def base_path
+    "#{Rails.root}/public/production/"
+  end
 
   def save_file
     if file_base64_encoded
@@ -172,6 +184,12 @@ class Sprite < ActiveRecord::Base
         f << file.read
       end
     end
+
+    if replay_data
+      File.open(replay_path, 'wb') do |f|
+        f << replay_data
+      end
+    end
   end
 
   def gather_metadata
@@ -184,6 +202,10 @@ class Sprite < ActiveRecord::Base
       self.frames = image_list.length
     elsif frame_data
       self.frames = frame_data.length
+    end
+
+    if replay_data
+      self.replayable = true
     end
   end
 

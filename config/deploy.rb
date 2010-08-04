@@ -32,6 +32,7 @@ end
 task :after_setup do
   run "mkdir #{shared_path}/production"
   run "mkdir #{shared_path}/production/images"
+  run "mkdir #{shared_path}/production/replays"
   run "mkdir #{shared_path}/db"
   run "mkdir #{shared_path}/backups"
   run "mkdir #{shared_path}/local"
