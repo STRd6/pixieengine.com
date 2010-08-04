@@ -72,19 +72,21 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  def self.bulk_import_files(directory_path)
+  def self.bulk_import_files(directory_path, tag_list=nil)
     dir = Dir.new(directory_path)
 
     dir.each do |file_name|
       unless file_name =~ /^\./
+        next unless file_name =~ /(\.png|\.gif)\z/
         file_path = File.expand_path(file_name, directory_path)
-        puts file_path
 
         unless File.directory?(file_path)
-          puts "T"
           file = File.new(file_path)
-          sprite = Sprite.new(:file => file)
-          sprite.save!
+          title = file_name[0...-4]
+          puts title
+
+          sprite = Sprite.new(:file => file, :title => title, :tag_list => tag_list)
+          sprite.save!(:validate => false)
         end
       end
     end
