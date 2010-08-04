@@ -102,7 +102,7 @@ h1, h2, h3, h4, h5, h6
   +box-sizing(border-box)
   padding-top: 2em
   
-  p
+  p, input, textarea
     font-family: Verdana, sans-serif
     font-size: 12px
     letter-spacing: .5px
@@ -119,16 +119,23 @@ form
   label
     display: inline-block
     font-family: Verdana, sans-serif
-    margin-right = $blueprint-grid-margin
-    text-align: right
     +grid-width(4)
+    margin-right = $blueprint-grid-margin
+    padding-top: 1em
+    text-align: right
+    vertical-align: top
 
-  input[type=text], input[type=password]
+  input[type=text], input[type=password], input[type=file], textarea
     border-width: 2px
     +grid-width(8)
+    margin: .5em
+    padding: 5px
     &:focus
       border-width: 2px
       border-color: !main_color
+      
+  textarea
+    height = ($blueprint-grid-width + $blueprint-grid-margin) * 4
 
   input[type=button], input[type=submit]
     display: block

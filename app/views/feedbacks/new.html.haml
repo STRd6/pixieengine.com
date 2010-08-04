@@ -2,5 +2,7 @@
 
 - form_for @feedback do |form|
   = form.error_messages
+  
+  = form.label "How can we make your experience more magical?"
   = form.text_area :body
   = form.submit "Send Feedback"

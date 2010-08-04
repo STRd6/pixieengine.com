@@ -12,10 +12,13 @@
 - if favorites = user.collections.first
   = link_to "Favorites", favorites
 
-%p
-  = link_to "Create something!", new_sprite_path
-  - if current_user?
+  
+- if current_user?
+  %p
     = link_to "Edit your profile", edit_user_path(current_user)
+  
+%p
+  = link_to "Now create something!", new_sprite_path
 
 - if user.sprites.size > 0
   %h3
