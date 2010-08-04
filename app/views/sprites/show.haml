@@ -27,7 +27,7 @@
             = collection.title
         %li{ "data-collection_id" => "new" } New Collection
   - if owner?
-    %li= link_to "#{image_tag "icons/table_edit.png"} Edit Details".html_safe, sprite_path(sprite), :method => :delete, :class => "button"
+    %li= link_to "#{image_tag "icons/table_edit.png"} Edit Details".html_safe, edit_sprite_path(sprite), :class => "button"
   - if owner_or_admin?
     %li= link_to "#{image_tag "icons/cross.png"} Delete".html_safe, sprite_path(sprite), :method => :delete, :class => "button"
 
