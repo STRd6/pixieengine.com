@@ -76,6 +76,15 @@
         window.canvas = canvas;
 
         canvas.addAction({
+          name: "Replay",
+          icon: "/images/icons/resultset_next.png",
+          perform: function(canvas) {
+            canvas.replay();
+          },
+          undoable: false
+        });
+
+        canvas.addAction({
           name: "New",
           icon: "/images/icons/page_white_add.png",
           perform: function(canvas) {

@@ -335,6 +335,26 @@
         }
 
         return this;
+      },
+
+      replayData: function() {
+        var replayData = [];
+
+        $.each(undos, function(i, items) {
+          replayData[i] = [];
+          $.each(items, function(key, data) {
+            var pixel = data.pixel;
+            replayData[i].push({
+              x: pixel.x,
+              y: pixel.y,
+              z: pixel.z,
+              f: pixel.f,
+              color: data.newColor
+            });
+          });
+        });
+
+        return replayData;
       }
     };
   };
@@ -358,7 +378,7 @@
         color: function(newColor, skipUndo) {
           if(arguments.length >= 1) {
             if(!skipUndo) {
-              undoStack.add(self, {pixel: self, color: color});
+              undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor});
             }
 
             color = newColor || transparent;
@@ -481,8 +501,10 @@
       var currentTool = undefined;
       var active = false;
       var layer = 0;
+      var editingLayers = [];
       var frame = 0;
       var mode = undefined;
+      var replaying = false;
       var primaryColorPicker = ColorPicker().addClass('primary');
       var secondaryColorPicker = ColorPicker().addClass('secondary');
       var tilePreview = true;
@@ -520,10 +542,13 @@
           frameDiv.addClass("current");
         }
 
+        editingLayers[frame] = [];
         pixels[frame] = [];
 
         for(layer = 0; layer < layers; layer++) {
           var layerDiv = Layer();
+          editingLayers[frame][layer] = layerDiv;
+
           if(layer == 0) {
             layerDiv.addClass('bottom');
           }
@@ -590,6 +615,15 @@
       frame = 0;
 
       $.extend(canvas, {
+        // Just visually clear the layers, doesn't affect undos or data
+        clear: function() {
+          $.each(editingLayers, function() {
+            $.each(this, function() {
+              this.clear();
+            });
+          });
+        },
+
         eachPixel: function(fn, z, f) {
           if(z === undefined) {
             z = layer;
@@ -822,6 +856,43 @@
           return data.substr(data.indexOf(',') + 1);
         },
 
+        getReplayData: function() {
+          return undoStack.replayData();
+        },
+
+        replay: function(steps) {
+          if(!replaying) {
+            replaying = true;
+
+            if(!steps) {
+              steps = this.getReplayData();
+            }
+
+            var canvas = this;
+            var i = 0;
+            var delay = 200;
+
+            function runStep() {
+              var step = steps[i];
+
+              if(step) {
+                $.each(step, function(j, p) {
+                  canvas.getPixel(p.x, p.y, p.z, p.f).color(p.color, true);
+                });
+
+                i++;
+
+                setTimeout(runStep, delay);
+              } else {
+                replaying = false;
+              }
+            }
+
+            canvas.clear();
+            setTimeout(runStep, delay);
+          }
+        },
+
         frameDataToBase64: function() {
           var frameData = [];
           for(var f = 0; f < frames; f++) {
@@ -841,26 +912,20 @@
 
         undo: function() {
           var data = undoStack.popUndo();
-          var swap;
 
           if(data) {
             $.each(data, function() {
-              swap = this.color;
-              this.color = this.pixel.color();
-              this.pixel.color(swap, true);
+              this.pixel.color(this.oldColor, true);
             });
           }
         },
 
         redo: function() {
           var data = undoStack.popRedo();
-          var swap;
 
           if(data) {
             $.each(data, function() {
-              swap = this.color;
-              this.color = this.pixel.color();
-              this.pixel.color(swap, true);
+              this.pixel.color(this.newColor, true);
             });
           }
         },
