@@ -69,9 +69,9 @@ ActiveRecord::Schema.define(:version => 20100730035438) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
-    t.integer  "parent_id"
-    t.integer  "comments_count"
     t.datetime "deleted_at"
+    t.integer  "parent_id"
+    t.integer  "comments_count", :default => 0, :null => false
   end
 
   create_table "collection_items", :force => true do |t|
