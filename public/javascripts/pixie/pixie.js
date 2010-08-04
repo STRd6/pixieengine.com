@@ -279,7 +279,6 @@
 
   var falseFn = function() {return false};
   var div = '<div></div>';
-  var clear = '<div class="clear"></div>';
   var ColorPicker = function() {
     return $('<input></input>').addClass('color').colorPicker();
   };
@@ -420,10 +419,12 @@
     return this.each(function() {
       var pixie = $(div).addClass('pixie');
       var actionsMenu = $(div).addClass('actions');
-      var canvas = $(div).addClass('canvas').css({width: pixelWidth*width, height: pixelHeight*height});
+      var viewport = $(div).addClass('viewport');
+      var canvas = $(div).addClass('canvas');
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var preview = $(div).addClass('preview').css({width: width, height: height});
+      var previewToggleHolder = $(div).addClass('toggle_holder');
       var previewLabel = $('<label class=\'preview-control\'>Tiled Preview</label>').click(function() {
         if (previewToggle.attr('checked')) {
           previewToggle.removeAttr('checked');
@@ -446,6 +447,7 @@
 
       canvas.addClass('nogrid');
 
+      var guideToggleHolder = $(div).addClass('toggle_holder');
       var guideLabel = $('<label class=\'guide-control\'>Display Guides</label>').click(function() {
 
         if (guideToggle.attr('checked')) {
@@ -481,15 +483,16 @@
       var layer = 0;
       var frame = 0;
       var mode = undefined;
-      var primaryColorPicker = ColorPicker();
-      var secondaryColorPicker = ColorPicker();
+      var primaryColorPicker = ColorPicker().addClass('primary');
+      var secondaryColorPicker = ColorPicker().addClass('secondary');
       var tilePreview = true;
 
-      colorbar.append(
-        primaryColorPicker
-      ).append(
-        secondaryColorPicker
-      );
+      var colorPickerHolder = $(div)
+        .addClass('color_picker_holder')
+        .append(primaryColorPicker)
+        .append(secondaryColorPicker);
+
+      colorbar.append(colorPickerHolder);
 
       pixie
         .bind('contextmenu', falseFn)
@@ -775,7 +778,7 @@
             });
           }
 
-          var toolDiv = $("<img src='"+ tool.icon +"' alt='"+ alt +"' title='"+ alt +"'></img>")
+          var toolDiv = $("<div><img src='"+ tool.icon +"' alt='"+ alt +"' title='"+ alt +"'></img></div>")
             .addClass('tool')
             .click(function(e) {
               setMe();
@@ -934,18 +937,24 @@
         })(i);
       }
 
+      viewport.append(canvas);
+      previewToggleHolder
+        .append(previewToggle)
+        .append(previewLabel);
+        
+      guideToggleHolder
+        .append(guideToggle)
+        .append(guideLabel);
+      
       pixie
         .append(actionsMenu)
         .append(toolbar)
-        .append(canvas)
+        .append(viewport)
         .append(colorbar)
-        .append(previewLabel)
-        .append(previewToggle)
-        .append(guideLabel)
-        .append(guideToggle)
-        .append(preview)
-        .append(clear)
-        .append(layerMenu);
+        .append(layerMenu)
+        .append(guideToggleHolder)
+        .append(previewToggleHolder)
+        .append(preview);
 
       if(frames > 1) {
         pixie.append(frameMenu);

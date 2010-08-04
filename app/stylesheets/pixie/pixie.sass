@@ -1,15 +1,28 @@
+@import "compass/css3/box-sizing"
+
 .pixie
   .canvas
-    float: left
     -moz-user-select: none
+    background-color: #ccc
+    +box-sizing(border-box)
+    height: 100%
     margin-right: 1em
     margin-bottom: 1em
+    overflow: auto
     position: relative
+    width: 100%
+    
+  .viewport
+    border: 1px solid #666
+    display: inline-block
+    height: 513px
+    margin-bottom: 1em
+    margin-right: 1em
+    position: relative
+    width: 513px
 
 .pixie
   .canvas.grid
-    border-bottom: 1px solid black
-    border-right: 1px solid black
     padding-bottom: 0px
     padding-right: 0px
 
@@ -23,26 +36,24 @@
   .frame
     display: none
     position: absolute
-    top: 0px
-    left: 0px
     &.current
       display: block
 
   .layer
+    border-bottom: 1px solid #666
+    border-right: 1px solid #666
     position: absolute
-    top: 0px
-    left: 0px
     &.bottom
-      background: transparent url(../images/pixie/pixel_bg.png)
+      background: white url(../images/pixie/pixel_bg.png)
 
   .pixel
-    float: left
-    width: 15px
-    height: 15px
     border-bottom: 1px solid black
     border-right: 1px solid black
+    float: left
+    height: 15px
     margin: 0
     padding: 0
+    width: 15px
 
   // Holds all the actions
   .actions
@@ -51,61 +62,85 @@
     margin-bottom: 10px
 
     a.tool
-      font-size: 0.8em
       color: black
+      margin: 5px
+      padding: .25em
 
       &:hover
+        background-color: #CCC
+        text-decoration: none
+        
+      &.active
+        background-color: #1084CE
         text-decoration: none
 
   // Holds all the tools
   .toolbar
-    float: left
-    width: 55px
-    height: 200px
+    display: inline-block
+    height: auto
     margin-right: 1em
+    position: relative
+    vertical-align: top
+    width: 60px
 
-  // Pencil, Eraser, etc. tool image styles
-  .tool
-    padding: 0 2px
-    margin-left: 2px
-
-    &:hover
-      background-color: #CCC
-
-    &.active
-      background-color= #1084CE
-
-    img
-      border: none
-
-  img.tool
-    padding: 2px
-    margin: 2px
+    // Pencil, Eraser, etc. tool image styles
+    .tool
+      +box-sizing(border-box)
+      height: 40px
+      margin: 5px
+      margin-left: 0
+      padding-top: 12px
+      text-align: center
+      width: 40px
+  
+      &:hover
+        background-color: #CCC
+  
+      &.active
+        background-color= #1084CE
+  
+      img
+        border: none
 
   .swatch
+    border: 1px solid #666
+    +box-sizing(border-box)
     float: left
-    margin: 4px
+    margin: 5px
     width: 16px
     height: 16px
 
   // Current colors input field
+  .color_picker_holder
+    height: 76px
+    margin-bottom: 12px
+    position: relative
+    width: 74px
+  
   input.color
     border: 2px solid
     border-color= #CCC
-    margin: 7px 2px 0 0
+    height: 50px
+    position: absolute
     width: 50px
+    
+    &.primary
+      left: 0
+      top: 0
+      z-index: 10
+    &.secondary
+      left: 20px
+      top: 20px
+      z-index: 1
 
   // Holds the preview image
   .preview
-    float: left
-    margin: 0 1em
-    width: 150px
+    border: 1px solid #666
     height: 150px
-    margin-left: 40px
-    margin-right: 90px
+    margin: 12px 0 0 70px
+    position: relative
+    width: 150px
 
-  .preview-control
-    float: left
-
-  .guide-control
-    float: left
+  .toggle_holder
+    display: block
+    margin-left: 70px
