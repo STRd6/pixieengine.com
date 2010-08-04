@@ -80,15 +80,18 @@
           icon: "/images/icons/page_white_add.png",
           perform: function(canvas) {
             setNewDimensions();
-          }
+          },
+          undoable: false
         });
 
         canvas.addAction({
           name: "Save",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
+            window.onbeforeunload = undefined;
             postImage();
-          }
+          },
+          undoable: false
         });
 
         $.each(installedTools, function(i, tool) {
