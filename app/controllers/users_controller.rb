@@ -80,6 +80,12 @@ class UsersController < ResourceController::Base
 
   private
 
+  def collection
+    users = User
+
+    @collection ||= users.all(:order => 'id ASC')
+  end
+
   def require_current_user
     unless current_user?
       flash[:notice] = "You can only edit your own account"
