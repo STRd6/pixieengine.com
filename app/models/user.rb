@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   has_many :collections
   has_many :sprites
 
+  has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
@@ -84,6 +85,27 @@ class User < ActiveRecord::Base
 
   def plugin_installed?(plugin)
     installed_plugins.include? plugin
+  end
+  
+  def progress
+    total = 0
+    if !self.profile.nil? && self.profile.length > 0
+      total += 10
+    end
+
+    if self.sprites.length > 0
+      total += 10
+    end
+
+    if !self.avatar_file_size.nil?
+      total += 10
+    end
+
+    if self.authored_comments.length > 0
+      total += 10
+    end
+
+    return total
   end
 
   private
