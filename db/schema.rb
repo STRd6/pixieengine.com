@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100730035438) do
+ActiveRecord::Schema.define(:version => 20100805020611) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -122,6 +122,14 @@ ActiveRecord::Schema.define(:version => 20100730035438) do
     t.string   "email_address"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "invites", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "email",      :null => false
+    t.string   "token",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "libraries", :force => true do |t|
