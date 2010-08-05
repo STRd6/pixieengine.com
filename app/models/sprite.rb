@@ -19,7 +19,7 @@ class Sprite < ActiveRecord::Base
 
   attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
 
-  MAX_LENGTH = 128
+  MAX_LENGTH = 256
   # Limit sizes to small pixel art for now
   validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
 
@@ -89,12 +89,13 @@ class Sprite < ActiveRecord::Base
         file_path = File.expand_path(file_name, directory_path)
 
         unless File.directory?(file_path)
-          file = File.new(file_path)
           title = file_name[0...-4]
           puts title
 
-          sprite = Sprite.new(:file => file, :title => title, :tag_list => tag_list)
-          sprite.save!(:validate => false)
+          sprite = Sprite.new(:image => File.open(file_path), :title => title, :tag_list => tag_list)
+          unless sprite.save
+            puts sprite.errors
+          end
         end
       end
     end
