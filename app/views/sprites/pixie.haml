@@ -52,14 +52,9 @@
         'sprite[width]': #{width},
         'sprite[height]': #{height},
         'sprite[parent_id]': #{@parent_id.to_json},
+        'sprite[file_base64_encoded]': canvas.toBase64(),
         'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
       };
-
-      var frameData = canvas.frameDataToBase64();
-      $.each(frameData, function(i, data) {
-        postData["sprite[frame_data][" + i + "]"] = data;
-      });
-      postData["sprite[frames]"] = frameData.length;
 
       $.post('/sprites', postData, function(data) {
         eval(data);
