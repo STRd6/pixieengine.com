@@ -27,7 +27,7 @@ class Sprite < ActiveRecord::Base
 
   after_save :send_broadcast
 
-  after_create :update_dimension_tags!
+  after_create :update_dimension_tags!, :save_replay_data
 
   cattr_reader :per_page
   @@per_page = 40
