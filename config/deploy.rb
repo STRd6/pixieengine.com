@@ -32,6 +32,7 @@ end
 task :after_setup do
   run "mkdir #{shared_path}/production"
   run "mkdir #{shared_path}/production/images"
+  run "mkdir #{shared_path}/production/replays"
   run "mkdir #{shared_path}/db"
   run "mkdir #{shared_path}/backups"
   run "mkdir #{shared_path}/local"
@@ -43,6 +44,7 @@ task :after_update_code do
   run "ln -nfs #{shared_path}/production #{release_path}/public/production"
   run "ln -nfs #{shared_path}/local/authlogic.yml #{release_path}/config/authlogic.yml"
   run "ln -nfs #{shared_path}/local/local.rake #{release_path}/lib/tasks/local.rake"
+  run "ln -nfs #{shared_path}/local/s3.yml #{release_path}/config/s3.yml"
 end
 
 # Passenger start Tasks

@@ -51,14 +51,10 @@
         'format': 'js',
         'sprite[width]': #{width},
         'sprite[height]': #{height},
-        'sprite[parent_id]': #{@parent_id.to_json}
+        'sprite[parent_id]': #{@parent_id.to_json},
+        'sprite[file_base64_encoded]': canvas.toBase64(),
+        'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
       };
-
-      var frameData = canvas.frameDataToBase64();
-      $.each(frameData, function(i, data) {
-        postData["sprite[frame_data][" + i + "]"] = data;
-      });
-      postData["sprite[frames]"] = frameData.length;
 
       $.post('/sprites', postData, function(data) {
         eval(data);
@@ -76,19 +72,31 @@
         window.canvas = canvas;
 
         canvas.addAction({
+          name: "Replay",
+          icon: "/images/icons/resultset_next.png",
+          perform: function(canvas) {
+            canvas.replay();
+          },
+          undoable: false
+        });
+
+        canvas.addAction({
           name: "New",
           icon: "/images/icons/page_white_add.png",
           perform: function(canvas) {
             setNewDimensions();
-          }
+          },
+          undoable: false
         });
 
         canvas.addAction({
           name: "Save",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
+            window.onbeforeunload = undefined;
             postImage();
-          }
+          },
+          undoable: false
         });
 
         $.each(installedTools, function(i, tool) {
@@ -96,15 +104,12 @@
         });
 
         (function(frameData) {
-          if(frameData) {
-            $.each(frameData, function(f, data) {
-              canvas.eachPixel(function(pixel, x, y) {
-                var pos = x + y*canvas.width;
-                pixel.color(data[pos], true);
-              }, undefined, f);
-            });
-          }
+          canvas.setInitialState(frameData);
         }(#{data.to_json}));
+
+        if(#{!!@replay_data}) {
+          canvas.replay(#{@replay_data});
+        }
 
         window.onbeforeunload = function() {
           if (canvas.dirty()) {

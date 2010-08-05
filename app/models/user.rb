@@ -5,7 +5,14 @@ class User < ActiveRecord::Base
     config.require_password_confirmation = false
   end
 
-  has_attached_file :avatar, :styles => { :thumb => "128x128>" }
+  has_attached_file :avatar,
+    :storage => :s3,
+    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+    :path => "avatars/:id/:style.:extension",
+    :styles => {
+      :large => ["256x256>", :png],
+      :thumb => ["32x32>", :png]
+    }
 
   include Commentable
 

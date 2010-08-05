@@ -53,6 +53,7 @@ class SpritesController < ResourceController::Base
     @height = sprite.height
     @data = sprite.data[:frame_data]
     @parent_id = sprite.id
+    @replay_data = sprite.load_replay_data if sprite.replayable?
 
     render :action => :pixie
   end
