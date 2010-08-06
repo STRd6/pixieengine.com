@@ -140,9 +140,9 @@ class User < ActiveRecord::Base
       tasks << "Invite 3 or more friends"
     end
 
-    if total === 34..66
+    if (34..66) === total
       color = "yellow"
-    elsif total === 67..100
+    elsif (67..100) === total
       color = "green"
     end
 
