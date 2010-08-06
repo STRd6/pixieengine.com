@@ -3,6 +3,7 @@ class SpritesController < ResourceController::Base
 
   before_filter :require_owner, :only => [:edit, :update]
   before_filter :require_owner_or_admin, :only => [:destroy]
+  before_filter :require_user, :only => [:add_tag, :remove_tag]
 
   create.before do
     @sprite.user = current_user
@@ -84,6 +85,22 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  def add_tag
+    sprite.add_tag(params[:tag])
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+    end
+  end
+
+  def remove_tag
+    sprite.remove_tag(params[:tag])
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+    end
+  end
+
   private
 
   def collection
@@ -93,7 +110,7 @@ class SpritesController < ResourceController::Base
       sprites = Sprite.tagged_with(params[:tagged])
     end
 
-    @collection ||= sprites.paginate(:page => params[:page], :order => 'id DESC')
+    @collection ||= sprites.paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
   end
 
   helper_method :sprites

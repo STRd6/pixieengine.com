@@ -15,10 +15,6 @@ module ApplicationHelper
     date.utc.strftime("%Y-%m-%dT%H:%M:%S+00:00")
   end
 
-  def tag_link(tag)
-    link_to tag, sprites_path(:tagged => tag.to_s)
-  end
-
   private
   def oauth_button(name, options = {})
     "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>".html_safe

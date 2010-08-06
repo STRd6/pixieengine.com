@@ -9,7 +9,6 @@
   = link_to_function "Or log in with your Pixie account", "$('#registration').hide(); $('#logIn').show(); $(this).hide().prev().show();", :class => "button"
 
 :javascript
-  var loggedIn = #{!!current_user};
   var logInCallback;
 
   function requireLogin(callback) {

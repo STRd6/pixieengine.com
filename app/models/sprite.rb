@@ -80,6 +80,11 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def remove_tag(tag)
+    self.tag_list = self.tag_list.remove(tag)
+    save
+  end
+
   def self.bulk_import_files(directory_path, tag_list=nil)
     dir = Dir.new(directory_path)
 

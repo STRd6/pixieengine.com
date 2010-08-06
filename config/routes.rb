@@ -55,6 +55,9 @@ PixieStrd6Com::Application.routes.draw do |map|
   resources :sprites do
     member do
       get :load
+
+      post :add_tag
+      post :remove_tag
     end
 
     collection do

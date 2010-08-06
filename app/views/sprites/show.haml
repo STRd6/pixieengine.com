@@ -30,13 +30,17 @@
   - if owner_or_admin?
     %li= link_to "#{image_tag "icons/cross.png"} Delete".html_safe, sprite_path(sprite), :method => :delete, :class => "button"
 
-%p
+%h3 Tags
+.tags
   - sprite.tag_list.each do |tag|
-    = tag_link(tag)
+    = sprite_tag_link(sprite, tag)
 
-%p
   - sprite.dimension_list.each do |dimension|
-    = link_to dimension, sprites_path(:tagged => dimension)
+    = sprite_tag_link(sprite, dimension)
+
+  - form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
+    = text_field_tag :tag
+    = submit_tag "Add"
 
 = display_comments sprite
 

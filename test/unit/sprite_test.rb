@@ -20,9 +20,20 @@ class SpriteTest < ActiveSupport::TestCase
   end
 
   context "tagging" do
+    setup do
+      @test_tag = "test"
+      @sprite.update_attribute(:tag_list, @test_tag)
+    end
+
     should "be taggable" do
       assert_difference "@sprite.tags.count", +1 do
         @sprite.add_tag("cool")
+      end
+    end
+
+    should "be able to remove a tag" do
+      assert_difference "@sprite.tags.count", -1 do
+        @sprite.remove_tag(@test_tag)
       end
     end
   end

@@ -2,14 +2,14 @@
 
 = will_paginate sprites
 
+- sprites.each do |sprite|
+  = render :partial => sprite
+.clear
+
 .tags
   - tags = Sprite.with_ids(sprites).tag_counts
   - tags.each do |tag|
     = tag_link tag
-
-- sprites.each do |sprite|
-  = render :partial => sprite
-.clear
 
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
