@@ -101,35 +101,67 @@ class User < ActiveRecord::Base
   
   def progress
     total = 0
+    tasks = []
+    color = "red"
+
     if !self.profile.nil? && self.profile.length > 0
       total += 5
+      tasks << "Complete profile description"
     end
 
     if self.sprites.length > 0
       total += 50
+      tasks << "Create a sprite"
     end
 
     if !self.avatar_file_size.nil?
       total += 10
+      tasks << "Choose an avatar"
     end
 
     if self.authored_comments.length > 0
       total += 10
+      tasks << "Write a comment"
     end
 
     if self.favorites_count > 0
       total += 10
+      tasks << "Find a favorite"
     end
 
     if self.invites.length == 1
       total += 5
+      tasks << "Invite a friend"
     elsif self.invites.length == 2
       total += 10
-    elseif self.invites.length >= 3
+      tasks << "Invite 2 friends"
+    elsif self.invites.length >= 3
       total += 15
+      tasks << "Invite 3 or more friends"
     end
 
-    return total
+    if total === 34..66
+      color = "yellow"
+    elsif total === 67..100
+      color = "green"
+    end
+
+    remaining_tasks = [
+      "Complete profile description",
+      "Create a sprite",
+      "Choose an avatar",
+      "Write a comment",
+      "Find a favorite",
+      "Invite 3 or more friends"
+      ] - tasks
+
+    return {
+      :total => total,
+      :tasks => tasks,
+      :color => color,
+      :remaining_tasks => remaining_tasks
+    }
+
   end
 
   def invite(options)

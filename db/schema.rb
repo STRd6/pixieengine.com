@@ -72,6 +72,11 @@ ActiveRecord::Schema.define(:version => 20100805020611) do
     t.integer  "parent_id"
     t.integer  "comments_count"
     t.datetime "deleted_at"
+    t.boolean  "replayable",         :default => false, :null => false
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
   end
 
   create_table "collection_items", :force => true do |t|
@@ -199,16 +204,21 @@ ActiveRecord::Schema.define(:version => 20100805020611) do
   end
 
   create_table "sprites", :force => true do |t|
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
-    t.integer  "width",                         :null => false
-    t.integer  "height",                        :null => false
-    t.integer  "frames",         :default => 1, :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
+    t.integer  "width",                                 :null => false
+    t.integer  "height",                                :null => false
+    t.integer  "frames",             :default => 1,     :null => false
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
     t.integer  "parent_id"
-    t.integer  "comments_count", :default => 0, :null => false
+    t.integer  "comments_count",     :default => 0,     :null => false
+    t.boolean  "replayable",         :default => false, :null => false
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
   end
 
   create_table "taggings", :force => true do |t|

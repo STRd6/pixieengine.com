@@ -1,12 +1,13 @@
 - if current_user
   == Logged in as #{link_to current_user, current_user }
   (#{link_to "Log out", logout_path, { :title => "Log out" }})
-  #progressbar
+  #progressbar{ :width => "10px" }
 
 -else
   = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
 
-:javascript
-  $(document).ready(function() {
-    $("#progressbar").progressbar({ value: #{current_user.progress} });
-  });
+- if current_user
+  :javascript
+    $(document).ready(function() {
+      $("#progressbar").progressbar({ value: #{current_user.progress[:total]}});
+    });
