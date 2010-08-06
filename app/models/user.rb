@@ -19,7 +19,9 @@ class User < ActiveRecord::Base
   has_many :libraries
   has_many :collections
   has_many :sprites
+  has_many :invites
 
+  has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
@@ -60,6 +62,10 @@ class User < ActiveRecord::Base
     collections.find_or_create_by_name("favorites").collection_items.find_by_item(sprite).first
   end
 
+  def favorites_count
+    collections.find_or_create_by_name("favorites").collection_items.count
+  end
+
   def broadcast(message)
     if Rails.env.development?
       logger.info("USER[#{id}] BROADCASTING: #{message}")
@@ -91,6 +97,75 @@ class User < ActiveRecord::Base
 
   def plugin_installed?(plugin)
     installed_plugins.include? plugin
+  end
+  
+  def progress
+    total = 0
+    tasks = []
+    color = "red"
+
+    if !self.profile.nil? && self.profile.length > 0
+      total += 5
+      tasks << "Complete profile description"
+    end
+
+    if self.sprites.length > 0
+      total += 50
+      tasks << "Create a sprite"
+    end
+
+    if !self.avatar_file_size.nil?
+      total += 10
+      tasks << "Choose an avatar"
+    end
+
+    if self.authored_comments.length > 0
+      total += 10
+      tasks << "Write a comment"
+    end
+
+    if self.favorites_count > 0
+      total += 10
+      tasks << "Find a favorite"
+    end
+
+    if self.invites.length == 1
+      total += 5
+      tasks << "Invite a friend"
+    elsif self.invites.length == 2
+      total += 10
+      tasks << "Invite 2 friends"
+    elsif self.invites.length >= 3
+      total += 15
+      tasks << "Invite 3 or more friends"
+    end
+
+    if (34..66) === total
+      color = "yellow"
+    elsif (67..100) === total
+      color = "green"
+    end
+
+    remaining_tasks = [
+      "Complete profile description",
+      "Create a sprite",
+      "Choose an avatar",
+      "Write a comment",
+      "Find a favorite",
+      "Invite 3 or more friends"
+      ] - tasks
+
+    return {
+      :total => total,
+      :tasks => tasks,
+      :color => color,
+      :remaining_tasks => remaining_tasks
+    }
+
+  end
+
+  def invite(options)
+    invites.create(options)
   end
 
   private
