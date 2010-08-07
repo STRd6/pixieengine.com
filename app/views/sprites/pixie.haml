@@ -51,14 +51,10 @@
         'format': 'js',
         'sprite[width]': #{width},
         'sprite[height]': #{height},
-        'sprite[parent_id]': #{@parent_id.to_json}
+        'sprite[parent_id]': #{@parent_id.to_json},
+        'sprite[file_base64_encoded]': canvas.toBase64(),
+        'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
       };
-
-      var frameData = canvas.frameDataToBase64();
-      $.each(frameData, function(i, data) {
-        postData["sprite[frame_data][" + i + "]"] = data;
-      });
-      postData["sprite[frames]"] = frameData.length;
 
       $.post('/sprites', postData, function(data) {
         eval(data);
@@ -108,15 +104,12 @@
         });
 
         (function(frameData) {
-          if(frameData) {
-            $.each(frameData, function(f, data) {
-              canvas.eachPixel(function(pixel, x, y) {
-                var pos = x + y*canvas.width;
-                pixel.color(data[pos], true);
-              }, undefined, f);
-            });
-          }
+          canvas.setInitialState(frameData);
         }(#{data.to_json}));
+
+        if(#{!!@replay_data}) {
+          canvas.replay(#{@replay_data});
+        }
 
         window.onbeforeunload = function() {
           if (canvas.dirty()) {

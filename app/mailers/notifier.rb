@@ -11,7 +11,7 @@ class Notifier < ActionMailer::Base
   def received_feedback(feedback)
     @feedback = feedback
 
-    mail :to => "yahivin@gmail.com", :reply_to => feedback.email_address
+    mail :to => "yahivin@gmail.com", :reply_to => feedback.email_address || (feedback.user ? feedback.user.email : nil)
   end
 
   def welcome_email(user)

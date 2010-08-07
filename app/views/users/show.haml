@@ -2,7 +2,7 @@
   %h2= user.display_name
 
   .avatar.left
-    = image_tag user.avatar.url(:thumb)
+    = image_tag user.avatar.url(:large)
 
   - unless user.profile.blank?
     %h3 Profile

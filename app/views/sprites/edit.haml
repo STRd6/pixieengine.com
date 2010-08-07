@@ -1,8 +1,12 @@
 - form_for sprite do |form|
-  = form.label :title
-  = form.text_field :title
+  = form.error_messages
 
-  = form.label :description
-  = form.text_area :description
+  %p
+    = form.label :title
+    = form.text_field :title
+
+  %p
+    = form.label :description
+    = form.text_area :description
 
   = form.submit

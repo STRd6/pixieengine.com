@@ -505,6 +505,8 @@
       var frame = 0;
       var mode = undefined;
       var replaying = false;
+      var initialStateData = undefined;
+
       var primaryColorPicker = ColorPicker().addClass('primary');
       var secondaryColorPicker = ColorPicker().addClass('secondary');
       var tilePreview = true;
@@ -863,12 +865,15 @@
         replay: function(steps) {
           if(!replaying) {
             replaying = true;
+            var canvas = this;
 
             if(!steps) {
               steps = this.getReplayData();
+              canvas.displayInitialState();
+            } else {
+              canvas.clear();
             }
 
-            var canvas = this;
             var i = 0;
             var delay = 200;
 
@@ -887,8 +892,6 @@
                 replaying = false;
               }
             }
-
-            canvas.clear();
             setTimeout(runStep, delay);
           }
         },
@@ -899,6 +902,25 @@
             frameData[f] = this.toBase64(f);
           }
           return frameData;
+        },
+
+        setInitialState: function(frameData) {
+          initialStateData = frameData;
+
+          this.displayInitialState();
+        },
+
+        displayInitialState: function() {
+          this.clear();
+
+          if(initialStateData) {
+            $.each(initialStateData, function(f, data) {
+              canvas.eachPixel(function(pixel, x, y) {
+                var pos = x + y*canvas.width;
+                pixel.color(data[pos], true);
+              }, undefined, f);
+            });
+          }
         },
 
         showPreview: function() {

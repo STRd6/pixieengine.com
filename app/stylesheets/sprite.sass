@@ -12,3 +12,46 @@
 
   .favorites
     float: left
+
+.tags
+  form
+    +inline-block
+    input
+      +inline-block
+
+      &[type=text]
+        +grid-width(3)
+
+
+      &[type=button], &[type=submit]
+        margin: 0
+
+.tag
+  +inline-block
+  +border-radius(4px)
+  background-color: #FFF
+  border: 1px solid #666
+  font-weight: bold
+  margin-right: 5px
+  padding: 4px 8px
+
+  &:hover
+    background-color: #666
+    color: #FFF
+
+    a
+      color: #FFF
+
+  a
+    +inline-block
+    color: #000
+    float: left
+    text-decoration: none
+
+  .remove
+    +inline-block
+    cursor: pointer
+    float: left
+    font-size: 0.8em
+    margin-left: 8px
+    padding-top: 1px

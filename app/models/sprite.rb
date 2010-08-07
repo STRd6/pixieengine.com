@@ -1,6 +1,15 @@
 class Sprite < ActiveRecord::Base
   include Commentable
 
+  has_attached_file :image,
+    :storage => :s3,
+    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+    :path => "sprites/:id/:style.:extension",
+    :styles => {
+      :medium => ["64x64>", :png],
+      :thumb => ["32x32#", :png]
+    }
+
   acts_as_archive
   acts_as_taggable
   acts_as_taggable_on :dimension
@@ -8,18 +17,17 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  attr_accessor :broadcast, :file, :file_base64_encoded, :frame_data
+  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
 
-  MAX_LENGTH = 128
+  MAX_LENGTH = 256
   # Limit sizes to small pixel art for now
   validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
 
-  before_save :gather_metadata
+  before_validation :gather_metadata, :convert_to_io, :set_dimensions
 
-  after_save :save_file
   after_save :send_broadcast
 
-  after_create :update_dimension_tags!
+  after_create :update_dimension_tags!, :save_replay_data
 
   cattr_reader :per_page
   @@per_page = 40
@@ -51,7 +59,11 @@ class Sprite < ActiveRecord::Base
   end
 
   def data
-    Sprite.data_from_path(file_path)
+    Sprite.data_from_path(image.url)
+  end
+
+  def load_replay_data
+    File.read(replay_path)
   end
 
   def broadcast_link
@@ -68,19 +80,27 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  def self.bulk_import_files(directory_path)
+  def remove_tag(tag)
+    self.tag_list = self.tag_list.remove(tag)
+    save
+  end
+
+  def self.bulk_import_files(directory_path, tag_list=nil)
     dir = Dir.new(directory_path)
 
     dir.each do |file_name|
       unless file_name =~ /^\./
+        next unless file_name =~ /(\.png|\.gif)\z/
         file_path = File.expand_path(file_name, directory_path)
-        puts file_path
 
         unless File.directory?(file_path)
-          puts "T"
-          file = File.new(file_path)
-          sprite = Sprite.new(:file => file)
-          sprite.save!
+          title = file_name[0...-4]
+          puts title
+
+          sprite = Sprite.new(:image => File.open(file_path), :title => title, :tag_list => tag_list)
+          unless sprite.save
+            puts sprite.errors
+          end
         end
       end
     end
@@ -139,53 +159,66 @@ class Sprite < ActiveRecord::Base
 
   def file_path
     if frames > 1
-      "#{Rails.root}/public/production/images/#{id}.gif"
+      "#{base_path}images/#{id}.gif"
     else
-      "#{Rails.root}/public/production/images/#{id}.png"
+      "#{base_path}images/#{id}.png"
     end
+  end
+
+  def replay_path
+    "#{base_path}replays/#{id}.json"
   end
 
   def meta_desc
     "#{tag_list.join(' ')} #{title} #{dimension_list.join(' ')} #{description}"
   end
 
+  def migrate_image_attachment
+    update_attribute(:image, File.open(file_path))
+  end
+
   private
 
-  def save_file
-    if file_base64_encoded
-      File.open(file_path, 'wb') do |f|
-        f << Base64.decode64(file_base64_encoded)
-      end
-    elsif frame_data
-      image_list = Magick::ImageList.new
+  def base_path
+    "#{Rails.root}/public/production/"
+  end
 
-      image_list.from_blob(*frame_data.sort do |a, b|
-        a[0].to_i <=> b[0].to_i
-      end.map do |i, frame|
-        Base64.decode64(frame)
-      end)
-
-      image_list.write(file_path)
-    elsif file
-      file.rewind
-      File.open(file_path, 'wb') do |f|
-        f << file.read
+  def save_replay_data
+    if replay_data
+      File.open(replay_path, 'wb') do |f|
+        f << replay_data
       end
     end
   end
 
   def gather_metadata
-    if file
-      image_list = Magick::Image.read(file.path)
-      first_image = image_list.first
-
-      self.width = first_image.columns
-      self.height = first_image.rows
-      self.frames = image_list.length
-    elsif frame_data
-      self.frames = frame_data.length
+    if replay_data
+      self.replayable = true
     end
   end
+
+  def convert_to_io
+    if file_base64_encoded
+      img_data = Base64.decode64(file_base64_encoded)
+
+      io = StringIO.new(img_data)
+      io.original_filename = "image.png"
+      io.content_type = "image/png"
+
+      self.image = io
+    end
+  end
+
+  def set_dimensions
+    tempfile = image.queued_for_write[:original]
+
+    unless tempfile.nil?
+      dimensions = Paperclip::Geometry.from_file(tempfile)
+      self.width = dimensions.width.to_i
+      self.height = dimensions.height.to_i
+    end
+  end
+
 
   def send_broadcast
     if broadcast == "1"
