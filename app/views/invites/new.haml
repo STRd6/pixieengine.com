@@ -1,0 +1,7 @@
+- form_for @invite do |form|
+  = form.error_messages
+  %p
+    = form.label :email
+    = form.text_field :email
+
+  = form.submit "Invite friend"
