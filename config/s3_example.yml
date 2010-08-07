@@ -1,0 +1,8 @@
+development:
+  bucket: dev_bucket
+  access_key_id: 1234
+  secret_access_key: abcd
+test:
+  bucket: test_bucket
+  access_key_id: 1234
+  secret_access_key: abcd
