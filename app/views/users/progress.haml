@@ -1,0 +1,12 @@
+.profile
+  %h2= user.display_name
+
+%ul Complete tasks
+- tasks = user.progress[:tasks]
+  - tasks.each do |task|
+  %li #{task}
+
+%ul Incomplete tasks
+- incomplete = user.progress[:remaining_tasks]
+  - incomplete.each do |task|
+  %li #{task}
