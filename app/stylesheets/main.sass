@@ -158,8 +158,7 @@ a
   border-right = 1px solid !dark_gray
   +box-sizing(border-box)
   +grid-width(20)
-  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width + $blueprint-grid-margin
-  padding-bottom: 0
+  padding = ($blueprint-grid-width - $blueprint-grid-margin) 0 0 $blueprint-grid-width + $blueprint-grid-margin
   position: relative
   top: -5px
   
@@ -167,7 +166,11 @@ a
     font-family: Verdana, sans-serif
     letter-spacing: .5px
     line-height: 1.8
-  
+
+.profile
+  @include single-column
+  margin-right = $blueprint-grid-margin
+ 
 #footer
   +grid-width(20)
   margin-top: 2em
@@ -212,9 +215,6 @@ div.no-star
   background-image: url(../images/icons/star_empty.png)
   width: 16px
   height: 16px
-
-.avatar
-  padding: 8px
 
 .round
   +border-radius(5px)

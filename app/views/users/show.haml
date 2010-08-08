@@ -1,12 +1,11 @@
+%h2= user.display_name + "'s Profile"
+
 .profile
-  %h2= user.display_name + "'s Profile"
-  .avatar.left
+  .avatar
     = image_tag user.avatar.url(:large)
 
   - unless user.profile.blank?
     %p= user.profile
-
-  .clear
 
 - if user == current_user
   = render :partial => "tasks"
