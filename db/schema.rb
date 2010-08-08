@@ -69,9 +69,9 @@ ActiveRecord::Schema.define(:version => 20100804222146) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
-    t.integer  "parent_id"
-    t.integer  "comments_count"
     t.datetime "deleted_at"
+    t.integer  "parent_id"
+    t.integer  "comments_count",     :default => 0,     :null => false
     t.boolean  "replayable",         :default => false, :null => false
     t.string   "image_file_name"
     t.string   "image_content_type"

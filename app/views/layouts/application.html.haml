@@ -12,8 +12,6 @@
     <link rel="shortcut icon" href="/favicon.png" />
     = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
     = stylesheet_link_tag 'print.css', :media => 'print'
-    /[if lt IE 8]
-      = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
 
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
     = javascript_include_tag 'rails', 'application', 'jquery.simplemodal-1.3.5.min', 'jquery.form.js'
@@ -24,7 +22,7 @@
     .container
       = render :partial => "/shared/header"
 
-      #content.prepend-1.span-20.append-1.last
+      #content
         #flashes
           - flash.each do |key, msg|
             %div{ :class => key }= msg
@@ -33,8 +31,7 @@
           -#nothing
 
         - if @title
-          %h2
-            = @title
+          %h2= @title
             
         = yield
 

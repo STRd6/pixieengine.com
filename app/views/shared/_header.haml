@@ -6,17 +6,17 @@
     On Pixie you can create amazing pixel art for free, from anywhere, and share it with the world.
       
 #header
-  #nav.prepend-1.span-12.last
-    .span-2
+  #nav
+    %span
       = link_to_unless_current "Pixel Editor", new_sprite_path
-    .span-2
+    %span
       = link_to_unless_current "Upload", upload_sprites_path
-    .span-2
+    %span
       = link_to_unless_current "Browse", sprites_path
-    .span-2
+    %span
       = link_to_unless_current "Feedback", new_feedback_path
-    .span-2
+    %span
       = link_to_unless_current "About Pixie", about_path
     
-  #login_link.span-8.last
+  #login_link
     = render :partial => "/shared/login"
