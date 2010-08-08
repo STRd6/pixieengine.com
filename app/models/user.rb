@@ -114,13 +114,13 @@ class User < ActiveRecord::Base
       {
         :description => "Fill out your profile",
         :value => 10,
-        :complete => profile && profile.length > 0,
+        :complete? => profile && profile.length > 0,
         :link => {:action => :edit, :id => id, :controller => :users},
       },
       {
         :description => "Upload an avatar",
         :value => 10,
-        :complete => avatar_file_size,
+        :complete? => avatar_file_size,
         :link => {:action => :edit, :id => id, :controller => :users},
       },
       {
@@ -138,19 +138,19 @@ class User < ActiveRecord::Base
       {
         :description => "Invite a friend",
         :value => 10,
-        :complete => invites.length > 0,
+        :complete? => invites.length > 0,
         :link => {:action => :new, :controller => :invites},
       },
       {
         :description => "Invite another friend",
         :value => 5,
-        :complete => invites.length > 1,
+        :complete? => invites.length > 1,
         :link => {:action => :new, :controller => :invites},
       },
       {
         :description => "Invite a third friend",
         :value => 5,
-        :complete => invites.length > 2,
+        :complete? => invites.length > 2,
         :link => {:action => :new, :controller => :invites},
       }
     ]
