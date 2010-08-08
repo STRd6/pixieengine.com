@@ -31,6 +31,13 @@ h3
 p, label
   font-family: Verdana, sans-serif
 
+a
+  color = !link_color
+  font-weight: bold
+  text-decoration: none
+  &:hover
+    text-decoration: underline
+
 .border
   border: 1px solid #BBB
 
@@ -157,11 +164,6 @@ p, label
     font-family: Verdana, sans-serif
     letter-spacing: .5px
     line-height: 1.8
-    
-  a
-    color = !link_color
-    &:hover
-      text-decoration: none
   
 #footer
   +grid-width(20)
