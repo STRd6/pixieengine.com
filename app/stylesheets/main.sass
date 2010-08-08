@@ -7,11 +7,29 @@
 // Basic layout and font styles
 body
   background-color: white
+  color: #333333
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif
+  font-size: 12px
+  line-height: 1.5
+  margin: 0
+  padding: 0
   
 h1, h2, h3, h4, h5, h6
   color = !main_color
   font-family: 'Josefin Sans Std Light', Arial, serif
+  font-weight: normal
   letter-spacing: .1em
+  margin: 0 0 .5em 0
+  
+h1
+  font-size: 2.5em
+h2
+  font-size: 2em
+h3
+  font-size: 1.5em
+  
+p, label
+  font-family: Verdana, sans-serif
 
 .border
   border: 1px solid #BBB
@@ -20,11 +38,16 @@ h1, h2, h3, h4, h5, h6
 .container
   margin: 0
   margin-left = $blueprint-grid-margin
+  padding-left = ($blueprint-grid-width + $blueprint-grid-margin) * 4
+  position: relative
+  width: auto
 
 #sidebar
-  float: left
-  margin-right = $blueprint-grid-margin
+  display: block
   +grid-width(4)
+  left: 0
+  margin-right = $blueprint-grid-margin
+  position: absolute
 
   #logo
     height: 70px
@@ -33,8 +56,8 @@ h1, h2, h3, h4, h5, h6
     #logo_type
       bottom: 0
       color = !main_color
-      font-size: 24pt
-      height: 30pt
+      font-size: 32px
+      height: 40px
       letter-spacing: .25em
       position: absolute
       text-align: center
@@ -46,20 +69,20 @@ h1, h2, h3, h4, h5, h6
     
   #description
     color = !light_gray
-    font-size: 8pt
+    font-size: 11px
     font-style: italic
     letter-spacing: .1em
-    margin-top: 2em
-    //padding-left = $blueprint-grid-width / 2
+    margin-top = $blueprint-grid-width - $blueprint-grid-margin
     text-align: justify
 
 #header
   +box-sizing(border-box)
+  border-bottom = 1px solid !dark_gray
   border-left = 1px solid !dark_gray
-  float: left
+  display: inline-block
   height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
   +grid-width(20)
-  padding-top: 48px
+  position: relative
   
   // Apply to all header links (navigation and log in link)
   a
@@ -73,87 +96,70 @@ h1, h2, h3, h4, h5, h6
     text-decoration: none
     
   #nav
+    bottom: 0
     +box-sizing(border-box)
-    height: 100%
+    display: inline-block
+    +grid-width(12)
+    padding-left = $blueprint-grid-width + $blueprint-grid-margin
+    position: absolute
     
-    // Text straight in a div means it's the current page
-    div
+    // Text straight in a span means it's the current page
+    span
       color = !main_color
+      display: inline-block
       font-weight: bold
+      +grid-width(2)
+      margin-right = $blueprint-grid-margin
       text-align: left
       text-decoration: none
     
       a
+        // HAX
+        border-bottom: 4px solid white
         display: inline-block
         width: 100%
         &:hover
           border-bottom = 4px solid !dark_gray
       
   #login_link
+    bottom: 0
+    display: inline-block
+    +grid-width(8)
+    padding-bottom: 4px
+    position: absolute
+    right: 0
     text-align: center
     a
+      text-align: center
       text-decoration: underline
       &:hover
         text-decoration: none
   
 #content
-  border-top = 1px solid !dark_gray
   border-right = 1px solid !dark_gray
   +box-sizing(border-box)
-  padding-top: 2em
+  +grid-width(20)
+  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width + $blueprint-grid-margin
+  padding-bottom: 0
+  position: relative
+  top: -5px
   
   p
     font-family: Verdana, sans-serif
-    font-size: 12px
     letter-spacing: .5px
-    line-height: 18px
+    line-height: 1.8
+    
+  a
+    color = !link_color
+    &:hover
+      text-decoration: none
   
 #footer
+  +grid-width(20)
   margin-top: 2em
   
   center
     height: 3em
-
-// Forms - move into separate file?
-form
-  label
-    display: inline-block
-    font-family: Verdana, sans-serif
-    margin-right = $blueprint-grid-margin
-    text-align: right
-    +grid-width(4)
-
-  input[type=text], input[type=password]
-    border-width: 2px
-    +grid-width(8)
-    &:focus
-      border-width: 2px
-      border-color: !main_color
-
-  input[type=button], input[type=submit]
-    display: block
-    margin-top: 1em
-    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 4
-
-  input[type=radio], input[type=checkbox]
-    display: inline-block
-    +grid-width(1)
-    margin = 0 $blueprint-grid-margin 0 0
-
-  input[disabled]
-    background-color: #efefef
-  
-// Custom log in page spacing
-#user_session_password
-  +grid-width(7)
-  
-#forgot_password_link
-  color: black
-  display: block
-  font-size: .8em
-  margin-left = $blueprint-grid-width * 7
-  &:hover
-    text-decoration: none
 
 // TODO: Good these up, embetter and embiggen
 // Error and notice styling
