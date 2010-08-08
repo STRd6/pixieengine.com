@@ -4,7 +4,7 @@
   %h2 What is your email address?
   %p
     = form.label :email
-    = form.text_field :email
+    = form.text_field :email, :value => session[:email]
 
   %h2 Do you have a Pixie password?
   

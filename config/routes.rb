@@ -75,18 +75,22 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
 
     collection do
+      get :progress
+      
       post :install_plugin
       post :uninstall_plugin
     end
   end
 
   resources :comments, :password_resets, :user_sessions
+  resources :invites
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
 
   # Link Tracking
   match 'r/:token' => "links#track", :as => :link_token
+  match 'i/:token' => "invites#track", :as => :invite_token
 
   match 'about' => "home#about", :as => :about
   match 'sitemap' => "home#sitemap"
@@ -97,6 +101,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match "sign_up" => "users#new", :as => :signup
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
+  match 'users/:id/progress' => 'users#progress'
 
   root :to => "sprites#new"
 

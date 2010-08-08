@@ -1,27 +1,26 @@
 .profile
-  %h2= user.display_name
-
+  %h2= user.display_name + "'s Profile"
   .avatar.left
     = image_tag user.avatar.url(:large)
 
   - unless user.profile.blank?
-    %h3 Profile
     %p= user.profile
+
   .clear
 
-- if favorites = user.collections.first
-  = link_to "Favorites", favorites
+- if user == current_user
+  = render :partial => "tasks"
 
-  
-- if current_user?
-  %p
-    = link_to "Edit your profile", edit_user_path(current_user)
-  
-%p
-  = link_to "Now create something!", new_sprite_path
+%ul.actions
+  - if favorites = user.collections.first
+    %li= link_to "#{image_tag "icons/photos.png"} Favorites".html_safe, favorites, :class => "button"
+  - if current_user?
+    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, edit_user_path(current_user), :class => "button"
 
 - if user.sprites.size > 0
   %h3
     = "#{user}'s creations"
-  - user.sprites.each do |sprite|
-    = render :partial => sprite
+  .sprites
+    - user.sprites.each do |sprite|
+      = render :partial => sprite
+  .clear

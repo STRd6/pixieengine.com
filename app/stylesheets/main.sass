@@ -31,8 +31,24 @@ h3
 p, label
   font-family: Verdana, sans-serif
 
+a
+  color = !link_color
+  font-weight: bold
+  text-decoration: none
+  &:hover
+    text-decoration: underline
+
 .border
   border: 1px solid #BBB
+
+.left
+  float: left
+
+.right
+  float: right
+
+.clear
+  clear: both
 
 // Grid container
 .container
@@ -149,11 +165,6 @@ p, label
     font-family: Verdana, sans-serif
     letter-spacing: .5px
     line-height: 1.8
-    
-  a
-    color = !link_color
-    &:hover
-      text-decoration: none
   
 #footer
   +grid-width(20)
@@ -179,9 +190,6 @@ p, label
   color= !error_color
   border-color= !error_color
   background-color= !s2
-
-#errorExplanation, .errorExplanation
-  color= !error_color
 
 // Specifics
 .chunk

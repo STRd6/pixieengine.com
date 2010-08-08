@@ -19,7 +19,9 @@ class User < ActiveRecord::Base
   has_many :libraries
   has_many :collections
   has_many :sprites
+  has_many :invites
 
+  has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
@@ -60,6 +62,10 @@ class User < ActiveRecord::Base
     collections.find_or_create_by_name("favorites").collection_items.find_by_item(sprite).first
   end
 
+  def favorites_count
+    collections.find_or_create_by_name("favorites").collection_items.count
+  end
+
   def broadcast(message)
     if Rails.env.development?
       logger.info("USER[#{id}] BROADCASTING: #{message}")
@@ -91,6 +97,63 @@ class User < ActiveRecord::Base
 
   def plugin_installed?(plugin)
     installed_plugins.include? plugin
+  end
+
+  def invite(options)
+    invites.create(options)
+  end
+
+  def tasks
+    [
+      {
+        :description => "Create a sprite",
+        :value => 40,
+        :complete? => sprites.length > 0,
+        :link => {:action => :new, :controller => :sprites},
+      },
+      {
+        :description => "Fill out your profile",
+        :value => 10,
+        :complete? => profile && profile.length > 0,
+        :link => {:action => :edit, :id => id, :controller => :users},
+      },
+      {
+        :description => "Upload an avatar",
+        :value => 10,
+        :complete? => avatar_file_size,
+        :link => {:action => :edit, :id => id, :controller => :users},
+      },
+      {
+        :description => "Find three favorites",
+        :value => 10,
+        :complete? => favorites_count > 2,
+        :link => {:action => :index, :controller => :sprites},
+      },
+      {
+        :description => "Leave a comment",
+        :value => 10,
+        :complete? => authored_comments.length > 0,
+        :link => {:action => :index, :controller => :sprites},
+      },
+      {
+        :description => "Invite a friend",
+        :value => 10,
+        :complete? => invites.length > 0,
+        :link => {:action => :new, :controller => :invites},
+      },
+      {
+        :description => "Invite another friend",
+        :value => 5,
+        :complete? => invites.length > 1,
+        :link => {:action => :new, :controller => :invites},
+      },
+      {
+        :description => "Invite a third friend",
+        :value => 5,
+        :complete? => invites.length > 2,
+        :link => {:action => :new, :controller => :invites},
+      }
+    ]
   end
 
   private

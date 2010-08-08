@@ -1,12 +1,10 @@
 // For all the form styling goodness
- 
 form
-
   label, input, textarea
     font-family: Verdana, sans-serif
     font-size: 12px
     letter-spacing: .5px
-    
+
   label
     display: inline-block
     font-size: 12px
@@ -24,10 +22,10 @@ form
     &:focus
       border-width: 2px
       border-color: !main_color
-      
+
   input[type=text], input[type=password], textarea
-    border= 2px solid !light_gray
-      
+    border: 2px solid !light_gray
+
   textarea
     height = ($blueprint-grid-width + $blueprint-grid-margin) * 4
 
@@ -43,11 +41,28 @@ form
 
   input[disabled]
     background-color: #efefef
-  
+
+  #errorExplanation
+    color: !error_color
+    margin-left: 170px
+
+    h2
+      color: !error_color
+      font-size: 1.5em
+
+  .field_with_errors
+    +inline-block
+
+    input
+      border-color: !error_color
+
+    label
+      color: !error_color
+
 // Custom log in page spacing
 #user_session_password
   +grid-width(7)
-  
+
 #forgot_password_link
   color: black
   display: block
