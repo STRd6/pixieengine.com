@@ -1,0 +1,14 @@
+- progress = current_user.tasks.inject(0) {|total, task| task[:complete?] ? task[:value] + total : total}
+
+.tasks
+  %h3 Tasks: #{progress}% Complete!
+  - current_user.tasks.each do |task|
+    .task{:class => ("incomplete" unless task[:complete])}
+      - if task[:complete?]
+        = image_tag "icons/thumb_up.png"
+        = task[:description]
+      - else
+        = image_tag "icons/add.png"
+        = link_to task[:description], task[:link]
+      .value
+        +#{task[:value]}%

@@ -98,74 +98,62 @@ class User < ActiveRecord::Base
   def plugin_installed?(plugin)
     installed_plugins.include? plugin
   end
-  
-  def progress
-    total = 0
-    tasks = []
-    color = "red"
-
-    if !self.profile.nil? && self.profile.length > 0
-      total += 5
-      tasks << "Complete profile description"
-    end
-
-    if self.sprites.length > 0
-      total += 50
-      tasks << "Create a sprite"
-    end
-
-    if !self.avatar_file_size.nil?
-      total += 10
-      tasks << "Choose an avatar"
-    end
-
-    if self.authored_comments.length > 0
-      total += 10
-      tasks << "Write a comment"
-    end
-
-    if self.favorites_count > 0
-      total += 10
-      tasks << "Find a favorite"
-    end
-
-    if self.invites.length == 1
-      total += 5
-      tasks << "Invite a friend"
-    elsif self.invites.length == 2
-      total += 10
-      tasks << "Invite 2 friends"
-    elsif self.invites.length >= 3
-      total += 15
-      tasks << "Invite 3 or more friends"
-    end
-
-    if (34..66) === total
-      color = "yellow"
-    elsif (67..100) === total
-      color = "green"
-    end
-
-    remaining_tasks = [
-      "Complete profile description",
-      "Create a sprite",
-      "Choose an avatar",
-      "Write a comment",
-      "Find a favorite",
-      "Invite 3 or more friends"
-      ] - tasks
-
-    return {
-      :total => total,
-      :tasks => tasks,
-      :color => color,
-      :remaining_tasks => remaining_tasks
-    }
-
-  end
 
   def invite(options)
     invites.create(options)
+  end
+
+  def tasks
+    [
+      {
+        :description => "Create a sprite",
+        :value => 40,
+        :complete? => sprites.length > 0,
+        :link => {:action => :new, :controller => :sprites},
+      },
+      {
+        :description => "Fill out your profile",
+        :value => 10,
+        :complete => profile && profile.length > 0,
+        :link => {:action => :edit, :id => id, :controller => :users},
+      },
+      {
+        :description => "Upload an avatar",
+        :value => 10,
+        :complete => avatar_file_size,
+        :link => {:action => :edit, :id => id, :controller => :users},
+      },
+      {
+        :description => "Find three favorites",
+        :value => 10,
+        :complete? => favorites_count > 2,
+        :link => {:action => :index, :controller => :sprites},
+      },
+      {
+        :description => "Leave a comment",
+        :value => 10,
+        :complete? => authored_comments.length > 0,
+        :link => {:action => :index, :controller => :sprites},
+      },
+      {
+        :description => "Invite a friend",
+        :value => 10,
+        :complete => invites.length > 0,
+        :link => {:action => :new, :controller => :invites},
+      },
+      {
+        :description => "Invite another friend",
+        :value => 5,
+        :complete => invites.length > 1,
+        :link => {:action => :new, :controller => :invites},
+      },
+      {
+        :description => "Invite a third friend",
+        :value => 5,
+        :complete => invites.length > 2,
+        :link => {:action => :new, :controller => :invites},
+      }
+    ]
   end
 
   private

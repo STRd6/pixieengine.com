@@ -75,6 +75,8 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
 
     collection do
+      get :progress
+      
       post :install_plugin
       post :uninstall_plugin
     end

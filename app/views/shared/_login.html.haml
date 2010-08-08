@@ -6,8 +6,3 @@
 -else
   = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
 
-- if current_user
-  :javascript
-    $(document).ready(function() {
-      $("#progressbar").progressbar({ value: #{current_user.progress[:total]}});
-    });
