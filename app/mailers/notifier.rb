@@ -19,6 +19,11 @@ class Notifier < ActionMailer::Base
     mail :to => user.email
   end
 
+  def invitation(invite)
+    @invite = invite
+    mail :to => invite.email
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email

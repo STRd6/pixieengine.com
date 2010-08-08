@@ -1,7 +1,21 @@
+%h2 Invite a Friend
+
 - form_for @invite do |form|
   = form.error_messages
+
   %p
-    = form.label :email
+    = form.label :to, "Friend's name"
+    = form.text_field :to
+
+  %p
+    = form.label :email, "Friend's email"
     = form.text_field :email
 
   = form.submit "Invite friend"
+
+%p
+  When you invite a friend they will receive an email similar to the sample
+  below:
+
+%pre
+  = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})

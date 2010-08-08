@@ -1,17 +1,23 @@
 class Invite < ActiveRecord::Base
+  include Rails.application.routes.url_helpers
+  self.default_url_options = { :host => "pixie.strd6.com" }
+
   belongs_to :user
 
-  validates_presence_of :user, :token, :email
+  validates_presence_of :user, :token, :email, :to
+
+  validates_format_of :email, :with => Authlogic::Regex.email
+  validates_format_of :to, :with => /\A[A-Za-z0-9 ]*\Z/, :message => "should have a more personalized name"
 
   after_create do
-    Notifier.welcome_email(self).deliver unless email.blank?
+    Notifier.invitation(self).deliver
   end
 
   before_validation :on => :create do
     self.token = ActiveSupport::SecureRandom.hex(8)
   end
 
-  def to_s
-    return link_token_url(token)
+  def url
+    return invite_token_url(token)
   end
 end

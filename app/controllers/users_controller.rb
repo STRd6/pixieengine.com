@@ -19,8 +19,13 @@ class UsersController < ResourceController::Base
 
   def create
     @object = User.new(params[:user])
+
+    @object.referrer_id = session[:referrer_id]
+
     @object.save do |result|
       if result
+        session.delete(:referrer_id)
+
         bingo!("registration_popup")
         bingo!("load_pic")
         bingo!("login_after")

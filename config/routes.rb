@@ -90,6 +90,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   # Link Tracking
   match 'r/:token' => "links#track", :as => :link_token
+  match 'i/:token' => "invites#track", :as => :invite_token
 
   match 'about' => "home#about", :as => :about
   match 'sitemap' => "home#sitemap"

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100805020611) do
+ActiveRecord::Schema.define(:version => 20100808030809) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(:version => 20100805020611) do
     t.string   "token",      :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "to",         :null => false
   end
 
   create_table "libraries", :force => true do |t|
