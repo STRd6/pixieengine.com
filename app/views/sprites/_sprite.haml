@@ -2,9 +2,9 @@
   - if current_user
     .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
     
-  %span.title= link_to sprite.title || "sprite #{sprite.id}"
+  %span.title= link_to(sprite.title || "sprite #{sprite.id}", sprite)
   
-  = link_to image_tag(sprite.image.url(:thumb)), sprite_path(sprite)
+  = link_to image_tag(sprite.image.url(:thumb)),sprite
 
   .user
     By 
