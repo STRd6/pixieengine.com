@@ -177,6 +177,14 @@ class Sprite < ActiveRecord::Base
     update_attribute(:image, File.open(file_path))
   end
 
+  def to_param
+    if title.blank?
+      id
+    else
+      "#{id}-#{title.seo_url}"
+    end
+  end
+
   private
 
   def base_path
