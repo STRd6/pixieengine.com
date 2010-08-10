@@ -1,17 +1,29 @@
 .sprite
-  +inline-block
-  width: 120px
-  height: 80px
-  float: left
-  margin: 15px
-  padding: 8px
+  +grid-width(4)
+  display: inline-block
+  height: auto
+  margin-right = $blueprint-grid-margin
+  margin-bottom = $blueprint-grid-margin*2
+  position: relative
+  vertical-align: top
+  word-wrap: break-word
 
   img
-    padding: 6px
-    float: left
-
+    border = 1px solid !light_gray
+    display: block
+    margin: .5em 0
+  
   .favorites
-    float: left
+    cursor: pointer
+    display: inline-block
+    
+  .title a
+    vertical-align: top
+    
+  .user
+    color: #666
+    a
+      color = !dark_gray
 
 .tags
   form
@@ -30,7 +42,7 @@
   +inline-block
   +border-radius(4px)
   background-color: #FFF
-  border: 1px solid #666
+  border = 1px solid !dark_gray
   font-weight: bold
   margin-right: 5px
   padding: 4px 8px
