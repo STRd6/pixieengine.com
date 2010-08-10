@@ -33,5 +33,4 @@ xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
       xml.priority    0.6
     end
   end
-
 end
