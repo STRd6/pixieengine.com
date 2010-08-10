@@ -185,6 +185,37 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def self.import_titles_from_files(sprites, directory_path)
+    dir = Dir.new(directory_path)
+
+    title_table = {}
+
+    dir.each do |file_name|
+      next if file_name =~ /^\./
+      next unless file_name =~ /(\.png|\.gif)\z/
+
+      title = file_name[0...-4].titleize
+      file_path = File.expand_path(file_name, directory_path)
+
+      checksum = Digest::MD5.hexdigest(File.read(file_path))
+      title_table[checksum] = title
+    end
+
+    update_count = 0
+
+    sprites.each do |sprite|
+      checksum = Digest::MD5.hexdigest(sprite.image.to_file.read)
+
+      if (new_title = title_table[checksum]) && sprite.title.blank?
+        sprite.update_attribute :title, new_title
+        update_count += 1
+        puts "Updating sprite #{sprite.id}'s title: #{new_title}"
+      end
+    end
+
+    puts update_count
+  end
+
   private
 
   def base_path
