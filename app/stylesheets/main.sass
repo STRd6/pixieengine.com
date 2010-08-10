@@ -59,8 +59,8 @@ a
   width: auto
 
 #sidebar
-  display: block
   +grid-width(4)
+  display: block
   left: 0
   margin-right = $blueprint-grid-margin
   position: absolute
@@ -94,11 +94,11 @@ a
 
 #header
   +box-sizing(border-box)
+  +grid-width(20)
   border-bottom = 1px solid !dark_gray
   border-left = 1px solid !dark_gray
   display: inline-block
   height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
-  +grid-width(20)
   position: relative
   
   // Apply to all header links (navigation and log in link)
@@ -113,19 +113,19 @@ a
     text-decoration: none
     
   #nav
-    bottom: 0
     +box-sizing(border-box)
-    display: inline-block
     +grid-width(12)
+    bottom: 0
+    display: inline-block
     padding-left = $blueprint-grid-width + $blueprint-grid-margin
     position: absolute
     
     // Text straight in a span means it's the current page
     span
+      +grid-width(2)
       color = !main_color
       display: inline-block
       font-weight: bold
-      +grid-width(2)
       margin-right = $blueprint-grid-margin
       text-align: left
       text-decoration: none
@@ -139,14 +139,15 @@ a
           border-bottom = 4px solid !dark_gray
       
   #login_link
-    bottom: 0
-    color: black
-    display: inline-block
     +grid-width(8)
+    bottom: 0
+    color = !light_gray
+    display: inline-block
     padding-bottom: 4px
     position: absolute
     right: 0
     text-align: center
+    word-spacing: .1em
     a
       font-weight: normal
       text-align: center
@@ -155,9 +156,9 @@ a
         text-decoration: none
   
 #content
-  border-right = 1px solid !dark_gray
   +box-sizing(border-box)
   +grid-width(20)
+  border-right = 1px solid !dark_gray
   padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 0 ($blueprint-grid-width + $blueprint-grid-margin)
   position: relative
   top: -5px

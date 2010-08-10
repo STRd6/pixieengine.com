@@ -4,7 +4,6 @@
 
 - sprites.each do |sprite|
   = render :partial => sprite
-.clear
 
 .tags
   - tags = Sprite.with_ids(sprites).tag_counts
