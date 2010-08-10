@@ -1,8 +1,7 @@
 class SpritesController < ResourceController::Base
   actions :all
 
-  before_filter :require_owner, :only => [:edit, :update]
-  before_filter :require_owner_or_admin, :only => [:destroy]
+  before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
   before_filter :require_user, :only => [:add_tag, :remove_tag]
 
   create.before do
