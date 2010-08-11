@@ -58,6 +58,14 @@ class Sprite < ActiveRecord::Base
     }
   end
 
+  def display_name
+    if title.blank?
+      "Sprite #{id}"
+    else
+      title
+    end
+  end
+
   def data
     Sprite.data_from_path(image.url)
   end

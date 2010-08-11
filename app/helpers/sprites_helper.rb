@@ -18,4 +18,8 @@ module SpritesHelper
       nil
     end
   end
+
+  def image_link(sprite)
+    link_to image_tag(sprite.image.url(:thumb), :alt => sprite.display_name, :title => sprite.display_name), sprite
+  end
 end
