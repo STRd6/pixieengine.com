@@ -1,4 +1,5 @@
-- @meta_desc = "Load #{sprite.meta_desc if sprite}"
+- unless sprite.new_record?
+  - @meta_desc = "Load #{sprite.meta_desc}"
 
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
