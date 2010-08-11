@@ -36,7 +36,7 @@ class UsersController < ResourceController::Base
           format.html do
             @registered = true
             flash[:notice] = "Account registered!"
-            redirect_back_or_default url_for(@object)
+            redirect_to user
           end
           format.json { render :json => {:status => "ok"} }
         end
