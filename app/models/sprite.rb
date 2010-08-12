@@ -58,7 +58,6 @@ class Sprite < ActiveRecord::Base
     }
   end
 
-<<<<<<< Updated upstream
   def display_name
     if title.blank?
       "Sprite #{id}"
@@ -67,14 +66,13 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-=======
   def self.color_to_alpha(sprites, color=nil)
     sprites.each do |sprite|
       sprite.alpha_clear! color
     end
   end
 
-  def alpha_clear(color_to_change=nil)
+  def alpha_clear!(color_to_change=nil)
     width = self.width
     height = self.height
     data = []
@@ -99,7 +97,6 @@ class Sprite < ActiveRecord::Base
     save!
   end
 
->>>>>>> Stashed changes
   def data
     Sprite.data_from_path(image.url)
   end
