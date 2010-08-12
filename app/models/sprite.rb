@@ -12,7 +12,7 @@ class Sprite < ActiveRecord::Base
 
   acts_as_archive
   acts_as_taggable
-  acts_as_taggable_on :dimension
+  acts_as_taggable_on :dimension, :source
 
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
@@ -75,7 +75,14 @@ class Sprite < ActiveRecord::Base
   def alpha_clear(color_to_change=nil)
     data = []
 
-    image = Magick::Image.read(self.image.url).first
+    if tempfile = self.image.queued_for_write[:original]
+      image = Magick::Image.read(tempfile.path).first
+    else
+      image = Magick::Image.read(self.image.url).first
+    end
+
+    width = image.columns
+    height = image.rows
 
     image.get_pixels(0, 0, width, height).each do |pixel|
       data << pixel
@@ -157,6 +164,7 @@ class Sprite < ActiveRecord::Base
     padding_x = options[:padding_x] || options[:padding] || 0
     padding_y = options[:padding_y] || options[:padding] || 0
     tags = options[:tags]
+    source_list = options[:source_list]
     alpha_color = options[:alpha_color]
     pixel_format = "RGBA"
 
@@ -191,7 +199,7 @@ class Sprite < ActiveRecord::Base
           image_io.original_filename = "image.png"
           image_io.content_type = "image/png"
 
-          sprite = Sprite.new(:image => image_io, :tag_list => tags)
+          sprite = Sprite.new(:image => image_io, :tag_list => tags, :source_list => source_list)
 
           if alpha_color
             sprite.alpha_clear(alpha_color)
