@@ -163,6 +163,7 @@ class Sprite < ActiveRecord::Base
     margin_y = options[:margin_y] || options[:margin] || 0
     padding_x = options[:padding_x] || options[:padding] || 0
     padding_y = options[:padding_y] || options[:padding] || 0
+    row_start = options[:row_start]
     tags = options[:tags]
     source_list = options[:source_list]
     alpha_color = options[:alpha_color]
@@ -175,7 +176,7 @@ class Sprite < ActiveRecord::Base
     tile_columns = (image.columns / (tile_width + 2 * padding_x + margin_x)).floor
     tile_rows = (image.rows / (tile_height + 2 * padding_y + margin_y)).floor
 
-    tile_rows.times do |row|
+    ((row_start || 0)...tile_rows).each do |row|
       tile_count = 0
       tile_columns.times do |col|
         pixel_data = image.export_pixels(
