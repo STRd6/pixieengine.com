@@ -72,12 +72,10 @@ class Sprite < ActiveRecord::Base
     end
   end
 
-  def alpha_clear!(color_to_change=nil)
-    width = self.width
-    height = self.height
+  def alpha_clear(color_to_change=nil)
     data = []
 
-    image = Magick::Image.read(self.file_path).first
+    image = Magick::Image.read(self.image.url).first
 
     image.get_pixels(0, 0, width, height).each do |pixel|
       data << pixel
@@ -94,6 +92,10 @@ class Sprite < ActiveRecord::Base
     io.content_type = "image/png"
 
     self.image = io
+  end
+
+  def alpha_clear!(color_to_change=nil)
+    alpha_clear(color_to_change)
     save!
   end
 
@@ -154,7 +156,8 @@ class Sprite < ActiveRecord::Base
     margin_y = options[:margin_y] || options[:margin] || 0
     padding_x = options[:padding_x] || options[:padding] || 0
     padding_y = options[:padding_y] || options[:padding] || 0
-    tags = options[:tags] || ''
+    tags = options[:tags]
+    alpha_color = options[:alpha_color]
     pixel_format = "RGBA"
 
     puts "importing #{path}"
@@ -184,10 +187,17 @@ class Sprite < ActiveRecord::Base
           puts "discarding blank image"
           # next
         else
-          sprite = Sprite.create!(:width => tile_width, :height => tile_height)
-          sprite.add_tag(tags)
+          image_io = StringIO.new(tile_image.to_blob {self.format = "png"})
+          image_io.original_filename = "image.png"
+          image_io.content_type = "image/png"
 
-          tile_image.write(sprite.file_path)
+          sprite = Sprite.new(:image => image_io, :tag_list => tags)
+
+          if alpha_color
+            sprite.alpha_clear(alpha_color)
+          end
+
+          sprite.save!
           tile_count += 1
         end
       end
