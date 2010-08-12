@@ -58,6 +58,7 @@ class Sprite < ActiveRecord::Base
     }
   end
 
+<<<<<<< Updated upstream
   def display_name
     if title.blank?
       "Sprite #{id}"
@@ -66,6 +67,39 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+=======
+  def self.color_to_alpha(sprites, color=nil)
+    sprites.each do |sprite|
+      sprite.alpha_clear! color
+    end
+  end
+
+  def alpha_clear(color_to_change=nil)
+    width = self.width
+    height = self.height
+    data = []
+
+    image = Magick::Image.read(self.file_path).first
+
+    image.get_pixels(0, 0, width, height).each do |pixel|
+      data << pixel
+    end
+
+    color = (color_to_change) ? Magick::Pixel.from_color(color_to_change) : data[0]
+
+    data.map!{ |pixel| (pixel == color) ? Magick::Pixel.new(0,0,0,Magick::TransparentOpacity) : pixel}
+
+    image.store_pixels(0, 0, width, height, data)
+
+    io = StringIO.new(image.to_blob)
+    io.original_filename = "image.png"
+    io.content_type = "image/png"
+
+    self.image = io
+    save!
+  end
+
+>>>>>>> Stashed changes
   def data
     Sprite.data_from_path(image.url)
   end
