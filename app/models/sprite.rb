@@ -17,18 +17,17 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
-
+  #TODO: Why does this require a special association?
+  has_many :tags, :through => :taggings
   define_index do
     indexes title
     indexes description
 
+    #TODO: Get this working without the special association
     indexes tags(:name), :as => :tags
-    indexes dimension(:name), :as => :dimension
-
-    #TODO: Source is a special name and the tag context should be changed
-    #indexes source(:name), :as => :source
   end
+
+  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
 
   MAX_LENGTH = 256
   # Limit sizes to small pixel art for now
@@ -134,7 +133,7 @@ class Sprite < ActiveRecord::Base
 
   def add_tag(tag)
     unless tag.blank?
-      self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
+      self.update_attribute(:tag_list, (tag_list + [tag]).join(","))
       reload
     end
   end
