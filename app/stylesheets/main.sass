@@ -154,6 +154,25 @@ a
       text-decoration: underline
       &:hover
         text-decoration: none
+
+  form.search
+    +border-radius-bottom(6px)
+
+    background-color: !light_gray
+    padding: 0.5em 1em
+    position: absolute
+    right: 0px
+    top: 0px
+
+    input
+      display: inline
+      margin: 0
+      &[type="text"]
+        width: 160px
+
+      &[type="submit"]
+        padding: 4px 6px
+
   
 #content
   +box-sizing(border-box)

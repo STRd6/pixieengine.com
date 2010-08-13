@@ -20,3 +20,7 @@
     
   #login_link
     = render :partial => "/shared/login"
+
+  - form_tag(sprites_path, :method => "get", :class => "search") do
+    = text_field_tag(:q)
+    = submit_tag("Search", :name => nil)
