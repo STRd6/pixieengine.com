@@ -103,13 +103,13 @@ class SpritesController < ResourceController::Base
   private
 
   def collection
-    sprites = Sprite
-
-    if params[:tagged]
-      sprites = Sprite.tagged_with(params[:tagged])
+    @collection ||= if params[:tagged]
+      sprites = Sprite.tagged_with(params[:tagged]).paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
+    elsif params[:q]
+      sprites = Sprite.search(params[:q], :page => params[:page], :per_page => Sprite.per_page)
+    else
+      Sprite.paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
     end
-
-    @collection ||= sprites.paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
   end
 
   helper_method :sprites

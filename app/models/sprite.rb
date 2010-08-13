@@ -19,6 +19,17 @@ class Sprite < ActiveRecord::Base
 
   attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
 
+  define_index do
+    indexes title
+    indexes description
+
+    indexes tags(:name), :as => :tags
+    indexes dimension(:name), :as => :dimension
+
+    #TODO: Source is a special name and the tag context should be changed
+    #indexes source(:name), :as => :source
+  end
+
   MAX_LENGTH = 256
   # Limit sizes to small pixel art for now
   validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
