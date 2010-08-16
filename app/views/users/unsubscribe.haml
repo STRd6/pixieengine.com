@@ -1,0 +1,6 @@
+- form_tag (url_for({:action => "do_unsubscribe"})) do
+
+  = hidden_field_tag (:id, params[:id])
+  
+  %p Really unsubscribe #{User.find(params[:id]).email} from Pixie newsletter?
+  = submit_tag "Unsubscribe"
