@@ -82,6 +82,16 @@ class UsersController < ResourceController::Base
     flash[:notice] = "Plugin uninstalled"
     redirect_to :back
   end
+  
+  def do_unsubscribe
+    user = User.find params[:id]
+    
+    if (user) 
+      user.update_attribute(:subscribed, false)
+    end
+    flash[:notice] = "#{user.email} has been unsubscribed"
+    redirect_to root_path
+  end
 
   private
 

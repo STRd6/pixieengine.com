@@ -24,6 +24,11 @@ class Notifier < ActionMailer::Base
     mail :to => invite.email
   end
 
+  def newsletter(user)
+    @user = user
+    mail :to => user.email
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email

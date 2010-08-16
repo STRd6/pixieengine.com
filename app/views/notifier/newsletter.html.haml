@@ -1,0 +1,50 @@
+%html
+  %body{:bgcolor => "#1084CE", :leftmargin => "0", :marginheight => "0", :marginwidth => "0", :offset => "0", :topmargin => "0"}
+    %STYLE
+      \.headerTop { background-color:#FFCC66; border-top:0px solid #000000; border-bottom:1px solid #FFFFFF; text-align:center; }
+      \.adminText { font-size:10px; color:#666666; line-height:200%; font-family:verdana; text-decoration:none; }
+      \.headerBar { background-color:#FFFFFF; border-top:0px solid #333333; border-bottom:10px solid #FFFFFF; }
+      \.title { font-size:20px; font-weight:bold; color:#CC6600; font-family:arial; line-height:110%; }
+      \.subTitle { font-size:11px; font-weight:normal; color:#666666; font-style:italic; font-family:arial; }
+      \.defaultText { font-size:12px; color:#000000; line-height:150%; font-family:trebuchet ms; }
+      \.footerRow { background-color:#1084CE; border-top:10px solid #FFFFFF; }
+      \.footerText { font-size:10px; color:#1084CE; line-height:100%; font-family:verdana; }
+      a { color:#DB4B00; color:#DB4B00; color:#DB4B00; }
+    %table.backgroundTable{:bgcolor => "#1084CE", :cellpadding => "10", :cellspacing => "0", :width => "100%"}
+      %tr
+        %td{:align => "center", :valign => "top"}
+          %table{:cellpadding => "0", :cellspacing => "0", :width => "550"}
+            %tr
+              %td{:style => "background-color:#FFFFFF;border-top:0px solid #333333;border-bottom:10px solid #FFFFFF;"}
+                %center
+                  %a{:href => ""}
+                    %IMG#editableImg1{:BORDER => "0", :SRC => "http://pixie.strd6.com/pixie_banner.png", :align => "center", :alt => "Pixie", :title => "Pixie"}/
+          %table{:bgcolor => "#FFFFFF", :cellpadding => "20", :cellspacing => "0", :width => "550"}
+            %tr
+              %td{:bgcolor => "#FFFFFF", :style => "font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;", :valign => "top"}
+                %p
+                  %span{:style => "font-size:20px;font-weight:bold;color:#DB4B00;font-family:arial;line-height:110%;"} This week in features
+                  %br
+                    %span{:style => "font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;"} Everything you have all been asking for
+                    %br
+                      We have been hard at work rolling out new features. We have two new features this week: a color palette with great default colors and a progress meter on your user profile page.
+                %p
+                  %span{:style => "font-size:20px;font-weight:bold;color:#DB4B00;font-family:arial;line-height:110%;"} New Colors: Finally
+                  %br
+                    %span{:style => "font-size:11px;font-weight:normal;color:#666666;font-style:italic;font-family:arial;"} For those of you who hated that console yellow
+                    %br
+                      The colors we have added make drawing what you want much simpler.
+                  These are the kind of colors you would take if you were stranded on a desert island.
+                  We tried to keep the palette small but still offer colors that supported a wide range of applications. Read the full palette blog post
+                  %a{:href => "http://strd6.com/2010/08/new-pixie-color-palette/"} here
+                  Stop by, become a 100% vested Pixie user, and give the new colors a spin. We can't wait to see what you will create.
+                  \-Pixie
+            %tr
+              %td{:style => "background-color:#FFFFFF;border-top:10px solid #FFFFFF;", :valign => "top"}
+                %span{:style => "font-size:10px;color:#666666;line-height:100%;font-family:verdana;"}
+                  %center
+                    = link_to "Unsubscribe", {:controller => "/users", :action => "unsubscribe", :id => @user.id, :only_path => false}
+                    #{@user.email} from this list.
+                    %br/
+                    Copyright (C) 2010 STRd6 All rights reserved.
+                    %br/
