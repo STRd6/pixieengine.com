@@ -1,10 +1,14 @@
 .bundle
 .DS_Store
 config/authlogic.yml
+config/database.yml
+config/development.sphinx.conf
 config/s3.yml
 db/*.sqlite3
+db/sphinx
 lib/tasks/local.rake
 log/*.log
+log/*.pid
 tmp/**/*
 nbproject
 public/stylesheets/*.css

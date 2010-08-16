@@ -32,6 +32,7 @@ gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
+gem "thinking-sphinx", "2.0.0.rc1", :require => "thinking_sphinx"
 gem "will_paginate", "3.0.pre"
 gem "whenever"
 

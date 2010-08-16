@@ -1,0 +1,2 @@
+production:
+  searchd_file_path: "/u/apps/pixie.strd6.com/db/sphinx/production"

@@ -12,10 +12,20 @@ class Sprite < ActiveRecord::Base
 
   acts_as_archive
   acts_as_taggable
-  acts_as_taggable_on :dimension
+  acts_as_taggable_on :dimension, :source
 
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
+
+  #TODO: Why does this require a special association?
+  has_many :tags, :through => :taggings
+  define_index do
+    indexes title
+    indexes description
+
+    #TODO: Get this working without the special association
+    indexes tags(:name), :as => :tags
+  end
 
   attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
 
@@ -73,11 +83,16 @@ class Sprite < ActiveRecord::Base
   end
 
   def alpha_clear(color_to_change=nil)
-    width = self.width
-    height = self.height
     data = []
 
-    image = Magick::Image.read(self.file_path).first
+    if tempfile = self.image.queued_for_write[:original]
+      image = Magick::Image.read(tempfile.path).first
+    else
+      image = Magick::Image.read(self.image.url).first
+    end
+
+    width = image.columns
+    height = image.rows
 
     image.get_pixels(0, 0, width, height).each do |pixel|
       data << pixel
@@ -94,6 +109,10 @@ class Sprite < ActiveRecord::Base
     io.content_type = "image/png"
 
     self.image = io
+  end
+
+  def alpha_clear!(color_to_change=nil)
+    alpha_clear(color_to_change)
     save!
   end
 
@@ -114,7 +133,7 @@ class Sprite < ActiveRecord::Base
 
   def add_tag(tag)
     unless tag.blank?
-      self.update_attribute(:tag_list, (tags.map(&:to_s) + [tag]).join(","))
+      self.update_attribute(:tag_list, (tag_list + [tag]).join(","))
       reload
     end
   end
@@ -154,7 +173,10 @@ class Sprite < ActiveRecord::Base
     margin_y = options[:margin_y] || options[:margin] || 0
     padding_x = options[:padding_x] || options[:padding] || 0
     padding_y = options[:padding_y] || options[:padding] || 0
-    tags = options[:tags] || ''
+    row_start = options[:row_start]
+    tags = options[:tags]
+    source_list = options[:source_list]
+    alpha_color = options[:alpha_color]
     pixel_format = "RGBA"
 
     puts "importing #{path}"
@@ -164,7 +186,7 @@ class Sprite < ActiveRecord::Base
     tile_columns = (image.columns / (tile_width + 2 * padding_x + margin_x)).floor
     tile_rows = (image.rows / (tile_height + 2 * padding_y + margin_y)).floor
 
-    tile_rows.times do |row|
+    ((row_start || 0)...tile_rows).each do |row|
       tile_count = 0
       tile_columns.times do |col|
         pixel_data = image.export_pixels(
@@ -184,10 +206,17 @@ class Sprite < ActiveRecord::Base
           puts "discarding blank image"
           # next
         else
-          sprite = Sprite.create!(:width => tile_width, :height => tile_height)
-          sprite.add_tag(tags)
+          image_io = StringIO.new(tile_image.to_blob {self.format = "png"})
+          image_io.original_filename = "image.png"
+          image_io.content_type = "image/png"
 
-          tile_image.write(sprite.file_path)
+          sprite = Sprite.new(:image => image_io, :tag_list => tags, :source_list => source_list)
+
+          if alpha_color
+            sprite.alpha_clear(alpha_color)
+          end
+
+          sprite.save!
           tile_count += 1
         end
       end

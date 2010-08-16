@@ -93,6 +93,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def to_param
+    "#{id}-#{display_name.seo_url}"
+  end
+
   def install_plugin(plugin)
     installed_plugins << plugin
   end

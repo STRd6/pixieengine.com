@@ -35,6 +35,9 @@
   - sprite.tag_list.each do |tag|
     = sprite_tag_link(sprite, tag)
 
+  - sprite.source_list.each do |source|
+    = sprite_tag_link(sprite, source)
+
   - sprite.dimension_list.each do |dimension|
     = sprite_tag_link(sprite, dimension)
 
