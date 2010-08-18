@@ -28,6 +28,10 @@ class User < ActiveRecord::Base
 
   attr_accessible :avatar, :display_name, :email, :password, :profile
 
+  scope :online_now, lambda {
+    where("last_request_at >= ?", Time.zone.now - 15.minutes)
+  }
+
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?
   end
