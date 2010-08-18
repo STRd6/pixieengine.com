@@ -84,12 +84,17 @@ class UsersController < ResourceController::Base
   end
   
   def do_unsubscribe
-    user = User.find params[:id]
+    if params[:id]
+      user = User.find(params[:id])
+    elsif params[:email]
+      user = User.find_by_email(params[:email])
+    end
     
-    if (user) 
+    if user
       user.update_attribute(:subscribed, false)
     end
-    flash[:notice] = "#{user.email} has been unsubscribed"
+
+    flash[:notice] = "You have been unsubscribed"
     redirect_to root_path
   end
 

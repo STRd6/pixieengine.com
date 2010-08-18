@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
     Notifier.forgot_password(self).deliver
   end
   
-  def send_newsletter_email
+  def self.send_newsletter_email
     User.all(:conditions => {:subscribed => true}).each do |user|
       Notifier.newsletter(user).deliver  
     end
