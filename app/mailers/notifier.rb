@@ -1,7 +1,7 @@
 class Notifier < ActionMailer::Base
   default_url_options[:host] = "pixie.strd6.com"
 
-  default :from => "notifications@strd6.com"
+  default :from => 'Pixie <notifications@strd6.com>'
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -16,17 +16,22 @@ class Notifier < ActionMailer::Base
 
   def welcome_email(user)
     @user = user
-    mail :to => user.email
+    mail :subject => "Welcome to Pixie",
+      :to => user.email
   end
 
   def invitation(invite)
+    user = invite.user
     @invite = invite
-    mail :to => invite.email
+    mail :subject => "You're invited to join Pixie!",
+      :to => invite.email,
+      :from => "#{user.display_name} <#{user.email}>"
   end
 
   def newsletter(user)
     @user = user
-    mail :to => user.email
+    mail :subject => "Pixie Newsletter",
+      :to => user.email
   end
 
   def forgot_password(user)
