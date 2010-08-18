@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  before_filter :set_abingo_identity
+  before_filter :set_abingo_identity, :track_visits
 
   after_filter :flash_to_headers
 
@@ -19,6 +19,12 @@ class ApplicationController < ActionController::Base
     else
       session[:abingo_identity] ||= rand(10 ** 10)
       Abingo.identity = session[:abingo_identity]
+    end
+  end
+
+  def track_visits
+    if current_user
+      Visit.track(current_user, controller_name, action_name)
     end
   end
 

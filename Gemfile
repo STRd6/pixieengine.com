@@ -25,6 +25,7 @@ gem "exception_notification", :git => "git://github.com/rails/exception_notifica
 gem 'haml'
 gem 'hpricot'
 gem 'mail'
+gem 'mocha'
 gem 'oauth'
 gem "oauth2"
 gem 'paperclip'

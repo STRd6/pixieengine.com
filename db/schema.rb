@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100814081527) do
+ActiveRecord::Schema.define(:version => 20100818035829) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -281,5 +281,14 @@ ActiveRecord::Schema.define(:version => 20100814081527) do
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
+
+  create_table "visits", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "controller", :null => false
+    t.string   "action",     :null => false
+    t.datetime "created_at", :null => false
+  end
+
+  add_index "visits", ["user_id"], :name => "index_visits_on_user_id"
 
 end
