@@ -4,6 +4,8 @@ class UsersController < ResourceController::Base
   before_filter :require_user, :only => [:install_plugin]
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
 
+  REGISTERED_FLASH = "Account registered!"
+
   new_action.before do
     email = session.delete(:email) || ''
 
@@ -35,7 +37,7 @@ class UsersController < ResourceController::Base
         respond_to do |format|
           format.html do
             @registered = true
-            flash[:notice] = "Account registered!"
+            flash[:notice] = REGISTERED_FLASH
             redirect_to user
           end
           format.json { render :json => {:status => "ok"} }

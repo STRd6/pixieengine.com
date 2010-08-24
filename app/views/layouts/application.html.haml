@@ -42,7 +42,8 @@
       = render :partial => "/shared/fb_app"
     = render :partial => "/shared/analytics"
 
-    - if @registered
+    - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
+      = render :partial => "/shared/conversion"
       :javascript
         $(function() {
           trackPageview("/event/registered");
