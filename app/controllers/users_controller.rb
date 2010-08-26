@@ -134,4 +134,9 @@ class UsersController < ResourceController::Base
     object
   end
   helper_method :user
+
+  def users
+    collection
+  end
+  helper_method :users
 end

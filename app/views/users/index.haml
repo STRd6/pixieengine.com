@@ -1,4 +1,4 @@
 %h2 User List
 %ul
-- @users.each do |u|
-  %li= u.display_name
+- users.each do |user|
+  %li= link_to user.display_name, user
