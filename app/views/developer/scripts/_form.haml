@@ -18,16 +18,14 @@
   .border
     = form.text_area :code
 
-  = form.label :test
-  .border
-    = form.text_area :test
-
+  .left
+    = button_to_function "Run", "eval(codeEditor.getCode())"
   .right= form.submit
   .clear
 
 :javascript
   var codeTextArea = $('#script_code').get(0);
-  var editor = new CodeMirror.fromTextArea(codeTextArea, {
+  var codeEditor = new CodeMirror.fromTextArea(codeTextArea, {
     height: "350px",
     content: codeTextArea.value,
     parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
@@ -37,7 +35,7 @@
   });
 
   var testTextArea = $('#script_test').get(0);
-  var editor = new CodeMirror.fromTextArea(testTextArea, {
+  var testEditor = new CodeMirror.fromTextArea(testTextArea, {
     height: "350px",
     content: testTextArea.value,
     parserfile: ["tokenizejavascript.js", "parsejavascript.js"],

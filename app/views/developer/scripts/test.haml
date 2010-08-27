@@ -7,6 +7,32 @@
 %ol#qunit-tests
 #qunit-fixture
 
+= javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
+
+%h2 Test Script
+- form_for [:developer, script] do |form|
+  = form.error_messages
+
+  = form.label :test
+  .border
+    = form.text_area :test
+
+  .left
+    = button_to_function "Test", "runTest()"
+  .right= form.submit
+  .clear
+
+:javascript
+  var testTextArea = $('#script_test').get(0);
+  var testEditor = new CodeMirror.fromTextArea(testTextArea, {
+    height: "350px",
+    content: testTextArea.value,
+    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
+    stylesheet: "/stylesheets/codemirror/jscolors.css",
+    path: "/javascripts/codemirror/",
+    autoMatchParens: true
+  });
+
 :javascript
   #{script.code}
   ;
@@ -14,3 +40,9 @@
   $(function() {
     #{script.test}
   });
+
+  function runTest() {
+    QUnit.init();
+    eval(testEditor.getCode());
+    QUnit.start();
+  }
