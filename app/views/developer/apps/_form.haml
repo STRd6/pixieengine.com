@@ -21,12 +21,11 @@
   .border
     = form.text_area :code
 
-  = form.label :test
-  .border
-    = form.text_area :test
-
+  .left= button_to_function "Run", "runApp()"
   .right= form.submit
   .clear
+
+%iframe#testFrame{:src => "/blank.html"}
 
 :javascript
   var codeTextArea = $('#app_code').get(0);
@@ -39,12 +38,16 @@
     autoMatchParens: true
   });
 
-  var testTextArea = $('#app_test').get(0);
-  var editor = new CodeMirror.fromTextArea(testTextArea, {
-    height: "350px",
-    content: testTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
+  function runApp() {
+    var sandbox = $("#testFrame")[0].contentWindow.document;
+    sandbox.open();
+
+    var html = $("#app_html").val();
+    sandbox.write(html);
+
+    setTimeout(function() {
+      sandbox.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js" type="text/javascript"><\/script>');
+      sandbox.write("<script>"+ editor.getCode() +"<\/script>");
+      sandbox.close();
+    }, 1);
+  }
