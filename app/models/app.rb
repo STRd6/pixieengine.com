@@ -8,4 +8,8 @@ class App < ActiveRecord::Base
   def library_code
     libraries.map(&:code).join(";\n")
   end
+
+  def add_library(library)
+    libraries << library
+  end
 end
