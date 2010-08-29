@@ -1,7 +1,7 @@
 %h2= app.title
 
 - if owner?
-  = link_to "Edit", edit_developer_app_path(app)
+  = button_link "Edit", "application_edit", edit_developer_app_path(app)
 
 %p= app.description
 
