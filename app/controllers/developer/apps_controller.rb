@@ -1,7 +1,7 @@
 class Developer::AppsController < ResourceController::Base
   actions :all, :except => [:destroy]
 
-  before_filter :require_owner, :only => [:edit, :update]
+  before_filter :require_owner, :only => [:edit, :update, :add_library, :remove_library]
 
   create.before do
     app.user = current_user

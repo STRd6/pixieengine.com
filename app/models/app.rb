@@ -14,7 +14,7 @@ class App < ActiveRecord::Base
   end
 
   def remove_library(library)
-    app_libraries.find_by_script_id(library.id).destroy
+    app_libraries.find_by_library_id(library.id).destroy
   end
 
   def template

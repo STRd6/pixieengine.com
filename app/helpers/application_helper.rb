@@ -15,8 +15,8 @@ module ApplicationHelper
     date.utc.strftime("%Y-%m-%dT%H:%M:%S+00:00")
   end
 
-  def button_link(text, icon, link)
-    link_to "#{image_tag "icons/#{icon}.png"} #{text}".html_safe, link, :class => "button"
+  def button_link(text, icon, link, options={})
+    link_to "#{image_tag "icons/#{icon}.png"} #{text}".html_safe, link, {:class => "button"}.merge(options)
   end
 
   private
