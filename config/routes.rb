@@ -92,6 +92,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   resources :comments, :password_resets, :user_sessions
   resources :invites
 
+  match 'pixel-editor' => "sprites#new", :as => :new_sprite
+
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
 
