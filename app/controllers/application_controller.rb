@@ -100,6 +100,11 @@ class ApplicationController < ActionController::Base
     session[:return_to] = nil
   end
 
+  def context
+    nil
+  end
+  helper_method :context
+
   def flash_to_headers
     return unless request.xhr?
 

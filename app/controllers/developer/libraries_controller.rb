@@ -1,4 +1,5 @@
-class Developer::LibrariesController < ResourceController::Base
+class Developer::LibrariesController < DeveloperController
+  resource_controller
   actions :all, :except => [:destroy]
 
   before_filter :require_user

@@ -1,4 +1,5 @@
-class Developer::AppsController < ResourceController::Base
+class Developer::AppsController < DeveloperController
+  resource_controller
   actions :all, :except => [:destroy]
 
   before_filter :require_owner, :only => [:edit, :update, :add_library, :remove_library]

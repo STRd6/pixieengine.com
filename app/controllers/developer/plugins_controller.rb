@@ -1,4 +1,5 @@
-class Developer::PluginsController < ResourceController::Base
+class Developer::PluginsController < DeveloperController
+  resource_controller
   actions :all, :except => [:destroy]
 
   before_filter :require_owner, :only => [:edit, :update]

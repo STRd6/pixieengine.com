@@ -1,4 +1,5 @@
-class Developer::ScriptsController < ResourceController::Base
+class Developer::ScriptsController < DeveloperController
+  resource_controller
   actions :all, :except => [:destroy]
 
   before_filter :require_owner, :only => [:edit, :update]
