@@ -1,4 +1,6 @@
-= link_to "New Plugin", new_developer_plugin_path
+- @title = "Pixie Plugins"
+
+= button_link "New Plugin", "plugin_add", new_developer_plugin_path
 
 - plugins.each do |plugin|
   = render :partial => plugin

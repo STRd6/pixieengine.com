@@ -1,7 +1,7 @@
-%h2= plugin.title
+- @title = plugin.title
 
 - if owner?
-  = link_to "Edit", edit_developer_plugin_path(plugin)
+  = button_link "Edit", "plugin_edit", edit_developer_plugin_path(plugin)
 
 %p= plugin.description
 
