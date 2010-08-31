@@ -28,10 +28,14 @@ class Developer::LibrariesController < ResourceController::Base
     end
   end
 
+  def show
+    
+  end
+
   create.before do
     library.user = current_user
 
-    if params[:script_id]
+    unless params[:script_id].blank?
       library.library_scripts.build(:script_id => params[:script_id])
     end
   end

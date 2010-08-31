@@ -8,6 +8,10 @@ class Developer::ScriptsController < ResourceController::Base
     script.script_type = "script"
   end
 
+  def show
+    
+  end
+
   def load
     @script = Script.new(
       :parent => script,

@@ -18,6 +18,30 @@ class Developer::AppsController < ResourceController::Base
     )
   end
 
+  def add_library
+    app.add_library(Library.find(params[:library_id]))
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+      format.html do
+        flash[:notice] = "Library added"
+        redirect_to :back
+      end
+    end
+  end
+
+  def remove_library
+    app.remove_library(Library.find(params[:library_id]))
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+      format.html do
+        flash[:notice] = "Library removed"
+        redirect_to :back
+      end
+    end
+  end
+
   private
   def app
     object

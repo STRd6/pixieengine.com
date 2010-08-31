@@ -12,4 +12,13 @@ class App < ActiveRecord::Base
   def add_library(library)
     libraries << library
   end
+
+  def remove_library(library)
+    app_libraries.find_by_script_id(library.id).destroy
+  end
+
+  def template
+    #TODO Not hardcoded
+    '<canvas width="640" height="480"></canvas>'
+  end
 end
