@@ -1,6 +1,7 @@
+- @title = @app.new_record? ? "Create a New App" : "Edit your App"
+
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
-%h2 New App
 - form_for [:developer, @app] do |form|
   = form.error_messages
 
@@ -13,3 +14,5 @@
   %p
     = form.label :description
     = form.text_field :description
+
+  = form.submit

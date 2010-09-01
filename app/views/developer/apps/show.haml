@@ -11,6 +11,8 @@
             = check_box_tag "library", "1", app.libraries.include?(library), :id => nil, :name => nil
             = library.title
 
+  %li= button_link "Docs", "book_open", docs_developer_app_path(app)
+
 %p= app.description
 
 %pre= app.code

@@ -33,13 +33,3 @@
     path: "/javascripts/codemirror/",
     autoMatchParens: true
   });
-
-  var testTextArea = $('#script_test').get(0);
-  var testEditor = new CodeMirror.fromTextArea(testTextArea, {
-    height: "350px",
-    content: testTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
