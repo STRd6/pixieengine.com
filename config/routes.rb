@@ -12,9 +12,11 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         post :add_library
         post :remove_library
+        post :fork_post
 
         get :docs
         get :edit_code
+        get :fork
         get :load
         get :run
         get :lib, :defaults => { :format => 'js' }

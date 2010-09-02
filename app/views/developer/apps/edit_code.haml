@@ -1,6 +1,7 @@
+- @title = "Edit #{app.title}"
+
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
-%h2 Edit #{app.title}
 - form_for [:developer, app] do |form|
   = form.error_messages
 
