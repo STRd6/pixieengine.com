@@ -63,6 +63,7 @@
         eval(data);
         trackPageview("/event/save_drawing");
         canvas.dirty(false);
+        $(".tool.button").last().removeAttr("disabled");
       }, "script");
     }
 
@@ -96,6 +97,7 @@
           name: "Save",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
+            $(".tool.button").last().attr("disabled", true);
             window.onbeforeunload = undefined;
             postImage();
           },

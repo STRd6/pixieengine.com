@@ -770,8 +770,12 @@
 
             $.each(action.hotkeys, function(i, hotkey) {
               $(document).bind('keydown', hotkey, function(e) {
-                doIt();
-                e.preventDefault();
+                if(!actionButton.get(0).attr("disabled")) {
+                  doIt();
+                  e.preventDefault();
+                }
+
+                return false;
               });
             });
           }
@@ -782,15 +786,18 @@
               iconImg.src = action.icon;
             }
 
-            actionsMenu.append(
-              $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
-                .prepend(iconImg)
-                .addClass('tool button')
-                .click(function(e) {
+            var actionButton = $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
+              .prepend(iconImg)
+              .addClass('tool button')
+              .click(function(e) {
+                if(!$(this).attr("disabled")) {
                   doIt();
-                  return false;
-                })
-            );
+                }
+
+                return false;
+              });
+
+            actionButton.appendTo(actionsMenu);
           }
         },
 
