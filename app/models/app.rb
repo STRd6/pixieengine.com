@@ -26,7 +26,7 @@ class App < ActiveRecord::Base
 
   def generate_docs
     Dir.mktmpdir do |dir|
-      jsdoc_toolkit_dir = "vendor/jsdoc-toolkit/"
+      jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
       doc_dir = "public/production/apps/#{id}/docs/"
 
       open("#{dir}/lib.js", "w") {|f| f.write(library_code)}
