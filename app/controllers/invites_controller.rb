@@ -9,6 +9,7 @@ class InvitesController < ResourceController::Base
 
   create.response do |wants|
     wants.html do
+      Event.create(:user => current_user, :name => "invite_friend")
       flash[:notice] =  "Your friend will receive the message shortly"
       redirect_to root_path
     end

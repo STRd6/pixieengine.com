@@ -24,6 +24,7 @@ class SpritesController < ResourceController::Base
       render :update do |page|
         link = link_to "Sprite #{@sprite.id}", @sprite
 
+        Event.create(:user => current_user, :name => "save_sprite")
         page.call "notify", "Saved as #{link}"
       end
     else
