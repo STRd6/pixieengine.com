@@ -1,3 +1,5 @@
+= javascript_include_tag 'pixie/jqcolor'
+
 %h2 Edit Profile
 - form_for user, :html => { :multipart => true } do |form|
   = form.error_messages
@@ -5,6 +7,10 @@
   %p
     = form.label :display_name
     = form.text_field :display_name
+
+  %p
+    = form.label :favorite_color
+    = form.text_field :favorite_color
 
   %p
     = form.label :profile
@@ -15,3 +21,8 @@
     = form.file_field :avatar
 
   = form.submit "Update Information"
+
+:javascript
+  $(function() {
+    $("#user_favorite_color").colorPicker();
+  });

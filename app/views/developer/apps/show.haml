@@ -1,9 +1,64 @@
 %h2= app.title
 
-- if owner?
-  = link_to "Edit", edit_developer_app_path(app)
+%ul.actions
+  - if owner?
+    %li= button_link "Edit Description", "pencil", edit_developer_app_path(app)
+    %li= button_link "Edit Code", "application_edit", edit_code_developer_app_path(app)
+    %li.listMenu.menu
+      = button_link "Add Library", 'book_add', '#', "data-app_id" => app.id
+      %ul.round{:style => "display: none;"}
+        - Library.all.each do |library|
+          %li{ "data-library_id" => library.id }
+            = check_box_tag "library", "1", app.libraries.include?(library), :id => nil, :name => nil
+            = library.title
+
+  %li= button_link "Run", "application_go", run_developer_app_path(app)
+  %li= button_link "Fork", "arrow_divide", fork_developer_app_path(app)
+  %li= button_link "Docs", "book_open", docs_developer_app_path(app)
 
 %p= app.description
 
-%pre= app.html
 %pre= app.code
+
+:javascript
+  $(function() {
+    var displayedMenu;
+    var appId;
+
+    $(".listMenu .button").click(function() {
+      appId = $(this).attr("data-app_id");
+      displayedMenu = $(this).next("ul");
+      displayedMenu.show();
+
+      setTimeout(function() {
+        $(document).one('click', function() {
+          displayedMenu.fadeOut();
+        });
+      }, 0);
+
+      return false;
+    });
+
+    $(".menu li").live("click", function(event) {
+      var libraryId = $(this).attr("data-library_id");
+      var checkbox = $(this).children("input");
+      var boxClick = false;
+
+      if($(event.target).is("input")) {
+        boxClick = true;
+      }
+
+      var checked = !(checkbox.attr("checked") ^ boxClick);
+      checkbox.attr("checked", checked);
+
+      if(checked) {
+        $.post("/developer/apps/#{app.id}/add_library", {
+          library_id: libraryId
+        }, "json");
+      } else {
+        $.post("/developer/apps/#{app.id}/remove_library", {
+          library_id: libraryId
+        }, "json");
+      }
+    });
+  });

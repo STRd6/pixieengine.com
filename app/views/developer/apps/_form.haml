@@ -1,6 +1,7 @@
+- @title = @app.new_record? ? "Create a New App" : "Edit your App"
+
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
-%h2 New App
 - form_for [:developer, @app] do |form|
   = form.error_messages
 
@@ -14,37 +15,4 @@
     = form.label :description
     = form.text_field :description
 
-  = form.label :html
-  = form.text_area :html
-
-  = form.label :code
-  .border
-    = form.text_area :code
-
-  = form.label :test
-  .border
-    = form.text_area :test
-
-  .right= form.submit
-  .clear
-
-:javascript
-  var codeTextArea = $('#app_code').get(0);
-  var editor = new CodeMirror.fromTextArea(codeTextArea, {
-    height: "350px",
-    content: codeTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
-
-  var testTextArea = $('#app_test').get(0);
-  var editor = new CodeMirror.fromTextArea(testTextArea, {
-    height: "350px",
-    content: testTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
+  = form.submit

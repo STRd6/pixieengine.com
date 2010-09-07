@@ -10,8 +10,16 @@ PixieStrd6Com::Application.routes.draw do |map|
   namespace :developer do
     resources :apps do
       member do
+        post :add_library
+        post :remove_library
+        post :fork_post
+
+        get :docs
+        get :edit_code
+        get :fork
         get :load
         get :run
+        get :lib, :defaults => { :format => 'js' }
       end
     end
 
@@ -86,6 +94,8 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   resources :comments, :password_resets, :user_sessions
   resources :invites
+
+  match 'pixel-editor' => "sprites#new", :as => :new_sprite
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"

@@ -1,4 +1,5 @@
-class Developer::ScriptsController < ResourceController::Base
+class Developer::ScriptsController < DeveloperController
+  resource_controller
   actions :all, :except => [:destroy]
 
   before_filter :require_owner, :only => [:edit, :update]
@@ -6,6 +7,10 @@ class Developer::ScriptsController < ResourceController::Base
   create.before do
     script.user = current_user
     script.script_type = "script"
+  end
+
+  def show
+    
   end
 
   def load

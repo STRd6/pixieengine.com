@@ -360,6 +360,11 @@
   };
 
   $.fn.pixie = function(options) {
+    /**
+     * A pixel class.
+     * @name Pixie.Pixel
+     * @constructor
+     */
     var Pixel = function(x, y, z, f, layerCanvas, canvas, undoStack) {
       var color = transparent;
 
@@ -375,6 +380,20 @@
           return "[Pixel: " + [this.x, this.y, this.z, + this.f].join(",") + "]";
         },
 
+        /**
+         * If called with no arguments returns the String representing the color
+         * of this pixel.
+         *
+         * If called with an argument sets this pixels color to the argument.
+         *
+         * @name color
+         * @methodOf Pixie.Pixel#
+         *
+         * @param {String} [newColor] The color to set this pixel to
+         * @param {Boolean} [skipUndo] True if this action should not be undoable.
+         *
+         * @returns String
+         */
         color: function(newColor, skipUndo) {
           if(arguments.length >= 1) {
             if(!skipUndo) {
@@ -616,6 +635,10 @@
       layer = layers - 1;
       frame = 0;
 
+      /**
+       * @name Pixie.Canvas
+       * @constructor
+       */
       $.extend(canvas, {
         // Just visually clear the layers, doesn't affect undos or data
         clear: function() {
@@ -626,6 +649,19 @@
           });
         },
 
+        /**
+         * Iterate through each pixel, yielding it to the iterator function.
+         * @name eachPixel
+         * @methodOf Pixie.Canvas#
+         *
+         * @param {Number} fn The iterator function that will receive three arguments
+         * for each pixel in the current layer and frame: the pixel, the column, the row.
+         * @param {Number} [z] The layer coordinate, defaults to the current layer
+         * @param {Number} [f] The frame coordinate, defaults to the current frame
+         *
+         * @return this, for chaining
+         * @type Pixie.Canvas
+         */
         eachPixel: function(fn, z, f) {
           if(z === undefined) {
             z = layer;
@@ -645,6 +681,20 @@
           return canvas;
         },
 
+        /**
+         * Gets the pixel at the specified coordinates.
+         * @name getPixel
+         * @methodOf Pixie.Canvas#
+         *
+         * @param {Number} x The x coordinate
+         * @param {Number} y The y coordinate
+         * @param {Number} [z] The layer coordinate, defaults to the current layer
+         * @param {Number} [f] The frame coordinate, defaults to the current frame
+         *
+         * @return The pixel at the specified coordinates, undefined if no pixel
+         * is present
+         * @type Pixie.Pixel
+         */
         getPixel: function(x, y, z, f) {
           if(z === undefined) {
             z = layer;
@@ -663,6 +713,21 @@
           return undefined;
         },
 
+        /**
+         * Gets an array containing the four adjacent pixels to the coordinates
+         * specified.
+         * @name getNeighbors
+         * @methodOf Pixie.Canvas#
+         *
+         * @param {Number} x The x coordinate
+         * @param {Number} y The y coordinate
+         * @param {Number} [z] The layer coordinate, defaults to the current layer
+         * @param {Number} [f] The frame coordinate, defaults to the current frame
+         *
+         * @return An array containing the results from calling getPixel for each
+         * adjacent coordinate
+         * @type Array
+         */
         getNeighbors: function(x, y, z, f) {
           if(z === undefined) {
             z = layer;
@@ -772,6 +837,8 @@
               $(document).bind('keydown', hotkey, function(e) {
                 doIt();
                 e.preventDefault();
+
+                return false;
               });
             });
           }
@@ -782,18 +849,28 @@
               iconImg.src = action.icon;
             }
 
-            actionsMenu.append(
-              $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
-                .prepend(iconImg)
-                .addClass('tool button')
-                .click(function(e) {
+            var actionButton = $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
+              .prepend(iconImg)
+              .addClass('tool button')
+              .click(function(e) {
+                if(!$(this).attr("disabled")) {
                   doIt();
-                  return false;
-                })
-            );
+                }
+
+                return false;
+              });
+
+            actionButton.appendTo(actionsMenu);
           }
         },
 
+        /**
+         * Adds a tool to be used with the canvas.
+         * @name addTool
+         * @methodOf Pixie.Canvas#
+         *
+         * @param {Pixie.Tool} tool
+         */
         addTool: function(tool) {
           var alt = tool.name;
 
