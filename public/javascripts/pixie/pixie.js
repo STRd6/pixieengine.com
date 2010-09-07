@@ -770,10 +770,8 @@
 
             $.each(action.hotkeys, function(i, hotkey) {
               $(document).bind('keydown', hotkey, function(e) {
-                if(!actionButton.get(0).attr("disabled")) {
-                  doIt();
-                  e.preventDefault();
-                }
+                doIt();
+                e.preventDefault();
 
                 return false;
               });
