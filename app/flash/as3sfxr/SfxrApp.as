@@ -21,6 +21,7 @@ package
   import flash.net.sendToURL;
   import flash.net.URLLoader;
   import flash.net.URLRequest;
+  import flash.net.URLRequestHeader;
   import flash.net.URLRequestMethod;
   import flash.net.URLVariables;
   import flash.text.Font;
@@ -57,7 +58,7 @@ package
    *
    * @author Thomas Vian
    */
-  [SWF(width='640', height='480', backgroundColor='#C0B090', frameRate='25')]
+  [SWF(width='640', height='480', frameRate='25')]
   public class SfxrApp extends Sprite
   {
     //--------------------------------------------------------------------------
@@ -67,9 +68,6 @@ package
     //--------------------------------------------------------------------------
     [Embed(source = "assets/amiga4ever.ttf", fontName = "Amiga4Ever", mimeType = "application/x-font", embedAsCFF = "false")]
     private var Amiga4Ever:Class;            // Pixel font, original was in a tga file
-
-    [Embed(source = "assets/logo.png")]
-    private var Logo:Class;                  // SFB09 logo, for the bottom left corner
 
     private var _synth:SfxrSynth;            // synthesizer instance
 
@@ -87,9 +85,14 @@ package
 
     private var _fileRef:FileReference;      // File reference for loading in sfs file
 
-    private var _logoRect:Rectangle;         // Click rectangle for SFB website link
     private var _sfxrRect:Rectangle;         // Click rectangle for LD website link
     private var _volumeRect:Rectangle;       // Click rectangle for resetting volume
+
+    // Upload params
+    // Copyright (c) Mike Stead 2009, All rights reserved.
+    private static const MULTIPART_BOUNDARY:String  = "----------196f00b77b968397849367c61a2080";
+    private static const MULTIPART_MARK:String      = "--";
+    private static const LF:String                  = "\r\n";
 
     //--------------------------------------------------------------------------
     //
@@ -548,18 +551,70 @@ package
      */
     private function clickPostWav(button:TinyButton):void
     {
-      // TODO: Gather title data
-      var loader:URLLoader = new URLLoader();
-      var request:URLRequest = new URLRequest("/sounds/");
+      // Copyright (c) Mike Stead 2009, All rights reserved.
+      function encodeMultipartFile(id:String, data:ByteArray, fileName:String, contentType:String):ByteArray
+      {
+        var field:ByteArray = new ByteArray();
+        // Note, we writeUTFBytes and not writeUTF because it can corrupt parsing on the server
+        field.writeUTFBytes(
+          MULTIPART_MARK + MULTIPART_BOUNDARY + LF +
+          "Content-Disposition: form-data; name=\"" + id +  "\"; " +
+          "filename=\"" + fileName + "\"" + LF +
+          "Content-Type: "+ contentType + LF + LF
+        );
 
+        field.writeBytes(data);
+        field.writeUTFBytes(LF);
+
+        return field;
+      }
+
+      function encodeMultipartString(id:String, text:String):ByteArray
+      {
+        var field:ByteArray = new ByteArray();
+        // Note, we writeUTFBytes and not writeUTF because it can corrupt parsing on the server
+        field.writeUTFBytes(
+          MULTIPART_MARK + MULTIPART_BOUNDARY + LF +
+          "Content-Disposition: form-data; name=\"" + id + "\"" + LF + LF +
+          text + LF
+        );
+
+        return field;
+      }
+
+      // TODO: Set status bar to saving, disable button
+
+      // TODO: Gather title data
+
+      var request:URLRequest = new URLRequest("/sounds/");
       request.method = URLRequestMethod.POST;
+      request.contentType = "multipart/form-data; boundary=" + MULTIPART_BOUNDARY;
+      request.requestHeaders = [
+        new URLRequestHeader("Accept", "*/*"), // Allow any type of data in response
+        new URLRequestHeader("Cache-Control", "no-cache")
+      ];
+
+      var body:ByteArray = new ByteArray();
       var variables:URLVariables = new URLVariables();
-      variables.key1 = "value1";
-      variables.key2 = "value2";
-      request.data = variables;
+
+      // Send along the flashvars
+      var params:Object = this.root.loaderInfo.parameters;
+      for(var key:String in params) {
+        body.writeBytes(encodeMultipartString(key, params[key]));
+      }
+
+      body.writeBytes(encodeMultipartFile("sound[wav]", _synth.getWavFile(), "sfx.wav", "audio/x-wav"));
+      body.writeBytes(encodeMultipartFile("sound[sfs]", getSettingsFile(), "sfx.sfs", "application/octet-stream"));
+
+      body.writeUTFBytes(MULTIPART_MARK + MULTIPART_BOUNDARY + MULTIPART_MARK + LF);
+
+      request.data = body;
 
       //  Handlers
+      var loader:URLLoader = new URLLoader();
       loader.addEventListener(Event.COMPLETE, on_complete);
+
+      // Send request
       loader.load(request);
       function on_complete(e : Event):void{
         // TODO: Update status
@@ -919,12 +974,6 @@ package
       addLabel("GENERATOR", 6, 8, 0x504030);
       addLabel("MANUAL SETTINGS", 122, 8, 0x504030);
 
-      var logo:DisplayObject = new Logo();
-      logo.x = 4;
-      logo.y = 439;
-      addChild(logo);
-
-      _logoRect = logo.getBounds(stage);
       _sfxrRect = new Rectangle(480, 115, 100, 30);
       _volumeRect = new Rectangle(516, 192, 200, 15);
 
@@ -937,7 +986,6 @@ package
      */
     private function onClick(e:MouseEvent):void
     {
-      if (_logoRect.contains(stage.mouseX, stage.mouseY)) navigateToURL(new URLRequest("http://www.superflashbros.net"));
       if (_sfxrRect.contains(stage.mouseX, stage.mouseY)) navigateToURL(new URLRequest("http://www.ludumdare.com/compo/2007/12/13/sfxr-sound-effects-for-all/"));
       if (_volumeRect.contains(stage.mouseX, stage.mouseY)) _sliderLookup["masterVolume"].value = 0.5;
     }

@@ -19,6 +19,10 @@ module ApplicationHelper
     link_to "#{image_tag "icons/#{icon}.png"} #{text}".html_safe, link, {:class => "button"}.merge(options)
   end
 
+  def session_key_name
+    Rails.application.config.session_options[:key]
+  end
+
   private
   def oauth_button(name, options = {})
     "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>".html_safe

@@ -12,6 +12,12 @@ function trackPageview(pageName) {
   _gaq.push(['_trackPageview', pageName]);
 }
 
+function getCsrfData() {
+  var data = {};
+  data[$('meta[name=csrf-param]').attr('content')] = $('meta[name=csrf-token]').attr('content');
+
+  return data;
+}
 
 // Tags
 $(".tag .remove").live("click", function() {
