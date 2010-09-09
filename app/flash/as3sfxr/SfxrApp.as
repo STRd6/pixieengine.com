@@ -92,6 +92,9 @@ package
     private var _sfxrRect:Rectangle;         // Click rectangle for LD website link
     private var _volumeRect:Rectangle;       // Click rectangle for resetting volume
 
+    private var publishButton:TinyButton;    // Button to publish to web
+    private var status:TextField;            // Text status indicator
+
     //--------------------------------------------------------------------------
     //
     //  Constructor
@@ -186,7 +189,10 @@ package
       addButton("PLAY SOUND",   clickPlaySound,   490, 228);
       addButton("LOAD SOUND",   clickLoadSound,   490, 288);
       addButton("SAVE SOUND",   clickSaveSound,   490, 318);
-      addButton("PUBLISH .WAV", clickPostWav,     490, 378, 3);
+
+      status = addLabel("", 492, 356, 0);
+      publishButton =
+        addButton("PUBLISH .WAV", clickPostWav,     490, 378, 3);
       addButton("44100 HZ",     clickSampleRate,  490, 408);
       addButton("16-BIT",       clickBitDepth,    490, 438);
     }
@@ -549,7 +555,8 @@ package
      */
     private function clickPostWav(button:TinyButton):void
     {
-      // TODO: Set status bar to saving, disable button
+      status.text = "SAVING...";
+      publishButton.enabled = false;
 
       // TODO: Gather title and description data
 
@@ -561,7 +568,7 @@ package
         variables[key] = params[key];
       }
 
-      variables["sound[wav]"] = new URLFileVariable(_synth.getWavFile(), "sfx.wav");
+      variables["sound[wav]"] = new URLFileVariable(_synth.getWavFile(), "sfx.wav", "audio/x-wav");
       variables["sound[sfs]"] = new URLFileVariable(getSettingsFile(), "sfx.sfs");
 
       var request:URLRequest = new URLRequestBuilder(variables).build();
@@ -574,7 +581,8 @@ package
       // Send request
       loader.load(request);
       function on_complete(e : Event):void{
-        // TODO: Update status
+        status.text = "SAVED!";
+        publishButton.enabled = true;
       }
     }
 
@@ -954,7 +962,7 @@ package
      * @param  y      Y position of the label
      * @param  colour    Colour of the text
      */
-    private function addLabel(label:String, x:Number, y:Number, colour:uint, width:Number = 200):void
+    private function addLabel(label:String, x:Number, y:Number, colour:uint, width:Number = 200):TextField
     {
       var txt:TextField = new TextField();
       txt.defaultTextFormat = new TextFormat("Amiga4Ever", 8, colour);
@@ -966,6 +974,8 @@ package
       txt.x = x;
       txt.y = y;
       addChild(txt);
+
+      return txt;
     }
   }
 }
