@@ -185,7 +185,7 @@ package co.uk.mikestead.net
             field.writeUTFBytes(MULTIPART_MARK + MULTIPART_BOUNDARY + LF +
                                 "Content-Disposition: form-data; name=\"" + id +  "\"; " +
                                 "filename=\"" + file.name + "\"" + LF +
-                                "Content-Type: application/octet-stream" + LF + LF);
+                                "Content-Type: " + file.contentType + LF + LF);
 
             field.writeBytes(file.data);
             field.writeUTFBytes(LF);

@@ -72,35 +72,26 @@ package co.uk.mikestead.net
      */
     public class URLFileVariable
     {
-        private var _name:String;
+        private var _contentType:String;
         private var _data:ByteArray;
+        private var _name:String;
 
         /**
          * Constructor.
          *
          * @param data The contents of the file to be sent to the server
          * @param name The name to be given to the file on the server, e.g. <code>user_image.jpg</code>
+         * @param [contentType] The mime Content-type of the file. Defaults to "application/octet-stream"
          */
-        public function URLFileVariable(data:ByteArray, name:String)
+        public function URLFileVariable(data:ByteArray, name:String, contentType:String="application/octet-stream")
         {
+            _contentType = contentType;
             _data = data;
             _name = name;
         }
 
-        /**
-         * The name to be given to the file on the server
-         */
-        public function get name():String
-        {
-            return _name;
-        }
-
-        /**
-         * The contents of the file
-         */
-        public function get data():ByteArray
-        {
-            return _data;
-        }
+        public function get contentType():String { return _contentType; }
+        public function get data():ByteArray { return _data; }
+        public function get name():String { return _name; }
     }
 }
