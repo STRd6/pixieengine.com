@@ -1,0 +1,11 @@
+.sound
+  %span.title= link_to(sound.display_name, sound)
+
+  = link_to(image_tag("wav.png"), sound)
+
+  .user
+    By
+    - if sound.user
+      = link_to sound.user, sound.user
+    - else
+      Anonymous

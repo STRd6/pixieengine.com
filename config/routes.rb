@@ -100,6 +100,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   resources :invites
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
+  match 'sfx-editor' => "sounds#new", :as => :new_sound
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"
