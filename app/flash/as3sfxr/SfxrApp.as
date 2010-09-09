@@ -36,6 +36,10 @@ package
   import flash.utils.ByteArray;
   import flash.utils.Dictionary;
   import flash.utils.Endian;
+
+  import co.uk.mikestead.net.URLFileVariable;
+  import co.uk.mikestead.net.URLRequestBuilder;
+
   import ui.TinyButton;
   import ui.TinySlider;
 
@@ -87,12 +91,6 @@ package
 
     private var _sfxrRect:Rectangle;         // Click rectangle for LD website link
     private var _volumeRect:Rectangle;       // Click rectangle for resetting volume
-
-    // Upload params
-    // Copyright (c) Mike Stead 2009, All rights reserved.
-    private static const MULTIPART_BOUNDARY:String  = "----------196f00b77b968397849367c61a2080";
-    private static const MULTIPART_MARK:String      = "--";
-    private static const LF:String                  = "\r\n";
 
     //--------------------------------------------------------------------------
     //
@@ -551,64 +549,23 @@ package
      */
     private function clickPostWav(button:TinyButton):void
     {
-      // Copyright (c) Mike Stead 2009, All rights reserved.
-      function encodeMultipartFile(id:String, data:ByteArray, fileName:String, contentType:String):ByteArray
-      {
-        var field:ByteArray = new ByteArray();
-        // Note, we writeUTFBytes and not writeUTF because it can corrupt parsing on the server
-        field.writeUTFBytes(
-          MULTIPART_MARK + MULTIPART_BOUNDARY + LF +
-          "Content-Disposition: form-data; name=\"" + id +  "\"; " +
-          "filename=\"" + fileName + "\"" + LF +
-          "Content-Type: "+ contentType + LF + LF
-        );
-
-        field.writeBytes(data);
-        field.writeUTFBytes(LF);
-
-        return field;
-      }
-
-      function encodeMultipartString(id:String, text:String):ByteArray
-      {
-        var field:ByteArray = new ByteArray();
-        // Note, we writeUTFBytes and not writeUTF because it can corrupt parsing on the server
-        field.writeUTFBytes(
-          MULTIPART_MARK + MULTIPART_BOUNDARY + LF +
-          "Content-Disposition: form-data; name=\"" + id + "\"" + LF + LF +
-          text + LF
-        );
-
-        return field;
-      }
-
       // TODO: Set status bar to saving, disable button
 
-      // TODO: Gather title data
+      // TODO: Gather title and description data
 
-      var request:URLRequest = new URLRequest("/sounds/");
-      request.method = URLRequestMethod.POST;
-      request.contentType = "multipart/form-data; boundary=" + MULTIPART_BOUNDARY;
-      request.requestHeaders = [
-        new URLRequestHeader("Accept", "*/*"), // Allow any type of data in response
-        new URLRequestHeader("Cache-Control", "no-cache")
-      ];
-
-      var body:ByteArray = new ByteArray();
       var variables:URLVariables = new URLVariables();
 
       // Send along the flashvars
       var params:Object = this.root.loaderInfo.parameters;
       for(var key:String in params) {
-        body.writeBytes(encodeMultipartString(key, params[key]));
+        variables[key] = params[key];
       }
 
-      body.writeBytes(encodeMultipartFile("sound[wav]", _synth.getWavFile(), "sfx.wav", "audio/x-wav"));
-      body.writeBytes(encodeMultipartFile("sound[sfs]", getSettingsFile(), "sfx.sfs", "application/octet-stream"));
+      variables["sound[wav]"] = new URLFileVariable(_synth.getWavFile(), "sfx.wav");
+      variables["sound[sfs]"] = new URLFileVariable(getSettingsFile(), "sfx.sfs");
 
-      body.writeUTFBytes(MULTIPART_MARK + MULTIPART_BOUNDARY + MULTIPART_MARK + LF);
-
-      request.data = body;
+      var request:URLRequest = new URLRequestBuilder(variables).build();
+      request.url = "/sounds/";
 
       //  Handlers
       var loader:URLLoader = new URLLoader();
