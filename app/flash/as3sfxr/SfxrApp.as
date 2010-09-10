@@ -14,6 +14,7 @@ package
   import flash.events.KeyboardEvent;
   import flash.events.MouseEvent;
   import flash.events.TextEvent;
+  import flash.external.ExternalInterface;
   import flash.geom.Rectangle;
   import flash.net.FileFilter;
   import flash.net.FileReference;
@@ -39,6 +40,8 @@ package
 
   import co.uk.mikestead.net.URLFileVariable;
   import co.uk.mikestead.net.URLRequestBuilder;
+
+  import com.hurlant.util.Base64;
 
   import ui.TinyButton;
   import ui.TinySlider;
@@ -139,6 +142,12 @@ package
       drawButtons();
       drawSliders();
       drawCopyPaste();
+
+      // Load settings if present
+      var settingsData:String = ExternalInterface.call("loadSettingsFile");
+      if(settingsData) {
+        setSettingsFile(Base64.decodeToByteArray(settingsData));
+      }
 
       updateSliders();
       updateButtons();

@@ -15,7 +15,15 @@ class Sound < ActiveRecord::Base
 
   validates_attachment_presence :sfs
 
+  acts_as_archive
+
   belongs_to :user
+
+  def sfs_base64
+    open(sfs.url, "rb") do |f|
+      Base64.encode64(f.read())
+    end
+  end
 
   def display_name
     if title.blank?

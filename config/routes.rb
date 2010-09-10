@@ -61,7 +61,9 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   resources :sounds do
-    
+    member do
+      get :load
+    end
   end
 
   resources :sprites do

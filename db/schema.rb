@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100907182736) do
+ActiveRecord::Schema.define(:version => 20100910002836) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -57,6 +57,24 @@ ActiveRecord::Schema.define(:version => 20100907182736) do
     t.integer  "parent_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "archived_sounds", :id => false, :force => true do |t|
+    t.integer  "id"
+    t.string   "title"
+    t.text     "description"
+    t.integer  "user_id"
+    t.string   "wav_file_name"
+    t.string   "wav_content_type"
+    t.integer  "wav_file_size"
+    t.datetime "wav_uploaded_at"
+    t.string   "sfs_file_name"
+    t.string   "sfs_content_type"
+    t.integer  "sfs_file_size"
+    t.datetime "sfs_uploaded_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "deleted_at"
   end
 
   create_table "archived_sprites", :id => false, :force => true do |t|

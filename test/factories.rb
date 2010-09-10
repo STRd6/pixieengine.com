@@ -44,3 +44,8 @@ Factory.define :plugin do |plugin|
   plugin.title "Test"
   plugin.plugin_type "tool"
 end
+
+Factory.define :sound do |sound|
+  sound.wav File.new("#{RAILS_ROOT}/test/test.wav")
+  sound.sfs File.new("#{RAILS_ROOT}/test/test.sfs")
+end
