@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100910002836) do
+ActiveRecord::Schema.define(:version => 20100910204318) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -75,6 +75,10 @@ ActiveRecord::Schema.define(:version => 20100910002836) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string   "mp3_file_name"
+    t.string   "mp3_content_type"
+    t.integer  "mp3_file_size"
+    t.datetime "mp3_updated_at"
   end
 
   create_table "archived_sprites", :id => false, :force => true do |t|
@@ -243,6 +247,10 @@ ActiveRecord::Schema.define(:version => 20100910002836) do
     t.datetime "sfs_uploaded_at"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.string   "mp3_file_name"
+    t.string   "mp3_content_type"
+    t.integer  "mp3_file_size"
+    t.datetime "mp3_updated_at"
   end
 
   create_table "sprites", :force => true do |t|
