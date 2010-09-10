@@ -1,0 +1,14 @@
+- @title = "Edit #{sound.display_name}"
+
+- form_for sound do |form|
+  = form.error_messages
+
+  %p
+    = form.label :title
+    = form.text_field :title
+
+  %p
+    = form.label :description
+    = form.text_area :description
+
+  = form.submit
