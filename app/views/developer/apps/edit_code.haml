@@ -59,4 +59,7 @@
     sandbox.write("<script>$(function(){"+ editor.getCode() +"});<\/script>");
 
     sandbox.close();
+
+    // Set focus
+    $("#testFrame")[0].contentWindow.focus();
   }

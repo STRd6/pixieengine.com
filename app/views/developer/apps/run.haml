@@ -23,6 +23,9 @@
     sandbox.write("<script>$(function(){"+ #{app.code.to_json} +"});<\/script>");
 
     sandbox.close();
+
+    // Set focus
+    $("#testFrame")[0].contentWindow.focus();
   }
 
   runApp();
