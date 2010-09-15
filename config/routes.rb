@@ -113,6 +113,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'about' => "home#about", :as => :about
   match 'sitemap' => "home#sitemap"
+  match 'survey' => "home#survey", :as => :survey
 
   match "login" => "user_sessions#new", :as => :login
   match "logout" => "user_sessions#destroy", :as => :logout
