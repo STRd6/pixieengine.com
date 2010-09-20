@@ -630,6 +630,8 @@
           lastPixel = pixel;
         });
 
+      guideLayer.html("<p>Can't use the editor? You may need <a href='http://www.google.com/chrome'>a browser that supports HTML5 Canvas</a></p>");
+
       canvas.append(guideLayer);
 
       layer = layers - 1;
