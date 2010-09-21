@@ -1,3 +1,10 @@
+Number.prototype.times = function(iterator, context) {
+  for(var i = 0; i < this; i++) {
+    iterator.call(context, i);
+  }
+  return i;
+};
+
 /*global jQuery */
 (function($) {
   /************************************************************************
@@ -64,14 +71,22 @@
       menu: false,
       hotkeys: ['left'],
       perform: function(canvas) {
+        var deferredColors = [];
+
+        canvas.height.times(function(y) {
+          deferredColors[y] = canvas.getPixel(0, y).color();
+        });
+
         canvas.eachPixel(function(pixel, x, y) {
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
             pixel.color(rightPixel.color());
-          } else {
-            pixel.color(transparent);
           }
+        });
+
+        $.each(deferredColors, function(y, color) {
+          canvas.getPixel(canvas.width - 1, y).color(color);
         });
       }
     },
@@ -84,10 +99,17 @@
       perform: function(canvas) {
         var width = canvas.width;
         var height = canvas.height;
+
+        var deferredColors = [];
+
+        height.times(function(y) {
+          deferredColors[y] = canvas.getPixel(width - 1, y).color();
+        });
+
         for(var x = width-1; x >= 0; x--) {
           for(var y = 0; y < height; y++) {
             var currentPixel = canvas.getPixel(x, y);
-            var leftPixel = canvas.getPixel(x-1, y);
+            var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
               currentPixel.color(leftPixel.color());
@@ -96,6 +118,10 @@
             }
           }
         }
+
+        $.each(deferredColors, function(y, color) {
+          canvas.getPixel(0, y).color(color);
+        });
       }
     },
 
@@ -105,6 +131,12 @@
       menu: false,
       hotkeys: ['up'],
       perform: function(canvas) {
+        var deferredColors = [];
+
+        canvas.width.times(function(x) {
+          deferredColors[x] = canvas.getPixel(x, 0).color();
+        });
+
         canvas.eachPixel(function(pixel, x, y) {
           var lowerPixel = canvas.getPixel(x, y + 1);
 
@@ -113,6 +145,10 @@
           } else {
             pixel.color(transparent);
           }
+        });
+
+        $.each(deferredColors, function(x, color) {
+          canvas.getPixel(x, canvas.height - 1).color(color);
         });
       }
     },
@@ -125,6 +161,13 @@
       perform: function(canvas) {
         var width = canvas.width;
         var height = canvas.height;
+
+        var deferredColors = [];
+
+        canvas.width.times(function(x) {
+          deferredColors[x] = canvas.getPixel(x, height - 1).color();
+        });
+
         for(var x = 0; x < width; x++) {
           for(var y = height-1; y >= 0; y--) {
             var currentPixel = canvas.getPixel(x, y);
@@ -137,6 +180,10 @@
             }
           }
         }
+
+        $.each(deferredColors, function(x, color) {
+          canvas.getPixel(x, 0).color(color);
+        });
       }
     }
   };
