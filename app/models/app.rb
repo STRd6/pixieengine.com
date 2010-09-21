@@ -5,7 +5,8 @@ class App < ActiveRecord::Base
   has_many :app_libraries
   has_many :libraries, :through => :app_libraries
 
-  after_save :generate_docs
+  # TODO: Move to a background process
+  # after_save :generate_docs
 
   def library_code
     libraries.map(&:code).join(";\n")
