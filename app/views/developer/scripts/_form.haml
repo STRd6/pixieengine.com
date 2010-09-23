@@ -14,22 +14,61 @@
     = form.label :description
     = form.text_field :description
 
-  = form.label :code
-  .border
-    = form.text_area :code
+  %p
+    - if @script.lang == 'javascript'
+      = form.label :code, "JavaScript"
+      = form.text_area :code, :class => "code"
+    - else
+      = form.hidden_field :code
+      = form.label :coffee_script
+      %br
+      = form.text_area :coffee_script, :class => "code"
 
   .left
-    = button_to_function "Run", "eval(codeEditor.getCode())"
+    %button.run Run
   .right= form.submit
   .clear
 
-:javascript
-  var codeTextArea = $('#script_code').get(0);
-  var codeEditor = new CodeMirror.fromTextArea(codeTextArea, {
-    height: "350px",
-    content: codeTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
+#error
+
+- if @script.lang == "coffeescript"
+  :plain
+    <script type="text/coffeescript">
+      # Set up the compilation function, to run when you stop typing.
+      compile_source = ->
+        source = $('#script_coffee_script').val()
+        window.compiled_js = ''
+        try
+          window.compiled_js = CoffeeScript.compile source, noWrap: true
+          $('#script_code').val window.compiled_js
+          $('#error').hide()
+        catch error
+          $('#error').text(error.message).show()
+
+      # Listen for keypresses and recompile.
+      $('#script_coffee_script').keyup -> compile_source()
+
+      # Eval the compiled js.
+      $('button.run').click (event) ->
+        event.preventDefault()
+        try
+          eval window.compiled_js
+        catch error then alert error
+
+      compile_source()
+    </script>
+
+
+  = javascript_include_tag "coffee_script"
+
+- else
+  :javascript
+    $('button.run').click(function(event) {
+      event.preventDefault();
+
+      try {
+        eval($('#script_code').val());
+      } catch(error) {
+        alert(error);
+      }
+    });

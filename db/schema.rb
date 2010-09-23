@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100910204318) do
+ActiveRecord::Schema.define(:version => 20100923021254) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -222,15 +222,17 @@ ActiveRecord::Schema.define(:version => 20100910204318) do
 
   create_table "scripts", :force => true do |t|
     t.integer  "user_id"
-    t.boolean  "approved",    :default => false, :null => false
-    t.string   "script_type",                    :null => false
-    t.string   "title",                          :null => false
+    t.boolean  "approved",      :default => false,          :null => false
+    t.string   "script_type",                               :null => false
+    t.string   "title",                                     :null => false
     t.text     "description"
-    t.text     "code",                           :null => false
+    t.text     "code",                                      :null => false
     t.text     "test"
     t.integer  "parent_id"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+    t.text     "coffee_script"
+    t.string   "lang",          :default => "coffeescript"
   end
 
   create_table "sounds", :force => true do |t|
