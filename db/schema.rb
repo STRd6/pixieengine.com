@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100923021254) do
+ActiveRecord::Schema.define(:version => 20100926181029) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -48,15 +48,17 @@ ActiveRecord::Schema.define(:version => 20100923021254) do
   add_index "app_libraries", ["library_id"], :name => "index_app_libraries_on_library_id"
 
   create_table "apps", :force => true do |t|
-    t.integer  "user_id",     :null => false
-    t.string   "title",       :null => false
+    t.integer  "user_id",                      :null => false
+    t.string   "title",                        :null => false
     t.text     "description"
     t.text     "html"
     t.text     "code"
     t.text     "test"
     t.integer  "parent_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.integer  "width",       :default => 480
+    t.integer  "height",      :default => 320
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|

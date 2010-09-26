@@ -21,8 +21,7 @@ class App < ActiveRecord::Base
   end
 
   def template
-    #TODO Not hardcoded
-    '<canvas width="640" height="480"></canvas>'
+    "<canvas width='#{width}' height='#{height}'></canvas>"
   end
 
   def generate_docs

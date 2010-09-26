@@ -16,6 +16,8 @@ class Developer::AppsController < DeveloperController
       :description => app.description,
       :html => app.html,
       :libraries => app.libraries,
+      :width => app.width,
+      :height => app.height,
       :code => app.code,
       :test => app.test,
       :user => current_user
@@ -33,6 +35,10 @@ class Developer::AppsController < DeveloperController
       :code => app.code,
       :test => app.test
     )
+  end
+
+  def mobile
+    render :layout => "mobile"
   end
 
   def add_library
