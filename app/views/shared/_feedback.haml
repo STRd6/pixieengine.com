@@ -1,0 +1,12 @@
+- if !@hide_feedback
+  #feedback
+    = link_to "", "/survey"
+
+  :javascript
+    $(function() {
+      $("#feedback").mouseover(function() {
+        $(this).animate({left: 0}, "fast");
+      }).mouseout(function() {
+        $(this).animate({left: -10});
+      });
+    });
