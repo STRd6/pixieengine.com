@@ -125,4 +125,8 @@ class ApplicationController < ActionController::Base
 
     session[:saved_sprites] = nil
   end
+
+  def hide_feedback
+    @hide_feedback = true
+  end
 end
