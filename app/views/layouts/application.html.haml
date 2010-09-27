@@ -46,6 +46,9 @@
         = render :partial => 'shared/register_modal'
       = render :partial => "/shared/footer"
       = render :partial => "/shared/fb_app"
+
+    = javascript_include_tag "coffee-script"
+
     = render :partial => "/shared/analytics"
 
     - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)

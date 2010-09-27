@@ -1,7 +1,7 @@
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
 %h2 New Script
-- form_for [:developer, @script] do |form|
+- form_for [:developer, script] do |form|
   = form.error_messages
 
   = form.hidden_field :parent_id
@@ -14,22 +14,16 @@
     = form.label :description
     = form.text_field :description
 
-  = form.label :code
-  .border
-    = form.text_area :code
+  %p
+    = form.hidden_field :code
+    = form.label :src, "Source (#{script.lang})"
+    .border
+      = form.text_area :src, :class => "code"
 
   .left
-    = button_to_function "Run", "eval(codeEditor.getCode())"
+    %button.run Run
   .right= form.submit
   .clear
 
-:javascript
-  var codeTextArea = $('#script_code').get(0);
-  var codeEditor = new CodeMirror.fromTextArea(codeTextArea, {
-    height: "350px",
-    content: codeTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
+// TODO this could be a form helper or something
+= render :partial => "editor", :locals => {:lang => script.lang, :src_id => 'script_src', :code_id => 'script_code'}

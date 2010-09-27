@@ -19,6 +19,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :fork
         get :load
         get :run
+        get :mobile
         get :lib, :defaults => { :format => 'js' }
         get :ide
       end

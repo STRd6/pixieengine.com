@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+%html
+  %head
+    %title
+      - if @title
+        = @title
+      - else
+        Pixie App
+    %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
+    %meta{ :name => "description", :content => (@meta_desc || "Just another Pixie Application.") }
+    <meta name="google-site-verification" content="0FAurYC_rgKeOIIzTKuunYVGbrc9gCI9xPClgJvN5_w" />
+    <meta name="msvalidate.01" content="AA62CD2D00BD5CE103C280DD73C569C0" />
+
+    // Mobile
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+    <meta name="apple-touch-fullscreen" content="YES" />
+
+    = csrf_meta_tag
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans+Std+Light' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="/favicon.png" />
+    = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+    // TODO: Mobile stylesheets
+
+    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+    :javascript
+      var loggedIn = #{!!current_user};
+
+  %body
+    = yield
+
+    = render :partial => "/shared/analytics"
+
+    - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
+      = render :partial => "/shared/conversion"
+      :javascript
+        $(function() {
+          trackPageview("/event/registered");
+        });
