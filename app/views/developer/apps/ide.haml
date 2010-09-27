@@ -3,63 +3,64 @@
 = javascript_include_tag "http://dev.jquery.com/view/trunk/plugins/treeview/jquery.treeview.js"
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"
 
-:plain
-  <style>
-    .ui-tabs .ui-tabs-hide {
-      display: none;
-    }
+%style
+  :sass
+    ul.filetree
+      display: inline-block
+      height: 650px
+      margin: 1em
+      overflow-x: hidden
+      width: 120px
+      vertical-align: top
 
-    #tabs { margin-top: 1em; }
+    .ui-tabs
+      .ui-tabs-hide
+        display: none
 
-    #tabs li .ui-icon-close {
-      float: right;
-      margin: 0.4em 0.2em 0 0;
-      cursor: pointer;
-    }
+    #tabs
+      display: inline-block
+      margin: 1em
+      margin-right: 0
+      width: 552px
+      vertical-align: top
 
-    .folder, .file {
-      cursor: pointer;
-    }
-  </style>
+      li
+        .ui-icon-close
+          float: right
+          margin: 0.4em 0.2em 0 0
+          cursor: pointer
 
-- app.libraries.each do |libary|
-  alert library
-end
+    .folder, .file
+      cursor: pointer
 
-#left-pane{ :style => 'float: left; margin-right: 50px;' }
-  %ul#example.filetree
-    %li
-      %span.folder folder1
-      %ul
-        %li
-          %span.file Item1.1
-        %li
-          %span.file Item1.2
-    %li
-      %span.folder folder2
+%ul.filetree
+  %li
+    %span.file Main
+  - app.libraries.each do |library|
     %li.closed
-      %span.folder folder3
+      %span.folder= library.title
       %ul
-        %li
-          %span.file Item3.1
-#right-pane{ :style => 'float:right; width: 550px' }
-  #tabs
-    %ul
-      %li
-        %a{ :href => '#fragment-1' }
-          %span.ui-icon.ui-icon-close
-          One
-      %li
-        %a{ :href => '#fragment-2' }
-          %span.ui-icon.ui-icon-close
-          Two
-      %li
-        %a{ :href => '#fragment-3' }
-          %span.ui-icon.ui-icon-close
-          Three
-    %textarea#fragment-1{ :cols => '70', :rows => '30' } Tab 1
-    %textarea#fragment-2{ :cols => '70', :rows => '30' } Tab 2
-    %textarea#fragment-3{ :cols => '70', :rows => '30' } Tab 3
+        - library.scripts.each do |script|
+          %li
+            %span.file= script.title
+
+#tabs
+  %ul
+    %li
+      %span.ui-icon.ui-icon-close
+      %a{ :href => '#fragment-1' }
+        One
+    %li
+      %span.ui-icon.ui-icon-close
+      %a{ :href => '#fragment-2' }
+        Two
+    %li
+      %span.ui-icon.ui-icon-close
+      %a{ :href => '#fragment-3' }
+        Three
+  %textarea#fragment-1{ :cols => '70', :rows => '30' } Tab 1
+  %textarea#fragment-2{ :cols => '70', :rows => '30' } Tab 2
+  %textarea#fragment-3{ :cols => '70', :rows => '30' } Tab 3
 
 #button{ :style => 'float: left; width: 100px'}
   %input{ :type => 'submit', :value => 'save' }
@@ -68,10 +69,10 @@ end
   $(function() {
     var tab_counter = 1;
 
-    $('#example').treeview();
+    $('ul.filetree').treeview();
 
-    $('.file').click(function(){
-      $('#editor').text('Contents of ' + $(this).text());
+    $('.file').click(function() {
+      alert($(this).text());
     });
 
     var $tabs = $('#tabs').tabs({
