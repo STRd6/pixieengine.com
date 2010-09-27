@@ -13,25 +13,18 @@
 - form_for [:developer, script] do |form|
   = form.error_messages
 
-  = form.label :test
-  .border
-    = form.text_area :test
+  %p
+    = form.hidden_field :test
+    = form.label :test_src, "Test (#{script.lang})"
+    .border
+      = form.text_area :test_src
 
   .left
     = button_to_function "Test", "runTest()"
   .right= form.submit
   .clear
 
-:javascript
-  var testTextArea = $('#script_test').get(0);
-  var testEditor = new CodeMirror.fromTextArea(testTextArea, {
-    height: "350px",
-    content: testTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
-    path: "/javascripts/codemirror/",
-    autoMatchParens: true
-  });
+= render :partial => "editor", :locals => {:lang => script.lang, :src_id => "script_test_src", :code_id => "script_test"}
 
 :javascript
   #{script.code}
@@ -43,6 +36,6 @@
 
   function runTest() {
     QUnit.init();
-    eval(testEditor.getCode());
+    eval($("#script_test").val());
     QUnit.start();
   }
