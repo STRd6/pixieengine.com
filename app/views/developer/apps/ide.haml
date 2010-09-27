@@ -22,9 +22,9 @@
     }
   </style>
 
-- app.libraries.each do |libary|
-  alert library
-end
+- app.libraries.each do |library|
+  :javascript
+    $('#example').append('<li><span class="folder">#{ library.title }</span></li>');
 
 #left-pane{ :style => 'float: left; margin-right: 50px;' }
   %ul#example.filetree
@@ -78,7 +78,7 @@ end
       tabTemplate: '<li><a href="#tabs-" + tab_counter>#label</a> <span class="ui-icon ui-icon-close">Remove Tab</span></li>',
       add: function(event, ui) {
         var tab_content = $tab_content_input.val() || 'Tab '+tab_counter+' content.';
-        $(ui.panel).append('<p>'+tab_content+'</p>');
+        $('ui.panel').append('<p>'+tab_content+'</p>');
       }
     });
 
