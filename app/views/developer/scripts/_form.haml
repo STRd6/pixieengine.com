@@ -1,7 +1,7 @@
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
 %h2 New Script
-- form_for [:developer, @script] do |form|
+- form_for [:developer, script] do |form|
   = form.error_messages
 
   = form.hidden_field :parent_id
@@ -15,14 +15,10 @@
     = form.text_field :description
 
   %p
-    - if @script.lang == 'javascript'
-      = form.label :code, "JavaScript"
-      = form.text_area :code, :class => "code"
-    - else
-      = form.hidden_field :code
-      = form.label :coffee_script
-      %br
-      = form.text_area :coffee_script, :class => "code"
+    = form.hidden_field :code
+    = form.label :src, "Source (#{script.lang})"
+    .border
+      = form.text_area :src, :class => "code"
 
   .left
     %button.run Run
@@ -31,12 +27,13 @@
 
 #error
 
-- if @script.lang == "coffeescript"
+- if script.lang == "coffeescript"
+  - lang = 'dummy'
   :plain
     <script type="text/coffeescript">
       # Set up the compilation function, to run when you stop typing.
-      compile_source = ->
-        source = $('#script_coffee_script').val()
+      window.compile_source = ->
+        source = window.editor.getCode()
         window.compiled_js = ''
         try
           window.compiled_js = CoffeeScript.compile source, noWrap: true
@@ -44,31 +41,42 @@
           $('#error').hide()
         catch error
           $('#error').text(error.message).show()
-
-      # Listen for keypresses and recompile.
-      $('#script_coffee_script').keyup -> compile_source()
-
-      # Eval the compiled js.
-      $('button.run').click (event) ->
-        event.preventDefault()
-        try
-          eval window.compiled_js
-        catch error then alert error
-
-      compile_source()
     </script>
-
-
-  = javascript_include_tag "coffee_script"
-
 - else
+  - lang = 'javascript'
   :javascript
-    $('button.run').click(function(event) {
-      event.preventDefault();
+    // TODO: Add JSLint or Closure Compiler to identify errors and warnings
+    window.compile_source = function() {
+      compiled_js = editor.getCode();
+    }
 
-      try {
-        eval($('#script_code').val());
-      } catch(error) {
-        alert(error);
-      }
-    });
+:plain
+  <script type="text/coffeescript">
+
+    codeTextArea = $('#script_src').get(0)
+    window.editor = new CodeMirror.fromTextArea codeTextArea,
+      autoMatchParens: true
+      content: codeTextArea.value
+      height: "350px"
+      parserfile: ["tokenize_#{lang}.js", "parse_#{lang}.js"]
+      path: "/javascripts/codemirror/"
+      stylesheet: "/stylesheets/codemirror/#{script.lang}_colors.css"
+      tabMode: "shift"
+
+    # Listen for keypresses and recompile.
+    $(window.editor.win.document).keyup -> window.compile_source()
+
+    # Eval the compiled js.
+    $('button.run').click (event) ->
+      event.preventDefault()
+
+      compile_source() if window.compiled_source == ''
+
+      try
+        eval window.compiled_js
+      catch error then alert error
+
+  </script>
+
+
+= javascript_include_tag "coffee_script"

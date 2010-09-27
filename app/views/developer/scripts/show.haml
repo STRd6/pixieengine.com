@@ -17,7 +17,9 @@
 
 %p= script.description
 
-%pre= script.code
+%pre
+  = script.src
+
 
 #newLibraryModal.modalElement
   = render :partial => "developer/libraries/form"
