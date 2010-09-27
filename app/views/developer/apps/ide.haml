@@ -1,0 +1,90 @@
+= stylesheet_link_tag "http://dev.jquery.com/view/trunk/plugins/treeview/jquery.treeview.css"
+= stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"
+= javascript_include_tag "http://dev.jquery.com/view/trunk/plugins/treeview/jquery.treeview.js"
+= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"
+
+:plain
+  <style>
+    .ui-tabs .ui-tabs-hide {
+      display: none;
+    }
+
+    #tabs { margin-top: 1em; }
+
+    #tabs li .ui-icon-close {
+      float: right;
+      margin: 0.4em 0.2em 0 0;
+      cursor: pointer;
+    }
+
+    .folder, .file {
+      cursor: pointer;
+    }
+  </style>
+
+- app.libraries.each do |libary|
+  alert library
+end
+
+#left-pane{ :style => 'float: left; margin-right: 50px;' }
+  %ul#example.filetree
+    %li
+      %span.folder folder1
+      %ul
+        %li
+          %span.file Item1.1
+        %li
+          %span.file Item1.2
+    %li
+      %span.folder folder2
+    %li.closed
+      %span.folder folder3
+      %ul
+        %li
+          %span.file Item3.1
+#right-pane{ :style => 'float:right; width: 550px' }
+  #tabs
+    %ul
+      %li
+        %a{ :href => '#fragment-1' }
+          %span.ui-icon.ui-icon-close
+          One
+      %li
+        %a{ :href => '#fragment-2' }
+          %span.ui-icon.ui-icon-close
+          Two
+      %li
+        %a{ :href => '#fragment-3' }
+          %span.ui-icon.ui-icon-close
+          Three
+    %textarea#fragment-1{ :cols => '70', :rows => '30' } Tab 1
+    %textarea#fragment-2{ :cols => '70', :rows => '30' } Tab 2
+    %textarea#fragment-3{ :cols => '70', :rows => '30' } Tab 3
+
+#button{ :style => 'float: left; width: 100px'}
+  %input{ :type => 'submit', :value => 'save' }
+
+:javascript
+  $(function() {
+    var tab_counter = 1;
+
+    $('#example').treeview();
+
+    $('.file').click(function(){
+      $('#editor').text('Contents of ' + $(this).text());
+    });
+
+    var $tabs = $('#tabs').tabs({
+      tabTemplate: '<li><a href="#tabs-" + tab_counter>#label</a> <span class="ui-icon ui-icon-close">Remove Tab</span></li>',
+      add: function(event, ui) {
+        var tab_content = $tab_content_input.val() || 'Tab '+tab_counter+' content.';
+        $(ui.panel).append('<p>'+tab_content+'</p>');
+      }
+    });
+
+    $('#tabs span.ui-icon-close').live('click', function() {
+      var index = $('li',$tabs).index($(this).parent());
+      alert(index);
+      $tabs.tabs('remove', index);
+    });
+  });

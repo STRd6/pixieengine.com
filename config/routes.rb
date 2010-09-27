@@ -20,6 +20,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :load
         get :run
         get :lib, :defaults => { :format => 'js' }
+        get :ide
       end
     end
 
@@ -91,7 +92,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     collection do
       get :progress
       get :unsubscribe
-      
+
       post :install_plugin
       post :uninstall_plugin
       post :do_unsubscribe
