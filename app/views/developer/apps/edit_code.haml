@@ -41,8 +41,8 @@
   var editor = new CodeMirror.fromTextArea(codeTextArea, {
     height: "350px",
     content: codeTextArea.value,
-    parserfile: ["tokenizejavascript.js", "parsejavascript.js"],
-    stylesheet: "/stylesheets/codemirror/jscolors.css",
+    parserfile: ["tokenize_javascript.js", "parse_javascript.js"],
+    stylesheet: "/stylesheets/codemirror/javascript_colors.css",
     path: "/javascripts/codemirror/",
     autoMatchParens: true
   });
