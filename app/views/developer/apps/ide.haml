@@ -36,6 +36,15 @@
           margin: 0.4em 0.2em 0 0
           cursor: pointer
 
+        .ui-icon
+          &.coffeescript
+            background-image: url(/images/icons/cup.png)
+            float: left
+            margin: 0.4em 0 0 0.2em
+
+        a
+          padding: 0.5em 0.6em
+
     .folder, .file
       cursor: pointer
 
@@ -57,10 +66,13 @@
 #tabs
   %ul
     %li
-      %span
+      %span.ui-icon.coffeescript
       %a{ :href => '#scriptmain' }
         Main
-  %textarea#scriptmain{ :cols => '70', :rows => '30' } Main
+  #scriptmain
+    - form_for [:developer, app] do |form|
+      = form.hidden_field :code
+      = form.text_area :src
 
 #save{ :style => 'float: left; width: 100px'}
   %input{ :type => 'submit', :value => 'save' }
@@ -102,6 +114,7 @@
         compile_source(editor.getCode())
         $(src_id).val(editor.getCode())
 
+    createEditor "#{app.lang}", $("#scriptmain")
   </script>
 
 :javascript
@@ -130,7 +143,7 @@
       select: function(event, ui) {
         currentPanel = ui.panel;
       },
-      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon coffeescript"></span><a href="#' + '{href}">#' + '{label}</a></li>'
     });
 
     $('#save').click(function() {
