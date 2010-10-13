@@ -19,6 +19,19 @@
       .script
         display: none
 
+      span.folder
+        cursor: pointer
+        &.resources
+          background-image: url(/images/icons/images.png)
+
+      span.file
+        cursor: pointer
+        white-space: nowrap
+        &.coffeescript
+          background-image: url(/images/icons/cup.png)
+        &.javascript
+          background-image: url(/images/icons/script.png)
+
     .ui-tabs
       .ui-tabs-hide
         display: none
@@ -52,29 +65,24 @@
         a
           padding: 0.5em 0.6em
 
-    .folder
-      cursor: pointer
-    span.file
-      cursor: pointer
-      &.coffeescript
-        background-image: url(/images/icons/cup.png)
-      &.javascript
-        background-image: url(/images/icons/script.png)
-
 %ul.filetree
   %li
     %span.file{ 'data-id' => 'main', :class => app.lang } Main
   - app.libraries.each do |library|
-    %li.closed
+    %li.closed{ :title => library.title }
       %span.folder= library.title
       %ul
         - library.scripts.each do |script|
-          %li
+          %li{ :title => script.title }
             %span.file{ 'data-id' => script.id, :class => script.lang }= script.title
             .script{ :id => "script#{script.id}", 'data-lang' => script.lang }
               - form_for [:developer, script] do |form|
                 = form.hidden_field :code, { :id => "script_code#{script.id}" }
                 = form.text_area :src, { :id => "script_src#{script.id}" }
+
+  %li.closed
+    %span.folder.resources Resources
+    %ul
 
 #tabs
   %ul
@@ -117,7 +125,7 @@
       editor = new CodeMirror.fromTextArea codeTextArea,
         autoMatchParens: true
         content: codeTextArea.value
-        height: "350px"
+        height: "600px"
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
         path: "/javascripts/codemirror/"
         stylesheet: "/stylesheets/codemirror/" + lang + "_colors.css"
@@ -127,6 +135,8 @@
       $(editor.win.document).keyup ->
         compile_source(editor.getCode())
         $(src_id).val(editor.getCode())
+
+      lang: lang
 
     createEditor $("#scriptmain")
   </script>
@@ -149,9 +159,12 @@
     var $tabs = $('#tabs').tabs({
       add: function(event, ui) {
         $tabs.tabs('select', '#' + ui.panel.id);
-        createEditor(ui.panel);
+        var fileData = createEditor(ui.panel);
+
+        $(ui.tab).parent().find('span.lang').addClass(fileData.lang);
       },
       remove: function(event, ui) {
+        $(ui.panel).find(".CodeMirror-wrapping").remove();
         $('.filetree').append(ui.panel);
       },
       select: function(event, ui) {
