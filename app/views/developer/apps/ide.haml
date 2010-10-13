@@ -23,6 +23,9 @@
       .ui-tabs-hide
         display: none
 
+      .ui-tabs-panel
+        padding: 0
+
     #tabs
       display: inline-block
       margin: 1em
@@ -37,39 +40,49 @@
           cursor: pointer
 
         .ui-icon
-          &.coffeescript
-            background-image: url(/images/icons/cup.png)
+          &.lang
             float: left
             margin: 0.4em 0 0 0.2em
+
+            &.coffeescript
+              background-image: url(/images/icons/cup.png)
+            &.javascript
+              background-image: url(/images/icons/script.png)
 
         a
           padding: 0.5em 0.6em
 
-    .folder, .file
+    .folder
       cursor: pointer
+    span.file
+      cursor: pointer
+      &.coffeescript
+        background-image: url(/images/icons/cup.png)
+      &.javascript
+        background-image: url(/images/icons/script.png)
 
 %ul.filetree
   %li
-    %span.file{ 'data-id' => 'main' } Main
+    %span.file{ 'data-id' => 'main', :class => app.lang } Main
   - app.libraries.each do |library|
     %li.closed
       %span.folder= library.title
       %ul
         - library.scripts.each do |script|
           %li
-            %span.file{ 'data-id' => script.id }= script.title
-            .script{ 'id' => "script#{script.id}" }
+            %span.file{ 'data-id' => script.id, :class => script.lang }= script.title
+            .script{ :id => "script#{script.id}", 'data-lang' => script.lang }
               - form_for [:developer, script] do |form|
-                = form.hidden_field :code, { :id => "script_code#{script.id}"}
-                = form.text_area :src, { :id => "script_src#{script.id}"}
+                = form.hidden_field :code, { :id => "script_code#{script.id}" }
+                = form.text_area :src, { :id => "script_src#{script.id}" }
 
 #tabs
   %ul
     %li
-      %span.ui-icon.coffeescript
+      %span.ui-icon.lang{ :class => app.lang }
       %a{ :href => '#scriptmain' }
         Main
-  #scriptmain
+  #scriptmain{ 'data-lang' => app.lang }
     - form_for [:developer, app] do |form|
       = form.hidden_field :code
       = form.text_area :src
@@ -79,7 +92,8 @@
 
 :plain
   <script type="text/coffeescript">
-    window.createEditor = (lang, panel) ->
+    window.createEditor = (panel) ->
+      lang = $(panel).attr('data-lang')
       code_id = "#" + $(panel).find('input').eq(2).attr('id')
       src_id = "#" + $(panel).find('textarea').attr('id')
 
@@ -114,7 +128,7 @@
         compile_source(editor.getCode())
         $(src_id).val(editor.getCode())
 
-    createEditor "#{app.lang}", $("#scriptmain")
+    createEditor $("#scriptmain")
   </script>
 
 :javascript
@@ -135,7 +149,7 @@
     var $tabs = $('#tabs').tabs({
       add: function(event, ui) {
         $tabs.tabs('select', '#' + ui.panel.id);
-        createEditor("coffeescript", ui.panel);
+        createEditor(ui.panel);
       },
       remove: function(event, ui) {
         $('.filetree').append(ui.panel);
@@ -143,7 +157,7 @@
       select: function(event, ui) {
         currentPanel = ui.panel;
       },
-      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon coffeescript"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
     });
 
     $('#save').click(function() {
