@@ -63,6 +63,7 @@
               background-image: url(/images/icons/script.png)
 
         a
+          font-weight: normal
           padding: 0.5em 0.6em
 
 %ul.filetree
@@ -95,8 +96,15 @@
       = form.hidden_field :code
       = form.text_area :src
 
-#save{ :style => 'float: left; width: 100px'}
-  %input{ :type => 'submit', :value => 'save' }
+%button#save Save
+%button#run Run
+
+%iframe#testFrame.no_border{:src => "/blank.html", :width => app.width, :height => app.height}
+
+%style
+  :sass
+    #testFrame
+      display: block
 
 :plain
   <script type="text/coffeescript">
@@ -139,6 +147,26 @@
       lang: lang
 
     createEditor $("#scriptmain")
+
+    runApp = (code) ->
+      sandbox = $("#testFrame")[0].contentWindow.document
+
+      sandbox.open();
+
+      sandbox.write(#{stylesheet_link_tag('screen.css').to_json})
+      sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+      sandbox.write('<script src="/developer/apps/#{app.id}/lib.js"><\/script>')
+      sandbox.write(#{app.template.to_json})
+      sandbox.write("<script>$(function(){"+ code +"});<\/script>")
+
+      sandbox.close()
+
+      # Set focus
+      $("#testFrame")[0].contentWindow.focus()
+
+    $('#run').click ->
+      runApp($('#app_code').val())
+
   </script>
 
 :javascript
