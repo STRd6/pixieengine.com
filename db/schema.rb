@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101003045902) do
+ActiveRecord::Schema.define(:version => 20101015045602) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -46,6 +46,17 @@ ActiveRecord::Schema.define(:version => 20101003045902) do
   add_index "app_libraries", ["app_id", "library_id"], :name => "index_app_libraries_on_app_id_and_library_id", :unique => true
   add_index "app_libraries", ["app_id"], :name => "index_app_libraries_on_app_id"
   add_index "app_libraries", ["library_id"], :name => "index_app_libraries_on_library_id"
+
+  create_table "app_sprites", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.integer  "sprite_id",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "app_sprites", ["app_id", "sprite_id"], :name => "index_app_sprites_on_app_id_and_sprite_id", :unique => true
+  add_index "app_sprites", ["app_id"], :name => "index_app_sprites_on_app_id"
+  add_index "app_sprites", ["sprite_id"], :name => "index_app_sprites_on_sprite_id"
 
   create_table "apps", :force => true do |t|
     t.integer  "user_id",                                 :null => false

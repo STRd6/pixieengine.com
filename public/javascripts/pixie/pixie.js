@@ -509,6 +509,7 @@ Number.prototype.times = function(iterator, context) {
       var canvas = $(div).addClass('canvas');
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
+      var swatches = $(div).addClass('swatches');
       var preview = $(div).addClass('preview').css({width: width, height: height});
       var previewToggleHolder = $(div).addClass('toggle_holder');
       var previewLabel = $('<label class=\'preview-control\'>Tiled Preview</label>').click(function() {
@@ -583,6 +584,7 @@ Number.prototype.times = function(iterator, context) {
         .append(secondaryColorPicker);
 
       colorbar.append(colorPickerHolder);
+      colorbar.append(swatches);
 
       pixie
         .bind('contextmenu', falseFn)
@@ -861,7 +863,7 @@ Number.prototype.times = function(iterator, context) {
         },
 
         addSwatch: function(color) {
-          colorbar.append(
+          swatches.append(
             $(div)
               .addClass('swatch')
               .css({backgroundColor: color})

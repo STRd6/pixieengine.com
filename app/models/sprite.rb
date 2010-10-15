@@ -27,7 +27,7 @@ class Sprite < ActiveRecord::Base
     indexes tags(:name), :as => :tags
   end
 
-  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data
+  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data, :app_id
 
   MAX_LENGTH = 640
   # Limit sizes to small pixel art for now
@@ -37,7 +37,7 @@ class Sprite < ActiveRecord::Base
 
   after_save :send_broadcast
 
-  after_create :update_dimension_tags!, :save_replay_data
+  after_create :update_dimension_tags!, :save_replay_data, :associate_app
 
   cattr_reader :per_page
   @@per_page = 40
@@ -326,6 +326,11 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def associate_app
+    if app_id
+      AppSprite.create(:app_id => app_id, :sprite_id => id)
+    end
+  end
 
   def send_broadcast
     if broadcast == "1"

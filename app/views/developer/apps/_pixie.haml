@@ -1,20 +1,72 @@
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
 
+#titleModal
+  %p
+    = label_tag :title
+    = text_field_tag :title, "", {:title => 'title'}
+
+  %button Save
+
+%style
+  :sass
+    #titleModal
+      display: none
+
+    .pixie
+      padding-left: 1em
+      .actions
+        margin-left: 0
+
+      .toolbar
+        width: 350px
+
+        .tool
+          display: inline-block
+
+      .color_picker_holder
+        display: inline-block
+        margin-right: 1em
+      .swatches
+        display: inline-block
+        width: 200px
+        vertical-align: top
+
+
 :plain
   <script type="text/coffeescript">
     $ ->
       window.createPixelEditor = (width, height) ->
+        title = null
+
         $('<div />').pixie
           width: width
           height: height
           frames: 1
           initializer: (canvas) ->
+
+            promptForTitle = ->
+              $("#titleModal button").one 'click', ->
+                title = $("#titleModal input").val()
+                $.modal.close()
+                postImage()
+
+              $("#titleModal").modal
+                containerCss:
+                  height: 200
+                  width: 400
+
+                onClose: () ->
+                  $('#titleModal button').unbind()
+                  $.modal.close()
+
             postImage = ->
               notify "Saving, please wait..."
 
               postData =
                 'format': 'js',
+                'sprite[app_id]': #{app.id},
+                'sprite[title]': title,
                 'sprite[width]': width,
                 'sprite[height]': height,
                 'sprite[file_base64_encoded]': canvas.toBase64(),
@@ -25,15 +77,16 @@
                 trackPageview("/event/save_drawing")
                 canvas.dirty(false)
                 $(".tool.button").last().removeAttr("disabled")
+                #TODO: set resource entry
               , "script"
-
 
             canvas.addAction
               name: "Save"
               icon: "/images/icons/database_save.png"
               perform: (canvas) ->
                 $(".tool.button").last().attr("disabled", true)
-                postImage()
+
+                promptForTitle()
 
               undoable: false
 

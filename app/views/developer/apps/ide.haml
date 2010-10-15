@@ -43,6 +43,8 @@
             background-image: url(/images/icons/cup.png)
           &.javascript
             background-image: url(/images/icons/script.png)
+          &.sprite
+            background-image: url(/images/icons/picture.png)
 
     .ui-tabs
       .ui-tabs-hide
@@ -110,6 +112,10 @@
           %li{ :title => "Load Sprite" }
             %span.file.new_sprite New Sprite
           / TODO: Have all existing sprites added to app here
+          - app.sprites.each do |sprite|
+            %li{ :title => sprite.title }
+              %span.file.sprite= sprite.title
+
 
 #tabs
   %ul

@@ -5,6 +5,9 @@ class App < ActiveRecord::Base
   has_many :app_libraries
   has_many :libraries, :through => :app_libraries
 
+  has_many :app_sprites
+  has_many :sprites, :through => :app_sprites
+
   # TODO: Move to a background process
   # after_save :generate_docs
 
