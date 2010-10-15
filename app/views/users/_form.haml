@@ -11,3 +11,10 @@
     = form.password_field :password
 
   = form.submit "Sign Up"
+
+:javascript
+  $(function() {
+    $('#user_submit').click(function() {
+      _gaq.push(['_trackEvent', 'action_button', 'register']);
+    });
+  });

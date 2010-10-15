@@ -19,3 +19,10 @@
 
 %pre
   = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})
+
+:javascript
+  $(function() {
+    $('#invite_submit').click(function() {
+      _gaq.push(['_trackEvent', 'action_button', 'invite friend']);
+    });
+  });

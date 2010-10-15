@@ -908,6 +908,8 @@ Number.prototype.times = function(iterator, context) {
                   doIt();
                 }
 
+                _gaq.push(['_trackEvent', 'action_button', action.name]);
+
                 return false;
               });
 
@@ -1156,11 +1158,11 @@ Number.prototype.times = function(iterator, context) {
       previewToggleHolder
         .append(previewToggle)
         .append(previewLabel);
-        
+
       guideToggleHolder
         .append(guideToggle)
         .append(guideLabel);
-      
+
       pixie
         .append(actionsMenu)
         .append(toolbar)
