@@ -222,7 +222,7 @@
         if $(scriptSelector).parents('#tabs').length
           $('#tabs ul li a[href="' + scriptSelector + '"]').click()
         else
-          $tabs.tabs('add', scriptSelector, $(this).text(), 0)
+          $tabs.tabs 'add', scriptSelector, $(this).text(), 0
 
       $('.filetree .file.new_sprite').click ->
         shouldCreateEditor = false
@@ -238,15 +238,25 @@
       $('.filetree .file.sprite').click ->
         shouldCreateEditor = false
         langClass = "sprite"
+
+        spriteSelector = "#sprite" + $(this).attr('data-id')
+
+        if $(spriteSelector).length
+          if $(spriteSelector).parents('#tabs').length
+            $('#tabs ul li a[href="' + spriteSelector + '"]').click()
+
+            return
+          else
+            $(spriteSelector).remove()
+
         bgCss = $(this).css('backgroundImage')
         data = bgCss.substr(4, bgCss.length - 5)
+        title = $(this).text()
 
         pixieEditor = createPixelEditor 32, 32, data
-        pixieEditorId = "pixie_editor" + (pixieEditorIds++)
+        pixieEditor.attr('id', spriteSelector.substr(1)).addClass('tab_data').appendTo($('ul.filetree'))
 
-        pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
-
-        $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
+        $tabs.tabs 'add', spriteSelector, title, 0
 
       currentPanel = $("#scriptmain")
 
