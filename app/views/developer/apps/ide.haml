@@ -145,13 +145,25 @@
     pixieEditorIds = 0
     langClass = null
 
-    window.createSpriteNode = (sprite) ->
+    window.updateSpriteNode = (sprite) ->
       id = sprite.id
       title = sprite.title
+      cssImageUrl = sprite.cssImageUrl
 
-      li = $("<li />").attr("title", title)
-      spriteNode = $("<span />").text(title).attr('data-id', id).addClass("file sprite").appendTo(li)
-      $('.filetree .sprites').next().append(li).children().removeClass('last').last().addClass('last')
+      node = $(".filetree .sprite[data-id=" + id + "]")
+
+      if node.length
+        spriteNode = node
+        node = node.parent()
+      else
+        node = $("<li />").attr("title", title)
+        spriteNode = $("<span />").text(title).attr('data-id', id).addClass("file sprite").appendTo(node)
+        $('.filetree .sprites').next().append(node).children().removeClass('last').last().addClass('last')
+
+      spriteNode.css "backgroundImage", cssImageUrl
+
+      # Reload tab
+      spriteNode.click()
 
     window.createEditor = (panel) ->
       lang = $(panel).attr('data-lang')
@@ -235,7 +247,7 @@
 
         $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 
-      $('.filetree .file.sprite').click ->
+      $('.filetree .file.sprite').live 'click', ->
         shouldCreateEditor = false
         langClass = "sprite"
 

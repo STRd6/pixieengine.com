@@ -80,9 +80,14 @@
 
               $.post '/sprites', postData, (data) ->
                 sprite = data.sprite
+                sprite.cssImageUrl = canvas.toCSSImageURL()
+
                 notify("Saved!")
 
-                createSpriteNode sprite
+                # Close tab
+                tab.find('span').first().click()
+
+                updateSpriteNode sprite
 
                 trackPageview("/event/save_drawing")
                 canvas.dirty(false)
