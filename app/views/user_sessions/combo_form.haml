@@ -7,11 +7,11 @@
     = form.text_field :email, :value => session[:email]
 
   %h2 Do you have a Pixie password?
-  
+
   %p
     = form.label :login_no, "No, I am new"
     = form.radio_button :login, "no"
-    
+
   %p
     = form.label :login_yes, "Yes, I have a password"
     = form.radio_button :login, "yes"
@@ -45,6 +45,10 @@
         loginMode(false);
       }
     }, 10);
+
+    $('#user_session_submit').click(function() {
+      _gaq.push(['_trackEvent', 'action_button', 'register']);
+    });
 
     trackPageview("/event/login_screen");
   });
