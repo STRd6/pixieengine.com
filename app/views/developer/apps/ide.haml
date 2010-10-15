@@ -45,6 +45,7 @@
             background-image: url(/images/icons/script.png)
           &.sprite
             background-image: url(/images/icons/picture.png)
+            margin: 0
 
     .ui-tabs
       .ui-tabs-hide
@@ -114,7 +115,7 @@
           / TODO: Have all existing sprites added to app here
           - app.sprites.each do |sprite|
             %li{ :title => sprite.title }
-              %span.file.sprite= sprite.title
+              %span.file.sprite{ 'data-id' => sprite.id, :style => "background-image: url(#{sprite.data_url})" }= sprite.title
 
 
 #tabs
@@ -143,6 +144,14 @@
     shouldCreateEditor = false
     pixieEditorIds = 0
     langClass = null
+
+    window.createSpriteNode = (sprite) ->
+      id = sprite.id
+      title = sprite.title
+
+      li = $("<li />").attr("title", title)
+      spriteNode = $("<span />").text(title).attr('data-id', id).addClass("file sprite").appendTo(li)
+      $('.filetree .sprites').next().append(li).children().removeClass('last').last().addClass('last')
 
     window.createEditor = (panel) ->
       lang = $(panel).attr('data-lang')
@@ -216,13 +225,26 @@
           $tabs.tabs('add', scriptSelector, $(this).text(), 0)
 
       $('.filetree .file.new_sprite').click ->
+        shouldCreateEditor = false
+        langClass = "sprite"
+
         pixieEditor = createPixelEditor 32, 32
         pixieEditorId = "pixie_editor" + (pixieEditorIds++)
 
         pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
 
+        $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
+
+      $('.filetree .file.sprite').click ->
         shouldCreateEditor = false
         langClass = "sprite"
+        bgCss = $(this).css('backgroundImage')
+        data = bgCss.substr(4, bgCss.length - 5)
+
+        pixieEditor = createPixelEditor 32, 32, data
+        pixieEditorId = "pixie_editor" + (pixieEditorIds++)
+
+        pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
 
         $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 

@@ -68,6 +68,10 @@ class Sprite < ActiveRecord::Base
     }
   end
 
+  def self.data_url_from_path(path, content_type)
+    "data:#{content_type};base64,#{Base64.encode64(open(path, 'rb') {|f| f.read}).gsub("\n", "")}"
+  end
+
   def display_name
     if title.blank?
       "Sprite #{id}"
@@ -118,6 +122,10 @@ class Sprite < ActiveRecord::Base
 
   def data
     Sprite.data_from_path(image.url)
+  end
+
+  def data_url
+    Sprite.data_url_from_path(image.url, image_content_type)
   end
 
   def load_replay_data

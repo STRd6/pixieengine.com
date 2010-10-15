@@ -36,18 +36,24 @@
 :plain
   <script type="text/coffeescript">
     $ ->
-      window.createPixelEditor = (width, height) ->
+      window.createPixelEditor = (width, height, dataUrl) ->
         title = null
+        tab = null
 
         $('<div />').pixie
           width: width
           height: height
           frames: 1
           initializer: (canvas) ->
+            if dataUrl
+              canvas.fromDataURL(dataUrl)
 
             promptForTitle = ->
               $("#titleModal button").one 'click', ->
                 title = $("#titleModal input").val()
+
+                tab.find("a").text title
+
                 $.modal.close()
                 postImage()
 
@@ -64,7 +70,7 @@
               notify "Saving, please wait..."
 
               postData =
-                'format': 'js',
+                'format': 'json',
                 'sprite[app_id]': #{app.id},
                 'sprite[title]': title,
                 'sprite[width]': width,
@@ -73,18 +79,23 @@
                 'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
 
               $.post '/sprites', postData, (data) ->
-                eval(data)
+                sprite = data.sprite
+                notify("Saved!")
+
+                createSpriteNode sprite
+
                 trackPageview("/event/save_drawing")
                 canvas.dirty(false)
                 $(".tool.button").last().removeAttr("disabled")
-                #TODO: set resource entry
-              , "script"
+              , "json"
 
             canvas.addAction
               name: "Save"
               icon: "/images/icons/database_save.png"
               perform: (canvas) ->
                 $(".tool.button").last().attr("disabled", true)
+
+                tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
 
                 promptForTitle()
 

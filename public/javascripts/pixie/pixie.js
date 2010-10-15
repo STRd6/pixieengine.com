@@ -988,6 +988,32 @@ Number.prototype.times = function(iterator, context) {
           return data.substr(data.indexOf(',') + 1);
         },
 
+        fromDataURL: function(dataURL) {
+          var context = document.createElement('canvas').getContext('2d');
+
+          var image = new Image();
+          image.onload = function() {
+            context.drawImage(image, 0, 0);
+            var imageData = context.getImageData(0, 0, image.width, image.height);
+
+            function getColor(x, y) {
+              var index = (x + y * imageData.width) * 4
+              return "rgba(" + [
+                imageData.data[index  + 0],
+                imageData.data[index  + 1],
+                imageData.data[index  + 2],
+                imageData.data[index  + 3]/255
+              ].join(',') + ")"
+            }
+
+            canvas.eachPixel(function(pixel, x, y) {
+              pixel.color(getColor(x, y), true);
+            });
+          };
+
+          image.src = dataURL;
+        },
+
         getReplayData: function() {
           return undoStack.replayData();
         },

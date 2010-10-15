@@ -37,6 +37,24 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  create.wants.json do
+    if sprite.user
+      render :json => {
+        :sprite => {
+          :id => @sprite.id,
+          :title => @sprite.title
+        }
+      }
+    else
+      session[:saved_sprites] ||= {}
+      session[:saved_sprites][sprite.id] = sprite.broadcast
+
+      render :json => {
+        :redirect => login_path
+      }
+    end
+  end
+
   new_action.wants.html do
     unless params[:width].to_i <= 0
       @width = [params[:width].to_i, Sprite::MAX_LENGTH].min
