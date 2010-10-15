@@ -19,18 +19,28 @@
       .script
         display: none
 
-      span.folder
+      span
         cursor: pointer
-        &.resources
-          background-image: url(/images/icons/images.png)
+        &.folder
+          &.resources
+            background-image: url(/images/icons/images.png)
+          &.sprites
+            background-image: url(/images/icons/pictures.png)
+          &.sounds
+            background-image: url(/images/icons/sound.png)
 
-      span.file
-        cursor: pointer
-        white-space: nowrap
-        &.coffeescript
-          background-image: url(/images/icons/cup.png)
-        &.javascript
-          background-image: url(/images/icons/script.png)
+        &.load_sprite
+          background-image: url(/images/icons/picture_go.png)
+
+        &.new_sprite
+          background-image: url(/images/icons/picture_add.png)
+
+        &.file
+          white-space: nowrap
+          &.coffeescript
+            background-image: url(/images/icons/cup.png)
+          &.javascript
+            background-image: url(/images/icons/script.png)
 
     .ui-tabs
       .ui-tabs-hide
@@ -75,15 +85,26 @@
       %ul
         - library.scripts.each do |script|
           %li{ :title => script.title }
-            %span.file{ 'data-id' => script.id, :class => script.lang }= script.title
+            %span.file.code{ 'data-id' => script.id, :class => script.lang }= script.title
             .script{ :id => "script#{script.id}", 'data-lang' => script.lang }
               - form_for [:developer, script] do |form|
                 = form.hidden_field :code, { :id => "script_code#{script.id}" }
                 = form.text_area :src, { :id => "script_src#{script.id}" }
 
-  %li.closed
+  %li.closed{ :title => "Resources" }
     %span.folder.resources Resources
     %ul
+      %li.closed{ :title => "Sounds" }
+        %span.folder.sounds Sounds
+        %ul
+      %li.closed{ :title => "Sprites" }
+        %span.folder.sprites Sprites
+        %ul
+          %li{ :title => "Load Sprite" }
+            %span.file.load_sprite Load Sprite
+          %li{ :title => "Load Sprite" }
+            %span.file.new_sprite New Sprite
+          / TODO: Have all existing sprites added to app here
 
 #tabs
   %ul
@@ -167,46 +188,47 @@
     $('#run').click ->
       runApp($('#app_code').val())
 
+    $ ->
+      $('ul.filetree').treeview()
+
+      $('.filetree .file.code').click ->
+        scriptSelector = "#script" + $(this).attr('data-id')
+        if $(scriptSelector).parents('#tabs').length
+          $('#tabs ul li a[href="' + scriptSelector + '"]').click()
+        else
+          $tabs.tabs('add', scriptSelector, $(this).text(), 0)
+
+      $('.filetree .file.load_sprite').click ->
+        alert "Load Sprite"
+
+      $('.filetree .file.new_sprite').click ->
+        alert "New Sprite"
+
+      currentPanel = $("#scriptmain")
+
+      $tabs = $('#tabs').tabs
+        add: (event, ui) ->
+          $tabs.tabs('select', '#' + ui.panel.id)
+          fileData = createEditor(ui.panel)
+
+          $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+
+        remove: (event, ui) ->
+          $(ui.panel).find(".CodeMirror-wrapping").remove()
+          $('.filetree').append(ui.panel)
+
+        select: (event, ui) ->
+          currentPanel = ui.panel
+
+        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+
+
+      $('#save').click ->
+        $(currentPanel).find('form').ajaxSubmit({ type: 'POST' });
+
+      $('#tabs span.ui-icon-close').live 'click', ->
+        # TODO Prompt if changed
+        index = $('li',$tabs).index($(this).parent())
+        $tabs.tabs('remove', index)
+
   </script>
-
-:javascript
-  $(function() {
-    $('ul.filetree').treeview();
-
-    $('.file').click(function() {
-      var scriptSelector = "#script" + $(this).attr('data-id');
-      if ($(scriptSelector).parents('#tabs').length == 0) {
-        $tabs.tabs('add', scriptSelector, $(this).text(), 0);
-      } else {
-        $('#tabs ul li a[href="' + scriptSelector + '"]').click();
-        // TODO: go to the index of that tab
-      }
-    });
-
-    var currentPanel = $("#scriptmain");
-    var $tabs = $('#tabs').tabs({
-      add: function(event, ui) {
-        $tabs.tabs('select', '#' + ui.panel.id);
-        var fileData = createEditor(ui.panel);
-
-        $(ui.tab).parent().find('span.lang').addClass(fileData.lang);
-      },
-      remove: function(event, ui) {
-        $(ui.panel).find(".CodeMirror-wrapping").remove();
-        $('.filetree').append(ui.panel);
-      },
-      select: function(event, ui) {
-        currentPanel = ui.panel;
-      },
-      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
-    });
-
-    $('#save').click(function() {
-      $(currentPanel).find('form').ajaxSubmit({ type: 'POST' });
-    });
-
-    $('#tabs span.ui-icon-close').live('click', function() {
-      var index = $('li',$tabs).index($(this).parent());
-      $tabs.tabs('remove', index);
-    });
-  });
