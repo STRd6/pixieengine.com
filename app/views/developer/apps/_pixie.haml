@@ -1,0 +1,40 @@
+= stylesheet_link_tag 'pixie/pixie'
+= javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
+
+:plain
+  <script type="text/coffeescript">
+    $ ->
+      window.createPixelEditor = (width, height) ->
+        $('<div />').pixie
+          width: width
+          height: height
+          frames: 1
+          initializer: (canvas) ->
+            postImage = ->
+              notify "Saving, please wait..."
+
+              postData =
+                'format': 'js',
+                'sprite[width]': width,
+                'sprite[height]': height,
+                'sprite[file_base64_encoded]': canvas.toBase64(),
+                'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
+
+              $.post '/sprites', postData, (data) ->
+                eval(data)
+                trackPageview("/event/save_drawing")
+                canvas.dirty(false)
+                $(".tool.button").last().removeAttr("disabled")
+              , "script"
+
+
+            canvas.addAction
+              name: "Save"
+              icon: "/images/icons/database_save.png"
+              perform: (canvas) ->
+                $(".tool.button").last().attr("disabled", true)
+                postImage()
+
+              undoable: false
+
+  </script>

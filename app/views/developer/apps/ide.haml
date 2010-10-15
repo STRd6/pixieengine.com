@@ -4,6 +4,8 @@
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"
 = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
+= render :partial => "pixie"
+
 #error
 
 %style
@@ -16,7 +18,7 @@
       width: 120px
       vertical-align: top
 
-      .script
+      .tab_data
         display: none
 
       span
@@ -71,7 +73,10 @@
               background-image: url(/images/icons/cup.png)
             &.javascript
               background-image: url(/images/icons/script.png)
-
+            &.sound
+              background-image: url(/images/icons/sound.png)
+            &.sprite
+              background-image: url(/images/icons/photo.png)
         a
           font-weight: normal
           padding: 0.5em 0.6em
@@ -85,8 +90,8 @@
       %ul
         - library.scripts.each do |script|
           %li{ :title => script.title }
-            %span.file.code{ 'data-id' => script.id, :class => script.lang }= script.title
-            .script{ :id => "script#{script.id}", 'data-lang' => script.lang }
+            %span.file.script{ 'data-id' => script.id, :class => script.lang }= script.title
+            .tab_data{ :id => "script#{script.id}", 'data-lang' => script.lang }
               - form_for [:developer, script] do |form|
                 = form.hidden_field :code, { :id => "script_code#{script.id}" }
                 = form.text_area :src, { :id => "script_src#{script.id}" }
@@ -129,6 +134,10 @@
 
 :plain
   <script type="text/coffeescript">
+    shouldCreateEditor = false
+    pixieEditorIds = 0
+    langClass = null
+
     window.createEditor = (panel) ->
       lang = $(panel).attr('data-lang')
       code_id = "#" + $(panel).find('input').eq(2).attr('id')
@@ -186,32 +195,46 @@
       $("#testFrame")[0].contentWindow.focus()
 
     $('#run').click ->
-      runApp($('#app_code').val())
+      runApp $('#app_code').val()
 
     $ ->
       $('ul.filetree').treeview()
 
-      $('.filetree .file.code').click ->
+      $('.filetree .file.script').click ->
+        shouldCreateEditor = true
         scriptSelector = "#script" + $(this).attr('data-id')
+
         if $(scriptSelector).parents('#tabs').length
           $('#tabs ul li a[href="' + scriptSelector + '"]').click()
         else
           $tabs.tabs('add', scriptSelector, $(this).text(), 0)
 
-      $('.filetree .file.load_sprite').click ->
-        alert "Load Sprite"
-
       $('.filetree .file.new_sprite').click ->
-        alert "New Sprite"
+        pixieEditor = createPixelEditor 32, 32
+        pixieEditorId = "pixie_editor" + (pixieEditorIds++)
+
+        pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
+
+        shouldCreateEditor = false
+        langClass = "sprite"
+
+        $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 
       currentPanel = $("#scriptmain")
 
       $tabs = $('#tabs').tabs
         add: (event, ui) ->
           $tabs.tabs('select', '#' + ui.panel.id)
-          fileData = createEditor(ui.panel)
 
-          $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+          if shouldCreateEditor
+            fileData = createEditor(ui.panel)
+
+            $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+          else
+            if langClass
+              $(ui.tab).parent().find('span.lang').addClass(langClass)
+
+          langClass = null
 
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
