@@ -42,7 +42,8 @@ class SpritesController < ResourceController::Base
       render :json => {
         :sprite => {
           :id => @sprite.id,
-          :title => @sprite.title
+          :title => @sprite.title,
+          :app_sprite_id => @sprite.app_sprite_id
         }
       }
     else

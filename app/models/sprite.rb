@@ -27,15 +27,13 @@ class Sprite < ActiveRecord::Base
     indexes tags(:name), :as => :tags
   end
 
-  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data, :app_id
+  attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data, :app_id, :app_sprite_id
 
   MAX_LENGTH = 640
   # Limit sizes to small pixel art for now
   validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
 
   before_validation :gather_metadata, :convert_to_io, :set_dimensions
-
-  after_save :send_broadcast
 
   after_create :update_dimension_tags!, :save_replay_data, :associate_app
 
@@ -336,13 +334,9 @@ class Sprite < ActiveRecord::Base
 
   def associate_app
     if app_id
-      AppSprite.create(:app_id => app_id, :sprite_id => id)
-    end
-  end
+      app_sprite = AppSprite.create(:app_id => app_id, :sprite_id => id)
 
-  def send_broadcast
-    if broadcast == "1"
-      broadcast_link
+      self.app_sprite_id = app_sprite.id
     end
   end
 

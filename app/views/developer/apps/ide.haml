@@ -113,9 +113,10 @@
           %li{ :title => "Load Sprite" }
             %span.file.new_sprite New Sprite
           / TODO: Have all existing sprites added to app here
-          - app.sprites.each do |sprite|
-            %li{ :title => sprite.title }
-              %span.file.sprite{ 'data-id' => sprite.id, :style => "background-image: url(#{sprite.data_url})" }= sprite.title
+          - app.app_sprites.each do |app_sprite|
+            - title = app_sprite.title
+            %li{ :title => title }
+              %span.file.sprite{ 'data-id' => app_sprite.id, :style => "background-image: url(#{app_sprite.data_url})" }= title
 
 
 #tabs
@@ -146,7 +147,7 @@
     langClass = null
 
     window.updateSpriteNode = (sprite) ->
-      id = sprite.id
+      id = sprite.app_sprite_id
       title = sprite.title
       cssImageUrl = sprite.cssImageUrl
 
