@@ -3,7 +3,7 @@
 %ul.actions
   - if owner?
     %li= button_link "Edit Description", "pencil", edit_developer_app_path(app)
-    %li= button_link "Edit Code", "application_edit", edit_code_developer_app_path(app)
+    %li= button_link "Edit Code", "application_edit", ide_developer_app_path(app)
     %li.listMenu.menu
       = button_link "Add Library", 'book_add', '#', "data-app_id" => app.id
       %ul.round{:style => "display: none;"}
