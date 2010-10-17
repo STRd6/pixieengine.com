@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101015045602) do
+ActiveRecord::Schema.define(:version => 20101017214436) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -52,8 +52,10 @@ ActiveRecord::Schema.define(:version => 20101015045602) do
     t.integer  "sprite_id",  :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "name",       :null => false
   end
 
+  add_index "app_sprites", ["app_id", "name"], :name => "index_app_sprites_on_app_id_and_name", :unique => true
   add_index "app_sprites", ["app_id", "sprite_id"], :name => "index_app_sprites_on_app_id_and_sprite_id", :unique => true
   add_index "app_sprites", ["app_id"], :name => "index_app_sprites_on_app_id"
   add_index "app_sprites", ["sprite_id"], :name => "index_app_sprites_on_sprite_id"

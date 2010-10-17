@@ -102,22 +102,15 @@
   %li.closed{ :title => "Resources" }
     %span.folder.resources Resources
     %ul
-      %li.closed{ :title => "Sounds" }
-        %span.folder.sounds Sounds
-        %ul
       %li.closed{ :title => "Sprites" }
         %span.folder.sprites Sprites
         %ul
-          %li{ :title => "Load Sprite" }
-            %span.file.load_sprite Load Sprite
-          %li{ :title => "Load Sprite" }
+          %li{ :title => "New Sprite" }
             %span.file.new_sprite New Sprite
-          / TODO: Have all existing sprites added to app here
           - app.app_sprites.each do |app_sprite|
-            - title = app_sprite.title
+            - title = app_sprite.name
             %li{ :title => title }
               %span.file.sprite{ 'data-id' => app_sprite.id, :style => "background-image: url(#{app_sprite.data_url})" }= title
-
 
 #tabs
   %ul
@@ -146,10 +139,10 @@
     pixieEditorIds = 0
     langClass = null
 
-    window.updateSpriteNode = (sprite) ->
-      id = sprite.app_sprite_id
-      title = sprite.title
-      cssImageUrl = sprite.cssImageUrl
+    window.updateSpriteNode = (appSprite) ->
+      id = appSprite.id
+      title = appSprite.name
+      cssImageUrl = appSprite.cssImageUrl
 
       node = $(".filetree .sprite[data-id=" + id + "]")
 
@@ -241,7 +234,10 @@
         shouldCreateEditor = false
         langClass = "sprite"
 
-        pixieEditor = createPixelEditor 32, 32
+        pixieEditor = createPixelEditor
+          width: 32
+          height: 32
+
         pixieEditorId = "pixie_editor" + (pixieEditorIds++)
 
         pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
@@ -251,8 +247,9 @@
       $('.filetree .file.sprite').live 'click', ->
         shouldCreateEditor = false
         langClass = "sprite"
+        appSpriteId = $(this).attr('data-id')
 
-        spriteSelector = "#sprite" + $(this).attr('data-id')
+        spriteSelector = "#sprite" + appSpriteId
 
         if $(spriteSelector).length
           if $(spriteSelector).parents('#tabs').length
@@ -266,7 +263,13 @@
         data = bgCss.substr(4, bgCss.length - 5)
         title = $(this).text()
 
-        pixieEditor = createPixelEditor 32, 32, data
+        pixieEditor = createPixelEditor
+          width: 32
+          height: 32
+          title: title
+          dataUrl: data
+          appSpriteId: appSpriteId
+
         pixieEditor.attr('id', spriteSelector.substr(1)).addClass('tab_data').appendTo($('ul.filetree'))
 
         $tabs.tabs 'add', spriteSelector, title, 0

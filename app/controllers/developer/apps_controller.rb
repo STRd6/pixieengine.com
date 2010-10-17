@@ -5,8 +5,33 @@ class Developer::AppsController < DeveloperController
   before_filter :require_user, :only => [:fork_post]
   before_filter :require_owner, :only => [:edit, :update, :add_library, :remove_library]
 
+  respond_to :html, :xml, :json
+
   create.before do
     app.user = current_user
+  end
+
+  def create_app_sprite
+    if owner?
+      app_sprite_data = params[:app_sprite]
+      app_sprite_data[:sprite] = Sprite.new(app_sprite_data[:sprite])
+
+      if params[:app_sprite_id]
+        app_sprite = app.app_sprites.find params[:app_sprite_id]
+      end
+
+      if app_sprite
+        app_sprite.update_attributes app_sprite_data
+      else
+        app_sprite = app.app_sprites.create app_sprite_data
+      end
+
+      respond_to do |format|
+        format.json {render :json => app_sprite}
+      end
+    else
+      # Error, can't add to apps that you don't own
+    end
   end
 
   def fork_post

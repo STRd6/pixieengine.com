@@ -36,8 +36,12 @@
 :plain
   <script type="text/coffeescript">
     $ ->
-      window.createPixelEditor = (width, height, dataUrl) ->
-        title = null
+      window.createPixelEditor = (options) ->
+        width = options.width
+        height = options.height
+        dataUrl = options.dataUrl
+        title = options.title
+        appSpriteId = options.appSpriteId
         tab = null
 
         $('<div />').pixie
@@ -71,15 +75,17 @@
 
               postData =
                 'format': 'json',
-                'sprite[app_id]': #{app.id},
-                'sprite[title]': title,
-                'sprite[width]': width,
-                'sprite[height]': height,
-                'sprite[file_base64_encoded]': canvas.toBase64(),
-                'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
+                'app_sprite_id': appSpriteId
+                'app_sprite[app_id]': #{app.id}
+                'app_sprite[name]': title
+                'app_sprite[sprite][title]': title
+                'app_sprite[sprite][width]': width
+                'app_sprite[sprite][height]': height
+                'app_sprite[sprite][file_base64_encoded]': canvas.toBase64()
+                'app_sprite[sprite][replay_data]': JSON.stringify(canvas.getReplayData())
 
-              $.post '/sprites', postData, (data) ->
-                sprite = data.sprite
+              $.post '/developer/apps/#{app.id}/create_app_sprite', postData, (data) ->
+                sprite = data.app_sprite
                 sprite.cssImageUrl = canvas.toCSSImageURL()
 
                 notify("Saved!")
@@ -102,7 +108,10 @@
 
                 tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
 
-                promptForTitle()
+                if title
+                  postImage()
+                else
+                  promptForTitle()
 
               undoable: false
 

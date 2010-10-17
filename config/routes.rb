@@ -12,6 +12,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         post :add_library
         post :remove_library
+        post :create_app_sprite
         post :fork_post
 
         get :docs
