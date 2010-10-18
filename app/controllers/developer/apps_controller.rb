@@ -14,7 +14,7 @@ class Developer::AppsController < DeveloperController
   def create_app_sprite
     if owner?
       app_sprite_data = params[:app_sprite]
-      app_sprite_data[:sprite] = Sprite.new(app_sprite_data[:sprite])
+      app_sprite_data[:sprite] = Sprite.new(app_sprite_data[:sprite].merge(:user => current_user))
 
       if params[:app_sprite_id]
         app_sprite = app.app_sprites.find params[:app_sprite_id]
