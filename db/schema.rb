@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101017214436) do
+ActiveRecord::Schema.define(:version => 20101018213433) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -46,6 +46,17 @@ ActiveRecord::Schema.define(:version => 20101017214436) do
   add_index "app_libraries", ["app_id", "library_id"], :name => "index_app_libraries_on_app_id_and_library_id", :unique => true
   add_index "app_libraries", ["app_id"], :name => "index_app_libraries_on_app_id"
   add_index "app_libraries", ["library_id"], :name => "index_app_libraries_on_library_id"
+
+  create_table "app_members", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "app_members", ["app_id", "user_id"], :name => "index_app_members_on_app_id_and_user_id", :unique => true
+  add_index "app_members", ["app_id"], :name => "index_app_members_on_app_id"
+  add_index "app_members", ["user_id"], :name => "index_app_members_on_user_id"
 
   create_table "app_sprites", :force => true do |t|
     t.integer  "app_id",     :null => false
@@ -236,6 +247,17 @@ ActiveRecord::Schema.define(:version => 20101017214436) do
     t.datetime "updated_at",                     :null => false
     t.integer  "parent_id"
   end
+
+  create_table "script_members", :force => true do |t|
+    t.integer  "script_id",  :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "script_members", ["script_id", "user_id"], :name => "index_script_members_on_script_id_and_user_id", :unique => true
+  add_index "script_members", ["script_id"], :name => "index_script_members_on_script_id"
+  add_index "script_members", ["user_id"], :name => "index_script_members_on_user_id"
 
   create_table "scripts", :force => true do |t|
     t.integer  "user_id"

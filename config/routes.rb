@@ -11,6 +11,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     resources :apps do
       member do
         post :add_library
+        post :add_user
         post :remove_library
         post :create_app_sprite
         post :fork_post
@@ -23,6 +24,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :mobile
         get :lib, :defaults => { :format => 'js' }
         get :ide
+        get :permissions
       end
     end
 
@@ -34,7 +36,10 @@ PixieStrd6Com::Application.routes.draw do |map|
 
     resources :scripts do
       member do
+        post :add_user
+
         get :load
+        get :permissions
         get :run
         get :test
       end

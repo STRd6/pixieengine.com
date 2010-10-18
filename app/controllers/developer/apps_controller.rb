@@ -3,7 +3,8 @@ class Developer::AppsController < DeveloperController
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post]
-  before_filter :require_owner, :only => [:edit, :update, :add_library, :remove_library]
+  before_filter :require_access, :only => [:edit, :update, :add_library, :remove_library]
+  before_filter :require_owner, :only => [:add_user]
 
   respond_to :html, :xml, :json
 
@@ -49,6 +50,14 @@ class Developer::AppsController < DeveloperController
     )
 
     redirect_to edit_developer_app_path(fork)
+  end
+
+  def add_user
+    AppMember.create :app => app, :user => User.find(params[:user_id])
+
+    flash[:notice] = "Added user id #{params[:user_id]} to app"
+
+    redirect_to :back
   end
 
   def load

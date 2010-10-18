@@ -1,3 +1,8 @@
+Factory.define :app do |app|
+  app.title "TEST"
+  app.user {Factory :user}
+end
+
 Factory.define :collection do |collection|
   collection.user {Factory :user}
   collection.name "TEST"

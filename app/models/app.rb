@@ -8,6 +8,9 @@ class App < ActiveRecord::Base
   has_many :app_sprites
   has_many :sprites, :through => :app_sprites
 
+  has_many :app_members
+  has_many :members, :through => :app_members, :source => :user
+
   # TODO: Move to a background process
   # after_save :generate_docs
 
@@ -31,6 +34,10 @@ class App < ActiveRecord::Base
 
   def template
     "<canvas width='#{width}' height='#{height}'></canvas>"
+  end
+
+  def has_access?(user)
+    members.exists? user
   end
 
   def generate_docs

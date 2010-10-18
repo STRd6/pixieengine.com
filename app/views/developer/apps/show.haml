@@ -1,7 +1,7 @@
 %h2= app.title
 
 %ul.actions
-  - if owner?
+  - if has_access?
     %li= button_link "Edit Description", "pencil", edit_developer_app_path(app)
     %li= button_link "Edit Code", "application_edit", ide_developer_app_path(app)
     %li.listMenu.menu
@@ -11,6 +11,9 @@
           %li{ "data-library_id" => library.id }
             = check_box_tag "library", "1", app.libraries.include?(library), :id => nil, :name => nil
             = library.title
+
+  - if owner?
+    %li= button_link "Add User", "user_add", permissions_developer_app_path(app)
 
   %li= button_link "Run", "application_go", run_developer_app_path(app)
   %li= button_link "Fork", "arrow_divide", fork_developer_app_path(app)

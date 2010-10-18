@@ -1,8 +1,11 @@
 %h2= script.title
 
 %ul.actions
-  - if owner?
+  - if has_access?
     %li= link_to "#{image_tag "icons/pencil_go.png"} Edit".html_safe, edit_developer_script_path(script), :class => "button"
+
+  - if owner?
+    %li= button_link "Add User", "user_add", permissions_developer_script_path(script)
 
   - if current_user
     %li.listMenu.menu

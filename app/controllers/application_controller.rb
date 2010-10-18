@@ -62,6 +62,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_access
+    unless has_access?
+      flash[:notice] = "You do not have access to do this!"
+      redirect_to root_url
+    end
+  end
+
   def require_admin
     unless admin?
       flash[:notice] = "Admin required"
@@ -80,6 +87,11 @@ class ApplicationController < ActionController::Base
     (current_user == object.user) && current_user
   end
   helper_method :owner?
+
+  def has_access?
+    owner? || object.has_access?(current_user)
+  end
+  helper_method :has_access?
 
   def admin?
     current_user && current_user.admin?
