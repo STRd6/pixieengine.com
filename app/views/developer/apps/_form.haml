@@ -15,4 +15,10 @@
     = form.label :description
     = form.text_area :description
 
+  %p
+    = form.label :lang_javascript, "JavaScript"
+    = form.radio_button :lang, "javascript"
+    = form.label :lang_coffeescript, "CoffeeScript"
+    = form.radio_button :lang, "coffeescript", :checked => true
+
   = form.submit
