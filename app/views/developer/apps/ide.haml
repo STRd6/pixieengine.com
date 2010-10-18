@@ -86,7 +86,7 @@
 
 %ul.filetree
   %li
-    %span.file{ 'data-id' => 'main', :class => app.lang } Main
+    %span.file.script{ 'data-id' => 'main', :class => app.lang } Main
   - app.libraries.each do |library|
     %li.closed{ :title => library.title }
       %span.folder= library.title
