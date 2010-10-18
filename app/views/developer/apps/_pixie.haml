@@ -53,6 +53,8 @@
               canvas.fromDataURL(dataUrl)
 
             promptForTitle = ->
+              $('#titleModal button').unbind()
+
               $("#titleModal button").one 'click', ->
                 title = $("#titleModal input").val()
 
