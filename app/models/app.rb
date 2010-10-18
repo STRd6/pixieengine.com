@@ -11,6 +11,12 @@ class App < ActiveRecord::Base
   # TODO: Move to a background process
   # after_save :generate_docs
 
+  def resource_code
+    return "var App = #{
+      {:Sprites => app_sprites.inject({}) { |hash, app_sprite| hash[app_sprite.name] = app_sprite.sprite_id; hash}}.to_json
+    };"
+  end
+
   def library_code
     libraries.map(&:code).join(";\n")
   end
