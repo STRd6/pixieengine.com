@@ -110,7 +110,7 @@
           - app.app_sprites.each do |app_sprite|
             - title = app_sprite.name
             %li{ :title => title }
-              %span.file.sprite{ 'data-id' => app_sprite.id, :style => "background-image: url(#{app_sprite.data_url})" }= title
+              %span.file.sprite{ 'data-id' => app_sprite.id, 'data-width' => app_sprite.width, 'data-height' => app_sprite.height, :style => "background-image: url(#{app_sprite.data_url})" }= title
 
 #tabs
   %ul
@@ -132,6 +132,18 @@
   :sass
     #testFrame
       display: block
+    #newCanvasModal
+      display: none
+
+#newCanvasModal
+  %p
+    = label_tag :resize_width, "width"
+    = text_field_tag :resize_width, 32, {:title => 'width'}
+  %p
+    = label_tag :resize_height, "height"
+    = text_field_tag :resize_height, 32, {:title => 'height'}
+
+  = button_to_function "New Canvas", "newCanvas()"
 
 :plain
   <script type="text/coffeescript">
@@ -139,10 +151,28 @@
     pixieEditorIds = 0
     langClass = null
 
+    window.newCanvas = ->
+      shouldCreateEditor = false
+      langClass = "sprite"
+
+      pixieEditor = createPixelEditor
+        width: $('#resize_width').val()
+        height: $('#resize_height').val()
+
+      pixieEditorId = "pixie_editor" + (pixieEditorIds++)
+
+      pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo('ul.filetree')
+
+      $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
+
+      $.modal.close()
+
     window.updateSpriteNode = (appSprite) ->
+      cssImageUrl = appSprite.cssImageUrl
+      height = appSprite.height
       id = appSprite.id
       title = appSprite.name
-      cssImageUrl = appSprite.cssImageUrl
+      width = appSprite.width
 
       node = $(".filetree .sprite[data-id=" + id + "]")
 
@@ -151,7 +181,7 @@
         node = node.parent()
       else
         node = $("<li />").attr("title", title)
-        spriteNode = $("<span />").text(title).attr('data-id', id).addClass("file sprite").appendTo(node)
+        spriteNode = $("<span />").text(title).attr('data-id', id).attr('data-width', width).attr('data-height', height).addClass("file sprite").appendTo(node)
         $('.filetree .sprites').next().append(node).children().removeClass('last').last().addClass('last')
 
       spriteNode.css "backgroundImage", cssImageUrl
@@ -231,23 +261,14 @@
           $tabs.tabs 'add', scriptSelector, $(this).text(), 0
 
       $('.filetree .file.new_sprite').click ->
-        shouldCreateEditor = false
-        langClass = "sprite"
-
-        pixieEditor = createPixelEditor
-          width: 32
-          height: 32
-
-        pixieEditorId = "pixie_editor" + (pixieEditorIds++)
-
-        pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo(this)
-
-        $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
+        $("#newCanvasModal").modal()
 
       $('.filetree .file.sprite').live 'click', ->
         shouldCreateEditor = false
         langClass = "sprite"
         appSpriteId = $(this).attr('data-id')
+        width = $(this).attr('data-width')
+        height = $(this).attr('data-height')
 
         spriteSelector = "#sprite" + appSpriteId
 
@@ -264,8 +285,8 @@
         title = $(this).text()
 
         pixieEditor = createPixelEditor
-          width: 32
-          height: 32
+          width: width
+          height: height
           title: title
           dataUrl: data
           appSpriteId: appSpriteId
@@ -276,7 +297,7 @@
 
       currentPanel = $("#scriptmain")
 
-      $tabs = $('#tabs').tabs
+      window.$tabs = $('#tabs').tabs
         add: (event, ui) ->
           $tabs.tabs('select', '#' + ui.panel.id)
 

@@ -89,6 +89,8 @@
               $.post '/developer/apps/#{app.id}/create_app_sprite', postData, (data) ->
                 sprite = data.app_sprite
                 sprite.cssImageUrl = canvas.toCSSImageURL()
+                sprite.width = width
+                sprite.height = height
 
                 notify("Saved!")
 
