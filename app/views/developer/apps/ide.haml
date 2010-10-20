@@ -46,6 +46,8 @@
           &.sprite
             background-image: url(/images/icons/picture.png)
             margin: 0
+          &.documentation
+            background-image: url(/images/icons/book.png)
 
     .ui-tabs
       .ui-tabs-hide
@@ -80,6 +82,8 @@
               background-image: url(/images/icons/sound.png)
             &.sprite
               background-image: url(/images/icons/photo.png)
+            &.documentation
+              background-image: url(/images/icons/book.png)
 
         a
           font-weight: normal
@@ -119,10 +123,15 @@
             %li{ :title => title }
               %span.file.sprite{ 'data-id' => app_sprite.id, 'data-width' => app_sprite.width, 'data-height' => app_sprite.height, :style => "background-image: url(#{app_sprite.data_url})" }= title
 
+  %li{ :title => "Documentation" }
+    %span.file.documentation Documentation
+
   #scriptmain.tab_data{ 'data-lang' => app.lang }
     - form_for [:developer, app] do |form|
       = form.hidden_field :code
       = form.text_area :src
+  #documentation.tab_data
+    %iframe.no_border{:src => "/production/apps/#{app.id}/docs/index.html", :width => 550, :height => 600}
 
 #tabs
   %ul
@@ -276,6 +285,16 @@
 
     $ ->
       $('ul.filetree').treeview()
+
+      $('.filetree .file.documentation').click ->
+        shouldCreateEditor = false
+        docSelector = "#documentation"
+        langClass = "documentation"
+
+        if $('#tabs ul li a[href="' + docSelector + '"]').length
+          $('#tabs ul li a[href="' + docSelector + '"]').click()
+        else
+          $tabs.tabs 'add', docSelector, $(this).text(), 0
 
       $('.filetree .file.script').click ->
         shouldCreateEditor = true
