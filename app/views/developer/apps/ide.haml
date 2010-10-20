@@ -80,9 +80,16 @@
               background-image: url(/images/icons/sound.png)
             &.sprite
               background-image: url(/images/icons/photo.png)
+
         a
           font-weight: normal
           padding: 0.5em 0.6em
+
+        &.unsaved
+          a
+            font-weight: bold
+            &:after
+              content: "*"
 
 %ul.filetree
   %li
@@ -112,16 +119,14 @@
             %li{ :title => title }
               %span.file.sprite{ 'data-id' => app_sprite.id, 'data-width' => app_sprite.width, 'data-height' => app_sprite.height, :style => "background-image: url(#{app_sprite.data_url})" }= title
 
-#tabs
-  %ul
-    %li
-      %span.ui-icon.lang{ :class => app.lang }
-      %a{ :href => '#scriptmain' }
-        Main
-  #scriptmain{ 'data-lang' => app.lang }
+  #scriptmain.tab_data{ 'data-lang' => app.lang }
     - form_for [:developer, app] do |form|
       = form.hidden_field :code
       = form.text_area :src
+
+#tabs
+  %ul
+
 
 %button#save Save
 %button#run Run
@@ -194,6 +199,8 @@
       code_id = "#" + $(panel).find('input').eq(2).attr('id')
       src_id = "#" + $(panel).find('textarea').attr('id')
 
+      savedCode = $(src_id).val()
+
       compiled_js = ''
 
       compile_source = if lang == 'coffeescript'
@@ -223,12 +230,29 @@
 
       # Listen for keypresses and recompile.
       $(editor.win.document).keyup ->
-        compile_source(editor.getCode())
-        $(src_id).val(editor.getCode())
+        currentCode = editor.getCode()
+
+        if currentCode != savedCode
+          setUnsaved()
+        else
+          setSaved()
+
+        compile_source(currentCode)
+        $(src_id).val(currentCode)
 
       lang: lang
+      updateSaved: () ->
+        savedCode = editor.getCode()
 
-    createEditor $("#scriptmain")
+    setUnsaved = () ->
+      $("#tabs ul li.ui-state-active").addClass("unsaved")
+
+    setSaved = () ->
+      tabLi = $("#tabs ul li.ui-state-active").removeClass("unsaved")
+      if c = tabLi.find('a').data('updateSaved')
+        c()
+      else
+        debugger
 
     runApp = (code) ->
       cacheBust = new Date().getTime()
@@ -306,6 +330,7 @@
           if shouldCreateEditor
             fileData = createEditor(ui.panel)
 
+            $(ui.tab).data('updateSaved', fileData.updateSaved)
             $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
           else
             if langClass
@@ -322,13 +347,19 @@
 
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
+      $('ul.filetree .file.script').first().click()
 
       $('#save').click ->
-        $(currentPanel).find('form').ajaxSubmit({ type: 'POST' });
+        notify("Saving...")
+        $(currentPanel).find('form').ajaxSubmit
+          type: 'POST'
+          success: () ->
+            setSaved()
+            notify("Saved!")
 
       $('#tabs span.ui-icon-close').live 'click', ->
         # TODO Prompt if changed
-        index = $('li',$tabs).index($(this).parent())
+        index = $('li', $tabs).index($(this).parent())
         $tabs.tabs('remove', index)
 
   </script>
