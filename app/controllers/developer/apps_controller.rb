@@ -110,4 +110,8 @@ class Developer::AppsController < DeveloperController
     collection
   end
   helper_method :apps
+
+  def collection
+    @collection ||= App.order("id DESC")
+  end
 end
