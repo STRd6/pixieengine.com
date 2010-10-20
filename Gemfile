@@ -21,6 +21,7 @@ gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "
 gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
 gem "compass", ">= 0.10.2"
+gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'hpricot'
