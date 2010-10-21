@@ -259,3 +259,26 @@ div.no-star
     display: block
     height: 102px
     width: 50px
+
+#tooltip
+  +border-radius(5px)
+  +box-shadow()
+  background-color: black
+  color: white
+  display: none
+  min-width: 150px
+  padding: 1em
+  position: absolute
+  z-index: 10
+
+  .icon
+    background-image: url(images/info.png)
+    height: 48px
+    left: -20px
+    position: absolute
+    top: -10px
+    width: 48px
+
+  .content
+    left: 24px
+    position: relative

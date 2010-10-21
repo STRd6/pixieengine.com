@@ -8,6 +8,17 @@ function notify(message) {
   }
 }
 
+function showTooltip(element, html) {
+  var position = element.offset();
+
+  position.left += element.width() + 16;
+  $("#tooltip").offset(position).fadeIn().find(".content").html(html);
+}
+
+function hideTooltip() {
+  $("#tooltip").fadeOut();
+}
+
 function trackPageview(pageName) {
   _gaq.push(['_trackPageview', pageName]);
 }
