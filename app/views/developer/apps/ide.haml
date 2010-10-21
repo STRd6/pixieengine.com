@@ -190,6 +190,10 @@
     $('#run').click ->
       runApp $('#app_code').val()
 
+    window.onbeforeunload = ->
+      if $("li.unsaved").length > 0
+        return "You have some unsaved changes, if you leave now you will lose your work."
+
     $ ->
       $('ul.filetree').treeview()
 
