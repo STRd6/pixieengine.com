@@ -35,8 +35,6 @@
 
   %body
     .container
-      = render :partial => "/shared/header"
-
       #content
         - if context
           = render :partial => "#{context}/navigation"

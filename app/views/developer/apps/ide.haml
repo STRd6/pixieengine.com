@@ -43,18 +43,11 @@
 #tabs
   %ul
 
-
-%button#save Save
-%button#run Run
-
-%iframe#testFrame.no_border{:src => "/blank.html", :width => app.width, :height => app.height}
-
-%style
-  :sass
-    #testFrame
-      display: block
-    #newCanvasModal
-      display: none
+#testZone
+  .actions
+    %button#save Save
+    %button#run Run
+  %iframe#testFrame{:src => "/blank.html", :width => app.width, :height => app.height}
 
 #newCanvasModal
   %p
