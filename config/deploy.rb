@@ -9,6 +9,9 @@ set :repository, "git://github.com/STRd6/#{application}.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
 
+set :default_env, 'production'
+set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
+
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
 # via the :deploy_to variable:
