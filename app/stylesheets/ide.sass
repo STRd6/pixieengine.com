@@ -1,0 +1,106 @@
+ul.filetree
+  display: inline-block
+  height: 650px
+  margin: 1em
+  overflow-x: hidden
+  width: 120px
+  vertical-align: top
+
+  .tab_data
+    display: none
+
+  span
+    cursor: pointer
+    &.folder
+      &.resources
+        background-image: url(/images/icons/images.png)
+      &.sprites
+        background-image: url(/images/icons/pictures.png)
+      &.sounds
+        background-image: url(/images/icons/sound.png)
+
+    &.load_sprite
+      background-image: url(/images/icons/picture_go.png)
+
+    &.new_sprite
+      background-image: url(/images/icons/picture_add.png)
+
+    &.file
+      white-space: nowrap
+      &.coffeescript
+        background-image: url(/images/icons/cup.png)
+      &.javascript
+        background-image: url(/images/icons/script.png)
+      &.sprite
+        background-image: url(/images/icons/picture.png)
+        margin: 0
+      &.documentation
+        background-image: url(/images/icons/book.png)
+
+.ui-tabs
+  .ui-tabs-hide
+    display: none
+
+  .ui-tabs-panel
+    padding: 0
+
+#tabs
+  display: inline-block
+  margin: 1em
+  margin-right: 0
+  width: 552px
+  vertical-align: top
+
+  li
+    .ui-icon-close
+      float: right
+      margin: 0.4em 0.2em 0 0
+      cursor: pointer
+
+    .ui-icon
+      &.lang
+        float: left
+        margin: 0.4em 0 0 0.2em
+
+        &.coffeescript
+          background-image: url(/images/icons/cup.png)
+        &.javascript
+          background-image: url(/images/icons/script.png)
+        &.sound
+          background-image: url(/images/icons/sound.png)
+        &.sprite
+          background-image: url(/images/icons/photo.png)
+        &.documentation
+          background-image: url(/images/icons/book.png)
+
+    a
+      font-weight: normal
+      padding: 0.5em 0.6em
+
+    &.unsaved
+      a
+        font-weight: bold
+        &:after
+          content: "*"
+
+#titleModal
+  display: none
+
+.pixie
+  padding-left: 1em
+  .actions
+    margin-left: 0
+
+  .toolbar
+    width: 350px
+
+    .tool
+      display: inline-block
+
+  .color_picker_holder
+    display: inline-block
+    margin-right: 1em
+  .swatches
+    display: inline-block
+    width: 200px
+    vertical-align: top

@@ -60,6 +60,10 @@ class Developer::AppsController < DeveloperController
     redirect_to :back
   end
 
+  def ide
+    render :layout => "ide"
+  end
+
   def load
     @app = App.new(
       :parent => app,

@@ -1,37 +1,9 @@
-= stylesheet_link_tag 'pixie/pixie'
-= javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
-
 #titleModal
   %p
     = label_tag :title
     = text_field_tag :title, "", {:title => 'title'}
 
   %button Save
-
-%style
-  :sass
-    #titleModal
-      display: none
-
-    .pixie
-      padding-left: 1em
-      .actions
-        margin-left: 0
-
-      .toolbar
-        width: 350px
-
-        .tool
-          display: inline-block
-
-      .color_picker_holder
-        display: inline-block
-        margin-right: 1em
-      .swatches
-        display: inline-block
-        width: 200px
-        vertical-align: top
-
 
 :plain
   <script type="text/coffeescript">
