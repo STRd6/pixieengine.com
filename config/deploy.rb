@@ -28,11 +28,6 @@ after "deploy", "deploy:cleanup"
 # Whenever task
 after "deploy:symlink", "deploy:update_crontab"
 
-# Delayed Job tasks
-after "deploy:stop",    "delayed_job:stop"
-after "deploy:start",   "delayed_job:start"
-after "deploy:symlink", "delayed_job:restart"
-
 namespace :deploy do
   desc "Update the crontab file"
   task :update_crontab, :roles => :db do
