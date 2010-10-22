@@ -31,7 +31,7 @@ after "deploy:symlink", "deploy:update_crontab"
 # Delayed Job tasks
 after "deploy:stop",    "delayed_job:stop"
 after "deploy:start",   "delayed_job:start"
-after "deploy:restart", "delayed_job:restart"
+after "deploy:symlink", "delayed_job:restart"
 
 namespace :deploy do
   desc "Update the crontab file"
