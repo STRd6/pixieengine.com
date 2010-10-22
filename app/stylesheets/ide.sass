@@ -1,3 +1,6 @@
+@import constants
+@import partials/border-radius
+
 ul.filetree
   display: inline-block
   height: 650px
@@ -50,6 +53,11 @@ ul.filetree
 
     .ui-tabs-panel
       padding: 0
+      position: relative
+      button.save
+        position: absolute
+        right: 1.5em
+        top: 0.5em
 
   li
     .ui-icon-close
@@ -106,13 +114,18 @@ ul.filetree
     vertical-align: top
 
 .actions
-  margin-bottom: 1em
+  display: inline-block
+  margin: 1em
 
 #testZone
-  display: inline-block
+  background-color: #EEE
+  display: none
   margin-top: 1em
   padding: 0.5em
+  position: absolute
+
 #testFrame
+  background-color: #EEE
   border: 1px solid black
 
 #newCanvasModal
@@ -125,3 +138,22 @@ ul.filetree
   border: none
   padding: 20px 0px 0px 1em
   width: 1280px
+
+#logo
+  height: 70px
+  position: relative
+
+  #logo_type
+    bottom: 0
+    color: !main_color
+    font-size: 32px
+    height: 40px
+    letter-spacing: .25em
+    position: absolute
+    text-align: center
+    width: 260px
+    a
+      font-weight: normal
+      text-decoration: none
+      &:visited
+        color: inherit

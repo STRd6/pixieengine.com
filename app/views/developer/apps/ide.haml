@@ -16,6 +16,7 @@
               - form_for [:developer, script] do |form|
                 = form.hidden_field :code, { :id => "script_code#{script.id}" }
                 = form.text_area :src, { :id => "script_src#{script.id}" }
+              %button.save Save
 
   %li.closed{ :title => "Resources" }
     %span.folder.resources Resources
@@ -37,16 +38,18 @@
     - form_for [:developer, app] do |form|
       = form.hidden_field :code
       = form.text_area :src
+    %button.save Save
   #documentation.tab_data
     %iframe.no_border{:src => "/production/apps/#{app.id}/docs/index.html", :width => 550, :height => 600}
 
 #tabs
   %ul
 
+.actions
+  %button#run Run App
+
 #testZone
-  .actions
-    %button#save Save
-    %button#run Run
+  %h3.ui-widget-header= app.title
   %iframe#testFrame{:src => "/blank.html", :width => app.width, :height => app.height}
 
 #newCanvasModal
@@ -164,6 +167,8 @@
         debugger
 
     runApp = (code) ->
+      $("#testZone").offset({top: 110, left: 640}).show()
+
       cacheBust = new Date().getTime()
       sandbox = $("#testFrame")[0].contentWindow.document
 
@@ -188,6 +193,8 @@
         return "You have some unsaved changes, if you leave now you will lose your work."
 
     $ ->
+      $("#testZone").draggable
+        handle: "h3"
       $('ul.filetree').treeview()
 
       $('.filetree .file.documentation').click ->
@@ -272,7 +279,7 @@
 
       $('ul.filetree .file.script').first().click()
 
-      $('#save').click ->
+      $('button.save').live 'click', ->
         notify("Saving...")
         $(currentPanel).find('form').ajaxSubmit
           type: 'POST'

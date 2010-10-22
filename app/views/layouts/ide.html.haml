@@ -34,10 +34,11 @@
     = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
 
   %body
+    #logo
+      #logo_type
+        = link_to "pixie IDE", new_sprite_path
     .container
       #content
-        - if context
-          = render :partial => "#{context}/navigation"
         #flashes
           - flash.each do |key, msg|
             %div{ :class => key }= msg
@@ -56,8 +57,6 @@
         = render :partial => 'shared/register_modal'
       = render :partial => "/shared/footer"
       = render :partial => "/shared/fb_app"
-
-    = render :partial => "/shared/feedback"
 
     #tooltip
       .icon
