@@ -481,11 +481,11 @@ Number.prototype.times = function(iterator, context) {
         },
         drawGuide: function() {
           context.fillStyle = gridColor;
-          for(var i = 0; i < height; i++) {
+          for(var i = 1; i < height; i++) {
             context.fillRect(0, i * pixelHeight, layerWidth, 1);
           }
 
-          for(i = 0; i < width; i++) {
+          for(i = 1; i < width; i++) {
             context.fillRect(i * pixelWidth, 0, 1, layerHeight);
           }
         }
@@ -560,8 +560,8 @@ Number.prototype.times = function(iterator, context) {
         }
       });
 
-      var layerMenu = $(div).addClass('actions').prepend('Layer: ');
-      var frameMenu = $(div).addClass('actions').prepend('Frame: ');
+      var layerMenu = $(div).addClass('layers').prepend('<h3>Layer:</h3>');
+      var frameMenu = $(div).addClass('actions').prepend('<h3>Frame:</h3>');
 
       var undoStack = UndoStack();
 
@@ -1128,7 +1128,7 @@ Number.prototype.times = function(iterator, context) {
       toolbar.children().eq(0).addClass("active");
 
       // Set up layer and frame menus
-      for(var i = 0; i < layers; i++) {
+      for(var i = layers-1; i >= 0; i--) {
         (function(currentLayer) {
           var layerName;
 
@@ -1189,12 +1189,13 @@ Number.prototype.times = function(iterator, context) {
         .append(guideToggle)
         .append(guideLabel);
 
+      colorbar.append(layerMenu);
+
       pixie
         .append(actionsMenu)
         .append(toolbar)
         .append(viewport)
         .append(colorbar)
-        .append(layerMenu)
         .append(guideToggleHolder)
         .append(previewToggleHolder)
         .append(preview);

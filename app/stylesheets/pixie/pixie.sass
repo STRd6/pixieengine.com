@@ -15,24 +15,13 @@
   .viewport
     border: 1px solid #666
     display: inline-block
-    height: 513px
+    height: 512px
     margin-bottom: 1em
     margin-right: 1em
     position: relative
-    width: 513px
+    width: 512px
 
 .pixie
-  .canvas.grid
-    padding-bottom: 0px
-    padding-right: 0px
-
-.pixie
-  .canvas.nogrid
-    border-bottom: 0px
-    border-right: 0px
-    padding-bottom: 1px
-    padding-right: 1px
-
   .frame
     display: none
     position: absolute
@@ -40,8 +29,6 @@
       display: block
 
   .layer
-    border-bottom: 1px solid #666
-    border-right: 1px solid #666
     position: absolute
     &.bottom
       background: white url(../images/pixie/pixel_bg.png)
@@ -56,7 +43,7 @@
     width: 15px
 
   // Holds all the actions
-  .actions
+  .actions, .layers
     display: block
     margin-left: 70px
     margin-bottom: 10px
@@ -78,7 +65,6 @@
   .toolbar
     display: inline-block
     height: auto
-    margin-right: 1em
     position: relative
     vertical-align: top
     width: 60px
@@ -87,8 +73,7 @@
     .tool
       +box-sizing(border-box)
       height: 40px
-      margin: 5px
-      margin-left: 0
+      margin: 5px auto 0
       padding-top: 12px
       text-align: center
       width: 40px
@@ -144,3 +129,23 @@
   .toggle_holder
     display: block
     margin-left: 70px
+
+
+  .layers
+    display: inline-block
+    margin: 0
+    margin-top: 1em
+    width: 80px
+
+    h3
+      margin: 0
+
+    a.tool
+      display: inline-block
+      height: auto
+      margin: 0
+      margin-top: 5px
+      width: auto
+
+      &.active
+        color: white
