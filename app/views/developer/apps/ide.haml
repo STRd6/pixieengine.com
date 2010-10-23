@@ -167,7 +167,7 @@
         debugger
 
     runApp = (code) ->
-      $("#testZone").offset({top: 110, left: 640}).show()
+      $("#testZone").css({top: 110, left: 640}).show()
 
       cacheBust = new Date().getTime()
       sandbox = $("#testFrame")[0].contentWindow.document
