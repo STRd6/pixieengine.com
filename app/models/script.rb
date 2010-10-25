@@ -7,7 +7,17 @@ class Script < ActiveRecord::Base
 
   validates_presence_of :title, :script_type, :code
 
+  attr_accessor :lib_id
+
+  after_create :associate_lib
+
   def has_access?(user)
     members.exists? user
+  end
+
+  def associate_lib
+    if lib_id
+      LibraryScript.create(:library_id => lib_id, :script_id => id)
+    end
   end
 end

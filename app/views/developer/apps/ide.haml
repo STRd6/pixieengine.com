@@ -9,6 +9,8 @@
     %li.closed{ :title => library.title }
       %span.folder= library.title
       %ul
+        %li{ :title => "New Script"}
+          %span.file.new_script{ 'data-library_id' => library.id } New Script
         - library.scripts.each do |script|
           %li{ :title => script.title }
             %span.file.script{ 'data-id' => script.id, :class => script.lang }= script.title
@@ -36,7 +38,7 @@
 
   #scriptmain.tab_data{ 'data-lang' => app.lang }
     - form_for [:developer, app] do |form|
-      = form.hidden_field :code
+      = form.hidden_field :code, :name => "script[code]"
       = form.text_area :src
     %button.save Save
   #documentation.tab_data
@@ -62,10 +64,18 @@
 
   = button_to_function "New Canvas", "newCanvas()"
 
+#scriptTitleModal
+  %p
+    = label_tag :new_script_title, "Title"
+    = text_field_tag :new_script_title, '', {:title => 'Title'}
+
+  = button_to_function "Save", "saveNewScript()"
+
 :plain
   <script type="text/coffeescript">
     shouldCreateEditor = false
     pixieEditorIds = 0
+    newScriptIds = 0
     langClass = null
 
     window.newCanvas = ->
@@ -83,6 +93,71 @@
       $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 
       $.modal.close()
+
+    window.saveNewScript = ->
+      title = $("#new_script_title").val()
+      $("#tabs ul li.ui-tabs-selected a").text(title)
+
+      tabLi = $("#tabs ul li.ui-state-active")
+
+      panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
+      form = panel.find('form')
+
+      form.find('input[name="script[title]"]').val(title)
+
+      postData = form.serialize()
+
+      notify("Saving...")
+
+      $.post form.attr('action'), postData, (data) ->
+        script_id = data.script.id
+        libId = data.script.lib_id
+        lang = data.script.lang
+
+        setSaved(tabLi)
+
+        form.attr("action", "/developer/scripts/" + script_id)
+        form.append("<input type='hidden' name='_method' value='put' />")
+        panel.find('button.new_save').removeClass('new_save').addClass('save')
+
+        newScriptNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file script " + lang)
+        node = $("<li />").attr("title", title).append(newScriptNode)
+
+        libUl = $('ul.filetree span[data-library_id='+libId+']').parent().parent()
+
+        libUl.append(node).children().removeClass("last")
+
+      , "json"
+
+      $.modal.close()
+
+    window.newLibraryScript = (libraryId) ->
+      scriptLang = "coffeescript"
+      langClass = scriptLang
+
+      newScriptId = "new_script" + (newScriptIds++)
+
+      scriptEditor = createNewScriptEditor
+        lang: scriptLang
+        libraryId: libraryId
+        idNum: newScriptId
+
+      scriptEditor.attr('id', newScriptId).addClass('tab_data').appendTo('ul.filetree')
+
+      $tabs.tabs 'add', "#" + newScriptId, "Script" + newScriptIds, 0
+
+    createNewScriptEditor = (options) ->
+      lang = options.lang
+      idNum = options.idNum
+
+      editorHtml = $('<div />').append($(#{render(:partial => "script_form").to_json}))
+      editorHtml.find('input[name="script[code]"]').attr('id', "new_script_code" + idNum)
+      editorHtml.find('input[name="script[lib_id]"]').val(options.libraryId)
+      editorHtml.find('textarea').attr('id', "new_script_src" + idNum)
+      editorHtml.attr('data-lang', lang)
+      $("<button>Save</button>").addClass("new_save").appendTo(editorHtml)
+
+      return editorHtml
 
     window.updateSpriteNode = (appSprite) ->
       cssImageUrl = appSprite.cssImageUrl
@@ -106,10 +181,12 @@
       # Reload tab
       spriteNode.click()
 
-    window.createEditor = (panel) ->
-      lang = $(panel).attr('data-lang')
-      code_id = "#" + $(panel).find('input').eq(2).attr('id')
-      src_id = "#" + $(panel).find('textarea').attr('id')
+    window.createEditor = (ui) ->
+      panel = $(ui.panel)
+      tab = $(ui.tab)
+      lang = panel.attr('data-lang')
+      code_id = "#" + panel.find('input[name="script[code]"]').attr('id')
+      src_id = "#" + panel.find('textarea').attr('id')
 
       savedCode = $(src_id).val()
 
@@ -147,7 +224,7 @@
         if currentCode != savedCode
           setUnsaved()
         else
-          setSaved()
+          tab.parent().removeClass("unsaved")
 
         compile_source(currentCode)
         $(src_id).val(currentCode)
@@ -159,8 +236,11 @@
     setUnsaved = () ->
       $("#tabs ul li.ui-state-active").addClass("unsaved")
 
-    setSaved = () ->
-      tabLi = $("#tabs ul li.ui-state-active").removeClass("unsaved")
+    setSaved = (tabLi) ->
+      notify("Saved!")
+      tabLi ||= $("#tabs ul li.ui-state-active")
+
+      tabLi.removeClass("unsaved")
       if c = tabLi.find('a').data('updateSaved')
         c()
       else
@@ -207,9 +287,12 @@
         else
           $tabs.tabs 'add', docSelector, $(this).text(), 0
 
-      $('.filetree .file.script').click ->
+      $('.filetree .file.script').live 'click', ->
         shouldCreateEditor = true
-        scriptSelector = "#script" + $(this).attr('data-id')
+        if $(this).hasClass("new")
+          scriptSelector = "#" + $(this).attr('data-id')
+        else
+          scriptSelector = "#script" + $(this).attr('data-id')
 
         if $(scriptSelector).parents('#tabs').length
           $('#tabs ul li a[href="' + scriptSelector + '"]').click()
@@ -218,6 +301,9 @@
 
       $('.filetree .file.new_sprite').click ->
         $("#newCanvasModal").modal()
+
+      $('.filetree .file.new_script').live 'click', ->
+        newLibraryScript $(this).attr('data-library_id')
 
       $('.filetree .file.sprite').live 'click', ->
         shouldCreateEditor = false
@@ -258,7 +344,7 @@
           $tabs.tabs('select', '#' + ui.panel.id)
 
           if shouldCreateEditor
-            fileData = createEditor(ui.panel)
+            fileData = createEditor(ui)
 
             $(ui.tab).data('updateSaved', fileData.updateSaved)
             $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
@@ -285,7 +371,9 @@
           type: 'POST'
           success: () ->
             setSaved()
-            notify("Saved!")
+
+      $('button.new_save').live 'click', ->
+        $("#scriptTitleModal").modal()
 
       $('#tabs span.ui-icon-close').live 'click', ->
         # TODO Prompt if changed

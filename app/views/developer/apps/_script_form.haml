@@ -1,0 +1,5 @@
+- form_for [:developer, Script.new] do |form|
+  = form.hidden_field :code, { :id => nil }
+  = form.text_area :src, { :id => nil }
+  = form.hidden_field :title, {:id => nil}
+  = form.hidden_field :lib_id, {:id => nil}

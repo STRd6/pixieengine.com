@@ -10,6 +10,17 @@ class Developer::ScriptsController < DeveloperController
     script.script_type = "script"
   end
 
+  create.wants.json do
+    render :json => {
+      :script => {
+        :id => @script.id,
+        :title => @script.title,
+        :lang => @script.lang,
+        :lib_id => @script.lib_id
+      }
+    }
+  end
+
   def show
     
   end

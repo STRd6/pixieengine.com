@@ -39,6 +39,8 @@ ul.filetree
         margin: 0
       &.documentation
         background-image: url(/images/icons/book.png)
+      &.new_script
+        background-image: url(/images/icons/cup_add.png)
 
 #tabs
   display: inline-block
@@ -54,7 +56,7 @@ ul.filetree
     .ui-tabs-panel
       padding: 0
       position: relative
-      button.save
+      button.save, button.new_save
         position: absolute
         right: 1.5em
         top: 0.5em
@@ -91,7 +93,7 @@ ul.filetree
         &:after
           content: "*"
 
-#titleModal
+#titleModal, #newCanvasModal, #scriptTitleModal
   display: none
 
 #testZone
@@ -104,9 +106,6 @@ ul.filetree
 #testFrame
   background-color: #EEE
   border: 1px solid black
-
-#newCanvasModal
-  display: none
 
 .container
   padding-left: 0
