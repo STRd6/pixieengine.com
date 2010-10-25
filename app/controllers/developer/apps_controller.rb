@@ -80,10 +80,20 @@ class Developer::AppsController < DeveloperController
   end
 
   def add_library
-    app.add_library(Library.find(params[:library_id]))
+    library = Library.find(params[:library_id])
+    app.add_library(library)
 
     respond_to do |format|
-      format.json { render :json => {:status => "ok"} }
+      format.json do
+        render :json => {
+          :status => "ok",
+          :library => {
+            :id => library.id,
+            :scripts => library.scripts.map {|script| {:title => script.title, :id => script.id, :lang => script.lang, :code => script.code, :src => script.src} },
+            :title => library.title
+          }
+        }
+      end
       format.html do
         flash[:notice] = "Library added"
         redirect_to :back

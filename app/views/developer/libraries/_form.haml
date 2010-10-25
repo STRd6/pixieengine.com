@@ -1,6 +1,7 @@
 %h3 New Library
 - form_for [:developer, @library || Library.new] do |form|
   = hidden_field_tag :script_id
+  = hidden_field_tag :app_id
   %p
     = form.label :title
     = form.text_field :title

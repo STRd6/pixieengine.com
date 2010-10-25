@@ -36,7 +36,7 @@ class App < ActiveRecord::Base
   end
 
   def has_access?(user)
-    members.exists? user
+    user == self.user || members.exists?(user)
   end
 
   def generate_docs

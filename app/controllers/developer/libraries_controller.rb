@@ -39,10 +39,27 @@ class Developer::LibrariesController < DeveloperController
     unless params[:script_id].blank?
       library.library_scripts.build(:script_id => params[:script_id])
     end
+
+    unless params[:app_id].blank?
+      app = App.find params[:app_id]
+
+      if app.has_access? current_user
+        library.app_libraries.build(:app => app)
+      end
+    end
   end
 
   create.wants.json do
-    render :json => {:status => "ok", :id => library.id, :title => library.title}
+    render :json => {
+      :status => "ok",
+      :id => library.id,
+      :title => library.title,
+      :library => {
+        :id => library.id,
+        :scripts => [],
+        :title => library.title,
+      }
+    }
   end
 
   private

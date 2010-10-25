@@ -14,6 +14,10 @@ ul.filetree
 
   span
     cursor: pointer
+
+    &.folder, &.file
+      padding: 1px 0px 1px 18px
+
     &.folder
       &.resources
         background-image: url(/images/icons/images.png)
@@ -38,9 +42,11 @@ ul.filetree
         background-image: url(/images/icons/picture.png)
         margin: 0
       &.documentation
-        background-image: url(/images/icons/book.png)
+        background-image: url(/images/icons/book_open.png)
       &.new_script
         background-image: url(/images/icons/cup_add.png)
+      &.add_library
+        background-image: url(/images/icons/book_add.png)
 
 #tabs
   display: inline-block
@@ -93,7 +99,7 @@ ul.filetree
         &:after
           content: "*"
 
-#titleModal, #newCanvasModal, #scriptTitleModal
+#titleModal, #libraries
   display: none
 
 #testZone
@@ -137,3 +143,30 @@ ul.filetree
       text-decoration: none
       &:visited
         color: inherit
+
+
+
+ul#libraries
+  background-color: #FFF
+  border: 1px solid #666
+  margin-top: -1px
+  position: absolute
+  width: 200px
+  z-index: 10
+
+  li
+    padding-left: 5px
+    &:hover
+      background-color: #666
+      color: #FFF
+
+    label
+      font-weight: normal
+
+    input[type="checkbox"]
+      display: inline-block
+      color: #666
+      margin: 0
+      padding: 0
+      position: relative
+      vertical-align: top

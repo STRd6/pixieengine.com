@@ -7,6 +7,8 @@ class Library < ActiveRecord::Base
   has_many :library_components
   has_many :component_libraries, :through => :library_components
 
+  has_many :app_libraries
+
   def add_component_library(library)
     component_libraries << library
   end
