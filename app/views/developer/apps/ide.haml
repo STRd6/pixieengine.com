@@ -253,6 +253,8 @@
           compiled_js = source
           $(code_id).val compiled_js
 
+      compile_source($(src_id).val())
+
       codeTextArea = $(src_id).get(0)
       editor = new CodeMirror.fromTextArea codeTextArea,
         autoMatchParens: true
