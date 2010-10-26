@@ -40,7 +40,7 @@
 
   #scriptmain.tab_data{ 'data-lang' => app.lang }
     - form_for [:developer, app] do |form|
-      = form.hidden_field :code, :name => "script[code]"
+      = form.hidden_field :code
       = form.text_area :src
     %button.save Save
   #documentation.tab_data
@@ -232,7 +232,7 @@
       panel = $(ui.panel)
       tab = $(ui.tab)
       lang = panel.attr('data-lang')
-      code_id = "#" + panel.find('input[name="script[code]"]').attr('id')
+      code_id = "#" + panel.find('input[name="script[code]"], input[name="app[code]"]').attr('id')
       src_id = "#" + panel.find('textarea').attr('id')
 
       savedCode = $(src_id).val()
