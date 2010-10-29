@@ -43,6 +43,8 @@ $(".tag .remove").live("click", function() {
 });
 
 $(function() {
+  $.modal.defaults.overlayClose = true;
+
   function makeTag(tag, spriteId) {
     var tagElem = $("<div class='tag' />");
     tagElem.attr("data-sprite_id", spriteId);
