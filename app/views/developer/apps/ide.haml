@@ -349,7 +349,10 @@
           $tabs.tabs 'add', scriptSelector, $(this).text(), 0
 
       $('.filetree .file.new_sprite').click ->
-        $("#newCanvasModal").modal()
+        $("#newCanvasModal").modal
+          containerCss:
+            height: 110,
+            width: 180
 
       $('.filetree .file.new_script').live 'click', ->
         newLibraryScript $(this).parents('[data-library_id]').last().attr('data-library_id')
@@ -432,7 +435,10 @@
             setSaved()
 
       $('button.new_save').live 'click', ->
-        $("#scriptTitleModal").modal()
+        $("#scriptTitleModal").modal
+          containerCss:
+            height: 75
+            width: 175
 
       $('#tabs span.ui-icon-close').live 'click', ->
         parentLi = $(this).parent()
