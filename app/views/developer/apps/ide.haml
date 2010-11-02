@@ -51,6 +51,7 @@
 
 .actions
   %button#run Run App
+  = link_to "Download Libs", "/developer/apps/#{app.id}/lib.js"
 
 #testZone
   %h3.ui-widget-header= app.title
@@ -296,11 +297,16 @@
         debugger
 
     runApp = (code) ->
-      $("#testZone").css({top: 110, left: 640}).show()
-
       cacheBust = new Date().getTime()
-      sandbox = $("#testFrame")[0].contentWindow.document
+      zone = $("#testZone")
+      zone.css({top: 110, left: 640}).show()
 
+      # Recreate iframe
+      $("#testFrame").remove()
+      iframe = $('<iframe height="320" id="testFrame" src="/blank.html" width="480"></iframe>')
+      zone.append(iframe)
+
+      sandbox = iframe[0].contentWindow.document
       sandbox.open();
 
       sandbox.write(#{stylesheet_link_tag('screen.css').to_json})
