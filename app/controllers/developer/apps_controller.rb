@@ -79,6 +79,13 @@ class Developer::AppsController < DeveloperController
     render :layout => "mobile"
   end
 
+  def widget
+    respond_to do |format|
+      format.html {render :layout => "widget"}
+      format.js {render :layout => nil}
+    end
+  end
+
   def add_library
     library = Library.find(params[:library_id])
     app.add_library(library)
