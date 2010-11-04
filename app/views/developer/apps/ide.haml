@@ -261,9 +261,10 @@
         autoMatchParens: true
         content: codeTextArea.value
         height: "600px"
+        lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
         path: "/javascripts/codemirror/"
-        stylesheet: "/stylesheets/codemirror/" + lang + "_colors.css"
+        stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
         tabMode: "shift"
         textWrapping: false
 
