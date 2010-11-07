@@ -4,7 +4,7 @@
       = link_to "pixie", new_sprite_path
   #description
     On Pixie you can create amazing pixel art for free, from anywhere, and share it with the world.
-      
+
 #header
   #nav
     %span
@@ -17,10 +17,10 @@
       = link_to_unless_current "Sounds", sounds_path
     %span
       = link_to_unless_current "About Pixie", about_path
-    
+
   #login_link
     = render :partial => "/shared/login"
 
   - form_tag(sprites_path, :method => "get", :class => "search") do
     = text_field_tag(:q)
-    = submit_tag("Search", :name => nil)
+    = submit_tag("Find Sprite", :name => nil)

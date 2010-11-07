@@ -13,21 +13,21 @@ body
   line-height: 1.5
   margin: 0
   padding: 0
-  
+
 h1, h2, h3, h4, h5, h6
   color = !main_color
   font-family: 'Josefin Sans Std Light', Arial, serif
   font-weight: normal
   letter-spacing: .1em
   margin: 0 0 .5em 0
-  
+
 h1
   font-size: 2.5em
 h2
   font-size: 2em
 h3
   font-size: 1.5em
-  
+
 p, label
   font-family: Verdana, sans-serif
 
@@ -68,7 +68,7 @@ a
   #logo
     height: 70px
     position: relative
-  
+
     #logo_type
       bottom: 0
       color = !main_color
@@ -83,7 +83,7 @@ a
         text-decoration: none
         &:visited
           color: inherit
-    
+
   #description
     color = !light_gray
     font-size: 11px
@@ -100,7 +100,7 @@ a
   display: inline-block
   height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
   position: relative
-  
+
   // Apply to all header links (navigation and log in link)
   a
     +box-sizing(border-box)
@@ -111,7 +111,7 @@ a
     padding: 0
     text-align: left
     text-decoration: none
-    
+
   #nav
     +box-sizing(border-box)
     +grid-width(12)
@@ -119,7 +119,7 @@ a
     display: inline-block
     padding-left = $blueprint-grid-width + $blueprint-grid-margin
     position: absolute
-    
+
     // Text straight in a span means it's the current page
     span
       +grid-width(2)
@@ -129,7 +129,7 @@ a
       margin-right = $blueprint-grid-margin
       text-align: left
       text-decoration: none
-    
+
       a
         // HAX
         border-bottom: 4px solid white
@@ -137,7 +137,7 @@ a
         width: 100%
         &:hover
           border-bottom = 4px solid !dark_gray
-      
+
   #login_link
     +grid-width(8)
     bottom: 0
@@ -173,7 +173,7 @@ a
       &[type="submit"]
         padding: 4px 6px
 
-  
+
 #content
   +box-sizing(border-box)
   +grid-width(20)
@@ -181,7 +181,7 @@ a
   padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 0 ($blueprint-grid-width + $blueprint-grid-margin)
   position: relative
   top: -5px
-  
+
   p
     font-family: Verdana, sans-serif
     letter-spacing: .5px
@@ -190,11 +190,11 @@ a
 .profile
   @include single-column
   margin-right = $blueprint-grid-margin
- 
+
 #footer
   +grid-width(20)
   margin-top: 2em
-  
+
   center
     height: 3em
 

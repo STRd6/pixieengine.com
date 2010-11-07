@@ -19,6 +19,7 @@ Number.prototype.times = function(iterator, context) {
   var actions = {
     undo: {
       name: "Undo",
+      cssClass: "pillbox-left",
       icon: "/images/icons/arrow_undo.png",
       undoable: false,
       hotkeys: ["ctrl+z"],
@@ -29,6 +30,7 @@ Number.prototype.times = function(iterator, context) {
 
     redo: {
       name: "Redo",
+      cssClass: "pillbox-middle",
       icon: "/images/icons/arrow_redo.png",
       undoable: false,
       hotkeys: ["ctrl+y"],
@@ -39,6 +41,7 @@ Number.prototype.times = function(iterator, context) {
 
     clear: {
       name: "Clear Layer",
+      cssClass: "pillbox-right",
       icon: "/images/icons/application.png",
       perform: function(canvas) {
         canvas.eachPixel(function(pixel) {
@@ -52,16 +55,6 @@ Number.prototype.times = function(iterator, context) {
       menu: false,
       perform: function(canvas) {
         canvas.showPreview();
-      }
-    },
-
-    save: {
-      name: "Download",
-      icon: "/images/icons/disk.png",
-      hotkeys: ["ctrl+s"],
-      perform: function(canvas) {
-        var w = window.open();
-        w.document.location = canvas.toDataURL();
       }
     },
 
@@ -184,6 +177,15 @@ Number.prototype.times = function(iterator, context) {
         $.each(deferredColors, function(x, color) {
           canvas.getPixel(x, 0).color(color);
         });
+      }
+    },
+    save: {
+      name: "Download",
+      icon: "/images/icons/disk.png",
+      hotkeys: ["ctrl+s"],
+      perform: function(canvas) {
+        var w = window.open();
+        w.document.location = canvas.toDataURL();
       }
     }
   };
@@ -900,8 +902,9 @@ Number.prototype.times = function(iterator, context) {
               iconImg.src = action.icon;
             }
 
-            var actionButton = $("<a href='#' title='"+ titleText +"'>"+ action.name +"</a>")
+            var actionButton = $("<a id='action-button-" + action.name.replace(" ", "-").toLowerCase() + "' href='#' title='"+ titleText +"'>"+ action.name +"</a>")
               .prepend(iconImg)
+              .addClass((action.cssClass) ? action.cssClass : '')
               .addClass('tool button')
               .click(function(e) {
                 if(!$(this).attr("disabled")) {
