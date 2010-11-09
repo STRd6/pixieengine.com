@@ -13,7 +13,7 @@ class Developer::AppsController < DeveloperController
   end
 
   def create_app_sprite
-    if owner?
+    if has_access?
       app_sprite_data = params[:app_sprite]
       app_sprite_data[:sprite] = Sprite.new(app_sprite_data[:sprite].merge(:user => current_user))
 
@@ -31,7 +31,10 @@ class Developer::AppsController < DeveloperController
         format.json {render :json => app_sprite}
       end
     else
-      # Error, can't add to apps that you don't own
+      render :json => {
+        :status => "error",
+        :message => "You do not have access to this app"
+      }
     end
   end
 

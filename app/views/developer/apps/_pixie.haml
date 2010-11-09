@@ -59,6 +59,12 @@
                 'app_sprite[sprite][replay_data]': JSON.stringify(canvas.getReplayData())
 
               $.post '/developer/apps/#{app.id}/create_app_sprite', postData, (data) ->
+                $(".tool.button").last().removeAttr("disabled")
+
+                if data.status == "error"
+                  notify data.message
+                  return
+
                 sprite = data.app_sprite
                 sprite.cssImageUrl = canvas.toCSSImageURL()
                 sprite.width = width
@@ -73,7 +79,6 @@
 
                 trackPageview("/event/save_drawing")
                 canvas.dirty(false)
-                $(".tool.button").last().removeAttr("disabled")
               , "json"
 
             canvas.addAction
