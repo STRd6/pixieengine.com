@@ -7,6 +7,13 @@ GIT
       daemons
 
 GIT
+  remote: git://github.com/maccman/juggernaut.git
+  revision: 6085a34
+  specs:
+    juggernaut (2.0.0)
+      redis
+
+GIT
   remote: git://github.com/odorcicd/authlogic.git
   revision: a087ad0
   branch: rails3
@@ -94,8 +101,6 @@ GEM
     i18n (0.4.1)
     json (1.4.6)
     json_pure (1.4.6)
-    juggernaut (2.0.0)
-      redis
     mail (2.2.5)
       activesupport (>= 2.3.6)
       mime-types
@@ -177,7 +182,7 @@ DEPENDENCIES
   factory_girl
   haml
   hpricot
-  juggernaut
+  juggernaut!
   mail
   mocha
   oauth
