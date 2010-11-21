@@ -1,7 +1,7 @@
 class Developer::AppSpritesController < ApplicationController
   resource_controller
 
-  before_filter :require_owner, :only => [:edit, :update, :destroy]
+  before_filter :require_access, :only => [:edit, :update, :destroy]
 
   def create
     if params[:sprite]

@@ -22,6 +22,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :load
         get :run
         get :mobile
+        get :widget
         get :lib, :defaults => { :format => 'js' }
         get :ide
         get :permissions

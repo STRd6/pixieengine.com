@@ -70,14 +70,21 @@ class Sound < ActiveRecord::Base
   end
 
   def convert_tempfile(tempfile)
-    dst = Tempfile.new(".mp3")
+    padded_file = Tempfile.new(".wav")
 
-    cmd_args = [File.expand_path(tempfile.path), File.expand_path(dst.path)]
+    # Pad out sound with silence to make sure it exceeds minimum length required for Chrome browser to play reliably
+    cmd_args = ["-m", "-v", "1", File.expand_path(tempfile.path), Rails.root.join("util", "silence.wav").to_s, "-t", "wav", File.expand_path(padded_file.path)]
+    system("sox", *cmd_args)
+
+    destination_file = Tempfile.new(".mp3")
+
+    # Convert to mp3
+    cmd_args = [File.expand_path(padded_file.path), File.expand_path(destination_file.path)]
     system("lame", *cmd_args)
 
-    dst.binmode
-    io = StringIO.new(dst.read)
-    dst.close
+    destination_file.binmode
+    io = StringIO.new(destination_file.read)
+    destination_file.close
 
     io.original_filename = "sound.mp3"
     io.content_type = "audio/mpeg"

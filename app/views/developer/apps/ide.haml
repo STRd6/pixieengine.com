@@ -84,6 +84,28 @@
 #newLibraryModal.modalElement
   = render :partial => "developer/libraries/form"
 
+#tips{:style => "display: none;"}
+  .tip{ 'data-element_selector' => "#scriptmain"}
+    .text
+      This is the code editor where you can edit your applications in the CoffeeScript language.
+  .tip{ 'data-element_selector' => "ul.filetree"}
+    .text
+      The files you need to create your app are here.
+  .tip{ 'data-element_selector' => "#run"}
+    .text
+      Press the run button to run your app!
+  .tip{ 'data-element_selector' => "#testZone"}
+    .text
+      Test how your app runs then modify your code and run it again.
+  .tip{ 'data-element_selector' => "ul.filetree"}
+    .text
+      That's it for the tips. The IDE is a work in progress, so ask or leave feedback if you have any questions!
+      = link_to "Feedback", "/survey", :class => "button"
+  .next
+    %button.next_tip.right Next
+  .close
+    %button.close_tip.left Close
+
 :plain
   <script type="text/coffeescript">
     shouldCreateEditor = false
@@ -261,9 +283,10 @@
         autoMatchParens: true
         content: codeTextArea.value
         height: "600px"
+        lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
         path: "/javascripts/codemirror/"
-        stylesheet: "/stylesheets/codemirror/" + lang + "_colors.css"
+        stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
         tabMode: "shift"
         textWrapping: false
 
@@ -489,5 +512,37 @@
         success: (data) ->
           createLibraryNode data.library
           $.modal.close()
+
+      $("#tooltip .next_tip").live "click", ->
+        nextTip()
+
+      $("#tooltip .close_tip").live "click", ->
+        hideTooltip()
+
+      tipIndex = -1
+      window.nextTip = () ->
+        tipIndex += 1
+        tips = $("#tips .tip")
+        moreTips = tipIndex < tips.length - 1
+
+        tip = tips.eq(tipIndex)
+
+        targetElement = $(tip.attr("data-element_selector"))
+
+        # TODO Highlight target element
+
+        hideTooltip()
+
+        if tip.length
+          tipMessage = tip.html()
+
+          tipMessage += $("#tips .close").html()
+
+          if moreTips
+            tipMessage += $("#tips .next").html()
+
+          showTooltip(targetElement, tipMessage)
+
+      nextTip()
 
   </script>
