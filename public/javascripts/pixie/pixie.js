@@ -1192,7 +1192,9 @@ Number.prototype.times = function(iterator, context) {
         .append(guideToggle)
         .append(guideLabel);
 
-      colorbar.append(layerMenu);
+      colorbar
+        .append(layerMenu)
+        .append(preview);
 
       pixie
         .append(actionsMenu)
@@ -1200,8 +1202,7 @@ Number.prototype.times = function(iterator, context) {
         .append(viewport)
         .append(colorbar)
         .append(guideToggleHolder)
-        .append(previewToggleHolder)
-        .append(preview);
+        .append(previewToggleHolder);
 
       if(frames > 1) {
         pixie.append(frameMenu);
