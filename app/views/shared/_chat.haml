@@ -1,5 +1,6 @@
 #chatZone
   = stylesheet_link_tag 'chat'
+  %h3 Pixie Chat
   %ul#chats
   = text_field_tag :chat_body
   %button Send
@@ -18,9 +19,17 @@
     });
 
     $(function() {
-      $('#chatZone button').click(function() {
-        var field = $(this).prev();
+      var field = $('#chatZone button').prev();
 
+      $('#chatZone #chat_body').keypress(function(e) {
+        if(e.keyCode == '13' && field.val() != "") {
+          $.post('/chat', {
+            body: field.val()
+          });
+          field.val("");
+        }
+      });
+      $('#chatZone button').click(function() {
         if (field.val() != "") {
           $.post('/chat', {
             body: field.val()
