@@ -891,6 +891,8 @@ Number.prototype.times = function(iterator, context) {
                 doIt();
                 e.preventDefault();
 
+                canvas.showPreview();
+
                 return false;
               });
             });
