@@ -564,6 +564,7 @@ Number.prototype.times = function(iterator, context) {
 
       var layerMenu = $(div).addClass('layers').prepend('<h3>Layer:</h3>');
       var frameMenu = $(div).addClass('actions').prepend('<h3>Frame:</h3>');
+      var previewMenu = $(div).prepend('<h3>Preview:</h3>');
 
       var undoStack = UndoStack();
 
@@ -1196,6 +1197,7 @@ Number.prototype.times = function(iterator, context) {
 
       colorbar
         .append(layerMenu)
+        .append(previewMenu)
         .append(preview);
 
       pixie
