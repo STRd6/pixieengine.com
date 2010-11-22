@@ -1,2 +1,23 @@
 #chatZone
-  <div style="width:555px"><style>.mcrmeebo { display: block; background:url("http://widget.meebo.com/r.gif") no-repeat top right; } .mcrmeebo:hover { background:url("http://widget.meebo.com/ro.gif") no-repeat top right; } </style><object width="555" height="300"><param name="movie" value="http://widget.meebo.com/mcr.swf?id=BRTFEBeqhE"></param><embed src="http://widget.meebo.com/mcr.swf?id=BRTFEBeqhE" type="application/x-shockwave-flash" width="555" height="300" /></object><a target="_blank" href="http://www.meebo.com/rooms/" class="mcrmeebo"><img alt="Create a Meebo Chat Room" src="http://widget.meebo.com/b.gif" width="555" height="45" style="border:0px"/></a></div>
+  #chats
+  = text_field_tag :chat_body
+  %button Send
+
+:plain
+  <script src="http://localhost:8080/application.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    var jug = new Juggernaut;
+    jug.subscribe("/chats", function(data){
+      var li = $("<li />");
+      li.text(data.name + "(" + data.time + ") : " + data.message);
+      $("#chats").append(li);
+    });
+
+    $(function() {
+      $('#chatZone button').click(function() {
+        $.post('/chat', {
+          body: $(this).prev().val()
+        });
+      });
+    });
+  </script>

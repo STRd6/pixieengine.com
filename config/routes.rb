@@ -129,6 +129,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
   match "sign_up" => "users#new", :as => :signup
 
+  match "chat" => "chats#publish"
+
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'
 
