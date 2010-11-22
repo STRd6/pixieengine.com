@@ -1,5 +1,6 @@
 #chatZone
-  #chats
+  = stylesheet_link_tag 'chat'
+  %ul#chats
   = text_field_tag :chat_body
   %button Send
 
@@ -9,15 +10,23 @@
     var jug = new Juggernaut;
     jug.subscribe("/chats", function(data){
       var li = $("<li />");
-      li.text(data.name + "(" + data.time + ") : " + data.message);
+      var name = $('<span />').addClass("name").text(data.name + ":");
+      var time = $('<span />').addClass("time").text(" " + data.time + " ");
+      var message = $('<span />').addClass("message").text(data.message);
+      li.append(name).append(time).append(message);
       $("#chats").append(li);
     });
 
     $(function() {
       $('#chatZone button').click(function() {
-        $.post('/chat', {
-          body: $(this).prev().val()
-        });
+        var field = $(this).prev();
+
+        if (field.val() != "") {
+          $.post('/chat', {
+            body: field.val()
+          });
+        }
+        field.val("");
       });
     });
   </script>
