@@ -1219,6 +1219,8 @@ Number.prototype.times = function(iterator, context) {
       lastClean = undoStack.last();
 
       $(this).append(pixie);
+
+      canvas.showPreview();
     });
   };
 })(jQuery);
