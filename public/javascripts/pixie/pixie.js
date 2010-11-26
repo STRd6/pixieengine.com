@@ -5,6 +5,10 @@ Number.prototype.times = function(iterator, context) {
   return i;
 };
 
+Number.prototype.clamp = function(min, max) {
+  return Math.min(Math.max(this, min), max);
+};
+
 /*global jQuery */
 (function($) {
   /************************************************************************
@@ -16,6 +20,12 @@ Number.prototype.times = function(iterator, context) {
   var imageDir = "/images/pixie/";
   var transparent = "transparent";
 
+  var scale = 1;
+  var xLast = 0;
+  var yLast = 0;
+  var xImage = 0;
+  var yImage = 0;
+
   var actions = {
     undo: {
       name: "Undo",
@@ -25,6 +35,8 @@ Number.prototype.times = function(iterator, context) {
       hotkeys: ["ctrl+z"],
       perform: function(canvas) {
         canvas.undo();
+
+        canvas.showPreview();
       }
     },
 
@@ -36,6 +48,8 @@ Number.prototype.times = function(iterator, context) {
       hotkeys: ["ctrl+y"],
       perform: function(canvas) {
         canvas.redo();
+
+        canvas.showPreview();
       }
     },
 
@@ -47,6 +61,8 @@ Number.prototype.times = function(iterator, context) {
         canvas.eachPixel(function(pixel) {
           pixel.color(transparent);
         });
+
+        canvas.showPreview();
       }
     },
 
@@ -224,6 +240,28 @@ Number.prototype.times = function(iterator, context) {
     };
   };
 
+  function scaleCanvas(scaleFactor) {
+    var viewportEl = $('.pixie .viewport');
+    var canvasEl = $('canvas');
+
+    var canvasWidth = parseInt(canvasEl.attr('width'));
+    var canvasHeight = parseInt(canvasEl.attr('height'));
+
+    $('canvas').css('-webkit-transform', 'scale(' + scale + ')')
+               .css('-moz-transform', 'scale(' + scale + ')')
+               .css('-webkit-transform-origin', 0 + 'px ' + 0 + 'px')
+               .css('-mov-transform-origin', 0 + 'px ' + 0 + 'px');
+
+    $('.nogrid').css('width', canvasWidth * scale)
+                .css('height', canvasHeight * scale);
+
+    if (scaleFactor <= 1) {
+      viewportEl.css('overflow', 'hidden');
+    } else {
+      viewportEl.css('overflow', 'auto');
+    }
+  }
+
   var tools = {
     pencil: {
       name: "Pencil",
@@ -323,7 +361,31 @@ Number.prototype.times = function(iterator, context) {
       }
     },
 
-    clone: CloneTool()
+    clone: CloneTool(),
+
+    zoom_in: {
+      name: "Zoom In",
+      hotkeys: ['Z'],
+      icon: imageDir + "zoom_in.png",
+      cursor: "url(" + imageDir + "zoom_in.png) 12 13, default",
+      mousedown: function() {
+        scale = (scale * 2).clamp(0.25, 4);
+
+        scaleCanvas(scale);
+      }
+    },
+
+    zoom_out: {
+      name: "Zoom Out",
+      hotkeys: ['alt'],
+      icon: imageDir + "zoom_out.png",
+      cursor: "url(" + imageDir + "zoom_out.png) 12 13, default",
+      mousedown: function() {
+        scale = (scale / 2).clamp(0.25, 4);
+
+        scaleCanvas(scale);
+      }
+    }
   };
 
   var falseFn = function() {return false};
@@ -481,6 +543,10 @@ Number.prototype.times = function(iterator, context) {
         clear: function() {
           context.clearRect(0, 0, width * pixelWidth, height * pixelHeight);
         },
+        dimension: function(width, height) {
+          layerElement.width = width;
+          layerElement.height = height;
+        },
         drawGuide: function() {
           context.fillStyle = gridColor;
           for(var i = 1; i < height; i++) {
@@ -518,13 +584,12 @@ Number.prototype.times = function(iterator, context) {
         if (previewToggle.attr('checked')) {
           previewToggle.removeAttr('checked');
           tilePreview = false;
-        }
-        else {
+        } else {
           previewToggle.attr('checked', 'true');
           tilePreview = true;
         }
         canvas.showPreview();
-      })
+      });
       var previewToggle = $('<input class="preview-control" type="checkbox"></input>').change(function() {
         if($(this).attr('checked')) {
           tilePreview = true;
@@ -544,8 +609,7 @@ Number.prototype.times = function(iterator, context) {
 
           canvas.removeClass('grid').addClass('nogrid');
           guideLayer.clear();
-        }
-        else {
+        } else {
           guideToggle.attr('checked', 'true');
           canvas.removeClass('nogrid').addClass('grid');
           guideLayer.drawGuide();
@@ -659,8 +723,8 @@ Number.prototype.times = function(iterator, context) {
         .bind("mousedown mousemove", function(event) {
           var offset = $(this).offset();
 
-          var localY = event.pageY - offset.top;
-          var localX = event.pageX - offset.left;
+          var localY = (event.pageY - offset.top) / scale;
+          var localX = (event.pageX - offset.left) / scale;
 
           var row = Math.floor(localY / pixelHeight);
           var col = Math.floor(localX / pixelWidth);
