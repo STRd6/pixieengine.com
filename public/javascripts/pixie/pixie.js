@@ -255,7 +255,7 @@ Number.prototype.clamp = function(min, max) {
     $('.nogrid').css('width', canvasWidth * scale)
                 .css('height', canvasHeight * scale);
 
-    if (scaleFactor <= 1) {
+    if (canvasWidth * scaleFactor <= 512 || canvasHeight * scaleFactor <= 512) {
       viewportEl.css('overflow', 'hidden');
     } else {
       viewportEl.css('overflow', 'auto');
@@ -542,10 +542,6 @@ Number.prototype.clamp = function(min, max) {
       return $.extend(layer, {
         clear: function() {
           context.clearRect(0, 0, width * pixelWidth, height * pixelHeight);
-        },
-        dimension: function(width, height) {
-          layerElement.width = width;
-          layerElement.height = height;
         },
         drawGuide: function() {
           context.fillStyle = gridColor;
@@ -1285,6 +1281,10 @@ Number.prototype.clamp = function(min, max) {
       $(this).append(pixie);
 
       canvas.showPreview();
+
+      if (width * pixelWidth > 512 || height * pixelHeight > 512) {
+        $('.pixie .viewport').css('overflow', 'auto');
+      }
     });
   };
 })(jQuery);
