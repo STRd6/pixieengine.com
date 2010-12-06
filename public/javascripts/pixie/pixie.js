@@ -203,6 +203,23 @@ Number.prototype.clamp = function(min, max) {
         var w = window.open();
         w.document.location = canvas.toDataURL();
       }
+    },
+    options: {
+      name: "Options",
+      icon: "images/icons/page_gear.png",
+      hotkeys: ["o"],
+      perform: function() {
+        $("#optionsModal").removeAttr("style").modal({
+          containerCss: {
+            height: 70,
+            width: 140
+          },
+          onClose: function() {
+            $.modal.close();
+            $("#optionsModal").attr("style", "display: none");
+          }
+        });
+      }
     }
   };
 
@@ -574,6 +591,7 @@ Number.prototype.clamp = function(min, max) {
       var toolbar = $(div).addClass('toolbar');
       var colorbar = $(div).addClass('toolbar');
       var swatches = $(div).addClass('swatches');
+      var optionsModal = $('#optionsModal');
       var preview = $(div).addClass('preview').css({width: width, height: height});
       var previewToggleHolder = $(div).addClass('toggle_holder');
       var previewLabel = $('<label class=\'preview-control\'>Tiled Preview</label>').click(function() {
@@ -1255,6 +1273,10 @@ Number.prototype.clamp = function(min, max) {
         .append(guideToggle)
         .append(guideLabel);
 
+      optionsModal
+        .append(guideToggleHolder)
+        .append(previewToggleHolder);
+
       colorbar
         .append(layerMenu)
         .append(previewMenu)
@@ -1265,8 +1287,7 @@ Number.prototype.clamp = function(min, max) {
         .append(toolbar)
         .append(viewport)
         .append(colorbar)
-        .append(guideToggleHolder)
-        .append(previewToggleHolder);
+        .append(optionsModal);
 
       if(frames > 1) {
         pixie.append(frameMenu);
