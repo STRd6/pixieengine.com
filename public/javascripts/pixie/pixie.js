@@ -1023,9 +1023,9 @@ Number.prototype.clamp = function(min, max) {
         setTool: function(tool) {
           currentTool = tool;
           if(tool.cursor) {
-            pixie.css({cursor: tool.cursor});
+            canvas.css({cursor: tool.cursor});
           } else {
-            pixie.css({cursor: "pointer"});
+            canvas.css({cursor: "pointer"});
           }
         },
 
