@@ -1,26 +1,17 @@
 connect:
   twitter:
-    key: "y6mFvUuAIZVPnRPmMxceMA"
-    secret: "TJgZuPanNB87pSoPcHXwx8f9qOh0j8rGykKy6ExeU"
+    key: "my_key"
+    secret: "my_secret"
     label: "Twitter"
   facebook:
-    key: "9b958884105e8b5e5e97e85f06da4b0e"
-    secret: "04464e7169cb90607e2dfb5dd8cff288"
+    key: "my_key"
+    secret: "my_secret"
     label: "Facebook"
   google:
-    key: "pixie.strd6.com"
-    secret: "Vg7hSxlGXN//09AKEYpmemqj"
+    key: "my_key"
+    secret: "my_secret"
     label: "Google"
   yahoo:
     key: "my_key"
     secret: "my_secret"
     label: "Yahoo"
-  myspace:
-    key: "02400d1bce29477fbf5606108242d0b1"
-    secret: "68a05dffd3da4d6db952096d51fd9971a57e0fef6a6d4074b4d0e42a622d120a"
-  vimeo:
-    key: "my_key"
-    secret: "my_secret"
-  linked_in:
-    key: "my_key"
-    secret: "my_secret"
