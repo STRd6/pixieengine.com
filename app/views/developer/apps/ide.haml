@@ -54,6 +54,7 @@
   = link_to "Download Libs", "/developer/apps/#{app.id}/lib.js"
 
 #testZone
+  %span#close_app.ui-icon.ui-icon-close X
   %h3.ui-widget-header= app.title
   %iframe#testFrame{:src => "/blank.html", :width => app.width, :height => app.height}
 
@@ -343,8 +344,15 @@
       # Set focus
       $("#testFrame")[0].contentWindow.focus()
 
+    closeApp = ->
+      $("#testZone").hide()
+      $("#testFrame").remove()
+
     $('#run').click ->
       runApp $('#app_code').val()
+
+    $('#close_app').click ->
+      closeApp();
 
     window.onbeforeunload = ->
       if $("li.unsaved").length > 0
