@@ -209,14 +209,14 @@ Number.prototype.clamp = function(min, max) {
       icon: "images/icons/page_gear.png",
       hotkeys: ["o"],
       perform: function() {
-        $("#optionsModal").removeAttr("style").modal({
+        $('#optionsModal').removeAttr("style").modal({
           containerCss: {
             height: 70,
             width: 140
           },
           onClose: function() {
             $.modal.close();
-            $("#optionsModal").attr("style", "display: none");
+            $('#optionsModal').attr("style", "display: none");
           }
         });
       }
@@ -1265,6 +1265,7 @@ Number.prototype.clamp = function(min, max) {
       }
 
       viewport.append(canvas);
+
       previewToggleHolder
         .append(previewToggle)
         .append(previewLabel);
@@ -1275,7 +1276,7 @@ Number.prototype.clamp = function(min, max) {
 
       optionsModal
         .append(guideToggleHolder)
-        .append(previewToggleHolder);
+        .append(previewToggleHolder)
 
       colorbar
         .append(layerMenu)
@@ -1287,7 +1288,6 @@ Number.prototype.clamp = function(min, max) {
         .append(toolbar)
         .append(viewport)
         .append(colorbar)
-        .append(optionsModal);
 
       if(frames > 1) {
         pixie.append(frameMenu);

@@ -130,6 +130,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match "sign_up" => "users#new", :as => :signup
 
   match "chat" => "chats#publish"
+  match "active_users" => "chats#active_users"
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'

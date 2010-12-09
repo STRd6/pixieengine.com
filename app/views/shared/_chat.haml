@@ -1,41 +1,53 @@
 #chatZone
   = stylesheet_link_tag 'chat'
-  %h3 Pixie Chat
-  %ul#chats
   = text_field_tag :chat_body
-  %button Send
+  %button#send.button Send
+  %ul#chats
+  %ul#active_users
+    %li.header Online Now
+    - User.logged_in.each do |user|
+      %li= user[:display_name]
 
 :plain
   <script src="http://localhost:8080/application.js" type="text/javascript" charset="utf-8"></script>
-  <script type="text/javascript" charset="utf-8">
-    var jug = new Juggernaut;
-    jug.subscribe("/chats", function(data){
-      var li = $("<li />");
-      var name = $('<span />').addClass("name").text(data.name + ":");
-      var time = $('<span />').addClass("time").text(" " + data.time + " ");
-      var message = $('<span />').addClass("message").text(data.message);
-      li.append(name).append(time).append(message);
-      $("#chats").append(li);
-    });
+  <script type="text/coffeescript">
+    jug = new Juggernaut
+    jug.subscribe "/chats", (data) ->
+      li = $("<li />")
+      name = $('<span />').addClass("name").text(data.name + ":")
+      time = $('<span />').addClass("time").text(" " + data.time + " ")
+      message = $('<span />').addClass("message").text(data.message)
+      li.append(name).append(time).append(message)
+      $('#chats').append(li)
 
-    $(function() {
-      var field = $('#chatZone button').prev();
+    $ ->
+      $('#chat_body').attr('placeholder', 'chat with your friends here')
 
-      $('#chatZone #chat_body').keypress(function(e) {
-        if(e.keyCode == '13' && field.val() != "") {
-          $.post('/chat', {
+      window.setInterval ->
+        $.get('/active_users', (data) ->
+          $('#active_users li:not(:first)').remove()
+
+          for user in data.users
+            li = $("<li />")
+            li.append(user.name)
+
+            $('#active_users').append(li)
+        )
+      , 15000
+
+      send = (field) ->
+        if (field.val() != "")
+          $.post '/chat',
             body: field.val()
-          });
-          field.val("");
-        }
-      });
-      $('#chatZone button').click(function() {
-        if (field.val() != "") {
-          $.post('/chat', {
-            body: field.val()
-          });
-        }
-        field.val("");
-      });
-    });
+
+          field.val("")
+
+      textBox = $('#send').prev()
+
+      $('#chatZone #chat_body').keypress (e) ->
+        if(e.keyCode == 13)
+          send(textBox)
+
+      $('#send').click ->
+        send(textBox)
   </script>

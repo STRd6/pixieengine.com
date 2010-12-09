@@ -14,4 +14,10 @@ class ChatsController < ApplicationController
 
     render :nothing => true
   end
+
+  def active_users
+    render :json => {
+      :users => User.logged_in.map {|user| {:name => user.display_name } }
+    }
+  end
 end

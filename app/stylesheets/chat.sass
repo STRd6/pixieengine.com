@@ -1,20 +1,35 @@
 #chatZone
   margin-left: 8.5%
+  margin-top: 1em
+  width: 700px
+
+  #send
+    margin: 0 0 0 -2px
+    font-weight: bold
+    -webkit-border-radius: 0
+    padding-left: 8px
+    padding-right: 8px
+    vertical-align: top
+    height: 24px
 
 #chats
-  height: 300px
+  height: 240px
   overflow: auto
-  width: 512px
-  border: 1px solid #eee
+  width: 511px
+  border: 1px solid #BBB
   font: 13px Helvetica, Arial
   list-style: none
+  display: inline-block
+  -moz-border-radius: 0 0 5px 5px
+  -webkit-border-radius: 0 0 5px 5px
 
   .name
     font-weight: bold
 
   .time
     font-style: italic
-    color: #CCC
+    font-size: 8pt
+    color: #BBB
 
   li
     padding: 5px
@@ -23,5 +38,20 @@
   li:nth-child(odd)
     background: #F6F6F6
 
+#active_users
+  list-style: none
+  display: inline-block
+  margin-left: 5px
+  vertical-align: top
+
+  li.header
+    font-weight: bold
+    width: 137px
+    text-align: center
+    margin-bottom: 5px
+
 #chat_body
-  width: 455px
+  width: 458px
+  height: 18px
+  margin-bottom: 5px
+
