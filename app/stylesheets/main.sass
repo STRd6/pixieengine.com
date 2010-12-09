@@ -109,15 +109,15 @@ a
     height: 100%
     margin: 0
     padding: 0
-    text-align: left
+    text-align: center
     text-decoration: none
 
   #nav
     +box-sizing(border-box)
-    +grid-width(12)
+    +grid-width(14)
     bottom: 0
     display: inline-block
-    padding-left = $blueprint-grid-width + $blueprint-grid-margin
+    padding-left = 35px
     position: absolute
 
     // Text straight in a span means it's the current page
@@ -127,7 +127,7 @@ a
       display: inline-block
       font-weight: bold
       margin-right = $blueprint-grid-margin
-      text-align: left
+      text-align: center
       text-decoration: none
 
       a

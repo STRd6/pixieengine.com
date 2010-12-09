@@ -16,7 +16,9 @@
     %span
       = link_to_unless_current "Sounds", sounds_path
     %span
-      = link_to_unless_current "About Pixie", about_path
+      = link_to_unless_current "Developer", developer_plugins_path
+    %span
+      = link_to_unless_current "About", about_path
 
   #login_link
     = render :partial => "/shared/login"
