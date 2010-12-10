@@ -1,12 +1,13 @@
 #chatZone
-  = stylesheet_link_tag 'chat'
-  = text_field_tag :chat_body
-  %button#send.button Send
+  %h3 Pixie Chat
   %ul#chats
   %ul#active_users
     %li.header Online Now
     - User.logged_in.each do |user|
       %li= user[:display_name]
+
+  = text_field_tag :chat_body
+  %button#send.button Send
 
 :plain
   <script src="http://localhost:8080/application.js" type="text/javascript" charset="utf-8"></script>
@@ -33,7 +34,7 @@
 
             $('#active_users').append(li)
         )
-      , 15000
+      , 30000
 
       send = (field) ->
         if (field.val() != "")
