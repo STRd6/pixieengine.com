@@ -359,9 +359,10 @@
         return "You have some unsaved changes, if you leave now you will lose your work."
 
     $ ->
-      $("#testZone").draggable
+      $("#testZone").draggable(
         handle: "h3"
         iframeFix: true
+      ).disableSelection()
 
       $('ul.filetree').treeview()
 
