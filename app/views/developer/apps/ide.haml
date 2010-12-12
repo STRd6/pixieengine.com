@@ -327,7 +327,7 @@
 
       # Recreate iframe
       $("#testFrame").remove()
-      iframe = $('<iframe height="320" id="testFrame" src="/blank.html" width="480"></iframe>')
+      iframe = $('<iframe height="#{app.height}" id="testFrame" src="/blank.html" width="#{app.width}"></iframe>')
       zone.append(iframe)
 
       sandbox = iframe[0].contentWindow.document

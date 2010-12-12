@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101020225333) do
+ActiveRecord::Schema.define(:version => 20101212002947) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(:version => 20101020225333) do
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
     t.integer  "width",       :default => 480
-    t.integer  "height",      :default => 320
+    t.integer  "height",      :default => 300
     t.text     "src"
     t.string   "lang",        :default => "coffeescript"
   end
@@ -119,9 +119,9 @@ ActiveRecord::Schema.define(:version => 20101020225333) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "description"
-    t.datetime "deleted_at"
     t.integer  "parent_id"
-    t.integer  "comments_count",     :default => 0,     :null => false
+    t.integer  "comments_count"
+    t.datetime "deleted_at"
     t.boolean  "replayable",         :default => false, :null => false
     t.string   "image_file_name"
     t.string   "image_content_type"
