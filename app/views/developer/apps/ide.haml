@@ -54,7 +54,7 @@
   = link_to "Download Libs", "/developer/apps/#{app.id}/lib.js"
 
 #testZone
-  %span#close_app.ui-icon.ui-icon-close X
+  %span#close_app.ui-icon.ui-icon-close
   %h3.ui-widget-header= app.title
   %iframe#testFrame{:src => "/blank.html", :width => app.width, :height => app.height}
 
@@ -486,6 +486,12 @@
         if !parentLi.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
           index = $('li', $tabs).index(parentLi)
           $tabs.tabs('remove', index)
+
+      $('#tabs span.ui-icon').live 'click', ->
+        parentLi = $(this).parent()
+
+        index = $('li', $tabs).index(parentLi)
+        $tabs.tabs('select', index)
 
       $("#libraries li").live "click", (event) ->
         libraryId = $(this).attr("data-library_id")
