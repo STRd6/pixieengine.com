@@ -88,6 +88,7 @@
 
         canvas.addAction({
           name: "New",
+          cssClass: "pillbox-left",
           icon: "/images/icons/page_white_add.png",
           perform: function(canvas) {
             setNewDimensions();
@@ -97,6 +98,7 @@
 
         canvas.addAction({
           name: "Save",
+          cssClass: "pillbox-right",
           icon: "/images/icons/database_save.png",
           perform: function(canvas) {
             $(".tool.button").last().attr("disabled", true);
