@@ -73,7 +73,20 @@ ul.filetree
       margin: 0.5em 0.2em 0 0
       cursor: pointer
 
+    &.ui-state-default
+      cursor: pointer
+
+      a
+        cursor: pointer
+
+      &.ui-state-active
+        cursor: default
+
+        a
+          cursor: default
+
     .ui-icon
+
       &.lang
         float: left
         margin: 0.5em 0 0 0.2em
@@ -92,7 +105,6 @@ ul.filetree
     a
       font-weight: normal
       padding: 0.5em 0.6em
-      cursor: default
 
     &.unsaved
       a
