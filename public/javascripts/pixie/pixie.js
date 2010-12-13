@@ -210,6 +210,7 @@ Number.prototype.clamp = function(min, max) {
       hotkeys: ["o"],
       perform: function() {
         $('#optionsModal').removeAttr("style").modal({
+          persist: true,
           containerCss: {
             height: 70,
             width: 140
