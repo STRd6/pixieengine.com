@@ -278,6 +278,8 @@ Number.prototype.clamp = function(min, max) {
     } else {
       viewportEl.css('overflow', 'auto');
     }
+
+    viewportEl.scrollTo(0, 0)
   }
 
   var tools = {
