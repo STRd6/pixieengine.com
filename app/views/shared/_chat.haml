@@ -12,7 +12,7 @@
 - #TODO: Use separate url for dev juggernaut script
 
 :plain
-  <script src="http://pixie.strd6.com:8080/application.js" type="text/javascript" charset="utf-8"></script>
+  <script src="http://localhost:8080/application.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/coffeescript">
     jug = new Juggernaut
     jug.subscribe "/chats", (data) ->
@@ -21,7 +21,7 @@
       time = $('<span />').addClass("time").text(" " + data.time + " ")
       message = $('<span />').addClass("message").text(data.message)
       li.append(name).append(time).append(message)
-      $('#chats').append(li)
+      $('#chats').append(li).scrollTo('max')
 
     $ ->
       $('#chat_body').attr('placeholder', 'chat with your friends here')
