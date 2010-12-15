@@ -5,14 +5,16 @@
 %ul.filetree
   %li{ :title => "Main" }
     %span.file.script{ 'data-id' => 'main', :class => app.lang } Main
-  %li{ :title => "Add Library" }
-    %span.file.add_library Add Library
+  - if has_access?
+    %li{ :title => "Add Library" }
+      %span.file.add_library Add Library
   - app.libraries.each do |library|
     %li.closed{ :title => library.title, 'data-library_id' => library.id }
       %span.folder= library.title
       %ul
-        %li{ :title => "New Script"}
-          %span.file.new_script New Script
+        - if has_access?
+          %li{ :title => "New Script"}
+            %span.file.new_script New Script
         - library.scripts.each do |script|
           %li{ :title => script.title }
             %span.file.script{ 'data-id' => script.id, :class => script.lang }= script.title
@@ -28,8 +30,9 @@
       %li.closed{ :title => "Sprites" }
         %span.folder.sprites Sprites
         %ul
-          %li{ :title => "New Sprite" }
-            %span.file.new_sprite New Sprite
+          - if has_access?
+            %li{ :title => "New Sprite" }
+              %span.file.new_sprite New Sprite
           - app.app_sprites.each do |app_sprite|
             - title = app_sprite.name
             %li{ :title => title }
