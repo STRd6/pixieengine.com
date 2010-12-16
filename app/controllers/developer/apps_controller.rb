@@ -10,6 +10,138 @@ class Developer::AppsController < DeveloperController
 
   create.before do
     app.user = current_user
+    if app.lang = "coffeescript"
+      add_default_libraries
+      app.src = <<-eos
+Square = (I) ->
+  I ||= {}
+
+  $.reverseMerge I,
+    color: '#800'
+    direction_change_timer: 0
+    width: 25
+    height: 25
+    x: 50,
+    y: 50,
+    xVelocity: 5
+
+  change_direction = ->
+    if (I.xVelocity == 5)
+      I.xVelocity = 0
+      I.yVelocity = 5
+    else if (I.yVelocity == 5)
+      I.yVelocity = 0
+      I.xVelocity = -5
+    else if (I.xVelocity == -5)
+      I.xVelocity = 0
+      I.yVelocity = -5
+    else if (I.yVelocity == -5)
+      I.yVelocity = 0
+      I.xVelocity = 5
+
+    I.direction_change_timer = 0
+
+  self = GameObject(I).extend
+
+    before:
+      update: ->
+        I.direction_change_timer++
+
+        if (I.direction_change_timer > 25)
+          change_direction()
+
+  self
+
+Circle = (I) ->
+  I ||= {}
+
+  $.reverseMerge I,
+    color: '#080'
+    radius: 15
+    theta: -Math.PI
+    x: 50,
+    y: 50,
+    velocity: 50
+
+  self = GameObject(I).extend
+
+    before:
+      update: ->
+        I.theta += Math.PI / 32
+        I.x = (Math.cos(I.theta) * I.velocity) + 350
+        I.y = (Math.sin(I.theta) * I.velocity) + 120
+
+    draw: (canvas) ->
+      canvas.fillColor I.color
+      canvas.fillCircle I.x, I.y, I.radius
+
+  self
+
+Player = () ->
+  I ||= {}
+
+  $.reverseMerge I,
+    color: '#FFF'
+    x: 30
+    y: 280
+    width: 20
+    height: 20
+
+  message = (canvas) ->
+    canvas.fillColor('#FFF')
+    canvas.fillText("You can move me.", I.x, I.y - 18)
+    canvas.fillText("Press left or right.", I.x, I.y - 5)
+
+  self = GameObject(I).extend
+
+    before:
+      draw: (canvas) ->
+        if (I.xVelocity == 0)
+          message(canvas)
+
+    after:
+      update: ->
+        I.x = I.x.clamp(0, 480 - I.width)
+
+    move: (direction) ->
+      if (direction == 'left')
+        I.xVelocity = -5
+
+      if (direction == 'right')
+        I.xVelocity = 5
+
+    stop: ->
+      I.xVelocity = 0
+
+  self
+
+circle = Circle()
+square = Square()
+player = Player()
+
+Game.keydown 'left', -> player.move 'left'
+Game.keyheld 'left', -> player.move 'left'
+Game.keyup 'left', -> player.stop()
+
+Game.keydown 'right', -> player.move 'right'
+Game.keyheld 'right', -> player.move 'right'
+Game.keyup 'right', -> player.stop()
+
+Game.update ->
+  circle.update()
+  square.update()
+  player.update()
+
+Game.draw (canvas) ->
+  canvas.fill '#000'
+  circle.draw canvas
+  square.draw canvas
+  player.draw canvas
+
+
+      eos
+
+    end
   end
 
   def create_app_sprite
@@ -134,6 +266,13 @@ class Developer::AppsController < DeveloperController
     collection
   end
   helper_method :apps
+
+  private
+  def add_default_libraries
+    app.add_library(Library.find 1)
+    app.add_library(Library.find 2)
+    app.add_library(Library.find 7)
+  end
 
   def collection
     @collection ||= App.order("id DESC")

@@ -21,7 +21,7 @@ class Developer::PluginsController < DeveloperController
     // Example: reading the color of the clicked pixel
     alert(this.color());
 
-    // Example: Pixel has referance to canvas
+    // Example: Pixel has reference to canvas
     var canvas = this.canvas;
   }
 }
