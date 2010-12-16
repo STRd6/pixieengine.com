@@ -112,6 +112,7 @@
 
 :plain
   <script type="text/coffeescript">
+    window.currentPanel
     shouldCreateEditor = false
     pixieEditorIds = 0
     newScriptIds = 0
@@ -294,6 +295,19 @@
         tabMode: "shift"
         textWrapping: false
 
+      $(editor.win.document).bind('keydown', 'ctrl+s', ->
+        if ($(window.currentPanel).find('button.new_save').length > 0)
+          $("#scriptTitleModal").modal
+            containerCss:
+              height: 75
+              width: 175
+        else
+          notify("Saving...")
+          $(window.currentPanel).find('form').ajaxSubmit
+            type: 'POST'
+            success: -> setSaved()
+      )
+
       # Listen for keypresses and recompile.
       $(editor.win.document).keyup ->
         currentCode = editor.getCode()
@@ -442,7 +456,7 @@
 
         $tabs.tabs 'add', spriteSelector, title, 0
 
-      currentPanel = $("#scriptmain")
+      window.currentPanel = $("#scriptmain")
 
       window.$tabs = $('#tabs').tabs
         add: (event, ui) ->
@@ -464,7 +478,7 @@
           $('.filetree').append(ui.panel)
 
         select: (event, ui) ->
-          currentPanel = ui.panel
+          window.currentPanel = ui.panel
 
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
@@ -472,7 +486,7 @@
 
       $('button.save').live 'click', ->
         notify("Saving...")
-        $(currentPanel).find('form').ajaxSubmit
+        $(window.currentPanel).find('form').ajaxSubmit
           type: 'POST'
           success: () ->
             setSaved()
