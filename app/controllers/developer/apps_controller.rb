@@ -2,7 +2,7 @@ class Developer::AppsController < DeveloperController
   resource_controller
   actions :all, :except => [:destroy]
 
-  before_filter :require_user, :only => [:fork_post]
+  before_filter :require_user, :only => [:fork_post, :new, :create]
   before_filter :require_access, :only => [:edit, :update, :add_library, :remove_library]
   before_filter :require_owner, :only => [:add_user]
 
