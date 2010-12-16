@@ -1118,7 +1118,7 @@ Number.prototype.clamp = function(min, max) {
             }
 
             var i = 0;
-            var delay = 200;
+            var delay = (5000 / steps.length).clamp(1, 200);
 
             function runStep() {
               var step = steps[i];
