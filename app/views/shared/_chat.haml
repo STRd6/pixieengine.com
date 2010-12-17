@@ -5,7 +5,7 @@
       %li
         - display_name = chat.user ? chat.user.display_name : "Anonymous"
         %span.name= display_name + ":"
-        %span.time= chat.user.created_at.strftime("%I:%M%p") + " "
+        %span.time= chat.created_at.strftime("%I:%M%p") + " "
         %span.message= chat.text
 
   %ul#active_users
