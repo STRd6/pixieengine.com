@@ -12,6 +12,8 @@ class ChatsController < ApplicationController
       :name => display_name
     })
 
+    Chat.create({ :user => current_user, :text => params[:body] })
+
     render :nothing => true
   end
 

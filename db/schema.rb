@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101212002947) do
+ActiveRecord::Schema.define(:version => 20101217024030) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -128,6 +128,15 @@ ActiveRecord::Schema.define(:version => 20101212002947) do
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
   end
+
+  create_table "chats", :force => true do |t|
+    t.integer  "user_id"
+    t.text     "text",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "chats", ["created_at"], :name => "index_chats_on_created_at"
 
   create_table "collection_items", :force => true do |t|
     t.integer  "collection_id", :null => false
