@@ -13,6 +13,8 @@ class Developer::AppsController < DeveloperController
     if app.lang = "coffeescript"
       add_default_libraries
       app.src = <<-eos
+window.bullets = []
+
 Square = (I) ->
   I ||= {}
 
@@ -21,8 +23,8 @@ Square = (I) ->
     direction_change_timer: 0
     width: 25
     height: 25
-    x: 50,
-    y: 50,
+    x: 50
+    y: 50
     xVelocity: 5
 
   change_direction = ->
@@ -52,6 +54,24 @@ Square = (I) ->
 
   self
 
+Bullet = (I) ->
+  I ||= {}
+
+  $.reverseMerge I,
+    color: '#CCC'
+    radius: 3
+    x: 50
+    y: 50
+    xVelocity: 10
+
+  self = GameObject(I).extend
+
+    draw: (canvas) ->
+      canvas.fillColor I.color
+      canvas.fillCircle I.x, I.y, I.radius
+
+  self
+
 Circle = (I) ->
   I ||= {}
 
@@ -59,8 +79,8 @@ Circle = (I) ->
     color: '#080'
     radius: 15
     theta: -Math.PI
-    x: 50,
-    y: 50,
+    x: 50
+    y: 50
     velocity: 50
 
   self = GameObject(I).extend
@@ -110,6 +130,13 @@ Player = () ->
       if (direction == 'right')
         I.xVelocity = 5
 
+    shoot: ->
+      window.bullets.push(Bullet(
+        x: I.x,
+        y: I.y + I.height / 2
+      ))
+      Sound.play 65
+
     stop: ->
       I.xVelocity = 0
 
@@ -127,16 +154,24 @@ Game.keydown 'right', -> player.move 'right'
 Game.keyheld 'right', -> player.move 'right'
 Game.keyup 'right', -> player.stop()
 
+Game.keydown 'space', -> player.shoot()
+
 Game.update ->
   circle.update()
   square.update()
   player.update()
+
+  window.bullets = window.bullets.select (bullet) ->
+    bullet.update()
 
 Game.draw (canvas) ->
   canvas.fill '#000'
   circle.draw canvas
   square.draw canvas
   player.draw canvas
+
+  for bullet in window.bullets
+    bullet.draw(canvas)
 
 
       eos
