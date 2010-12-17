@@ -295,6 +295,18 @@
         tabMode: "shift"
         textWrapping: false
 
+      $(editor.win.document).bind('keydown', 'ctrl+f', (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+        s = editor.selection() || prompt("Search string")
+        if (s)
+          c = editor.getSearchCursor(s, true, "")
+          c.findNext()
+          c.select()
+
+        false
+      )
+
       $(editor.win.document).bind('keydown', 'ctrl+s', ->
         if ($(window.currentPanel).find('button.new_save').length > 0)
           $("#scriptTitleModal").modal
