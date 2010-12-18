@@ -21,7 +21,7 @@ class ChatsController < ApplicationController
     respond_to do |format|
       format.json do
         render :json => {
-          :users => User.logged_in.map {|user| {:name => user.display_name } }
+          :users => User.logged_in.map { |user| {:name => user.display_name } }
         }
       end
 

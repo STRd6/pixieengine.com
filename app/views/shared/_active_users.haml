@@ -3,4 +3,5 @@
   - User.logged_in.each do |user|
     %li
       = image_tag user.avatar.url(:thumb)
-      = link_to user.display_name, user, :target => "_blank"
+      - user_color = (user.favorite_color && user.favorite_color != "FFFFFF") ? user.favorite_color : "000"
+      = link_to user.display_name, user, :target => "_blank", :style => 'color: #' + user_color

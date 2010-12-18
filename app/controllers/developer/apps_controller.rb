@@ -173,6 +173,14 @@ Game.draw (canvas) ->
   for bullet in window.bullets
     bullet.draw(canvas)
 
+musicSrc = "http://jupiterman.net/project_strugglin/JM_Strugglin_01.mp3"
+
+bgMusic = $(
+  "<audio src='" +
+  musicSrc + "' loop='loop' />"
+).appendTo('body').get(0)
+bgMusic.volume = 0.5
+bgMusic.play()
 
       eos
 
