@@ -30,6 +30,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    SystemTimer (1.2.1)
     abstract (1.0.0)
     actionmailer (3.0.0.beta4)
       actionpack (= 3.0.0.beta4)
@@ -172,6 +173,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   acts-as-taggable-on
   authlogic!
   authlogic-connect
