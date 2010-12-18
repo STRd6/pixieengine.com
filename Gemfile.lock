@@ -99,6 +99,7 @@ GEM
       rubyforge (>= 2.0.4)
     hpricot (0.8.2)
     i18n (0.4.1)
+    jrails (0.6.0)
     json (1.4.6)
     json_pure (1.4.6)
     mail (2.2.5)
@@ -182,6 +183,7 @@ DEPENDENCIES
   factory_girl
   haml
   hpricot
+  jrails
   juggernaut!
   mail
   mocha

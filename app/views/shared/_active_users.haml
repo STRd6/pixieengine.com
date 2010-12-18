@@ -1,0 +1,6 @@
+%ul#active_users
+  %li.header Online Now
+  - User.logged_in.each do |user|
+    %li
+      = image_tag user.avatar.url(:thumb)
+      = link_to user.display_name, user, :target => "_blank"

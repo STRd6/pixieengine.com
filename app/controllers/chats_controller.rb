@@ -18,8 +18,18 @@ class ChatsController < ApplicationController
   end
 
   def active_users
-    render :json => {
-      :users => User.logged_in.map {|user| {:name => user.display_name } }
-    }
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :users => User.logged_in.map {|user| {:name => user.display_name } }
+        }
+      end
+
+      format.js do
+        render :update do |page|
+          page.replace_html 'active_users', :partial => 'shared/active_users'
+        end
+      end
+    end
   end
 end
