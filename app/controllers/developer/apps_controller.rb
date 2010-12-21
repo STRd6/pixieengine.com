@@ -8,6 +8,8 @@ class Developer::AppsController < DeveloperController
 
   respond_to :html, :xml, :json
 
+  create.wants.html { redirect_to ide_developer_app_path(app) }
+
   create.before do
     app.user = current_user
     if app.lang = "coffeescript"
