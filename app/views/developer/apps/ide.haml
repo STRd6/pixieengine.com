@@ -59,7 +59,7 @@
 #testZone
   %span#close_app.ui-icon.ui-icon-close
   %h3.ui-widget-header= app.title
-  %iframe#testFrame{:src => "/blank.html", :width => app.width, :height => app.height}
+  %iframe#testFrame{ :width => app.width, :height => app.height}
 
 #newCanvasModal.modalElement
   %p
@@ -356,7 +356,7 @@
 
       # Recreate iframe
       $("#testFrame").remove()
-      iframe = $('<iframe height="#{app.height}" id="testFrame" src="/blank.html" width="#{app.width}"></iframe>')
+      iframe = $('<iframe height="#{app.height}" id="testFrame" width="#{app.width}"></iframe>')
       zone.append(iframe)
 
       sandbox = iframe[0].contentWindow.document
