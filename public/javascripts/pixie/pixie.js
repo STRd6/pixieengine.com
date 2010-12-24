@@ -206,7 +206,7 @@ Number.prototype.clamp = function(min, max) {
     },
     options: {
       name: "Options",
-      icon: "images/icons/page_gear.png",
+      icon: "/images/icons/page_gear.png",
       hotkeys: ["o"],
       perform: function() {
         $('#optionsModal').removeAttr("style").modal({
