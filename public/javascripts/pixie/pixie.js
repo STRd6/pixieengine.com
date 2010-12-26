@@ -204,6 +204,22 @@ Number.prototype.clamp = function(min, max) {
         w.document.location = canvas.toDataURL();
       }
     },
+    post: {
+      name: "Post",
+      icon: "/images/icons/picture_go.png",
+      hotkeys: ["return"],
+      perform: function(canvas) {
+        var imgEl = $("<img />");
+        imgEl.attr('src', canvas.toDataURL());
+
+        ($).post ('/chat', {
+          body: ""
+          }, function() {
+            $('#chats :last').append(imgEl);
+          }
+        );
+      }
+    },
     options: {
       name: "Options",
       icon: "/images/icons/page_gear.png",
