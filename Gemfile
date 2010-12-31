@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0.beta4'
+gem 'rails', '3.0.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -37,8 +37,8 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "SystemTimer"
-gem "thinking-sphinx", "2.0.0.rc1", :require => "thinking_sphinx"
-gem "will_paginate", "3.0.pre"
+gem "thinking-sphinx", "2.0.0", :require => "thinking_sphinx"
+gem "will_paginate"
 gem "whenever"
 
 # Bundle gems for certain environments:

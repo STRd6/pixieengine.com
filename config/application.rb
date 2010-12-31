@@ -16,8 +16,10 @@ module PixieStrd6Com
     # config.load_paths += %W( #{config.root}/extras )
     # Add additional load paths for your own custom dirs
     %w[middleware].each do |dir|
-      config.load_paths << "#{config.root}/app/#{dir}"
+      config.autoload_paths << "#{config.root}/app/#{dir}"
     end
+
+    config.autoload_paths << File.join(config.root, "lib")
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named
