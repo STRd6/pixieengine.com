@@ -152,9 +152,9 @@ GEM
     rmagick (2.13.1)
     ruby-openid (2.1.8)
     shoulda (2.11.3)
-    thinking-sphinx (2.0.0)
-      activerecord (>= 3.0.0)
-      riddle (>= 1.2.0)
+    thinking-sphinx (2.0.1)
+      activerecord (>= 3.0.3)
+      riddle (>= 1.2.1)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
@@ -195,6 +195,6 @@ DEPENDENCIES
   rmagick
   ruby-openid
   shoulda
-  thinking-sphinx (= 2.0.0)
+  thinking-sphinx (= 2.0.1)
   whenever
   will_paginate
