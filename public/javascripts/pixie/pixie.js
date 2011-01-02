@@ -212,10 +212,12 @@ Number.prototype.clamp = function(min, max) {
         var imgEl = $("<img />");
         imgEl.attr('src', canvas.toDataURL());
 
-        ($).post ('/chat', {
-          body: ""
-          }, function() {
+        ($).post ('/chat',
+          { body: "" },
+          function() {
             $('#chats :last').append(imgEl);
+            $('body').scrollTo('max');
+            $('#chats').scrollTo('max');
           }
         );
       }
