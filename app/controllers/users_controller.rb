@@ -19,6 +19,12 @@ class UsersController < ResourceController::Base
     render :nothing => true
   end
 
+  def set_avatar
+    sprite = Sprite.find(params[:sprite_id])
+    current_user.set_avatar(sprite)
+    render :nothing => true
+  end
+
   def create
     @object = User.new(params[:user])
 
@@ -84,14 +90,14 @@ class UsersController < ResourceController::Base
     flash[:notice] = "Plugin uninstalled"
     redirect_to :back
   end
-  
+
   def do_unsubscribe
     if params[:id]
       user = User.find(params[:id])
     elsif params[:email]
       user = User.find_by_email(params[:email])
     end
-    
+
     if user
       user.update_attribute(:subscribed, false)
     end

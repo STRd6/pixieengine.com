@@ -17,6 +17,8 @@
 %ul.actions
   %li= link_to "#{image_tag "icons/picture_edit.png"} Load in Editor".html_safe, load_sprite_path(sprite), :class => "button"
   - if current_user
+    %li.avatar
+      = link_to "#{image_tag "icons/status_online.png"} Set as Avatar".html_safe, "#", :class => "button", "data-sprite_id" => sprite.id
     %li.listMenu.menu
       = link_to "#{image_tag "icons/photo_add.png"} Add to Collection".html_safe, '#', :class => "button", "data-sprite_id" => sprite.id
       %ul.round{:style => "display: none;"}
@@ -144,5 +146,16 @@
           }, "json");
         }
       }
+    });
+
+    $(".avatar a").live("click", function(event) {
+      notify("Saving...");
+
+      var spriteId = $(this).attr("data-sprite_id");
+
+      $.post("/users/#{(current_user) ? current_user.id : 0}/set_avatar",
+        { sprite_id: spriteId },
+        function(data) { notify("Avatar successfully changed."); }
+      );
     });
   });
