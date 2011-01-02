@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/adamcooper/vestal_versions
+  revision: 6273df533f85014062e346cb1807b0531a809ee2
+  specs:
+    vestal_versions (1.2.2)
+      activerecord (>= 3.0.0)
+      activesupport (>= 3.0.0)
+
+GIT
   remote: git://github.com/collectiveidea/delayed_job.git
   revision: 411719b38c51a7fbd060ea139fd64adb20107a5d
   specs:
@@ -196,5 +204,6 @@ DEPENDENCIES
   ruby-openid
   shoulda
   thinking-sphinx (= 2.0.1)
+  vestal_versions!
   whenever
   will_paginate

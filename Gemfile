@@ -38,6 +38,7 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "SystemTimer"
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
+gem "vestal_versions", :git => "git://github.com/adamcooper/vestal_versions"
 gem "will_paginate"
 gem "whenever"
 

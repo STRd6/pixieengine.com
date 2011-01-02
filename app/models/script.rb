@@ -1,4 +1,6 @@
 class Script < ActiveRecord::Base
+  versioned
+
   belongs_to :user
   belongs_to :parent, :class_name => "Script"
 
