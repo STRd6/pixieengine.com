@@ -11,6 +11,8 @@ class App < ActiveRecord::Base
   has_many :app_members
   has_many :members, :through => :app_members, :source => :user
 
+  has_many :app_data
+
   after_save :generate_docs
 
   def resource_code

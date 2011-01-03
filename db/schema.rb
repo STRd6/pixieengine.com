@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110102183728) do
+ActiveRecord::Schema.define(:version => 20110102233834) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -36,6 +36,14 @@ ActiveRecord::Schema.define(:version => 20110102183728) do
 
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
+
+  create_table "app_data", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.string   "name",       :null => false
+    t.text     "json",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "app_libraries", :force => true do |t|
     t.integer  "app_id",     :null => false
