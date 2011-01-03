@@ -95,6 +95,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     member do
       get :favorites
       post :add_to_collection
+      post :set_avatar
       get :sprites
     end
 

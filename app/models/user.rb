@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   def send_forgot_password_email
     Notifier.forgot_password(self).deliver
   end
-  
+
   def self.send_newsletter_email
     User.all(:conditions => {:subscribed => true}).each do |user|
       Notifier.newsletter(user).deliver  unless user.email.blank?
@@ -66,6 +66,11 @@ class User < ActiveRecord::Base
 
   def remove_favorite(sprite)
     remove_from_collection(sprite)
+  end
+
+  def set_avatar(sprite)
+    self.avatar = sprite.image
+    self.save
   end
 
   def favorite?(sprite)
