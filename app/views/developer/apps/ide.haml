@@ -37,6 +37,30 @@
             - title = app_sprite.name
             %li{ :title => title }
               %span.file.sprite{ 'data-id' => app_sprite.id, 'data-width' => app_sprite.width, 'data-height' => app_sprite.height, :style => "background-image: url(#{app_sprite.data_url})" }= title
+      %li.closed{ :title => "Data" }
+        %span.folder.data Data
+        %ul
+          - if has_access?
+            %li{ :title => "New Datum" }
+              %span.file.new_datum New Datum
+              .tab_data.new_datum
+                - form_tag :action => :set_app_data do
+                  = fields_for :app_datum do |form|
+                    = form.hidden_field :name, :id => nil
+                    = form.text_area :json, :id => nil
+                %button.save Save
+
+          - app.app_data.each do |app_datum|
+            - title = app_datum.name
+            %li{ :title => title}
+              %span.file.datum{ 'data-id' => app_datum.id }= title
+              .tab_data{ :id => "datum#{app_datum.id}" }
+                - form_tag :action => :set_app_data do
+                  = hidden_field_tag :app_datum_id, app_datum.id, :id => nil
+                  = fields_for :app_datum do |form|
+                    = form.hidden_field :name, :value => app_datum.name, :id => nil
+                    = form.text_area :json, :value => app_datum.json, :id => nil
+                %button.save Save
 
   %li{ :title => "Documentation" }
     %span.file.documentation Documentation
@@ -77,6 +101,13 @@
     = text_field_tag :new_script_title, '', {:title => 'Title'}
 
   = button_to_function "Save", "saveNewScript()"
+
+#datumTitleModal.modalElement
+  %p
+    = label_tag :new_datum_title, "Title"
+    = text_field_tag :new_datum_title, '', {:title => 'Title'}
+
+  = button_to_function "Save", "setDatumTitle()"
 
 %ul#libraries.round
   - Library.all.each do |library|
@@ -168,6 +199,39 @@
         libUl.append(node).children().removeClass("last").last().addClass('last')
 
       , "json"
+
+      $.modal.close()
+
+    window.setDatumTitle = ->
+      title = $("#new_datum_title").val()
+
+      $("#tabs ul li.ui-tabs-selected a").text(title)
+
+      tabLi = $("#tabs ul li.ui-state-active")
+
+      panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
+      form = panel.find('form')
+
+      form.find('input[name="app_datum[name]"]').val(title)
+
+      form.ajaxSubmit
+        dataType: "json"
+        success: (data) ->
+          setSaved(tabLi)
+
+          appDatum = data.app_datum
+          console.log appDatum
+
+          panel.removeClass("new_datum")
+
+          form.append("<input type='hidden' value='"+ appDatum.id +"' name='app_datum_id'/>")
+
+          newDatumNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file datum")
+          node = $("<li />").attr("title", title).append(newDatumNode)
+
+          destinationUl = $('ul.filetree li[title=Data] > ul')
+
+          destinationUl.append(node).children().removeClass("last").last().addClass('last')
 
       $.modal.close()
 
@@ -407,6 +471,102 @@
         else
           $tabs.tabs 'add', docSelector, $(this).text(), 0
 
+      $('.filetree .file.new_datum').live 'click', ->
+        shouldCreateEditor = false
+        langClass = "data"
+        lang = "dummy"
+
+        newTabContents = $(this).next().clone()
+
+        newId = "new_datum" + (newScriptIds++)
+        newIdSelector = "#" + newId
+
+        newTabContents.attr('id', newId).appendTo($('ul.filetree'))
+
+        $tabs.tabs 'add', newIdSelector, $(this).text(), 0
+
+        $datumTextArea = $(newIdSelector).find("textarea")
+
+        datumTextArea = $datumTextArea.get(0)
+
+        savedCode = $datumTextArea.val()
+
+        editor = new CodeMirror.fromTextArea datumTextArea,
+          autoMatchParens: true
+          content: datumTextArea.value
+          height: "600px"
+          lineNumbers: true
+          parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+          path: "/javascripts/codemirror/"
+          stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
+          tabMode: "shift"
+          textWrapping: false
+
+        # Listen for keypresses and recompile.
+        $(editor.win.document).keyup ->
+          currentCode = editor.getCode()
+
+          if currentCode != savedCode
+            setUnsaved()
+          else
+            $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
+
+          try
+            JSON.parse(currentCode)
+            $datumTextArea.val(currentCode)
+            $('#error').hide()
+          catch error
+            $('#error').text(error.message).show()
+
+      $('.filetree .file.datum').live 'click', ->
+        shouldCreateEditor = false
+        langClass = "data"
+
+        if $(this).hasClass("new")
+          datumSelector = "#" + $(this).attr('data-id')
+        else
+          datumSelector = "#datum" + $(this).attr('data-id')
+        lang = "dummy"
+
+        if $('#tabs ul li a[href="' + datumSelector + '"]').length
+          $('#tabs ul li a[href="' + datumSelector + '"]').click()
+
+        else
+          $tabs.tabs 'add', datumSelector, $(this).text(), 0
+
+          $datumTextArea = $(datumSelector).find("textarea")
+
+          datumTextArea = $datumTextArea.get(0)
+
+          savedCode = $datumTextArea.val()
+
+          editor = new CodeMirror.fromTextArea datumTextArea,
+            autoMatchParens: true
+            content: datumTextArea.value
+            height: "600px"
+            lineNumbers: true
+            parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+            path: "/javascripts/codemirror/"
+            stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
+            tabMode: "shift"
+            textWrapping: false
+
+          # Listen for keypresses and recompile.
+          $(editor.win.document).keyup ->
+            currentCode = editor.getCode()
+
+            if currentCode != savedCode
+              setUnsaved()
+            else
+              $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
+
+            try
+              JSON.parse(currentCode)
+              $datumTextArea.val(currentCode)
+              $('#error').hide()
+            catch error
+              $('#error').text(error.message).show()
+
       $('.filetree .file.script').live 'click', ->
         shouldCreateEditor = true
         if $(this).hasClass("new")
@@ -500,10 +660,16 @@
 
       $('button.save').live 'click', ->
         notify("Saving...")
-        $(window.currentPanel).find('form').ajaxSubmit
-          type: 'POST'
-          success: () ->
-            setSaved()
+        if $(this).parent().hasClass("new_datum")
+          $("#datumTitleModal").modal
+            containerCss:
+              height: 75
+              width: 175
+        else
+          $(window.currentPanel).find('form').ajaxSubmit
+            type: 'POST'
+            success: () ->
+              setSaved()
 
       $('button.new_save').live 'click', ->
         $("#scriptTitleModal").modal

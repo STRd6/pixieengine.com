@@ -215,6 +215,31 @@ bgMusic.play()
     end
   end
 
+  def set_app_data
+    if has_access?
+      app_datum_data = params[:app_datum]
+
+      if params[:app_datum_id]
+        datum = app.app_data.find params[:app_datum_id]
+      end
+
+      if datum
+        datum.update_attributes app_datum_data
+      else
+        app_datum = app.app_data.create app_datum_data
+      end
+
+      respond_to do |format|
+        format.json {render :json => app_datum}
+      end
+    else
+      render :json => {
+        :status => "error",
+        :message => "You do not have access to this app"
+      }
+    end
+  end
+
   def fork_post
     fork = App.create(
       :parent => app,

@@ -17,7 +17,10 @@ class App < ActiveRecord::Base
 
   def resource_code
     return "var App = #{
-      {:Sprites => app_sprites.inject({}) { |hash, app_sprite| hash[app_sprite.name] = app_sprite.sprite_id; hash}}.to_json
+      {
+        :Sprites => app_sprites.inject({}) { |hash, app_sprite| hash[app_sprite.name] = app_sprite.sprite_id; hash},
+        :Data => Hash[app_data.map { |datum| [datum.name, datum.json] }]
+      }.to_json
     };"
   end
 
