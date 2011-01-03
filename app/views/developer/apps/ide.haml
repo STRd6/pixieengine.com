@@ -307,7 +307,7 @@
         false
       )
 
-      $(editor.win.document).bind('keydown', 'ctrl+s', ->
+      $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
         if ($(window.currentPanel).find('button.new_save').length > 0)
           $("#scriptTitleModal").modal
             containerCss:
@@ -318,6 +318,8 @@
           $(window.currentPanel).find('form').ajaxSubmit
             type: 'POST'
             success: -> setSaved()
+
+        event.preventDefault()
       )
 
       # Listen for keypresses and recompile.
