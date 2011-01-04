@@ -6,7 +6,7 @@
         - display_name = chat.user ? chat.user.display_name : "Anonymous"
         %span.name= display_name + ":"
         %span.time= chat.created_at.strftime("%I:%M%p") + " "
-        %span.message= chat.text
+        %span.message= chat.text.html_safe
 
   = render :partial => 'shared/active_users'
 
@@ -24,7 +24,7 @@
 
       name = $('<span />').addClass("name").text(data.name + ":")
       time = $('<span />').addClass("time").text(" " + data.time + " ")
-      message = $('<span />').addClass("message").text(data.message)
+      message = $('<span />').addClass("message").html(data.message)
       li.append(name).append(time).append(message)
       $('#chats').append(li).scrollTo('max')
 

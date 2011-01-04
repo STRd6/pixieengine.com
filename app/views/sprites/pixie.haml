@@ -108,6 +108,22 @@
           undoable: false
         });
 
+        canvas.addAction({
+          name: "Post to Chat",
+          icon: "/images/icons/picture_go.png",
+          perform: function(canvas) {
+            var wrapper = $("<div />");
+            var img = $("<img />");
+            img.attr('src', canvas.toDataURL());
+
+            img.appendTo(wrapper);
+
+            $.post ('/chat', { body: wrapper.html() }, function() {
+              $('body').scrollTo('max');
+            });
+          }
+        });
+
         $.each(installedTools, function(i, tool) {
           canvas.addTool(tool);
         });

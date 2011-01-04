@@ -123,6 +123,7 @@ GEM
     net-ssh (2.0.23)
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
+    nokogiri (1.4.4)
     oauth (0.4.4)
     oauth2 (0.1.0)
       faraday (~> 0.5.0)
@@ -159,6 +160,8 @@ GEM
     riddle (1.2.2)
     rmagick (2.13.1)
     ruby-openid (2.1.8)
+    sanitize (1.2.1)
+      nokogiri (~> 1.4.1)
     shoulda (2.11.3)
     thinking-sphinx (2.0.1)
       activerecord (>= 3.0.3)
@@ -202,6 +205,7 @@ DEPENDENCIES
   require
   rmagick
   ruby-openid
+  sanitize
   shoulda
   thinking-sphinx (= 2.0.1)
   vestal_versions!

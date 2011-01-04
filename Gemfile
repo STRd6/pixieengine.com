@@ -36,6 +36,7 @@ gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
+gem "sanitize"
 gem "SystemTimer"
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
 gem "vestal_versions", :git => "git://github.com/adamcooper/vestal_versions"
