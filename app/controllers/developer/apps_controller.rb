@@ -15,10 +15,34 @@ class Developer::AppsController < DeveloperController
     if app.lang = "coffeescript"
       add_default_libraries
       app.src = <<-eos
-window.bullets = []
+window.bullets = [] #initialize an empty global array to store bullets
+
+###
+In this application all the classes are included in the same file
+for simplicity. Typically, you would add a library for your game and save
+each class as a script in that library.
+###
+
+###
+The Square class is part of the Pixie default app. It is used to demonstrate
+how to draw a rectangle to screen and how you can make an object move linearly
+along the x and y axes.
+
+@name Square
+@constructor
+
+@param {Object} I Instance variables
+###
 
 Square = (I) ->
   I ||= {}
+
+  ###
+  I is a hash that stores all the instance variables of the class.
+  $.reverseMerge adds the properties to the hash if I currently does
+  not have that property. You can think of the call
+  to $.reverseMerge as setting up default values for I.
+  ###
 
   $.reverseMerge I,
     color: '#800'
@@ -28,6 +52,11 @@ Square = (I) ->
     x: 50
     y: 50
     xVelocity: 5
+
+  ###
+  This is a private method. It is used to tell the square
+  when and how to change direction.
+  ###
 
   change_direction = ->
     if (I.xVelocity == 5)
@@ -45,7 +74,25 @@ Square = (I) ->
 
     I.direction_change_timer = 0
 
+  ###
+  Here we define our public methods. All methods declared within the
+  self object are visible to clients of the class.
+
+  We extend the functionality of GameObject in order
+  to get some basic useful methods.
+
+  @see GameObject
+  ###
+
   self = GameObject(I).extend
+
+    ###
+    Since GameObject already provides an update method, we want to execute our
+    update code before or after GameObject#update. If we don't use the before
+    filter, we will overwrite GameObject#update.
+
+    @see GameObject#update
+    ###
 
     before:
       update: ->
@@ -55,6 +102,16 @@ Square = (I) ->
           change_direction()
 
   self
+
+###
+The Bullet class is part of the Pixie default app. It is used
+to demonstrate how to draw a circular projectile to screen.
+
+@name Bullet
+@constructor
+
+@param {Object} I Instance variables
+###
 
 Bullet = (I) ->
   I ||= {}
@@ -68,11 +125,26 @@ Bullet = (I) ->
 
   self = GameObject(I).extend
 
+    ###
+    Here we have overridden GameObject#draw since we want to draw a circle
+    instead of the rectangle that is drawn by GameObject#draw
+    ###
+
     draw: (canvas) ->
       canvas.fillColor I.color
       canvas.fillCircle I.x, I.y, I.radius
 
   self
+
+###
+The Circle class is part of the Pixie default app. It is used to demonstrate
+how to draw a circle to screen and how to make an object move radially.
+
+@name Circle
+@constructor
+
+@param {Object} I Instance variables
+###
 
 Circle = (I) ->
   I ||= {}
@@ -99,7 +171,17 @@ Circle = (I) ->
 
   self
 
-Player = () ->
+###
+The Player class is part of the Pixie default app. It is used to demonstrate
+how to draw text to screen and how to manage collections of game objects.
+
+@name Player
+@constructor
+
+@param {Object} I Instance variables
+###
+
+Player = (I) ->
   I ||= {}
 
   $.reverseMerge I,
@@ -137,16 +219,24 @@ Player = () ->
         x: I.x,
         y: I.y + I.height / 2
       ))
-      Sound.play 65
+      Sound.play 65 #Pew, Pew, Pew!
 
-    stop: ->
-      I.xVelocity = 0
+    stop: -> I.xVelocity = 0
 
   self
+
+#Here we create instances of each of the classes we defined above.
 
 circle = Circle()
 square = Square()
 player = Player()
+
+###
+This is how to manage keyboard input in Pixie. The keydown event is fired if
+the key was just pressed. The keyheld event is fired if the key is currently down
+and was previously down. They keyup event is fired if the key was previously down
+and is currently not pressed.
+###
 
 Game.keydown 'left', -> player.move 'left'
 Game.keyheld 'left', -> player.move 'left'
@@ -158,16 +248,31 @@ Game.keyup 'right', -> player.stop()
 
 Game.keydown 'space', -> player.shoot()
 
+
+#Anything within Game#update is called each time through the game's loop
+
 Game.update ->
   circle.update()
   square.update()
   player.update()
 
+  ###
+  This purges the inactive bullets.
+
+  Bullet#update returns true if the object is active and false otherwise.
+  Array#select makes a new array from the true values of Bullet#update
+  ###
+
   window.bullets = window.bullets.select (bullet) ->
     bullet.update()
 
+###
+Game#draw provides a reference to the canvas in order to draw
+each time through the game's loop.
+###
+
 Game.draw (canvas) ->
-  canvas.fill '#000'
+  canvas.fill '#000' #clear the screen each frame
   circle.draw canvas
   square.draw canvas
   player.draw canvas
@@ -175,12 +280,15 @@ Game.draw (canvas) ->
   for bullet in window.bullets
     bullet.draw(canvas)
 
+
+#This is how to add background music to your game.
+
 musicSrc = "http://jupiterman.net/project_strugglin/JM_Strugglin_01.mp3"
 
 bgMusic = $(
-  "<audio src='" +
-  musicSrc + "' loop='loop' />"
+  "<audio src='" + musicSrc + "' loop='loop' />"
 ).appendTo('body').get(0)
+
 bgMusic.volume = 0.5
 bgMusic.play()
 
