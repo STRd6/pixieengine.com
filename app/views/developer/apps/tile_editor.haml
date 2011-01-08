@@ -1,0 +1,164 @@
+- num_layers = 3
+
+.tile_editor
+  .screen
+    - num_layers.times do
+      .layer
+        .placed
+
+    .selection
+
+  .layer_select
+    .choice.active 1
+    .choice 2
+    .choice 3
+
+  .tiles
+    - 18.times do |i|
+      - if i % 2 == 1
+        %img.tile{ :src => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABFUlEQVRYhe2WvRGEIBCFHzc3Y2ZmAwTWYAsUZWRRtmANBjRgZmbERTgLg7rg3/29BF0Z3ie7rAqjlcGNetxpfjmAkK0zXgpATR2Yn6kBIVsnBfZ6FwBdaEtGq+B9VAqsmdEKQrYYshwAUEzjHAuZrSl6B4Ysd8yXYocDUIOQEX3GTQsbIPbtYiA2AVK3lgvx/q3YaIViGqMXtidjN0AKBNecDeBD0DEUO7UPFNOIqinnkV6npCrpYyRki6opnVhX91FvbpV0CoxW6Op+t3kywJH6Azw5k/yWupRv7rxoAABO1Yd6vH8yaJGuKSkF/hFcip0GcKTY3wLulgJxfYFdA/Sfb8mUzuWKDeAvnFLxIX1GDXw1wAuieZW3yApXcQAAAABJRU5ErkJggg=="}
+      - else
+        %img.tile{ :src => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAABIAAAASABGyWs+AAAB3klEQVRYw+1WvU6DUBg9EAYGbbsaHYhN3DqwGWNCeAB3nX0NNxNfpQ/gAzDUuJkOrJYwtAlDB0o1YbIOzQeXy+VyL40SE09CAvfvnO/w3e9e4/blc4ceYfZJDgAWvUyvPmqdd69HvyNARE7tbSKStQcAyMMMAGBPBsjDDI4/VxJgUA6wIhbRFgDwkJwokS4jE2fnX7VxKiIMnSRM1h7yMCuiJMi+20QoCyDyLpCJUNoFceDWyJdROdWeDGpz2P44cA8TwC+4jExc37+VkT1tYD/vKuP4nGgSYUEBeyK3IHT8sm88GwIjYJWmcPx5pS8O3CJBm36DkoBShB544SL8eCVsE957Kf4X8LcF8Hs7WXvSoiNC6zZkSzDVeL72E6iN5rDFiwoTvyusNmJ7MigIZeSEpn4qSKxDjj+vClA5cHg3RP1s5BQ9tdG5kYcZ4sDdC+CJ+cNFZrcoUt529p0NAAAsUdRdLJaRy5y06L/qWEwYz4bF++lohHdsW4l5mLQoPTIXWKHj2RCrNK30e6vjRtdEdwZA4zQULZDfGFhgI3SkyTUexuXjRXElYzOUvrtew1RRcUAnGQ8BG6jJN3ZZSHcsm28m26gLnTlNY5UOI5VIuzioLEAl0q750vt94BulQiU+KorOrgAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMS0wMS0wNlQwMDowNzo0NiswMDowMOxk8goAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTEtMDEtMDZUMDA6MDc6NDYrMDA6MDCdOUq2AAAAAElFTkSuQmCC"}
+
+:coffeescript
+  resolution = 32
+
+  currentLayer = 0
+
+  modeDown = null
+
+  prevTile = (mode) ->
+    tileCount = $(".tiles .tile").length
+
+    cur = $(".tiles ." + mode).removeClass(mode).index()
+
+    $(".tiles .tile").eq((cur - 1).mod(tileCount)).addClass(mode)
+
+  nextTile = (mode) ->
+    tileCount = $(".tiles .tile").length
+
+    cur = $(".tiles ." + mode).removeClass(mode).index()
+
+    $(".tiles .tile").eq((cur + 1).mod(tileCount)).addClass(mode)
+
+  entered = (x, y) ->
+    if mode = modeDown
+      posString = x + "x" + y
+
+      element = $(".tiles").find("." + mode).clone().removeClass("primary secondary").css(
+        position: "absolute"
+        top: y
+        left: x
+      ).attr("data-pos", posString)
+
+      targetLayer = $(".screen .layer").eq(currentLayer).find(".placed")
+
+      targetLayer.find("[data-pos='" + posString + "']").remove()
+
+      targetLayer.append(element)
+
+  clickMode = (event) ->
+    if event.which == 1
+      "primary"
+    else if event.which == 3
+      "secondary"
+
+  $(".tile_editor").bind "contextmenu", (event) ->
+    event.preventDefault()
+
+  $(".tiles .tile").live 'mousedown', (event) ->
+    event.preventDefault()
+
+    if mode = clickMode event
+      $(this).addClass(mode).siblings().removeClass(mode)
+
+  $(".layer_select .choice").live 'mousedown', (event) ->
+    $(this).addClass("active").siblings().removeClass("active")
+
+    currentLayer = $(this).index()
+
+  $(".screen").bind "mousemove", (event) ->
+    offset = $(this).offset()
+
+    localY = (event.pageY - offset.top).snap(resolution)
+    localX = (event.pageX - offset.left).snap(resolution)
+
+    oldPos = $(".screen .selection").position()
+
+    unless oldPos.left == localX && oldPos.top == localY
+      entered(localX, localY)
+
+      $(".screen .selection").css
+        left: localX
+        top: localY
+
+  $(".screen").bind "mousedown", (event) ->
+    if modeDown = clickMode event
+      offset = $(this).offset()
+
+      localY = (event.pageY - offset.top).snap(resolution)
+      localX = (event.pageX - offset.left).snap(resolution)
+
+      entered(localX, localY)
+
+  $(document).bind "mouseup", (event) ->
+    modeDown = null
+
+  hotkeys =
+    a: (event) ->
+      prevTile("primary")
+    z: (event) ->
+      nextTile("primary")
+    s: (event) ->
+      prevTile("secondary")
+    x: (event) ->
+      nextTile("secondary")
+
+  $.each hotkeys, (key, fn) ->
+    $(document).bind "keydown", key, fn
+
+
+%style
+  :sass
+    @import util
+
+    .tile_editor
+      .layer_select
+        .choice.active
+          background-color: yellow
+
+      .screen
+        height: 320px
+        overflow: hidden
+        position: relative
+        width: 480px
+
+        .layer
+          height: 320px
+          left: 0
+          position: absolute
+          top: 0
+          width: 480px
+
+        .selection
+          border: 1px solid green
+          height: 32px
+          position: absolute
+          width: 32px
+
+      .tile
+        +inline-block
+
+        height: 32px
+        margin-bottom: 2px
+        padding: 1px
+        width: 32px
+
+        &.primary, &.secondary
+          border: 1px solid
+          padding: 0px
+
+        &.primary
+          border-color: green
+        &.secondary
+          border-color: blue
