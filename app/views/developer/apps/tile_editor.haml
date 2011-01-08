@@ -27,6 +27,20 @@
 
   modeDown = null
 
+  prevTile = (mode) ->
+    tileCount = $(".tiles .tile").length
+
+    cur = $(".tiles ." + mode).removeClass(mode).index()
+
+    $(".tiles .tile").eq((cur - 1).mod(tileCount)).addClass(mode)
+
+  nextTile = (mode) ->
+    tileCount = $(".tiles .tile").length
+
+    cur = $(".tiles ." + mode).removeClass(mode).index()
+
+    $(".tiles .tile").eq((cur + 1).mod(tileCount)).addClass(mode)
+
   entered = (x, y) ->
     if mode = modeDown
       posString = x + "x" + y
@@ -91,6 +105,19 @@
 
   $(".screen").bind "mouseup", (event) ->
     modeDown = null
+
+  hotkeys =
+    a: (event) ->
+      prevTile("primary")
+    z: (event) ->
+      nextTile("primary")
+    s: (event) ->
+      prevTile("secondary")
+    x: (event) ->
+      nextTile("secondary")
+
+  $.each hotkeys, (key, fn) ->
+    $(document).bind "keydown", key, fn
 
 
 %style
