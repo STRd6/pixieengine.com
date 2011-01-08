@@ -53,9 +53,7 @@
 
       targetLayer = $(".screen .layer").eq(currentLayer).find(".placed")
 
-      rels = targetLayer.find("[data-pos='" + posString + "']").remove()
-
-      console.log rels
+      targetLayer.find("[data-pos='" + posString + "']").remove()
 
       targetLayer.append(element)
 
@@ -103,7 +101,7 @@
 
       entered(localX, localY)
 
-  $(".screen").bind "mouseup", (event) ->
+  $(document).bind "mouseup", (event) ->
     modeDown = null
 
   hotkeys =
