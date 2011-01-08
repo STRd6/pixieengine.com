@@ -83,6 +83,8 @@ GEM
       builder
       mime-types
       xml-simple
+    barista (1.0.0)
+      coffee-script (~> 2.1.1)
     builder (2.1.2)
     capistrano (2.5.19)
       highline
@@ -90,6 +92,9 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.0.0)
+    coffee-script (2.1.1)
+      coffee-script-source
+    coffee-script-source (1.0.0)
     compass (0.10.6)
       haml (>= 3.0.4)
     daemons (1.1.0)
@@ -163,6 +168,7 @@ GEM
     sanitize (1.2.1)
       nokogiri (~> 1.4.1)
     shoulda (2.11.3)
+    therubyracer (0.8.0)
     thinking-sphinx (2.0.1)
       activerecord (>= 3.0.3)
       riddle (>= 1.2.1)
@@ -185,6 +191,7 @@ DEPENDENCIES
   authlogic!
   authlogic-connect
   aws-s3
+  barista (~> 1.0)
   capistrano
   compass (>= 0.10.2)
   delayed_job!
@@ -193,6 +200,7 @@ DEPENDENCIES
   haml
   hpricot
   jrails
+  json
   juggernaut!
   mail
   mocha
@@ -207,6 +215,7 @@ DEPENDENCIES
   ruby-openid
   sanitize
   shoulda
+  therubyracer
   thinking-sphinx (= 2.0.1)
   vestal_versions!
   whenever

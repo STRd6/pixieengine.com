@@ -20,12 +20,14 @@ gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
+gem 'barista', '~> 1.0'
 gem "compass", ">= 0.10.2"
 gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'hpricot'
 gem 'jrails'
+gem 'json'
 gem 'juggernaut', :git => "git://github.com/maccman/juggernaut.git"
 gem 'mail'
 gem 'mocha'
@@ -38,6 +40,7 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "sanitize"
 gem "SystemTimer"
+gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
 gem "vestal_versions", :git => "git://github.com/adamcooper/vestal_versions"
 gem "will_paginate"
