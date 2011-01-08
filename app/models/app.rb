@@ -19,7 +19,9 @@ class App < ActiveRecord::Base
     return "var App = #{
       {
         :Sprites => app_sprites.inject({}) { |hash, app_sprite| hash[app_sprite.name] = app_sprite.sprite_id; hash},
-        :Data => Hash[app_data.map { |datum| [datum.name, datum.json] }]
+        :Data => Hash[app_data.map { |datum| [datum.name, datum.json] }],
+        :height => height,
+        :width => width
       }.to_json
     };"
   end
