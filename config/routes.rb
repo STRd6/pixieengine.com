@@ -27,6 +27,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :lib, :defaults => { :format => 'js' }
         get :ide
         get :permissions
+        get :tile_editor
       end
     end
 
