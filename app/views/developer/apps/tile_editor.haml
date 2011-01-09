@@ -1,5 +1,7 @@
 - num_layers = 3
 
+%h1 Tile Editor
+
 .tile_editor
   .screen
     - num_layers.times do
@@ -9,7 +11,6 @@
     .selection
 
   .layer_select
-
     %h3 Layer:
     .choice.active Background
     .choice Midground
@@ -27,19 +28,38 @@
 
   modeDown = null
 
-  prevTile = (mode) ->
+  localPosition = (element) ->
+    offset = element.offset()
+
+    position =
+      localX: (event.pageX - offset.left).snap(resolution)
+      localY: (event.pageY - offset.top).snap(resolution)
+
+  shiftTile = (mode, amount) ->
     tileCount = $(".tiles img").length
 
     cur = $(".tiles ." + mode).removeClass(mode).index()
 
-    $(".tiles img").eq((cur - 1).mod(tileCount)).addClass(mode)
+    $(".tiles img").eq((cur + amount).mod(tileCount)).addClass(mode)
+
+  prevTile = (mode) ->
+    shiftTile(mode, -1)
 
   nextTile = (mode) ->
-    tileCount = $(".tiles img").length
+    shiftTile(mode, 1)
 
-    cur = $(".tiles ." + mode).removeClass(mode).index()
-
-    $(".tiles img").eq((cur + 1).mod(tileCount)).addClass(mode)
+  toggleGrid = (mode) ->
+    if ($('.screen').css('background-image') == "none")
+      $('.screen').css(
+        'background-image': 'url("/images/tile-editor-grid.png")'
+        'border-right': '1px solid black'
+        'border-bottom': '1px solid black'
+      )
+    else
+      $('.screen').css(
+        'background-image': 'none'
+        'border': 'none'
+      )
 
   entered = (x, y) ->
     if mode = modeDown
@@ -75,31 +95,27 @@
   $(".layer_select .choice").live 'mousedown', (event) ->
     $(this).addClass("active").siblings().removeClass("active")
 
-    currentLayer = $(this).index()
+    currentLayer = $(this).index() - 1
 
   $(".screen").bind "mousemove", (event) ->
-    offset = $(this).offset()
-
-    localY = (event.pageY - offset.top).snap(resolution)
-    localX = (event.pageX - offset.left).snap(resolution)
+    pos = localPosition($(this))
 
     oldPos = $(".screen .selection").position()
 
-    unless oldPos.left == localX && oldPos.top == localY
-      entered(localX, localY)
+    unless oldPos.left == pos.localX && oldPos.top == pos.localY
+      entered(pos.localX, pos.localY)
 
       $(".screen .selection").css
-        left: localX
-        top: localY
+        left: pos.localX
+        top: pos.localY
 
   $(".screen").bind "mousedown", (event) ->
     if modeDown = clickMode event
-      offset = $(this).offset()
+      pos = localPosition($(this))
 
-      localY = (event.pageY - offset.top).snap(resolution)
-      localX = (event.pageX - offset.left).snap(resolution)
+      entered(pos.localX, pos.localY)
 
-      entered(localX, localY)
+    event.preventDefault()
 
   $(document).bind "mouseup", (event) ->
     modeDown = null
@@ -113,6 +129,8 @@
       prevTile("secondary")
     x: (event) ->
       nextTile("secondary")
+    g: (event) ->
+      toggleGrid()
 
   $.each hotkeys, (key, fn) ->
     $(document).bind "keydown", key, fn
@@ -126,14 +144,18 @@
       .layer_select
         cursor: pointer
         display: inline-block
+        font-weight: bold
 
-        .choice.active
-          background-color: yellow
-          width: 75px
-          font-weight: bold
+        .choice
+          text-align: center
+
+          &.active
+            background-color: #1084CE
+            color: #FFF
+            width: 75px
 
       .screen
-        background-color: #ccc
+        background-color: #CCC
         background-image: url('/images/tile-editor-grid.png')
         border-bottom: 1px solid black
         border-right: 1px solid black
