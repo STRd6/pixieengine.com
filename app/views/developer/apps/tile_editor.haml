@@ -9,10 +9,13 @@
     .selection
 
   .layer_select
+
+    %h3 Layer:
     .choice.active Background
     .choice Midground
     .choice Foreground
 
+  %h3 Tiles:
   .tiles
     - Collection.find(params[:tileset_id]).sprites.each do |sprite|
       = image_tag(sprite.image.url, :alt => sprite.display_name)
@@ -122,6 +125,7 @@
     .tile_editor
       .layer_select
         cursor: pointer
+        display: inline-block
 
         .choice.active
           background-color: yellow
@@ -130,10 +134,14 @@
 
       .screen
         background-color: #ccc
-        height: 322px
+        background-image: url('/images/tile-editor-grid.png')
+        border-bottom: 1px solid black
+        border-right: 1px solid black
+        display: inline-block
+        height: 320px
         overflow: hidden
         position: relative
-        width: 482px
+        width: 480px
 
         .layer
           height: 320px
@@ -143,10 +151,10 @@
           width: 480px
 
         .selection
-          border: 1px solid green
-          height: 32px
+          border: 2px solid green
+          height: 29px
           position: absolute
-          width: 32px
+          width: 29px
 
       img
         +inline-block
