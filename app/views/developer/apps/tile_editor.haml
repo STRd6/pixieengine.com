@@ -9,9 +9,9 @@
     .selection
 
   .layer_select
-    .choice.active 1
-    .choice 2
-    .choice 3
+    .choice.active Background
+    .choice Midground
+    .choice Foreground
 
   .tiles
     - Collection.find(params[:tileset_id]).sprites.each do |sprite|
@@ -121,14 +121,19 @@
 
     .tile_editor
       .layer_select
+        cursor: pointer
+
         .choice.active
           background-color: yellow
+          width: 75px
+          font-weight: bold
 
       .screen
-        height: 320px
+        background-color: #ccc
+        height: 322px
         overflow: hidden
         position: relative
-        width: 480px
+        width: 482px
 
         .layer
           height: 320px
