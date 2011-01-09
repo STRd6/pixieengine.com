@@ -1,0 +1,6 @@
+%h2= user.display_name + "'s Collections"
+
+- user.collections.each do |collection|
+  %h3= link_to collection.name, :controller => :collections, :action => :show, :id => collection.id
+  - collection.sprites[0..7].each do |sprite|
+    = render :partial => sprite

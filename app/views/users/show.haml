@@ -15,10 +15,9 @@
     .color{:style => "background: ##{user.favorite_color}"}
 
 %ul.actions
-  - if favorites = user.collections.first
-    %li= link_to "#{image_tag "icons/photos.png"} Favorites".html_safe, url_for(:action => :show, :id => favorites.id, :controller => :collections), :class => "button"
+  %li= link_to "#{image_tag "icons/photos.png"} Collections".html_safe, url_for(:action => :collections), :class => "button"
   - if current_user?
-    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, edit_user_path(current_user), :class => "button"
+    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, edit_user_path(current_user), :class => "button"  
 
 - if user.sprites.size > 0
   %h3

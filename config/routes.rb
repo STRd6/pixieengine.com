@@ -94,6 +94,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   resources :users do
     member do
+      get :collections
       get :favorites
       post :add_to_collection
       post :set_avatar

@@ -24,7 +24,7 @@ class ChatsController < ApplicationController
 
     Juggernaut.publish("/chats", {
       :message => cleaned_text,
-      :time => Time.now.strftime("%I:%M%p"),
+      :time => Time.zone.now.strftime("%I:%M%p"),
       :name => display_name
     })
 
