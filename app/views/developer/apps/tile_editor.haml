@@ -1,28 +1,45 @@
 - num_layers = 3
 
-%h1 Tile Editor
+- tile_width = 32
+- tile_height = 32
+
+- tiles_wide = 64
+- tiles_tall = 64
 
 .tile_editor
-  .screen
-    - num_layers.times do
-      .layer
-        .placed
+  .main
+    .screen
+      .layers
+        - num_layers.times do
+          .layer
+            .placed
 
-    .selection
+        .selection
 
-  .layer_select
-    %h3 Layer:
-    .choice.active Background
-    .choice Midground
-    .choice Foreground
+  .bottom_bar
+    .component
+      %h3 Tiles:
+      .tiles
+        - Collection.find(params[:tileset_id]).sprites.each do |sprite|
+          = image_tag(sprite.image.url, :alt => sprite.display_name)
 
-  %h3 Tiles:
-  .tiles
-    - Collection.find(params[:tileset_id]).sprites.each do |sprite|
-      = image_tag(sprite.image.url, :alt => sprite.display_name)
+  .sidebar
+    .component
+      %h3 Layer:
+      .layer_select
+        .choice.active Background
+        .choice Midground
+        .choice Foreground
+
 
 :coffeescript
-  resolution = 32
+  debugMode = false
+
+  tileWidth = #{tile_width}
+  tileHeight = #{tile_height}
+
+  gridResolutionX = tileWidth
+  gridResolutionY = tileHeight
 
   currentLayer = 0
 
@@ -84,7 +101,8 @@
       "secondary"
 
   $(".tile_editor").bind "contextmenu", (event) ->
-    event.preventDefault()
+    unless debugMode
+      event.preventDefault()
 
   $(".tiles img").live 'mousedown', (event) ->
     event.preventDefault()
@@ -100,6 +118,9 @@
   $(".screen").bind "mousemove", (event) ->
     pos = localPosition($(this))
 
+    localY = (event.pageY - offset.top).snap(gridResolutionY)
+    localX = (event.pageX - offset.left).snap(gridResolutionX)
+
     oldPos = $(".screen .selection").position()
 
     unless oldPos.left == pos.localX && oldPos.top == pos.localY
@@ -109,11 +130,12 @@
         left: pos.localX
         top: pos.localY
 
-  $(".screen").bind "mousedown", (event) ->
+  $(".screen .layers").bind "mousedown", (event) ->
     if modeDown = clickMode event
       pos = localPosition($(this))
 
-      entered(pos.localX, pos.localY)
+      localY = (event.pageY - offset.top).snap(gridResolutionY)
+      localX = (event.pageX - offset.left).snap(gridResolutionX)
 
     event.preventDefault()
 
@@ -135,19 +157,71 @@
   $.each hotkeys, (key, fn) ->
     $(document).bind "keydown", key, fn
 
+  $("body").attr("id", "fullscreen")
+
+  $(".tile_editor").noSelect()
 
 %style
   :sass
     @import util
 
+    $sidebar_width = 140px
+    $bottom_bar_height = 140px
+
     .tile_editor
+      +user-select(none)
+
+      cursor: default
+      height: 100%
+
+      &>.sidebar
+        left: 0
+        position: fixed
+        top: 0
+        width: 120px
+
+      &>.main
+        +box-sizing(border-box)
+
+        height: 100%
+        padding-bottom: $bottom_bar_height
+        padding-left: $sidebar_width
+        padding-right: $sidebar_width
+        padding-top: 4em
+        width: 100%
+
+      .bottom_bar
+        +box-sizing(border-box)
+
+        background-color: #00010D
+        bottom: 0
+        height: $bottom_bar_height
+        left: 0
+        padding-left: $sidebar_width
+        padding-right: $sidebar_width
+        position: fixed
+        width: 100%
+
       .layer_select
-        cursor: pointer
-        display: inline-block
-        font-weight: bold
+        +inline-block
 
         .choice
-          text-align: center
+          cursor: pointer
+
+          &.active
+            font-weight: bold
+
+      .component
+        +box-sizing(border-box)
+        background-color: #00010D
+        color: #BFE2FF
+        padding: 0.5em
+        width: 100%
+
+        h3
+          +text-shadow(#0A131A)
+          color: #BFE2FF
+          font-weight: bold
 
           &.active
             background-color: #1084CE
@@ -155,22 +229,28 @@
             width: 75px
 
       .screen
-        background-color: #CCC
-        background-image: url('/images/tile-editor-grid.png')
-        border-bottom: 1px solid black
-        border-right: 1px solid black
-        display: inline-block
-        height: 320px
-        overflow: hidden
+        +box-sizing(border-box)
+
+        height: 100%
+        margin: auto
+        overflow: auto
         position: relative
-        width: 480px
+        width: 100%
+
+        .layers
+          background-image: url('/images/tile-editor-grid.png')
+          border-bottom: 1px solid black
+          border-right: 1px solid black
+
+          height: #{tiles_tall * tile_height}px
+          width: #{tiles_wide * tile_width}px
 
         .layer
-          height: 320px
+          height: #{tiles_tall * tile_height}px
           left: 0
           position: absolute
           top: 0
-          width: 480px
+          width: #{tiles_wide * tile_width}px
 
         .selection
           border: 2px solid green
