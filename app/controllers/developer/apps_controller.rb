@@ -14,7 +14,7 @@ class Developer::AppsController < DeveloperController
     app.user = current_user
     if app.lang = "coffeescript"
       add_default_libraries
-      app.src = <<-eos
+      heredoc = <<-eos
 window.bullets = [] #initialize an empty global array to store bullets
 
 ###
@@ -294,6 +294,9 @@ bgMusic.play()
 
       eos
 
+      app.src = heredoc
+      app.code = heredoc
+
     end
   end
 
@@ -447,9 +450,12 @@ bgMusic.play()
 
   private
   def add_default_libraries
+    default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
+
     app.add_library(Library.find 1)
     app.add_library(Library.find 2)
     app.add_library(Library.find 7)
+    app.add_library(default_library)
   end
 
   def collection
