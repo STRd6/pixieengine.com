@@ -148,13 +148,16 @@
     $bottom_bar_height = 140px
 
     .tile_editor
+      +box-sizing(border-box)
       +user-select(none)
 
       cursor: default
       height: 100%
+      padding-top: 4em
 
       &>.sidebar
         left: 0
+        margin-top: 3em
         position: fixed
         top: 0
         width: 120px
@@ -166,7 +169,6 @@
         padding-bottom: $bottom_bar_height
         padding-left: $sidebar_width
         padding-right: $sidebar_width
-        padding-top: 4em
         width: 100%
 
       .bottom_bar
