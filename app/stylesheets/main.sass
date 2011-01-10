@@ -4,6 +4,9 @@
 @import constants
 @import icon
 
+html
+  height: 100%
+
 // Basic layout and font styles
 body
   background-color: white
@@ -281,3 +284,31 @@ div.no-star
   .content
     margin-left: 24px
     position: relative
+
+.noselect
+  +user-select(none)
+
+#fullscreen
+  background-color: #00010D
+
+  height: 100%
+
+  #sidebar, #header, #feedback, #footer, #chatZone
+    display: none
+
+  #content
+    +box-sizing(border-box)
+
+    border: none
+    height: 100%
+    margin: 0
+    padding: 0
+    width: 100%
+
+    .subnav
+      display: none
+
+  .container
+    height: 100%
+    margin: 0
+    padding: 0
