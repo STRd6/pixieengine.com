@@ -1,10 +1,10 @@
-- num_layers = 3
+- num_layers = 2
 
 - tile_width = 32
 - tile_height = 32
 
-- tiles_wide = 64
-- tiles_tall = 64
+- tiles_wide = params[:tiles_wide].blank? ? 15 : params[:tiles_wide].to_i
+- tiles_tall = params[:tiles_tall].blank? ? 10 : params[:tiles_tall].to_i
 
 .tile_editor
   .main
@@ -28,12 +28,16 @@
       %h3 Layer:
       .layer_select
         .choice.active Background
-        .choice Midground
         .choice Foreground
 
 
 :coffeescript
   debugMode = false
+
+  firstGID = 1
+
+  tilesWide = #{tiles_wide}
+  tilesTall = #{tiles_tall}
 
   tileWidth = #{tile_width}
   tileHeight = #{tile_height}
@@ -44,6 +48,17 @@
   currentLayer = 0
 
   modeDown = null
+
+  $.fn.tilePosition = (event) ->
+    offset = this.offset()
+
+    localY = (event.pageY - offset.top).snap(gridResolutionY).clamp(0, (tilesTall - 1) * tileHeight)
+    localX = (event.pageX - offset.left).snap(gridResolutionX).clamp(0, (tilesWide - 1) * tileWidth)
+
+    return {
+      x: localX
+      y: localY
+    }
 
   prevTile = (mode) ->
     tileCount = $(".tiles img").length
@@ -97,28 +112,22 @@
     currentLayer = $(this).index()
 
   $(".screen .layers").bind "mousemove", (event) ->
-    offset = $(this).offset()
-
-    localY = (event.pageY - offset.top).snap(gridResolutionY)
-    localX = (event.pageX - offset.left).snap(gridResolutionX)
+    pos = $(this).tilePosition(event)
 
     oldPos = $(".screen .selection").position()
 
-    unless oldPos.left == localX && oldPos.top == localY
-      entered(localX, localY)
+    unless oldPos.left == pos.x && oldPos.top == pos.y
+      entered(pos.x, pos.y)
 
       $(".screen .selection").css
-        left: localX
-        top: localY
+        left: pos.x
+        top: pos.y
 
   $(".screen .layers").bind "mousedown", (event) ->
     if modeDown = clickMode event
-      offset = $(this).offset()
+      pos = $(this).tilePosition(event)
 
-      localY = (event.pageY - offset.top).snap(gridResolutionY)
-      localX = (event.pageX - offset.left).snap(gridResolutionX)
-
-      entered(localX, localY)
+      entered(pos.x, pos.y)
 
   $(document).bind "mouseup", (event) ->
     modeDown = null
@@ -139,6 +148,56 @@
   $("body").attr("id", "fullscreen")
 
   $(".tile_editor").noSelect()
+
+  window.saveData = () ->
+    layers = []
+
+    $(".layer_select .choice").each (i) ->
+      $this = $(this)
+
+      screenLayer = $(".screen .layers .layer").eq(i)
+
+      tiles = []
+
+      #TODO: This is a dumb way to do it, it will ignore any non-grid aligned tiles and is pretty slow
+      tilesTall.times (y) ->
+        tilesWide.times (x) ->
+          posString = x * tileWidth + "x" + y * tileHeight
+
+          img = screenLayer.find(".placed img[data-pos='"+ posString +"']")
+
+          imgIndex = $(".bottom_bar .tiles img[src='"+img.attr('src')+"']").index()
+
+          tiles.push
+            gid: imgIndex + firstGID
+
+      layer = 
+        name: $this.text()
+        width: tilesWide
+        height: tilesTall
+        data:
+          tile: tiles
+
+      layers.push layer
+
+    return {
+      version: 1.0
+      orientation: "orthogonal"
+      width: tilesWide
+      height: tilesTall
+      tilewidth: tileWidth
+      tileheight: tileHeight
+
+      tileset:
+        firstgid: firstGID
+        name: "tileset"
+        tilewidth: tileWidth
+        tileheight: tileHeight
+        image:
+          source: ""
+
+      layer: layers
+    }
 
 %style
   :sass
@@ -215,8 +274,8 @@
 
         .layers
           background-image: url('/images/tile-editor-grid.png')
-          border-bottom: 1px solid black
-          border-right: 1px solid black
+          border-bottom: 1px solid #414141
+          border-right: 1px solid #414141
 
           height: #{tiles_tall * tile_height}px
           width: #{tiles_wide * tile_width}px
