@@ -326,6 +326,22 @@ bgMusic.play()
     end
   end
 
+  def import_app_sprites
+    if has_access?
+      sprite_data = params[:sprite_data] || []
+
+      sprite_data.each_pair do |k, v|
+        AppSprite.create(
+          :app_id => app.id,
+          :sprite_id => v["id"],
+          :name => (v["name"] == "undefined") ? "Sprite #{v["id"]}" : v["name"]
+        ) unless AppSprite.find_by_app_id_and_sprite_id(app.id, v["id"])
+      end
+    end
+
+    render :nothing => true
+  end
+
   def set_app_data
     if has_access?
       app_datum_data = params[:app_datum]
@@ -377,6 +393,7 @@ bgMusic.play()
   end
 
   def ide
+    @user_sprites = (current_user) ? current_user.sprites : []
     render :layout => "ide"
   end
 

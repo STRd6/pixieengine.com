@@ -33,6 +33,8 @@
           - if has_access?
             %li{ :title => "New Sprite" }
               %span.file.new_sprite New Sprite
+            %li{ :title => "Import Sprites" }
+              %span.file.import_sprites Import Sprites
           - app.app_sprites.each do |app_sprite|
             - title = app_sprite.name
             %li{ :title => title }
@@ -83,7 +85,7 @@
 #testZone
   %span#close_app.ui-icon.ui-icon-close
   %h3.ui-widget-header= app.title
-  %iframe#testFrame{ :width => app.width, :height => app.height}
+  %iframe#testFrame{ :width => app.width, :height => app.height }
 
 #newCanvasModal.modalElement
   %p
@@ -94,6 +96,12 @@
     = text_field_tag :resize_height, 32, {:title => 'height'}
 
   = button_to_function "New Canvas", "newCanvas()"
+
+#importSpriteModal.modalElement
+  %table.sprites{ :summary => "User sprites" }
+    = render :partial => 'developer/apps/import_sprite', :collection => @user_sprites
+
+  = button_to_function "Import Sprites", "importSprites()"
 
 #scriptTitleModal.modalElement
   %p
@@ -164,6 +172,30 @@
       $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 
       $.modal.close()
+
+    window.importSprites = ->
+      if $('.import_sprite.selected').length < 1
+        alert "Please select sprites to import"
+      else
+        sprite_data = $('.import_sprite.selected').map ->
+          id: parseInt($(this).attr('data-id'))
+          name: $(this).attr('data-title')
+
+        notify "Importing, please wait..."
+
+        postData =
+          'sprite_data': sprite_data
+
+        $.post '/developer/apps/#{app.id}/import_app_sprites', postData, (data) ->
+          $(".import_sprite.selected").removeClass('selected')
+
+          if data.status == "error"
+            notify data.message
+            return
+
+          notify("Saved!")
+
+        $.modal.close()
 
     window.saveNewScript = ->
       title = $("#new_script_title").val()
@@ -471,6 +503,9 @@
         else
           $tabs.tabs 'add', docSelector, $(this).text(), 0
 
+      $('.import_sprite').live 'click', ->
+        $(this).toggleClass('selected')
+
       $('.filetree .file.new_datum').live 'click', ->
         shouldCreateEditor = false
         langClass = "data"
@@ -584,6 +619,9 @@
           containerCss:
             height: 110,
             width: 180
+
+      $('.filetree .file.import_sprites').click ->
+        $("#importSpriteModal").modal()
 
       $('.filetree .file.new_script').live 'click', ->
         newLibraryScript $(this).parents('[data-library_id]').last().attr('data-library_id')
@@ -760,3 +798,17 @@
       nextTip()
 
   </script>
+
+%style
+  :sass
+    .import_sprite
+      display: inline-block
+      padding: 5px
+      margin: 3px
+
+      &.selected
+        background-color: #1084CE
+
+      img
+        height: 50px
+        width: 50px
