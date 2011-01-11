@@ -1,5 +1,4 @@
 (($) ->
-
   $.event.fix = ((originalFix) ->
     (event) ->
       event = originalFix.apply(this, arguments)
@@ -25,19 +24,12 @@
       $this.bind 'drop', (event) ->
         stopFn(event)
 
-        files = Array.prototype.each.call event.dataTransfer.files, (file) ->
+        Array.prototype.forEach.call event.dataTransfer.files, (file) ->
           imageType = /image.*/
           if !file.type.match(imageType)
             return
 
           reader = new FileReader()
-
-          reader.onerror = (evt) ->
-             msg = 'Error ' + evt.target.error.code
-             if evt.target.error.code && FileError.NOT_READABLE_ERR
-               msg += ': NOT_READABLE_ERR'
-
-             alert(msg)
 
           reader.onload = (evt) ->
             callback.call(element, file, evt)

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 11 Jan 2011 01:42:43 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 11 Jan 2011 08:23:37 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.dropimagereader.coffee
  */
 
@@ -25,23 +25,14 @@
         $this = $(this);
         $this.bind('dragenter dragover dragleave', stopFn);
         return $this.bind('drop', function(event) {
-          var files;
           stopFn(event);
-          return files = Array.prototype.each.call(event.dataTransfer.files, function(file) {
+          return Array.prototype.forEach.call(event.dataTransfer.files, function(file) {
             var imageType, reader;
             imageType = /image.*/;
             if (!file.type.match(imageType)) {
               return;
             }
             reader = new FileReader();
-            reader.onerror = function(evt) {
-              var msg;
-              msg = 'Error ' + evt.target.error.code;
-              if (evt.target.error.code && FileError.NOT_READABLE_ERR) {
-                msg += ': NOT_READABLE_ERR';
-              }
-              return alert(msg);
-            };
             reader.onload = function(evt) {
               return callback.call(element, file, evt);
             };
