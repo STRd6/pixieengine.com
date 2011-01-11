@@ -147,6 +147,15 @@
 
   $("body").attr("id", "fullscreen")
 
+  $(".bottom_bar .tiles").dropImageReader (file, event) ->
+    if event.target.readyState == FileReader.DONE
+      img = $ "<img/>",
+        alt: file.name
+        src: event.target.result
+        title: file.name
+
+      $(this).append img
+
   $(".tile_editor").noSelect()
 
   window.saveData = () ->
