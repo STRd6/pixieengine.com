@@ -23,7 +23,12 @@
         - Collection.find(params[:tileset_id]).sprites.each do |sprite|
           = image_tag(sprite.image.url, :alt => sprite.display_name)
 
+
   .sidebar
+    .component
+      %h3#filename Tilemap
+      #save
+
     .component
       %h3 Layer:
       .layer_select
@@ -32,6 +37,22 @@
 
 
 :coffeescript
+  Downloadify.create "save",
+    filename: () ->
+      $('#filename').text() + ".tmx.xml"
+
+    data: () ->
+      $.json2xml saveData(),
+        formatOutput: true
+        rootTagName: "map"
+
+    swf: '/flash/downloadify.swf'
+    downloadImage: '/images/download.png'
+    width: 100
+    height: 30
+    transparent: true
+    append: false
+
   debugMode = false
 
   firstGID = 1
