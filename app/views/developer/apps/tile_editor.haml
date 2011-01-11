@@ -194,7 +194,7 @@
         tilesWide.times (x) ->
           posString = x * tileWidth + "x" + y * tileHeight
 
-          img = screenLayer.find(".placed img[data-pos='"+ posString +"']")
+          img = screenLayer.find(".placed img[data-pos='" + posString + "']")
 
           imgIndex = $(".bottom_bar .tiles img[src='"+img.attr('src')+"']").index()
 
