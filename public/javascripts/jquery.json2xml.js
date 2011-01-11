@@ -4,7 +4,7 @@
  * Just as jQuery itself, this plugin is released under both MIT & GPL licences.
  * 
  * @version 1.02
- * @author Micha³ Korecki, www.michalkorecki.com
+ * @author Micha Korecki, www.michalkorecki.com
  */
 (function($) {
 	/**
@@ -149,35 +149,38 @@
 	 */
 	var createNodeFromArray = function(source, name, path, depth, suffix) {
 		var xmlNode = '';
-		if (source.length > 0) {
-			for (var index in source) {
+    var length = source.length;
+
+		if (length) {
+			for (var index = 0; index < length; index++) {
 				// array's element isn't object - it's primitive value, which
 				// means array might need to be converted to text nodes
-	            if (typeof(source[index]) !== 'object') {
-	            	// empty strings will be converted to empty nodes
-	                if (source[index] === "") {
-	                	xmlNode += getIndent(depth) + '<' + name + '/>' + suffix;                    
-	                }
-	                else {
-	            		var textPrefix = (settings.formatTextNodes) 
-                    ? suffix + getIndent(depth + 1) : '';
-        				var textSuffix = (settings.formatTextNodes)
-        					? suffix + getIndent(depth) : '';	        				
-	                	xmlNode += getIndent(depth) + '<' + name + '>' 
-	                			+ textPrefix + source[index] + textSuffix 
-	                			+ '</' + name + '>' + suffix;                                              
-	                }
-	            }
-	            // else regular conversion applies
-	            else {
-	            	xmlNode += convertToXml(source[index], name, path, depth);
-	            }					
+        if (typeof(source[index]) !== 'object') {
+          // empty strings will be converted to empty nodes
+            if (source[index] === "") {
+              xmlNode += getIndent(depth) + '<' + name + '/>' + suffix;
+            }
+            else {
+            var textPrefix = (settings.formatTextNodes)
+              ? suffix + getIndent(depth + 1) : '';
+          var textSuffix = (settings.formatTextNodes)
+            ? suffix + getIndent(depth) : '';
+              xmlNode += getIndent(depth) + '<' + name + '>'
+                  + textPrefix + source[index] + textSuffix
+                  + '</' + name + '>' + suffix;
+            }
+        }
+        // else regular conversion applies
+        else {
+          xmlNode += convertToXml(source[index], name, path, depth);
+        }
 			}
 		}
 		// array is empty, also creating empty XML node		
 		else {
 			xmlNode += getIndent(depth) + '<' + name + '/>' + suffix;
 		}
+
 		return xmlNode;
 	};	
 	
