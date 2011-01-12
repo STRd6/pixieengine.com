@@ -1,14 +1,13 @@
 class Sprite < ActiveRecord::Base
   include Commentable
 
-  has_attached_file :image,
-    :storage => :s3,
-    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  has_attached_file :image, S3_OPTS.merge(
     :path => "sprites/:id/:style.:extension",
     :styles => {
       :medium => ["64x64>", :png],
       :thumb => ["32x32#", :png]
     }
+  )
 
   acts_as_archive
   acts_as_taggable

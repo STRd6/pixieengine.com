@@ -5,14 +5,13 @@ class User < ActiveRecord::Base
     config.require_password_confirmation = false
   end
 
-  has_attached_file :avatar,
-    :storage => :s3,
-    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  has_attached_file :avatar, S3_OPTS.merge(
     :path => "avatars/:id/:style.:extension",
     :styles => {
       :large => ["256x256>", :png],
       :thumb => ["32x32>", :png]
     }
+  )
 
   include Commentable
 
