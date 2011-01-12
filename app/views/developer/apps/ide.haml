@@ -178,12 +178,14 @@
         alert "Please select sprites to import"
       else
         sprite_data = $('.import_sprite.selected').map ->
-          id: parseInt($(this).attr('data-id'))
-          name: $(this).attr('data-title')
+          'app_sprite_id': $(this).attr('data-id')
+          'app_id': #{app.id}
+          'app_sprite_name': $(this).attr('data-title')
 
         notify "Importing, please wait..."
 
         postData =
+          'format': 'json',
           'sprite_data': sprite_data
 
         $.post '/developer/apps/#{app.id}/import_app_sprites', postData, (data) ->
@@ -193,7 +195,11 @@
             notify data.message
             return
 
+          $.each data, (i, sprite) ->
+            updateSpriteNode sprite
+
           notify("Saved!")
+        , 'json'
 
         $.modal.close()
 
