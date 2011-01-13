@@ -14,6 +14,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         post :add_user
         post :remove_library
         post :create_app_sprite
+        post :import_app_sprites
         post :set_app_data
         post :fork_post
 

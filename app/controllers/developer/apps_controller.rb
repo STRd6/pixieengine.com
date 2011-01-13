@@ -14,7 +14,7 @@ class Developer::AppsController < DeveloperController
     app.user = current_user
     if app.lang = "coffeescript"
       add_default_libraries
-      app.src = <<-eos
+      heredoc = <<-eos
 window.bullets = [] #initialize an empty global array to store bullets
 
 ###
@@ -294,6 +294,9 @@ bgMusic.play()
 
       eos
 
+      app.src = heredoc
+      app.code = heredoc
+
     end
   end
 
@@ -315,6 +318,39 @@ bgMusic.play()
       respond_to do |format|
         format.json {render :json => app_sprite}
       end
+    else
+      render :json => {
+        :status => "error",
+        :message => "You do not have access to this app"
+      }
+    end
+  end
+
+  def import_app_sprites
+    if has_access?
+      sprite_data = params[:sprite_data]
+
+      app_sprites = []
+
+      sprite_data.each_value do |sprite|
+        (app_sprite = AppSprite.create(
+          :app_id => sprite["app_id"],
+          :sprite_id => sprite["app_sprite_id"],
+          :name => (sprite["app_sprite_name"] == "undefined") ? "Sprite #{sprite["app_sprite_id"]}" : sprite["app_sprite_name"]
+        )
+        app_sprites << {
+          :id => app_sprite.id,
+          :height => app_sprite.height,
+          :width => app_sprite.width,
+          :name => app_sprite.name,
+          :cssImageUrl => "url(#{app_sprite.data_url})"
+        }) unless AppSprite.find_by_app_id_and_sprite_id(app.id, sprite["app_sprite_id"])
+      end
+
+      respond_to do |format|
+        format.json { render :json => app_sprites }
+      end
+
     else
       render :json => {
         :status => "error",
@@ -374,6 +410,7 @@ bgMusic.play()
   end
 
   def ide
+    @user_sprites = (current_user) ? current_user.sprites : []
     render :layout => "ide"
   end
 
@@ -447,9 +484,12 @@ bgMusic.play()
 
   private
   def add_default_libraries
+    default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
+
     app.add_library(Library.find 1)
     app.add_library(Library.find 2)
     app.add_library(Library.find 7)
+    app.add_library(default_library)
   end
 
   def collection
