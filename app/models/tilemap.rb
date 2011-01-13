@@ -23,4 +23,12 @@ class Tilemap < ActiveRecord::Base
   def string_data
     open(data.url, 'rb') { |f| f.read }.to_json
   end
+
+  def display_name
+    if title.blank?
+      "Tilemap #{id}"
+    else
+      title
+    end
+  end
 end

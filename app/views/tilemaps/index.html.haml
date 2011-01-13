@@ -1,0 +1,5 @@
+%h2 Tilemaps
+
+%ul
+  - @tilemaps.each do |tilemap|
+    %li= link_to tilemap.display_name, tilemap

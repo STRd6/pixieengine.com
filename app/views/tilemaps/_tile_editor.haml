@@ -169,7 +169,26 @@
 
       $(this).append img
 
-  $(".tile_editor").noSelect()
+  $('.layer_select div.choice').live 'dblclick', () ->
+    $this = $(this)
+
+    textInput = $("<input/>",
+      class: $this.attr("class")
+      type: "text"
+      value: $this.text()
+    )
+
+    $this.replaceWith textInput
+
+    textInput.focus()
+
+  $('.layer_select input').live 'blur', () ->
+    $this = $(this)
+
+    $this.replaceWith $("<div />",
+      class: $this.attr("class")
+      text: $this.val()
+    )
 
   $("#save").click () ->
     notify("Saving...")
@@ -177,7 +196,7 @@
     postData =
       format: 'json'
       tilemap:
-        title: $("#filename").val()
+        title: $("#filename").text()
         width: tilesWide
         height: tilesTall
         parent_id: #{@parent_id.to_json}
@@ -337,7 +356,10 @@
       .layer_select
         +inline-block
 
-        .choice
+        input
+          +user-select(text)
+
+        div.choice
           cursor: pointer
 
           &.active

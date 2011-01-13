@@ -17,4 +17,8 @@ class TilemapsController < ApplicationController
     @tilemap = Tilemap.find(params[:id])
     @parent_id = @tilemap.id
   end
+
+  def index
+    @tilemaps = Tilemap.all
+  end
 end
