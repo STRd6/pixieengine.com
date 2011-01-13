@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110112235548) do
+ActiveRecord::Schema.define(:version => 20110112203610) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -268,17 +268,6 @@ ActiveRecord::Schema.define(:version => 20110112235548) do
   end
 
   add_index "links", ["token"], :name => "index_links_on_token", :unique => true
-
-  create_table "map_tiles", :force => true do |t|
-    t.integer  "tilemap_id", :null => false
-    t.integer  "index",      :null => false
-    t.integer  "sprite_id"
-    t.text     "url"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "map_tiles", ["tilemap_id", "index"], :name => "index_map_tiles_on_tilemap_id_and_index", :unique => true
 
   create_table "plugins", :force => true do |t|
     t.integer  "user_id"
