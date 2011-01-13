@@ -197,6 +197,7 @@
 
           $.each data, (i, sprite) ->
             updateSpriteNode sprite
+            $("#tabs ul li").eq($("#tabs").tabs('option', 'selected')).find('span').first().click()
 
           notify("Saved!")
         , 'json'
