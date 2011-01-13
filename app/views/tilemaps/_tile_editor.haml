@@ -1,4 +1,4 @@
-- @parent_id = nil
+- data ||= nil
 
 - num_layers = 2
 
@@ -21,8 +21,9 @@
     .component
       %h3 Tiles:
       .tiles
-        - Collection.find(params[:tileset_id]).sprites.each do |sprite|
-          = image_tag(sprite.image.url, :alt => sprite.display_name)
+        - unless data
+          - Collection.find(params[:tileset_id]).sprites.each do |sprite|
+            = image_tag(sprite.image.url, :alt => sprite.display_name)
 
 
   .sidebar
@@ -274,7 +275,7 @@
 
       $("<div />",
         class: "layer"
-      ).prependTo(".main .layers")
+      ).appendTo(".main .layers")
 
       $("<div />",
         class: "choice"
@@ -285,6 +286,8 @@
         row.each (tile, x) ->
           if tile >= 0
             placeTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+    $(".screen .selection").appendTo(".main .layers")
 
     $(layerSelect).find(".choice").first().trigger("mousedown")
 

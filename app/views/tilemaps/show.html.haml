@@ -1,0 +1,82 @@
+.tile_viewer
+
+  .main
+    .screen
+      .layers
+
+  .tiles
+
+
+:coffeescript
+
+
+  placeTile = (x, y, layer, tile) ->
+    posString = x + "x" + y
+
+    tile = tile.clone().removeClass("primary secondary").css(
+      position: "absolute"
+      top: y
+      left: x
+    ).attr("data-pos", posString)
+
+    targetLayer = $(".screen .layer").eq(layer)
+
+    targetLayer.find("[data-pos='" + posString + "']").remove()
+
+    targetLayer.append(tile)
+
+
+  loadData = (data) ->
+    width = data.width
+    height = data.height
+    tileWidth = data.tileWidth
+    tileHeight = data.tileHeight
+
+    tileLookup = {}
+
+    $(".tile_viewer .tiles").html('')
+    data.tileset.each (tile, index) ->
+      tileLookup[index] = $("<img />",
+        "data-guid": tile.guid
+        "data-pixie_id": tile.pixieId
+        src: tile.src
+      ).appendTo(".tile_viewer .tiles")
+
+    $(".main .layers").css
+      height: height * tileHeight
+      width: width * tileWidth
+
+    $(".main .layers .layer").remove()
+
+    data.layers.each (layer, i) ->
+      $("<div />",
+        class: "layer"
+        css:
+          height: height * tileHeight
+          left: 0
+          position: "absolute"
+          top: 0
+          width: width * tileWidth
+      ).appendTo(".main .layers")
+
+      layer.tiles.each (row, y) ->
+        row.each (tile, x) ->
+          if tile >= 0
+            placeTile(x * tileWidth, y * tileHeight, i, tileLookup[tile])
+
+  $ () ->
+    loadData(JSON.parse(#{@tilemap.string_data}))
+
+%style
+  :sass
+    @import util
+
+    .screen
+      +box-sizing(border-box)
+
+      height: 100%
+      margin: auto
+      margin-bottom: 2em
+      overflow: auto
+      position: relative
+      width: 100%

@@ -19,4 +19,8 @@ class Tilemap < ActiveRecord::Base
       self.data = io
     end
   end
+
+  def string_data
+    open(data.url, 'rb') { |f| f.read }.to_json
+  end
 end
