@@ -48,9 +48,13 @@
 
       textBox = $('#send').prev()
 
-      $('#chatZone').bind 'dragenter dragover', ->
+      $('#chatZone').bind 'dragenter dragover', (e) ->
         $('#dragZone').show()
         $('#chatZone').hide()
+
+      $('#dragZone').hover ->
+        $('#dragZone').delay(1000).fadeOut()
+        $('#chatZone').delay(1000).fadeIn()
 
       $("#dragZone, #chatZone").dropImageReader (file, event) ->
 
@@ -64,11 +68,11 @@
           img.appendTo(wrapper)
 
           $.post '/chat', body: wrapper.html(), ->
-            $('body').scrollTo('max')
-
             $('#dragZone').hide()
             $('#chatZone').show()
 
+            $('body').scrollTo('max')
+            $('#chats').scrollTo('max')
 
       $('#chatZone #chat_body').keypress (e) ->
         if(e.keyCode == 13)
