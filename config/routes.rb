@@ -112,7 +112,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :comments, :password_resets, :user_sessions
+  resources :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite

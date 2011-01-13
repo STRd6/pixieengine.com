@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110102233834) do
+ActiveRecord::Schema.define(:version => 20110112203610) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -361,6 +361,21 @@ ActiveRecord::Schema.define(:version => 20110102233834) do
 
   create_table "tags", :force => true do |t|
     t.string "name", :null => false
+  end
+
+  create_table "tilemaps", :force => true do |t|
+    t.string   "title",                             :null => false
+    t.integer  "parent_id"
+    t.integer  "width",                             :null => false
+    t.integer  "height",                            :null => false
+    t.integer  "tile_width",        :default => 32, :null => false
+    t.integer  "tile_height",       :default => 32, :null => false
+    t.string   "data_file_name"
+    t.string   "data_content_type"
+    t.integer  "data_file_size"
+    t.datetime "data_updated_at"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
   end
 
   create_table "user_plugins", :force => true do |t|

@@ -1,3 +1,5 @@
+- data ||= nil
+
 - num_layers = 2
 
 - tile_width = 32
@@ -12,7 +14,6 @@
       .layers
         - num_layers.times do
           .layer
-            .placed
 
         .selection
 
@@ -20,14 +21,15 @@
     .component
       %h3 Tiles:
       .tiles
-        - Collection.find(params[:tileset_id]).sprites.each do |sprite|
-          = image_tag(sprite.image.url, :alt => sprite.display_name)
+        - unless data
+          - Collection.find(params[:tileset_id]).sprites.each do |sprite|
+            = image_tag(sprite.image.url, :alt => sprite.display_name)
 
 
   .sidebar
     .component
       %h3#filename Tilemap
-      #save
+      %button#save Save
 
     .component
       %h3 Layer:
@@ -37,22 +39,6 @@
 
 
 :coffeescript
-  Downloadify.create "save",
-    filename: () ->
-      $('#filename').text() + ".tmx.xml"
-
-    data: () ->
-      $.json2xml saveData(),
-        formatOutput: true
-        rootTagName: "map"
-
-    swf: '/flash/downloadify.swf'
-    downloadImage: '/images/download.png'
-    width: 100
-    height: 30
-    transparent: true
-    append: false
-
   debugMode = false
 
   firstGID = 1
@@ -69,6 +55,9 @@
   currentLayer = 0
 
   modeDown = null
+
+  tileTray = ".bottom_bar .tiles"
+  layerSelect = ".sidebar .layer_select"
 
   $.fn.tilePosition = (event) ->
     offset = this.offset()
@@ -95,21 +84,24 @@
 
     $(".tiles img").eq((cur + 1).mod(tileCount)).addClass(mode)
 
+  placeTile = (x, y, tile) ->
+    posString = x + "x" + y
+
+    tile = tile.clone().removeClass("primary secondary").css(
+      position: "absolute"
+      top: y
+      left: x
+    ).attr("data-pos", posString)
+
+    targetLayer = $(".screen .layer").eq(currentLayer)
+
+    targetLayer.find("[data-pos='" + posString + "']").remove()
+
+    targetLayer.append(tile)
+
   entered = (x, y) ->
     if mode = modeDown
-      posString = x + "x" + y
-
-      element = $(".tiles").find("." + mode).clone().removeClass("primary secondary").css(
-        position: "absolute"
-        top: y
-        left: x
-      ).attr("data-pos", posString)
-
-      targetLayer = $(".screen .layer").eq(currentLayer).find(".placed")
-
-      targetLayer.find("[data-pos='" + posString + "']").remove()
-
-      targetLayer.append(element)
+      placeTile(x, y, $(".tiles").find("." + mode))
 
   clickMode = (event) ->
     if event.which == 1
@@ -179,7 +171,44 @@
 
   $(".tile_editor").noSelect()
 
+  $("#save").click () ->
+    notify("Saving...")
+
+    postData =
+      format: 'json'
+      tilemap:
+        title: $("#filename").val()
+        width: tilesWide
+        height: tilesTall
+        parent_id: #{@parent_id.to_json}
+        data_string: JSON.stringify(saveData())
+
+    $.post('/tilemaps', postData, (data) ->
+      console.log(data)
+
+      notify("Saved!")
+
+      $("#flashes .notice").delay(2000).slideUp("slow")
+
+    , "json")
+
   window.saveData = () ->
+    tileset = $(".bottom_bar .tiles img").map((i) ->
+      $this = $(this)
+
+      mapTileData = {
+        src: $this.attr("src")
+      }
+
+      if mapTileId = $this.data('guid')
+        mapTileData.guid mapTileId
+
+      if pixieId = $this.data("pixie_id")
+        mapTileData.pixieId = mapTileSpriteId
+
+      return mapTileData
+    ).get()
+
     layers = []
 
     $(".layer_select .choice").each (i) ->
@@ -191,43 +220,76 @@
 
       #TODO: This is a dumb way to do it, it will ignore any non-grid aligned tiles and is pretty slow
       tilesTall.times (y) ->
+        row = []
+        tiles.push row
+
         tilesWide.times (x) ->
           posString = x * tileWidth + "x" + y * tileHeight
 
-          img = screenLayer.find(".placed img[data-pos='" + posString + "']")
+          img = screenLayer.find("img[data-pos='" + posString + "']")
 
           imgIndex = $(".bottom_bar .tiles img[src='"+img.attr('src')+"']").index()
 
-          tiles.push
-            gid: imgIndex + firstGID
+          row.push imgIndex
 
-      layer = 
+      layer =
         name: $this.text()
-        width: tilesWide
-        height: tilesTall
-        data:
-          tile: tiles
+        tiles: tiles
 
       layers.push layer
 
     return {
-      version: 1.0
+      version: "1.0"
       orientation: "orthogonal"
       width: tilesWide
       height: tilesTall
-      tilewidth: tileWidth
-      tileheight: tileHeight
+      tileWidth: tileWidth
+      tileHeight: tileHeight
 
-      tileset:
-        firstgid: firstGID
-        name: "tileset"
-        tilewidth: tileWidth
-        tileheight: tileHeight
-        image:
-          source: ""
+      tileset: tileset
 
-      layer: layers
+      layers: layers
     }
+
+  window.loadData = (data) ->
+    tilesWide = data.width
+    tilesTall = data.height
+    tileWidth = data.tileWidth
+    tileHeight = data.tileHeight
+
+    tileLookup = {}
+
+    $(tileTray).html('')
+    data.tileset.each (tile, index) ->
+      tileLookup[index] = $("<img />",
+        "data-guid": tile.guid
+        "data-pixie_id": tile.pixieId
+        src: tile.src
+      ).appendTo(tileTray)
+
+    $(".main .layers .layer").remove()
+
+    $(layerSelect).html('')
+    data.layers.each (layer, i) ->
+      currentLayer = i
+
+      $("<div />",
+        class: "layer"
+      ).appendTo(".main .layers")
+
+      $("<div />",
+        class: "choice"
+        text: layer.name
+      ).appendTo(layerSelect)
+
+      layer.tiles.each (row, y) ->
+        row.each (tile, x) ->
+          if tile >= 0
+            placeTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+    $(".screen .selection").appendTo(".main .layers")
+
+    $(layerSelect).find(".choice").first().trigger("mousedown")
 
 %style
   :sass
