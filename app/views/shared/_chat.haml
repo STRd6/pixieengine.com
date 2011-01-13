@@ -29,10 +29,19 @@
       time = $('<span />').addClass("time").text(" " + data.time + " ")
       message = $('<span />').addClass("message").html(data.message)
       li.append(name).append(time).append(message)
-      $('#chats').append(li).scrollTo('max')
+      $('#chats').append(li).scrollTo(
+        left: '0%'
+        top: '100%'
+      )
+
+    scrollToBottomLeft = (el) ->
+      el.scrollTo(
+        left: '0%'
+        top: '100%'
+      )
 
     $ ->
-      $('#chats').scrollTo('max')
+      scrollToBottomLeft $('#chats')
       $('#chat_body').attr('placeholder', 'chat with your friends here')
 
       window.setInterval ->
@@ -71,8 +80,8 @@
             $('#dragZone').hide()
             $('#chatZone').show()
 
-            $('body').scrollTo('max')
-            $('#chats').scrollTo('max')
+            scrollToBottomLeft $('body')
+            scrollToBottomLeft $('#chats')
 
       $('#chatZone #chat_body').keypress (e) ->
         if(e.keyCode == 13)
