@@ -52,9 +52,9 @@
         $('#dragZone').show()
         $('#chatZone').hide()
 
-      $('#dragZone').hover ->
-        $('#dragZone').delay(1000).fadeOut()
-        $('#chatZone').delay(1000).fadeIn()
+      $('#dragZone').bind 'drop', ->
+        $('#dragZone').hide()
+        $('#chatZone').show()
 
       $("#dragZone, #chatZone").dropImageReader (file, event) ->
 
