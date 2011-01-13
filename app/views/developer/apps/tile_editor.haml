@@ -1,3 +1,5 @@
+- @parent_id = nil
+
 - num_layers = 2
 
 - tile_width = 32
@@ -27,7 +29,7 @@
   .sidebar
     .component
       %h3#filename Tilemap
-      #save
+      %button#save Save
 
     .component
       %h3 Layer:
@@ -37,22 +39,6 @@
 
 
 :coffeescript
-  Downloadify.create "save",
-    filename: () ->
-      $('#filename').text() + ".tmx.xml"
-
-    data: () ->
-      $.json2xml saveData(),
-        formatOutput: true
-        rootTagName: "map"
-
-    swf: '/flash/downloadify.swf'
-    downloadImage: '/images/download.png'
-    width: 100
-    height: 30
-    transparent: true
-    append: false
-
   debugMode = false
 
   firstGID = 1
@@ -178,6 +164,42 @@
       $(this).append img
 
   $(".tile_editor").noSelect()
+
+  $("#save").click () ->
+    notify("Saving...")
+
+    postData =
+      format: 'json'
+      tilemap:
+        title: $("#filename").val()
+        width: tilesWide
+        height: tilesTall
+        parent_id: #{@parent_id.to_json}
+        data_string: JSON.stringify(saveData())
+        map_tiles_attributes: $(".bottom_bar .tiles img").map (i) ->
+          $this = $(this)
+
+          mapTileData = {
+            index: i + firstGID
+            url: $this.attr("src")
+          }
+
+          if mapTileId = $this.data('id')
+            mapTileData.id mapTileId
+
+          if mapTileSpriteId = $this.data("sprite_id")
+            mapTileData.sprite_id = $this.data("sprite_id")
+
+          return mapTileData
+
+    $.post('/tilemaps', postData, (data) ->
+      console.log(data)
+
+      notify("Saved!")
+
+      $("#flashes .notice").delay(2000).slideUp("slow")
+
+    , "json")
 
   window.saveData = () ->
     layers = []
