@@ -1,22 +1,19 @@
 class Sound < ActiveRecord::Base
   include Commentable
 
-  has_attached_file :wav,
-    :storage => :s3,
-    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  has_attached_file :wav, S3_OPTS.merge(
     :path => "sounds/:id/:style.:extension"
+  )
 
-  has_attached_file :mp3,
-    :storage => :s3,
-    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  has_attached_file :mp3, S3_OPTS.merge(
     :path => "sounds/:id/:style.:extension"
+  )
 
   validates_attachment_presence :wav
 
-  has_attached_file :sfs,
-    :storage => :s3,
-    :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  has_attached_file :sfs, S3_OPTS.merge(
     :path => "sounds/:id/:style.:extension"
+  )
 
   validates_attachment_presence :sfs
 
