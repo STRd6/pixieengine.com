@@ -47,6 +47,7 @@
     %h3 Tools
     .tool.primary.secondary{ :"data-tool" => "stamp"}
     .tool{ :"data-tool" => "eraser"}
+    .tool{ :"data-tool" => "fill"}
 
 :coffeescript
   debugMode = false
@@ -94,7 +95,7 @@
 
     $(".tiles img").eq((cur + 1).mod(tileCount)).addClass(mode)
 
-  placeTile = (x, y, tile) ->
+  replaceTile = (x, y, tile) ->
     posString = x + "x" + y
 
     tile = tile.clone().removeClass("primary secondary").css(
@@ -110,9 +111,42 @@
     targetLayer.append(tile)
 
   removeTile = (x, y) ->
+    tileAt(x, y).remove()
+
+  tileAt = (x, y) ->
     posString = x + "x" + y
 
-    $(".screen .layer").eq(currentLayer).find("[data-pos='" + posString + "']").remove()
+    $(".screen .layer").eq(currentLayer).find("[data-pos='" + posString + "']")
+
+  getNeighborPositions = (position) ->
+    neighbors = [
+      [position[0] - tileWidth, position[1]]
+      [position[0] + tileWidth, position[1]]
+      [position[0], position[1] - tileHeight]
+      [position[0], position[1] + tileHeight]
+    ].select (neighborPos) ->
+      (0 <= neighborPos[0] < tileWidth * tilesWide) && (0 <= neighborPos[1] < tileHeight * tilesTall)
+
+  floodFill = (x, y, tile) ->
+    targetSrc = tileAt(x, y).attr("src")
+    paintSrc = tile.attr("src")
+
+    return if targetSrc == paintSrc
+
+    queue = []
+
+    replaceTile(x, y, tile)
+    queue.push([x, y])
+
+    while queue.length
+      position = queue.pop()
+
+      neighbors = getNeighborPositions(position);
+
+      neighbors.each (neighbor, index) ->
+        if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
+          replaceTile(neighbor[0], neighbor[1], tile)
+          queue.push(neighbor)
 
   currentTool = (mode) ->
     $(".tools .tool." + mode).data("tool")
@@ -121,9 +155,11 @@
     if mode = modeDown
       switch currentTool(mode)
         when "stamp"
-          placeTile(x, y, $(".tiles").find("." + mode))
+          replaceTile(x, y, $(".tiles").find("." + mode))
         when "eraser"
           removeTile(x, y)
+        when "fill"
+          floodFill(x, y, $(".tiles").find("." + mode))
 
   clickMode = (event) ->
     if event.which == 1
@@ -367,7 +403,7 @@
       layer.tiles.each (row, y) ->
         row.each (tile, x) ->
           if tile >= 0
-            placeTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+            replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
 
     $(".screen .selection").appendTo(".main .layers")
 
@@ -474,6 +510,8 @@
           background-image: url(/images/tools/stamp.png)
         [data-tool=eraser]
           background-image: url(/images/tools/eraser.png)
+        [data-tool=fill]
+          background-image: url(/images/tools/fill.png)
 
       .screen
         +box-sizing(border-box)
