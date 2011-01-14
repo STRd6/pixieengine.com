@@ -22,8 +22,14 @@
       %h3 Tiles:
       .tiles
         - unless data
-          - Collection.find(params[:tileset_id]).sprites.each do |sprite|
-            = image_tag(sprite.image.url, :alt => sprite.display_name)
+          - sprites = Collection.find(params[:tileset_id]).sprites
+          - sprites.each do |sprite|
+            - active = if sprite == sprites.first
+              - "primary"
+            - elsif sprite == sprites.second
+              - "secondary"
+
+            = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
 
   .sidebar
@@ -325,7 +331,13 @@
 
     $(tileTray).html('')
     data.tileset.each (tile, index) ->
+      active = if index == 0
+        "primary"
+      else if index == 1
+        "secondary"
+
       tileLookup[index] = $("<img />",
+        class: active
         "data-guid": tile.guid
         "data-pixie_id": tile.pixieId
         src: tile.src
