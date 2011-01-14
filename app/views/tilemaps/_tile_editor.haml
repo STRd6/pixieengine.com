@@ -37,6 +37,10 @@
         .choice.active Background
         .choice Foreground
 
+  .tools.component
+    %h3 Tools
+    .tool.primary.secondary{ :"data-tool" => "stamp"}
+    .tool{ :"data-tool" => "eraser"}
 
 :coffeescript
   debugMode = false
@@ -95,13 +99,25 @@
 
     targetLayer = $(".screen .layer").eq(currentLayer)
 
-    targetLayer.find("[data-pos='" + posString + "']").remove()
+    removeTile(x, y)
 
     targetLayer.append(tile)
 
+  removeTile = (x, y) ->
+    posString = x + "x" + y
+
+    $(".screen .layer").eq(currentLayer).find("[data-pos='" + posString + "']").remove()
+
+  currentTool = (mode) ->
+    $(".tools .tool." + mode).data("tool")
+
   entered = (x, y) ->
     if mode = modeDown
-      placeTile(x, y, $(".tiles").find("." + mode))
+      switch currentTool(mode)
+        when "stamp"
+          placeTile(x, y, $(".tiles").find("." + mode))
+        when "eraser"
+          removeTile(x, y)
 
   clickMode = (event) ->
     if event.which == 1
@@ -113,7 +129,7 @@
     unless debugMode
       event.preventDefault()
 
-  $(".tiles img").live 'mousedown', (event) ->
+  $(".tiles img, .tools .tool").live 'mousedown', (event) ->
     event.preventDefault()
 
     if mode = clickMode event
@@ -409,6 +425,37 @@
           +text-shadow(#0A131A)
           color: #BFE2FF
           font-weight: bold
+
+      .tools
+        bottom: 0
+        left: 0
+        position: fixed
+        width: $sidebar_width
+        height: $bottom_bar_height
+
+        .tool
+          +inline-block
+
+          background-repeat: no-repeat
+
+          cursor: pointer
+          height: 32px
+          padding: 1px
+          width: 32px
+
+          &.primary, &.secondary
+            border: 1px solid
+            padding: 0px
+
+          &.primary
+            border-color: green
+          &.secondary
+            border-color: blue
+
+        [data-tool=stamp]
+          background-image: url(/images/tools/stamp.png)
+        [data-tool=eraser]
+          background-image: url(/images/tools/eraser.png)
 
       .screen
         +box-sizing(border-box)
