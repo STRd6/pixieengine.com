@@ -203,11 +203,11 @@
         data_string: JSON.stringify(saveData())
 
     $.post('/tilemaps', postData, (data) ->
-      console.log(data)
+      id = data.tilemap.id
 
-      notify("Saved!")
+      notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
 
-      $("#flashes .notice").delay(2000).slideUp("slow")
+      $("#flashes .notice")
 
     , "json")
 

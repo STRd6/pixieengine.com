@@ -6,6 +6,12 @@ function notify(message) {
   } else {
     notice.html(message);
   }
+
+  notice.append($("<div/>", {
+    "class": "close"
+  }));
+
+  notice.slideDown();
 }
 
 function showTooltip(element, html) {
@@ -67,5 +73,9 @@ $(function() {
       $form.before(makeTag(tag, spriteId));
       input.val('');
     }
+  });
+
+  $("#flashes .close").live("mousedown", function() {
+    $(this).parent().slideUp();
   });
 });
