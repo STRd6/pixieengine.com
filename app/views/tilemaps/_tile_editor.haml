@@ -182,6 +182,8 @@
 
   $("body").attr("id", "fullscreen")
 
+  $(tileTray).sortable()
+
   $(".bottom_bar .tiles").dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       img = $ "<img/>",
