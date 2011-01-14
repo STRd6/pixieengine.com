@@ -3,6 +3,7 @@ class TilemapsController < ApplicationController
 
   def create
     @tilemap = Tilemap.new(params[:tilemap])
+    @tilemap.user = current_user
 
     @tilemap.save
 
