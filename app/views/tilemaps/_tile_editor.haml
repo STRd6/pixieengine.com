@@ -141,6 +141,10 @@
     if mode = clickMode event
       $(this).addClass(mode).siblings().removeClass(mode)
 
+  $(".tiles img").live 'mouseup', (event) ->
+    if event.which == 2
+      $(this).remove()
+
   $(".layer_select .choice").live 'mousedown', (event) ->
     $(this).addClass("active").siblings().removeClass("active")
 
