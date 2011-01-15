@@ -19,7 +19,7 @@
         .selection
 
   .bottom_bar
-    .component
+    .component#tile_select
       %h3 Tiles:
       .tiles
         - unless data
@@ -363,14 +363,14 @@
 
   $(tileTray).sortable()
 
-  $(".bottom_bar .tiles").dropImageReader (file, event) ->
+  $("#tile_select").dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       img = $ "<img/>",
         alt: file.name
         src: event.target.result
         title: file.name
 
-      $(this).append img
+      $(this).find(".tiles").append img
 
   $('.layer_select div.choice').live 'dblclick', () ->
     $this = $(this)
