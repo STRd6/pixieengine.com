@@ -212,6 +212,10 @@
 
     s.data("selectionData", selectionData)
 
+    selectTile(s, "primary")
+
+    selectTool("stamp", "primary")
+
   selectionCopy = () ->
     harvestSelection()
 
@@ -281,6 +285,15 @@
     else if event.which == 3
       "secondary"
 
+  selectTool = (name, mode) ->
+    tool = $(".tools .tool[data-tool="+name+"]")
+    tool.addClass(mode).siblings().removeClass(mode)
+
+  selectTile = (tile, mode) ->
+    $("#saved_selections .selection").removeClass(mode)
+    $(".tiles img").removeClass(mode)
+    tile.addClass(mode)
+
   $(".tile_editor").bind "contextmenu", (event) ->
     unless debugMode
       event.preventDefault()
@@ -291,19 +304,11 @@
     if mode = clickMode event
       $(this).addClass(mode).siblings().removeClass(mode)
 
-  $(".tiles img").live "mousedown", (event) ->
+  $(".tiles img, #saved_selections .selection").live "mousedown", (event) ->
     event.preventDefault()
 
     if mode = clickMode event
-      $("#saved_selections .selection").removeClass(mode)
-      $(this).addClass(mode).siblings().removeClass(mode)
-
-  $("#saved_selections .selection").live "mousedown", (event) ->
-    event.preventDefault()
-
-    if mode = clickMode event
-      $(".tiles img").removeClass(mode)
-      $(this).addClass(mode).siblings().removeClass(mode)
+      selectTile($(this), mode)
 
   $(".tiles img, #saved_selections .selection").live 'mouseup', (event) ->
     if event.which == 2
