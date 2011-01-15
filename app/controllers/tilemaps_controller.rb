@@ -3,6 +3,7 @@ class TilemapsController < ApplicationController
 
   def create
     @tilemap = Tilemap.new(params[:tilemap])
+    @tilemap.user = current_user
 
     @tilemap.save
 
@@ -16,5 +17,9 @@ class TilemapsController < ApplicationController
   def edit
     @tilemap = Tilemap.find(params[:id])
     @parent_id = @tilemap.id
+  end
+
+  def index
+    @tilemaps = Tilemap.all
   end
 end

@@ -1,6 +1,8 @@
 class Tilemap < ActiveRecord::Base
   belongs_to :parent, :class_name => "Tilemap"
 
+  belongs_to :user
+
   has_attached_file :data, S3_OPTS.merge(
     :path => "tilemaps/:id/data.:extension"
   )
@@ -22,5 +24,13 @@ class Tilemap < ActiveRecord::Base
 
   def string_data
     open(data.url, 'rb') { |f| f.read }.to_json
+  end
+
+  def display_name
+    if title.blank?
+      "Tilemap #{id}"
+    else
+      title
+    end
   end
 end

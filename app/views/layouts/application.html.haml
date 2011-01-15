@@ -11,7 +11,9 @@
           = render :partial => "#{context}/navigation"
         #flashes
           - flash.each do |key, msg|
-            %div{ :class => key }= msg
+            %div{ :class => key }
+              = msg
+              .close
 
         - if ab_test "test" #Dummy test
           -#nothing
