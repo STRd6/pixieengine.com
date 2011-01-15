@@ -544,7 +544,7 @@
           if tile >= 0
             replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
 
-    $(".screen .cursor").appendTo(".main .layers")
+    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
     $(layerSelect).find(".choice").first().trigger("mousedown")
 
