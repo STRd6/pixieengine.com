@@ -2,8 +2,8 @@
 
 - num_layers = 2
 
-- tile_width = 32
-- tile_height = 32
+- tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
+- tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
 
 - tiles_wide = params[:tiles_wide].blank? ? 15 : params[:tiles_wide].to_i
 - tiles_tall = params[:tiles_tall].blank? ? 10 : params[:tiles_tall].to_i
@@ -245,10 +245,10 @@
 
     else
       $(".screen .selection").addClass('active').css
-        height: 32
+        height: tileHeight
         left: x
         top: y
-        width: 32
+        width: tileWidth
 
       selectionStart = {x: x, y: y}
 
@@ -653,9 +653,9 @@
           background-repeat: no-repeat
 
           cursor: pointer
-          height: 32px
+          height: #{tile_height}px
           padding: 1px
-          width: 32px
+          width: #{tile_width}px
 
           &.primary, &.secondary
             border: 1px solid
