@@ -1,0 +1,141 @@
+%h3 Animation Editor
+
+.animation_editor
+  %table.sprites{ :summary => "User sprites" }
+    = render :partial => 'developer/apps/import_sprite', :collection => @user_sprites
+
+    .bottom_bar
+      .component#tile_select
+        %h3 Animation sprites:
+        .sprites
+
+    .play_bar
+      .component
+        %h3 Preview
+        .preview_box
+        %button#preview Preview
+
+:coffeescript
+  $('body').attr('id', 'fullscreen')
+
+  $('.import_sprite').draggable(
+    revert: true
+    helper: 'clone'
+  )
+
+  $('.sprites').droppable(
+    accept: '.import_sprite'
+    drop: (event, ui) ->
+      $(this).append($(ui.draggable).clone());
+  )
+
+  $('.sprites .import_sprite').live('click', ->
+    $(this).css('background-color', 'yellow')
+  ).sortable()
+
+  preview_animation = ->
+    animation_sprites = $('.sprites .import_sprite').clone()
+    $('.preview_box').replaceWith(animation_sprites)
+
+  $('#preview').click( ->
+    preview_animation()
+  )
+
+%style
+  :sass
+    @import util
+
+    $sidebar_width = 140px
+    $bottom_bar_height = 140px
+    $header_color = #BFE2FF
+    $background_color = #00010D
+
+    .animation_editor
+      +box-sizing(border-box)
+      +user-select(none)
+
+      cursor: default
+      height: 100%
+      padding-top: 4em
+
+      &>.main
+        +box-sizing(border-box)
+
+        height: 100%
+        padding-bottom: $bottom_bar_height
+        padding-left: $sidebar_width
+        padding-right: $sidebar_width
+        width: 100%
+
+      .bottom_bar
+        +box-sizing(border-box)
+
+        background-color: $background_color
+        bottom: 0
+        height: $bottom_bar_height
+        left: 0
+        padding-left: $sidebar_width
+        padding-right: $sidebar_width
+        position: fixed
+        width: 60%
+
+        .sprites
+          height: 70px
+          overflow: auto
+
+      .play_bar
+        +box-sizing(border-box)
+
+        background-color: $background_color
+        bottom: 0
+        height: $bottom_bar_height
+        right: 0
+        padding-left: $sidebar_width
+        padding-right: $sidebar_width
+        position: fixed
+        width: 40%
+
+      .component
+        +box-sizing(border-box)
+        background-color: $background_color
+        color: #BFE2FF
+        padding: 0.5em
+        width: 100%
+
+      h3
+        +text-shadow(#0A131A)
+        color: $header_color
+        font-weight: bold
+
+      #saved_selections
+        .selection
+          padding: 1px
+
+          &.primary, &.secondary
+            border: 1px solid
+            font-weight: bold
+            padding: 0px
+
+          &.primary
+            border-color: green
+          &.secondary
+            border-color: blue
+
+      img
+        +inline-block
+
+        margin-bottom: 2px
+        padding: 3px
+
+        &.primary, &.secondary
+          border: 1px solid
+          padding: 0px
+
+        &.primary
+          border-color: green
+        &.secondary
+          border-color: blue
+
+    .preview_box
+      width: 32px
+      height: 32px
