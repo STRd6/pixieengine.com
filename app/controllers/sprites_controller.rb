@@ -120,6 +120,10 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  index.wants.json do
+    render :json => collection
+  end
+
   private
 
   def collection
