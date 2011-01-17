@@ -1,6 +1,7 @@
 class AnimationsController < ApplicationController
   def new
     @user_sprites = (current_user) ? current_user.sprites : []
+    render :layout => "fullscreen"
   end
 
   def create
@@ -11,6 +12,7 @@ class AnimationsController < ApplicationController
 
   def edit
     @user_sprites = (current_user) ? current_user.sprites : []
+    render :layout => "fullscreen"
   end
 
   def index
