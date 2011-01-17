@@ -643,6 +643,11 @@
             border-color: blue
 
       .tools
+        +tile_tool(eraser)
+        +tile_tool(fill)
+        +tile_tool(selection)
+        +tile_tool(stamp)
+
         bottom: 0
         left: 0
         position: fixed
@@ -667,15 +672,6 @@
             border-color: green
           &.secondary
             border-color: blue
-
-        [data-tool=stamp]
-          background-image: url(/images/tools/stamp.png)
-        [data-tool=eraser]
-          background-image: url(/images/tools/eraser.png)
-        [data-tool=fill]
-          background-image: url(/images/tools/fill.png)
-        [data-tool=selection]
-          background-image: url(/images/tools/selection.png)
 
       .screen
         +box-sizing(border-box)
