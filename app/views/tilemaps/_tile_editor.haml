@@ -653,9 +653,9 @@
           background-repeat: no-repeat
 
           cursor: pointer
-          height: #{tile_height}px
+          height: 32px
           padding: 1px
-          width: #{tile_width}px
+          width: 32px
 
           &.primary, &.secondary
             border: 1px solid
@@ -700,10 +700,10 @@
           width: #{tiles_wide * tile_width}px
 
         .cursor
-          border: 2px solid green
-          height: 29px
+          border: 1px solid green
+          height: #{tile_height}px
           position: absolute
-          width: 29px
+          width: #{tile_width}px
 
         .selection
           +box-sizing(border-box)
