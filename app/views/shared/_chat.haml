@@ -1,3 +1,6 @@
+#dragZone
+  %p.big Drag images here
+  %p.small To post them to chat
 #chatZone
   %h3 Pixie Chat
   %ul#chats
@@ -26,10 +29,19 @@
       time = $('<span />').addClass("time").text(" " + data.time + " ")
       message = $('<span />').addClass("message").html(data.message)
       li.append(name).append(time).append(message)
-      $('#chats').append(li).scrollTo('max')
+      $('#chats').append(li).scrollTo(
+        left: '0%'
+        top: '100%'
+      )
+
+    scrollToBottomLeft = (el) ->
+      el.scrollTo(
+        left: '0%'
+        top: '100%'
+      )
 
     $ ->
-      $('#chats').scrollTo('max')
+      scrollToBottomLeft $('#chats')
       $('#chat_body').attr('placeholder', 'chat with your friends here')
 
       window.setInterval ->
@@ -45,6 +57,32 @@
 
       textBox = $('#send').prev()
 
+      $('#chatZone').bind 'dragenter dragover', (e) ->
+        $('#dragZone').show()
+        $('#chatZone').hide()
+
+      $('#dragZone').bind 'drop', ->
+        $('#dragZone').hide()
+        $('#chatZone').show()
+
+      $("#dragZone, #chatZone").dropImageReader (file, event) ->
+
+        if event.target.readyState == FileReader.DONE
+          wrapper = $("<div />")
+          img = $ "<img/>",
+            alt: file.name
+            src: event.target.result
+            title: file.name
+
+          img.appendTo(wrapper)
+
+          $.post '/chat', body: wrapper.html(), ->
+            $('#dragZone').hide()
+            $('#chatZone').show()
+
+            scrollToBottomLeft $('body')
+            scrollToBottomLeft $('#chats')
+
       $('#chatZone #chat_body').keypress (e) ->
         if(e.keyCode == 13)
           send(textBox)
@@ -52,3 +90,24 @@
       $('#send').click ->
         send(textBox)
   </script>
+
+%style
+  :sass
+    #dragZone
+      display: none
+      height: 350px
+      margin-left: -50px
+      margin-top: 15em
+      width: 700px
+
+      p
+        text-align: center
+
+        &.big
+          font-size: 150%
+          font-weight: bold
+          margin-bottom: 3px
+
+        &.small
+          font-size: 120%
+          margin-top: 3px

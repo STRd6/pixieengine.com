@@ -119,7 +119,10 @@
             img.appendTo(wrapper);
 
             $.post ('/chat', { body: wrapper.html() }, function() {
-              $('body').scrollTo('max');
+              $('body').scrollTo({
+                left: '0%',
+                top: '100%'
+              });
             });
           }
         });
