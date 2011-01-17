@@ -357,7 +357,9 @@
 
 
   $.each hotkeys, (key, fn) ->
-    $(document).bind "keydown", key, fn
+    $(document).bind "keydown", key, (event) ->
+      event.preventDefault()
+      fn(event)
 
   $("body").attr("id", "fullscreen")
 
