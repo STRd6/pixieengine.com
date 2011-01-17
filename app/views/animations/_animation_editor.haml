@@ -1,54 +1,79 @@
-%h3 Animation Editor
-
 .animation_editor
-  %table.sprites{ :summary => "User sprites" }
-    = render :partial => 'developer/apps/import_sprite', :collection => @user_sprites
+  %h3 Animation Editor
+  .user_sprites
+    = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-    .bottom_bar
-      .component#tile_select
-        %h3 Animation sprites:
-        .sprites
+  .frame_box
+    %h3 Animation sprites
+    .sprites
+      = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-    .play_bar
-      .component
-        %h3 Preview
-        .preview_box
-        %button#preview Preview
+  .preview_box
+    %h3 Preview
+    .sprites
+    %button#preview Preview
 
 :coffeescript
-  $('body').attr('id', 'fullscreen')
+  animation_id = null
 
-  $('.import_sprite').draggable(
-    revert: true
-    helper: 'clone'
-  )
-
-  $('.sprites').droppable(
-    accept: '.import_sprite'
+  $('.frame_box .sprites').droppable(
+    accept: '.user_sprites img'
     drop: (event, ui) ->
-      $(this).append($(ui.draggable).clone());
+      $(this).append($(ui.draggable).clone())
+  ).sortable
+    axis: "x"
+
+  $('.user_sprites img').draggable(
+   connectToSortable: '.frame_box .sprites'
+   helper: 'clone'
   )
 
-  $('.sprites .import_sprite').live('click', ->
-    $(this).css('background-color', 'yellow')
-  ).sortable()
+  play_next = ->
+    animation_sprites = $('.preview_box img')
+    active = $('.preview_box img.active').removeClass('active')
+
+    active_index = active.index()
+    length = animation_sprites.length
+
+    animation_sprites.eq((active_index + 1) % length).addClass('active')
 
   preview_animation = ->
-    animation_sprites = $('.sprites .import_sprite').clone()
-    $('.preview_box').replaceWith(animation_sprites)
+    clearInterval(animation_id)
 
-  $('#preview').click( ->
+    $('.preview_box img').remove()
+    animation_sprites = $('.sprites img').css('display', '').clone()
+    $('.preview_box .sprites').append(animation_sprites)
+
+    animation_sprites.first().addClass('active')
+
+    animation_id = setInterval(play_next, 100)
+
+  $('#preview').click ->
     preview_animation()
-  )
 
 %style
   :sass
     @import util
 
-    $sidebar_width = 140px
-    $bottom_bar_height = 140px
+    $frame_box_height = 140px
     $header_color = #BFE2FF
     $background_color = #00010D
+
+    body
+      background-color = $background_color
+
+    h3
+      +text-shadow(#0A131A)
+      color: $header_color
+      font-weight: bold
+
+    img
+      +inline-block
+      border: 1px solid #CCC
+      margin: 2px
+
+    .sprites
+      height: 32px
 
     .animation_editor
       +box-sizing(border-box)
@@ -58,84 +83,37 @@
       height: 100%
       padding-top: 4em
 
-      &>.main
+      .frame_box
+        +bounds(60%, $frame_box_height)
         +box-sizing(border-box)
 
-        height: 100%
-        padding-bottom: $bottom_bar_height
-        padding-left: $sidebar_width
-        padding-right: $sidebar_width
-        width: 100%
-
-      .bottom_bar
-        +box-sizing(border-box)
-
-        background-color: $background_color
         bottom: 0
-        height: $bottom_bar_height
+        display: inline-block
         left: 0
-        padding-left: $sidebar_width
-        padding-right: $sidebar_width
         position: fixed
-        width: 60%
+
+      .preview_box
+        +bounds(40%, $frame_box_height)
+
+        bottom: 0
+        display: inline-block
+        right: 0
+        position: fixed
 
         .sprites
-          height: 70px
-          overflow: auto
+          position: relative
 
-      .play_bar
-        +box-sizing(border-box)
+        img
+          position: absolute
+          top: 0
+          left: 0
+          display: none
 
-        background-color: $background_color
+          &.active
+            display: block
+
+      #preview
+        display: block
+        position: relative
         bottom: 0
-        height: $bottom_bar_height
         right: 0
-        padding-left: $sidebar_width
-        padding-right: $sidebar_width
-        position: fixed
-        width: 40%
-
-      .component
-        +box-sizing(border-box)
-        background-color: $background_color
-        color: #BFE2FF
-        padding: 0.5em
-        width: 100%
-
-      h3
-        +text-shadow(#0A131A)
-        color: $header_color
-        font-weight: bold
-
-      #saved_selections
-        .selection
-          padding: 1px
-
-          &.primary, &.secondary
-            border: 1px solid
-            font-weight: bold
-            padding: 0px
-
-          &.primary
-            border-color: green
-          &.secondary
-            border-color: blue
-
-      img
-        +inline-block
-
-        margin-bottom: 2px
-        padding: 3px
-
-        &.primary, &.secondary
-          border: 1px solid
-          padding: 0px
-
-        &.primary
-          border-color: green
-        &.secondary
-          border-color: blue
-
-    .preview_box
-      width: 32px
-      height: 32px
