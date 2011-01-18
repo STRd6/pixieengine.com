@@ -7,9 +7,7 @@ function notify(message) {
     notice.html(message);
   }
 
-  notice.append($("<div/>", {
-    "class": "close"
-  }));
+  notice.append($("<div class='close'><span>x</span></div>"));
 
   notice.slideDown();
 }
