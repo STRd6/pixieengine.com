@@ -1,9 +1,6 @@
-%iframe#testFrame.no_border{ :width => app.width, :height => app.height}
+= stylesheet_link_tag 'app'
 
-%style
-  :sass
-    #testFrame
-      display: block
+%iframe#testFrame.no_border{ :width => app.width, :height => app.height}
 
 :javascript
   function runApp() {
