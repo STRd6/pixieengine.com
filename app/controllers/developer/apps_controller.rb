@@ -12,7 +12,7 @@ class Developer::AppsController < DeveloperController
 
   create.before do
     app.user = current_user
-    if app.lang = "coffeescript"
+    if app.lang == "coffeescript"
       add_default_libraries
       heredoc = <<-eos
 window.bullets = [] #initialize an empty global array to store bullets
@@ -295,7 +295,6 @@ bgMusic.play()
       eos
 
       app.src = heredoc
-      app.code = heredoc
 
     end
   end

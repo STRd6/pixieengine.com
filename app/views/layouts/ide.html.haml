@@ -1,39 +1,17 @@
 <!DOCTYPE html>
 %html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
-  %head
-    %title
-      - if @title
-        = @title
-      - else
-        Pixie IDE
-    %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
-    %meta{ :name => "description", :content => (@meta_desc || "Create your own applications in this online editor.") }
-    <meta name="google-site-verification" content="0FAurYC_rgKeOIIzTKuunYVGbrc9gCI9xPClgJvN5_w" />
-    <meta name="msvalidate.01" content="AA62CD2D00BD5CE103C280DD73C569C0" />
-    = csrf_meta_tag
-    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans+Std+Light' rel='stylesheet' type='text/css'>
-    <link rel="shortcut icon" href="/favicon.png" />
-    = stylesheet_link_tag 'screen', :media => 'screen, projection'
-    = stylesheet_link_tag 'print', :media => 'print'
+  = render :partial => "/shared/head"
 
+  %body
     -# IDE Specific
     = stylesheet_link_tag 'pixie/pixie'
     = stylesheet_link_tag "jquery.treeview"
-    = stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css"
     = stylesheet_link_tag 'ide'
 
-    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
-    = javascript_include_tag 'rails', 'application', 'jquery.simplemodal-1.3.5.min', 'jquery.form.js'
-    :javascript
-      var loggedIn = #{!!current_user};
-
-    -# IDE Specific
-    = javascript_include_tag "jquery.treeview.js", "jquery.scrollTo-min"
-    = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
+    = javascript_include_tag "jquery.treeview.js"
     = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
-    = javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie'
+    = javascript_include_tag 'pixie/jqcolor', 'pixie/pixie'
 
-  %body
     #logo
       #logo_type
         = link_to "pixie IDE", new_sprite_path

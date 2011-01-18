@@ -120,15 +120,27 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  index.wants.json do
+    render :json => collection
+  end
+
   private
 
   def collection
     @collection ||= if params[:tagged]
-      Sprite.tagged_with(params[:tagged]).paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
+      Sprite.tagged_with(params[:tagged]).paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
     elsif params[:q]
-      Sprite.search(params[:q], :page => params[:page], :per_page => Sprite.per_page)
+      Sprite.search(params[:q], :page => params[:page], :per_page => per_page)
     else
-      Sprite.paginate(:page => params[:page], :per_page => Sprite.per_page, :order => 'id DESC')
+      Sprite.paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
+    end
+  end
+
+  def per_page
+    if params[:per_page].blank?
+      Sprite.per_page
+    else
+      params[:per_page].to_i
     end
   end
 
