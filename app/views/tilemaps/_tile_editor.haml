@@ -2,8 +2,8 @@
 
 - num_layers = 2
 
-- tile_width = 32
-- tile_height = 32
+- tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
+- tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
 
 - tiles_wide = params[:tiles_wide].blank? ? 15 : params[:tiles_wide].to_i
 - tiles_tall = params[:tiles_tall].blank? ? 10 : params[:tiles_tall].to_i
@@ -245,10 +245,10 @@
 
     else
       $(".screen .selection").addClass('active').css
-        height: 32
+        height: tileHeight
         left: x
         top: y
-        width: 32
+        width: tileWidth
 
       selectionStart = {x: x, y: y}
 
@@ -357,7 +357,9 @@
 
 
   $.each hotkeys, (key, fn) ->
-    $(document).bind "keydown", key, fn
+    $(document).bind "keydown", key, (event) ->
+      event.preventDefault()
+      fn(event)
 
   $("body").attr("id", "fullscreen")
 
@@ -372,55 +374,7 @@
 
       $(this).find(".tiles").append img
 
-  $('.layer_select div.choice').live 'dblclick', () ->
-    $this = $(this)
-
-    textInput = $("<input/>",
-      class: $this.attr("class")
-      type: "text"
-      value: $this.text()
-    )
-
-    $this.replaceWith textInput
-
-    textInput.focus()
-
-  $('.layer_select input').live 'blur keydown', () ->
-    if event.type == "keydown"
-      return unless event.which == 13 || event.which == 9
-
-    $this = $(this)
-
-    $this.replaceWith $("<div />",
-      class: $this.attr("class")
-      text: $this.val()
-    )
-
-  $('h3#filename').live 'dblclick', () ->
-    $this = $(this)
-
-    textInput = $("<input/>",
-      class: $this.attr("class")
-      id: $this.attr("id")
-      type: "text"
-      value: $this.text()
-    )
-
-    $this.replaceWith textInput
-
-    textInput.focus()
-
-  $('input#filename').live 'blur keydown', (event) ->
-    if event.type == "keydown"
-      return unless event.which == 13 || event.which == 9
-
-    $this = $(this)
-
-    $this.replaceWith $("<h3 />",
-      class: $this.attr("class")
-      id: $this.attr("id")
-      text: $this.val()
-    )
+  $('#filename, .layer_select .choice').liveEdit()
 
   $("#save").click () ->
     notify("Saving...")
@@ -641,6 +595,11 @@
             border-color: blue
 
       .tools
+        +tile_tool(eraser)
+        +tile_tool(fill)
+        +tile_tool(selection)
+        +tile_tool(stamp)
+
         bottom: 0
         left: 0
         position: fixed
@@ -665,15 +624,6 @@
             border-color: green
           &.secondary
             border-color: blue
-
-        [data-tool=stamp]
-          background-image: url(/images/tools/stamp.png)
-        [data-tool=eraser]
-          background-image: url(/images/tools/eraser.png)
-        [data-tool=fill]
-          background-image: url(/images/tools/fill.png)
-        [data-tool=selection]
-          background-image: url(/images/tools/selection.png)
 
       .screen
         +box-sizing(border-box)
@@ -700,10 +650,10 @@
           width: #{tiles_wide * tile_width}px
 
         .cursor
-          border: 2px solid green
-          height: 29px
+          border: 1px solid green
+          height: #{tile_height}px
           position: absolute
-          width: 29px
+          width: #{tile_width}px
 
         .selection
           +box-sizing(border-box)

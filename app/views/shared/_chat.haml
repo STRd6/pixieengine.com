@@ -61,7 +61,7 @@
         $('#dragZone').show()
         $('#chatZone').hide()
 
-      $('#dragZone').bind 'drop', ->
+      $('#dragZone').bind 'drop dragleave', ->
         $('#dragZone').hide()
         $('#chatZone').show()
 
