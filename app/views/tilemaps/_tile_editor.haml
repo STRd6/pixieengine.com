@@ -44,6 +44,11 @@
         .choice.active Background
         .choice Foreground
 
+    .component{ :style => "display: none"}
+      %h3 Properties
+      %table#prop_editor
+      %button#prop_save Save Properties
+
   .sidebar2
     .component
       %h3 Saved Selections
@@ -57,7 +62,7 @@
     .tool{ :"data-tool" => "selection"}
 
 :coffeescript
-  debugMode = false
+  debugMode = true
 
   firstGID = 1
 
@@ -305,7 +310,7 @@
       $(this).addClass(mode).siblings().removeClass(mode)
 
   $(".tiles img, #saved_selections .selection").live "mousedown", (event) ->
-    event.preventDefault()
+    #event.preventDefault()
 
     if mode = clickMode event
       selectTile($(this), mode)
@@ -313,6 +318,18 @@
   $(".tiles img, #saved_selections .selection").live 'mouseup', (event) ->
     if event.which == 2
       $(this).remove()
+
+  propElement = null
+  $(".tiles img").live "dblclick", (event) ->
+    propElement = $(this)
+    propEditor.setProps(propElement.data("properties"))
+    propEditor.parent().show()
+
+  $("#prop_save").click (event) ->
+    if propElement
+      console.log props = propEditor.getProps()
+      propElement.data("properties", props)
+      propEditor.parent().hide()
 
   $(".layer_select .choice").live 'mousedown', (event) ->
     $(this).addClass("active").siblings().removeClass("active")
@@ -376,6 +393,8 @@
 
   $('#filename, .layer_select .choice').liveEdit()
 
+  propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
+
   $("#save").click () ->
     notify("Saving...")
 
@@ -410,6 +429,9 @@
 
       if pixieId = $this.data("pixie_id")
         mapTileData.pixieId = mapTileSpriteId
+
+      if props = $this.data("properties")
+        mapTileData.properties = props
 
       return mapTileData
     ).get()
@@ -508,6 +530,22 @@
 
     $sidebar_width = 140px
     $bottom_bar_height = 140px
+
+    table.properties
+      background-color: transparent
+      border-spacing: 0
+      tr
+        td
+          width: 50%
+          input
+            +box-sizing(border-box)
+
+            background-color: transparent
+            border: 2px solid #888
+            color: #BFE2FF
+            margin: 0
+            padding: 2px
+            width: 100%
 
     .tile_editor
       +box-sizing(border-box)
