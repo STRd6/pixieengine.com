@@ -1,5 +1,3 @@
-= stylesheet_link_tag 'app'
-
 %iframe#testFrame.no_border{ :width => app.width, :height => app.height}
 
 :javascript
@@ -8,6 +6,7 @@
 
     sandbox.open();
 
+    sandbox.write(#{stylesheet_link_tag('app.css').to_json});
     sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
     sandbox.write('<script src="/developer/apps/#{app.id}/lib.js"><\/script>');
