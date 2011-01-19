@@ -41,8 +41,13 @@
     .component
       %h3 Layer:
       .layer_select
-        .choice.active Background
-        .choice Foreground
+        .choice.active
+          .name Background
+          .show.on
+
+        .choice
+          .name Foreground
+          .show.on
 
     .component{ :style => "display: none"}
       %h3 Properties
@@ -60,6 +65,11 @@
     .tool{ :"data-tool" => "eraser"}
     .tool{ :"data-tool" => "fill"}
     .tool{ :"data-tool" => "selection"}
+
+#layer_select.template
+  .choice
+    .name ${name}
+    .show.on
 
 :coffeescript
   debugMode = true
@@ -331,10 +341,19 @@
       propElement.data("properties", props)
       propEditor.parent().hide()
 
-  $(".layer_select .choice").live 'mousedown', (event) ->
-    $(this).addClass("active").siblings().removeClass("active")
+  $(".layer_select .choice .name").live 'mousedown', (event) ->
+    $layer = $(this).parent()
+    $layer.addClass("active").siblings().removeClass("active")
 
-    currentLayer = $(this).index()
+    currentLayer = $layer.index()
+
+  $(".layer_select").delegate ".show", 'mousedown', (event) ->
+    $this = $(this)
+
+    if $this.toggleClass("on").hasClass("on")
+      $(".screen .layers .layer").eq($this.parent().index()).fadeIn()
+    else
+      $(".screen .layers .layer").eq($this.parent().index()).fadeOut()
 
   $(".screen .layers").bind "mousemove", (event) ->
     pos = $(this).tilePosition(event)
@@ -391,7 +410,7 @@
 
       $(this).find(".tiles").append img
 
-  $('#filename, .layer_select .choice').liveEdit()
+  $('#filename, .layer_select .name').liveEdit()
 
   propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
@@ -510,9 +529,8 @@
         class: "layer"
       ).appendTo(".main .layers")
 
-      $("<div />",
-        class: "choice"
-        text: layer.name
+      $("#layer_select").tmpl(
+        name: layer.name
       ).appendTo(layerSelect)
 
       layer.tiles.each (row, y) ->
@@ -522,7 +540,7 @@
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
-    $(layerSelect).find(".choice").first().trigger("mousedown")
+    $(layerSelect).find(".name").first().trigger("mousedown")
 
 %style
   :sass
@@ -597,14 +615,40 @@
       .layer_select
         +inline-block
 
+        width: 100%
+
         input
           +user-select(text)
 
         div.choice
+          +inline-block
+
           cursor: pointer
+          width: 100%
 
           &.active
             font-weight: bold
+
+          .name
+            +inline-block
+            float: left
+
+          .show
+            display: none
+
+          &:hover
+            .show
+              +inline-block
+              +opacity(0.25)
+
+              background-image: url(/images/tools/show.png)
+              cursor: pointer
+              float: right
+              height: 16px
+              width: 16px
+
+              &.on
+                +opacity(1)
 
       .component
         +box-sizing(border-box)
