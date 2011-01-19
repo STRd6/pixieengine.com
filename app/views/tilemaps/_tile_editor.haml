@@ -343,7 +343,6 @@
 
   $("#prop_save").click (event) ->
     if propElement
-      console.log props = propEditor.getProps()
       propElement.data("properties", props)
       propEditor.parent().hide()
 
@@ -527,6 +526,9 @@
         "data-pixie_id": tile.pixieId
         src: tile.src
       ).appendTo(tileTray)
+
+      if tile.properties
+        tileLookup[index].data("properties", tile.properties)
 
     $(".main .layers .layer").remove()
 
