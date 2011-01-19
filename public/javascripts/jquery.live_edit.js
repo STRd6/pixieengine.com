@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 17 Jan 2011 23:11:52 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 19 Jan 2011 20:04:00 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.live_edit.coffee
  */
 
@@ -16,7 +16,7 @@
           "data-origType": this.tagName,
           id: (id = $this.attr("id")) ? id : null,
           type: "text",
-          value: $this.text()
+          value: $.trim($this.text())
         });
         $this.replaceWith(textInput);
         return textInput.focus();
