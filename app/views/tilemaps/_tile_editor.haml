@@ -72,7 +72,7 @@
     .show.on
 
 :coffeescript
-  debugMode = true
+  debugMode = false
 
   firstGID = 1
 
@@ -102,6 +102,12 @@
       x: localX
       y: localY
     }
+
+  selectNextVisibleLayer = () ->
+    shownLayers = $(".layer_select .choice .show.on")
+
+    if shownLayers.length
+      shownLayers.eq(0).parent().find(".name").mousedown()
 
   prevTile = (mode) ->
     tileCount = $(".tiles img").length
@@ -349,11 +355,14 @@
 
   $(".layer_select").delegate ".show", 'mousedown', (event) ->
     $this = $(this)
+    $choice = $this.parent()
 
     if $this.toggleClass("on").hasClass("on")
-      $(".screen .layers .layer").eq($this.parent().index()).fadeIn()
+      $(".screen .layers .layer").eq($choice.index()).fadeIn()
+      $choice.find(".name").mousedown()
     else
-      $(".screen .layers .layer").eq($this.parent().index()).fadeOut()
+      $(".screen .layers .layer").eq($choice.index()).fadeOut()
+      selectNextVisibleLayer()
 
   $(".screen .layers").bind "mousemove", (event) ->
     pos = $(this).tilePosition(event)
@@ -549,6 +558,24 @@
     $sidebar_width = 140px
     $bottom_bar_height = 140px
 
+    input
+      +box-sizing(border-box)
+
+      background-color: transparent
+      border: 2px solid #888
+      color: #BFE2FF
+      margin: 0
+      max-width: 120px
+      padding: 2px
+
+      &#filename
+        font-family: "Josefin Sans Std Light", Arial, serif
+        font-size: 1.5em
+        font-weight: bold
+        height: 27px
+        letter-spacing: 0.1em
+        margin-bottom: 0.5em
+
     table.properties
       background-color: transparent
       border-spacing: 0
@@ -556,13 +583,6 @@
         td
           width: 50%
           input
-            +box-sizing(border-box)
-
-            background-color: transparent
-            border: 2px solid #888
-            color: #BFE2FF
-            margin: 0
-            padding: 2px
             width: 100%
 
     .tile_editor
@@ -619,6 +639,15 @@
 
         input
           +user-select(text)
+
+        .choice
+          .name
+            +box-sizing(border-box)
+            padding: 3px
+            width: 90px
+
+          input.name
+            padding: 2px
 
         div.choice
           +inline-block
