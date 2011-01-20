@@ -1,1 +1,2 @@
-= image_tag(animation_sprite.image.url(), :alt => animation_sprite.display_name, :title => animation_sprite.title, 'data-id' => animation_sprite.id)
+%div.sprite_container
+  = image_tag(animation_sprite.image.url(), :alt => animation_sprite.display_name, :title => animation_sprite.title, 'data-id' => animation_sprite.id, 'data-width' => animation_sprite.width, 'data-height' => animation_sprite.height)
