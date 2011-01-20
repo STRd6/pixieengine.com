@@ -2,43 +2,29 @@
 %html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
   = render :partial => "shared/head"
 
-  %body
+  %body#fullscreen
     .container
-      = render :partial => "/shared/header"
 
       #content
-        - if context
-          = render :partial => "#{context}/navigation"
         #flashes
           - flash.each do |key, msg|
             %div{ :class => key }
               = msg
               .close
-                %span
-                  x
-
-        - if ab_test "test" #Dummy test
-          -#nothing
-
-        - if @title
-          %h1= @title
 
         = yield
-
-        = render :partial => "/shared/chat"
 
       - if @has_reg_popup
         = render :partial => 'shared/register_modal'
       = render :partial => "/shared/footer"
       = render :partial => "/shared/fb_app"
 
-    = render :partial => "/shared/feedback"
-
     #tooltip
       .icon
       .content
 
-    = javascript_include_tag "coffee-script"
+    - if Rails.env.development?
+      = javascript_include_tag "coffee-script"
 
     = render :partial => "/shared/analytics"
 

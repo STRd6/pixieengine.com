@@ -1,0 +1,119 @@
+.animation_editor
+  %h3 Animation Editor
+  .user_sprites
+    = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+
+  .frame_box
+    %h3 Animation sprites
+    .sprites
+      = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+
+  .preview_box
+    %h3 Preview
+    .sprites
+    %button#preview Preview
+
+:coffeescript
+  animation_id = null
+
+  $('.frame_box .sprites').droppable(
+    accept: '.user_sprites img'
+    drop: (event, ui) ->
+      $(this).append($(ui.draggable).clone())
+  ).sortable
+    axis: "x"
+
+  $('.user_sprites img').draggable(
+   connectToSortable: '.frame_box .sprites'
+   helper: 'clone'
+  )
+
+  play_next = ->
+    animation_sprites = $('.preview_box img')
+    active = $('.preview_box img.active').removeClass('active')
+
+    active_index = active.index()
+    length = animation_sprites.length
+
+    animation_sprites.eq((active_index + 1) % length).addClass('active')
+
+  preview_animation = ->
+    clearInterval(animation_id)
+
+    $('.preview_box img').remove()
+    animation_sprites = $('.sprites img').css('display', '').clone()
+    $('.preview_box .sprites').append(animation_sprites)
+
+    animation_sprites.first().addClass('active')
+
+    animation_id = setInterval(play_next, 100)
+
+  $('#preview').click ->
+    preview_animation()
+
+%style
+  :sass
+    @import util
+
+    $frame_box_height = 140px
+    $header_color = #BFE2FF
+    $background_color = #00010D
+
+    body
+      background-color = $background_color
+
+    h3
+      +text-shadow(#0A131A)
+      color: $header_color
+      font-weight: bold
+
+    img
+      +inline-block
+      border: 1px solid #CCC
+      margin: 2px
+
+    .sprites
+      height: 32px
+
+    .animation_editor
+      +box-sizing(border-box)
+      +user-select(none)
+
+      cursor: default
+      height: 100%
+      padding-top: 4em
+
+      .frame_box
+        +bounds(60%, $frame_box_height)
+        +box-sizing(border-box)
+
+        bottom: 0
+        display: inline-block
+        left: 0
+        position: fixed
+
+      .preview_box
+        +bounds(40%, $frame_box_height)
+
+        bottom: 0
+        display: inline-block
+        right: 0
+        position: fixed
+
+        .sprites
+          position: relative
+
+        img
+          position: absolute
+          top: 0
+          left: 0
+          display: none
+
+          &.active
+            display: block
+
+      #preview
+        display: block
+        position: relative
+        bottom: 0
+        right: 0
