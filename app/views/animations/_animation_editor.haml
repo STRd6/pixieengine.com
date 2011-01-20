@@ -6,12 +6,12 @@
   .frame_box
     %h3 Frames
     .sprites
-      = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+      = render :partial => 'animations/animation_sprite', :collection => @user_sprites[0..5]
 
   .preview_box
     %h3 Preview
     .sprites
-    %button#preview Preview
+    #preview
 
 :coffeescript
   animation_id = null
@@ -52,6 +52,7 @@
 
   $('#preview').click ->
     preview_animation()
+    $(this).toggleClass("pause")
 
   $('.frame_box .sprite_container').live
     mouseenter: -> $('<div class="x" />').appendTo($(this))
@@ -114,11 +115,13 @@
           text-align: center
 
           img
+            +box-shadow(#ccc)
+
             cursor: move
             vertical-align: top
 
       .frame_box
-        +bounds(70%, $frame_box_height)
+        +bounds(75%, $frame_box_height)
         +box-sizing(border-box)
 
         bottom: 0
@@ -139,7 +142,7 @@
           margin: 5px 15px
 
       .preview_box
-        +bounds(27%, $frame_box_height)
+        +bounds(23%, $frame_box_height)
 
         bottom: 0
         display: inline-block
@@ -161,7 +164,20 @@
             display: block
 
       #preview
+        +bounds(16px, 16px)
+
+        background-image: url(/images/icons/control_play.png)
+        background-repeat: no-repeat
         display: block
         position: relative
         bottom: 0
         right: 0
+
+        &:hover
+          background-image: url(/images/icons/control_play_blue.png)
+
+        &.pause
+          background-image: url(/images/icons/control_pause.png)
+
+          &:hover
+            background-image: url(/images/icons/control_pause_blue.png)
