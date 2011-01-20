@@ -343,7 +343,7 @@
 
   $("#prop_save").click (event) ->
     if propElement
-      propElement.data("properties", props)
+      propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
 
   $(".layer_select .choice .name").live 'mousedown', (event) ->
@@ -404,8 +404,6 @@
     $(document).bind "keydown", key, (event) ->
       event.preventDefault()
       fn(event)
-
-  $("body").attr("id", "fullscreen")
 
   $(tileTray).sortable()
 
