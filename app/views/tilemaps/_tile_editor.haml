@@ -49,6 +49,8 @@
           .name Foreground
           .show.on
 
+      %button.new New Layer
+
     .component{ :style => "display: none"}
       %h3 Properties
       %table#prop_editor
@@ -102,6 +104,17 @@
       x: localX
       y: localY
     }
+
+  addNewLayer = () ->
+    $("#layer_select").tmpl(
+      name: "Layer " + ($(".layer_select .choice").length + 1)
+    ).appendTo(layerSelect).find('.name').mousedown()
+
+    $("<div />",
+      class: "layer"
+    ).appendTo(".main .layers")
+
+    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
   selectNextVisibleLayer = () ->
     shownLayers = $(".layer_select .choice .show.on")
@@ -345,6 +358,9 @@
     if propElement
       propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
+
+  $(".layer_select+button.new").click () ->
+    addNewLayer()
 
   $(".layer_select .choice .name").live 'mousedown', (event) ->
     $layer = $(this).parent()
