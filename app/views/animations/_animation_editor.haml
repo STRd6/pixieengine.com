@@ -4,7 +4,7 @@
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
   .frame_box
-    %h3 Animation sprites
+    %h3 Frames
     .sprites
       = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
@@ -17,15 +17,17 @@
   animation_id = null
 
   $('.frame_box .sprites').droppable(
-    accept: '.user_sprites img'
-    drop: (event, ui) ->
-      $(this).append($(ui.draggable).clone())
+    accept: '.user_sprites .sprite_container'
   ).sortable
     axis: "x"
 
-  $('.user_sprites img').draggable(
+  $('.user_sprites .sprite_container').draggable(
    connectToSortable: '.frame_box .sprites'
    helper: 'clone'
+  )
+
+  $('img').live('click mousedown mousemove', (event) ->
+    event.preventDefault()
   )
 
   play_next = ->
@@ -51,6 +53,13 @@
   $('#preview').click ->
     preview_animation()
 
+  $('.frame_box .sprite_container').live
+    mouseenter: -> $('<div class="x" />').appendTo($(this))
+    mouseleave: -> $(this).find('.x').remove()
+
+  $('.x').live 'click', ->
+    $(this).parent().remove()
+
 %style
   :sass
     @import util
@@ -69,11 +78,22 @@
 
     img
       +inline-block
+
       border: 1px solid #CCC
       margin: 2px
 
-    .sprites
-      height: 32px
+    .x
+      +bounds(24px, 24px)
+
+      background-image: url(/images/x.png)
+      cursor: pointer
+      display: inline-block
+      left: -28px
+      position: relative
+      top: -22px
+
+    .sprite_container
+      display: inline-block
 
     .animation_editor
       +box-sizing(border-box)
@@ -83,17 +103,39 @@
       height: 100%
       padding-top: 4em
 
+      .user_sprites
+        margin: auto
+        width: 75%
+
+        img
+          cursor: move
+
       .frame_box
-        +bounds(60%, $frame_box_height)
+        +bounds(70%, $frame_box_height)
         +box-sizing(border-box)
 
         bottom: 0
         display: inline-block
-        left: 0
+        left: 10px
+        overflow-y: hidden
         position: fixed
+        white-space: nowrap
+
+        .sprite_container
+          +bounds(80px, 80px)
+
+        img
+          +bounds(64px, 64px)
+          +box-shadow(#ccc)
+
+          cursor: move
+          margin: 5px 15px
+
+          &:hover
+            border: 1px solid red
 
       .preview_box
-        +bounds(40%, $frame_box_height)
+        +bounds(27%, $frame_box_height)
 
         bottom: 0
         display: inline-block
@@ -101,6 +143,7 @@
         position: fixed
 
         .sprites
+          height: 64px
           position: relative
 
         img
@@ -108,6 +151,7 @@
           top: 0
           left: 0
           display: none
+          margin: 5px
 
           &.active
             display: block
