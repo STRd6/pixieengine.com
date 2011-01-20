@@ -10,8 +10,10 @@
 
   .preview_box
     %h3 Preview
-    .sprites
-    #preview
+    .sprites_container
+      .sprites
+      #play
+      #stop
 
 :coffeescript
   animation_id = null
@@ -50,9 +52,18 @@
 
     animation_id = setInterval(play_next, 100)
 
-  $('#preview').click ->
+  stop_animation = ->
+    clearInterval(animation_id)
+
+    $('.preview_box img').remove()
+
+  $('#play').click ->
     preview_animation()
     $(this).toggleClass("pause")
+
+  $('#stop').click ->
+    stop_animation()
+    $('#play').removeClass("pause")
 
   $('.frame_box .sprite_container').live
     mouseenter: -> $('<div class="x" />').appendTo($(this))
@@ -74,8 +85,10 @@
 
     h3
       +text-shadow(#0A131A)
+
       color: $header_color
       font-weight: bold
+      margin-left: 14px
 
     img
       +inline-block
@@ -126,7 +139,7 @@
 
         bottom: 0
         display: inline-block
-        left: 10px
+        left: 0
         overflow-y: hidden
         position: fixed
         white-space: nowrap
@@ -149,11 +162,49 @@
         right: 0
         position: fixed
 
+        h3
+          margin-left: 0
+
+        .sprites_container
+          +bounds(64px, 64px)
+
+          position: relative
+
+          #play
+            +bounds(16px, 16px)
+
+            background-image: url(/images/icons/control_play.png)
+            position: absolute
+            bottom: -16px
+            right: 0
+
+            &:hover
+              background-image: url(/images/icons/control_play_blue.png)
+
+            &.pause
+              background-image: url(/images/icons/control_pause.png)
+
+              &:hover
+                background-image: url(/images/icons/control_pause_blue.png)
+
+          #stop
+            +bounds(16px, 16px)
+
+            background-image: url(/images/icons/control_stop.png)
+            position: absolute
+            bottom: -16px
+            left: 0
+
+            &:hover
+              background-image: url(/images/icons/control_stop_blue.png)
+
         .sprites
-          height: 64px
+          +bounds(64px, 64px)
+
           position: relative
 
         img
+          border: none
           position: absolute
           top: 0
           left: 0
@@ -162,22 +213,3 @@
 
           &.active
             display: block
-
-      #preview
-        +bounds(16px, 16px)
-
-        background-image: url(/images/icons/control_play.png)
-        background-repeat: no-repeat
-        display: block
-        position: relative
-        bottom: 0
-        right: 0
-
-        &:hover
-          background-image: url(/images/icons/control_play_blue.png)
-
-        &.pause
-          background-image: url(/images/icons/control_pause.png)
-
-          &:hover
-            background-image: url(/images/icons/control_pause_blue.png)
