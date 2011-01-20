@@ -7,7 +7,19 @@ class TilemapsController < ApplicationController
 
     @tilemap.save
 
-    respond_with(@tilemap)
+    respond_with(@tilemap) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+    end
+  end
+
+  def new
+    respond_with(@tilemap) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+    end
   end
 
   def show
@@ -17,6 +29,12 @@ class TilemapsController < ApplicationController
   def edit
     @tilemap = Tilemap.find(params[:id])
     @parent_id = @tilemap.id
+
+    respond_with(@tilemap) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+    end
   end
 
   def index

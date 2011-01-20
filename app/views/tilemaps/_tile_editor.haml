@@ -41,8 +41,15 @@
     .component
       %h3 Layer:
       .layer_select
-        .choice.active Background
-        .choice Foreground
+        .choice.active
+          .name Background
+          .show.on
+
+        .choice
+          .name Foreground
+          .show.on
+
+      %button.new New Layer
 
     .component{ :style => "display: none"}
       %h3 Properties
@@ -61,8 +68,13 @@
     .tool{ :"data-tool" => "fill"}
     .tool{ :"data-tool" => "selection"}
 
+#layer_select.template
+  .choice
+    .name ${name}
+    .show.on
+
 :coffeescript
-  debugMode = true
+  debugMode = false
 
   firstGID = 1
 
@@ -92,6 +104,23 @@
       x: localX
       y: localY
     }
+
+  addNewLayer = () ->
+    $("#layer_select").tmpl(
+      name: "Layer " + ($(".layer_select .choice").length + 1)
+    ).appendTo(layerSelect).find('.name').mousedown()
+
+    $("<div />",
+      class: "layer"
+    ).appendTo(".main .layers")
+
+    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
+
+  selectNextVisibleLayer = () ->
+    shownLayers = $(".layer_select .choice .show.on")
+
+    if shownLayers.length
+      shownLayers.eq(0).parent().find(".name").mousedown()
 
   prevTile = (mode) ->
     tileCount = $(".tiles img").length
@@ -327,14 +356,28 @@
 
   $("#prop_save").click (event) ->
     if propElement
-      console.log props = propEditor.getProps()
-      propElement.data("properties", props)
+      propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
 
-  $(".layer_select .choice").live 'mousedown', (event) ->
-    $(this).addClass("active").siblings().removeClass("active")
+  $(".layer_select+button.new").click () ->
+    addNewLayer()
 
-    currentLayer = $(this).index()
+  $(".layer_select .choice .name").live 'mousedown', (event) ->
+    $layer = $(this).parent()
+    $layer.addClass("active").siblings().removeClass("active")
+
+    currentLayer = $layer.index()
+
+  $(".layer_select").delegate ".show", 'mousedown', (event) ->
+    $this = $(this)
+    $choice = $this.parent()
+
+    if $this.toggleClass("on").hasClass("on")
+      $(".screen .layers .layer").eq($choice.index()).fadeIn()
+      $choice.find(".name").mousedown()
+    else
+      $(".screen .layers .layer").eq($choice.index()).fadeOut()
+      selectNextVisibleLayer()
 
   $(".screen .layers").bind "mousemove", (event) ->
     pos = $(this).tilePosition(event)
@@ -378,8 +421,6 @@
       event.preventDefault()
       fn(event)
 
-  $("body").attr("id", "fullscreen")
-
   $(tileTray).sortable()
 
   $("#tile_select").dropImageReader (file, event) ->
@@ -391,7 +432,7 @@
 
       $(this).find(".tiles").append img
 
-  $('#filename, .layer_select .choice').liveEdit()
+  $('#filename, .layer_select .name').liveEdit()
 
   propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
@@ -500,6 +541,9 @@
         src: tile.src
       ).appendTo(tileTray)
 
+      if tile.properties
+        tileLookup[index].data("properties", tile.properties)
+
     $(".main .layers .layer").remove()
 
     $(layerSelect).html('')
@@ -510,9 +554,8 @@
         class: "layer"
       ).appendTo(".main .layers")
 
-      $("<div />",
-        class: "choice"
-        text: layer.name
+      $("#layer_select").tmpl(
+        name: layer.name
       ).appendTo(layerSelect)
 
       layer.tiles.each (row, y) ->
@@ -522,7 +565,7 @@
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
-    $(layerSelect).find(".choice").first().trigger("mousedown")
+    $(layerSelect).find(".name").first().trigger("mousedown")
 
 %style
   :sass
@@ -531,6 +574,24 @@
     $sidebar_width = 140px
     $bottom_bar_height = 140px
 
+    input
+      +box-sizing(border-box)
+
+      background-color: transparent
+      border: 2px solid #888
+      color: #BFE2FF
+      margin: 0
+      max-width: 120px
+      padding: 2px
+
+      &#filename
+        font-family: "Josefin Sans Std Light", Arial, serif
+        font-size: 1.5em
+        font-weight: bold
+        height: 27px
+        letter-spacing: 0.1em
+        margin-bottom: 0.5em
+
     table.properties
       background-color: transparent
       border-spacing: 0
@@ -538,13 +599,6 @@
         td
           width: 50%
           input
-            +box-sizing(border-box)
-
-            background-color: transparent
-            border: 2px solid #888
-            color: #BFE2FF
-            margin: 0
-            padding: 2px
             width: 100%
 
     .tile_editor
@@ -597,14 +651,49 @@
       .layer_select
         +inline-block
 
+        width: 100%
+
         input
           +user-select(text)
 
+        .choice
+          .name
+            +box-sizing(border-box)
+            padding: 3px
+            width: 90px
+
+          input.name
+            padding: 2px
+
         div.choice
+          +inline-block
+
           cursor: pointer
+          width: 100%
 
           &.active
             font-weight: bold
+
+          .name
+            +inline-block
+            float: left
+
+          .show
+            display: none
+
+          &:hover
+            .show
+              +inline-block
+              +opacity(0.25)
+
+              background-image: url(/images/tools/show.png)
+              cursor: pointer
+              float: right
+              height: 16px
+              width: 16px
+
+              &.on
+                +opacity(1)
 
       .component
         +box-sizing(border-box)

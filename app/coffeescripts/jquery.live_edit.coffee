@@ -10,7 +10,7 @@
         "data-origType": this.tagName
         id: if id = $this.attr("id") then id else null
         type: "text"
-        value: $this.text()
+        value: $.trim($this.text())
       )
 
       $this.replaceWith textInput
