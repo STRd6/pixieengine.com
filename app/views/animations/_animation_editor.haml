@@ -104,11 +104,18 @@
       padding-top: 4em
 
       .user_sprites
-        margin: auto
         width: 75%
 
-        img
-          cursor: move
+        .sprite_container
+          +bounds(96px, 96px)
+
+          margin: 5px
+          overflow: hidden
+          text-align: center
+
+          img
+            cursor: move
+            vertical-align: top
 
       .frame_box
         +bounds(70%, $frame_box_height)
@@ -130,9 +137,6 @@
 
           cursor: move
           margin: 5px 15px
-
-          &:hover
-            border: 1px solid red
 
       .preview_box
         +bounds(27%, $frame_box_height)
