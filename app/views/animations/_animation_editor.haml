@@ -6,12 +6,14 @@
   .frame_box
     %h3 Frames
     .sprites
-      = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+      = render :partial => 'animations/animation_sprite', :collection => @user_sprites[0..5]
 
   .preview_box
     %h3 Preview
-    .sprites
-    %button#preview Preview
+    .sprites_container
+      .sprites
+      #play
+      #stop
 
 :coffeescript
   animation_id = null
@@ -39,7 +41,7 @@
 
     animation_sprites.eq((active_index + 1) % length).addClass('active')
 
-  preview_animation = ->
+  play_animation = ->
     clearInterval(animation_id)
 
     $('.preview_box img').remove()
@@ -50,8 +52,25 @@
 
     animation_id = setInterval(play_next, 100)
 
-  $('#preview').click ->
-    preview_animation()
+  pause_animation = ->
+    clearInterval(animation_id)
+
+  stop_animation = ->
+    clearInterval(animation_id)
+
+    $('.preview_box img').remove()
+
+  $('#play').click ->
+    if $(this).hasClass("pause")
+      pause_animation()
+    else
+      play_animation()
+
+    $(this).toggleClass("pause")
+
+  $('#stop').click ->
+    stop_animation()
+    $('#play').removeClass("pause")
 
   $('.frame_box .sprite_container').live
     mouseenter: -> $('<div class="x" />').appendTo($(this))
@@ -73,14 +92,15 @@
 
     h3
       +text-shadow(#0A131A)
+
       color: $header_color
       font-weight: bold
+      margin-left: 14px
 
     img
       +inline-block
 
       border: 1px solid #CCC
-      margin: 2px
 
     .x
       +bounds(24px, 24px)
@@ -88,9 +108,9 @@
       background-image: url(/images/x.png)
       cursor: pointer
       display: inline-block
-      left: -28px
+      left: -18px
       position: relative
-      top: -22px
+      top: -52px
 
     .sprite_container
       display: inline-block
@@ -104,49 +124,91 @@
       padding-top: 4em
 
       .user_sprites
-        margin: auto
         width: 75%
 
-        img
-          cursor: move
+        .sprite_container
+          +bounds(96px, 96px)
+
+          margin: 5px
+          overflow: hidden
+          text-align: center
+
+          img
+            +box-shadow(#ccc)
+
+            cursor: move
+            vertical-align: top
 
       .frame_box
-        +bounds(70%, $frame_box_height)
-        +box-sizing(border-box)
+        +bounds(75%, $frame_box_height)
 
         bottom: 0
-        display: inline-block
-        left: 10px
+        left: 0
         overflow-y: hidden
         position: fixed
         white-space: nowrap
 
         .sprite_container
-          +bounds(80px, 80px)
+          +bounds(64px, 64px)
+
+          margin-left: 10px
+          margin-right: 10px
 
         img
           +bounds(64px, 64px)
           +box-shadow(#ccc)
 
           cursor: move
-          margin: 5px 15px
-
-          &:hover
-            border: 1px solid red
+          vertical-align: baseline
 
       .preview_box
-        +bounds(27%, $frame_box_height)
+        +bounds(23%, $frame_box_height)
 
         bottom: 0
         display: inline-block
         right: 0
         position: fixed
 
+        .sprites_container
+          +bounds(96px, 96px)
+
+          position: relative
+
+          #play
+            +bounds(16px, 16px)
+
+            background-image: url(/images/icons/control_play.png)
+            position: absolute
+            bottom: -8px
+            right: 0
+
+            &:hover
+              background-image: url(/images/icons/control_play_blue.png)
+
+            &.pause
+              background-image: url(/images/icons/control_pause.png)
+
+              &:hover
+                background-image: url(/images/icons/control_pause_blue.png)
+
+          #stop
+            +bounds(16px, 16px)
+
+            background-image: url(/images/icons/control_stop.png)
+            position: absolute
+            bottom: -8px
+            left: 0
+
+            &:hover
+              background-image: url(/images/icons/control_stop_blue.png)
+
         .sprites
-          height: 64px
+          +bounds(64px, 64px)
+
           position: relative
 
         img
+          border: none
           position: absolute
           top: 0
           left: 0
@@ -155,9 +217,3 @@
 
           &.active
             display: block
-
-      #preview
-        display: block
-        position: relative
-        bottom: 0
-        right: 0
