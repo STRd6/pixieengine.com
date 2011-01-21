@@ -500,7 +500,7 @@
 
           imgIndex = tileIndexLookup[img.attr('src')]
 
-          if imgIndex? then imgIndex else -1
+          imgIndex = if imgIndex? then imgIndex else -1
 
           row.push imgIndex
 
