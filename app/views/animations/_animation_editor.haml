@@ -41,7 +41,7 @@
 
     animation_sprites.eq((active_index + 1) % length).addClass('active')
 
-  preview_animation = ->
+  play_animation = ->
     clearInterval(animation_id)
 
     $('.preview_box img').remove()
@@ -52,13 +52,20 @@
 
     animation_id = setInterval(play_next, 100)
 
+  pause_animation = ->
+    clearInterval(animation_id)
+
   stop_animation = ->
     clearInterval(animation_id)
 
     $('.preview_box img').remove()
 
   $('#play').click ->
-    preview_animation()
+    if $(this).hasClass("pause")
+      pause_animation()
+    else
+      play_animation()
+
     $(this).toggleClass("pause")
 
   $('#stop').click ->
@@ -144,6 +151,9 @@
         position: fixed
         white-space: nowrap
 
+        .sprites
+          +bounds(96px, 96px)
+
         .sprite_container
           +bounds(80px, 80px)
 
@@ -162,11 +172,8 @@
         right: 0
         position: fixed
 
-        h3
-          margin-left: 0
-
         .sprites_container
-          +bounds(64px, 64px)
+          +bounds(96px, 96px)
 
           position: relative
 
@@ -175,7 +182,7 @@
 
             background-image: url(/images/icons/control_play.png)
             position: absolute
-            bottom: -16px
+            bottom: -8px
             right: 0
 
             &:hover
@@ -192,7 +199,7 @@
 
             background-image: url(/images/icons/control_stop.png)
             position: absolute
-            bottom: -16px
+            bottom: -8px
             left: 0
 
             &:hover
