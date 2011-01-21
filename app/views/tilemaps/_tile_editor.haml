@@ -84,9 +84,6 @@
   tileWidth = #{tile_width}
   tileHeight = #{tile_height}
 
-  gridResolutionX = tileWidth
-  gridResolutionY = tileHeight
-
   currentLayer = 0
 
   modeDown = null
@@ -97,8 +94,8 @@
   $.fn.tilePosition = (event) ->
     offset = this.offset()
 
-    localY = (event.pageY - offset.top).snap(gridResolutionY).clamp(0, (tilesTall - 1) * tileHeight)
-    localX = (event.pageX - offset.left).snap(gridResolutionX).clamp(0, (tilesWide - 1) * tileWidth)
+    localY = (event.pageY - offset.top).snap(tileHeight).clamp(0, (tilesTall - 1) * tileHeight)
+    localX = (event.pageX - offset.left).snap(tileWidth).clamp(0, (tilesWide - 1) * tileWidth)
 
     return {
       x: localX
@@ -562,6 +559,10 @@
         row.each (tile, x) ->
           if tile >= 0
             replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+    $(".screen .cursor").css
+      width: tileWidth
+      height: tileHeight
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
