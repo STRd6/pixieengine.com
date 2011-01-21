@@ -455,11 +455,16 @@
     , "json")
 
   window.saveData = () ->
+    tileIndexLookup = {}
+
     tileset = $(".bottom_bar .tiles img").map((i) ->
       $this = $(this)
+      src = $this.attr("src")
+
+      tileIndexLookup[src] = i
 
       mapTileData = {
-        src: $this.attr("src")
+        src: src
       }
 
       if mapTileId = $this.data('guid')
@@ -493,7 +498,9 @@
 
           img = screenLayer.find("img[data-pos='" + posString + "']")
 
-          imgIndex = $(".bottom_bar .tiles img[src='"+img.attr('src')+"']").index()
+          imgIndex = tileIndexLookup[img.attr('src')]
+
+          if imgIndex? then imgIndex else -1
 
           row.push imgIndex
 
