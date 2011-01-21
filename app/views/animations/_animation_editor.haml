@@ -101,7 +101,6 @@
       +inline-block
 
       border: 1px solid #CCC
-      margin: 2px
 
     .x
       +bounds(24px, 24px)
@@ -109,9 +108,9 @@
       background-image: url(/images/x.png)
       cursor: pointer
       display: inline-block
-      left: -28px
+      left: -18px
       position: relative
-      top: -22px
+      top: -52px
 
     .sprite_container
       display: inline-block
@@ -142,27 +141,25 @@
 
       .frame_box
         +bounds(75%, $frame_box_height)
-        +box-sizing(border-box)
 
         bottom: 0
-        display: inline-block
         left: 0
         overflow-y: hidden
         position: fixed
         white-space: nowrap
 
-        .sprites
-          +bounds(96px, 96px)
-
         .sprite_container
-          +bounds(80px, 80px)
+          +bounds(64px, 64px)
+
+          margin-left: 10px
+          margin-right: 10px
 
         img
           +bounds(64px, 64px)
           +box-shadow(#ccc)
 
           cursor: move
-          margin: 5px 15px
+          vertical-align: baseline
 
       .preview_box
         +bounds(23%, $frame_box_height)
