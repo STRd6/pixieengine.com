@@ -91,6 +91,11 @@
   tileTray = ".bottom_bar .tiles"
   layerSelect = ".sidebar .layer_select"
 
+  positionElementIndices = []
+
+  $(".screen .layers").length.times () ->
+    positionElementIndices.push {}
+
   $.fn.tilePosition = (event) ->
     offset = this.offset()
 
@@ -108,6 +113,8 @@
     ).appendTo(".main .layers")
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
+
+    positionElementIndices.push {}
 
   addNewLayer = () ->
     $("#layer_select").tmpl(
@@ -156,13 +163,18 @@
 
     targetLayer.append(tile)
 
+    positionElementIndices[currentLayer][posString] = tile.get()
+
   removeTile = (x, y) ->
     tileAt(x, y).remove()
+
+    posString = x + "x" + y
+    positionElementIndices[currentLayer][posString] = undefined
 
   tileAt = (x, y) ->
     posString = x + "x" + y
 
-    $(".screen .layer").eq(currentLayer).find("[data-pos='" + posString + "']")
+    $(positionElementIndices[currentLayer][posString])
 
   getNeighborPositions = (position) ->
     neighbors = [
@@ -534,6 +546,8 @@
     tileWidth = data.tileWidth
     tileHeight = data.tileHeight
 
+    positionElementIndices = []
+
     tileLookup = {}
 
     $(tileTray).html('')
@@ -559,9 +573,7 @@
     data.layers.each (layer, i) ->
       currentLayer = i
 
-      $("<div />",
-        class: "layer"
-      ).appendTo(".main .layers")
+      addScreenLayer()
 
       $("#layer_select").tmpl(
         name: layer.name
@@ -575,8 +587,6 @@
     $(".screen .cursor").css
       width: tileWidth
       height: tileHeight
-
-    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
     $(layerSelect).find(".name").first().trigger("mousedown")
 
