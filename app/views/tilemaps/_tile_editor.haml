@@ -102,16 +102,19 @@
       y: localY
     }
 
-  addNewLayer = () ->
-    $("#layer_select").tmpl(
-      name: "Layer " + ($(".layer_select .choice").length + 1)
-    ).appendTo(layerSelect).find('.name').mousedown()
-
+  addScreenLayer = () ->
     $("<div />",
       class: "layer"
     ).appendTo(".main .layers")
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
+
+  addNewLayer = () ->
+    $("#layer_select").tmpl(
+      name: "Layer " + ($(".layer_select .choice").length + 1)
+    ).appendTo(layerSelect).find('.name').mousedown()
+
+    addScreenLayer()
 
   selectNextVisibleLayer = () ->
     shownLayers = $(".layer_select .choice .show.on")
@@ -486,9 +489,15 @@
 
       screenLayer = $(".screen .layers .layer").eq(i)
 
+      tileLookup = {}
+
+      screenLayer.find("img").each () ->
+        src = this.getAttribute("src")
+
+        tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src]
+
       tiles = []
 
-      #TODO: This is a dumb way to do it, it will ignore any non-grid aligned tiles and is pretty slow
       tilesTall.times (y) ->
         row = []
         tiles.push row
@@ -496,11 +505,7 @@
         tilesWide.times (x) ->
           posString = x * tileWidth + "x" + y * tileHeight
 
-          img = screenLayer.find("img[data-pos='" + posString + "']")
-
-          imgIndex = tileIndexLookup[img.attr('src')]
-
-          imgIndex = if imgIndex? then imgIndex else -1
+          imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
 
           row.push imgIndex
 
