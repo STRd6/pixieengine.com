@@ -114,30 +114,35 @@
 
     .sprite_container
       display: inline-block
+      position: relative
 
     .animation_editor
       +box-sizing(border-box)
       +user-select(none)
 
-      cursor: default
-      height: 100%
       padding-top: 4em
 
       .user_sprites
-        width: 75%
+        +bounds(75%, 400px)
+        overflow: auto
 
         .sprite_container
+          +border-radius(8px)
           +bounds(96px, 96px)
+          +box-shadow(#ccc, 4px, 4px, 15px)
+          +contents-centered()
 
+          background-color: #fff
+          cursor: move
           margin: 5px
           overflow: hidden
           text-align: center
 
-          img
-            +box-shadow(#ccc)
+          &:hover
+            background-color: #FFF6BF
 
-            cursor: move
-            vertical-align: top
+          img
+            border: none
 
       .frame_box
         +bounds(75%, $frame_box_height)
