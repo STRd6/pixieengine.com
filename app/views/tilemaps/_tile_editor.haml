@@ -73,6 +73,11 @@
     .name ${name}
     .show.on
 
+#saved_selection.template
+  .selection
+    .name ${text}
+    .preview
+
 :coffeescript
   debugMode = false
 
@@ -238,6 +243,12 @@
     rowY = undefined
     row = undefined
 
+    savedSelection = $("#saved_selection").tmpl(
+      text: "Selection" + (++savedSelectionCount)
+    ).appendTo("#saved_selections")
+
+    preview = savedSelection.find(".preview")
+
     selectionData = []
 
     selectionEach (x, y) ->
@@ -246,19 +257,23 @@
         row = []
         selectionData.push row
 
-      row.push tileAt(x, y).attr("src")
+      tile = tileAt(x, y).clone()
+      row.push tile.attr("src")
+
+      tile.css(
+        position: "absolute"
+        top: (selectionData.length - 1) * tileHeight
+        left: (row.length - 1) * tileWidth
+      )
+
+      preview.append(tile)
 
       if remove
         removeTile(x, y)
 
-    s = $("<div/>",
-      class: "selection"
-      text: "Selection" + (++savedSelectionCount)
-    ).appendTo("#saved_selections")
+    savedSelection.data("selectionData", selectionData)
 
-    s.data("selectionData", selectionData)
-
-    selectTile(s, "primary")
+    selectTile(savedSelection, "primary")
 
     selectTool("stamp", "primary")
 
@@ -444,7 +459,7 @@
 
       $(this).find(".tiles").append img
 
-  $('#filename, .layer_select .name').liveEdit()
+  $('#filename, .layer_select .name, #saved_selections .name').liveEdit()
 
   propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
@@ -743,6 +758,20 @@
             border-color: green
           &.secondary
             border-color: blue
+
+          .name
+            padding: 3px
+
+          input.name
+            padding: 2px
+
+          .preview
+            display: none
+            position: relative
+
+          &:hover
+            .preview
+              display: block
 
       .tools
         +tile_tool(eraser)
