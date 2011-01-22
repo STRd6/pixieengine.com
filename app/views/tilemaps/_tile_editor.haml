@@ -73,6 +73,11 @@
     .name ${name}
     .show.on
 
+#saved_selection.template
+  .selection
+    .name ${text}
+    .preview
+
 :coffeescript
   debugMode = false
 
@@ -91,6 +96,11 @@
   tileTray = ".bottom_bar .tiles"
   layerSelect = ".sidebar .layer_select"
 
+  positionElementIndices = []
+
+  $(".screen .layers").length.times () ->
+    positionElementIndices.push {}
+
   $.fn.tilePosition = (event) ->
     offset = this.offset()
 
@@ -102,16 +112,21 @@
       y: localY
     }
 
-  addNewLayer = () ->
-    $("#layer_select").tmpl(
-      name: "Layer " + ($(".layer_select .choice").length + 1)
-    ).appendTo(layerSelect).find('.name').mousedown()
-
+  addScreenLayer = () ->
     $("<div />",
       class: "layer"
     ).appendTo(".main .layers")
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
+
+    positionElementIndices.push {}
+
+  addNewLayer = () ->
+    $("#layer_select").tmpl(
+      name: "Layer " + ($(".layer_select .choice").length + 1)
+    ).appendTo(layerSelect).find('.name').mousedown()
+
+    addScreenLayer()
 
   selectNextVisibleLayer = () ->
     shownLayers = $(".layer_select .choice .show.on")
@@ -153,13 +168,18 @@
 
     targetLayer.append(tile)
 
+    positionElementIndices[currentLayer][posString] = tile.get()
+
   removeTile = (x, y) ->
     tileAt(x, y).remove()
+
+    posString = x + "x" + y
+    positionElementIndices[currentLayer][posString] = undefined
 
   tileAt = (x, y) ->
     posString = x + "x" + y
 
-    $(".screen .layer").eq(currentLayer).find("[data-pos='" + posString + "']")
+    $(positionElementIndices[currentLayer][posString])
 
   getNeighborPositions = (position) ->
     neighbors = [
@@ -171,6 +191,7 @@
       inBounds(neighborPos[0], neighborPos[1])
 
   floodFill = (x, y, tile) ->
+    inSelection = isInSelection(x, y)
     targetSrc = tileAt(x, y).attr("src")
     paintSrc = tile.attr("src")
 
@@ -187,13 +208,23 @@
       neighbors = getNeighborPositions(position);
 
       neighbors.each (neighbor, index) ->
-        if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
-          replaceTile(neighbor[0], neighbor[1], tile)
-          queue.push(neighbor)
+        if inSelection == isInSelection(neighbor[0], neighbor[1])
+          if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
+            replaceTile(neighbor[0], neighbor[1], tile)
+            queue.push(neighbor)
 
+
+  selectionCache = null
+  isInSelection = (x, y) ->
+    if selectionCache
+      selectionCache.top <= y < selectionCache.top + selectionCache.height &&
+      selectionCache.left <= x < selectionCache.left + selectionCache.width
+    else
+      false
 
   clearSelection = () ->
     $(".screen .selection").removeClass("active")
+    selectionCache = null
 
   selectionEach = (callback) ->
     $selection = $(".screen .selection")
@@ -223,6 +254,12 @@
     rowY = undefined
     row = undefined
 
+    savedSelection = $("#saved_selection").tmpl(
+      text: "Selection" + (++savedSelectionCount)
+    ).appendTo("#saved_selections")
+
+    preview = savedSelection.find(".preview")
+
     selectionData = []
 
     selectionEach (x, y) ->
@@ -231,19 +268,23 @@
         row = []
         selectionData.push row
 
-      row.push tileAt(x, y).attr("src")
+      tile = tileAt(x, y).clone()
+      row.push tile.attr("src")
+
+      tile.css(
+        position: "absolute"
+        top: (selectionData.length - 1) * tileHeight
+        left: (row.length - 1) * tileWidth
+      )
+
+      preview.append(tile)
 
       if remove
         removeTile(x, y)
 
-    s = $("<div/>",
-      class: "selection"
-      text: "Selection" + (++savedSelectionCount)
-    ).appendTo("#saved_selections")
+    savedSelection.data("selectionData", selectionData)
 
-    s.data("selectionData", selectionData)
-
-    selectTile(s, "primary")
+    selectTile(savedSelection, "primary")
 
     selectTool("stamp", "primary")
 
@@ -268,18 +309,22 @@
       selectionLeft = if deltaX < 0 then x else selectionStart.x
       selectionTop = if deltaY < 0 then y else selectionStart.y
 
-      $selection.css
+      selectionCache =
         height: selectionHeight
         left: selectionLeft
         top: selectionTop
         width: selectionWidth
 
+      $selection.css selectionCache
+
     else
-      $(".screen .selection").addClass('active').css
+      selectionCache =
         height: tileHeight
         left: x
         top: y
         width: tileWidth
+
+      $(".screen .selection").addClass('active').css selectionCache
 
       selectionStart = {x: x, y: y}
 
@@ -429,7 +474,7 @@
 
       $(this).find(".tiles").append img
 
-  $('#filename, .layer_select .name').liveEdit()
+  $('#filename, .layer_select .name, #saved_selections .name').liveEdit()
 
   propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
@@ -486,9 +531,15 @@
 
       screenLayer = $(".screen .layers .layer").eq(i)
 
+      tileLookup = {}
+
+      screenLayer.find("img").each () ->
+        src = this.getAttribute("src")
+
+        tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src]
+
       tiles = []
 
-      #TODO: This is a dumb way to do it, it will ignore any non-grid aligned tiles and is pretty slow
       tilesTall.times (y) ->
         row = []
         tiles.push row
@@ -496,11 +547,7 @@
         tilesWide.times (x) ->
           posString = x * tileWidth + "x" + y * tileHeight
 
-          img = screenLayer.find("img[data-pos='" + posString + "']")
-
-          imgIndex = tileIndexLookup[img.attr('src')]
-
-          imgIndex = if imgIndex? then imgIndex else -1
+          imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
 
           row.push imgIndex
 
@@ -529,6 +576,8 @@
     tileWidth = data.tileWidth
     tileHeight = data.tileHeight
 
+    positionElementIndices = []
+
     tileLookup = {}
 
     $(tileTray).html('')
@@ -554,9 +603,7 @@
     data.layers.each (layer, i) ->
       currentLayer = i
 
-      $("<div />",
-        class: "layer"
-      ).appendTo(".main .layers")
+      addScreenLayer()
 
       $("#layer_select").tmpl(
         name: layer.name
@@ -570,8 +617,6 @@
     $(".screen .cursor").css
       width: tileWidth
       height: tileHeight
-
-    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
     $(layerSelect).find(".name").first().trigger("mousedown")
 
@@ -728,6 +773,20 @@
             border-color: green
           &.secondary
             border-color: blue
+
+          .name
+            padding: 3px
+
+          input.name
+            padding: 2px
+
+          .preview
+            display: none
+            position: relative
+
+          &:hover
+            .preview
+              display: block
 
       .tools
         +tile_tool(eraser)
