@@ -452,11 +452,11 @@
       prevTile("secondary")
     x: (event) ->
       nextTile("secondary")
+    backspace: selectionDelete
     del: selectionDelete
     esc: clearSelection
     "ctrl+c": selectionCopy
     "ctrl+x": selectionCut
-
 
   $.each hotkeys, (key, fn) ->
     $(document).bind "keydown", key, (event) ->
