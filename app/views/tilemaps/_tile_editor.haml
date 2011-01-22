@@ -84,9 +84,6 @@
   tileWidth = #{tile_width}
   tileHeight = #{tile_height}
 
-  gridResolutionX = tileWidth
-  gridResolutionY = tileHeight
-
   currentLayer = 0
 
   modeDown = null
@@ -97,8 +94,8 @@
   $.fn.tilePosition = (event) ->
     offset = this.offset()
 
-    localY = (event.pageY - offset.top).snap(gridResolutionY).clamp(0, (tilesTall - 1) * tileHeight)
-    localX = (event.pageX - offset.left).snap(gridResolutionX).clamp(0, (tilesWide - 1) * tileWidth)
+    localY = (event.pageY - offset.top).snap(tileHeight).clamp(0, (tilesTall - 1) * tileHeight)
+    localX = (event.pageX - offset.left).snap(tileWidth).clamp(0, (tilesWide - 1) * tileWidth)
 
     return {
       x: localX
@@ -458,11 +455,16 @@
     , "json")
 
   window.saveData = () ->
+    tileIndexLookup = {}
+
     tileset = $(".bottom_bar .tiles img").map((i) ->
       $this = $(this)
+      src = $this.attr("src")
+
+      tileIndexLookup[src] = i
 
       mapTileData = {
-        src: $this.attr("src")
+        src: src
       }
 
       if mapTileId = $this.data('guid')
@@ -496,7 +498,9 @@
 
           img = screenLayer.find("img[data-pos='" + posString + "']")
 
-          imgIndex = $(".bottom_bar .tiles img[src='"+img.attr('src')+"']").index()
+          imgIndex = tileIndexLookup[img.attr('src')]
+
+          imgIndex = if imgIndex? then imgIndex else -1
 
           row.push imgIndex
 
@@ -562,6 +566,10 @@
         row.each (tile, x) ->
           if tile >= 0
             replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+    $(".screen .cursor").css
+      width: tileWidth
+      height: tileHeight
 
     $(".screen").find(".cursor, .selection").appendTo(".main .layers")
 
