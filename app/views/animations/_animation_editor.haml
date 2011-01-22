@@ -6,7 +6,6 @@
   .frame_box
     %h3 Frames
     .sprites
-      = render :partial => 'animations/animation_sprite', :collection => @user_sprites[0..5]
 
   .preview_box
     %h3 Preview
@@ -100,17 +99,15 @@
     img
       +inline-block
 
-      border: 1px solid #CCC
-
     .x
       +bounds(24px, 24px)
 
       background-image: url(/images/x.png)
       cursor: pointer
       display: inline-block
-      left: -18px
-      position: relative
-      top: -52px
+      right: -10px
+      position: absolute
+      top: -10px
 
     .sprite_container
       display: inline-block
@@ -136,7 +133,6 @@
           cursor: move
           margin: 5px
           overflow: hidden
-          text-align: center
 
           &:hover
             background-color: #FFF6BF
@@ -154,29 +150,46 @@
         white-space: nowrap
 
         .sprite_container
-          +bounds(64px, 64px)
+          +border-radius(8px)
+          +bounds(72px, 72px)
+          +box-shadow(#ccc, 2px, 2px, 15px)
 
+          background-color: #fff
           margin-left: 10px
           margin-right: 10px
+          position: relative
+
+          &:hover
+            background-color: #FFF6BF
+
+        .sprites
+          min-height: 77px
 
         img
           +bounds(64px, 64px)
-          +box-shadow(#ccc)
 
           cursor: move
+          margin: auto
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          right: 0
           vertical-align: baseline
 
       .preview_box
         +bounds(23%, $frame_box_height)
 
-        bottom: 0
+        bottom: 8px
         display: inline-block
         right: 0
         position: fixed
 
         .sprites_container
+          +border-radius(8px)
           +bounds(96px, 96px)
 
+          background-color: #fff
           position: relative
 
           #play
@@ -184,7 +197,7 @@
 
             background-image: url(/images/icons/control_play.png)
             position: absolute
-            bottom: -8px
+            bottom: -16px
             right: 0
 
             &:hover
@@ -201,7 +214,7 @@
 
             background-image: url(/images/icons/control_stop.png)
             position: absolute
-            bottom: -8px
+            bottom: -16px
             left: 0
 
             &:hover
@@ -210,15 +223,15 @@
         .sprites
           +bounds(64px, 64px)
 
-          position: relative
-
         img
-          border: none
+          display: none
+          margin: auto
           position: absolute
           top: 0
           left: 0
-          display: none
-          margin: 5px
+          right: 0
+          bottom: 0
+
 
           &.active
             display: block
