@@ -191,6 +191,7 @@
       inBounds(neighborPos[0], neighborPos[1])
 
   floodFill = (x, y, tile) ->
+    inSelection = isInSelection(x, y)
     targetSrc = tileAt(x, y).attr("src")
     paintSrc = tile.attr("src")
 
@@ -207,13 +208,23 @@
       neighbors = getNeighborPositions(position);
 
       neighbors.each (neighbor, index) ->
-        if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
-          replaceTile(neighbor[0], neighbor[1], tile)
-          queue.push(neighbor)
+        if inSelection == isInSelection(neighbor[0], neighbor[1])
+          if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
+            replaceTile(neighbor[0], neighbor[1], tile)
+            queue.push(neighbor)
 
+
+  selectionCache = null
+  isInSelection = (x, y) ->
+    if selectionCache
+      selectionCache.top <= y < selectionCache.top + selectionCache.height &&
+      selectionCache.left <= x < selectionCache.left + selectionCache.width
+    else
+      false
 
   clearSelection = () ->
     $(".screen .selection").removeClass("active")
+    selectionCache = null
 
   selectionEach = (callback) ->
     $selection = $(".screen .selection")
@@ -298,18 +309,22 @@
       selectionLeft = if deltaX < 0 then x else selectionStart.x
       selectionTop = if deltaY < 0 then y else selectionStart.y
 
-      $selection.css
+      selectionCache =
         height: selectionHeight
         left: selectionLeft
         top: selectionTop
         width: selectionWidth
 
+      $selection.css selectionCache
+
     else
-      $(".screen .selection").addClass('active').css
+      selectionCache =
         height: tileHeight
         left: x
         top: y
         width: tileWidth
+
+      $(".screen .selection").addClass('active').css selectionCache
 
       selectionStart = {x: x, y: y}
 
