@@ -576,6 +576,8 @@
     tileWidth = data.tileWidth
     tileHeight = data.tileHeight
 
+    $('.screen .layers').css('background-image', 'url(/images/tile_grid_' + tileWidth + '.png)')
+
     positionElementIndices = []
 
     tileLookup = {}
@@ -829,7 +831,7 @@
         width: 100%
 
         .layers
-          background-image: url('/images/tile_editor_grid.png')
+          background-image: url('/images/tile_grid_#{tile_width}.png')
           border-bottom: 1px solid #414141
           border-right: 1px solid #414141
 
