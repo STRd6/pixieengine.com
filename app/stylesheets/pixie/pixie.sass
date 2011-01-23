@@ -1,4 +1,5 @@
 @import "compass/css3/box-sizing"
+@import util
 
 .pixie
   .canvas
@@ -20,6 +21,12 @@
     overflow: hidden
     position: relative
     width: 512px
+
+.color_toggle
+  +bounds(16px, 16px)
+
+  background-image: url(/images/pixie/color_switch_arrow.png)
+  float: right
 
 .pixie
   .frame
