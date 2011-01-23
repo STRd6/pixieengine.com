@@ -21,6 +21,7 @@ PixieStrd6Com::Application.routes.draw do |map|
         get :docs
         get :edit_code
         get :fork
+        get :fullscreen
         get :load
         get :run
         get :mobile
