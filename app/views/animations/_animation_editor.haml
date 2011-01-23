@@ -1,5 +1,4 @@
 .animation_editor
-  %h3 Animation Editor
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
@@ -11,7 +10,6 @@
     %h3 Animations
 
   .preview_box
-    %h3 Preview
     .sprites_container
       .sprites
       #play
@@ -30,6 +28,7 @@
 
   $('.user_sprites .sprite_container').draggable
     connectToSortable: '.frame_box .sprites'
+    containment: 'document'
     helper: 'clone'
     opacity: 0.7
 
@@ -123,10 +122,11 @@
       +box-sizing(border-box)
       +user-select(none)
 
-      padding-top: 2em
+      height: 100%
+      padding: 2em 2em 160px 2em
 
       .user_sprites
-        +bounds(75%, 420px)
+        +bounds(75%, 100%)
         overflow-x: hidden
         overflow-y: auto
 
@@ -138,7 +138,7 @@
 
           background-color: #fff
           cursor: move
-          margin: 5px
+          margin: 4px
           overflow: hidden
 
           &:hover
