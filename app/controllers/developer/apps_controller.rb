@@ -428,6 +428,10 @@ bgMusic.play()
     render :layout => "mobile"
   end
 
+  def fullscreen
+    render :layout => "fullscreen"
+  end
+
   def widget
     respond_to do |format|
       format.html {render :layout => "widget"}
