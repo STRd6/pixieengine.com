@@ -660,12 +660,28 @@ Number.prototype.clamp = function(min, max) {
 
       var primaryColorPicker = ColorPicker().addClass('primary');
       var secondaryColorPicker = ColorPicker().addClass('secondary');
+
+      function switchColors() {
+        var primary = primaryColorPicker.css('backgroundColor');
+        var secondary = secondaryColorPicker.css('backgroundColor');
+
+        canvas.color(secondary);
+        canvas.color(primary, true);
+      }
+
+      var colorToggle = $("<div>", {
+        "class": "color_toggle"
+      }).click(function() {
+        switchColors();
+      });
+
       var tilePreview = true;
 
       var colorPickerHolder = $(div)
         .addClass('color_picker_holder')
         .append(primaryColorPicker)
-        .append(secondaryColorPicker);
+        .append(secondaryColorPicker)
+        .append(colorToggle);
 
       colorbar.append(colorPickerHolder);
       colorbar.append(swatches);

@@ -11,7 +11,12 @@
         inputs = $(this).find("input")
 
         if key = inputs.eq(0).val()
-          props[key] = inputs.eq(1).val()
+          value = inputs.eq(1).val()
+
+          try
+            props[key] = JSON.parse(value)
+          catch e
+            props[key] = value
 
       props
 
@@ -36,6 +41,8 @@
       ).appendTo cell
 
       cell = $("<td>").appendTo(row)
+
+      value = JSON.stringify(value) unless typeof value == "string"
 
       $("<input>",
         type: "text"

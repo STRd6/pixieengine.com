@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 18 Jan 2011 04:36:51 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 23 Jan 2011 02:03:26 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -12,10 +12,15 @@
         var props;
         props = {};
         element.find("tr").each(function() {
-          var inputs, key;
+          var inputs, key, value;
           inputs = $(this).find("input");
           if (key = inputs.eq(0).val()) {
-            return props[key] = inputs.eq(1).val();
+            value = inputs.eq(1).val();
+            try {
+              return props[key] = JSON.parse(value);
+            } catch (e) {
+              return props[key] = value;
+            }
           }
         });
         return props;
@@ -37,6 +42,9 @@
           value: key
         }).appendTo(cell);
         cell = $("<td>").appendTo(row);
+        if (typeof value !== "string") {
+          value = JSON.stringify(value);
+        }
         $("<input>", {
           type: "text",
           value: value
