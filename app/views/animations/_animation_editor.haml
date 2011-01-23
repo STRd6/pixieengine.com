@@ -76,8 +76,31 @@
     $('#play').removeClass("pause")
 
   $('.frame_box .sprite_container').live
+    click: ->
+      sprite = $(this)
+      if sprite.hasClass('selected')
+        sprite.removeClass('selected')
+      else
+        sprite.parent().find('.selected').removeClass('selected')
+        sprite.addClass('selected')
     mouseenter: -> $('<div class="x" />').appendTo($(this))
     mouseleave: -> $(this).find('.x').remove()
+
+  $(document).bind "keydown", 'left', (event) ->
+    event.preventDefault()
+
+    selected_sprite = $('.frame_box .sprite_container.selected')
+
+    if (selected_sprite.prev().length > 0)
+      selected_sprite.prev().before(selected_sprite)
+
+  $(document).bind "keydown", 'right', (event) ->
+    event.preventDefault()
+
+    selected_sprite = $('.frame_box .sprite_container.selected')
+
+    if (selected_sprite.next().length > 0)
+      selected_sprite.next().after(selected_sprite)
 
   $('.x').live 'click', ->
     $(this).parent().remove()
@@ -160,6 +183,7 @@
           +border-radius(8px)
           +bounds(72px, 72px)
           +box-shadow(#ccc, 2px, 2px, 15px)
+          +box-sizing(border-box)
 
           background-color: #fff
           margin-left: 10px
@@ -168,6 +192,9 @@
 
           &:hover
             background-color: #FFF6BF
+
+          &.selected
+            border: 3px solid #FFD324
 
         .sprites
           min-height: 77px
