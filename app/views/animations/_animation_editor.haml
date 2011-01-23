@@ -4,10 +4,13 @@
 
   .frame_box
     %h3 Frames
+    %p Drag sprites here to make an animation
     .sprites
 
   .animations
     %h3 Animations
+    .name Animation 1
+    .animation.active
 
   .preview_box
     .sprites_container
@@ -20,6 +23,8 @@
 
   $('.frame_box').droppable(
     appendTo: '.frame_box .sprites'
+    drop: ->
+      $(this).find('p').remove()
   )
 
   $('.frame_box .sprites').sortable
@@ -76,22 +81,19 @@
     $('#play').removeClass("pause")
 
   $('.frame_box .sprite_container').live
-    click: ->
-      sprite = $(this)
-      if sprite.hasClass('selected')
-        sprite.removeClass('selected')
-      else
-        sprite.parent().find('.selected').removeClass('selected')
-        sprite.addClass('selected')
+    click: -> $(this).addClass('selected')
     mouseenter: -> $('<div class="x" />').appendTo($(this))
     mouseleave: -> $(this).find('.x').remove()
+
+  $(document).mousedown (event) ->
+    $('.frame_box .sprite_container.selected').removeClass('selected')
 
   $(document).bind "keydown", 'left', (event) ->
     event.preventDefault()
 
     selected_sprite = $('.frame_box .sprite_container.selected')
 
-    if (selected_sprite.prev().length > 0)
+    if selected_sprite.prev().length
       selected_sprite.prev().before(selected_sprite)
 
   $(document).bind "keydown", 'right', (event) ->
@@ -99,8 +101,10 @@
 
     selected_sprite = $('.frame_box .sprite_container.selected')
 
-    if (selected_sprite.next().length > 0)
+    if selected_sprite.next().length
       selected_sprite.next().after(selected_sprite)
+
+  $('.animations .name').liveEdit()
 
   $('.x').live 'click', ->
     $(this).parent().remove()
@@ -126,6 +130,16 @@
 
     img
       +inline-block
+
+    .animation
+      +border-radius(8px)
+      +bounds(96px, 96px)
+      +box-sizing(border-box)
+
+      background-color: #fff
+
+      &.active
+        border: 3px solid green
 
     .x
       +bounds(24px, 24px)
@@ -218,6 +232,10 @@
         position: fixed
         right: 0
         top: 20px
+
+        .name
+          text-align: center
+          width: 96px
 
       .preview_box
         +bounds(23%, $frame_box_height)
