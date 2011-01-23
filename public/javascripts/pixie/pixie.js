@@ -672,7 +672,6 @@ Number.prototype.clamp = function(min, max) {
       var colorToggle = $("<div>", {
         "class": "color_toggle"
       }).click(function() {
-        console.log('clicked');
         switchColors();
       });
 
