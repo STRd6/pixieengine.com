@@ -5,12 +5,15 @@
   .frame_box
     %h3 Frames
     .sprites
-      %p Drag sprites here to make an animation
+      .demo
+      %p Drag sprites here to start an animation
 
   .animations
     %h3 Animations
     .name Animation 1
     .animation.active
+      .cover
+      .sprites
 
   .preview_box
     .sprites_container
@@ -21,11 +24,10 @@
 :coffeescript
   animation_id = null
 
-  $('.frame_box').droppable(
-    appendTo: '.frame_box .sprites'
+  $('.frame_box').droppable
     drop: ->
       $(this).find('p').remove()
-  )
+      $(this).find('.demo').remove()
 
   $('.frame_box .sprites').sortable
     axis: "x"
@@ -234,6 +236,25 @@
         .sprites
           min-height: 77px
 
+        .demo
+          +border-radius(8px)
+          +bounds(72px, 72px)
+          +box-shadow(#ccc, 2px, 2px, 15px)
+          +box-sizing(border-box)
+
+          background-color: #ccc
+          border: 3px dotted #aaa
+          margin-left: 10px
+          margin-right: 10px
+          position: fixed
+          left: 2px
+          bottom: 40px
+
+        p
+          position: fixed
+          bottom: 55px
+          left: 100px
+
         img
           +bounds(64px, 64px)
 
@@ -253,6 +274,9 @@
         position: fixed
         right: 0
         top: 20px
+
+        .cover
+          +bounds(64px, 64px)
 
         .name
           text-align: center
