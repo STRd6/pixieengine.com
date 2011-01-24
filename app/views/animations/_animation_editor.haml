@@ -54,13 +54,16 @@
   play_animation = ->
     clearInterval(animation_id)
 
-    $('.preview_box img').remove()
-    animation_sprites = $('.sprites img').css('display', '').clone()
-    $('.preview_box .sprites').append(animation_sprites)
+    if $('.preview_box img').length != $('.frame_box img').length
+      $('.preview_box img').remove()
+      animation_sprites = $('.sprites img').css('display', '').clone()
+      $('.preview_box .sprites').append(animation_sprites)
 
-    animation_sprites.first().addClass('active')
+      animation_sprites.first().addClass('active')
 
-    animation_id = setInterval(play_next, 110)
+      animation_id = setInterval(play_next, 110)
+    else
+      animation_id = setInterval(play_next, 110)
 
   pause_animation = ->
     clearInterval(animation_id)
