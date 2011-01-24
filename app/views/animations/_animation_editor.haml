@@ -69,12 +69,10 @@
     $('.preview_box img').remove()
 
   $('#play').click ->
-    if $(this).hasClass("pause")
-      pause_animation()
-    else
-      play_animation()
+    if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-    $(this).toggleClass("pause")
+    if $('.frame_box .sprites img').length
+      $(this).toggleClass("pause")
 
   $('#stop').click ->
     stop_animation()
@@ -96,6 +94,7 @@
     event.preventDefault()
 
     selected_sprite = $('.frame_box .sprite_container.selected')
+    selected_sprite.find('.x, .duplicate').remove()
 
     if selected_sprite.prev().length
       selected_sprite.prev().before(selected_sprite)
@@ -104,6 +103,7 @@
     event.preventDefault()
 
     selected_sprite = $('.frame_box .sprite_container.selected')
+    selected_sprite.find('.x, .duplicate').remove()
 
     if selected_sprite.next().length
       selected_sprite.next().after(selected_sprite)
