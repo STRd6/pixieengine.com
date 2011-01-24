@@ -4,13 +4,16 @@
 
   .frame_box
     %h3 Frames
-    %p Drag sprites here to make an animation
     .sprites
+      .demo
+      %p Drag sprites here to start animating
 
   .animations
-    %h3 Animations
     .name Animation 1
     .animation.active
+      .cover
+      .sprites
+    %button#new_animation New
 
   .preview_box
     .sprites_container
@@ -18,96 +21,143 @@
       #play
       #stop
 
+#create_animation.template
+  .name ${name}
+  .animation.active
+    .cover
+    .sprites
+
+#default_frame.template
+  .demo
+  %p Drag sprites here to start animating
+
 :coffeescript
-  animation_id = null
 
-  $('.frame_box').droppable(
-    appendTo: '.frame_box .sprites'
-    drop: ->
-      $(this).find('p').remove()
+  $(->
+    animation_id = null
+
+    $('.animation').live 'click', ->
+      $('.animations .animation.active').removeClass('active')
+      $(this).addClass('active')
+
+    $('#new_animation').mousedown ->
+      # Save sprites in frame to currently active animation
+
+      $('.animations .animation.active').removeClass('active')
+
+      $('.frame_box .sprites').children().remove()
+
+      $('#default_frame').tmpl().appendTo($('.frame_box .sprites'))
+
+      $('#create_animation').tmpl(
+        name: "Animation " + ($('.animations .animation').length + 1)
+      ).insertAfter($('.animations .animation').last())
+
+    $('.frame_box').droppable
+      drop: ->
+        $(this).find('p').remove()
+        $(this).find('.demo').remove()
+
+    $('.frame_box .sprites').sortable
+      axis: "x"
+      tolerance: "pointer"
+
+    $('.user_sprites .sprite_container').draggable
+      connectToSortable: '.frame_box .sprites'
+      containment: 'document'
+      helper: 'clone'
+      opacity: 0.7
+
+    $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
+      event.preventDefault()
+
+    play_next = ->
+      animation_sprites = $('.preview_box img')
+      active = $('.preview_box img.active').removeClass('active')
+
+      active_index = active.index()
+      length = animation_sprites.length
+
+      animation_sprites.eq((active_index + 1) % length).addClass('active')
+
+    play_animation = ->
+      clearInterval(animation_id)
+
+      if $('.preview_box img').length != $('.frame_box img').length
+        $('.preview_box img').remove()
+        animation_sprites = $('.sprites img').css('display', '').clone()
+        $('.preview_box .sprites').append(animation_sprites)
+
+        animation_sprites.first().addClass('active')
+
+        animation_id = setInterval(play_next, 110)
+      else
+        animation_id = setInterval(play_next, 110)
+
+    pause_animation = ->
+      clearInterval(animation_id)
+
+    stop_animation = ->
+      clearInterval(animation_id)
+
+      $('.preview_box img').remove()
+
+    $('#play').click ->
+      if $(this).hasClass("pause") then pause_animation() else play_animation()
+
+      if $('.frame_box .sprites img').length
+        $(this).toggleClass("pause")
+
+    $('#stop').click ->
+      stop_animation()
+      $('#play').removeClass("pause")
+
+    $('.frame_box .sprite_container').live
+      click: -> $(this).addClass('selected')
+      mouseenter: ->
+        $('<div class="x" />').appendTo($(this))
+        $('<div class="duplicate" />').appendTo($(this))
+      mouseleave: ->
+        $(this).find('.x').remove()
+        $(this).find('.duplicate').remove()
+
+    $(document).mousedown (event) ->
+      $('.frame_box .sprite_container.selected').removeClass('selected')
+
+    $(document).bind "keydown", 'left', (event) ->
+      event.preventDefault()
+
+      selected_sprite = $('.frame_box .sprite_container.selected')
+      selected_sprite.find('.x, .duplicate').remove()
+
+      if selected_sprite.prev().length
+        selected_sprite.prev().before(selected_sprite)
+
+    $(document).bind "keydown", 'right', (event) ->
+      event.preventDefault()
+
+      selected_sprite = $('.frame_box .sprite_container.selected')
+      selected_sprite.find('.x, .duplicate').remove()
+
+      if selected_sprite.next().length
+        selected_sprite.next().after(selected_sprite)
+
+    $('.animations .name').liveEdit()
+
+    $('.x').live 'click', ->
+      $(this).parent().remove()
+
+      if $('.frame_box .sprites').children().length == 0
+        $('#default_frame').tmpl().appendTo($('.frame_box .sprites'))
+
+
+    $('.duplicate').live 'click', ->
+      parent = $(this).parent()
+
+      parent.clone().insertAfter(parent)
+
+      parent.parent().find('.x, .duplicate').remove()
   )
-
-  $('.frame_box .sprites').sortable
-    axis: "x"
-    tolerance: "pointer"
-
-  $('.user_sprites .sprite_container').draggable
-    connectToSortable: '.frame_box .sprites'
-    containment: 'document'
-    helper: 'clone'
-    opacity: 0.7
-
-  $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
-    event.preventDefault()
-
-  play_next = ->
-    animation_sprites = $('.preview_box img')
-    active = $('.preview_box img.active').removeClass('active')
-
-    active_index = active.index()
-    length = animation_sprites.length
-
-    animation_sprites.eq((active_index + 1) % length).addClass('active')
-
-  play_animation = ->
-    clearInterval(animation_id)
-
-    $('.preview_box img').remove()
-    animation_sprites = $('.sprites img').css('display', '').clone()
-    $('.preview_box .sprites').append(animation_sprites)
-
-    animation_sprites.first().addClass('active')
-
-    animation_id = setInterval(play_next, 100)
-
-  pause_animation = ->
-    clearInterval(animation_id)
-
-  stop_animation = ->
-    clearInterval(animation_id)
-
-    $('.preview_box img').remove()
-
-  $('#play').click ->
-    if $(this).hasClass("pause")
-      pause_animation()
-    else
-      play_animation()
-
-    $(this).toggleClass("pause")
-
-  $('#stop').click ->
-    stop_animation()
-    $('#play').removeClass("pause")
-
-  $('.frame_box .sprite_container').live
-    click: -> $(this).addClass('selected')
-    mouseenter: -> $('<div class="x" />').appendTo($(this))
-    mouseleave: -> $(this).find('.x').remove()
-
-  $(document).mousedown (event) ->
-    $('.frame_box .sprite_container.selected').removeClass('selected')
-
-  $(document).bind "keydown", 'left', (event) ->
-    event.preventDefault()
-
-    selected_sprite = $('.frame_box .sprite_container.selected')
-
-    if selected_sprite.prev().length
-      selected_sprite.prev().before(selected_sprite)
-
-  $(document).bind "keydown", 'right', (event) ->
-    event.preventDefault()
-
-    selected_sprite = $('.frame_box .sprite_container.selected')
-
-    if selected_sprite.next().length
-      selected_sprite.next().after(selected_sprite)
-
-  $('.animations .name').liveEdit()
-
-  $('.x').live 'click', ->
-    $(this).parent().remove()
 
 %style
   :sass
@@ -142,7 +192,7 @@
         border: 3px solid green
 
     .x
-      +bounds(24px, 24px)
+      +bounds(24px, 29px)
 
       background-image: url(/images/x.png)
       cursor: pointer
@@ -150,6 +200,16 @@
       right: -10px
       position: absolute
       top: -10px
+
+    .duplicate
+      +bounds(24px, 29px)
+
+      background-image: url(/images/duplicate_layer.png)
+      cursor: pointer
+      display: inline-block
+      right: -10px
+      position: absolute
+      bottom: 18px
 
     .sprite_container
       display: inline-block
@@ -208,10 +268,29 @@
             background-color: #FFF6BF
 
           &.selected
-            border: 3px solid #FFD324
+            border: 4px solid green
 
         .sprites
           min-height: 77px
+
+        .demo
+          +border-radius(8px)
+          +bounds(72px, 72px)
+          +box-shadow(#ccc, 2px, 2px, 15px)
+          +box-sizing(border-box)
+
+          background-color: #ccc
+          border: 3px dotted #aaa
+          margin-left: 10px
+          margin-right: 10px
+          position: fixed
+          left: 2px
+          bottom: 40px
+
+        p
+          position: fixed
+          bottom: 55px
+          left: 100px
 
         img
           +bounds(64px, 64px)
@@ -232,6 +311,9 @@
         position: fixed
         right: 0
         top: 20px
+
+        .cover
+          +bounds(64px, 64px)
 
         .name
           text-align: center
