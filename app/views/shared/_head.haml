@@ -16,6 +16,11 @@
   = stylesheet_link_tag 'print.css', :media => 'print'
   = stylesheet_link_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css"
 
+  :plain
+    <!--[if lte IE 9]>
+      #{stylesheet_link_tag "unsupported.css"}
+    <![endif]-->
+
   = render :partial => "/shared/javascripts"
 
   :javascript
