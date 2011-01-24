@@ -1,2 +1,7 @@
-- collections.each do |collection|
-  = link_to collection.name, :action => :show, :id => collection.id
+= will_paginate paged_collections
+
+- paged_collections.each do |collection|
+  .collections
+    = link_to "#{collection.user.display_name}'s #{collection.name}", :action => :show, :id => collection.id
+
+= will_paginate paged_collections

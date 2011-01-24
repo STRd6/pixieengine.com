@@ -41,9 +41,22 @@ class CollectionsController < ResourceController::Base
 
   private
 
+  def per_page
+    if params[:per_page].blank?
+      Collection.per_page
+    else
+      params[:per_page].to_i
+    end
+  end
+
   helper_method :collections
   def collections
     collection
+  end
+
+  helper_method :paged_collections
+  def paged_collections
+    collection.paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
   end
 
   def user
