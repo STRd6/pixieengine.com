@@ -2,8 +2,8 @@
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
+  %h3 Frames
   .frame_box
-    %h3 Frames
     .sprites
 
   .animations
@@ -47,6 +47,12 @@
       active_animation_sprites().children().remove()
       frame_sprites().clone().appendTo(active_animation_sprites())
 
+    $('.user_sprites img').each ->
+      if $(this).data('width') > 96
+        $(this).css
+          width: '86px'
+          height: '86px'
+
     $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
     $('#create_animation').tmpl(
@@ -86,6 +92,10 @@
         $(this).removeClass('highlight')
         $(this).find('p').remove()
         $(this).find('.demo').remove()
+
+        frame_sprites().find('img').css
+          width: "64px"
+          height: "64px"
 
         active_animation().find('.cover').children().remove()
         active_animation().find('.cover').append(ui.draggable.find('img').clone())
@@ -204,7 +214,7 @@
   :sass
     @import util
 
-    $frame_box_height = 140px
+    $frame_box_height = 120px
     $header_color = #BFE2FF
     $background_color = #00010D
 
@@ -296,7 +306,7 @@
         white-space: nowrap
 
         &.highlight
-          background-color: rgba(0, 255, 0, 0.35)
+          background-color: #264409
 
         .sprite_container
           +border-radius(8px)
@@ -316,6 +326,7 @@
             border: 4px solid green
 
         .sprites
+          margin-top: 23px
           min-height: 77px
 
         .demo
@@ -330,12 +341,12 @@
           margin-right: 10px
           position: fixed
           left: 0
-          bottom: 41px
+          bottom: 25px
 
         p
           color: #555
           position: fixed
-          bottom: 55px
+          bottom: 39px
           left: 100px
 
         img
