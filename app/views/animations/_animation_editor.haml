@@ -5,14 +5,8 @@
   .frame_box
     %h3 Frames
     .sprites
-      .demo
-      %p Drag sprites here to start animating
 
   .animations
-    .name Animation 1
-    .animation.active
-      .cover
-      .sprites
     %button#new_animation New
 
   .preview_box
@@ -34,37 +28,78 @@
 :coffeescript
 
   $(->
-    animation_id = null
+    clear_frame_sprites = -> frame_sprites().remove()
 
-    $('.animation').live 'click', ->
-      $('.animations .animation.active').removeClass('active')
+    frame_sprites = -> frame_sprites_container().children()
+
+    frame_sprites_container = -> $('.frame_box .sprites')
+
+    active_animation = -> $('.animations .animation.active')
+
+    active_animation_sprites = -> active_animation().find('.sprites')
+
+    clear_preview = -> $('.preview_box img').remove()
+
+    update_active_animation = ->
+      active_animation_sprites().children().remove()
+      frame_sprites().clone().appendTo(active_animation_sprites())
+
+    $('#default_frame').tmpl().appendTo(frame_sprites_container())
+
+    $('#create_animation').tmpl(
+      name: "Animation 1"
+    ).insertBefore($('#new_animation'))
+
+    animation_id = null
+    preview_dirty = false
+
+    $('.animation').live 'mousedown', ->
+      update_active_animation()
+      stop_animation()
+
+      clear_frame_sprites()
+      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
+
+      active_animation().removeClass('active')
       $(this).addClass('active')
 
     $('#new_animation').mousedown ->
-      # Save sprites in frame to currently active animation
+      update_active_animation()
+      stop_animation()
 
-      $('.animations .animation.active').removeClass('active')
+      active_animation().removeClass('active')
 
-      $('.frame_box .sprites').children().remove()
+      clear_frame_sprites()
 
-      $('#default_frame').tmpl().appendTo($('.frame_box .sprites'))
+      $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
       $('#create_animation').tmpl(
         name: "Animation " + ($('.animations .animation').length + 1)
       ).insertAfter($('.animations .animation').last())
 
     $('.frame_box').droppable
-      drop: ->
+      addClass: false
+      drop: (event, ui) ->
+        $(this).removeClass('highlight')
         $(this).find('p').remove()
         $(this).find('.demo').remove()
 
-    $('.frame_box .sprites').sortable
+        active_animation().find('.cover').children().remove()
+        active_animation().find('.cover').append(ui.draggable.find('img').clone())
+      out: ->
+        $(this).removeClass('highlight')
+      over: ->
+        $(this).addClass('highlight')
+      tolerance: "touch"
+
+    frame_sprites_container().sortable
       axis: "x"
       tolerance: "pointer"
 
     $('.user_sprites .sprite_container').draggable
+      addClasses: false
       connectToSortable: '.frame_box .sprites'
-      containment: 'document'
+      containment: 'window'
       helper: 'clone'
       opacity: 0.7
 
@@ -72,23 +107,24 @@
       event.preventDefault()
 
     play_next = ->
-      animation_sprites = $('.preview_box img')
+      preview_sprites = $('.preview_box img')
       active = $('.preview_box img.active').removeClass('active')
 
       active_index = active.index()
-      length = animation_sprites.length
+      length = preview_sprites.length
 
-      animation_sprites.eq((active_index + 1) % length).addClass('active')
+      preview_sprites.eq((active_index + 1) % length).addClass('active')
 
     play_animation = ->
       clearInterval(animation_id)
 
-      if $('.preview_box img').length != $('.frame_box img').length
-        $('.preview_box img').remove()
-        animation_sprites = $('.sprites img').css('display', '').clone()
-        $('.preview_box .sprites').append(animation_sprites)
+      if ($('.preview_box img').length != $('.frame_box img').length || preview_dirty)
+        preview_dirty = false
+        clear_preview()
+        preview_sprites = $('.frame_box .sprites img').css('display', '').clone()
+        $('.preview_box .sprites').append(preview_sprites)
 
-        animation_sprites.first().addClass('active')
+        preview_sprites.first().addClass('active')
 
         animation_id = setInterval(play_next, 110)
       else
@@ -100,17 +136,18 @@
     stop_animation = ->
       clearInterval(animation_id)
 
-      $('.preview_box img').remove()
+      clear_preview()
 
-    $('#play').click ->
+      $('#play').removeClass("pause")
+
+    $('#play').mousedown ->
       if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-      if $('.frame_box .sprites img').length
+      if frame_sprites().length
         $(this).toggleClass("pause")
 
-    $('#stop').click ->
+    $('#stop').mousedown ->
       stop_animation()
-      $('#play').removeClass("pause")
 
     $('.frame_box .sprite_container').live
       click: -> $(this).addClass('selected')
@@ -125,6 +162,7 @@
       $('.frame_box .sprite_container.selected').removeClass('selected')
 
     $(document).bind "keydown", 'left', (event) ->
+      preview_dirty = true
       event.preventDefault()
 
       selected_sprite = $('.frame_box .sprite_container.selected')
@@ -134,6 +172,7 @@
         selected_sprite.prev().before(selected_sprite)
 
     $(document).bind "keydown", 'right', (event) ->
+      preview_dirty = true
       event.preventDefault()
 
       selected_sprite = $('.frame_box .sprite_container.selected')
@@ -147,11 +186,10 @@
     $('.x').live 'click', ->
       $(this).parent().remove()
 
-      if $('.frame_box .sprites').children().length == 0
-        $('#default_frame').tmpl().appendTo($('.frame_box .sprites'))
+      if frame_sprites().length == 0
+        $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
-
-    $('.duplicate').live 'click', ->
+    $('.duplicate').live 'mousedown', ->
       parent = $(this).parent()
 
       parent.clone().insertAfter(parent)
@@ -246,12 +284,16 @@
 
       .frame_box
         +bounds(75%, $frame_box_height)
+        +border-top-right-radius(8px)
 
         bottom: 0
         left: 0
         overflow-y: hidden
         position: fixed
         white-space: nowrap
+
+        &.highlight
+          background-color: rgba(0, 255, 0, 0.35)
 
         .sprite_container
           +border-radius(8px)
@@ -284,8 +326,8 @@
           margin-left: 10px
           margin-right: 10px
           position: fixed
-          left: 2px
-          bottom: 40px
+          left: 0
+          bottom: 41px
 
         p
           position: fixed
@@ -313,11 +355,20 @@
         top: 20px
 
         .cover
-          +bounds(64px, 64px)
+          +bounds(96px, 96px)
+          +contents_centered()
+
+          img
+            +bounds(64px, 64px)
 
         .name
+          margin-top: 4px
+          margin-bottom: 4px
           text-align: center
           width: 96px
+
+        .sprites
+          visibility: hidden
 
       .preview_box
         +bounds(23%, $frame_box_height)
