@@ -15,7 +15,7 @@
 
       $this.replaceWith textInput
 
-      textInput.focus()
+      textInput.focus().select()
 
     this.live 'blur keydown', (event) ->
       if event.type == "keydown"

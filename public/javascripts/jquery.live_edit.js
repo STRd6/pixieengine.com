@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Wed, 19 Jan 2011 20:04:00 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.live_edit.coffee
+/* DO NOT MODIFY. This file was compiled Tue, 25 Jan 2011 16:33:35 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.live_edit.coffee
  */
 
 (function() {
@@ -19,7 +19,7 @@
           value: $.trim($this.text())
         });
         $this.replaceWith(textInput);
-        return textInput.focus();
+        return textInput.focus().select();
       });
       this.live('blur keydown', function(event) {
         var $this, id;
