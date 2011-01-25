@@ -2,7 +2,6 @@
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-  %h3 Frames
   .frame_box
     .sprites
 
@@ -10,9 +9,10 @@
     %button#new_animation New
 
   .preview_box
-    Speed
-    %input{ :id => "animation_speed", :value => "110" }
-    ms
+    %div
+      Speed
+      %input{ :id => "animation_speed", :value => "110" }
+      ms
     .sprite_container
       .sprites
       #play
@@ -134,10 +134,10 @@
     play_animation = ->
       clearInterval(animation_id)
 
-      if ($('.preview_box img').length != $('.frame_box img').length || preview_dirty)
+      if ($('.preview_box img').length != $('.frame_box img').length) || preview_dirty
         preview_dirty = false
         clear_preview()
-        preview_sprites = $('.frame_box .sprites img').css('display', '').clone()
+        preview_sprites = $('.frame_box .sprites img').attr('style', '').clone()
         $('.preview_box .sprites').append(preview_sprites)
 
         preview_sprites.first().addClass('active')
@@ -224,6 +224,8 @@
   :sass
     @import util
 
+    $page_padding = 20px
+
     $selected_green = #264409
 
     $font_color = #555
@@ -236,8 +238,7 @@
     $bottom_box_height = 150px
     $frame_box_height = 120px
 
-    $left_column_width = 75%
-    $right_column_width = 25%
+    $left_column_width = 85%
 
     $header_color = #BFE2FF
     $background_color = #00010D
@@ -262,6 +263,7 @@
       +box-sizing(border-box)
 
       background-color: #fff
+      margin-bottom: 4px
 
       &.active
         border: 3px solid $selected_green
@@ -295,10 +297,12 @@
       +user-select(none)
 
       height: 100%
-      padding: 2em 2em $bottom_box_height
+      padding: $page_padding $page_padding $bottom_box_height
 
       .user_sprites
         +bounds($left_column_width, 100%)
+
+        margin-bottom: 15px
         overflow-x: hidden
         overflow-y: auto
 
@@ -307,7 +311,8 @@
           +contents-centered()
 
           cursor: move
-          margin: 5px
+          margin-bottom: 10px
+          margin-right: 10px
           overflow: hidden
 
           &:hover
@@ -319,6 +324,7 @@
 
         bottom: 0
         left: 0
+        padding-left: $page_padding
         overflow-y: hidden
         position: fixed
         white-space: nowrap
@@ -335,8 +341,7 @@
           +box-shadow(#ccc, 2px, 2px, 15px)
           +box-sizing(border-box)
 
-          margin-left: 10px
-          margin-right: 10px
+          margin-right: 20px
 
           &:hover
             background-color: #FFF6BF
@@ -364,21 +369,21 @@
           background-color: #ccc
           border: 3px dotted #aaa
           position: fixed
-          left: 10px
+          left: $page_padding
           bottom: 25px
 
         p
           position: fixed
           bottom: 39px
-          left: 95px
+          left: 105px
 
       .animations
-        +bounds($right_column_width, 450px)
-
-        display: inline-block
+        height: 100%
+        margin-bottom: 15px
         position: fixed
-        right: 0
-        top: 20px
+        right: $page_padding
+        text-align: center
+        top = $page_padding
 
         .cover
           +bounds($sprite_container_bounds)
@@ -388,7 +393,6 @@
             +bounds(64px, 64px)
 
         .name
-          margin-top: 4px
           margin-bottom: 4px
           text-align: center
           width: $sprite_container_bounds
@@ -397,11 +401,10 @@
           visibility: hidden
 
       .preview_box
-        +bounds($right_column_width, $bottom_box_height)
-
-        bottom: 0
+        bottom = (8 + $page_padding)
         display: inline-block
         right: 0
+        padding-right: $page_padding
         position: fixed
 
         input
