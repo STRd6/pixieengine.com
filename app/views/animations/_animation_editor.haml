@@ -10,6 +10,9 @@
     %button#new_animation New
 
   .preview_box
+    Speed
+    %input{ :id => "animation_speed", :value => "110" }
+    ms
     .sprites_container
       .sprites
       #play
@@ -126,9 +129,9 @@
 
         preview_sprites.first().addClass('active')
 
-        animation_id = setInterval(play_next, 110)
+        animation_id = setInterval(play_next, $('#animation_speed').val())
       else
-        animation_id = setInterval(play_next, 110)
+        animation_id = setInterval(play_next, $('#animation_speed').val())
 
     pause_animation = ->
       clearInterval(animation_id)
@@ -330,6 +333,7 @@
           bottom: 41px
 
         p
+          color: #555
           position: fixed
           bottom: 55px
           left: 100px
@@ -362,6 +366,7 @@
             +bounds(64px, 64px)
 
         .name
+          color: #555
           margin-top: 4px
           margin-bottom: 4px
           text-align: center
@@ -377,6 +382,10 @@
         display: inline-block
         right: 0
         position: fixed
+
+        input
+          margin-bottom: 5px
+          width: 30px
 
         .sprites_container
           +border-radius(8px)
