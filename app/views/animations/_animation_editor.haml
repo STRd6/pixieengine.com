@@ -7,8 +7,10 @@
   .frame_box
     .sprites
 
+  %h3#filename Animation states
   .animations
-    %button#new_animation New
+    %button#new_animation.pillbox_left New
+    %button#save.pillbox_right Save
 
   .preview_box
     %div
@@ -205,6 +207,7 @@
         selected_sprite.next().after(selected_sprite)
 
     $('.animations .name').liveEdit()
+    $('#filename').liveEdit()
 
     $('.x').live 'mousedown', ->
       parent = $(this).parent()
@@ -233,10 +236,7 @@
       format: 'json'
       animation:
         name: $("#filename").text()
-        frames: saveData().length
-        speed: saveData().speed
-        frame_width: saveData()[0].data('width')
-        frame_height: saveData()[0].data('height')
+        states: saveData().length
         data_string: JSON.stringify(saveData())
 
     $.post('/animations', postData, (data) ->
@@ -250,8 +250,6 @@
 
   window.saveData = ->
     update_active_animation()
-
-    speed = $('#animation_speed').val()
 
     map_data = $('.animations .animation').map(->
       return {
@@ -274,7 +272,10 @@
   :sass
     @import util
 
+    $notify_height = 42px
     $page_padding = 20px
+
+    $top_padding = $notify_height + $page_padding
 
     $selected_green = #264409
 
@@ -304,8 +305,20 @@
         font-weight: bold
         margin: 0
 
+    .pillbox_left
+      +border-right-radius(0)
+      margin-right: 1px
+
+    .pillbox_right
+      +border-left-radius(0)
+
     img
       +inline-block()
+
+    #filename
+      position: fixed
+      top = $top_padding
+      right = $page_padding
 
     .animation
       +border-radius($radius)
@@ -347,7 +360,7 @@
       +user-select(none)
 
       height: 100%
-      padding: $page_padding $page_padding $bottom_box_height
+      padding: $top_padding $page_padding $bottom_box_height
 
       .user_sprites
         +bounds($left_column_width, 100%)
@@ -433,7 +446,7 @@
         position: fixed
         right: $page_padding
         text-align: center
-        top = $page_padding
+        top = $top_padding + 30px
 
         .cover
           +bounds($sprite_container_bounds)
