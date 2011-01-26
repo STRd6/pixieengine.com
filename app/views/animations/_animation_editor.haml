@@ -4,8 +4,7 @@
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-  .frame_box
-    .sprites
+  .frame_sprites
 
   %h3#filename Animation states
   .animations
@@ -42,9 +41,9 @@
 
     frame_sprites = -> frame_sprites_container().children()
 
-    frame_sprites_container = -> $('.frame_box .sprites')
+    frame_sprites_container = -> $('.frame_sprites')
 
-    frame_selected_sprite = -> $('.frame_box .sprite_container.selected')
+    frame_selected_sprite = -> $('.frame_sprites .sprite_container.selected')
 
     active_animation = -> $('.animations .animation.active')
 
@@ -97,9 +96,11 @@
         name: "Animation " + ($('.animations .animation').length + 1)
       ).insertAfter($('.animations .animation').last())
 
-    $('.frame_box').droppable
-      addClass: false
-      drop: (event, ui) ->
+    $('.frame_sprites').sortable
+      axis: "x"
+      out: -> $(this).removeClass('highlight')
+      over: -> $(this).addClass('highlight')
+      receive: (event, ui) ->
         $(this).removeClass('highlight')
         $(this).find('p').remove()
         $(this).find('.demo').remove()
@@ -109,24 +110,16 @@
           height: "64px"
 
         active_animation().find('.cover').children().remove()
-        active_animation().find('.cover').append(ui.draggable.find('img').clone())
-      out: ->
-        $(this).removeClass('highlight')
-      over: ->
-        $(this).addClass('highlight')
+        active_animation().find('.cover').append(ui.item.find('img').clone())
       tolerance: "touch"
-
-    frame_sprites_container().sortable
-      axis: "x"
-      tolerance: "pointer"
 
     $('.user_sprites .sprite_container').draggable
       addClasses: false
-      connectToSortable: '.frame_box .sprites'
+      connectToSortable: '.frame_sprites'
       containment: 'window'
       helper: 'clone'
       opacity: 0.7
-      zIndex: 200
+      zIndex: 10000
 
     $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
       event.preventDefault()
@@ -143,10 +136,10 @@
     play_animation = ->
       clearInterval(animation_id)
 
-      if ($('.preview_box img').length != $('.frame_box img').length) || preview_dirty
+      if ($('.preview_box img').length != $('.frame_sprites img').length) || preview_dirty
         preview_dirty = false
         clear_preview()
-        preview_sprites = $('.frame_box .sprites img').attr('style', '').clone()
+        preview_sprites = $('.frame_sprites img').attr('style', '').clone()
         $('.preview_box .sprites').append(preview_sprites)
 
         preview_sprites.first().addClass('active')
@@ -174,7 +167,7 @@
     $('#stop').mousedown ->
       stop_animation()
 
-    $('.frame_box .sprite_container').live
+    $('.frame_sprites .sprite_container').live
       click: -> $(this).addClass('selected')
       mouseenter: ->
         $('<div class="x" />').appendTo $(this)
@@ -272,24 +265,25 @@
   :sass
     @import util
 
-    $notify_height = 42px
-    $page_padding = 20px
+    $page_padding = 50px
 
-    $top_padding = $notify_height + $page_padding
+    $frame_sprite_background = #566669
+    $dark_blue = #122031
+    $gray_blue = #566669
+    $light_blue = #BFE2FF
 
-    $selected_green = #264409
-
-    $font_color = #555
+    $font_color = $gray_blue
 
     $radius = 8px
 
     $sprite_container_bounds = 96px
     $sprite_container_color = #fff
 
-    $bottom_box_height = 150px
-    $frame_box_height = 120px
+    $bottom_box_height = 50px
+    $frame_sprite_height = 72px
+    $p_height = 21px
 
-    $left_column_width = 85%
+    $left_column_width = 83%
 
     $header_color = #BFE2FF
     $background_color = #00010D
@@ -317,7 +311,7 @@
 
     #filename
       position: fixed
-      top = $top_padding
+      top = $page_padding
       right = $page_padding
 
     .animation
@@ -329,7 +323,7 @@
       margin-bottom: 4px
 
       &.active
-        border: 3px solid $selected_green
+        border: 3px solid $light_blue
 
     .x, .duplicate
       +bounds(24px, 29px)
@@ -360,7 +354,7 @@
       +user-select(none)
 
       height: 100%
-      padding: $top_padding $page_padding $bottom_box_height
+      padding: $page_padding $page_padding 0
 
       .user_sprites
         +bounds($left_column_width, 100%)
@@ -381,27 +375,29 @@
           &:hover
             background-color: #FFF6BF
 
-      .frame_box
-        +bounds($left_column_width, $frame_box_height)
+      .frame_sprites
         +border-top-right-radius($radius)
 
+        background-color = $dark_blue
         bottom: 0
         left: 0
-        padding-left: $page_padding
+        height = $bottom_box_height + $frame_sprite_height
         overflow-y: hidden
+        padding-top = ($bottom_box_height + $frame_sprite_height) / 2
+        padding-left = $page_padding
         position: fixed
+        width = $left_column_width
         white-space: nowrap
 
         &.highlight
-          background-color = $selected_green
-
-        .sprites
-          margin-top: 23px
-          min-height: 77px
+          border-width: 2px
+          border-color: $gray_blue
+          border-top-style = solid
+          border-right-style = solid
 
         .sprite_container
           +bounds(72px)
-          +box-shadow(#ccc, 2px, 2px, 15px)
+          +box-shadow($gray_blue, 2px, 2px, 15px)
           +box-sizing(border-box)
 
           margin-right: 20px
@@ -410,7 +406,7 @@
             background-color: #FFF6BF
 
           &.selected
-            border: 4px solid $selected_green
+            border: 4px solid $dark_blue
 
           img
             +bounds(64px)
@@ -425,7 +421,7 @@
 
         .demo
           +border-radius($radius)
-          +bounds(72px)
+          +bounds($frame_sprite_height)
           +box-shadow(#ccc, 2px, 2px, 15px)
           +box-sizing(border-box)
 
@@ -433,12 +429,13 @@
           border: 3px dotted #aaa
           position: fixed
           left: $page_padding
-          bottom: 25px
+          bottom: $page_padding
 
         p
           position: fixed
-          bottom: 39px
-          left: 105px
+          bottom: $page_padding + ($frame_sprite_height / 2) - ($p_height / 2)
+          left: $page_padding + ($frame_sprite_height) + 15px
+          margin: 0
 
       .animations
         height: 100%
@@ -446,7 +443,7 @@
         position: fixed
         right: $page_padding
         text-align: center
-        top = $top_padding + 30px
+        top = $page_padding + 30px
 
         .cover
           +bounds($sprite_container_bounds)
