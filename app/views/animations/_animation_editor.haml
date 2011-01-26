@@ -1,16 +1,23 @@
+- date ||= nil
+
 .animation_editor
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
   .frame_box
-    %h3 Frames
     .sprites
 
+  %h3#filename Animation states
   .animations
-    %button#new_animation New
+    %button#new_animation.pillbox_left New
+    %button#save.pillbox_right Save
 
   .preview_box
-    .sprites_container
+    %div
+      Speed
+      %input{ :id => "animation_speed", :value => "110" }
+      ms
+    .sprite_container
       .sprites
       #play
       #stop
@@ -20,19 +27,24 @@
   .animation.active
     .cover
     .sprites
+    .speed ${speed}
 
 #default_frame.template
   .demo
   %p Drag sprites here to start animating
 
 :coffeescript
-
   $(->
+    animation_id = null
+    preview_dirty = false
+
     clear_frame_sprites = -> frame_sprites().remove()
 
     frame_sprites = -> frame_sprites_container().children()
 
     frame_sprites_container = -> $('.frame_box .sprites')
+
+    frame_selected_sprite = -> $('.frame_box .sprite_container.selected')
 
     active_animation = -> $('.animations .animation.active')
 
@@ -40,24 +52,32 @@
 
     clear_preview = -> $('.preview_box img').remove()
 
-    update_active_animation = ->
+    window.update_active_animation = ->
       active_animation_sprites().children().remove()
       frame_sprites().clone().appendTo(active_animation_sprites())
+
+      active_animation().find('.speed').text($('#animation_speed').val())
+
+    $('.user_sprites img').each ->
+      if $(this).data('width') > 96
+        $(this).css
+          width: '86px'
+          height: '86px'
 
     $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
     $('#create_animation').tmpl(
       name: "Animation 1"
+      speed: $('#animation_speed').val()
     ).insertBefore($('#new_animation'))
-
-    animation_id = null
-    preview_dirty = false
 
     $('.animation').live 'mousedown', ->
       update_active_animation()
-      stop_animation()
 
+      $('#animation_speed').val($(this).find('.speed').text())
+      stop_animation()
       clear_frame_sprites()
+
       $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
 
       active_animation().removeClass('active')
@@ -84,6 +104,10 @@
         $(this).find('p').remove()
         $(this).find('.demo').remove()
 
+        frame_sprites().find('img').css
+          width: "64px"
+          height: "64px"
+
         active_animation().find('.cover').children().remove()
         active_animation().find('.cover').append(ui.draggable.find('img').clone())
       out: ->
@@ -102,6 +126,7 @@
       containment: 'window'
       helper: 'clone'
       opacity: 0.7
+      zIndex: 200
 
     $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
       event.preventDefault()
@@ -118,17 +143,17 @@
     play_animation = ->
       clearInterval(animation_id)
 
-      if ($('.preview_box img').length != $('.frame_box img').length || preview_dirty)
+      if ($('.preview_box img').length != $('.frame_box img').length) || preview_dirty
         preview_dirty = false
         clear_preview()
-        preview_sprites = $('.frame_box .sprites img').css('display', '').clone()
+        preview_sprites = $('.frame_box .sprites img').attr('style', '').clone()
         $('.preview_box .sprites').append(preview_sprites)
 
         preview_sprites.first().addClass('active')
 
-        animation_id = setInterval(play_next, 110)
+        animation_id = setInterval(play_next, $('#animation_speed').val())
       else
-        animation_id = setInterval(play_next, 110)
+        animation_id = setInterval(play_next, $('#animation_speed').val())
 
     pause_animation = ->
       clearInterval(animation_id)
@@ -152,20 +177,20 @@
     $('.frame_box .sprite_container').live
       click: -> $(this).addClass('selected')
       mouseenter: ->
-        $('<div class="x" />').appendTo($(this))
-        $('<div class="duplicate" />').appendTo($(this))
+        $('<div class="x" />').appendTo $(this)
+        $('<div class="duplicate" />').appendTo $(this)
       mouseleave: ->
         $(this).find('.x').remove()
         $(this).find('.duplicate').remove()
 
-    $(document).mousedown (event) ->
-      $('.frame_box .sprite_container.selected').removeClass('selected')
+    $(document).mousedown ->
+      frame_selected_sprite().removeClass('selected')
 
     $(document).bind "keydown", 'left', (event) ->
       preview_dirty = true
       event.preventDefault()
 
-      selected_sprite = $('.frame_box .sprite_container.selected')
+      selected_sprite = frame_selected_sprite()
       selected_sprite.find('.x, .duplicate').remove()
 
       if selected_sprite.prev().length
@@ -175,16 +200,23 @@
       preview_dirty = true
       event.preventDefault()
 
-      selected_sprite = $('.frame_box .sprite_container.selected')
+      selected_sprite = frame_selected_sprite()
       selected_sprite.find('.x, .duplicate').remove()
 
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
 
     $('.animations .name').liveEdit()
+    $('#filename').liveEdit()
 
-    $('.x').live 'click', ->
-      $(this).parent().remove()
+    $('.x').live 'mousedown', ->
+      parent = $(this).parent()
+
+      if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
+        parent.next().append('<div class= "x" />')
+        parent.next().append('<div class= "duplicate" />')
+
+      parent.remove()
 
       if frame_sprites().length == 0
         $('#default_frame').tmpl().appendTo(frame_sprites_container())
@@ -192,65 +224,135 @@
     $('.duplicate').live 'mousedown', ->
       parent = $(this).parent()
 
-      parent.clone().insertAfter(parent)
+      newEl = parent.clone()
+      newEl.find('.x, .duplicate').remove()
 
-      parent.parent().find('.x, .duplicate').remove()
+      newEl.insertAfter(parent)
+
+  $("#save").click ->
+    notify("Saving...")
+
+    postData =
+      format: 'json'
+      animation:
+        name: $("#filename").text()
+        states: saveData().length
+        data_string: JSON.stringify(saveData())
+
+    $.post('/animations', postData, (data) ->
+      id = data.animation.id
+
+      notify("Saved as <a href='/animations/" + id + "'>Animation " + id + "</a>!")
+
+      $("#flashes .notice")
+
+    , "json")
+
+  window.saveData = ->
+    update_active_animation()
+
+    map_data = $('.animations .animation').map(->
+      return {
+        version: "1.0"
+        name: $(this).prev().text()
+        speed: $(this).find('.speed').text()
+
+        frames: $(this).find('.sprites img').map(->
+          src: $(this).attr('src')
+          id: $(this).data('id')
+          title: $(this).attr('title') || $(this).attr('alt')
+          width: $(this).data('width')
+          height: $(this).data('height')
+        ).get()
+      }
+    ).get()
   )
 
 %style
   :sass
     @import util
 
-    $frame_box_height = 140px
+    $notify_height = 42px
+    $page_padding = 20px
+
+    $top_padding = $notify_height + $page_padding
+
+    $selected_green = #264409
+
+    $font_color = #555
+
+    $radius = 8px
+
+    $sprite_container_bounds = 96px
+    $sprite_container_color = #fff
+
+    $bottom_box_height = 150px
+    $frame_box_height = 120px
+
+    $left_column_width = 85%
+
     $header_color = #BFE2FF
     $background_color = #00010D
 
     body
       background-color = $background_color
+      color = $font_color
 
-    h3
-      +text-shadow(#0A131A)
+      h3
+        +text-shadow(#0A131A)
 
-      color: $header_color
-      font-weight: bold
-      margin-left: 14px
-      margin-bottom: 0
+        color: $header_color
+        font-weight: bold
+        margin: 0
+
+    .pillbox_left
+      +border-right-radius(0)
+      margin-right: 1px
+
+    .pillbox_right
+      +border-left-radius(0)
 
     img
-      +inline-block
+      +inline-block()
+
+    #filename
+      position: fixed
+      top = $top_padding
+      right = $page_padding
 
     .animation
-      +border-radius(8px)
-      +bounds(96px, 96px)
+      +border-radius($radius)
+      +bounds($sprite_container_bounds)
       +box-sizing(border-box)
 
       background-color: #fff
+      margin-bottom: 4px
 
       &.active
-        border: 3px solid green
+        border: 3px solid $selected_green
 
-    .x
+    .x, .duplicate
       +bounds(24px, 29px)
 
-      background-image: url(/images/x.png)
       cursor: pointer
       display: inline-block
       right: -10px
       position: absolute
+
+    .x
+      background-image: url(/images/x.png)
       top: -10px
 
     .duplicate
-      +bounds(24px, 29px)
-
       background-image: url(/images/duplicate_layer.png)
-      cursor: pointer
-      display: inline-block
-      right: -10px
-      position: absolute
       bottom: 18px
 
     .sprite_container
-      display: inline-block
+      +bounds($sprite_container_bounds)
+      +border-radius($radius)
+      +inline-block()
+
+      background-color = $sprite_container_color
       position: relative
 
     .animation_editor
@@ -258,163 +360,122 @@
       +user-select(none)
 
       height: 100%
-      padding: 2em 2em 160px 2em
+      padding: $top_padding $page_padding $bottom_box_height
 
       .user_sprites
-        +bounds(75%, 100%)
+        +bounds($left_column_width, 100%)
+
+        margin-bottom: 15px
         overflow-x: hidden
         overflow-y: auto
 
         .sprite_container
-          +border-radius(8px)
-          +bounds(96px, 96px)
           +box-shadow(#ccc, 4px, 4px, 15px)
           +contents-centered()
 
-          background-color: #fff
           cursor: move
-          margin: 4px
+          margin-bottom: 10px
+          margin-right: 10px
           overflow: hidden
 
           &:hover
             background-color: #FFF6BF
 
-          img
-            border: none
-
       .frame_box
-        +bounds(75%, $frame_box_height)
-        +border-top-right-radius(8px)
+        +bounds($left_column_width, $frame_box_height)
+        +border-top-right-radius($radius)
 
         bottom: 0
         left: 0
+        padding-left: $page_padding
         overflow-y: hidden
         position: fixed
         white-space: nowrap
 
         &.highlight
-          background-color: rgba(0, 255, 0, 0.35)
+          background-color = $selected_green
+
+        .sprites
+          margin-top: 23px
+          min-height: 77px
 
         .sprite_container
-          +border-radius(8px)
-          +bounds(72px, 72px)
+          +bounds(72px)
           +box-shadow(#ccc, 2px, 2px, 15px)
           +box-sizing(border-box)
 
-          background-color: #fff
-          margin-left: 10px
-          margin-right: 10px
-          position: relative
+          margin-right: 20px
 
           &:hover
             background-color: #FFF6BF
 
           &.selected
-            border: 4px solid green
+            border: 4px solid $selected_green
 
-        .sprites
-          min-height: 77px
+          img
+            +bounds(64px)
+
+            cursor: move
+            margin: auto
+            position: absolute
+            top: 0
+            bottom: 0
+            left: 0
+            right: 0
 
         .demo
-          +border-radius(8px)
-          +bounds(72px, 72px)
+          +border-radius($radius)
+          +bounds(72px)
           +box-shadow(#ccc, 2px, 2px, 15px)
           +box-sizing(border-box)
 
           background-color: #ccc
           border: 3px dotted #aaa
-          margin-left: 10px
-          margin-right: 10px
           position: fixed
-          left: 0
-          bottom: 41px
+          left: $page_padding
+          bottom: 25px
 
         p
           position: fixed
-          bottom: 55px
-          left: 100px
-
-        img
-          +bounds(64px, 64px)
-
-          cursor: move
-          margin: auto
-          position: absolute
-          top: 0
-          bottom: 0
-          left: 0
-          right: 0
-          vertical-align: baseline
+          bottom: 39px
+          left: 105px
 
       .animations
-        +bounds(23%, 450px)
-
-        display: inline-block
+        height: 100%
+        margin-bottom: 15px
         position: fixed
-        right: 0
-        top: 20px
+        right: $page_padding
+        text-align: center
+        top = $top_padding + 30px
 
         .cover
-          +bounds(96px, 96px)
+          +bounds($sprite_container_bounds)
           +contents_centered()
 
           img
             +bounds(64px, 64px)
 
         .name
-          margin-top: 4px
           margin-bottom: 4px
           text-align: center
-          width: 96px
+          width: $sprite_container_bounds
 
-        .sprites
+        .sprites, .speed
           visibility: hidden
 
       .preview_box
-        +bounds(23%, $frame_box_height)
-
-        bottom: 8px
+        bottom = (8 + $page_padding)
         display: inline-block
         right: 0
+        padding-right: $page_padding
         position: fixed
 
-        .sprites_container
-          +border-radius(8px)
-          +bounds(96px, 96px)
-
-          background-color: #fff
-          position: relative
-
-          #play
-            +bounds(16px, 16px)
-
-            background-image: url(/images/icons/control_play.png)
-            position: absolute
-            bottom: -16px
-            right: 0
-
-            &:hover
-              background-image: url(/images/icons/control_play_blue.png)
-
-            &.pause
-              background-image: url(/images/icons/control_pause.png)
-
-              &:hover
-                background-image: url(/images/icons/control_pause_blue.png)
-
-          #stop
-            +bounds(16px, 16px)
-
-            background-image: url(/images/icons/control_stop.png)
-            position: absolute
-            bottom: -16px
-            left: 0
-
-            &:hover
-              background-image: url(/images/icons/control_stop_blue.png)
+        input
+          margin-bottom: 5px
+          width: 30px
 
         .sprites
-          +bounds(64px, 64px)
+          +bounds($sprite_container_bounds)
 
         img
           display: none
@@ -425,6 +486,33 @@
           right: 0
           bottom: 0
 
-
           &.active
             display: block
+
+    #play
+      +bounds(16px, 16px)
+
+      background-image: url(/images/icons/control_play.png)
+      position: absolute
+      bottom: -16px
+      right: 0
+
+      &:hover
+        background-image: url(/images/icons/control_play_blue.png)
+
+      &.pause
+        background-image: url(/images/icons/control_pause.png)
+
+        &:hover
+          background-image: url(/images/icons/control_pause_blue.png)
+
+    #stop
+      +bounds(16px, 16px)
+
+      background-image: url(/images/icons/control_stop.png)
+      position: absolute
+      bottom: -16px
+      left: 0
+
+      &:hover
+        background-image: url(/images/icons/control_stop_blue.png)
