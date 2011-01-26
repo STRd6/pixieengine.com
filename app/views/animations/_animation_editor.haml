@@ -1,3 +1,5 @@
+- date ||= nil
+
 .animation_editor
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
@@ -23,13 +25,13 @@
   .animation.active
     .cover
     .sprites
+    .speed ${speed}
 
 #default_frame.template
   .demo
   %p Drag sprites here to start animating
 
 :coffeescript
-
   $(->
     animation_id = null
     preview_dirty = false
@@ -48,9 +50,11 @@
 
     clear_preview = -> $('.preview_box img').remove()
 
-    update_active_animation = ->
+    window.update_active_animation = ->
       active_animation_sprites().children().remove()
       frame_sprites().clone().appendTo(active_animation_sprites())
+
+      active_animation().find('.speed').text($('#animation_speed').val())
 
     $('.user_sprites img').each ->
       if $(this).data('width') > 96
@@ -62,10 +66,13 @@
 
     $('#create_animation').tmpl(
       name: "Animation 1"
+      speed: $('#animation_speed').val()
     ).insertBefore($('#new_animation'))
 
     $('.animation').live 'mousedown', ->
       update_active_animation()
+
+      $('#animation_speed').val($(this).find('.speed').text())
       stop_animation()
       clear_frame_sprites()
 
@@ -218,6 +225,49 @@
       newEl.find('.x, .duplicate').remove()
 
       newEl.insertAfter(parent)
+
+  $("#save").click ->
+    notify("Saving...")
+
+    postData =
+      format: 'json'
+      animation:
+        name: $("#filename").text()
+        frames: saveData().length
+        speed: saveData().speed
+        frame_width: saveData()[0].data('width')
+        frame_height: saveData()[0].data('height')
+        data_string: JSON.stringify(saveData())
+
+    $.post('/animations', postData, (data) ->
+      id = data.animation.id
+
+      notify("Saved as <a href='/animations/" + id + "'>Animation " + id + "</a>!")
+
+      $("#flashes .notice")
+
+    , "json")
+
+  window.saveData = ->
+    update_active_animation()
+
+    speed = $('#animation_speed').val()
+
+    map_data = $('.animations .animation').map(->
+      return {
+        version: "1.0"
+        name: $(this).prev().text()
+        speed: $(this).find('.speed').text()
+
+        frames: $(this).find('.sprites img').map(->
+          src: $(this).attr('src')
+          id: $(this).data('id')
+          title: $(this).attr('title') || $(this).attr('alt')
+          width: $(this).data('width')
+          height: $(this).data('height')
+        ).get()
+      }
+    ).get()
   )
 
 %style
@@ -397,7 +447,7 @@
           text-align: center
           width: $sprite_container_bounds
 
-        .sprites
+        .sprites, .speed
           visibility: hidden
 
       .preview_box
