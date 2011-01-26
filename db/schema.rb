@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110114074844) do
+ActiveRecord::Schema.define(:version => 20110125220749) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -36,6 +36,17 @@ ActiveRecord::Schema.define(:version => 20110114074844) do
 
   add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
   add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
+
+  create_table "animations", :force => true do |t|
+    t.integer  "user_id",                       :null => false
+    t.string   "name",                          :null => false
+    t.integer  "frames",                        :null => false
+    t.integer  "speed",        :default => 110, :null => false
+    t.integer  "frame_width",  :default => 32,  :null => false
+    t.integer  "frame_height", :default => 32,  :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
 
   create_table "app_data", :force => true do |t|
     t.integer  "app_id",     :null => false
