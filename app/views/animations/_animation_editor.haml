@@ -263,6 +263,8 @@
     $gray_blue = #566669
     $light_blue = #BFE2FF
 
+    $selected = green
+
     $font_color = $gray_blue
 
     $radius = 8px
@@ -276,7 +278,7 @@
     $frame_sprite_height = 72px
     $p_height = 21px
 
-    $left_column_width = 83%
+    $left_column_width = 75%
 
     $header_color = #BFE2FF
     $background_color = #00010D
@@ -395,8 +397,11 @@
           &:hover
             background-color: #FFF6BF
 
+          &.highlight
+            background-color: #FFF6BF
+
           &.selected
-            border: 4px solid $dark_blue
+            border: 4px solid $selected
 
           img
             cursor: move
@@ -440,7 +445,7 @@
           +contents-centered()
 
           &.active
-            border: 3px solid $light_blue
+            border: 3px solid $selected
 
         .name
           margin-bottom: 4px
