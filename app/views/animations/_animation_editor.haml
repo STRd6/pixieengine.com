@@ -55,7 +55,7 @@
       active_animation_sprites().parent().find('.sprites').children().remove()
       frame_sprites().clone().appendTo(active_animation_sprites())
 
-      active_animation().find('.speed').text($('#animation_speed').val())
+      active_animation().parent().find('.speed').text($('#animation_speed').val())
 
     $('.user_sprites img').each ->
       if $(this).data('width') > 96
@@ -161,8 +161,7 @@
     $('#play').mousedown ->
       if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-      if frame_sprites().length
-        $(this).toggleClass("pause")
+      $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
 
     $('#stop').mousedown ->
       stop_animation()
@@ -486,29 +485,20 @@
             display: block
 
     #play
-      +bounds(16px, 16px)
+      +bounds(24px, 29px)
 
-      background-image: url(/images/icons/control_play.png)
+      background-image: url(/images/play.png)
       position: absolute
       bottom: -16px
-      right: 0
-
-      &:hover
-        background-image: url(/images/icons/control_play_blue.png)
+      right: -10px
 
       &.pause
-        background-image: url(/images/icons/control_pause.png)
-
-        &:hover
-          background-image: url(/images/icons/control_pause_blue.png)
+        background-image: url(/images/pause.png)
 
     #stop
-      +bounds(16px, 16px)
+      +bounds(24px, 29px)
 
-      background-image: url(/images/icons/control_stop.png)
+      background-image: url(/images/stop.png)
       position: absolute
       bottom: -16px
-      left: 0
-
-      &:hover
-        background-image: url(/images/icons/control_stop_blue.png)
+      left: -10px
