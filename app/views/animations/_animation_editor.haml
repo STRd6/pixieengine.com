@@ -57,12 +57,6 @@
 
       active_animation().parent().find('.speed').text($('#animation_speed').val())
 
-    $('.user_sprites img').each ->
-      if $(this).data('width') > 96
-        $(this).css
-          width: '86px'
-          height: '86px'
-
     $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
     $('#create_animation').tmpl(
@@ -104,10 +98,6 @@
         $(this).removeClass('highlight')
         $(this).find('p').remove()
         $(this).find('.demo').remove()
-
-        frame_sprites().find('img').css
-          width: "64px"
-          height: "64px"
 
         active_animation().children().remove()
         active_animation().append(ui.item.find('img').clone())
@@ -208,10 +198,12 @@
         parent.next().append('<div class= "x" />')
         parent.next().append('<div class= "duplicate" />')
 
-      parent.remove()
+      parent.fadeOut(150, ->
+        parent.remove()
 
-      if frame_sprites().length == 0
-        $('#default_frame').tmpl().appendTo(frame_sprites_container())
+        if frame_sprites().length == 0
+          $('#default_frame').tmpl().appendTo(frame_sprites_container())
+      )
 
     $('.duplicate').live 'mousedown', ->
       parent = $(this).parent()
@@ -275,8 +267,10 @@
 
     $radius = 8px
 
-    $sprite_container_bounds = 96px
+    $sprite_container_bounds = 72px
     $sprite_container_color = #fff
+
+    $img_dimension = 64px
 
     $bottom_box_height = 50px
     $frame_sprite_height = 72px
@@ -300,6 +294,9 @@
 
     img
       +inline-block()
+
+      max-width: $img_dimension
+      max-height: $img_dimension
 
     #filename
       position: fixed
@@ -371,22 +368,22 @@
       .frame_sprites
         +border-top-right-radius($radius)
 
-        background-color = $dark_blue
+        background-color: $dark_blue
         bottom: 0
         left: 0
-        height = $bottom_box_height + $frame_sprite_height
+        height: $bottom_box_height + $frame_sprite_height
         overflow-y: hidden
-        padding-top = ($bottom_box_height + $frame_sprite_height) / 2
-        padding-left = $page_padding
+        padding-top: ($bottom_box_height + $frame_sprite_height) / 2
+        padding-left: $page_padding
         position: fixed
-        width = $left_column_width
+        width: $left_column_width
         white-space: nowrap
 
         &.highlight
           border-width: 2px
           border-color: $gray_blue
-          border-top-style = solid
-          border-right-style = solid
+          border-top-style: solid
+          border-right-style: solid
 
         .sprite_container
           +bounds(72px)
@@ -402,8 +399,6 @@
             border: 4px solid $dark_blue
 
           img
-            +bounds(64px)
-
             cursor: move
             margin: auto
             position: absolute
@@ -436,7 +431,7 @@
         position: fixed
         right: $page_padding
         text-align: center
-        top = $page_padding + 60px
+        top: $page_padding + 60px
 
         .cover
           +border-radius($radius)
@@ -447,9 +442,6 @@
           &.active
             border: 3px solid $light_blue
 
-          img
-            +bounds(64px, 64px)
-
         .name
           margin-bottom: 4px
           text-align: center
@@ -459,7 +451,7 @@
           visibility: hidden
 
       .preview_box
-        bottom = (8 + $page_padding)
+        bottom: ($page_padding - 12)
         display: inline-block
         right: 0
         padding-right: $page_padding
@@ -468,6 +460,9 @@
         input
           margin-bottom: 5px
           width: 30px
+
+        .sprite_container
+          +bounds(96px)
 
         .sprites
           +bounds($sprite_container_bounds)
