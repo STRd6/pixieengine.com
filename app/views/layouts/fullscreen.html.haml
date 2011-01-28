@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-%html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
+%html{ 'xmlns' => "http://www.w3.org/1999/xhtml" }
   = render :partial => "shared/head"
 
   %body#fullscreen
@@ -16,7 +16,6 @@
 
       - if @has_reg_popup
         = render :partial => 'shared/register_modal'
-      = render :partial => "/shared/footer"
 
     #tooltip
       .icon
