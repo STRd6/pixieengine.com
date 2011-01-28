@@ -9,9 +9,9 @@
     sandbox.write(#{stylesheet_link_tag('app.css').to_json});
     sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
-    sandbox.write('<script src="/developer/apps/#{app.id}/lib.js"><\/script>');
+
     sandbox.write(#{app.template.to_json});
-    sandbox.write("<script>$(function(){"+ #{(app.lang == "coffeescript") ? CoffeeScript.compile(app.src || '').to_json : app.code.to_json} +"});<\/script>");
+    sandbox.write('<script src=#{rewrite_asset_path("/production/apps/#{app.id}/published.js").to_json}><\/script>');
 
     sandbox.close();
 

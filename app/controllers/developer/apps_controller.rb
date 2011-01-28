@@ -473,6 +473,18 @@ bgMusic.play()
     end
   end
 
+  def publish
+    app.publish
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+      format.html do
+        flash[:notice] = "Published Latest Version"
+        redirect_to :back
+      end
+    end
+  end
+
   private
   def app
     object

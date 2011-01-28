@@ -42,8 +42,24 @@ class App < ActiveRecord::Base
     "<canvas width='#{width}' height='#{height}'></canvas>"
   end
 
+  def wrapped_code
+    "$(function(){ #{code} });"
+  end
+
   def has_access?(user)
     user == self.user || members.exists?(user)
+  end
+
+  def publish
+    dir = "public/production/apps/#{id}"
+
+    FileUtils.mkdir_p(dir)
+
+    open("#{dir}/published.js", "w") do |f|
+      f.write(resource_code)
+      f.write(library_code)
+      f.write(wrapped_code)
+    end
   end
 
   def generate_docs

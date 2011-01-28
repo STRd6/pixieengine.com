@@ -80,6 +80,7 @@
 
 .actions
   %button#run Run App
+  %button#publish Publish App
   = link_to "Download Libs", "/developer/apps/#{app.id}/lib.js"
 
 #testZone
@@ -485,6 +486,11 @@
 
     $('#run').click ->
       runApp $('#app_code').val()
+    $('#publish').click ->
+      notify "Publishing..."
+      $.post "/developer/apps/#{app.id}/publish", (data) ->
+        notify("Latest changes have been published!")
+      , "json"
 
     $('#close_app').click ->
       closeApp();
