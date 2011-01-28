@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110126042922) do
+ActiveRecord::Schema.define(:version => 20110128081442) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -78,6 +78,19 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
   add_index "app_members", ["app_id", "user_id"], :name => "index_app_members_on_app_id_and_user_id", :unique => true
   add_index "app_members", ["app_id"], :name => "index_app_members_on_app_id"
   add_index "app_members", ["user_id"], :name => "index_app_members_on_user_id"
+
+  create_table "app_sounds", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.integer  "sound_id",   :null => false
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "app_sounds", ["app_id", "name"], :name => "index_app_sounds_on_app_id_and_name", :unique => true
+  add_index "app_sounds", ["app_id", "sound_id"], :name => "index_app_sounds_on_app_id_and_sound_id", :unique => true
+  add_index "app_sounds", ["app_id"], :name => "index_app_sounds_on_app_id"
+  add_index "app_sounds", ["sound_id"], :name => "index_app_sounds_on_sound_id"
 
   create_table "app_sprites", :force => true do |t|
     t.integer  "app_id",     :null => false

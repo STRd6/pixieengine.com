@@ -8,6 +8,9 @@ class App < ActiveRecord::Base
   has_many :app_sprites
   has_many :sprites, :through => :app_sprites
 
+  has_many :app_sounds
+  has_many :sounds, :through => :app_sounds
+
   has_many :app_members
   has_many :members, :through => :app_members, :source => :user
 

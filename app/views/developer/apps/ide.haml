@@ -35,6 +35,8 @@
               %span.file.new_sprite New Sprite
             %li{ :title => "Import Sprites" }
               %span.file.import_sprites Import Sprites
+            %li{ :title => "Import Sounds"}
+              %span.file.import_sounds Import Sounds
           - app.app_sprites.each do |app_sprite|
             - title = app_sprite.name
             %li{ :title => title }
@@ -102,6 +104,12 @@
     = render :partial => 'developer/apps/import_sprite', :collection => @user_sprites
 
   = button_to_function "Import Sprites", "importSprites()"
+
+#importSoundModal.modalElement
+  %table.sounds{ :summary => "User sounds" }
+    = render :partial => 'developer/apps/import_sound', :collection => @user_sounds
+
+  = button_to_function "Import Sounds", "importSounds()"
 
 #scriptTitleModal.modalElement
   %p
@@ -630,6 +638,9 @@
 
       $('.filetree .file.import_sprites').click ->
         $("#importSpriteModal").modal()
+
+      $('.filetree .file.import_sounds').click ->
+        $("#importSoundModal").modal()
 
       $('.filetree .file.new_script').live 'click', ->
         newLibraryScript $(this).parents('[data-library_id]').last().attr('data-library_id')

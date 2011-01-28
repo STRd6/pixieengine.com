@@ -410,6 +410,7 @@ bgMusic.play()
 
   def ide
     @user_sprites = (current_user) ? current_user.sprites : []
+    @user_sounds = (current_user) ? Sound.find_all_by_user_id(current_user) : []
     render :layout => "ide"
   end
 
