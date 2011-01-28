@@ -2,11 +2,54 @@ html
   cursor: text
 
 .editbox
-  margin: .4em
-  padding: 0
+  padding: .4em
+  margin: 0
   font-family: monospace
-  font-size: 10pt
+  font-size: 11pt
+  line-height: 16px
   color: #333
+  .rb-linenum
+    background-color: #EEEEEE
+    color: #888888
+    padding: 0.1em 1em 0.2em 0
+    width: 75px
+  .rb-pan
+    padding-bottom: 0.1em
+    padding-top: 0.2em
+  .rb-comment, .rb-long-comment
+    color: #AEAEAE
+    font-style: italic
+  .rb-method-parameter
+    color: #8AA6C1
+  .rb-variable, .rb-method-call
+    color: black
+  .rb-long-comment-whitespace
+  .rb-symbol, .rb-ascii
+    color: #6FB1FF
+  .rb-hexnum, .rb-binary
+    color: #DFC745
+  .rb-float, .rb-fixnum, .rb-numeric
+    color: black
+  .rb-entity
+    color: #89BDFF
+  .rb-keyword
+    color: blue
+  .rb-operator
+    color: darkRed
+  .rb-storage
+    color: #99CF50
+  .rb-string, .rb-heredoc, .rb-exec
+    color: green
+  .rb-class, .rb-constant, .rb-global-variable
+    font-style: italic
+  .rb-instance-var
+    color: #61B2DF
+  .rb-class-var
+    color: #8BC9DF
+  .rb-regexp
+    color: #DF5045
+  .rb-method
+    color: purple
 
   p
     margin: 0
