@@ -235,20 +235,40 @@
   window.saveData = ->
     update_active_animation()
 
+    frames = []
+
     map_data = $('.animations .animation').map(->
-      return {
-        version: "1.0"
+      ids = []
+
+      tileset = $(this).find('.sprites img').map(->
+        tile_id = $(this).data('id')
+
+        if $.inArray(tile_id, ids) == -1
+          ids.push tile_id
+
+          tile_data =
+            src: $(this).attr('src')
+            id: tile_id
+            title: $(this).attr('title') || $(this).attr('alt')
+
+        frames.push(ids.indexOf(tile_id))
+
+        return tile_data
+
+      ).get()
+
+      animation = {
+        version: "1.1"
         name: $(this).prev().text()
         speed: $(this).find('.speed').text()
-
-        frames: $(this).find('.sprites img').map(->
-          src: $(this).attr('src')
-          id: $(this).data('id')
-          title: $(this).attr('title') || $(this).attr('alt')
-          width: $(this).data('width')
-          height: $(this).data('height')
-        ).get()
+        tileset: tileset
+        frames: frames
       }
+
+      frames = []
+
+      return animation
+
     ).get()
   )
 
