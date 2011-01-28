@@ -636,10 +636,10 @@
             height: 110,
             width: 180
 
-      $('.filetree .file.import_sprites').click ->
+      $('.filetree .file.import_sprites').mousedown ->
         $("#importSpriteModal").modal()
 
-      $('.filetree .file.import_sounds').click ->
+      $('.filetree .file.import_sounds').mousedown ->
         $("#importSoundModal").modal()
 
       $('.filetree .file.new_script').live 'click', ->
@@ -820,10 +820,27 @@
 
 %style
   :sass
-    .import_sprite
+    @import util
+
+    #simplemodal-container
+      +border-radius(12px)
+      +box-shadow(#333, 10px, 10px, 20px)
+
+      background-color: black
+
+    .import_sprite, .import_sound
+      +border-radius(8px)
+      +bounds(72px)
+      +contents-centered()
+
+      background-color: white
       display: inline-block
-      padding: 5px
-      margin: 3px
+      margin-right: 10px
+      margin-bottom: 3px
+
+      img
+        max-width: 64px
+        max-height: 64px
 
       &.selected
         background-color: #1084CE
