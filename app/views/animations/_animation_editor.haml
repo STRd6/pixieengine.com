@@ -4,13 +4,12 @@
   .user_sprites
     = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-  .frame_box
-    .sprites
+  .frame_sprites
 
-  %h3#filename Animation states
+  %h3#filename Title
+  %button#save Save
   .animations
-    %button#new_animation.pillbox_left New
-    %button#save.pillbox_right Save
+    %button#new_animation New
 
   .preview_box
     %div
@@ -24,8 +23,8 @@
 
 #create_animation.template
   .name ${name}
-  .animation.active
-    .cover
+  .animation
+    .cover.active
     .sprites
     .speed ${speed}
 
@@ -42,27 +41,21 @@
 
     frame_sprites = -> frame_sprites_container().children()
 
-    frame_sprites_container = -> $('.frame_box .sprites')
+    frame_sprites_container = -> $('.frame_sprites')
 
-    frame_selected_sprite = -> $('.frame_box .sprite_container.selected')
+    frame_selected_sprite = -> $('.frame_sprites .sprite_container.selected')
 
-    active_animation = -> $('.animations .animation.active')
+    active_animation = -> $('.animations .animation .active')
 
-    active_animation_sprites = -> active_animation().find('.sprites')
+    active_animation_sprites = -> active_animation().parent().find('.sprites')
 
     clear_preview = -> $('.preview_box img').remove()
 
     window.update_active_animation = ->
-      active_animation_sprites().children().remove()
+      active_animation_sprites().parent().find('.sprites').children().remove()
       frame_sprites().clone().appendTo(active_animation_sprites())
 
-      active_animation().find('.speed').text($('#animation_speed').val())
-
-    $('.user_sprites img').each ->
-      if $(this).data('width') > 96
-        $(this).css
-          width: '86px'
-          height: '86px'
+      active_animation().parent().find('.speed').text($('#animation_speed').val())
 
     $('#default_frame').tmpl().appendTo(frame_sprites_container())
 
@@ -81,7 +74,7 @@
       $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
 
       active_animation().removeClass('active')
-      $(this).addClass('active')
+      $(this).find('.cover').addClass('active')
 
     $('#new_animation').mousedown ->
       update_active_animation()
@@ -97,36 +90,26 @@
         name: "Animation " + ($('.animations .animation').length + 1)
       ).insertAfter($('.animations .animation').last())
 
-    $('.frame_box').droppable
-      addClass: false
-      drop: (event, ui) ->
+    $('.frame_sprites').sortable
+      axis: "x"
+      out: -> $(this).removeClass('highlight')
+      over: -> $(this).addClass('highlight')
+      receive: (event, ui) ->
         $(this).removeClass('highlight')
         $(this).find('p').remove()
         $(this).find('.demo').remove()
 
-        frame_sprites().find('img').css
-          width: "64px"
-          height: "64px"
-
-        active_animation().find('.cover').children().remove()
-        active_animation().find('.cover').append(ui.draggable.find('img').clone())
-      out: ->
-        $(this).removeClass('highlight')
-      over: ->
-        $(this).addClass('highlight')
+        active_animation().children().remove()
+        active_animation().append(ui.item.find('img').clone())
       tolerance: "touch"
-
-    frame_sprites_container().sortable
-      axis: "x"
-      tolerance: "pointer"
 
     $('.user_sprites .sprite_container').draggable
       addClasses: false
-      connectToSortable: '.frame_box .sprites'
+      connectToSortable: '.frame_sprites'
       containment: 'window'
       helper: 'clone'
       opacity: 0.7
-      zIndex: 200
+      zIndex: 10000
 
     $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
       event.preventDefault()
@@ -143,10 +126,10 @@
     play_animation = ->
       clearInterval(animation_id)
 
-      if ($('.preview_box img').length != $('.frame_box img').length) || preview_dirty
+      if ($('.preview_box img').length != $('.frame_sprites img').length) || preview_dirty
         preview_dirty = false
         clear_preview()
-        preview_sprites = $('.frame_box .sprites img').attr('style', '').clone()
+        preview_sprites = $('.frame_sprites img').attr('style', '').clone()
         $('.preview_box .sprites').append(preview_sprites)
 
         preview_sprites.first().addClass('active')
@@ -168,13 +151,12 @@
     $('#play').mousedown ->
       if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-      if frame_sprites().length
-        $(this).toggleClass("pause")
+      $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
 
     $('#stop').mousedown ->
       stop_animation()
 
-    $('.frame_box .sprite_container').live
+    $('.frame_sprites .sprite_container').live
       click: -> $(this).addClass('selected')
       mouseenter: ->
         $('<div class="x" />').appendTo $(this)
@@ -216,10 +198,12 @@
         parent.next().append('<div class= "x" />')
         parent.next().append('<div class= "duplicate" />')
 
-      parent.remove()
+      parent.fadeOut(150, ->
+        parent.remove()
 
-      if frame_sprites().length == 0
-        $('#default_frame').tmpl().appendTo(frame_sprites_container())
+        if frame_sprites().length == 0
+          $('#default_frame').tmpl().appendTo(frame_sprites_container())
+      )
 
     $('.duplicate').live 'mousedown', ->
       parent = $(this).parent()
@@ -251,20 +235,40 @@
   window.saveData = ->
     update_active_animation()
 
+    frames = []
+
     map_data = $('.animations .animation').map(->
-      return {
-        version: "1.0"
+      ids = []
+
+      tileset = $(this).find('.sprites img').map(->
+        tile_id = $(this).data('id')
+
+        if $.inArray(tile_id, ids) == -1
+          ids.push tile_id
+
+          tile_data =
+            src: $(this).attr('src')
+            id: tile_id
+            title: $(this).attr('title') || $(this).attr('alt')
+
+        frames.push(ids.indexOf(tile_id))
+
+        return tile_data
+
+      ).get()
+
+      animation = {
+        version: "1.1"
         name: $(this).prev().text()
         speed: $(this).find('.speed').text()
-
-        frames: $(this).find('.sprites img').map(->
-          src: $(this).attr('src')
-          id: $(this).data('id')
-          title: $(this).attr('title') || $(this).attr('alt')
-          width: $(this).data('width')
-          height: $(this).data('height')
-        ).get()
+        tileset: tileset
+        frames: frames
       }
+
+      frames = []
+
+      return animation
+
     ).get()
   )
 
@@ -272,24 +276,29 @@
   :sass
     @import util
 
-    $notify_height = 42px
-    $page_padding = 20px
+    $page_padding = 50px
 
-    $top_padding = $notify_height + $page_padding
+    $frame_sprite_background = #566669
+    $dark_blue = #122031
+    $gray_blue = #566669
+    $light_blue = #BFE2FF
 
-    $selected_green = #264409
+    $selected = green
 
-    $font_color = #555
+    $font_color = $gray_blue
 
     $radius = 8px
 
-    $sprite_container_bounds = 96px
+    $sprite_container_bounds = 72px
     $sprite_container_color = #fff
 
-    $bottom_box_height = 150px
-    $frame_box_height = 120px
+    $img_dimension = 64px
 
-    $left_column_width = 85%
+    $bottom_box_height = 50px
+    $frame_sprite_height = 72px
+    $p_height = 21px
+
+    $left_column_width = 75%
 
     $header_color = #BFE2FF
     $background_color = #00010D
@@ -305,31 +314,28 @@
         font-weight: bold
         margin: 0
 
-    .pillbox_left
-      +border-right-radius(0)
-      margin-right: 1px
-
-    .pillbox_right
-      +border-left-radius(0)
-
     img
       +inline-block()
 
+      max-width: $img_dimension
+      max-height: $img_dimension
+
     #filename
       position: fixed
-      top = $top_padding
-      right = $page_padding
+      top: $page_padding + 8
+      right: $page_padding + 65
+
+    #save
+      position: fixed
+      top: $page_padding
+      right: $page_padding
 
     .animation
       +border-radius($radius)
       +bounds($sprite_container_bounds)
-      +box-sizing(border-box)
 
       background-color: #fff
       margin-bottom: 4px
-
-      &.active
-        border: 3px solid $selected_green
 
     .x, .duplicate
       +bounds(24px, 29px)
@@ -360,7 +366,7 @@
       +user-select(none)
 
       height: 100%
-      padding: $top_padding $page_padding $bottom_box_height
+      padding: $page_padding $page_padding 0
 
       .user_sprites
         +bounds($left_column_width, 100%)
@@ -381,27 +387,29 @@
           &:hover
             background-color: #FFF6BF
 
-      .frame_box
-        +bounds($left_column_width, $frame_box_height)
+      .frame_sprites
         +border-top-right-radius($radius)
 
+        background-color: $dark_blue
         bottom: 0
         left: 0
-        padding-left: $page_padding
+        height: $bottom_box_height + $frame_sprite_height
         overflow-y: hidden
+        padding-top: ($bottom_box_height + $frame_sprite_height) / 2
+        padding-left: $page_padding
         position: fixed
+        width: $left_column_width
         white-space: nowrap
 
         &.highlight
-          background-color = $selected_green
-
-        .sprites
-          margin-top: 23px
-          min-height: 77px
+          border-width: 2px
+          border-color: $gray_blue
+          border-top-style: solid
+          border-right-style: solid
 
         .sprite_container
           +bounds(72px)
-          +box-shadow(#ccc, 2px, 2px, 15px)
+          +box-shadow($gray_blue, 2px, 2px, 15px)
           +box-sizing(border-box)
 
           margin-right: 20px
@@ -409,12 +417,13 @@
           &:hover
             background-color: #FFF6BF
 
+          &.highlight
+            background-color: #FFF6BF
+
           &.selected
-            border: 4px solid $selected_green
+            border: 4px solid $selected
 
           img
-            +bounds(64px)
-
             cursor: move
             margin: auto
             position: absolute
@@ -425,7 +434,7 @@
 
         .demo
           +border-radius($radius)
-          +bounds(72px)
+          +bounds($frame_sprite_height)
           +box-shadow(#ccc, 2px, 2px, 15px)
           +box-sizing(border-box)
 
@@ -433,12 +442,13 @@
           border: 3px dotted #aaa
           position: fixed
           left: $page_padding
-          bottom: 25px
+          bottom: $page_padding
 
         p
           position: fixed
-          bottom: 39px
-          left: 105px
+          bottom: $page_padding + ($frame_sprite_height / 2) - ($p_height / 2)
+          left: $page_padding + ($frame_sprite_height) + 15px
+          margin: 0
 
       .animations
         height: 100%
@@ -446,14 +456,16 @@
         position: fixed
         right: $page_padding
         text-align: center
-        top = $top_padding + 30px
+        top: $page_padding + 60px
 
         .cover
+          +border-radius($radius)
           +bounds($sprite_container_bounds)
-          +contents_centered()
+          +box-sizing(border-box)
+          +contents-centered()
 
-          img
-            +bounds(64px, 64px)
+          &.active
+            border: 3px solid $selected
 
         .name
           margin-bottom: 4px
@@ -464,7 +476,7 @@
           visibility: hidden
 
       .preview_box
-        bottom = (8 + $page_padding)
+        bottom: ($page_padding - 12)
         display: inline-block
         right: 0
         padding-right: $page_padding
@@ -473,6 +485,9 @@
         input
           margin-bottom: 5px
           width: 30px
+
+        .sprite_container
+          +bounds(96px)
 
         .sprites
           +bounds($sprite_container_bounds)
@@ -490,29 +505,20 @@
             display: block
 
     #play
-      +bounds(16px, 16px)
+      +bounds(24px, 29px)
 
-      background-image: url(/images/icons/control_play.png)
+      background-image: url(/images/play.png)
       position: absolute
       bottom: -16px
-      right: 0
-
-      &:hover
-        background-image: url(/images/icons/control_play_blue.png)
+      right: -10px
 
       &.pause
-        background-image: url(/images/icons/control_pause.png)
-
-        &:hover
-          background-image: url(/images/icons/control_pause_blue.png)
+        background-image: url(/images/pause.png)
 
     #stop
-      +bounds(16px, 16px)
+      +bounds(24px, 29px)
 
-      background-image: url(/images/icons/control_stop.png)
+      background-image: url(/images/stop.png)
       position: absolute
       bottom: -16px
-      left: 0
-
-      &:hover
-        background-image: url(/images/icons/control_stop_blue.png)
+      left: -10px
