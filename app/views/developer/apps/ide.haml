@@ -245,8 +245,7 @@
           return
 
         $.each data, (i, sound) ->
-          updateSpriteNode sound
-          $("#tabs ul li").eq($("#tabs").tabs('option', 'selected')).find('span').first().click()
+          updateSoundNode sound
 
         notify("Saved!")
       , 'json'
@@ -372,6 +371,23 @@
 
     # Reload tab
     spriteNode.click()
+
+   window.updateSoundNode = (appSound) ->
+    id = appSound.id
+    title = appSound.name
+
+    node = $(".filetree .sound[data-id=" + id + "]")
+
+    if node.length
+      soundNode = node
+      node = node.parent()
+    else
+      node = $("<li />").attr("title", title)
+      soundNode = $("<span />").text(title).attr('data-id', id).addClass("file sound").appendTo(node)
+      $('.filetree .sounds').next().append(node).children().removeClass('last').last().addClass('last')
+
+    # Reload tab
+    soundNode.click()
 
   createLibraryNode = (library) ->
     id = library.id
