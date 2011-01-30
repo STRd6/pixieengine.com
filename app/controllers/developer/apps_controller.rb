@@ -358,6 +358,37 @@ bgMusic.play()
     end
   end
 
+  def import_app_sounds
+    if has_access?
+      sound_data = params[:sound_data]
+
+      app_sounds = []
+
+      sound_data.each_value do |sound|
+        (app_sound = AppSound.create(
+          :app_id => sound["app_id"],
+          :sound_id => sound["app_sound_id"],
+          :name => (sound["app_sound_name"] == "undefined") ? "Sound #{sound["app_sound_id"]}" : sound["app_sound_name"]
+        )
+        app_sounds << {
+          :id => app_sound.id,
+          :name => app_sound.name,
+          :cssImageUrl => "url(/images/icons/sound)"
+        }) unless AppSound.find_by_app_id_and_sound_id(app.id, sound["app_sound_id"])
+      end
+
+      respond_to do |format|
+        format.json { render :json => app_sounds }
+      end
+
+    else
+      render :json => {
+        :status => "error",
+        :message => "You do not have access to this app"
+      }
+    end
+  end
+
   def set_app_data
     if has_access?
       app_datum_data = params[:app_datum]
@@ -410,6 +441,7 @@ bgMusic.play()
 
   def ide
     @user_sprites = (current_user) ? current_user.sprites : []
+    @user_sounds = (current_user) ? Sound.find_all_by_user_id(current_user) : []
     render :layout => "ide"
   end
 
