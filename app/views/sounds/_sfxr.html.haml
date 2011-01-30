@@ -1,6 +1,5 @@
 <embed width="640" height="480" src="/flash/sfxr.swf" flashvars="authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}" quality="high" pluginspage="http://www.adobe.com/go/getflashplayer" align="top" play="true" loop="true" scale="showall" wmode="window" devicefont="false" bgcolor="#c0b090" name="as3sfxr" menu="true" allowfullscreen="false" allowscriptaccess="sameDomain" salign="" type="application/x-shockwave-flash">
 
-:javascript
-  function loadSettingsFile() {
-    return #{@settings_file.to_json};
-  }
+:coffeescript
+  loadSettingsFile = ->
+    #{@settings_file.to_json}
