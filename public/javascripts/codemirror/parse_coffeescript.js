@@ -10,11 +10,6 @@ var RubyParser = Editor.Parser = (function() {
     this.column = column;
     // type of scope ('vardef', 'stat' (statement), 'form' (special form), '[', '{', or '(')
     this.type = type;
-    // '[', '{', or '(' blocks that have any text after their opening
-    // character are said to be 'aligned' -- any lines below are
-    // indented all the way to the opening character.
-    if (align != null)
-      this.align = align;
     // Parent scope, if any.
     this.prev = prev;
     this.info = info;
@@ -48,29 +43,6 @@ var RubyParser = Editor.Parser = (function() {
   var OPCLASS = 'rb-operator';
   var METHODPARAMCLASS = 'rb-method-parameter';
 
-
-  // My favourite JavaScript indentation rules.
-  function indentRuby(lexical) {
-    return function(firstChars) {
-      var firstChar = firstChars && firstChars.charAt(0), type = lexical.type;
-      var closing = firstChar == type;
-      //console.log(lexical);
-      
-      if (type == "vardef")
-        return lexical.indented + 2;
-      else if (type == "form" && firstChar == "{")
-        return lexical.indented;
-      else if (type == "stat" || type == "form")
-        return lexical.indented + indentUnit;
-      else if (lexical.info == "switch" && !closing)
-        return lexical.indented + (/^(?:case|default)\b/.test(firstChars) ? indentUnit : 2 * indentUnit);
-      else if (lexical.align)
-        return lexical.column - (closing ? 1 : 0);
-      else
-        return lexical.indented + (closing ? 0 : indentUnit);
-    };
-  }
-
   // The parser-iterator-producing function itself.
   function parseRuby(input, basecolumn) {
     // Wrap the input in a token stream
@@ -91,6 +63,10 @@ var RubyParser = Editor.Parser = (function() {
     // line. Used to create lexical scope objects.
     var column = 0;
     var indented = 0;
+
+    var space = 0;
+    function indentTo(n) {return function() {return n;}}
+
     // Variables which are used by the mark, cont, and pass functions
     // below to communicate with the driver loop in the 'next'
     // function.
@@ -115,14 +91,13 @@ var RubyParser = Editor.Parser = (function() {
       }
       column += token.value.length;
       if (token.content == "\n"){
-        indented = column = 0;
         // If the lexical scope's align property is still undefined at
         // the end of the line, it is an un-aligned scope.
         if (!("align" in lexical))
           lexical.align = false;
         // Newline tokens get an indentation function associated with
         // them.
-        token.indentation = indentRuby(lexical);
+        token.indentation = indentTo(indented);
       }
       // No more processing for meaningless tokens.
       //if (token.type == "whitespace" || token.type == "comment")
@@ -404,6 +379,5 @@ var RubyParser = Editor.Parser = (function() {
     return parser;
   }
 
-  return {make: parseRuby, electricChars: "{}:"};
+  return {make: parseRuby, electricChars: ""};
 })();
-
