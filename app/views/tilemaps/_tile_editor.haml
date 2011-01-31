@@ -629,6 +629,10 @@
     $sidebar_width = 140px
     $bottom_bar_height = 140px
 
+    body
+      +box-sizing(border-box)
+      padding: 3em
+
     input
       +box-sizing(border-box)
 
@@ -662,21 +666,23 @@
 
       cursor: default
       height: 100%
-      padding-top: 4em
+      position: relative
 
       &>.sidebar
         left: 0
-        margin-top: 3em
-        position: fixed
+        position: absolute
         top: 0
         width: 120px
 
       .sidebar2
         right: 0
-        margin-top: 3em
-        position: fixed
+        position: absolute
         top: 0
         width: 120px
+
+      .sidebar, .sidebar2
+        .component:first-child
+          padding-top: 0
 
       &>.main
         +box-sizing(border-box)
@@ -696,7 +702,7 @@
         left: 0
         padding-left: $sidebar_width
         padding-right: $sidebar_width
-        position: fixed
+        position: absolute
         width: 100%
 
         .tiles
@@ -798,7 +804,7 @@
 
         bottom: 0
         left: 0
-        position: fixed
+        position: absolute
         width: $sidebar_width
         height: $bottom_bar_height
 
