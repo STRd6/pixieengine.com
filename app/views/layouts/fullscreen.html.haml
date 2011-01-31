@@ -3,19 +3,16 @@
   = render :partial => "shared/head"
 
   %body#fullscreen
-    .container
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }
+          = msg
+          .close
 
-      #content
-        #flashes
-          - flash.each do |key, msg|
-            %div{ :class => key }
-              = msg
-              .close
+    = yield
 
-        = yield
-
-      - if @has_reg_popup
-        = render :partial => 'shared/register_modal'
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
 
     #tooltip
       .icon
