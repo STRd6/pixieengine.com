@@ -1,3 +1,4 @@
+.logo
 .animation_editor
   .main
     .user_sprites
@@ -308,6 +309,16 @@
     $header_color = #BFE2FF
     $background_color = #00010D
 
+    .logo
+      +bounds(64px, 34px)
+
+      background-image: url(/images/pixie.png)
+      margin-left: 4px
+      margin-top: 4px
+      position: fixed
+      top: 0
+      left: 0
+
     body
       +box-sizing(border-box)
 
@@ -377,7 +388,7 @@
           padding: 20px
 
         .sprite_container
-          +box-shadow(#ccc, 4px, 4px, 15px)
+          +box-shadow(#ccc, 3px, 3px, 15px)
           +contents-centered()
 
           cursor: move
@@ -454,10 +465,7 @@
         top: 0
 
         h3
-          +text-shadow(#0A131A)
-
-          color: $header_color
-          font-weight: bold
+          color: $pixie_blue
           margin: 0
 
         #filename, #save
@@ -465,12 +473,14 @@
 
         .animations
           +border-radius($radius)
+          +box-sizing(border-box)
 
           background-color: $dark_highlight
           height: 100%
           margin-bottom: 15px
           text-align: center
           overflow-y: auto
+          padding: 10px
 
           .cover
             +border-radius($radius)
