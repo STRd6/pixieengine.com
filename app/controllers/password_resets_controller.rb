@@ -24,7 +24,11 @@ class PasswordResetsController < ApplicationController
       render :action => :edit
     end
   end
-  
+
+  def edit
+    
+  end
+
   private
 
   def load_user_using_perishable_token
