@@ -19,6 +19,9 @@
       = link_to_unless_current "Developer", developer_apps_path
     %span
       = link_to_unless_current "About", about_path
+    - if current_user
+      %span
+        = subscription_link(current_user)
 
   #login_link
     = render :partial => "/shared/login"
