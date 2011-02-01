@@ -381,7 +381,7 @@
       $(this).addClass(mode).siblings().removeClass(mode)
 
   $(".tiles img, #saved_selections .selection").live "mousedown", (event) ->
-    #event.preventDefault()
+    event.preventDefault()
 
     if mode = clickMode event
       selectTile($(this), mode)
