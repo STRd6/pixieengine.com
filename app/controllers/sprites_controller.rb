@@ -1,4 +1,5 @@
 class SpritesController < ResourceController::Base
+  respond_to :html, :json
   actions :all
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
@@ -66,6 +67,20 @@ class SpritesController < ResourceController::Base
     end
 
     render :action => :pixie
+  end
+
+  def index
+    @sprites = sprites
+
+    respond_with(@sprites) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+
+      format.json do
+        render :json
+      end
+    end
   end
 
   def load
@@ -138,7 +153,7 @@ class SpritesController < ResourceController::Base
 
   def per_page
     if params[:per_page].blank?
-      Sprite.per_page
+      100
     else
       params[:per_page].to_i
     end
