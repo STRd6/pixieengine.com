@@ -1,0 +1,22 @@
+.sprite_container{ 'data-author' => (index_sprite.user) ? index_sprite.user.display_name : "Anonymous", 'data-author_id' => index_sprite.user_id, 'data-id' => index_sprite.id, 'data-name' => index_sprite.display_name, 'data-description' => index_sprite.description, 'data-original_url' => index_sprite.image.url, 'data-tags' => index_sprite.tags.join(" ") }
+  = image_tag index_sprite.image.url(:thumb)
+  - if current_user
+    .tags
+      - form_tag "/sprites/#{index_sprite.id}/add_tag" do
+        = text_field_tag :tag
+        = submit_tag "Add"
+    = display_comments index_sprite
+  - if owner_or_admin?(index_sprite)
+    - form_for index_sprite do |form|
+      = form.error_messages
+
+      %p
+        = form.label :title
+        = form.text_field :title
+
+      %p
+        = form.label :description
+        = form.text_area :description
+
+      = form.submit
+
