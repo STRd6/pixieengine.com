@@ -1,35 +1,272 @@
 - @title = "Sprites"
 
-= will_paginate sprites
+.sprites_gallery
+  .sidebar
+    .info_component
+      %h3.name= sprites[0].display_name
+      %span.author by #{link_to sprites[0].user, sprites[0].user}
+      .sprite_container
+        =image_tag(sprites[0].image.url)
+      %a.button#load_sprite{ :target => "_blank" }
+        %img{ :src => "/images/icons/picture_edit.png" }
+        Edit image
+      %a.button#set_avatar
+        %img{ :src => "/images/icons/status_online.png"}
+        Set as avatar
+      %a.button#delete_sprite
+        %img{ :src => "/images/icons/cross.png" }
+        Delete
+    .tag_component
+      %h3 Tags
+      %input{ :placeholder => "Add tag..." }
+    .comment_component
+    - if owner_or_admin?(sprites[0])
+      .edit_component
+        %h3 Edit
 
-- sprites.each do |sprite|
-  = render :partial => sprite
+  .main
+    .sprites
+      = will_paginate sprites
 
-.tags
-  - tags = Sprite.with_ids(sprites).tag_counts
-  - tags.each do |tag|
-    = tag_link tag
+      = render :partial => "index_sprite", :collection => sprites
 
-- @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
+      .tags
+        - tags = Sprite.with_ids(sprites).tag_counts
+        - tags.each do |tag|
+          = tag_link tag
 
-- if current_user
-  :javascript
-    $(function() {
-      $('.favorites').click(function() {
-        var spriteId = $(this).attr('data-id');
-        if ($(this).hasClass('star')) {
-          $(this).removeClass('star').addClass('no-star');
-          $.get('/users/remove_favorite/' + spriteId);
-        } else {
-          $(this).removeClass('no-star').addClass('star');
-          $.post('/users/#{current_user.id}/add_to_collection', {
-            'format': 'js',
-            'collectable_type': "Sprite",
-            'collectable_id': spriteId,
-            'collection_name': "favorites"
-          }, "script");
-        }
-      });
-    });
+      - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-= will_paginate sprites
+#new_tag.template
+  .tag{ 'data-id' => "${id}" }
+    %a{ :href => "/sprites?tagged=${name}" } ${name}
+    .remove X
+
+:coffeescript
+  $('.main .sprite_container').mousedown ->
+    $('.sprite_container').removeClass('selected')
+    $(this).addClass('selected')
+
+    id = $(this).data('id')
+    name = $(this).data('name')
+    author = $(this).data('author')
+    author_id = $(this).data('author_id')
+    author_path = "users/" + author_id
+    img = $(this).data('original_url')
+    description = $(this).data('description') || ""
+    tags = $(this).data('tags')
+    comments = $(this).find('.comments_area').children().clone()
+    edit_form = '#edit_sprite_' + id
+
+    update_info_component = ->
+      $('.info_component .name').text(name)
+      if author_id
+        $('.info_component .author a, .info_component .author span').remove()
+        $('.info_component .author').append('<a href=' + author_path + '>' + author + '</a>')
+      else
+        $('.info_component .author a, .info_component .author span').remove()
+        $('.info_component .author').append('<span>' + author + '</span>')
+      $('.info_component .sprite_container img').attr('src', img).attr('data-id', id)
+      $('#load_sprite').attr('href', '/sprites/' + id + '/load')
+
+    clear_tags = ->
+      $('.tag_component').children().not('h3, input').remove()
+
+    update_tag_component = ->
+      clear_tags()
+
+      $.each tags.split(" "), (i, tag) ->
+        $('#new_tag').tmpl(
+          id: id
+          name: tag
+        ).insertBefore('.tag_component input')
+
+    clear_comments = ->
+      $('.comment_component').children().remove()
+
+    update_comment_component = ->
+      clear_comments()
+
+      $('#new_comment').ajaxForm(
+        beforeSerialize: ->
+          notify("Saving...")
+        success: (data) ->
+          notify("Complete")
+      )
+
+      comments.appendTo('.comment_component')
+
+    clear_form = ->
+      $('.edit_component').children().not('h3, a.button').remove()
+
+    update_edit_component = ->
+      clear_form()
+
+      $(edit_form).ajaxForm(
+        beforeSerialize: ->
+          notify("Saving...")
+        success: (data) ->
+          notify("Complete!")
+      )
+
+      $(edit_form).insertAfter('.edit_component h3')
+
+    update_info_component()
+    update_tag_component()
+    update_comment_component()
+    update_edit_component()
+
+  $("#set_avatar").live "click", ->
+    notify("Saving...")
+
+    sprite_id = $(this).prev().find('img').data('id')
+
+    $.post("/users/#{current_user.id}/set_avatar",
+      { sprite_id: sprite_id },
+      (data) -> notify("Avatar successfully changed.")
+    )
+
+%style
+  :sass
+    @import util
+    @import blueprint/buttons
+
+    $dark_bg: #000002
+    $dark_highlight: lighten(#000d16, 5)
+    $pixie_blue: #1084ce
+    $light_highlight: #b2e2ff
+    $light_bg: #d2eeff
+
+    .info_component, .tag_component, .comment_component, .edit_component
+      +border-radius(8px)
+      +box-sizing(border-box)
+
+      background-color: $dark_highlight
+      margin-bottom: 10px
+      padding: 15px
+
+    .main
+      padding-left: 350px
+
+      .sprites
+        +border-radius(8px)
+        +box-sizing(border-box)
+
+        border: 1px solid $pixie_blue
+        padding: 15px
+
+      .sprite_container
+        &:hover
+          background-color: #FFF6BF
+
+        &.selected
+          background-color: $pixie_blue
+
+    .info_component
+      .sprite_container
+        +border-radius(8px)
+        +bounds(96px)
+        +contents-centered
+
+        background-color: #fff
+        display: block
+        margin-bottom: 7px
+
+    .comment_component, .edit_component
+      input[type="submit"]
+        margin: 0
+
+    .comments_area
+      display: none
+
+    .actions
+      position: absolute
+      bottom: 0
+
+    h3.name
+      display: inline-block
+      margin-right: 10px
+      margin-bottom: 0
+
+    .sprites_gallery
+      +box-sizing(border-box)
+      +user-select(none)
+
+      color: #fff
+      height: 100%
+      position: relative
+
+      .sidebar
+        left: 0
+        position: absolute
+        top: 0
+        width: 320px
+
+        .sprite_container
+          img
+            display: block
+
+        textarea
+          margin: 0
+
+    a
+      color: darken(#BFE2FF, 25)
+
+    form textarea
+      +bounds(150px, 50px)
+
+    button, a.button
+      +button-button
+      +button-colors
+      +button-hover-colors
+      +button-active-colors
+      +border-radius(4px)
+
+      margin: 0
+      padding-left: 3px
+      padding-right: 3px
+
+      &[disabled]
+        color: #AAA
+        cursor: default
+
+        &:hover
+          color: #AAA
+
+    img.primary
+      display: block
+
+    img.selected
+      background-color: #fff
+
+    body
+      background-color: black
+      margin: 3em
+
+    .pagination
+      color: $pixie_blue
+      margin-bottom: 5px
+
+      a
+        color: #fff
+
+    body .sprite_container
+      +border-radius(8px)
+      +bounds(48px)
+      +contents-centered
+
+      background-color: white
+      cursor: pointer
+      display: inline-block
+      margin-right: 7px
+      margin-bottom: 3px
+
+      color: black
+      font-size: 10px
+      text-align: center
+
+      form
+        display: none
+
+      a
+        +bounds(32px)
