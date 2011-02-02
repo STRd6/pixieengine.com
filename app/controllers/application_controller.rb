@@ -83,8 +83,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def owner?
-    (current_user == object.user) && current_user
+  def owner?(specified_object = nil)
+    if specified_object
+      (current_user == specified_object.user) && current_user
+    else
+      (current_user == object.user) && current_user
+    end
   end
   helper_method :owner?
 
@@ -98,8 +102,8 @@ class ApplicationController < ActionController::Base
   end
   helper_method :admin?
 
-  def owner_or_admin?
-    owner? || admin?
+  def owner_or_admin?(specified_object = nil)
+    owner?(specified_object) || admin?
   end
   helper_method :owner_or_admin?
 
