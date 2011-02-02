@@ -5,20 +5,18 @@
   .clear
   = submit_tag "Post Comment"
 
-:javascript
-  $(function() {
-    var commentText;
+:coffeescript
+  $(->
+    commentText
 
-    var commentForm = $("#new_comment");
+    commentForm = $("#new_comment")
 
-    commentForm.submit(function() {
-      if(loggedIn) {
-        return true;
-      } else {
-        requireLogin(function() {
-          commentForm.submit();
-        });
-        return false;
-      }
-    });
-  });
+    commentForm.submit ->
+      if (loggedIn)
+        return true
+      else
+        requireLogin ->
+          commentForm.submit()
+  )
+
+
