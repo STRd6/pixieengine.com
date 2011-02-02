@@ -47,6 +47,16 @@ form
   input[disabled]
     background-color: #efefef
 
+  input[type=text]
+    +box-sizing(border-box)
+
+    background-color: transparent
+    border: 2px solid #888
+    color: #BFE2FF
+    margin: 0
+    max-width: 120px
+    padding: 2px
+
   #errorExplanation
     color: !error_color
     margin-bottom: 1em
