@@ -68,7 +68,7 @@
         $('.info_component .author').append('<span>' + author + '</span>')
       $('.info_component .sprite_container img').attr('src', img).attr('data-id', id)
 
-      $('.info_component .sprite_container').next().remove()
+      $('.info_component').children().find('p').remove()
       $("<p>" + description + "</p>").insertAfter('.info_component .sprite_container')
 
       $('#load_sprite').attr('href', '/sprites/' + id + '/load')
