@@ -169,454 +169,294 @@
 #preview_sound
   %audio
 
-:coffeescript
-  window.currentPanel
-  shouldCreateEditor = false
-  pixieEditorIds = 0
-  newScriptIds = 0
-  langClass = null
-
-  window.newCanvas = ->
+:plain
+  <script type="text/coffeescript">
+    window.currentPanel
     shouldCreateEditor = false
-    langClass = "sprite"
+    pixieEditorIds = 0
+    newScriptIds = 0
+    langClass = null
 
-    pixieEditor = createPixelEditor
-      width: $('#resize_width').val()
-      height: $('#resize_height').val()
+    window.newCanvas = ->
+      shouldCreateEditor = false
+      langClass = "sprite"
 
-    pixieEditorId = "pixie_editor" + (pixieEditorIds++)
+      pixieEditor = createPixelEditor
+        width: $('#resize_width').val()
+        height: $('#resize_height').val()
 
-    pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo('ul.filetree')
+      pixieEditorId = "pixie_editor" + (pixieEditorIds++)
 
-    $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
+      pixieEditor.attr('id', pixieEditorId).addClass('tab_data').appendTo('ul.filetree')
 
-    $.modal.close()
-
-  window.importSprites = ->
-    if $('.import_sprite.selected').length < 1
-      alert "Please select sprites to import"
-    else
-      sprite_data = $('.import_sprite.selected').map ->
-        'app_sprite_id': $(this).attr('data-id')
-        'app_id': #{app.id}
-        'app_sprite_name': $(this).attr('data-title')
-
-      notify "Importing, please wait..."
-
-      postData =
-        'format': 'json',
-        'sprite_data': sprite_data
-
-      $.post '/developer/apps/#{app.id}/import_app_sprites', postData, (data) ->
-        $(".import_sprite.selected").removeClass('selected')
-
-        if data.status == "error"
-          notify data.message
-          return
-
-        $.each data, (i, sprite) ->
-          updateSpriteNode sprite
-          $("#tabs ul li").eq($("#tabs").tabs('option', 'selected')).find('span').first().click()
-
-        notify("Saved!")
-      , 'json'
+      $tabs.tabs 'add', "#" + pixieEditorId, "Sprite" + pixieEditorIds, 0
 
       $.modal.close()
 
-  window.importSounds = ->
-    if $('.import_sound.selected').length < 1
-      alert "Please select sounds to import"
-    else
-      sound_data = $('.import_sound.selected').map ->
-        'app_sound_id': $(this).data('id')
-        'app_id': #{app.id}
-        'app_sound_name': $(this).data('title')
+    window.importSprites = ->
+      if $('.import_sprite.selected').length < 1
+        alert "Please select sprites to import"
+      else
+        sprite_data = $('.import_sprite.selected').map ->
+          'app_sprite_id': $(this).attr('data-id')
+          'app_id': #{app.id}
+          'app_sprite_name': $(this).attr('data-title')
 
-      notify "Importing, please wait..."
+        notify "Importing, please wait..."
 
-      postData =
-        'format': 'json',
-        'sound_data': sound_data
+        postData =
+          'format': 'json',
+          'sprite_data': sprite_data
 
-      $.post '/developer/apps/#{app.id}/import_app_sounds', postData, (data) ->
-        $(".import_sound.selected").removeClass('selected')
+        $.post '/developer/apps/#{app.id}/import_app_sprites', postData, (data) ->
+          $(".import_sprite.selected").removeClass('selected')
 
-        if data.status == "error"
-          notify data.message
-          return
+          if data.status == "error"
+            notify data.message
+            return
 
-        $.each data, (i, sound) ->
-          updateSoundNode sound
+          $.each data, (i, sprite) ->
+            updateSpriteNode sprite
+            $("#tabs ul li").eq($("#tabs").tabs('option', 'selected')).find('span').first().click()
 
-        notify("Saved!")
-      , 'json'
+          notify("Saved!")
+        , 'json'
 
-      $.modal.close()
+        $.modal.close()
 
-  window.saveNewScript = ->
-    title = $("#new_script_title").val()
-    $("#tabs ul li.ui-tabs-selected a").text(title)
+    window.importSounds = ->
+      if $('.import_sound.selected').length < 1
+        alert "Please select sounds to import"
+      else
+        sound_data = $('.import_sound.selected').map ->
+          'app_sound_id': $(this).data('id')
+          'app_id': #{app.id}
+          'app_sound_name': $(this).data('title')
 
-    tabLi = $("#tabs ul li.ui-state-active")
+        notify "Importing, please wait..."
 
-    panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
-    form = panel.find('form')
+        postData =
+          'format': 'json',
+          'sound_data': sound_data
 
-    form.find('input[name="script[title]"]').val(title)
+        $.post '/developer/apps/#{app.id}/import_app_sounds', postData, (data) ->
+          $(".import_sound.selected").removeClass('selected')
 
-    postData = form.serialize()
+          if data.status == "error"
+            notify data.message
+            return
 
-    notify("Saving...")
+          $.each data, (i, sound) ->
+            updateSoundNode sound
 
-    $.post form.attr('action'), postData, (data) ->
-      script_id = data.script.id
-      libId = data.script.lib_id
-      lang = data.script.lang
+          notify("Saved!")
+        , 'json'
 
-      setSaved(tabLi)
+        $.modal.close()
 
-      form.attr("action", "/developer/scripts/" + script_id)
-      form.append("<input type='hidden' name='_method' value='put' />")
-      panel.find('button.new_save').removeClass('new_save').addClass('save')
+    window.saveNewScript = ->
+      title = $("#new_script_title").val()
+      $("#tabs ul li.ui-tabs-selected a").text(title)
 
-      newScriptNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file script " + lang)
-      node = $("<li />").attr("title", title).append(newScriptNode)
+      tabLi = $("#tabs ul li.ui-state-active")
 
-      libUl = $('ul.filetree li[data-library_id='+libId+'] > ul')
+      panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
+      form = panel.find('form')
 
-      libUl.append(node).children().removeClass("last").last().addClass('last')
+      form.find('input[name="script[title]"]').val(title)
 
-    , "json"
+      postData = form.serialize()
 
-    $.modal.close()
+      notify("Saving...")
 
-  window.setDatumTitle = ->
-    title = $("#new_datum_title").val()
+      $.post form.attr('action'), postData, (data) ->
+        script_id = data.script.id
+        libId = data.script.lib_id
+        lang = data.script.lang
 
-    $("#tabs ul li.ui-tabs-selected a").text(title)
-
-    tabLi = $("#tabs ul li.ui-state-active")
-
-    panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
-    form = panel.find('form')
-
-    form.find('input[name="app_datum[name]"]').val(title)
-
-    form.ajaxSubmit
-      dataType: "json"
-      success: (data) ->
         setSaved(tabLi)
 
-        appDatum = data.app_datum
-        console.log appDatum
+        form.attr("action", "/developer/scripts/" + script_id)
+        form.append("<input type='hidden' name='_method' value='put' />")
+        panel.find('button.new_save').removeClass('new_save').addClass('save')
 
-        panel.removeClass("new_datum")
+        newScriptNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file script " + lang)
+        node = $("<li />").attr("title", title).append(newScriptNode)
 
-        form.append("<input type='hidden' value='"+ appDatum.id +"' name='app_datum_id'/>")
+        libUl = $('ul.filetree li[data-library_id='+libId+'] > ul')
 
-        newDatumNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file datum")
-        node = $("<li />").attr("title", title).append(newDatumNode)
+        libUl.append(node).children().removeClass("last").last().addClass('last')
 
-        destinationUl = $('ul.filetree li[title=Data] > ul')
+      , "json"
 
-        destinationUl.append(node).children().removeClass("last").last().addClass('last')
+      $.modal.close()
 
-    $.modal.close()
+    window.setDatumTitle = ->
+      title = $("#new_datum_title").val()
 
-  window.newLibraryScript = (libraryId) ->
-    scriptLang = "coffeescript"
-    langClass = scriptLang
+      $("#tabs ul li.ui-tabs-selected a").text(title)
 
-    newScriptId = "new_script" + (newScriptIds++)
+      tabLi = $("#tabs ul li.ui-state-active")
 
-    scriptEditor = createNewScriptEditor
-      lang: scriptLang
-      libraryId: libraryId
-      idNum: newScriptId
+      panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
+      form = panel.find('form')
 
-    scriptEditor.attr('id', newScriptId).addClass('tab_data').appendTo('ul.filetree')
+      form.find('input[name="app_datum[name]"]').val(title)
 
-    $tabs.tabs 'add', "#" + newScriptId, "Script" + newScriptIds, 0
+      form.ajaxSubmit
+        dataType: "json"
+        success: (data) ->
+          setSaved(tabLi)
 
-  createNewScriptEditor = (options) ->
-    lang = options.lang
-    idNum = options.idNum
+          appDatum = data.app_datum
+          console.log appDatum
 
-    editorHtml = $('<div />').append($(#{render(:partial => "script_form").to_json}))
-    editorHtml.find('input[name="script[code]"]').attr('id', "new_script_code" + idNum)
-    editorHtml.find('input[name="script[lib_id]"]').val(options.libraryId)
-    editorHtml.find('textarea').attr('id', "new_script_src" + idNum)
-    editorHtml.attr('data-lang', lang)
-    $("<button>Save</button>").addClass("new_save").appendTo(editorHtml)
+          panel.removeClass("new_datum")
 
-    return editorHtml
+          form.append("<input type='hidden' value='"+ appDatum.id +"' name='app_datum_id'/>")
 
-  window.updateSpriteNode = (appSprite) ->
-    cssImageUrl = appSprite.cssImageUrl
-    height = appSprite.height
-    id = appSprite.id
-    title = appSprite.name
-    width = appSprite.width
+          newDatumNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file datum")
+          node = $("<li />").attr("title", title).append(newDatumNode)
 
-    node = $(".filetree .sprite[data-id=" + id + "]")
+          destinationUl = $('ul.filetree li[title=Data] > ul')
 
-    if node.length
-      spriteNode = node
-      node = node.parent()
-    else
-      node = $("<li />").attr("title", title)
-      spriteNode = $("<span />").text(title).attr('data-id', id).attr('data-width', width).attr('data-height', height).addClass("file sprite").appendTo(node)
-      $('.filetree .sprites').next().append(node).children().removeClass('last').last().addClass('last')
+          destinationUl.append(node).children().removeClass("last").last().addClass('last')
 
-    spriteNode.css "backgroundImage", cssImageUrl
+      $.modal.close()
 
-    # Reload tab
-    spriteNode.click()
+    window.newLibraryScript = (libraryId) ->
+      scriptLang = "coffeescript"
+      langClass = scriptLang
 
-   window.updateSoundNode = (appSound) ->
-    id = appSound.id
-    title = appSound.name
+      newScriptId = "new_script" + (newScriptIds++)
 
-    node = $(".filetree .sound[data-id=" + id + "]")
+      scriptEditor = createNewScriptEditor
+        lang: scriptLang
+        libraryId: libraryId
+        idNum: newScriptId
 
-    if node.length
-      soundNode = node
-      node = node.parent()
-    else
-      node = $("<li />").attr("title", title)
-      soundNode = $("<span />").text(title).attr('data-id', id).addClass("file sound").appendTo(node)
-      $('.filetree .sounds').next().append(node).children().removeClass('last').last().addClass('last')
+      scriptEditor.attr('id', newScriptId).addClass('tab_data').appendTo('ul.filetree')
 
-    # Reload tab
-    soundNode.click()
+      $tabs.tabs 'add', "#" + newScriptId, "Script" + newScriptIds, 0
 
-  createLibraryNode = (library) ->
-    id = library.id
-    title = library.title
-
-    node = $("<li />").attr("title", title).attr('data-library_id', id)
-    folderNode = $("<span />").text(title).addClass("folder").appendTo(node)
-    fileList = $("<ul />").appendTo(node)
-
-    newScriptNode = $("<li />").attr("title", "New Script").append(
-      $("<span />").addClass("file new_script").text("New Script")
-    ).appendTo(fileList)
-
-    $.each library.scripts, (i, script) ->
-      scriptId = script.id
-      title = script.title
-      lang = script.lang
-      code = script.code
-      src = script.src
-
-      scriptNode = $("<li />").attr("title", title)
-      $("<span />").attr("data-id", scriptId).addClass("file script " + lang).text(title).appendTo(scriptNode)
+    createNewScriptEditor = (options) ->
+      lang = options.lang
+      idNum = options.idNum
 
       editorHtml = $('<div />').append($(#{render(:partial => "script_form").to_json}))
-      editorHtml.find('input[name="script[code]"]').attr('id', "script_code" + scriptId).val(code)
-      editorHtml.find('input[name="script[lib_id]"]').val(id)
-      editorHtml.find('textarea').attr('id', "script_src" + scriptId).val(src)
-      editorHtml.attr('data-lang', lang).attr("id", "script" + scriptId).addClass("tab_data")
-      $("<button>Save</button>").addClass("save").appendTo(editorHtml)
+      editorHtml.find('input[name="script[code]"]').attr('id', "new_script_code" + idNum)
+      editorHtml.find('input[name="script[lib_id]"]').val(options.libraryId)
+      editorHtml.find('textarea').attr('id', "new_script_src" + idNum)
+      editorHtml.attr('data-lang', lang)
+      $("<button>Save</button>").addClass("new_save").appendTo(editorHtml)
 
-      editorHtml.appendTo(scriptNode)
+      return editorHtml
 
-      scriptNode.appendTo(fileList)
+    window.updateSpriteNode = (appSprite) ->
+      cssImageUrl = appSprite.cssImageUrl
+      height = appSprite.height
+      id = appSprite.id
+      title = appSprite.name
+      width = appSprite.width
 
-    $("ul.filetree > li").eq(1).after(node)
+      node = $(".filetree .sprite[data-id=" + id + "]")
 
-  window.createEditor = (ui) ->
-    panel = $(ui.panel)
-    tab = $(ui.tab)
-    lang = panel.attr('data-lang')
-    code_id = "#" + panel.find('input[name="script[code]"], input[name="app[code]"]').attr('id')
-    src_id = "#" + panel.find('textarea').attr('id')
+      if node.length
+        spriteNode = node
+        node = node.parent()
+      else
+        node = $("<li />").attr("title", title)
+        spriteNode = $("<span />").text(title).attr('data-id', id).attr('data-width', width).attr('data-height', height).addClass("file sprite").appendTo(node)
+        $('.filetree .sprites').next().append(node).children().removeClass('last').last().addClass('last')
 
-    savedCode = $(src_id).val()
+      spriteNode.css "backgroundImage", cssImageUrl
 
-    compiled_js = ''
+      # Reload tab
+      spriteNode.click()
 
-    compile_source = if lang == 'coffeescript'
-      (source) ->
-        compiled_js = ''
-        try
-          compiled_js = CoffeeScript.compile source, noWrap: true
+     window.updateSoundNode = (appSound) ->
+      id = appSound.id
+      title = appSound.name
+
+      node = $(".filetree .sound[data-id=" + id + "]")
+
+      if node.length
+        soundNode = node
+        node = node.parent()
+      else
+        node = $("<li />").attr("title", title)
+        soundNode = $("<span />").text(title).attr('data-id', id).addClass("file sound").appendTo(node)
+        $('.filetree .sounds').next().append(node).children().removeClass('last').last().addClass('last')
+
+      # Reload tab
+      soundNode.click()
+
+    createLibraryNode = (library) ->
+      id = library.id
+      title = library.title
+
+      node = $("<li />").attr("title", title).attr('data-library_id', id)
+      folderNode = $("<span />").text(title).addClass("folder").appendTo(node)
+      fileList = $("<ul />").appendTo(node)
+
+      newScriptNode = $("<li />").attr("title", "New Script").append(
+        $("<span />").addClass("file new_script").text("New Script")
+      ).appendTo(fileList)
+
+      $.each library.scripts, (i, script) ->
+        scriptId = script.id
+        title = script.title
+        lang = script.lang
+        code = script.code
+        src = script.src
+
+        scriptNode = $("<li />").attr("title", title)
+        $("<span />").attr("data-id", scriptId).addClass("file script " + lang).text(title).appendTo(scriptNode)
+
+        editorHtml = $('<div />').append($(#{render(:partial => "script_form").to_json}))
+        editorHtml.find('input[name="script[code]"]').attr('id', "script_code" + scriptId).val(code)
+        editorHtml.find('input[name="script[lib_id]"]').val(id)
+        editorHtml.find('textarea').attr('id', "script_src" + scriptId).val(src)
+        editorHtml.attr('data-lang', lang).attr("id", "script" + scriptId).addClass("tab_data")
+        $("<button>Save</button>").addClass("save").appendTo(editorHtml)
+
+        editorHtml.appendTo(scriptNode)
+
+        scriptNode.appendTo(fileList)
+
+      $("ul.filetree > li").eq(1).after(node)
+
+    window.createEditor = (ui) ->
+      panel = $(ui.panel)
+      tab = $(ui.tab)
+      lang = panel.attr('data-lang')
+      code_id = "#" + panel.find('input[name="script[code]"], input[name="app[code]"]').attr('id')
+      src_id = "#" + panel.find('textarea').attr('id')
+
+      savedCode = $(src_id).val()
+
+      compiled_js = ''
+
+      compile_source = if lang == 'coffeescript'
+        (source) ->
+          compiled_js = ''
+          try
+            compiled_js = CoffeeScript.compile source, noWrap: true
+            $(code_id).val compiled_js
+            $('#error').hide()
+          catch error
+            $('#error').text(error.message).show()
+      else
+        (source) ->
+          compiled_js = source
           $(code_id).val compiled_js
-          $('#error').hide()
-        catch error
-          $('#error').text(error.message).show()
-    else
-      (source) ->
-        compiled_js = source
-        $(code_id).val compiled_js
 
-    compile_source($(src_id).val())
+      compile_source($(src_id).val())
 
-    codeTextArea = $(src_id).get(0)
-    editor = new CodeMirror.fromTextArea codeTextArea,
-      autoMatchParens: true
-      content: codeTextArea.value
-      height: "600px"
-      lineNumbers: true
-      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-      path: "/javascripts/codemirror/"
-      stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
-      tabMode: "shift"
-      textWrapping: false
-
-    $(editor.win.document).bind('keydown', 'ctrl+f', (e) ->
-      e.preventDefault()
-      e.stopPropagation()
-      s = editor.selection() || prompt("Search string")
-      if (s)
-        c = editor.getSearchCursor(s, true, "")
-        c.findNext()
-        c.select()
-
-      false
-    )
-
-    $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
-      if ($(window.currentPanel).find('button.new_save').length > 0)
-        $("#scriptTitleModal").modal
-          containerCss:
-            height: 75
-            width: 175
-      else
-        notify("Saving...")
-        $(window.currentPanel).find('form').ajaxSubmit
-          type: 'POST'
-          success: -> setSaved()
-
-      event.preventDefault()
-    )
-
-    # Listen for keypresses and recompile.
-    $(editor.win.document).keyup ->
-      currentCode = editor.getCode()
-
-      if currentCode != savedCode
-        setUnsaved()
-      else
-        tab.parent().removeClass("unsaved")
-
-      compile_source(currentCode)
-      $(src_id).val(currentCode)
-
-    lang: lang
-    updateSaved: () ->
-      savedCode = editor.getCode()
-
-  setUnsaved = () ->
-    $("#tabs ul li.ui-state-active").addClass("unsaved")
-
-  setSaved = (tabLi) ->
-    notify("Saved!")
-    tabLi ||= $("#tabs ul li.ui-state-active")
-
-    tabLi.removeClass("unsaved")
-    if c = tabLi.find('a').data('updateSaved')
-      c()
-    else
-      debugger
-
-  runApp = (code) ->
-    cacheBust = new Date().getTime()
-    zone = $("#testZone")
-    zone.css({top: 160, left: 640}).show()
-
-    # Recreate iframe
-    $("#testFrame").remove()
-    iframe = $('<iframe height="#{app.height}" id="testFrame" width="#{app.width}"></iframe>')
-    zone.append(iframe)
-
-    sandbox = iframe[0].contentWindow.document
-    sandbox.open()
-
-    sandbox.write(#{stylesheet_link_tag('app.css').to_json})
-    sandbox.write(#{stylesheet_link_tag('screen.css').to_json})
-    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
-    sandbox.write('<script src="/developer/apps/#{app.id}/lib.js?' + cacheBust + '"><\/script>')
-    sandbox.write(#{app.template.to_json})
-    sandbox.write("<script>var cacheBust = " + cacheBust + "; $(function(){"+ code +"});<\/script>")
-
-    sandbox.close()
-
-    # Set focus
-    $("#testFrame")[0].contentWindow.focus()
-
-  closeApp = ->
-    $("#testZone").hide()
-    $("#testFrame").remove()
-
-  $('#run').click ->
-    runApp $('#app_code').val()
-
-  $('#close_app').click ->
-    closeApp();
-
-  window.onbeforeunload = ->
-    if $("li.unsaved").length > 0
-      return "You have some unsaved changes, if you leave now you will lose your work."
-
-  $ ->
-    $("#testZone").draggable(
-      handle: "h3"
-      iframeFix: true
-    ).disableSelection()
-
-    $('ul.filetree').treeview()
-
-    $('.filetree .file.documentation').click ->
-      shouldCreateEditor = false
-      docSelector = "#documentation"
-      langClass = "documentation"
-
-      if $('#tabs ul li a[href="' + docSelector + '"]').length
-        $('#tabs ul li a[href="' + docSelector + '"]').click()
-      else
-        $tabs.tabs 'add', docSelector, $(this).text(), 0
-
-    $('.import_sprite, .import_sound').live 'mousedown', (event) ->
-      return if $(event.target).is('.control')
-
-      $(this).toggleClass('selected')
-
-    $('.control').live 'mousedown', ->
-      src = $(this).parent().data('wav_src') || $(this).parent().data('mp3_src')
-
-      $('#preview_sound audio').attr('src', src).get(0).play()
-
-    $('.filetree .file.new_datum').live 'click', ->
-      shouldCreateEditor = false
-      langClass = "data"
-      lang = "dummy"
-
-      newTabContents = $(this).next().clone()
-
-      newId = "new_datum" + (newScriptIds++)
-      newIdSelector = "#" + newId
-
-    $('#run').click ->
-      runApp $('#app_code').val()
-    $('#publish').click ->
-      notify "Publishing..."
-      $.post "/developer/apps/#{app.id}/publish", (data) ->
-        notify("Latest changes have been published!")
-      , "json"
-      newTabContents.attr('id', newId).appendTo($('ul.filetree'))
-
-      $tabs.tabs 'add', newIdSelector, $(this).text(), 0
-
-      $datumTextArea = $(newIdSelector).find("textarea")
-
-      datumTextArea = $datumTextArea.get(0)
-
-      savedCode = $datumTextArea.val()
-
-      editor = new CodeMirror.fromTextArea datumTextArea,
+      codeTextArea = $(src_id).get(0)
+      editor = new CodeMirror.fromTextArea codeTextArea,
         autoMatchParens: true
-        content: datumTextArea.value
+        content: codeTextArea.value
         height: "600px"
         lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
@@ -625,6 +465,33 @@
         tabMode: "shift"
         textWrapping: false
 
+      $(editor.win.document).bind('keydown', 'ctrl+f', (e) ->
+        e.preventDefault()
+        e.stopPropagation()
+        s = editor.selection() || prompt("Search string")
+        if (s)
+          c = editor.getSearchCursor(s, true, "")
+          c.findNext()
+          c.select()
+
+        false
+      )
+
+      $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
+        if ($(window.currentPanel).find('button.new_save').length > 0)
+          $("#scriptTitleModal").modal
+            containerCss:
+              height: 75
+              width: 175
+        else
+          notify("Saving...")
+          $(window.currentPanel).find('form').ajaxSubmit
+            type: 'POST'
+            success: -> setSaved()
+
+        event.preventDefault()
+      )
+
       # Listen for keypresses and recompile.
       $(editor.win.document).keyup ->
         currentCode = editor.getCode()
@@ -632,32 +499,117 @@
         if currentCode != savedCode
           setUnsaved()
         else
-          $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
+          tab.parent().removeClass("unsaved")
 
-        try
-          JSON.parse(currentCode)
-          $datumTextArea.val(currentCode)
-          $('#error').hide()
-        catch error
-          $('#error').text(error.message).show()
+        compile_source(currentCode)
+        $(src_id).val(currentCode)
 
-    $('.filetree .file.datum').live 'click', ->
-      shouldCreateEditor = false
-      langClass = "data"
+      lang: lang
+      updateSaved: () ->
+        savedCode = editor.getCode()
 
-      if $(this).hasClass("new")
-        datumSelector = "#" + $(this).attr('data-id')
+    setUnsaved = () ->
+      $("#tabs ul li.ui-state-active").addClass("unsaved")
+
+    setSaved = (tabLi) ->
+      notify("Saved!")
+      tabLi ||= $("#tabs ul li.ui-state-active")
+
+      tabLi.removeClass("unsaved")
+      if c = tabLi.find('a').data('updateSaved')
+        c()
       else
-        datumSelector = "#datum" + $(this).attr('data-id')
-      lang = "dummy"
+        debugger
 
-      if $('#tabs ul li a[href="' + datumSelector + '"]').length
-        $('#tabs ul li a[href="' + datumSelector + '"]').click()
+    runApp = (code) ->
+      cacheBust = new Date().getTime()
+      zone = $("#testZone")
+      zone.css({top: 160, left: 640}).show()
 
-      else
-        $tabs.tabs 'add', datumSelector, $(this).text(), 0
+      # Recreate iframe
+      $("#testFrame").remove()
+      iframe = $('<iframe height="#{app.height}" id="testFrame" width="#{app.width}"></iframe>')
+      zone.append(iframe)
 
-        $datumTextArea = $(datumSelector).find("textarea")
+      sandbox = iframe[0].contentWindow.document
+      sandbox.open()
+
+      sandbox.write(#{stylesheet_link_tag('app.css').to_json})
+      sandbox.write(#{stylesheet_link_tag('screen.css').to_json})
+      sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+      sandbox.write('<script src="/developer/apps/#{app.id}/lib.js?' + cacheBust + '"><\/script>')
+      sandbox.write(#{app.template.to_json})
+      sandbox.write("<script>var cacheBust = " + cacheBust + "; $(function(){"+ code +"});<\/script>")
+
+      sandbox.close()
+
+      # Set focus
+      $("#testFrame")[0].contentWindow.focus()
+
+    closeApp = ->
+      $("#testZone").hide()
+      $("#testFrame").remove()
+
+    $('#run').click ->
+      runApp $('#app_code').val()
+
+    $('#close_app').click ->
+      closeApp();
+
+    window.onbeforeunload = ->
+      if $("li.unsaved").length > 0
+        return "You have some unsaved changes, if you leave now you will lose your work."
+
+    $ ->
+      $("#testZone").draggable(
+        handle: "h3"
+        iframeFix: true
+      ).disableSelection()
+
+      $('ul.filetree').treeview()
+
+      $('.filetree .file.documentation').click ->
+        shouldCreateEditor = false
+        docSelector = "#documentation"
+        langClass = "documentation"
+
+        if $('#tabs ul li a[href="' + docSelector + '"]').length
+          $('#tabs ul li a[href="' + docSelector + '"]').click()
+        else
+          $tabs.tabs 'add', docSelector, $(this).text(), 0
+
+      $('.import_sprite, .import_sound').live 'mousedown', (event) ->
+        return if $(event.target).is('.control')
+
+        $(this).toggleClass('selected')
+
+      $('.control').live 'mousedown', ->
+        src = $(this).parent().data('wav_src') || $(this).parent().data('mp3_src')
+
+        $('#preview_sound audio').attr('src', src).get(0).play()
+
+      $('.filetree .file.new_datum').live 'click', ->
+        shouldCreateEditor = false
+        langClass = "data"
+        lang = "dummy"
+
+        newTabContents = $(this).next().clone()
+
+        newId = "new_datum" + (newScriptIds++)
+        newIdSelector = "#" + newId
+
+      $('#run').click ->
+        runApp $('#app_code').val()
+      $('#publish').click ->
+        notify "Publishing..."
+        $.post "/developer/apps/#{app.id}/publish", (data) ->
+          notify("Latest changes have been published!")
+        , "json"
+        newTabContents.attr('id', newId).appendTo($('ul.filetree'))
+
+        $tabs.tabs 'add', newIdSelector, $(this).text(), 0
+
+        $datumTextArea = $(newIdSelector).find("textarea")
 
         datumTextArea = $datumTextArea.get(0)
 
@@ -690,203 +642,253 @@
           catch error
             $('#error').text(error.message).show()
 
-    $('.filetree .file.script').live 'click', ->
-      shouldCreateEditor = true
-      if $(this).hasClass("new")
-        scriptSelector = "#" + $(this).attr('data-id')
-      else
-        scriptSelector = "#script" + $(this).attr('data-id')
+      $('.filetree .file.datum').live 'click', ->
+        shouldCreateEditor = false
+        langClass = "data"
 
-      if $(scriptSelector).parents('#tabs').length
-        $('#tabs ul li a[href="' + scriptSelector + '"]').click()
-      else
-        $tabs.tabs 'add', scriptSelector, $(this).text(), 0
-
-    $('.filetree .file.new_sprite').click ->
-      $("#newCanvasModal").modal
-        containerCss:
-          height: 110,
-          width: 180
-
-    $('.filetree .file.import_sprites').mousedown ->
-      $("#importSpriteModal").modal()
-
-    $('.filetree .file.import_sounds').mousedown ->
-      $("#importSoundModal").modal()
-
-    $('.filetree .file.new_script').live 'click', ->
-      newLibraryScript $(this).parents('[data-library_id]').last().attr('data-library_id')
-
-    $('.filetree .file.add_library').click ->
-      pos = $(this).offset()
-      pos.top += 20
-      $("#libraries").show().offset(pos)
-
-      setTimeout ->
-        $(document).one 'click', ->
-          $("#libraries").fadeOut()
-      , 0
-
-    $('.filetree .file.sprite').live 'click', ->
-      shouldCreateEditor = false
-      langClass = "sprite"
-      appSpriteId = $(this).attr('data-id')
-      width = $(this).attr('data-width')
-      height = $(this).attr('data-height')
-
-      spriteSelector = "#sprite" + appSpriteId
-
-      if $(spriteSelector).length
-        if $(spriteSelector).parents('#tabs').length
-          $('#tabs ul li a[href="' + spriteSelector + '"]').click()
-
-          return
+        if $(this).hasClass("new")
+          datumSelector = "#" + $(this).attr('data-id')
         else
-          $(spriteSelector).remove()
+          datumSelector = "#datum" + $(this).attr('data-id')
+        lang = "dummy"
 
-      bgCss = $(this).css('backgroundImage')
-      data = bgCss.substr(4, bgCss.length - 5)
-      title = $(this).text()
+        if $('#tabs ul li a[href="' + datumSelector + '"]').length
+          $('#tabs ul li a[href="' + datumSelector + '"]').click()
 
-      pixieEditor = createPixelEditor
-        width: width
-        height: height
-        title: title
-        dataUrl: data
-        appSpriteId: appSpriteId
-
-      pixieEditor.attr('id', spriteSelector.substr(1)).addClass('tab_data').appendTo($('ul.filetree'))
-
-      $tabs.tabs 'add', spriteSelector, title, 0
-
-    window.currentPanel = $("#scriptmain")
-
-    window.$tabs = $('#tabs').tabs
-      add: (event, ui) ->
-        $tabs.tabs('select', '#' + ui.panel.id)
-
-        if shouldCreateEditor
-          fileData = createEditor(ui)
-
-          $(ui.tab).data('updateSaved', fileData.updateSaved)
-          $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
         else
-          if langClass
-            $(ui.tab).parent().find('span.lang').addClass(langClass)
+          $tabs.tabs 'add', datumSelector, $(this).text(), 0
 
-        langClass = null
+          $datumTextArea = $(datumSelector).find("textarea")
 
-      remove: (event, ui) ->
-        $(ui.panel).find(".CodeMirror-wrapping").remove()
-        $('.filetree').append(ui.panel)
+          datumTextArea = $datumTextArea.get(0)
 
-      select: (event, ui) ->
-        window.currentPanel = ui.panel
+          savedCode = $datumTextArea.val()
 
-      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+          editor = new CodeMirror.fromTextArea datumTextArea,
+            autoMatchParens: true
+            content: datumTextArea.value
+            height: "600px"
+            lineNumbers: true
+            parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+            path: "/javascripts/codemirror/"
+            stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
+            tabMode: "shift"
+            textWrapping: false
 
-    $('ul.filetree .file.script').first().click()
+          # Listen for keypresses and recompile.
+          $(editor.win.document).keyup ->
+            currentCode = editor.getCode()
 
-    $('button.save').live 'click', ->
-      notify("Saving...")
-      if $(this).parent().hasClass("new_datum")
-        $("#datumTitleModal").modal
+            if currentCode != savedCode
+              setUnsaved()
+            else
+              $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
+
+            try
+              JSON.parse(currentCode)
+              $datumTextArea.val(currentCode)
+              $('#error').hide()
+            catch error
+              $('#error').text(error.message).show()
+
+      $('.filetree .file.script').live 'click', ->
+        shouldCreateEditor = true
+        if $(this).hasClass("new")
+          scriptSelector = "#" + $(this).attr('data-id')
+        else
+          scriptSelector = "#script" + $(this).attr('data-id')
+
+        if $(scriptSelector).parents('#tabs').length
+          $('#tabs ul li a[href="' + scriptSelector + '"]').click()
+        else
+          $tabs.tabs 'add', scriptSelector, $(this).text(), 0
+
+      $('.filetree .file.new_sprite').click ->
+        $("#newCanvasModal").modal
+          containerCss:
+            height: 110,
+            width: 180
+
+      $('.filetree .file.import_sprites').mousedown ->
+        $("#importSpriteModal").modal()
+
+      $('.filetree .file.import_sounds').mousedown ->
+        $("#importSoundModal").modal()
+
+      $('.filetree .file.new_script').live 'click', ->
+        newLibraryScript $(this).parents('[data-library_id]').last().attr('data-library_id')
+
+      $('.filetree .file.add_library').click ->
+        pos = $(this).offset()
+        pos.top += 20
+        $("#libraries").show().offset(pos)
+
+        setTimeout ->
+          $(document).one 'click', ->
+            $("#libraries").fadeOut()
+        , 0
+
+      $('.filetree .file.sprite').live 'click', ->
+        shouldCreateEditor = false
+        langClass = "sprite"
+        appSpriteId = $(this).attr('data-id')
+        width = $(this).attr('data-width')
+        height = $(this).attr('data-height')
+
+        spriteSelector = "#sprite" + appSpriteId
+
+        if $(spriteSelector).length
+          if $(spriteSelector).parents('#tabs').length
+            $('#tabs ul li a[href="' + spriteSelector + '"]').click()
+
+            return
+          else
+            $(spriteSelector).remove()
+
+        bgCss = $(this).css('backgroundImage')
+        data = bgCss.substr(4, bgCss.length - 5)
+        title = $(this).text()
+
+        pixieEditor = createPixelEditor
+          width: width
+          height: height
+          title: title
+          dataUrl: data
+          appSpriteId: appSpriteId
+
+        pixieEditor.attr('id', spriteSelector.substr(1)).addClass('tab_data').appendTo($('ul.filetree'))
+
+        $tabs.tabs 'add', spriteSelector, title, 0
+
+      window.currentPanel = $("#scriptmain")
+
+      window.$tabs = $('#tabs').tabs
+        add: (event, ui) ->
+          $tabs.tabs('select', '#' + ui.panel.id)
+
+          if shouldCreateEditor
+            fileData = createEditor(ui)
+
+            $(ui.tab).data('updateSaved', fileData.updateSaved)
+            $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+          else
+            if langClass
+              $(ui.tab).parent().find('span.lang').addClass(langClass)
+
+          langClass = null
+
+        remove: (event, ui) ->
+          $(ui.panel).find(".CodeMirror-wrapping").remove()
+          $('.filetree').append(ui.panel)
+
+        select: (event, ui) ->
+          window.currentPanel = ui.panel
+
+        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+
+      $('ul.filetree .file.script').first().click()
+
+      $('button.save').live 'click', ->
+        notify("Saving...")
+        if $(this).parent().hasClass("new_datum")
+          $("#datumTitleModal").modal
+            containerCss:
+              height: 75
+              width: 175
+        else
+          $(window.currentPanel).find('form').ajaxSubmit
+            type: 'POST'
+            success: () ->
+              setSaved()
+
+      $('button.new_save').live 'click', ->
+        $("#scriptTitleModal").modal
           containerCss:
             height: 75
             width: 175
-      else
-        $(window.currentPanel).find('form').ajaxSubmit
-          type: 'POST'
-          success: () ->
-            setSaved()
 
-    $('button.new_save').live 'click', ->
-      $("#scriptTitleModal").modal
-        containerCss:
-          height: 75
-          width: 175
+      $('#tabs span.ui-icon-close').live 'click', ->
+        parentLi = $(this).parent()
 
-    $('#tabs span.ui-icon-close').live 'click', ->
-      parentLi = $(this).parent()
+        if !parentLi.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
+          index = $('li', $tabs).index(parentLi)
+          $tabs.tabs('remove', index)
 
-      if !parentLi.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
+      $('#tabs span.ui-icon').live 'click', ->
+        parentLi = $(this).parent()
+
         index = $('li', $tabs).index(parentLi)
-        $tabs.tabs('remove', index)
+        $tabs.tabs('select', index)
 
-    $('#tabs span.ui-icon').live 'click', ->
-      parentLi = $(this).parent()
+      $("#libraries li").live "click", (event) ->
+        libraryId = $(this).attr("data-library_id")
+        checkbox = $(this).children("input")
+        boxClick = false
 
-      index = $('li', $tabs).index(parentLi)
-      $tabs.tabs('select', index)
+        if $(event.target).is("input")
+          boxClick = true
 
-    $("#libraries li").live "click", (event) ->
-      libraryId = $(this).attr("data-library_id")
-      checkbox = $(this).children("input")
-      boxClick = false
-
-      if $(event.target).is("input")
-        boxClick = true
-
-      if libraryId == "new"
-        $("#newLibraryModal").modal()
-      else
-        checked = !(checkbox.attr("checked") ^ boxClick)
-        checkbox.attr("checked", checked)
-
-        postData =
-          library_id: libraryId
-
-        if checked
-          $.post "/developer/apps/#{app.id}/add_library", postData, (data) ->
-            createLibraryNode data.library
-          , "json"
+        if libraryId == "new"
+          $("#newLibraryModal").modal()
         else
-          $("ul.filetree li[data-library_id='" + libraryId + "']").remove()
+          checked = !(checkbox.attr("checked") ^ boxClick)
+          checkbox.attr("checked", checked)
 
-          $.post "/developer/apps/#{app.id}/remove_library", postData, (data) ->
-            unless data.status == "ok"
-              true # TODO Error message
-          , "json"
+          postData =
+            library_id: libraryId
 
-    $("#new_library").ajaxForm
-      dataType: "json"
-      beforeSerialize: ($form) ->
-        $form.find("input[name=app_id]").val(#{app.id})
-      success: (data) ->
-        createLibraryNode data.library
-        $.modal.close()
+          if checked
+            $.post "/developer/apps/#{app.id}/add_library", postData, (data) ->
+              createLibraryNode data.library
+            , "json"
+          else
+            $("ul.filetree li[data-library_id='" + libraryId + "']").remove()
 
-    $("#tooltip .next_tip").live "click", ->
+            $.post "/developer/apps/#{app.id}/remove_library", postData, (data) ->
+              unless data.status == "ok"
+                true # TODO Error message
+            , "json"
+
+      $("#new_library").ajaxForm
+        dataType: "json"
+        beforeSerialize: ($form) ->
+          $form.find("input[name=app_id]").val(#{app.id})
+        success: (data) ->
+          createLibraryNode data.library
+          $.modal.close()
+
+      $("#tooltip .next_tip").live "click", ->
+        nextTip()
+
+      $("#tooltip .close_tip").live "click", ->
+        hideTooltip()
+
+      tipIndex = -1
+      window.nextTip = () ->
+        tipIndex += 1
+        tips = $("#tips .tip")
+        moreTips = tipIndex < tips.length - 1
+
+        tip = tips.eq(tipIndex)
+
+        targetElement = $(tip.attr("data-element_selector"))
+
+        # TODO Highlight target element
+
+        hideTooltip()
+
+        if tip.length
+          tipMessage = tip.html()
+
+          tipMessage += $("#tips .close").html()
+
+          if moreTips
+            tipMessage += $("#tips .next").html()
+
+          showTooltip(targetElement, tipMessage)
+
       nextTip()
-
-    $("#tooltip .close_tip").live "click", ->
-      hideTooltip()
-
-    tipIndex = -1
-    window.nextTip = () ->
-      tipIndex += 1
-      tips = $("#tips .tip")
-      moreTips = tipIndex < tips.length - 1
-
-      tip = tips.eq(tipIndex)
-
-      targetElement = $(tip.attr("data-element_selector"))
-
-      # TODO Highlight target element
-
-      hideTooltip()
-
-      if tip.length
-        tipMessage = tip.html()
-
-        tipMessage += $("#tips .close").html()
-
-        if moreTips
-          tipMessage += $("#tips .next").html()
-
-        showTooltip(targetElement, tipMessage)
-
-    nextTip()
+  <script type="text/coffeescript">
 
 %style
   :sass
