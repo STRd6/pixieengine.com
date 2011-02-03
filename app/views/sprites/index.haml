@@ -56,7 +56,7 @@
     description = $(this).data('description') || ""
     tags = $(this).data('tags')
     comments = $(this).find('.comments_area').children().clone()
-    edit_form = '#edit_sprite_' + id
+    edit_form = '.main #edit_sprite_' + id
 
     update_info_component = ->
       $('.info_component .name').text(name)
@@ -67,6 +67,10 @@
         $('.info_component .author a, .info_component .author span').remove()
         $('.info_component .author').append('<span>' + author + '</span>')
       $('.info_component .sprite_container img').attr('src', img).attr('data-id', id)
+
+      $('.info_component .sprite_container').next().remove()
+      $("<p>" + description + "</p>").insertAfter('.info_component .sprite_container')
+
       $('#load_sprite').attr('href', '/sprites/' + id + '/load')
 
     clear_tags = ->
@@ -87,29 +91,46 @@
     update_comment_component = ->
       clear_comments()
 
-      $('#new_comment').ajaxForm(
+      comments.appendTo('.comment_component')
+
+      $('.comment_component form').ajaxForm(
         beforeSerialize: ->
           notify("Saving...")
         success: (data) ->
           notify("Complete")
       )
 
-      comments.appendTo('.comment_component')
-
     clear_form = ->
-      $('.edit_component').children().not('h3, a.button').remove()
+      form_id = $('.edit_component').find('form')
+
+      if ("edit_sprite_" + id != form_id)
+        $('.edit_component').children().not('h3, a.button').remove()
+
+    update_sprite_info = ->
+      title = $('.edit_component form').find('#sprite_title').val()
+      description = $('.edit_component form').find('#sprite_description').val()
+
+      $('.info_component h3').text(title)
+      $('.info_component .sprite_container').next().text(description)
+
+      #update .main sprites with the new data elements for title and description
+      #replace the existing form in .main with a clone of the newly edited form
 
     update_edit_component = ->
       clear_form()
 
-      $(edit_form).ajaxForm(
+      $(edit_form).clone().insertAfter('.edit_component h3')
+
+      $('.edit_component form').ajaxForm(
         beforeSerialize: ->
           notify("Saving...")
         success: (data) ->
           notify("Complete!")
-      )
 
-      $(edit_form).insertAfter('.edit_component h3')
+          update_sprite_info()
+
+          #update the main data ids too
+      )
 
     update_info_component()
     update_tag_component()
@@ -136,6 +157,16 @@
     $pixie_blue: #1084ce
     $light_highlight: #b2e2ff
     $light_bg: #d2eeff
+
+    form
+      input[type="text"]
+        +box-sizing(content-box)
+
+        color: black
+        background-color: #fff
+
+      label
+        text-align: left
 
     .info_component, .tag_component, .comment_component, .edit_component
       +border-radius(8px)
