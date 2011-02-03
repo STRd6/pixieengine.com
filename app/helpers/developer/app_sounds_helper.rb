@@ -1,0 +1,2 @@
+module Developer::AppSoundsHelper
+end
