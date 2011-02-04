@@ -1,7 +1,8 @@
 $blueprint-button-font-color = "#0C639B"
 $blueprint-button-active-background-color = "#0C639B"
-$blueprint-button-active-font-color = "whiteSmoke"
+$blueprint-button-active-font-color = "#f5fcff"
 $blueprint-button-hover-background-color = "#EBF7FF"
+$blueprint-button-hover-font-color = "#1084ce"
 
 button, #content a.button
   +button-button
@@ -9,13 +10,17 @@ button, #content a.button
   +button-hover-colors
   +button-active-colors
   +border-radius(4px)
+  +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #90cff8))
+
+  &:active
+    +linear-gradient(color-stops(#0c639b, #70c2f6 33%, #90cff8))
 
   &[disabled]
+    +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #b2e2ff))
+    border-color: #f5fcff
     color: #AAA
     cursor: default
 
-    &:hover
-      color: #AAA
 
 #content #pixie .pixie .actions
   a.button
