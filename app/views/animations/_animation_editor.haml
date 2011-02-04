@@ -237,40 +237,45 @@
     update_active_animation()
 
     frames = []
+    ids = []
+    tiles = []
 
-    map_data = $('.animations .animation').map(->
-      ids = []
+    $('.animations .animation').find('.sprites img').each (i, img) ->
+      tile =
+        id: $(img).data('id')
+        src: $(img).attr('src')
+        title: $(img).attr('title') || $(img).attr('alt')
 
-      tileset = $(this).find('.sprites img').map(->
+      if $.inArray(tile.id, ids) == -1
+        ids.push tile.id
+        tiles.push(tile)
+
+    animation_data = $('.animations .animation').map(->
+
+      frame_data = $(this).find('.sprites img').each (i, img) ->
         tile_id = $(this).data('id')
-
-        if $.inArray(tile_id, ids) == -1
-          ids.push tile_id
-
-          tile_data =
-            src: $(this).attr('src')
-            id: tile_id
-            title: $(this).attr('title') || $(this).attr('alt')
 
         frames.push(ids.indexOf(tile_id))
 
-        return tile_data
+      if frames.length
 
-      ).get()
-
-      animation = {
-        version: "1.1"
-        name: $(this).prev().text()
-        speed: $(this).find('.speed').text()
-        tileset: tileset
-        frames: frames
-      }
+        animation = {
+          name: $(this).prev().text()
+          speed: $(this).find('.speed').text()
+          frames: frames
+        }
 
       frames = []
 
       return animation
 
     ).get()
+
+    return {
+      version: "1.2"
+      tileset: tiles
+      animations: animation_data
+    }
   )
 
 %style
@@ -309,6 +314,10 @@
 
     $header_color = #BFE2FF
     $background_color = #00010D
+
+    #flashes
+      color: #000
+      padding-left: 80px
 
     .logo
       +bounds(64px, 34px)
