@@ -5,8 +5,6 @@
       = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
   .frame_sprites
-    .demo
-    %p Drag sprites here to start animating
 
   .sidebar_right
     %h3#filename Title
@@ -31,15 +29,21 @@
     .sprites
     .speed ${speed}
 
+#placeholder.template
+  .demo
+  %p Drag sprites here to start animating
+
 :coffeescript
   $(->
+    $('#placeholder').tmpl().appendTo('.frame_sprites')
+
     animation_id = null
     preview_dirty = false
 
     clear_frame_sprites = -> frame_sprites().remove()
 
     frame_sprites = ->
-      frame_sprites_container().children().not('p, .demo')
+      frame_sprites_container().children()
 
     frame_sprites_container = -> $('.frame_sprites')
 
@@ -82,7 +86,7 @@
 
       clear_frame_sprites()
 
-      $('.frame_sprites .demo, .frame_sprites p').show()
+      $('#placeholder').tmpl().appendTo('.frame_sprites')
 
       $('#create_animation').tmpl(
         name: "Animation " + ($('.animations .animation').length + 1)
@@ -92,14 +96,12 @@
       axis: "x"
       out: ->
         $(this).removeClass('highlight')
-        if $('.frame_sprites .ui-sortable-placeholder').length == 1
-          $(this).find('p, .demo').show()
       over: ->
         $(this).addClass('highlight')
-        $(this).find('p, .demo').hide()
+        $('.frame_sprites .demo, .frame_sprites p').remove()
       receive: (event, ui) ->
         $(this).removeClass('highlight')
-
+        $('.frame_sprites .demo, .frame_sprites p').remove()
         active_animation().children().remove()
         active_animation().append(ui.item.find('img').clone())
       tolerance: "touch"
@@ -201,8 +203,7 @@
       parent.fadeOut(150, ->
         parent.remove()
 
-        if frame_sprites().length == 0
-          $('.frame_sprites p, .frame_sprites .demo').show()
+        $('#placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
       )
 
     $('.duplicate').live 'mousedown', ->
@@ -346,12 +347,12 @@
 
       cursor: pointer
       display: inline-block
-      right: -10px
+      right: -15px
       position: absolute
 
     .x
       background-image: url(/images/x.png)
-      top: -10px
+      top: -12px
 
     .duplicate
       background-image: url(/images/duplicate_layer.png)
@@ -419,16 +420,15 @@
           +border-radius($radius)
           +bounds($frame_sprite_height)
           +box-shadow(#ccc, 2px, 2px, 15px)
-          +box-sizing(border-box)
 
           background-color: #ccc
-          border: 3px dotted #aaa
+          border: 4px dotted #aaa
 
         .sprite_container
           +bounds(72px)
           +box-shadow($gray_blue, 2px, 2px, 15px)
-          +box-sizing(border-box)
 
+          border: 4px solid transparent
           margin-right: 20px
 
           &:hover
