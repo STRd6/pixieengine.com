@@ -23,10 +23,6 @@ class AnimationsController < ApplicationController
     end
   end
 
-  def show
-    @animation = Animation.find(params[:id])
-  end
-
   def edit
     @animation = Animation.find(params[:id])
 
