@@ -7,22 +7,44 @@
       %span.author by #{link_to sprites[0].user, sprites[0].user}
       .sprite_container
         =image_tag(sprites[0].image.url)
+      %p.description
       %a.button#load_sprite{ :target => "_blank" }
         %img{ :src => "/images/icons/picture_edit.png" }
         Edit image
       %a.button#set_avatar
         %img{ :src => "/images/icons/status_online.png"}
         Set as avatar
-      %a.button#delete_sprite
-        %img{ :src => "/images/icons/cross.png" }
-        Delete
+      =link_to "#{image_tag "icons/cross.png"} Delete".html_safe, sprite_path(sprites[0]), :method => :delete, :class => "button delete"
     .tag_component
       %h3 Tags
-      %input{ :placeholder => "Add tag..." }
+      .tags
+        - sprites[0].tag_list.each do |tag|
+          = sprite_tag_link(sprites[0], tag)
+
+        - sprites[0].source_list.each do |source|
+          = sprite_tag_link(sprites[0], source)
+
+        - sprites[0].dimension_list.each do |dimension|
+          = sprite_tag_link(sprites[0], dimension)
+        - form_tag "/sprites/#{sprites[0].id}/add_tag" do
+          = text_field_tag :tag
+          = submit_tag "Add"
     .comment_component
-    - if owner_or_admin?(sprites[0])
-      .edit_component
-        %h3 Edit
+      = display_comments sprites[0]
+    .edit_component
+      %h3 Edit
+      - form_for sprites[0] do |form|
+        = form.error_messages
+
+        %p
+          = form.label :title
+          = form.text_field :title
+
+        %p
+          = form.label :description
+          = form.text_area :description
+
+        = form.submit
 
   .main
     .sprites
@@ -38,88 +60,98 @@
       - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
 #new_tag.template
-  .tag{ 'data-id' => "${id}" }
+  .tag{ 'data-sprite_id' => "${sprite_id}" }
     %a{ :href => "/sprites?tagged=${name}" } ${name}
     .remove X
 
 :coffeescript
-  $('.main .sprite_container').mousedown ->
-    $('.sprite_container').removeClass('selected')
-    $(this).addClass('selected')
+  select_sprite = ->
+    el = $(this)
 
-    id = $(this).data('id')
-    name = $(this).data('name')
-    author = $(this).data('author')
-    author_id = $(this).data('author_id')
-    author_path = "users/" + author_id
-    img = $(this).data('original_url')
-    description = $(this).data('description') || ""
+    if !el.hasClass('selected')
+      el.removeClass('selected')
+
+    el.addClass('selected')
+
+  $('.main .sprite_container').mousedown ->
+    select_sprite()
+
+    sprite =
+      id: $(this).data('id')
+      name: $(this).data('name') || "Sprite " + $(this).data('id')
+      description: $(this).data('description') || ""
+      img: $(this).data('original_url')
+
+    author =
+      id: $(this).data('author_id')
+      name: $(this).data('author')
+
     tags = $(this).data('tags')
     comments = $(this).find('.comments_area').children().clone()
-    edit_form = '.main #edit_sprite_' + id
+
+    author_path = (author_id) ->
+      "users/" + author_id
+
+    edit_form_selector = (sprite_id) ->
+      '.main #edit_sprite_' + sprite_id
 
     update_info_component = ->
-      $('.info_component .name').text(name)
-      if author_id
-        $('.info_component .author a, .info_component .author span').remove()
-        $('.info_component .author').append('<a href=' + author_path + '>' + author + '</a>')
+      $('.info_component .name').text(sprite.name)
+      if author.id
+        $('.info_component .author a').text(author.name).attr('href', author_path(author.id))
       else
-        $('.info_component .author a, .info_component .author span').remove()
-        $('.info_component .author').append('<span>' + author + '</span>')
-      $('.info_component .sprite_container img').attr('src', img).attr('data-id', id)
+        $('.info_component .author a').text(author.name).removeAttr('href')
 
-      $('.info_component').children().find('p').remove()
-      $("<p>" + description + "</p>").insertAfter('.info_component .sprite_container')
+      $('.info_component .sprite_container img').attr('src', sprite.img)
 
-      $('#load_sprite').attr('href', '/sprites/' + id + '/load')
+      $('.info_component p.description').text(sprite.description)
+
+      $('.info_component a.delete').attr('href', '/sprites/' + sprite.id)
+      $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
 
     clear_tags = ->
-      $('.tag_component').children().not('h3, input').remove()
+      $('.tag_component .tag').remove()
 
     update_tag_component = ->
       clear_tags()
 
       $.each tags.split(" "), (i, tag) ->
         $('#new_tag').tmpl(
-          id: id
+          sprite_id: sprite.id
           name: tag
-        ).insertBefore('.tag_component input')
+        ).insertBefore('.tag_component form')
+
+      $('.tag_component form').attr('action', '/sprites/' + sprite.id + '/add_tag')
 
     clear_comments = ->
-      $('.comment_component').children().remove()
+      $('.comment_component .comment').remove()
 
     update_comment_component = ->
       clear_comments()
 
       comments.appendTo('.comment_component')
 
-      $('.comment_component form').ajaxForm(
+      $('.comment_component form').ajaxForm
         beforeSerialize: ->
           notify("Saving...")
         success: (data) ->
           notify("Complete")
-      )
-
-    clear_form = ->
-      form_id = $('.edit_component').find('form')
-
-      if ("edit_sprite_" + id != form_id)
-        $('.edit_component').children().not('h3, a.button').remove()
 
     update_sprite_info = ->
-      title = $('.edit_component form').find('#sprite_title').val()
-      description = $('.edit_component form').find('#sprite_description').val()
+      title = $('.edit_component #sprite_title').val()
+      description = $('.edit_component #sprite_description').val()
 
-      $('.info_component h3').text(title)
-      $('.info_component .sprite_container').next().text(description)
+      $('.main .sprite_container[data-id="' + sprite.id + '"]').data
+        name: title
+        description: description
 
-      #update .main sprites with the new data elements for title and description
-      #replace the existing form in .main with a clone of the newly edited form
+      sprite.name = title
+      sprite.description = description
 
     update_edit_component = ->
-      clear_form()
-
-      $(edit_form).clone().insertAfter('.edit_component h3')
+      $('.edit_component form').attr('action', 'sprites/' + sprite.id).attr('id', 'edit_sprite_' + sprite.id)
+      $('.edit_component #sprite_title').val(sprite.name)
+      $('.edit_component #sprite_description').val(sprite.description)
 
       $('.edit_component form').ajaxForm(
         beforeSerialize: ->
@@ -128,8 +160,7 @@
           notify("Complete!")
 
           update_sprite_info()
-
-          #update the main data ids too
+          update_info_component()
       )
 
     update_info_component()
@@ -140,12 +171,10 @@
   $("#set_avatar").live "click", ->
     notify("Saving...")
 
-    sprite_id = $(this).prev().find('img').data('id')
+    data =
+      sprite_id: $(this).prev().find('img').data('id')
 
-    $.post("/users/#{current_user.id}/set_avatar",
-      { sprite_id: sprite_id },
-      (data) -> notify("Avatar successfully changed.")
-    )
+    $.post("/users/#{current_user.id}/set_avatar", data, -> notify("Avatar successfully changed."))
 
 %style
   :sass
@@ -206,9 +235,6 @@
     .comment_component, .edit_component
       input[type="submit"]
         margin: 0
-
-    .comments_area
-      display: none
 
     .actions
       position: absolute
