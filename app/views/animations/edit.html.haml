@@ -1,1 +1,5 @@
-= render :partial => 'animation_editor'
+= render :partial => 'animation_editor', :locals => {:data => @animation.string_data}
+
+:coffeescript
+  $ ->
+    window.loadData(JSON.parse(#{@animation.string_data}))
