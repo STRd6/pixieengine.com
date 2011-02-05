@@ -479,10 +479,7 @@
 
       $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
         if ($(window.currentPanel).find('button.new_save').length > 0)
-          $("#scriptTitleModal").modal
-            containerCss:
-              height: 75
-              width: 175
+          $("#scriptTitleModal").modal()
         else
           notify("Saving...")
           $(window.currentPanel).find('form').ajaxSubmit
@@ -704,10 +701,7 @@
           $tabs.tabs 'add', scriptSelector, $(this).text(), 0
 
       $('.filetree .file.new_sprite').click ->
-        $("#newCanvasModal").modal
-          containerCss:
-            height: 110,
-            width: 180
+        $("#newCanvasModal").modal()
 
       $('.filetree .file.import_sprites').mousedown ->
         $("#importSpriteModal").modal()
@@ -791,10 +785,7 @@
       $('button.save').live 'click', ->
         notify("Saving...")
         if $(this).parent().hasClass("new_datum")
-          $("#datumTitleModal").modal
-            containerCss:
-              height: 75
-              width: 175
+          $("#datumTitleModal").modal()
         else
           $(window.currentPanel).find('form').ajaxSubmit
             type: 'POST'
@@ -802,10 +793,7 @@
               setSaved()
 
       $('button.new_save').live 'click', ->
-        $("#scriptTitleModal").modal
-          containerCss:
-            height: 75
-            width: 175
+        $("#scriptTitleModal").modal()
 
       $('#tabs span.ui-icon-close').live 'click', ->
         parentLi = $(this).parent()

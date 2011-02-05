@@ -35,10 +35,7 @@
                 $.modal.close()
                 postImage()
 
-              $("#titleModal").modal
-                containerCss:
-                  height: 200
-                  width: 400
+              $("#titleModal").modal()
 
                 onClose: () ->
                   $('#titleModal button').unbind()
