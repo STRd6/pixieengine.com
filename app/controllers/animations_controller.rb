@@ -28,6 +28,7 @@ class AnimationsController < ApplicationController
 
     respond_with(@animation) do |format|
       format.html do
+        @user_sprites = current_user.sprites || []
         render :layout => "fullscreen"
       end
     end
