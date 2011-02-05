@@ -4,7 +4,8 @@
     .user_sprites
       = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-  .frame_sprites
+  .bottom
+    .frame_sprites
 
   .sidebar_right
     %h3#filename Title
@@ -310,8 +311,6 @@
     $frame_sprite_height = 72px
     $p_height = 21px
 
-    $left_column_width = 80%
-
     $header_color = #BFE2FF
     $background_color = #00010D
 
@@ -409,17 +408,21 @@
           &:hover
             background-color: #FFF6BF
 
+      .bottom
+        +box-sizing(border-box)
+        padding-right: 175px
+        bottom: 0
+        left: 0
+        position: absolute
+        width: 100%
+
       .frame_sprites
         +border-radius($radius)
 
         background-color: $dark_highlight
         border: 2px solid transparent
-        bottom: 0
-        left: 0
         overflow-y: hidden
         padding: 20px
-        position: absolute
-        width: $left_column_width
         white-space: nowrap
 
         &.highlight
