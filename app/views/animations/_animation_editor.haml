@@ -8,7 +8,10 @@
     .frame_sprites
 
   .sidebar_right
-    %h3#filename Title
+    - if @animation
+      %h3#filename #{@animation.name}
+    - else
+      %h3#filename Title
     %button#save Save
     .animations
       %button#new_animation New
@@ -51,7 +54,6 @@
 
         $('#placeholder').tmpl().appendTo('.frame_sprites')
       else
-        $('#filename').text("#{@animation.name}")
         animation_el = $(data.animations).each (i, animation) ->
 
           animation_el = $('#create_animation').tmpl(
@@ -68,11 +70,17 @@
               id: data.tileset[frame].id
             ).appendTo($('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
 
-          $('#animation_speed').val(active_animation().find('.speed').text())
-          stop_animation()
-          clear_frame_sprites()
+          last_sprite_img = $('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
 
-          active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
+          $('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
+
+        $('#animation_speed').val(active_animation().find('.speed').text())
+        stop_animation()
+        clear_frame_sprites()
+
+        active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
+
+        $('.animations .animation').first().mousedown()
 
     animation_id = null
     preview_dirty = false
