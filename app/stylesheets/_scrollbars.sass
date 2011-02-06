@@ -1,0 +1,41 @@
+#fullscreen
+  /* Turn on a 16x16 scrollbar
+  ::-webkit-scrollbar
+    width: 16px
+    height: 16px
+
+  /* Place The scroll down button at the bottom
+  ::-webkit-scrollbar-button:vertical:end:increment
+    background-image: url(/images/scroll/control_down.png)
+
+    &:active
+      background: blue
+
+  /* Place The scroll up button at the up
+  ::-webkit-scrollbar-button:vertical:start:decrement
+    background-image: url(/images/scroll/control_up.png)
+
+    &:active
+      background: blue
+
+  /* Top area above thumb and below up button
+  ::-webkit-scrollbar-track-piece:vertical:start
+    background-image: url(/images/scroll/gutter_top.png), url(/images/scroll/gutter_middle.png)
+    background-repeat: no-repeat, repeat-y
+
+
+  /* Bottom area below thumb and down button
+  ::-webkit-scrollbar-track-piece:vertical:end
+    background-image: url(/images/scroll/gutter_bottom.png), url(/images/scroll/gutter_middle.png)
+    background-repeat: no-repeat, repeat-y
+    background-position: bottom left, 0 0
+
+
+  /* The thumb itself
+  ::-webkit-scrollbar-thumb:vertical
+    height: 56px
+    -webkit-border-image: url(/images/scroll/thumb.png) 8 0 8 0 stretch stretch
+    border-width: 8 0 8 0
+
+    &:active
+      background: blue
