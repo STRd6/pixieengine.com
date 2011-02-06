@@ -71,17 +71,19 @@ a
   #logo
     height: 70px
     position: relative
+    +contents-centered
 
     #logo_type
-      bottom: 0
+      +bounds(110px, 40px)
+
       color = !main_color
       font-size: 32px
-      height: 40px
       letter-spacing: .25em
-      position: absolute
-      text-align: center
-      width: 100%
       a
+        +bounds(110px, 55px)
+        +replace-text('/images/logo_large.png')
+
+        display: block
         font-weight: normal
         text-decoration: none
         &:visited
