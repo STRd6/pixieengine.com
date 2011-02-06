@@ -1,4 +1,3 @@
-.logo
 .animation_editor
   .main
     .user_sprites
@@ -44,8 +43,6 @@
 :coffeescript
   $(->
     window.loadData = (data) ->
-      console.log(data)
-
       if !(data)
         $('#create_animation').tmpl(
           name: "Animation 1"
@@ -354,16 +351,6 @@
     #flashes
       color: #000
       padding-left: 80px
-
-    .logo
-      +bounds(64px, 34px)
-
-      background-image: url(/images/pixie.png)
-      margin-left: 4px
-      margin-top: 4px
-      position: fixed
-      top: 0
-      left: 0
 
     body
       +box-sizing(border-box)
