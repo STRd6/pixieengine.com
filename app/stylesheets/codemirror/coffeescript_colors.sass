@@ -1,55 +1,36 @@
-html
-  cursor: text
-
-.editbox
-  padding: .4em
-  margin: 0
-  font-family: monospace
-  font-size: 11pt
-  line-height: 16px
-  color: #333
-  .rb-linenum
-    background-color: #EEEEEE
-    color: #888888
-    padding: 0.1em 1em 0.2em 0
-    width: 75px
-  .rb-pan
-    padding-bottom: 0.1em
-    padding-top: 0.2em
-  .rb-comment, .rb-long-comment
+span
+  &.comment, &.long-comment
     color: #AEAEAE
-    font-style: italic
-  .rb-method-parameter
+    //font-style: italic
+  &.method-parameter
     color: #8AA6C1
-  .rb-variable, .rb-method-call
+  &.variable, &.method-call
     color: black
-  .rb-long-comment-whitespace
-  .rb-symbol, .rb-ascii
+  &.long-comment-whitespace
+  &.symbol, &.ascii
     color: #6FB1FF
-  .rb-hexnum, .rb-binary
+  &.hexnum, &.binary
     color: #DFC745
-  .rb-float, .rb-fixnum, .rb-numeric
+  &.float, &.fixnum, &.numeric
     color: black
-  .rb-entity
+  &.entity
     color: #89BDFF
-  .rb-keyword
+  &.keyword
     color: blue
-  .rb-operator
+  &.operator
     color: darkRed
-  .rb-storage
+  &.storage
     color: #99CF50
-  .rb-string, .rb-heredoc, .rb-exec
+  &.string, &.heredoc, &.exec
     color: green
-  .rb-class, .rb-constant, .rb-global-variable
-    font-style: italic
-  .rb-instance-var
+  &.class, &.constant, &.global-variable
+    color: black
+    //font-style: italic
+  &.instance-var
     color: #61B2DF
-  .rb-class-var
+  &.class-var
     color: #8BC9DF
-  .rb-regexp
+  &.regexp
     color: #DF5045
-  .rb-method
+  &.method
     color: purple
-
-  p
-    margin: 0

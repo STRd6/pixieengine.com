@@ -424,6 +424,8 @@ bgMusic.play()
       :width => app.width,
       :height => app.height,
       :code => app.code,
+      :src => app.src,
+      :lang => app.lang,
       :test => app.test,
       :user => current_user
     )
