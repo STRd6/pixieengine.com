@@ -43,24 +43,36 @@
     window.loadData = (data) ->
       console.log(data)
 
-      $('.sidebar_right .animations').children().not('#new_animation').remove()
+      if !(data)
+        $('#create_animation').tmpl(
+          name: "Animation 1"
+          speed: $('#animation_speed').val()
+        ).insertBefore($('#new_animation'))
 
-      animation_el = $(data.animations).each (i, animation) ->
-        animation_el = $('#create_animation').tmpl(
-          name: animation.name
-          speed: animation.speed
-        ).insertBefore('.sidebar_right #new_animation')
+        $('#placeholder').tmpl().appendTo('.frame_sprites')
+      else
+        $('#filename').text("#{@animation.name}")
+        animation_el = $(data.animations).each (i, animation) ->
 
-        $.each(animation.frames, (i, frame) ->
-          $('#load_sprite').tmpl(
-            url: data.tileset[frame].src
-            alt: data.tileset[frame].title
-            title: data.tileset[frame].title
-            id: data.tileset[frame].id
-          ).appendTo($(animation_el).last().find('.sprites'))
-        )
+          animation_el = $('#create_animation').tmpl(
+            name: animation.name
+            speed: animation.speed
+          ).insertBefore('.sidebar_right #new_animation')
 
-    $('#placeholder').tmpl().appendTo('.frame_sprites')
+          $.each animation.frames, (i, frame) ->
+            active_animation().removeClass('active')
+            $('#load_sprite').tmpl(
+              url: data.tileset[frame].src
+              alt: data.tileset[frame].title
+              title: data.tileset[frame].title
+              id: data.tileset[frame].id
+            ).appendTo($('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
+
+          $('#animation_speed').val(active_animation().find('.speed').text())
+          stop_animation()
+          clear_frame_sprites()
+
+          active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
 
     animation_id = null
     preview_dirty = false
@@ -85,11 +97,6 @@
       frame_sprites().clone().appendTo(active_animation_sprites())
 
       active_animation().parent().find('.speed').text($('#animation_speed').val())
-
-    $('#create_animation').tmpl(
-      name: "Animation 1"
-      speed: $('#animation_speed').val()
-    ).insertBefore($('#new_animation'))
 
     $('.animation').live 'mousedown', ->
       update_active_animation()
@@ -215,8 +222,7 @@
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
 
-    $('.animations .name').liveEdit()
-    $('#filename').liveEdit()
+    $('.animations .name, #filename').liveEdit()
 
     $('.x').live 'mousedown', ->
       parent = $(this).parent()
@@ -225,16 +231,15 @@
         parent.next().append('<div class= "x" />')
         parent.next().append('<div class= "duplicate" />')
 
-      parent.fadeOut(150, ->
+      parent.fadeOut 150, ->
         parent.remove()
 
         $('#placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
-      )
 
     $('.duplicate').live 'mousedown', ->
       parent = $(this).parent()
-
       newEl = parent.clone()
+
       newEl.find('.x, .duplicate').remove()
 
       newEl.insertAfter(parent)
@@ -495,8 +500,9 @@
         +bounds(116px, 100%)
         +box-sizing(border-box)
 
-        padding-bottom: 36px + 175px
+        padding-bottom: 63px + 175px
         position: absolute
+        text-align: center
         right: 0
         top: 0
 
@@ -504,7 +510,7 @@
           color: $pixie_blue
           margin: 0
 
-        #filename, #save
+        #save
           +inline-block
 
         .animations
