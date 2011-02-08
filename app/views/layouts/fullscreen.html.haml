@@ -11,6 +11,7 @@
     #logo
 
     = yield
+    = render :partial => "/shared/nav_dock"
 
     - if @has_reg_popup
       = render :partial => 'shared/register_modal'
