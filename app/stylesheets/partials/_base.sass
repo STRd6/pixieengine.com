@@ -11,9 +11,20 @@ $blueprint-grid-width: ($blueprint-container-size + $blueprint-grid-margin) / $b
 
 =grid-width(!cols)
   width = ($blueprint-grid-width + $blueprint-grid-margin) * !cols - $blueprint-grid-margin
-  
+
 @mixin single-column
   display: inline-block
   +grid-width(9)
   position: relative
   vertical-align: top
+
+$default-border-radius: 8px
+
+$editor_background: #00010D
+$editor_box_shadow: #566669
+
+$editor_page_padding: 3em
+
+$dark_highlight: #001C2F
+$pixie_primary: #1084CE
+$hover: #FFF6BF

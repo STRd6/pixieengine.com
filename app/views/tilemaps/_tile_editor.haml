@@ -20,7 +20,7 @@
 
   .bottom_bar
     .component#tile_select
-      %h3 Tiles:
+      %h3 Tiles
       .tiles
         - unless data
           - sprites = Collection.find(params[:tileset_id]).sprites
@@ -39,7 +39,7 @@
       %button#save Save
 
     .component
-      %h3 Layer:
+      %h3 Layer
       .layer_select
         .choice.active
           .name Background
@@ -79,7 +79,7 @@
     .preview
 
 :coffeescript
-  debugMode = false
+  debugMode = true
 
   firstGID = 1
 
@@ -624,21 +624,22 @@
 
 %style
   :sass
+    @import partials/base
     @import util
 
-    $sidebar_width = 140px
-    $bottom_bar_height = 140px
+    $sidebar_width: 180px
+    $bottom_bar_height: 140px
 
     body
       +box-sizing(border-box)
-      padding: 3em
+      padding: $editor_page_padding
 
     input
       +box-sizing(border-box)
 
       background-color: transparent
       border: 2px solid #888
-      color: #BFE2FF
+      color: $pixie_primary
       margin: 0
       max-width: 120px
       padding: 2px
@@ -650,6 +651,11 @@
         height: 27px
         letter-spacing: 0.1em
         margin-bottom: 0.5em
+
+    .sidebar, .sidebar2, .bottom_bar, .tools
+      +box-sizing(border-box)
+
+      padding: 10px
 
     table.properties
       background-color: transparent
@@ -669,16 +675,22 @@
       position: relative
 
       &>.sidebar
+        +border-radius
+
+        background-color: $dark-highlight
         left: 0
         position: absolute
         top: 0
-        width: 120px
+        width: $sidebar_width
 
       .sidebar2
+        +border-radius
+
+        background-color: $dark_highlight
         right: 0
         position: absolute
         top: 0
-        width: 120px
+        width: $sidebar_width
 
       .sidebar, .sidebar2
         .component:first-child
@@ -689,14 +701,15 @@
 
         height: 100%
         padding-bottom: $bottom_bar_height
-        padding-left: $sidebar_width
-        padding-right: $sidebar_width
+        padding-left: $sidebar_width + 20
+        padding-right: $sidebar_width + 20
         width: 100%
 
       .bottom_bar
+        +border-radius
         +box-sizing(border-box)
 
-        background-color: #00010D
+        background-color: $dark_highlight
         bottom: 0
         height: $bottom_bar_height
         left: 0
@@ -758,15 +771,8 @@
 
       .component
         +box-sizing(border-box)
-        background-color: #00010D
-        color: #BFE2FF
-        padding: 0.5em
+        color: $pixie_primary
         width: 100%
-
-        h3
-          +text-shadow(#0A131A)
-          color: #BFE2FF
-          font-weight: bold
 
       #saved_selections
         .selection
@@ -797,6 +803,7 @@
               display: block
 
       .tools
+        +bounds($sidebar_width, $bottom_bar_height)
         +tile_tool(eraser)
         +tile_tool(fill)
         +tile_tool(selection)
@@ -805,18 +812,15 @@
         bottom: 0
         left: 0
         position: absolute
-        width: $sidebar_width
-        height: $bottom_bar_height
 
         .tool
+          +bounds(32px)
           +inline-block
 
           background-repeat: no-repeat
-
+          border: 1px solid transparent
           cursor: pointer
-          height: 32px
-          padding: 1px
-          width: 32px
+          margin: 1px
 
           &.primary, &.secondary
             border: 1px solid
@@ -828,34 +832,31 @@
             border-color: blue
 
       .screen
+        +bounds(100%)
         +box-sizing(border-box)
 
-        height: 100%
         margin: auto
         overflow: auto
         position: relative
-        width: 100%
 
         .layers
+          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
+
           background-image: url('/images/tile_grid_#{tile_width}.png')
           border-bottom: 1px solid #414141
           border-right: 1px solid #414141
 
-          height: #{tiles_tall * tile_height}px
-          width: #{tiles_wide * tile_width}px
-
         .layer
-          height: #{tiles_tall * tile_height}px
+          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
+
           left: 0
           position: absolute
           top: 0
-          width: #{tiles_wide * tile_width}px
 
         .cursor
+          +bounds(#{tile_width}px, #{tile_height}px)
           border: 1px solid green
-          height: #{tile_height}px
           position: absolute
-          width: #{tile_width}px
 
         .selection
           +box-sizing(border-box)
