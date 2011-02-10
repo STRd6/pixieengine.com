@@ -1,0 +1,71 @@
+#fullscreen
+  +box-sizing(border-box)
+
+  background-color: $editor_background
+  height: 100%
+  padding: $editor_page_padding
+
+  #sidebar, #header, #feedback, #footer, #chatZone
+    display: none
+
+  #flashes
+    right: 0
+    position: fixed
+    top: 0
+    width: 90%
+
+  #logo
+    +bounds(68px, 34px)
+
+    background-image: url(/images/pixie.png)
+    margin-left: 4px
+    margin-top: 4px
+    position: absolute
+    top: 0
+    left: 0
+
+  #content
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    border: none
+    margin: 0
+    padding: 0
+
+    .subnav
+      display: none
+
+  .container
+    height: 100%
+    margin: 0
+    padding: 0
+
+  nav.bottom
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 100%
+
+  nav.left
+    left: 0
+    position: absolute
+    top: 0
+
+  nav.right
+    +box-sizing(border-box)
+
+    right: 0
+    position: absolute
+    top: 0
+
+  section
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    .screen
+      +bounds(100%)
+      +box-sizing(border-box)
+
+      margin: auto
+      overflow: auto
+      position: relative

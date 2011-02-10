@@ -1,12 +1,12 @@
 .animation_editor
-  .main
+  %section
     .user_sprites
       = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
-  .bottom
+  %nav.bottom
     .frame_sprites
 
-  .sidebar_right
+  %nav.right
     - if @animation
       %h3#filename #{@animation.name}
     - else

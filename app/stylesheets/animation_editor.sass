@@ -1,34 +1,13 @@
 $sprite_container_bounds: 72px
 
-#fullscreen
-  background-color: $editor_background
-  height: 100%
-
-  #logo
-    +bounds(68px, 34px)
-
-    background-image: url(/images/pixie.png)
-    margin-left: 4px
-    margin-top: 4px
-    position: absolute
-    top: 0
-    left: 0
-
 body
-  +box-sizing(border-box)
-
   color: #fff
-  padding: $editor_page_padding
 
 img
   +inline-block
   +max-bounds(64px)
 
   vertical-align: middle
-
-#flashes
-  color: #000
-  padding-left: 80px
 
 .x, .duplicate
   +bounds(24px, 29px)
@@ -61,10 +40,7 @@ img
   height: 100%
   position: relative
 
-  .main
-    +bounds(100%)
-    +box-sizing(border-box)
-
+  section
     padding-bottom: 175px
     padding-right: 175px
 
@@ -89,14 +65,10 @@ img
       &:hover
         background-color: $hover
 
-  .bottom
+  nav.bottom
     +box-sizing(border-box)
 
     padding-right: 175px
-    position: absolute
-    bottom: 0
-    left: 0
-    width: 100%
 
   .frame_sprites
     +border-radius
@@ -141,19 +113,15 @@ img
 
     p
       position: absolute
-      bottom: ($sprite_container_bounds / 2) + 10
+      bottom: ($sprite_container_bounds / 2) + 15
       left: ($sprite_container_bounds) + 35px
       margin: 0
 
-  .sidebar_right
+  nav.right
     +bounds(116px, 100%)
-    +box-sizing(border-box)
 
     padding-bottom: 63px + 175px
-    position: absolute
     text-align: center
-    right: 0
-    top: 0
 
     h3
       margin: 0
