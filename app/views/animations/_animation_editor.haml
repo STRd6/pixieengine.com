@@ -265,8 +265,11 @@
 
     $.post('/animations', postData, (data) ->
       id = data.animation.id
+      name = postData.animation.name
 
-      notify("Saved as <a href='/animations/" + id + "'>Animation " + id + "</a>!")
+      display_name = (if (!name || name == "Title") then "Animation " + id else name)
+
+      notify("Saved as <a href='/animations'>" + display_name + "</a>!")
 
       $("#flashes .notice")
 
