@@ -4,8 +4,9 @@
   #error
   %nav.left
     .actions
-      %button#run Run App
-      %button#publish Publish App
+      %button.save Save
+      %button#run Run
+      %button#publish Publish
       = link_to "Download Libs", "/developer/apps/#{app.id}/lib.js"
 
     %ul.filetree
@@ -527,7 +528,7 @@
     runApp = (code) ->
       cacheBust = new Date().getTime()
       zone = $("#testZone")
-      zone.css({top: 160, left: 160}).show()
+      zone.css({top: 300, left: 0}).show()
 
       # Recreate iframe
       $("#testFrame").remove()
