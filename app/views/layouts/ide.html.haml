@@ -14,7 +14,9 @@
 
     #flashes
       - flash.each do |key, msg|
-        %div{ :class => key }= msg
+        %div{ :class => key }
+          = msg
+          .close
 
     #logo
     #bulb
