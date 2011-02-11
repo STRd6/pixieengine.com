@@ -40,6 +40,7 @@
 
     .component
       %h3 Layer
+      %button.new New Layer
       .layer_select
         .choice.active
           .name Background
@@ -48,8 +49,6 @@
         .choice
           .name Foreground
           .show.on
-
-      %button.new New Layer
 
     .component{ :style => "display: none"}
       %h3 Properties
@@ -405,7 +404,7 @@
       propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
 
-  $(".layer_select+button.new").click () ->
+  $(".layer_select").parent().find('.new').click () ->
     addNewLayer()
 
   $(".layer_select .choice .name").live 'mousedown', (event) ->
@@ -631,7 +630,7 @@
     @import partials/base
     @import util
 
-    $sidebar_width: 180px
+    $sidebar_width: 220px
     $bottom_bar_height: 140px
 
     input
@@ -694,7 +693,23 @@
 
       nav.left, nav.right
         .component:first-child
+          margin-bottom: 10px
           padding-top: 0
+
+      nav.left
+        .component
+          position: relative
+
+          h3
+            +inline-block
+
+            margin: 0
+
+          button#save, button.new
+            margin-top: auto
+            margin-bottom: auto
+            position: absolute
+            right: 0
 
       &>section
         padding-bottom: $bottom_bar_height
