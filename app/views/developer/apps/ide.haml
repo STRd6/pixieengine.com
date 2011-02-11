@@ -787,7 +787,19 @@
         if $(this).parent().hasClass("new_datum")
           $("#datumTitleModal").modal()
         else
-          $(window.currentPanel).find('form').ajaxSubmit
+          form = $(window.currentPanel).find('form')
+
+          code = form.find("[name*='[code]']").val()
+
+          # Hot swap: inject code
+          if runningGameFrame = $("#testFrame").get(0)?.contentWindow
+            newScriptTag = $ "<script />",
+              html: code
+
+            $("head", runningGameFrame.document).append(newScriptTag)
+            runningGameFrame.eval("engine.reload()")
+
+          form.ajaxSubmit
             type: 'POST'
             success: () ->
               setSaved()
