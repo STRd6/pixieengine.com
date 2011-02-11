@@ -1,9 +1,12 @@
 #fullscreen
   +box-sizing(border-box)
 
-  background-color: $editor_background
+  background-color: $dark_background
   height: 100%
   padding: $editor_page_padding
+
+  &.light
+    background-color: $light_background
 
   #sidebar, #header, #feedback, #footer, #chatZone
     display: none

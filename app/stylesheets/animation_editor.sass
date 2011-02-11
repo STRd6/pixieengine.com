@@ -1,13 +1,7 @@
 $sprite_container_bounds: 72px
 
 #fullscreen
-  color: #fff
-
-  img
-    +inline-block
-    +max-bounds(64px)
-
-    vertical-align: middle
+  color: $dark_text
 
   .x, .duplicate
     +bounds(24px, 29px)
@@ -17,6 +11,9 @@ $sprite_container_bounds: 72px
     right: -15px
     position: absolute
 
+  &.light
+    color: $light_text
+
   .x
     background-image: url(/images/x.png)
     top: -12px
@@ -24,6 +21,13 @@ $sprite_container_bounds: 72px
   .duplicate
     background-image: url(/images/duplicate_layer.png)
     bottom: 18px
+
+.animation_editor
+  +box-sizing(border-box)
+  +user-select
+
+  height: 100%
+  position: relative
 
   .sprite_container
     +border-radius
@@ -33,12 +37,11 @@ $sprite_container_bounds: 72px
     background-color: #fff
     position: relative
 
-.animation_editor
-  +box-sizing(border-box)
-  +user-select
+  img
+    +inline-block
+    +max-bounds(64px)
 
-  height: 100%
-  position: relative
+    vertical-align: middle
 
   section
     padding-bottom: 175px
@@ -54,7 +57,7 @@ $sprite_container_bounds: 72px
       padding: 20px
 
     .sprite_container
-      +box-shadow(#ccc, 3px, 3px, 15px)
+      +box-shadow($dark_box_shadow, 3px, 3px, 15px)
       +contents-centered
 
       cursor: move
@@ -79,19 +82,26 @@ $sprite_container_bounds: 72px
     padding: 20px
     white-space: nowrap
 
+    &.light
+      background-color: $light_highlight
+
     &.highlight
       border: 2px solid $pixie_primary
 
     .demo
       +border-radius
       +bounds($sprite_container_bounds)
-      +box-shadow($editor_box_shadow, 2px, 2px, 15px)
+      +box-shadow($dark_box_shadow, 2px, 2px, 15px)
 
       background-color: #ccc
       border: 4px dotted #aaa
 
+      &.light
+        background-color: #fff
+        border: 4px dotted #ccc
+
     .sprite_container
-      +box-shadow($editor_box_shadow, 2px, 2px, 15px)
+      +box-shadow($dark_box_shadow, 2px, 2px, 15px)
 
       border: 4px solid transparent
       margin-right: 20px
@@ -141,6 +151,9 @@ $sprite_container_bounds: 72px
       text-align: center
       overflow-y: auto
       padding: 10px
+
+      &.light
+        background-color: $light_highlight
 
       .speed, .sprites
         visibility: hidden
