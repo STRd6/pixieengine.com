@@ -173,6 +173,10 @@
 
 :plain
   <script type="text/coffeescript">
+    $('#bulb').click ->
+      $(this).toggleClass('on')
+      $('#fullscreen, nav.left').toggleClass('light')
+
     window.currentPanel
     shouldCreateEditor = false
     pixieEditorIds = 0
