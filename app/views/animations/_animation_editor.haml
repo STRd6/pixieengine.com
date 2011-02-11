@@ -42,6 +42,9 @@
 
 :coffeescript
   $(->
+    $('#bulb').click ->
+      $(this).toggleClass('on')
+
     window.loadData = (data) ->
       if !(data)
         $('#create_animation').tmpl(

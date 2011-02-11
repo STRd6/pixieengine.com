@@ -24,6 +24,17 @@
     top: 0
     left: 0
 
+  #bulb
+    +bounds(32px)
+
+    background-image: url(/images/lightbulb_off.png)
+    position: absolute
+    top: 5px
+    right: 5px
+
+    &.on
+      background-image: url(/images/lightbulb.png)
+
   #content
     +bounds(100%)
     +box-sizing(border-box)

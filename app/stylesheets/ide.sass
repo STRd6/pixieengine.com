@@ -1,12 +1,43 @@
 @import constants
 @import util
+@import partials/base
+
+$nav_left: 220px
+
+#fullscreen
+  #run
+    +border-right-radius(0)
+
+    margin-right: 0
+
+  #publish
+    +border-left-radius(0)
+
+    margin-left: 0
+
+  nav.left
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    padding: 10px
+    width: $nav_left
+
+  section
+    padding-left: $nav_left + 20px
+
+  .treeview ul
+    background-color: transparent
+
+  .treeview .hover
+    color: $pixie_primary
 
 ul.filetree
+  +bounds(100%)
+
   display: inline-block
-  height: 650px
   margin: 1em
   overflow-x: hidden
-  width: 150px
   vertical-align: top
 
   .tab_data
@@ -58,10 +89,9 @@ ul.filetree
         background-image: url(/images/icons/book_add.png)
 
 #tabs
+  +bounds(99%, 100%)
+
   display: inline-block
-  margin: 1em
-  margin-right: 0
-  width: 712px
   vertical-align: top
 
   &.ui-tabs
@@ -150,7 +180,10 @@ ul.filetree
 
 .actions
   display: inline-block
-  margin: 1em
+  text-align: center
+
+  a
+    color: $pixie_primary
 
 #content
   border: none

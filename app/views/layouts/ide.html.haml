@@ -12,21 +12,19 @@
     = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
     = javascript_include_tag 'pixie/jqcolor', 'pixie/pixie'
 
-    .container
-      #content
-        #flashes
-          - flash.each do |key, msg|
-            %div{ :class => key }= msg
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }= msg
 
-        #logo
+    #logo
 
-        - if @title
-          %h1= @title
+    - if @title
+      %h1= @title
 
-        = yield
+    = yield
 
-      - if @has_reg_popup
-        = render :partial => 'shared/register_modal'
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
 
     #tooltip
       .icon
