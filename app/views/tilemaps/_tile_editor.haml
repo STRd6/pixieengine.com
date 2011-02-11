@@ -79,6 +79,10 @@
     .preview
 
 :coffeescript
+  $('#bulb').click ->
+    $(this).toggleClass('on')
+    $('#fullscreen, nav.left, nav.right, nav.bottom').toggleClass('light')
+
   debugMode = true
 
   firstGID = 1
@@ -673,14 +677,20 @@
       &>nav.left
         +border-radius
 
-        background-color: $dark-highlight
+        background-color: $dark_highlight
         width: $sidebar_width
+
+        &.light
+          background-color: $light_highlight
 
       nav.right
         +border-radius
 
         background-color: $dark_highlight
         width: $sidebar_width
+
+        &.light
+          background-color: $light_highlight
 
       nav.left, nav.right
         .component:first-child
@@ -699,6 +709,9 @@
         height: $bottom_bar_height
         padding-left: $sidebar_width
         padding-right: $sidebar_width
+
+        &.light
+          background-color: $light_highlight
 
         .tiles
           height: 70px
