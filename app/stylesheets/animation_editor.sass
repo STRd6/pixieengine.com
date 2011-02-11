@@ -3,35 +3,35 @@ $sprite_container_bounds: 72px
 #fullscreen
   color: #fff
 
-img
-  +inline-block
-  +max-bounds(64px)
+  img
+    +inline-block
+    +max-bounds(64px)
 
-  vertical-align: middle
+    vertical-align: middle
 
-.x, .duplicate
-  +bounds(24px, 29px)
+  .x, .duplicate
+    +bounds(24px, 29px)
 
-  cursor: pointer
-  display: inline-block
-  right: -15px
-  position: absolute
+    cursor: pointer
+    display: inline-block
+    right: -15px
+    position: absolute
 
-.x
-  background-image: url(/images/x.png)
-  top: -12px
+  .x
+    background-image: url(/images/x.png)
+    top: -12px
 
-.duplicate
-  background-image: url(/images/duplicate_layer.png)
-  bottom: 18px
+  .duplicate
+    background-image: url(/images/duplicate_layer.png)
+    bottom: 18px
 
-.sprite_container
-  +border-radius
-  +bounds($sprite_container_bounds)
-  +inline-block
+  .sprite_container
+    +border-radius
+    +bounds($sprite_container_bounds)
+    +inline-block
 
-  background-color: #fff
-  position: relative
+    background-color: #fff
+    position: relative
 
 .animation_editor
   +box-sizing(border-box)
