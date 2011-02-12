@@ -5,6 +5,32 @@
 $nav_left: 220px
 
 #fullscreen
+  .import_sprite, .import_sound
+    +border-radius(8px)
+    +bounds(72px)
+    +contents-centered()
+
+    background-color: white
+    display: inline-block
+    margin-right: 10px
+    margin-bottom: 3px
+
+    &.selected
+      background-color: $pixie_primary
+
+    img
+      +max-bounds(64px)
+
+  .import_sound
+    color: #000
+    font-size: 10px
+    text-align: center
+
+    .control
+      +bounds(25px, 29px)
+
+      background-image: url(/images/play.png)
+
   button.save
     +border-right-radius(0)
 

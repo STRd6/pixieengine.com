@@ -316,7 +316,6 @@
           setSaved(tabLi)
 
           appDatum = data.app_datum
-          console.log appDatum
 
           panel.removeClass("new_datum")
 
@@ -911,41 +910,3 @@
 
       nextTip()
   </script>
-
-%style
-  :sass
-    @import util
-
-    #simplemodal-container
-      +border-radius(12px)
-      +box-shadow(#333, 10px, 10px, 20px)
-
-      background-color: black
-      color: white
-
-    .import_sprite, .import_sound
-      +border-radius(8px)
-      +bounds(72px)
-      +contents-centered()
-
-      background-color: white
-      display: inline-block
-      margin-right: 10px
-      margin-bottom: 3px
-
-    .import_sound
-      color: black
-      font-size: 10px
-      text-align: center
-
-      .control
-        +bounds(25px, 29px)
-
-        background-image: url(/images/play.png)
-
-      img
-        max-width: 64px
-        max-height: 64px
-
-      &.selected
-        background-color: #1084CE
