@@ -793,10 +793,11 @@
 
           # Hot swap: inject code
           if runningGameFrame = $("#testFrame").get(0)?.contentWindow
-            newScriptTag = $ "<script />",
-              html: code
+            try
+              runningGameFrame.eval(code)
+            catch error
+              warn? error.message
 
-            $("head", runningGameFrame.document).append(newScriptTag)
             try
               runningGameFrame.eval("engine.reload()")
             catch error
