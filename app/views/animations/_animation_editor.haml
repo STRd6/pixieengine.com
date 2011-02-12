@@ -41,217 +41,179 @@
   %p Drag sprites here to start animating
 
 :coffeescript
-  $(->
-    $('#bulb').click ->
-      $(this).toggleClass('on')
-      $('#fullscreen, .frame_sprites, .animations, .demo').toggleClass('light')
+  $('#bulb').click ->
+    $(this).toggleClass('on')
+    $('#fullscreen, .frame_sprites, .animations, .demo').toggleClass('light')
 
-    window.loadData = (data) ->
-      if !(data)
-        $('#create_animation').tmpl(
-          name: "Animation 1"
-          speed: $('#animation_speed').val()
-        ).insertBefore($('#new_animation'))
+  animation_id = null
+  preview_dirty = false
 
-        $('#placeholder').tmpl().appendTo('.frame_sprites')
-      else
-        animation_el = $(data.animations).each (i, animation) ->
+  clear_frame_sprites = -> frame_sprites().remove()
 
-          animation_el = $('#create_animation').tmpl(
-            name: animation.name
-            speed: animation.speed
-          ).insertBefore('.sidebar_right #new_animation')
+  frame_sprites = ->
+    frame_sprites_container().children()
 
-          $.each animation.frames, (i, frame) ->
-            active_animation().removeClass('active')
-            $('#load_sprite').tmpl(
-              url: data.tileset[frame].src
-              alt: data.tileset[frame].title
-              title: data.tileset[frame].title
-              id: data.tileset[frame].id
-            ).appendTo($('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
+  frame_sprites_container = -> $('.frame_sprites')
 
-          last_sprite_img = $('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
+  frame_selected_sprite = -> $('.frame_sprites .sprite_container.selected')
 
-          $('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
+  active_animation = -> $('.animations .animation .active')
 
-        $('#animation_speed').val(active_animation().find('.speed').text())
-        stop_animation()
-        clear_frame_sprites()
+  active_animation_sprites = -> active_animation().parent().find('.sprites')
 
-        active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
+  clear_preview = -> $('.preview_box img').remove()
 
-        $('.animations .animation').first().mousedown()
+  window.update_active_animation = ->
+    active_animation_sprites().parent().find('.sprites').children().remove()
+    frame_sprites().clone().appendTo(active_animation_sprites())
 
-    animation_id = null
-    preview_dirty = false
+    active_animation().parent().find('.speed').text($('#animation_speed').val())
 
-    clear_frame_sprites = -> frame_sprites().remove()
+  $('.animation').live 'mousedown', ->
+    update_active_animation()
 
-    frame_sprites = ->
-      frame_sprites_container().children()
+    $('#animation_speed').val($(this).find('.speed').text())
+    stop_animation()
+    clear_frame_sprites()
 
-    frame_sprites_container = -> $('.frame_sprites')
+    $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
 
-    frame_selected_sprite = -> $('.frame_sprites .sprite_container.selected')
+    active_animation().removeClass('active')
+    $(this).find('.cover').addClass('active')
 
-    active_animation = -> $('.animations .animation .active')
+  $('#new_animation').mousedown ->
+    update_active_animation()
+    stop_animation()
 
-    active_animation_sprites = -> active_animation().parent().find('.sprites')
+    active_animation().removeClass('active')
 
-    clear_preview = -> $('.preview_box img').remove()
+    clear_frame_sprites()
 
-    window.update_active_animation = ->
-      active_animation_sprites().parent().find('.sprites').children().remove()
-      frame_sprites().clone().appendTo(active_animation_sprites())
+    $('#placeholder').tmpl().appendTo('.frame_sprites')
 
-      active_animation().parent().find('.speed').text($('#animation_speed').val())
+    $('#create_animation').tmpl(
+      name: "Animation " + ($('.animations .animation').length + 1)
+    ).insertAfter($('.animations .animation').last())
 
-    $('.animation').live 'mousedown', ->
-      update_active_animation()
+  $('.frame_sprites').sortable
+    axis: "x"
+    out: ->
+      $(this).removeClass('highlight')
+    over: ->
+      $(this).addClass('highlight')
+      $('.frame_sprites .demo, .frame_sprites p').remove()
+    receive: (event, ui) ->
+      $(this).removeClass('highlight')
+      $('.frame_sprites .demo, .frame_sprites p').remove()
+      active_animation().children().remove()
+      active_animation().append(ui.item.find('img').clone())
+    tolerance: "touch"
 
-      $('#animation_speed').val($(this).find('.speed').text())
-      stop_animation()
-      clear_frame_sprites()
+  $('.user_sprites .sprite_container').draggable
+    addClasses: false
+    connectToSortable: '.frame_sprites'
+    containment: 'window'
+    helper: 'clone'
+    opacity: 0.7
+    zIndex: 10000
 
-      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
+  $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
+    event.preventDefault()
 
-      active_animation().removeClass('active')
-      $(this).find('.cover').addClass('active')
+  play_next = ->
+    preview_sprites = $('.preview_box img')
+    active = $('.preview_box img.active').removeClass('active')
 
-    $('#new_animation').mousedown ->
-      update_active_animation()
-      stop_animation()
+    active_index = active.index()
+    length = preview_sprites.length
 
-      active_animation().removeClass('active')
+    preview_sprites.eq((active_index + 1) % length).addClass('active')
 
-      clear_frame_sprites()
+  play_animation = ->
+    clearInterval(animation_id)
 
-      $('#placeholder').tmpl().appendTo('.frame_sprites')
-
-      $('#create_animation').tmpl(
-        name: "Animation " + ($('.animations .animation').length + 1)
-      ).insertAfter($('.animations .animation').last())
-
-    $('.frame_sprites').sortable
-      axis: "x"
-      out: ->
-        $(this).removeClass('highlight')
-      over: ->
-        $(this).addClass('highlight')
-        $('.frame_sprites .demo, .frame_sprites p').remove()
-      receive: (event, ui) ->
-        $(this).removeClass('highlight')
-        $('.frame_sprites .demo, .frame_sprites p').remove()
-        active_animation().children().remove()
-        active_animation().append(ui.item.find('img').clone())
-      tolerance: "touch"
-
-    $('.user_sprites .sprite_container').draggable
-      addClasses: false
-      connectToSortable: '.frame_sprites'
-      containment: 'window'
-      helper: 'clone'
-      opacity: 0.7
-      zIndex: 10000
-
-    $('img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
-      event.preventDefault()
-
-    play_next = ->
-      preview_sprites = $('.preview_box img')
-      active = $('.preview_box img.active').removeClass('active')
-
-      active_index = active.index()
-      length = preview_sprites.length
-
-      preview_sprites.eq((active_index + 1) % length).addClass('active')
-
-    play_animation = ->
-      clearInterval(animation_id)
-
-      if ($('.preview_box img').length != $('.frame_sprites img').length) || preview_dirty
-        preview_dirty = false
-        clear_preview()
-        preview_sprites = $('.frame_sprites img').attr('style', '').clone()
-        $('.preview_box .sprites').append(preview_sprites)
-
-        preview_sprites.first().addClass('active')
-
-        animation_id = setInterval(play_next, $('#animation_speed').val())
-      else
-        animation_id = setInterval(play_next, $('#animation_speed').val())
-
-    pause_animation = ->
-      clearInterval(animation_id)
-
-    stop_animation = ->
-      clearInterval(animation_id)
-
+    if ($('.preview_box img').length != $('.frame_sprites img').length) || preview_dirty
+      preview_dirty = false
       clear_preview()
+      preview_sprites = $('.frame_sprites img').attr('style', '').clone()
+      $('.preview_box .sprites').append(preview_sprites)
 
-      $('#play').removeClass("pause")
+      preview_sprites.first().addClass('active')
 
-    $('#play').mousedown ->
-      if $(this).hasClass("pause") then pause_animation() else play_animation()
+      animation_id = setInterval(play_next, $('#animation_speed').val())
+    else
+      animation_id = setInterval(play_next, $('#animation_speed').val())
 
-      $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
+  pause_animation = ->
+    clearInterval(animation_id)
 
-    $('#stop').mousedown ->
-      stop_animation()
+  stop_animation = ->
+    clearInterval(animation_id)
 
-    $('.frame_sprites .sprite_container').live
-      click: -> $(this).addClass('selected')
-      mouseenter: ->
-        $('<div class="x" />').appendTo $(this)
-        $('<div class="duplicate" />').appendTo $(this)
-      mouseleave: ->
-        $(this).find('.x, .duplicate').remove()
+    clear_preview()
 
-    $(document).mousedown ->
-      frame_selected_sprite().removeClass('selected')
+    $('#play').removeClass("pause")
 
-    $(document).bind "keydown", 'left', (event) ->
-      preview_dirty = true
-      event.preventDefault()
+  $('#play').mousedown ->
+    if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-      selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+    $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
 
-      if selected_sprite.prev().length
-        selected_sprite.prev().before(selected_sprite)
+  $('#stop').mousedown ->
+    stop_animation()
 
-    $(document).bind "keydown", 'right', (event) ->
-      preview_dirty = true
-      event.preventDefault()
+  $('.frame_sprites .sprite_container').live
+    click: -> $(this).addClass('selected')
+    mouseenter: ->
+      $('<div class="x" />').appendTo $(this)
+      $('<div class="duplicate" />').appendTo $(this)
+    mouseleave: ->
+      $(this).find('.x, .duplicate').remove()
 
-      selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+  $(document).mousedown ->
+    frame_selected_sprite().removeClass('selected')
 
-      if selected_sprite.next().length
-        selected_sprite.next().after(selected_sprite)
+  $(document).bind "keydown", 'left', (event) ->
+    preview_dirty = true
+    event.preventDefault()
 
-    $('.animations .name, #filename').liveEdit()
+    selected_sprite = frame_selected_sprite()
+    selected_sprite.find('.x, .duplicate').remove()
 
-    $('.x').live 'mousedown', ->
-      parent = $(this).parent()
+    if selected_sprite.prev().length
+      selected_sprite.prev().before(selected_sprite)
 
-      if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
-        parent.next().append('<div class= "x" />')
-        parent.next().append('<div class= "duplicate" />')
+  $(document).bind "keydown", 'right', (event) ->
+    preview_dirty = true
+    event.preventDefault()
 
-      parent.fadeOut 150, ->
-        parent.remove()
+    selected_sprite = frame_selected_sprite()
+    selected_sprite.find('.x, .duplicate').remove()
 
-        $('#placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
+    if selected_sprite.next().length
+      selected_sprite.next().after(selected_sprite)
 
-    $('.duplicate').live 'mousedown', ->
-      parent = $(this).parent()
-      newEl = parent.clone()
+  $('.animations .name, #filename').liveEdit()
 
-      newEl.find('.x, .duplicate').remove()
+  $('.x').live 'mousedown', ->
+    parent = $(this).parent()
 
-      newEl.insertAfter(parent)
+    if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
+      parent.next().append('<div class= "x" />')
+      parent.next().append('<div class= "duplicate" />')
+
+    parent.fadeOut 150, ->
+      parent.remove()
+
+      $('#placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
+
+  $('.duplicate').live 'mousedown', ->
+    parent = $(this).parent()
+    newEl = parent.clone()
+
+    newEl.find('.x, .duplicate').remove()
+
+    newEl.insertAfter(parent)
 
   $("#save").click ->
     notify("Saving...")
@@ -274,6 +236,51 @@
       $("#flashes .notice")
 
     , "json")
+
+  window.loadData = (data) ->
+    if !data
+      $('#create_animation').tmpl(
+        name: "Animation 1"
+        speed: $('#animation_speed').val()
+      ).insertBefore($('#new_animation'))
+
+      $('#placeholder').tmpl().appendTo('.frame_sprites')
+    else if !data.animations.length
+      $('#create_animation').tmpl(
+        name: "Animation 1"
+        speed: $('#animation_speed').val()
+      ).insertBefore($('#new_animation'))
+
+      $('#placeholder').tmpl().appendTo('.frame_sprites')
+      $('.frame_sprites .demo').next().text("There were no animations found in this file. Drag sprites here to start animating.")
+    else
+      animation_el = $(data.animations).each (i, animation) ->
+
+        animation_el = $('#create_animation').tmpl(
+          name: animation.name
+          speed: animation.speed
+        ).insertBefore('nav.right #new_animation')
+
+        $.each animation.frames, (i, frame) ->
+          active_animation().removeClass('active')
+          $('#load_sprite').tmpl(
+            url: data.tileset[frame].src
+            alt: data.tileset[frame].title
+            title: data.tileset[frame].title
+            id: data.tileset[frame].id
+          ).appendTo($('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
+
+        last_sprite_img = $('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
+
+        $('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
+
+      $('#animation_speed').val(active_animation().find('.speed').text())
+      stop_animation()
+      clear_frame_sprites()
+
+      active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
+
+      $('.animations .animation').first().mousedown()
 
   window.saveData = ->
     update_active_animation()
@@ -318,4 +325,3 @@
       tileset: tiles
       animations: animation_data
     }
-  )
