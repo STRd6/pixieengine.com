@@ -797,7 +797,10 @@
               html: code
 
             $("head", runningGameFrame.document).append(newScriptTag)
-            runningGameFrame.eval("engine.reload()")
+            try
+              runningGameFrame.eval("engine.reload()")
+            catch error
+              warn? error.message
 
           form.ajaxSubmit
             type: 'POST'
