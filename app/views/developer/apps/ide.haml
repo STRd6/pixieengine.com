@@ -55,7 +55,7 @@
               - app.app_sounds.each do |app_sound|
                 - title = app_sound.name
                 %li{ :title => title }
-                  %span.file.sound{ 'data-id' => app_sound.id }= title
+                  %span.file.sound{ 'data-id' => app_sound.id, 'data-sound_id' => app_sound.sound_id }= title
           %li.closed{ :title => "Data" }
             %span.folder.data Data
             %ul
@@ -236,7 +236,7 @@
         alert "Please select sounds to import"
       else
         sound_data = $('.import_sound.selected').map ->
-          'app_sound_id': $(this).data('id')
+          'app_sound_id': $(this).data('sound_id')
           'app_id': #{app.id}
           'app_sound_name': $(this).data('title')
 
@@ -383,6 +383,7 @@
      window.updateSoundNode = (appSound) ->
       id = appSound.id
       title = appSound.name
+      sound_id = appSound.sound_id
 
       node = $(".filetree .sound[data-id=" + id + "]")
 
@@ -391,7 +392,7 @@
         node = node.parent()
       else
         node = $("<li />").attr("title", title)
-        soundNode = $("<span />").text(title).attr('data-id', id).addClass("file sound").appendTo(node)
+        soundNode = $("<span />").text(title).attr('data-id', id).attr('data-sound_id', sound_id).addClass("file sound").appendTo(node)
         $('.filetree .sounds').next().append(node).children().removeClass('last').last().addClass('last')
 
       # Reload tab
@@ -580,6 +581,14 @@
           $('#tabs ul li a[href="' + docSelector + '"]').click()
         else
           $tabs.tabs 'add', docSelector, $(this).text(), 0
+
+      $('.file.sound').live 'mousedown', (event) ->
+        event.preventDefault()
+
+        sound_id = $(this).data('sound_id')
+        src = $('.import_sound[data-sound_id=' + sound_id + ']').data('wav_src') || $('.import_sound[data-sound_id=' + sound_id + ']').data('mp3_src')
+
+        $('#preview_sound audio').attr('src', src).get(0).play()
 
       $('.import_sprite, .import_sound').live 'mousedown', (event) ->
         return if $(event.target).is('.control')
