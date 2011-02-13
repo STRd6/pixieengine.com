@@ -484,7 +484,7 @@
         false
       )
 
-      $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
+      $(editor.win.document).bind('keydown', 'ctrl+s meta+s', (event) ->
         if ($(window.currentPanel).find('button.new_save').length > 0)
           $("#scriptTitleModal").modal()
         else
