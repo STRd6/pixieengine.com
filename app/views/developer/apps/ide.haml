@@ -56,30 +56,6 @@
                 - title = app_sound.name
                 %li{ :title => title }
                   %span.file.sound{ 'data-id' => app_sound.id, 'data-sound_id' => app_sound.sound_id }= title
-          %li.closed{ :title => "Data" }
-            %span.folder.data Data
-            %ul
-              - if has_access?
-                %li{ :title => "New Datum" }
-                  %span.file.new_datum New Datum
-                  .tab_data.new_datum
-                    - form_tag :action => :set_app_data do
-                      = fields_for :app_datum do |form|
-                        = form.hidden_field :name, :id => nil
-                        = form.text_area :json, :id => nil
-                    %button.save Save
-
-              - app.app_data.each do |app_datum|
-                - title = app_datum.name
-                %li{ :title => title}
-                  %span.file.datum{ 'data-id' => app_datum.id }= title
-                  .tab_data{ :id => "datum#{app_datum.id}" }
-                    - form_tag :action => :set_app_data do
-                      = hidden_field_tag :app_datum_id, app_datum.id, :id => nil
-                      = fields_for :app_datum do |form|
-                        = form.hidden_field :name, :value => app_datum.name, :id => nil
-                        = form.text_area :json, :value => app_datum.json, :id => nil
-                    %button.save Save
 
       %li{ :title => "Documentation" }
         %span.file.documentation Documentation
@@ -129,13 +105,6 @@
         = text_field_tag :new_script_title, '', {:title => 'Title'}
 
       = button_to_function "Save", "saveNewScript()"
-
-    #datumTitleModal.modalElement
-      %p
-        = label_tag :new_datum_title, "Title"
-        = text_field_tag :new_datum_title, '', {:title => 'Title'}
-
-      = button_to_function "Save", "setDatumTitle()"
 
     %ul#libraries.round
       - Library.all.each do |library|
@@ -261,6 +230,30 @@
 
         $.modal.close()
 
+    saveClick = () ->
+      notify("Saving...")
+
+      form = $(currentPanel).find('form')
+
+      code = form.find("[name*='[code]']").val()
+
+      # Hot swap: inject code
+      if runningGameFrame = $("#testFrame").get(0)?.contentWindow
+        try
+          runningGameFrame.eval(code)
+        catch error
+          warn? error.message
+
+        try
+          runningGameFrame.eval("engine.reload()")
+        catch error
+          warn? error.message
+
+      form.ajaxSubmit
+        type: 'POST'
+        success: () ->
+          setSaved()
+
     window.saveNewScript = ->
       title = $("#new_script_title").val()
       $("#tabs ul li.ui-tabs-selected a").text(title)
@@ -295,38 +288,6 @@
         libUl.append(node).children().removeClass("last").last().addClass('last')
 
       , "json"
-
-      $.modal.close()
-
-    window.setDatumTitle = ->
-      title = $("#new_datum_title").val()
-
-      $("#tabs ul li.ui-tabs-selected a").text(title)
-
-      tabLi = $("#tabs ul li.ui-state-active")
-
-      panel = $("#tabs .ui-tabs-panel").not('.ui-tabs-hide')
-      form = panel.find('form')
-
-      form.find('input[name="app_datum[name]"]').val(title)
-
-      form.ajaxSubmit
-        dataType: "json"
-        success: (data) ->
-          setSaved(tabLi)
-
-          appDatum = data.app_datum
-
-          panel.removeClass("new_datum")
-
-          form.append("<input type='hidden' value='"+ appDatum.id +"' name='app_datum_id'/>")
-
-          newDatumNode = $("<span />").text(title).attr('data-id', panel.attr('id')).addClass("new file datum")
-          node = $("<li />").attr("title", title).append(newDatumNode)
-
-          destinationUl = $('ul.filetree li[title=Data] > ul')
-
-          destinationUl.append(node).children().removeClass("last").last().addClass('last')
 
       $.modal.close()
 
@@ -484,16 +445,9 @@
         false
       )
 
-      $(editor.win.document).bind('keydown', 'ctrl+s meta+s', (event) ->
-        if ($(window.currentPanel).find('button.new_save').length > 0)
-          $("#scriptTitleModal").modal()
-        else
-          notify("Saving...")
-          $(window.currentPanel).find('form').ajaxSubmit
-            type: 'POST'
-            success: -> setSaved()
-
+      $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
         event.preventDefault()
+        saveClick.apply(this, arguments)
       )
 
       # Listen for keypresses and recompile.
@@ -600,16 +554,6 @@
 
         $('#preview_sound audio').attr('src', src).get(0).play()
 
-      $('.filetree .file.new_datum').live 'click', ->
-        shouldCreateEditor = false
-        langClass = "data"
-        lang = "dummy"
-
-        newTabContents = $(this).next().clone()
-
-        newId = "new_datum" + (newScriptIds++)
-        newIdSelector = "#" + newId
-
       $('#run').click ->
         runApp $('#app_code').val()
       $('#publish').click ->
@@ -617,91 +561,6 @@
         $.post "/developer/apps/#{app.id}/publish", (data) ->
           notify("Latest changes have been published!")
         , "json"
-        newTabContents.attr('id', newId).appendTo($('ul.filetree'))
-
-        $tabs.tabs 'add', newIdSelector, $(this).text(), 0
-
-        $datumTextArea = $(newIdSelector).find("textarea")
-
-        datumTextArea = $datumTextArea.get(0)
-
-        savedCode = $datumTextArea.val()
-
-        editor = new CodeMirror.fromTextArea datumTextArea,
-          autoMatchParens: true
-          content: datumTextArea.value
-          height: "100%"
-          lineNumbers: true
-          parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-          path: "/javascripts/codemirror/"
-          stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
-          tabMode: "shift"
-          textWrapping: false
-
-        # Listen for keypresses and recompile.
-        $(editor.win.document).keyup ->
-          currentCode = editor.getCode()
-
-          if currentCode != savedCode
-            setUnsaved()
-          else
-            $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
-
-          try
-            JSON.parse(currentCode)
-            $datumTextArea.val(currentCode)
-            $('#error').hide()
-          catch error
-            $('#error').text(error.message).show()
-
-      $('.filetree .file.datum').live 'click', ->
-        shouldCreateEditor = false
-        langClass = "data"
-
-        if $(this).hasClass("new")
-          datumSelector = "#" + $(this).attr('data-id')
-        else
-          datumSelector = "#datum" + $(this).attr('data-id')
-        lang = "dummy"
-
-        if $('#tabs ul li a[href="' + datumSelector + '"]').length
-          $('#tabs ul li a[href="' + datumSelector + '"]').click()
-
-        else
-          $tabs.tabs 'add', datumSelector, $(this).text(), 0
-
-          $datumTextArea = $(datumSelector).find("textarea")
-
-          datumTextArea = $datumTextArea.get(0)
-
-          savedCode = $datumTextArea.val()
-
-          editor = new CodeMirror.fromTextArea datumTextArea,
-            autoMatchParens: true
-            content: datumTextArea.value
-            height: "100%"
-            lineNumbers: true
-            parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-            path: "/javascripts/codemirror/"
-            stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
-            tabMode: "shift"
-            textWrapping: false
-
-          # Listen for keypresses and recompile.
-          $(editor.win.document).keyup ->
-            currentCode = editor.getCode()
-
-            if currentCode != savedCode
-              setUnsaved()
-            else
-              $("#tabs a[href='"+datumSelector+"']").parent().removeClass("unsaved")
-
-            try
-              JSON.parse(currentCode)
-              $datumTextArea.val(currentCode)
-              $('#error').hide()
-            catch error
-              $('#error').text(error.message).show()
 
       $('.filetree .file.script').live 'click', ->
         shouldCreateEditor = true
@@ -798,41 +657,9 @@
       $('ul.filetree .file.script').first().click()
 
       $('nav button.save').live 'click', ->
-        if ($(window.currentPanel).find('button.new_save').length > 0)
-          $("#scriptTitleModal").modal()
-        else
-          notify("Saving...")
-          $(window.currentPanel).find('form').ajaxSubmit
-            type: 'POST'
-            success: -> setSaved()
+        saveClick.apply(this, arguments)
 
-        event.preventDefault()
-
-      $('form button.save').live 'click', ->
-        notify("Saving...")
-        if $(this).parent().hasClass("new_datum")
-          $("#datumTitleModal").modal()
-        else
-          form = $(window.currentPanel).find('form')
-
-          code = form.find("[name*='[code]']").val()
-
-          # Hot swap: inject code
-          if runningGameFrame = $("#testFrame").get(0)?.contentWindow
-            try
-              runningGameFrame.eval(code)
-            catch error
-              warn? error.message
-
-            try
-              runningGameFrame.eval("engine.reload()")
-            catch error
-              warn? error.message
-
-          form.ajaxSubmit
-            type: 'POST'
-            success: () ->
-              setSaved()
+      $('form button.save').live 'click', saveClick
 
       $('button.new_save').live 'click', ->
         $("#scriptTitleModal").modal()
