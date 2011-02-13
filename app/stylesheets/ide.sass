@@ -132,17 +132,25 @@ ul.filetree
         background-image: url(/images/icons/book_add.png)
 
 #tabs
-  +bounds(99%, 100%)
+  +bounds(100%, 100%)
+  +box-sizing(border-box)
 
-  display: inline-block
-  vertical-align: top
+  .ui-tabs-nav
+    +box-sizing(border-box)
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
 
   &.ui-tabs
     .ui-tabs-hide
       display: none
 
     .ui-tabs-panel
+      +box-sizing(border-box)
+      height: 100%
       padding: 0
+      padding-top: 30px
       position: relative
       button.save, button.new_save
         position: absolute
