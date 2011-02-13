@@ -445,7 +445,7 @@
         false
       )
 
-      $(editor.win.document).bind('keydown', 'ctrl+s', (event) ->
+      $(editor.win.document).bind('keydown', 'ctrl+s meta+s', (event) ->
         event.preventDefault()
         saveClick.apply(this, arguments)
       )
