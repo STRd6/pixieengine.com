@@ -1,0 +1,48 @@
+= javascript_include_tag "jquery.flot.js"
+
+#registrations_per_day.chart
+
+#daily_active.chart
+
+#visits.chart
+
+- registration_data = User.select("date_trunc('day', created_at) AS day, count(*) AS count").group("date_trunc('day', created_at)").order("day")
+
+- daily_active_data = Visit.daily_active_report
+
+- visit_data = User.visit_report
+
+:coffeescript
+  registrationData = #{registration_data.to_json}.map (datum) ->
+    [new Date(datum.user.day).getTime(), datum.user.count]
+
+  $.plot $("#registrations_per_day"), [ registrationData ], xaxis: {
+    mode: "time"
+    timeformat: "%y/%m/%d"
+  }
+
+  dailyActiveData = #{daily_active_data.to_json}.map (datum) ->
+    [new Date(datum.visit.day).getTime(), datum.visit.count]
+
+  $.plot $("#daily_active"), [ dailyActiveData ], xaxis: {
+    mode: "time"
+    timeformat: "%y/%m/%d"
+  }
+
+  visitData = #{visit_data.to_json}.map (datum) ->
+    [datum.user.segment, datum.user.count]
+
+  $.plot $("#visits"), [ visitData ],
+    xaxis:
+      ticks: [0, [0.5, "login_count < 2"], [1.5, "2 - 5"], [2.5, "6 - 10"], [3.5, "11+"]]
+    bars:
+      show: true,
+      barWidth: 1
+      fill: 0.9
+
+
+%style
+  :sass
+    @import util
+    .chart
+      height: 400px
