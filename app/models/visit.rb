@@ -1,8 +1,8 @@
 class Visit < ActiveRecord::Base
   belongs_to :user
 
-  def self.track(user, controller, action)
-    Visit.create(:user => user, :controller => controller, :action => action)
+  def self.track(user, controller, action, session_id)
+    Visit.create(:user => user, :controller => controller, :action => action, :session_id => session_id)
   end
 
   def self.daily_active_report
