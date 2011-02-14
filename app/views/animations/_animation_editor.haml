@@ -1,7 +1,12 @@
 .animation_editor
   %section
     .user_sprites
-      = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+      - if @user_sprites.empty?
+        %p
+          You haven't created any sprites yet. Make one in the
+          = link_to "Pixel Editor", root_path
+      - else
+        = render :partial => 'animations/animation_sprite', :collection => @user_sprites
 
   %nav.bottom
     .frame_sprites
