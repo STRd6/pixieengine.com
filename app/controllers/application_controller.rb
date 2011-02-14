@@ -23,9 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def track_visits
-    if current_user
-      Visit.track(current_user, controller_name, action_name)
-    end
+    Visit.track(current_user, controller_name, action_name, request.session_options[:id])
   end
 
   def current_user_session

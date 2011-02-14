@@ -1,7 +1,52 @@
 .CodeMirror-line-numbers
-  background-color: #EEE
-  border-right: 1px solid #CCC
+  background-color: transparent
+  border-right: 1px dashed #DDD
   font-family: monospace
   font-size: 13px
   line-height: 16px
   margin: 5px 0px
+  padding-right: 2px
+  text-align: right
+
+  span
+    &.js-punctuation, &.js-operator, &.punctuation, &.operator
+      color: darkRed
+    &.js-keyword, &.keyword
+      color: #770088
+    &.js-atom, &.atom
+      color: #228811
+    &.js-variable, &.variable, &.method-call
+      color: #666666
+    &.js-variabledef, &.variabledef
+      color: #0000FF
+    &.js-localvariable, &.localvariable
+      color: #004499
+    &.js-property, &.property
+      color: #666666
+    &.js-comment, &.comment, &.long-comment
+      color: #AEAEAE
+    &.js-string, &.string, &.heredoc, &.exec
+      color: green
+    &.method-parameter
+      color: #8AA6C1
+    &.symbol, &.ascii
+      color: #6FB1FF
+    &.hexnum, &.binary
+      color: #DFC745
+    &.float, &.fixnum, &.numeric
+      color: red
+    &.entity
+      color: #89BDFF
+    &.storage
+      color: #99CF50
+    &.class, &.constant, &.global-variable
+      color: #666666
+      //font-style: italic
+    &.instance-var
+      color: #61B2DF
+    &.class-var
+      color: #8BC9DF
+    &.regexp
+      color: #DF5045
+    &.method
+      color: purple

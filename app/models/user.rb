@@ -174,6 +174,19 @@ class User < ActiveRecord::Base
     ]
   end
 
+  def self.visit_report
+    esac = "
+      CASE
+        WHEN login_count BETWEEN 0 AND 1 THEN 0
+        WHEN login_count BETWEEN 2 AND 5 THEN 1
+        WHEN login_count BETWEEN 6 AND 12 THEN 2
+        ELSE 3
+      END
+    "
+
+    User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
+  end
+
   private
 
   def no_connected_sites?

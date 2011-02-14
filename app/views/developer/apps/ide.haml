@@ -249,10 +249,13 @@
         catch error
           warn? error.message
 
-      form.ajaxSubmit
-        type: 'POST'
-        success: () ->
-          setSaved()
+      if form.parent().children("button.new_save").length
+        $("#scriptTitleModal").modal()
+      else
+        form.ajaxSubmit
+          type: 'POST'
+          success: () ->
+            setSaved()
 
     window.saveNewScript = ->
       title = $("#new_script_title").val()

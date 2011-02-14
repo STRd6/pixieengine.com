@@ -58,6 +58,9 @@ $nav_left: 220px
     +box-sizing(border-box)
 
     background-color: $dark_highlight
+    height: 100%
+    overflow-x: hidden
+    overflow-y: auto
     padding: 10px
     width: $nav_left
 
@@ -74,9 +77,6 @@ $nav_left: 220px
     color: $pixie_primary
 
 ul.filetree
-  +bounds(100%)
-
-  display: inline-block
   margin-top: 0.25em
   margin-left: 1em
   margin-right: 1em
@@ -141,6 +141,7 @@ ul.filetree
     position: absolute
     top: 0
     width: 100%
+    z-index: 1
 
   &.ui-tabs
     .ui-tabs-hide
