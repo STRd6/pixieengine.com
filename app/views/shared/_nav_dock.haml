@@ -32,6 +32,7 @@
           %img{ :src => "/images/sfx_dock_icon.png" }
 
 #hide_dock
+%a{ :title => "Show dock" }
 
 :coffeescript
   $ ->
@@ -42,6 +43,10 @@
     $('#hide_dock').mousedown ->
       $(this).toggleClass('show_dock')
       $('#dockContainer').slideToggle('slow')
+
+    $('#hide_dock.show_dock').next().tipsy
+      fade: false
+      gravity: "s"
 
 %style
   :sass
@@ -61,6 +66,9 @@
 
       &.show_dock
         background: url("/images/show_dock.png") no-repeat
+
+    a[title="Show dock"]
+      +bounds(25px, 29px)
 
     #dockContainer
       +border-radius(6px)
