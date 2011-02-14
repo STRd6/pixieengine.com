@@ -3,7 +3,7 @@
     .user_sprites
       - if @user_sprites.empty?
         %p
-          You haven't created any sprites yet. Make one in the
+          You haven't created any sprites yet. Make some in the
           = link_to "Pixel Editor", root_path
       - else
         = render :partial => 'animations/animation_sprite', :collection => @user_sprites
