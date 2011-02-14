@@ -31,15 +31,36 @@
         %a{ :href => "#", :title => "Placeholder", :rel => "tipsy" }
           %img{ :src => "/images/sfx_dock_icon.png" }
 
+#hide_dock
+
 :coffeescript
   $ ->
     $("a[rel='tipsy']").tipsy
       fade: false
       gravity: "s"
 
+    $('#hide_dock').mousedown ->
+      $(this).toggleClass('show_dock')
+      $('#dockContainer').slideToggle('slow')
+
 %style
   :sass
     @import util
+
+    #hide_dock
+      +bounds(25px, 29px)
+
+      background: url("/images/hide_dock.png") no-repeat
+      position: fixed
+      bottom: -5px
+      left: 0
+      right: 0
+      margin-left: auto
+      margin-right: auto
+      z-index: 100
+
+      &.show_dock
+        background: url("/images/show_dock.png") no-repeat
 
     #dockContainer
       +border-radius(6px)
