@@ -1,5 +1,12 @@
 = javascript_include_tag "jquery.flot.js"
 
+%style
+  :sass
+    @import util
+    .chart
+      height: 400px
+
+
 #registrations_per_day.chart
 
 #daily_active.chart
@@ -40,9 +47,3 @@
       barWidth: 1
       fill: 0.9
 
-
-%style
-  :sass
-    @import util
-    .chart
-      height: 400px
