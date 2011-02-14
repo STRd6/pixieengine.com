@@ -372,6 +372,7 @@ bgMusic.play()
         )
         app_sounds << {
           :id => app_sound.id,
+          :sound_id => app_sound.sound_id,
           :name => app_sound.name,
           :cssImageUrl => "url(/images/icons/sound)"
         }) unless AppSound.find_by_app_id_and_sound_id(app.id, sound["app_sound_id"])

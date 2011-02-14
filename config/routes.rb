@@ -4,7 +4,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   end
 
   namespace :admin do
-    resources :comments, :feedbacks, :sprites, :users
+    resources :comments, :feedbacks, :sprites, :users, :reports
   end
 
   namespace :developer do

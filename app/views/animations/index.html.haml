@@ -1,0 +1,7 @@
+= button_link "New Animation", "film_add", new_animation_path()
+
+%h2 Animations
+
+%ul
+  - @animations.each do |animation|
+    %li= link_to animation.display_name, edit_animation_path(animation)

@@ -3,4 +3,4 @@
 - user.collections.each do |collection|
   %h3= link_to collection.name, :controller => :collections, :action => :show, :id => collection.id
   - collection.sprites[0..7].each do |sprite|
-    = render :partial => sprite
+    = render :partial => sprite if sprite
