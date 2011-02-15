@@ -1,41 +1,58 @@
 #fullscreen
-  /* Turn on a 16x16 scrollbar
+  body
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    right: 10px
+    overflow-y: scroll
+    overflow-x: hidden
+
   ::-webkit-scrollbar
-    width: 16px
-    height: 16px
+    +bounds(16px)
 
-  /* Place The scroll down button at the bottom
-  ::-webkit-scrollbar-button:vertical:increment
-    background-image: url(/images/scroll/control_down.png)
+  ::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment
+    +bounds(16px)
+    display: block
+    background-color: transparent
 
-    &:active
-      background: blue
+  ::-webkit-scrollbar-track-piece:vertical:decrement
+    -webkit-border-image: url(/images/scroll/vertical_track.png) 16 0 16 0
+    border-color: transparent
+    border-width: 16px 0 0 0
 
-  /* Place The scroll up button at the up
-  ::-webkit-scrollbar-button:vertical:decrement
-    background-image: url(/images/scroll/control_up.png)
+  ::-webkit-scrollbar-track-piece:vertical:increment
+    -webkit-border-image: url(/images/scroll/vertical_track.png) 16 0 16 0
+    border-color: transparent
+    border-width: 0 0 16px 0
 
-    &:active
-      background: blue
+  ::-webkit-scrollbar-track-piece:horizontal:decrement
+    -webkit-border-image: url(/images/scroll/horizontal_track.png) 0 16 0 16
+    border-color: transparent
+    border-width: 0 0 0 16px
 
-  /* Top area above thumb and below up button
-  ::-webkit-scrollbar-track-piece:vertical:start
-    background-image: url(/images/scroll/gutter_top.png), url(/images/scroll/gutter_middle.png)
-    background-repeat: no-repeat, repeat-y
+  ::-webkit-scrollbar-track-piece:horizontal:increment
+    -webkit-border-image: url(/images/scroll/horizontal_track.png) 0 16 0 16
+    border-color: transparent
+    border-width: 0 16px 0 0
 
+  &.light
+    ::-webkit-scrollbar-track-piece:horizontal:increment, ::-webkit-scrollbar-track-piece:horizontal:decrement
+      -webkit-border-image: url(/images/scroll/horizontal_track_light.png) 0 16 0 16
 
-  /* Bottom area below thumb and down button
-  ::-webkit-scrollbar-track-piece:vertical:end
-    background-image: url(/images/scroll/gutter_bottom.png), url(/images/scroll/gutter_middle.png)
-    background-repeat: no-repeat, repeat-y
-    background-position: bottom left, 0 0
+    ::-webkit-scrollbar-track-piece:vertical:increment, ::-webkit-scrollbar-track-piece:vertical:decrement
+      -webkit-border-image: url(/images/scroll/vertical_track_light.png) 16 0 16 0
 
-
-  /* The thumb itself
   ::-webkit-scrollbar-thumb:vertical
-    height: 56px
-    -webkit-border-image: url(/images/scroll/thumb.png) 8 0 8 0 stretch stretch
-    border-width: 8 0 8 0
+    -webkit-border-image: url(/images/scroll/vertical_thumb.png) 16 0 16 0
+    border-color: transparent
+    border-width: 16px 0
+    min-height: 20px
 
-    &:active
-      background: blue
+  ::-webkit-scrollbar-thumb:horizontal
+    -webkit-border-image: url(/images/scroll/horizontal_thumb.png) 0 16 0 16
+    border-color: transparent
+    border-width: 0 16px
+    min-width: 20px
+
+
