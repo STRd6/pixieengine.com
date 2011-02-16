@@ -442,11 +442,11 @@
         lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
         path: "/javascripts/codemirror/"
-        stylesheet: ["/stylesheets/codemirror/main.css", "/stylesheets/codemirror/" + lang + "_colors.css"]
+        stylesheet: ["/stylesheets/codemirror/main.css"]
         tabMode: "shift"
         textWrapping: false
 
-      $(editor.win.document).bind('keydown', 'ctrl+f', (e) ->
+      $(editor.win.document).bind('keydown', 'ctrl+f meta+f', (e) ->
         e.preventDefault()
         e.stopPropagation()
         s = editor.selection() || prompt("Search string")
@@ -461,6 +461,22 @@
       $(editor.win.document).bind('keydown', 'ctrl+s meta+s', (event) ->
         event.preventDefault()
         saveClick.apply(this, arguments)
+      )
+
+      $(editor.win.document).bind('keydown', 'ctrl+r meta+r', (event) ->
+        event.preventDefault()
+        $('#run').click()
+      )
+
+      $(editor.win.document).bind('keydown', 'ctrl+p meta+p', (event) ->
+        event.preventDefault()
+        $('#publish').click()
+      )
+
+      $(editor.win.document).bind('keydown', 'esc', (event) ->
+        console.log("got here")
+        event.preventDefault()
+        $('#close_app').click()
       )
 
       # Listen for keypresses and recompile.
