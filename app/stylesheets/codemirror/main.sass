@@ -5,30 +5,23 @@ html
 
   +scrollbars
 
-.editbox
-  margin: .4em
-  padding: 0
-  font-family: monospace
-  font-size: 10pt
-  color: #666
-
   span
     &.js-punctuation, &.js-operator, &.punctuation, &.operator
-      color: darkRed
+      color: red
     &.js-keyword, &.keyword
       color: #770088
     &.js-atom, &.atom
       color: #228811
     &.js-variable, &.variable, &.method-call
-      color: #666666
+      color: #AAA
     &.js-variabledef, &.variabledef
-      color: #0000FF
+      color: #60F
     &.js-localvariable, &.localvariable
-      color: #004499
+      color: #AAA
     &.js-property, &.property
-      color: #666666
+      color: #AAA
     &.js-comment, &.comment, &.long-comment
-      color: #AEAEAE
+      color: #888
     &.js-string, &.string, &.heredoc, &.exec
       color: green
     &.method-parameter
@@ -55,13 +48,63 @@ html
     &.method
       color: purple
 
-pre.code
-  color: #666666
+  &.light
+    span
+      &.js-punctuation, &.js-operator, &.punctuation, &.operator
+        color: darkRed
+      &.js-keyword, &.keyword
+        color: #770088
+      &.js-atom, &.atom
+        color: #228811
+      &.js-variable, &.variable, &.method-call
+        color: #222
+      &.js-variabledef, &.variabledef
+        color: #0000FF
+      &.js-localvariable, &.localvariable
+        color: #004499
+      &.js-property, &.property
+        color: #222
+      &.js-comment, &.comment, &.long-comment
+        color: #AEAEAE
+      &.js-string, &.string, &.heredoc, &.exec
+        color: green
+      &.method-parameter
+        color: #8AA6C1
+      &.symbol, &.ascii
+        color: #6FB1FF
+      &.hexnum, &.binary
+        color: #DFC745
+      &.float, &.fixnum, &.numeric
+        color: red
+      &.entity
+        color: #89BDFF
+      &.storage
+        color: #99CF50
+      &.class, &.constant, &.global-variable
+        color: #666666
+        //font-style: italic
+      &.instance-var
+        color: #61B2DF
+      &.class-var
+        color: #8BC9DF
+      &.regexp
+        color: #DF5045
+      &.method
+        color: purple
+
 
 .editbox
-  color: #666666
+  color: #666
+  font-family: monospace
+  font-size: 10pt
   line-height: 16px
+  margin: .4em
+  padding: 0
+
   p
     margin: 0
 
 
+
+pre.code
+  color: #666666

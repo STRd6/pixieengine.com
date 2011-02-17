@@ -64,9 +64,6 @@ $nav_left: 220px
     padding: 10px
     width: $nav_left
 
-    &.light
-      background-color: $light_highlight
-
   section
     padding-left: $nav_left + 20px
 
@@ -75,6 +72,10 @@ $nav_left: 220px
 
   .treeview .hover
     color: $pixie_primary
+
+  &.light
+    nav.left
+      background-color: $light_highlight
 
 ul.filetree
   margin-top: 0.25em

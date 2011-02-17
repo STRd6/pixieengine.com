@@ -46,20 +46,6 @@
   %p Drag sprites here to start animating
 
 :coffeescript
-  $('#bulb').click ->
-    if localStorage
-      if localStorage.animationEditor
-        delete localStorage.animationEditor
-      else
-        localStorage.animationEditor = true
-
-    $(this).toggleClass('on')
-    $('#fullscreen, .frame_sprites, .animations, .demo').toggleClass('light')
-
-  if localStorage && localStorage.animationEditor
-    $('#bulb').toggleClass('on')
-    $('#fullscreen, .frame_sprites, .animations, .demo').toggleClass('light')
-
   animation_id = null
   preview_dirty = false
 

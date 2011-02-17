@@ -143,20 +143,6 @@
 
 :plain
   <script type="text/coffeescript">
-    $('#bulb').click ->
-      if localStorage
-        if localStorage.ide
-          delete localStorage.ide
-        else
-          localStorage.ide = true
-
-      $(this).toggleClass('on')
-      $('#fullscreen, nav.left').toggleClass('light')
-
-    if localStorage && localStorage.ide
-      $('#bulb').toggleClass('on')
-      $('#fullscreen, nav.left').toggleClass('light')
-
     window.currentPanel
     shouldCreateEditor = false
     pixieEditorIds = 0
