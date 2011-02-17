@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110128081442) do
+ActiveRecord::Schema.define(:version => 20110213233034) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -470,10 +470,11 @@ ActiveRecord::Schema.define(:version => 20110128081442) do
   add_index "versions", ["versioned_id", "versioned_type"], :name => "index_versions_on_versioned_id_and_versioned_type"
 
   create_table "visits", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at", :null => false
+    t.integer  "user_id"
+    t.string   "controller",               :null => false
+    t.string   "action",                   :null => false
+    t.datetime "created_at",               :null => false
+    t.string   "session_id", :limit => 32
   end
 
   add_index "visits", ["user_id"], :name => "index_visits_on_user_id"

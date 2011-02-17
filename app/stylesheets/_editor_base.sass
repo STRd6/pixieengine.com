@@ -1,0 +1,94 @@
+#fullscreen
+  +box-sizing(border-box)
+
+  background-color: $dark_background
+  height: 100%
+  padding: $editor_page_padding
+
+  a
+    color: #fff
+
+  &.light
+    background-color: $light_background
+
+    a
+      color: #000
+
+  #sidebar, #header, #feedback, #footer, #chatZone
+    display: none
+
+  #flashes
+    color: #000
+    left: 0
+    right: 0
+    position: fixed
+    top: 0
+    width: 80%
+    margin: auto
+
+  #logo
+    +bounds(68px, 34px)
+
+    background-image: url(/images/pixie.png)
+    margin-left: 4px
+    margin-top: 4px
+    position: absolute
+    top: 0
+    left: 0
+
+  #bulb
+    +bounds(32px)
+
+    background-image: url(/images/lightbulb_off.png)
+    position: absolute
+    top: 5px
+    right: 5px
+
+    &.on
+      background-image: url(/images/lightbulb.png)
+
+  #content
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    border: none
+    margin: 0
+    padding: 0
+
+    .subnav
+      display: none
+
+  .container
+    height: 100%
+    margin: 0
+    padding: 0
+
+  nav.bottom
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 100%
+
+  nav.left
+    left: 0
+    position: absolute
+    top: 0
+
+  nav.right
+    +box-sizing(border-box)
+
+    right: 0
+    position: absolute
+    top: 0
+
+  section
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    .screen
+      +bounds(100%)
+      +box-sizing(border-box)
+
+      margin: auto
+      overflow: auto
+      position: relative

@@ -5,6 +5,8 @@ default_run_options[:pty] = true
 
 set :application, "pixie.strd6.com"
 
+set :use_sudo, false
+
 set :scm, "git"
 set :repository, "git://github.com/STRd6/#{application}.git"
 set :branch, "master"

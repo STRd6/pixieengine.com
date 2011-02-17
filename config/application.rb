@@ -39,7 +39,7 @@ module PixieStrd6Com
     config.middleware.use ExceptionNotifier,
       :email_prefix => "[pixie.strd6.com] ",
       :sender_address => %{"Notifier" <notifier@strd6.com>},
-      :exception_recipients => %w{yahivin@gmail.com matt@strd6.com}
+      :exception_recipients => %w[yahivin@gmail.com mdiebolt@gmail.com]
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|

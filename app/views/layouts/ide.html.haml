@@ -2,7 +2,7 @@
 %html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
   = render :partial => "/shared/head"
 
-  %body
+  %body#fullscreen.ide
     -# IDE Specific
     = stylesheet_link_tag 'pixie/pixie'
     = stylesheet_link_tag "jquery.treeview"
@@ -12,29 +12,22 @@
     = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
     = javascript_include_tag 'pixie/jqcolor', 'pixie/pixie'
 
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }
+          = msg
+          .close
+
     #logo
-      #logo_type
-        = link_to "pixie IDE", new_sprite_path
-    .container
-      #content
-        #flashes
-          - flash.each do |key, msg|
-            %div{ :class => key }= msg
+    #bulb
 
-        - if ab_test "test" #Dummy test
-          -#nothing
+    - if @title
+      %h1= @title
 
-        - if @title
-          %h1= @title
+    = yield
 
-        = yield
-
-        = render :partial => "/shared/chat"
-
-      - if @has_reg_popup
-        = render :partial => 'shared/register_modal'
-      = render :partial => "/shared/footer"
-      = render :partial => "/shared/fb_app"
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
 
     #tooltip
       .icon

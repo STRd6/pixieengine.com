@@ -9,7 +9,7 @@
 - tiles_tall = params[:tiles_tall].blank? ? 10 : params[:tiles_tall].to_i
 
 .tile_editor
-  .main
+  %section
     .screen
       .layers
         - num_layers.times do
@@ -18,9 +18,9 @@
         .cursor
         .selection
 
-  .bottom_bar
+  %nav.bottom
     .component#tile_select
-      %h3 Tiles:
+      %h3 Tiles
       .tiles
         - unless data
           - sprites = Collection.find(params[:tileset_id]).sprites
@@ -33,13 +33,14 @@
             = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
 
-  .sidebar
+  %nav.left
     .component
       %h3#filename Tilemap
       %button#save Save
 
     .component
-      %h3 Layer:
+      %h3 Layer
+      %button.new New Layer
       .layer_select
         .choice.active
           .name Background
@@ -49,14 +50,12 @@
           .name Foreground
           .show.on
 
-      %button.new New Layer
-
     .component{ :style => "display: none"}
       %h3 Properties
       %table#prop_editor
       %button#prop_save Save Properties
 
-  .sidebar2
+  %nav.right
     .component
       %h3 Saved Selections
       #saved_selections
@@ -79,7 +78,21 @@
     .preview
 
 :coffeescript
-  debugMode = false
+  $('#bulb').click ->
+    if localStorage
+      if localStorage.tilemapEditor
+        delete localStorage.tilemapEditor
+      else
+        localStorage.tilemapEditor = true
+
+    $(this).toggleClass('on')
+    $('#fullscreen, nav.left, nav.right, nav.bottom').toggleClass('light')
+
+  if localStorage && localStorage.tilemapEditor
+    $('#bulb').toggleClass('on')
+    $('#fullscreen, nav.left, nav.right, nav.bottom').toggleClass('light')
+
+  debugMode = true
 
   firstGID = 1
 
@@ -93,8 +106,8 @@
 
   modeDown = null
 
-  tileTray = ".bottom_bar .tiles"
-  layerSelect = ".sidebar .layer_select"
+  tileTray = "nav.bottom .tiles"
+  layerSelect = "nav.left .layer_select"
 
   positionElementIndices = []
 
@@ -115,9 +128,9 @@
   addScreenLayer = () ->
     $("<div />",
       class: "layer"
-    ).appendTo(".main .layers")
+    ).appendTo("section .layers")
 
-    $(".screen").find(".cursor, .selection").appendTo(".main .layers")
+    $(".screen").find(".cursor, .selection").appendTo("section .layers")
 
     positionElementIndices.push {}
 
@@ -381,7 +394,7 @@
       $(this).addClass(mode).siblings().removeClass(mode)
 
   $(".tiles img, #saved_selections .selection").live "mousedown", (event) ->
-    #event.preventDefault()
+    event.preventDefault()
 
     if mode = clickMode event
       selectTile($(this), mode)
@@ -401,7 +414,7 @@
       propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
 
-  $(".layer_select+button.new").click () ->
+  $(".layer_select").parent().find('.new').click () ->
     addNewLayer()
 
   $(".layer_select .choice .name").live 'mousedown', (event) ->
@@ -502,7 +515,7 @@
   window.saveData = () ->
     tileIndexLookup = {}
 
-    tileset = $(".bottom_bar .tiles img").map((i) ->
+    tileset = $("nav.bottom .tiles img").map((i) ->
       $this = $(this)
       src = $this.attr("src")
 
@@ -599,7 +612,7 @@
       if tile.properties
         tileLookup[index].data("properties", tile.properties)
 
-    $(".main .layers .layer").remove()
+    $("section .layers .layer").remove()
 
     $(layerSelect).html('')
     data.layers.each (layer, i) ->
@@ -624,21 +637,18 @@
 
 %style
   :sass
+    @import partials/base
     @import util
 
-    $sidebar_width = 140px
-    $bottom_bar_height = 140px
-
-    body
-      +box-sizing(border-box)
-      padding: 3em
+    $sidebar_width: 220px
+    $bottom_bar_height: 140px
 
     input
       +box-sizing(border-box)
 
       background-color: transparent
       border: 2px solid #888
-      color: #BFE2FF
+      color: $pixie_primary
       margin: 0
       max-width: 120px
       padding: 2px
@@ -650,6 +660,11 @@
         height: 27px
         letter-spacing: 0.1em
         margin-bottom: 0.5em
+
+    nav.left, nav.right, nav.bottom, .tools
+      +box-sizing(border-box)
+
+      padding: 10px
 
     table.properties
       background-color: transparent
@@ -668,42 +683,59 @@
       height: 100%
       position: relative
 
-      &>.sidebar
-        left: 0
-        position: absolute
-        top: 0
-        width: 120px
+      &>nav.left
+        +border-radius
 
-      .sidebar2
-        right: 0
-        position: absolute
-        top: 0
-        width: 120px
+        background-color: $dark_highlight
+        width: $sidebar_width
 
-      .sidebar, .sidebar2
+        &.light
+          background-color: $light_highlight
+
+      nav.right
+        +border-radius
+
+        background-color: $dark_highlight
+        width: $sidebar_width
+
+        &.light
+          background-color: $light_highlight
+
+      nav.left, nav.right
         .component:first-child
           padding-top: 0
 
-      &>.main
-        +box-sizing(border-box)
+      nav.left
+        .component
+          position: relative
 
-        height: 100%
+          h3
+            +inline-block
+
+            margin-bottom: 10px
+
+          button#save, button.new
+            margin-top: auto
+            margin-bottom: auto
+            position: absolute
+            right: 0
+
+      &>section
         padding-bottom: $bottom_bar_height
-        padding-left: $sidebar_width
-        padding-right: $sidebar_width
-        width: 100%
+        padding-left: $sidebar_width + 20
+        padding-right: $sidebar_width + 20
 
-      .bottom_bar
+      nav.bottom
+        +border-radius
         +box-sizing(border-box)
 
-        background-color: #00010D
-        bottom: 0
+        background-color: $dark_highlight
         height: $bottom_bar_height
-        left: 0
         padding-left: $sidebar_width
         padding-right: $sidebar_width
-        position: absolute
-        width: 100%
+
+        &.light
+          background-color: $light_highlight
 
         .tiles
           height: 70px
@@ -758,15 +790,8 @@
 
       .component
         +box-sizing(border-box)
-        background-color: #00010D
-        color: #BFE2FF
-        padding: 0.5em
+        color: $pixie_primary
         width: 100%
-
-        h3
-          +text-shadow(#0A131A)
-          color: #BFE2FF
-          font-weight: bold
 
       #saved_selections
         .selection
@@ -797,6 +822,7 @@
               display: block
 
       .tools
+        +bounds($sidebar_width, $bottom_bar_height)
         +tile_tool(eraser)
         +tile_tool(fill)
         +tile_tool(selection)
@@ -805,18 +831,15 @@
         bottom: 0
         left: 0
         position: absolute
-        width: $sidebar_width
-        height: $bottom_bar_height
 
         .tool
+          +bounds(32px)
           +inline-block
 
           background-repeat: no-repeat
-
+          border: 1px solid transparent
           cursor: pointer
-          height: 32px
-          padding: 1px
-          width: 32px
+          margin: 1px
 
           &.primary, &.secondary
             border: 1px solid
@@ -828,34 +851,24 @@
             border-color: blue
 
       .screen
-        +box-sizing(border-box)
-
-        height: 100%
-        margin: auto
-        overflow: auto
-        position: relative
-        width: 100%
-
         .layers
+          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
+
           background-image: url('/images/tile_grid_#{tile_width}.png')
           border-bottom: 1px solid #414141
           border-right: 1px solid #414141
 
-          height: #{tiles_tall * tile_height}px
-          width: #{tiles_wide * tile_width}px
-
         .layer
-          height: #{tiles_tall * tile_height}px
+          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
+
           left: 0
           position: absolute
           top: 0
-          width: #{tiles_wide * tile_width}px
 
         .cursor
+          +bounds(#{tile_width}px, #{tile_height}px)
           border: 1px solid green
-          height: #{tile_height}px
           position: absolute
-          width: #{tile_width}px
 
         .selection
           +box-sizing(border-box)
