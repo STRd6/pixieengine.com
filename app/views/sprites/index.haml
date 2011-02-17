@@ -1,7 +1,7 @@
 - @title = "Sprites"
 
 .sprites_gallery
-  .sidebar
+  %nav.left
     .info_component
       %h3.name= sprites[0].display_name
       %span.author by #{link_to sprites[0].user, sprites[0].user}
@@ -253,7 +253,7 @@
       height: 100%
       position: relative
 
-      .sidebar
+      nav.left
         left: 0
         position: absolute
         top: 0
