@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 17 Feb 2011 01:29:28 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 17 Feb 2011 02:55:47 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -6,7 +6,11 @@
   var getVal, setVal;
   getVal = function(key) {
     if (localStorage) {
-      return JSON.parse(localStorage[key]);
+      try {
+        return JSON.parse(localStorage[key]);
+      } catch (error) {
+        return void 0;
+      }
     }
   };
   setVal = function(key, value) {

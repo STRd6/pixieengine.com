@@ -1,6 +1,9 @@
 getVal = (key) ->
   if localStorage
-    JSON.parse(localStorage[key])
+    try
+      JSON.parse(localStorage[key])
+    catch error
+      undefined
 
 setVal = (key, value) ->
   if localStorage
