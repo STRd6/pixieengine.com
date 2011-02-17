@@ -153,7 +153,7 @@ class SpritesController < ResourceController::Base
 
   def per_page
     if params[:per_page].blank?
-      100
+      15
     else
       params[:per_page].to_i
     end

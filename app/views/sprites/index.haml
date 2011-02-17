@@ -1,31 +1,24 @@
-- @title = "Sprites"
+- @title = "Sprite Gallery"
 
-.sprites_gallery
+.sprite_gallery
   %nav.left
     .info_component
-      %h3.name= sprites[0].display_name
-      %span.author by #{link_to sprites[0].user, sprites[0].user}
+      %h3.name
+      %span.author
       .sprite_container
-        =image_tag(sprites[0].image.url)
+        =image_tag("")
       %p.description
       %a.button#load_sprite{ :target => "_blank" }
         %img{ :src => "/images/icons/picture_edit.png" }
         Edit image
-      %a.button#set_avatar
-        %img{ :src => "/images/icons/status_online.png"}
-        Set as avatar
-      =link_to "#{image_tag "icons/cross.png"} Delete".html_safe, sprite_path(sprites[0]), :method => :delete, :class => "button delete"
+      -if current_user
+        %a.button#set_avatar
+          %img{ :src => "/images/icons/status_online.png"}
+          Set as avatar
+      =link_to "#{image_tag "icons/cross.png"} Delete".html_safe, "#", :method => :delete, :class => "button delete"
     .tag_component
       %h3 Tags
       .tags
-        - sprites[0].tag_list.each do |tag|
-          = sprite_tag_link(sprites[0], tag)
-
-        - sprites[0].source_list.each do |source|
-          = sprite_tag_link(sprites[0], source)
-
-        - sprites[0].dimension_list.each do |dimension|
-          = sprite_tag_link(sprites[0], dimension)
         - form_tag "/sprites/#{sprites[0].id}/add_tag" do
           = text_field_tag :tag
           = submit_tag "Add"
@@ -36,17 +29,15 @@
       - form_for sprites[0] do |form|
         = form.error_messages
 
-        %p
-          = form.label :title
-          = form.text_field :title
+        = form.label :title
+        = form.text_field :title
 
-        %p
-          = form.label :description
-          = form.text_area :description
+        = form.label :description
+        = form.text_area :description
 
         = form.submit
 
-  .main
+  %section
     .sprites
       = will_paginate sprites
 
@@ -65,54 +56,61 @@
     .remove X
 
 :coffeescript
-  select_sprite = ->
-    el = $(this)
+  $( ->
+    select_sprite = (el) ->
+      $('section .sprite_container').removeClass('selected')
 
-    if !el.hasClass('selected')
-      el.removeClass('selected')
+      el.addClass('selected')
 
-    el.addClass('selected')
+    $('section .sprite_container').mousedown ->
+      el = $(this)
 
-  $('.main .sprite_container').mousedown ->
-    select_sprite()
+      select_sprite(el)
 
-    sprite =
-      id: $(this).data('id')
-      name: $(this).data('name') || "Sprite " + $(this).data('id')
-      description: $(this).data('description') || ""
-      img: $(this).data('original_url')
+      sprite =
+        id: el.data('id')
+        name: el.data('name')
+        description: el.data('description')
+        img: el.data('original_url')
 
-    author =
-      id: $(this).data('author_id')
-      name: $(this).data('author')
+      author =
+        id: el.data('author_id')
+        name: el.data('author')
 
-    tags = $(this).data('tags')
-    comments = $(this).find('.comments_area').children().clone()
+      tags = el.data('tags')
 
-    author_path = (author_id) ->
-      "users/" + author_id
+      update_info_component(sprite, author)
+      update_tag_component(tags, sprite)
+      update_comment_component()
+      update_edit_component(sprite)
 
-    edit_form_selector = (sprite_id) ->
-      '.main #edit_sprite_' + sprite_id
+    $('.comment_component form').ajaxForm
+      beforeSerialize: -> notify("Saving...")
+      success: (data) -> notify("Complete")
 
-    update_info_component = ->
-      $('.info_component .name').text(sprite.name)
-      if author.id
-        $('.info_component .author a').text(author.name).attr('href', author_path(author.id))
-      else
-        $('.info_component .author a').text(author.name).removeAttr('href')
+    $('.edit_component form').ajaxForm
+      beforeSerialize: -> notify("Saving...")
+      success: (data) ->
+        notify("Complete!")
 
-      $('.info_component .sprite_container img').attr('src', sprite.img)
+        el = $('.sprites .sprite_container.selected')
 
-      $('.info_component p.description').text(sprite.description)
+        sprite =
+          id: el.data('id')
+          name: el.data('name')
+          description: el.data('description')
 
-      $('.info_component a.delete').attr('href', '/sprites/' + sprite.id)
-      $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
+        author =
+          id: el.data('author_id')
+          name: el.data('author')
+
+        update_sprite_info(sprite)
+        update_info_component(sprite, author)
 
     clear_tags = ->
       $('.tag_component .tag').remove()
 
-    update_tag_component = ->
+    update_tag_component = (tags, sprite) ->
       clear_tags()
 
       $.each tags.split(" "), (i, tag) ->
@@ -129,98 +127,93 @@
     update_comment_component = ->
       clear_comments()
 
-      comments.appendTo('.comment_component')
+    update_info_component = (sprite, author) ->
+      $('.info_component .name').text(sprite.name)
+      if author.id
+        $('.info_component .author').text("by ").append('<a href= "users/' + author.id + '"> ' + author.name + '</a>')
+      else
+        $('.info_component .author a').remove()
+        $('.info_component .author').text("by " + author.name)
 
-      $('.comment_component form').ajaxForm
-        beforeSerialize: ->
-          notify("Saving...")
-        success: (data) ->
-          notify("Complete")
+      $('.info_component .sprite_container img').attr('src', sprite.img)
+      $('.info_component p.description').text(sprite.description)
+      $('.info_component a.delete').attr('href', '/sprites/' + sprite.id)
+      $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
 
-    update_sprite_info = ->
-      title = $('.edit_component #sprite_title').val()
-      description = $('.edit_component #sprite_description').val()
+    update_edit_component = (sprite) ->
+      $('.edit_component form').attr
+        action: 'sprites/' + sprite.id
+        id: 'edit_sprite_' + sprite.id
 
-      $('.main .sprite_container[data-id="' + sprite.id + '"]').data
-        name: title
-        description: description
-
-      sprite.name = title
-      sprite.description = description
-
-    update_edit_component = ->
-      $('.edit_component form').attr('action', 'sprites/' + sprite.id).attr('id', 'edit_sprite_' + sprite.id)
       $('.edit_component #sprite_title').val(sprite.name)
       $('.edit_component #sprite_description').val(sprite.description)
 
-      $('.edit_component form').ajaxForm(
-        beforeSerialize: ->
-          notify("Saving...")
-        success: (data) ->
-          notify("Complete!")
+    update_sprite_info = (sprite) ->
+      $('section .sprite_container[data-id="' + sprite.id + '"]').attr
+        'data-name': sprite.name = $('.edit_component #sprite_title').val()
+        'data-description': sprite.description = $('.edit_component #sprite_description').val()
 
-          update_sprite_info()
-          update_info_component()
-      )
+    $("#set_avatar").live "click", ->
+      notify("Saving...")
 
-    update_info_component()
-    update_tag_component()
-    update_comment_component()
-    update_edit_component()
+      data =
+        sprite_id: $('section .sprite_container.selected').data('id')
 
-  $("#set_avatar").live "click", ->
-    notify("Saving...")
+      $.post("/users/#{current_user.id}/set_avatar", data, -> notify("Avatar successfully changed."))
 
-    data =
-      sprite_id: $(this).prev().find('img').data('id')
-
-    $.post("/users/#{current_user.id}/set_avatar", data, -> notify("Avatar successfully changed."))
+    $('section .sprite_container').first().mousedown()
+  )
 
 %style
   :sass
     @import util
     @import blueprint/buttons
+    @import partials/base
 
-    $dark_bg: #000002
-    $dark_highlight: lighten(#000d16, 5)
-    $pixie_blue: #1084ce
-    $light_highlight: #b2e2ff
-    $light_bg: #d2eeff
+    #fullscreen
+      a
+        color: #000
+
+      .author, .pagination
+        a
+          color: #fff
 
     form
       input[type="text"]
         +box-sizing(content-box)
 
-        color: black
+        color: #000
         background-color: #fff
+
+      input[type="submit"]
+        margin: 0
 
       label
         text-align: left
 
-    .info_component, .tag_component, .comment_component, .edit_component
-      +border-radius(8px)
-      +box-sizing(border-box)
+      textarea
+        +bounds(150px, 50px)
 
-      background-color: $dark_highlight
-      margin-bottom: 10px
-      padding: 15px
+        margin: 0
 
-    .main
+    section
       padding-left: 350px
 
       .sprites
         +border-radius(8px)
         +box-sizing(border-box)
 
-        border: 1px solid $pixie_blue
+        border: 1px solid $pixie_primary
         padding: 15px
 
       .sprite_container
+        cursor: pointer
+
         &:hover
-          background-color: #FFF6BF
+          background-color: $hover
 
         &.selected
-          background-color: $pixie_blue
+          background-color: $pixie_primary
 
     .info_component
       .sprite_container
@@ -232,45 +225,27 @@
         display: block
         margin-bottom: 7px
 
-    .comment_component, .edit_component
-      input[type="submit"]
-        margin: 0
-
-    .actions
-      position: absolute
-      bottom: 0
-
     h3.name
       display: inline-block
       margin-right: 10px
       margin-bottom: 0
 
-    .sprites_gallery
+    .sprite_gallery
       +box-sizing(border-box)
       +user-select(none)
 
-      color: #fff
       height: 100%
       position: relative
 
       nav.left
+        +border-radius(8px)
+
+        background-color: $dark_highlight
         left: 0
+        padding-left: 15px
         position: absolute
         top: 0
         width: 320px
-
-        .sprite_container
-          img
-            display: block
-
-        textarea
-          margin: 0
-
-    a
-      color: darken(#BFE2FF, 25)
-
-    form textarea
-      +bounds(150px, 50px)
 
     button, a.button
       +button-button
@@ -290,40 +265,17 @@
         &:hover
           color: #AAA
 
-    img.primary
-      display: block
-
-    img.selected
-      background-color: #fff
-
-    body
-      background-color: black
-      margin: 3em
-
     .pagination
-      color: $pixie_blue
+      color: $pixie_primary
       margin-bottom: 5px
 
-      a
-        color: #fff
+    body
+      .sprite_container
+        +border-radius(8px)
+        +bounds(48px)
+        +contents-centered
 
-    body .sprite_container
-      +border-radius(8px)
-      +bounds(48px)
-      +contents-centered
-
-      background-color: white
-      cursor: pointer
-      display: inline-block
-      margin-right: 7px
-      margin-bottom: 3px
-
-      color: black
-      font-size: 10px
-      text-align: center
-
-      form
-        display: none
-
-      a
-        +bounds(32px)
+        background-color: white
+        display: inline-block
+        margin-right: 7px
+        margin-bottom: 3px
