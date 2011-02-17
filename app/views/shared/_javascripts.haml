@@ -2,7 +2,7 @@
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
 
-= javascript_include_tag 'rails', 'util', 'application'
+= javascript_include_tag 'rails', 'util', 'application', 'site', :cache => "main"
 
 :ruby
   javascripts = %w[
@@ -17,5 +17,5 @@
     jquery.power_canvas
   ]
 
-- javascripts.each do |script|
-  = javascript_include_tag script
+- javascripts.push({:cache => "jqext"})
+= javascript_include_tag *javascripts
