@@ -6,32 +6,24 @@ html
   +scrollbars
 
   span
-    &.js-punctuation, &.js-operator, &.punctuation, &.operator
-      color: red
-    &.js-keyword, &.keyword
-      color: #770088
-    &.js-atom, &.atom
-      color: #228811
-    &.js-variable, &.variable, &.method-call
-      color: #AAA
-    &.js-variabledef, &.variabledef
-      color: #60F
-    &.js-localvariable, &.localvariable
-      color: #AAA
-    &.js-property, &.property
-      color: #AAA
-    &.js-comment, &.comment, &.long-comment
-      color: #888
-    &.js-string, &.string, &.heredoc, &.exec
-      color: green
+    &.keyword, &.punctuation, &.operator
+      color: #CDA869
+    &.variable, &.method-call, &.localvariable, &.property
+      color: #F8F8F8
+    &.variabledef
+      color: #7587A6
+    &.comment, &.long-comment
+      color: #5F5A60
+    &.string, &.heredoc, &.exec
+      color: #8F9D6A
     &.method-parameter
       color: #8AA6C1
     &.symbol, &.ascii
       color: #6FB1FF
     &.hexnum, &.binary
       color: #DFC745
-    &.float, &.fixnum, &.numeric
-      color: red
+    &.float, &.fixnum, &.numeric, &.atom
+      color: #CF6A4C
     &.entity
       color: #89BDFF
     &.storage
@@ -50,23 +42,23 @@ html
 
   &.light
     span
-      &.js-punctuation, &.js-operator, &.punctuation, &.operator
+      &.punctuation, &.operator
         color: darkRed
-      &.js-keyword, &.keyword
+      &.keyword
         color: #770088
-      &.js-atom, &.atom
+      &.atom
         color: #228811
-      &.js-variable, &.variable, &.method-call
+      &.variable, &.method-call
         color: #222
-      &.js-variabledef, &.variabledef
+      &.variabledef
         color: #0000FF
-      &.js-localvariable, &.localvariable
+      &.localvariable
         color: #004499
-      &.js-property, &.property
+      &.property
         color: #222
-      &.js-comment, &.comment, &.long-comment
+      &.comment, &.long-comment
         color: #AEAEAE
-      &.js-string, &.string, &.heredoc, &.exec
+      &.string, &.heredoc, &.exec
         color: green
       &.method-parameter
         color: #8AA6C1

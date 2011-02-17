@@ -22,7 +22,7 @@ var tokenizeJavaScript = (function() {
   // token.
   var keywords = function(){
     function result(type, style){
-      return {type: type, style: "js-" + style};
+      return {type: type, style: style};
     }
     // keywords that take a parenthised expression, and then a
     // statement (if)
@@ -73,7 +73,7 @@ var tokenizeJavaScript = (function() {
     function readHexNumber(){
       source.next(); // skip the 'x'
       source.nextWhileMatches(isHexDigit);
-      return {type: "number", style: "js-atom"};
+      return {type: "number", style: "atom"};
     }
 
     function readNumber() {
@@ -88,7 +88,7 @@ var tokenizeJavaScript = (function() {
           source.next();
         source.nextWhileMatches(/[0-9]/);
       }
-      return {type: "number", style: "js-atom"};
+      return {type: "number", style: "atom"};
     }
     // Read a word, look it up in keywords. If not found, it is a
     // variable, otherwise it is a keyword of the type found.
@@ -97,12 +97,12 @@ var tokenizeJavaScript = (function() {
       var word = source.get();
       var known = keywords.hasOwnProperty(word) && keywords.propertyIsEnumerable(word) && keywords[word];
       return known ? {type: known.type, style: known.style, content: word} :
-      {type: "variable", style: "js-variable", content: word};
+      {type: "variable", style: "variable", content: word};
     }
     function readRegexp() {
       nextUntilUnescaped(source, "/");
       source.nextWhileMatches(/[gi]/);
-      return {type: "regexp", style: "js-string"};
+      return {type: "regexp", style: "string"};
     }
     // Mutli-line comments are tricky. We want to return the newlines
     // embedded in them as regular newline tokens, and then continue
@@ -123,16 +123,16 @@ var tokenizeJavaScript = (function() {
         maybeEnd = (next == "*");
       }
       setInside(newInside);
-      return {type: "comment", style: "js-comment"};
+      return {type: "comment", style: "comment"};
     }
     function readOperator() {
       source.nextWhileMatches(isOperatorChar);
-      return {type: "operator", style: "js-operator"};
+      return {type: "operator", style: "operator"};
     }
     function readString(quote) {
       var endBackSlash = nextUntilUnescaped(source, quote);
       setInside(endBackSlash ? quote : null);
-      return {type: "string", style: "js-string"};
+      return {type: "string", style: "string"};
     }
 
     // Fetch the next token. Dispatches on first character in the
@@ -146,7 +146,7 @@ var tokenizeJavaScript = (function() {
       return readString(ch);
     // with punctuation, the type of the token is the symbol itself
     else if (/[\[\]{}\(\),;\:\.]/.test(ch))
-      return {type: ch, style: "js-punctuation"};
+      return {type: ch, style: "punctuation"};
     else if (ch == "0" && (source.equals("x") || source.equals("X")))
       return readHexNumber();
     else if (/[0-9]/.test(ch))
@@ -155,7 +155,7 @@ var tokenizeJavaScript = (function() {
       if (source.equals("*"))
       { source.next(); return readMultilineComment(ch); }
       else if (source.equals("/"))
-      { nextUntilUnescaped(source, null); return {type: "comment", style: "js-comment"};}
+      { nextUntilUnescaped(source, null); return {type: "comment", style: "comment"};}
       else if (regexp)
         return readRegexp();
       else
