@@ -77,6 +77,18 @@
 :coffeescript
   $( ->
 
+    $(".tag .remove").die("click")
+
+    $(".tag .remove").live "click", ->
+      $this = $(this)
+      spriteId = $this.parent().attr("data-sprite_id")
+      tag = $this.prev().text()
+      $this.parent().fadeOut 150, ->
+        $this.parent().remove()
+
+      $.post "/sprites/" + spriteId + "/remove_tag",
+        tag: tag
+
     $('img').bind 'click mousedown mousemove', (event) ->
       event.preventDefault()
 
@@ -109,16 +121,6 @@
       update_tag_component(sprite)
       update_comment_component(sprite)
       update_edit_component(sprite)
-
-    $('.tags form input[type="submit"]').mousedown ->
-      sprite = collect_sprite_data $('section .sprite_container.selected')
-
-      $('.tag_component .tags .tag:last').attr('data-sprite_id', sprite.id)
-
-      update_tag_component(sprite)
-
-    $('.tag .remove').live 'click', ->
-      $(this).parent().remove()
 
     $('.comment_component form').ajaxForm
       dataType: 'json'
@@ -157,7 +159,9 @@
         update_info_component(sprite, author)
 
     update_tag_component = (sprite) ->
-      $('.tag_component form').attr('action', '/sprites/' + sprite.id + '/add_tag')
+      $('.tag_component form').attr
+        'action': '/sprites/' + sprite.id + '/add_tag'
+        'data-sprite_id': sprite.id
       $('.tag_component .tag').hide()
       $('.tag_component .tag[data-sprite_id="' + sprite.id + '"]').css('display', 'inline-block')
 
@@ -221,7 +225,7 @@
         a
           color: #fff
 
-      .comment, .tag_component .tag
+      .comment
         display: none
 
       .comment
