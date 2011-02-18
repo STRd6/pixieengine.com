@@ -12,7 +12,12 @@ class CommentsController < ApplicationController
       format.html do
         redirect_to :back
       end
-      format.json { render :json => @comment }
+      format.json { render :json => {
+        :body => @comment.body,
+        :commentable_id => @comment.commentable_id,
+        :name => @comment.commenter.display_name,
+        :time => Time.zone.now.strftime("%I:%M%p")
+      }}
     end
   end
 end

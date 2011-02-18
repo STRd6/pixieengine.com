@@ -16,14 +16,6 @@
           %img{ :src => "/images/icons/status_online.png"}
           Set as avatar
       =link_to "#{image_tag "icons/cross.png"} Delete".html_safe, "#", :method => :delete, :class => "button delete"
-    .tag_component
-      %h3 Tags
-      .tags
-        - form_tag "/sprites/#{sprites[0].id}/add_tag" do
-          = text_field_tag :tag
-          = submit_tag "Add"
-    .comment_component
-      = display_comments sprites[0]
     .edit_component
       %h3 Edit
       - form_for sprites[0] do |form|
@@ -36,6 +28,31 @@
         = form.text_area :description
 
         = form.submit
+
+  %nav.right
+    .comment_component
+      %h3 Comments
+      = render :partial => "shared/comment_form", :locals => {:commentable => sprites[0]}
+      - sprites.each do |sprite|
+        = render :partial => "comments/comment", :collection => sprite.comments
+
+  %nav.bottom
+    .tag_component
+      %h3 Tags
+      .tags
+        - sprites.each do |sprite|
+          - sprite.tag_list.each do |tag|
+            = sprite_tag_link(sprite, tag)
+
+          - sprite.source_list.each do |source|
+            = sprite_tag_link(sprite, source)
+
+          - sprite.dimension_list.each do |dimension|
+            = sprite_tag_link(sprite, dimension)
+
+        - form_tag "/sprites/#{sprites[0].id}/add_tag" do
+          = text_field_tag :tag
+          = submit_tag "Add"
 
   %section
     .sprites
@@ -50,82 +67,104 @@
 
       - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-#new_tag.template
-  .tag{ 'data-sprite_id' => "${sprite_id}" }
-    %a{ :href => "/sprites?tagged=${name}" } ${name}
-    .remove X
+#comment.template
+  .comment{ 'data-commentable_id' => "${commentable_id}" }
+    %p ${body}
+    %p.attribution
+      %span.name ${name}
+      %span.time ${time}
 
 :coffeescript
   $( ->
+
+    $('img').bind 'click mousedown mousemove', (event) ->
+      event.preventDefault()
+
     select_sprite = (el) ->
       $('section .sprite_container').removeClass('selected')
 
       el.addClass('selected')
+
+    collect_sprite_data = (sprite_el) ->
+      sprite =
+        id: $(sprite_el).attr('data-id')
+        name: $(sprite_el).attr('data-name')
+        description: $(sprite_el).attr('data-description')
+        img: $(sprite_el).attr('data-original_url')
+
+    collect_author_data = (sprite_el) ->
+      author =
+        id: sprite_el.attr('data-author_id')
+        name: sprite_el.attr('data-author')
 
     $('section .sprite_container').mousedown ->
       el = $(this)
 
       select_sprite(el)
 
-      sprite =
-        id: el.data('id')
-        name: el.data('name')
-        description: el.data('description')
-        img: el.data('original_url')
-
-      author =
-        id: el.data('author_id')
-        name: el.data('author')
-
-      tags = el.data('tags')
+      sprite = collect_sprite_data(el)
+      author = collect_author_data(el)
 
       update_info_component(sprite, author)
-      update_tag_component(tags, sprite)
-      update_comment_component()
+      update_tag_component(sprite)
+      update_comment_component(sprite)
       update_edit_component(sprite)
 
+    $('.tags form input[type="submit"]').mousedown ->
+      sprite = collect_sprite_data $('section .sprite_container.selected')
+
+      $('.tag_component .tags .tag:last').attr('data-sprite_id', sprite.id)
+
+      update_tag_component(sprite)
+
+    $('.tag .remove').live 'click', ->
+      $(this).parent().remove()
+
     $('.comment_component form').ajaxForm
-      beforeSerialize: -> notify("Saving...")
-      success: (data) -> notify("Complete")
+      dataType: 'json'
+      resetForm: true
+      beforeSerialize: ->
+        notify("Saving...")
+      success: (data) ->
+        notify("Complete!")
+        $('#new_comment textarea').val("")
+        $('#comment').tmpl(
+          body: data.body
+          name: data.name
+          commentable_id: data.commentable_id
+          time: data.time
+        ).insertBefore('.comment_component .comment:first')
+
+        update_comment_component(collect_sprite_data($('section .sprite_container.selected')))
 
     $('.edit_component form').ajaxForm
+      dataType: 'json'
       beforeSerialize: -> notify("Saving...")
       success: (data) ->
         notify("Complete!")
 
-        el = $('.sprites .sprite_container.selected')
-
         sprite =
-          id: el.data('id')
-          name: el.data('name')
-          description: el.data('description')
+          id: data.id
+          name: data.title
+          description: data.description
+          img: data.img
 
         author =
-          id: el.data('author_id')
-          name: el.data('author')
+          id: data.author_id
+          name: data.author
 
         update_sprite_info(sprite)
         update_info_component(sprite, author)
 
-    clear_tags = ->
-      $('.tag_component .tag').remove()
-
-    update_tag_component = (tags, sprite) ->
-      clear_tags()
-
-      $.each tags.split(" "), (i, tag) ->
-        $('#new_tag').tmpl(
-          sprite_id: sprite.id
-          name: tag
-        ).insertBefore('.tag_component form')
-
+    update_tag_component = (sprite) ->
       $('.tag_component form').attr('action', '/sprites/' + sprite.id + '/add_tag')
+      $('.tag_component .tag').hide()
+      $('.tag_component .tag[data-sprite_id="' + sprite.id + '"]').css('display', 'inline-block')
 
-    clear_comments = ->
-      $('.comment_component .comment').remove()
-
-    update_comment_component = ->
-      clear_comments()
+    update_comment_component = (sprite) ->
+      $('#comment_commentable_id').val(sprite.id)
+      $('.comment_component .comment').hide()
+      $('.comment_component .comment[data-commentable_id="' + sprite.id + '"]').show()
 
     update_info_component = (sprite, author) ->
       $('.info_component .name').text(sprite.name)
@@ -150,10 +189,10 @@
 
     update_sprite_info = (sprite) ->
       $('section .sprite_container[data-id="' + sprite.id + '"]').attr
-        'data-name': sprite.name = $('.edit_component #sprite_title').val()
-        'data-description': sprite.description = $('.edit_component #sprite_description').val()
+        'data-name': $('.edit_component #sprite_title').val()
+        'data-description': $('.edit_component #sprite_description').val()
 
-    $("#set_avatar").live "click", ->
+    $("#set_avatar").click ->
       notify("Saving...")
 
       data =
@@ -170,6 +209,10 @@
     @import blueprint/buttons
     @import partials/base
 
+    $nav_left: 280px
+    $nav_right: 200px
+    $nav_bottom: 150px
+
     #fullscreen
       a
         color: #000
@@ -177,6 +220,29 @@
       .author, .pagination
         a
           color: #fff
+
+      .comment, .tag_component .tag
+        display: none
+
+      .comment
+        margin-bottom: 1.5em
+
+        p.attribution
+          font-size: 0.8em
+          margin: 0
+
+          .time
+            color: #999
+
+      .edit_component textarea
+        +bounds($nav_left - 40px, 50px)
+
+      .tag_component form
+        display: block
+        margin-top: 15px
+
+        input[type="submit"]
+          display: inline-block
 
     form
       input[type="text"]
@@ -189,6 +255,7 @@
         margin: 0
 
       label
+        display: block
         text-align: left
 
       textarea
@@ -197,7 +264,9 @@
         margin: 0
 
     section
-      padding-left: 350px
+      padding-left: $nav_left + 40px
+      padding-right: $nav_right + 20px
+      padding-bottom: $nav_bottom + 20px
 
       .sprites
         +border-radius(8px)
@@ -237,15 +306,22 @@
       height: 100%
       position: relative
 
-      nav.left
-        +border-radius(8px)
+      nav.left, nav.right, nav.bottom
+        +border-radius
 
         background-color: $dark_highlight
-        left: 0
-        padding-left: 15px
-        position: absolute
-        top: 0
-        width: 320px
+        padding: 15px
+
+      nav.left
+        width: $nav_left
+
+      nav.right
+        width: $nav_right
+
+      nav.bottom
+        +box-sizing(border-box)
+
+        height: $nav_bottom
 
     button, a.button
       +button-button
@@ -255,8 +331,8 @@
       +border-radius(4px)
 
       margin: 0
-      padding-left: 3px
-      padding-right: 3px
+      padding-left: 2px
+      padding-right: 2px
 
       &[disabled]
         color: #AAA

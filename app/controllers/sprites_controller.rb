@@ -83,6 +83,27 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  def update
+    @sprite = Sprite.find(params[:id])
+
+    @sprite.update_attributes(params[:sprite])
+
+    respond_with(@sprite) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+      format.json { render :json => {
+          :id => @sprite.id,
+          :title => @sprite.display_name,
+          :description => @sprite.description || "",
+          :img => @sprite.image.url,
+          :author => (@sprite.user) ? @sprite.user.display_name : "Anonymous",
+          :author_id => @sprite.user_id
+        }
+      }
+    end
+  end
+
   def load
     @width = sprite.width
     @height = sprite.height
@@ -153,7 +174,7 @@ class SpritesController < ResourceController::Base
 
   def per_page
     if params[:per_page].blank?
-      15
+      10
     else
       params[:per_page].to_i
     end
