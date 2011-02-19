@@ -77,6 +77,14 @@
 :coffeescript
   $( ->
 
+    $('#new_comment textarea, #tag').keyup ->
+      el = $(this)
+      button = el.parent().find('input[type="submit"]')
+
+      if $(el).val() then $(button).removeAttr('disabled') else $(button).attr('disabled', true)
+
+    $('#new_comment textarea, #tag').keyup()
+
     $(".tag .remove").die("click")
 
     $(".tag .remove").live "click", ->
@@ -96,23 +104,19 @@
       event.preventDefault()
 
       selected_sprite = $('.sprites .sprite_container.selected')
-      $('section .sprite_container').removeClass('selected')
+      prev_sprite = if $(selected_sprite).prev('.sprite_container').length then $(selected_sprite).prev('.sprite_container') else $('.sprites .sprite_container:last')
 
-      if $(selected_sprite).prev('.sprite_container').length
-        $(selected_sprite).prev('.sprite_container').addClass('selected').mousedown()
-      else
-        $('.sprites .sprite_container:last').addClass('selected').mousedown()
+      $('section .sprite_container').removeClass('selected')
+      $(prev_sprite).addClass('selected').mousedown()
 
     $(document).bind "keydown", 'right', (event) ->
       event.preventDefault()
 
       selected_sprite = $('.sprites .sprite_container.selected')
-      $('section .sprite_container').removeClass('selected')
+      next_sprite = if $(selected_sprite).next('.sprite_container').length then $(selected_sprite).next('.sprite_container') else $('.sprites .sprite_container:first')
 
-      if $(selected_sprite).next('.sprite_container').length
-        $(selected_sprite).next('.sprite_container').addClass('selected').mousedown()
-      else
-        $('.sprites .sprite_container:first').addClass('selected').mousedown()
+      $('section .sprite_container').removeClass('selected')
+      $(next_sprite).addClass('selected').mousedown()
 
     select_sprite = (el) ->
       $('section .sprite_container').removeClass('selected')
