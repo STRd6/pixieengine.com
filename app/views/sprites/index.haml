@@ -92,6 +92,28 @@
     $('img').bind 'click mousedown mousemove', (event) ->
       event.preventDefault()
 
+    $(document).bind "keydown", 'left', (event) ->
+      event.preventDefault()
+
+      selected_sprite = $('.sprites .sprite_container.selected')
+      $('section .sprite_container').removeClass('selected')
+
+      if $(selected_sprite).prev('.sprite_container').length
+        $(selected_sprite).prev('.sprite_container').addClass('selected').mousedown()
+      else
+        $('.sprites .sprite_container:last').addClass('selected').mousedown()
+
+    $(document).bind "keydown", 'right', (event) ->
+      event.preventDefault()
+
+      selected_sprite = $('.sprites .sprite_container.selected')
+      $('section .sprite_container').removeClass('selected')
+
+      if $(selected_sprite).next('.sprite_container').length
+        $(selected_sprite).next('.sprite_container').addClass('selected').mousedown()
+      else
+        $('.sprites .sprite_container:first').addClass('selected').mousedown()
+
     select_sprite = (el) ->
       $('section .sprite_container').removeClass('selected')
 
@@ -262,6 +284,9 @@
         display: block
         text-align: left
 
+        &[for="sprite_title"]
+          padding-top: 0
+
       textarea
         +bounds(150px, 50px)
 
@@ -289,6 +314,8 @@
           background-color: $pixie_primary
 
     .info_component
+      margin-bottom: 30px
+
       .sprite_container
         +border-radius(8px)
         +bounds(96px)
@@ -298,10 +325,12 @@
         display: block
         margin-bottom: 7px
 
-    h3.name
-      display: inline-block
-      margin-right: 10px
+    h3
       margin-bottom: 0
+
+      &.name
+        display: inline-block
+        margin-right: 10px
 
     .sprite_gallery
       +box-sizing(border-box)
