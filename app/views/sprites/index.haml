@@ -76,6 +76,8 @@
 
 :coffeescript
   $( ->
+    $('#bulb').click ->
+      if $(this).hasClass('on') then $('nav').addClass('light') else $('nav').removeClass('light')
 
     $('#new_comment textarea, #tag').keyup ->
       el = $(this)
@@ -247,6 +249,11 @@
       a
         color: #000
 
+      &.light
+        .author, .pagination
+          a
+            color: #000
+
       .author, .pagination
         a
           color: #fff
@@ -299,13 +306,15 @@
     section
       padding-left: $nav_left + 40px
       padding-right: $nav_right + 20px
-      padding-bottom: $nav_bottom + 20px
+      padding-bottom: $nav_bottom + 40px
 
       .sprites
         +border-radius(8px)
+        +bounds(100%)
         +box-sizing(border-box)
 
         border: 1px solid $pixie_primary
+        overflow: auto
         padding: 15px
 
       .sprite_container
@@ -349,15 +358,21 @@
         background-color: $dark_highlight
         padding: 15px
 
+        &.light
+          background-color: $light_highlight
+
       nav.left
         width: $nav_left
 
       nav.right
-        width: $nav_right
+        +bounds($nav_right, 100%)
+
+        overflow: auto
+        padding-bottom: $nav_bottom + 40px
 
       nav.bottom
         +box-sizing(border-box)
-
+        color: #000
         height: $nav_bottom
 
     button, a.button
