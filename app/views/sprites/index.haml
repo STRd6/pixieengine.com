@@ -1,58 +1,12 @@
 - @title = "Sprite Gallery"
 
 .sprite_gallery
-  %nav.left
-    .info_component
-      %h3.name
-      %span.author
-      .sprite_container
-        =image_tag("")
-      %p.description
-      %a.button#load_sprite{ :target => "_blank" }
-        %img{ :src => "/images/icons/picture_edit.png" }
-        Edit image
-      -if current_user
-        %a.button#set_avatar
-          %img{ :src => "/images/icons/status_online.png"}
-          Set as avatar
-      =link_to "#{image_tag "icons/cross.png"} Delete".html_safe, "#", :method => :delete, :class => "button delete"
-    .edit_component
-      %h3 Edit
-      - form_for sprites[0] do |form|
-        = form.error_messages
-
-        = form.label :title
-        = form.text_field :title
-
-        = form.label :description
-        = form.text_area :description
-
-        = form.submit
-
-  %nav.right
-    .comment_component
-      %h3 Comments
-      = render :partial => "shared/comment_form", :locals => {:commentable => sprites[0]}
-      - sprites.each do |sprite|
-        = render :partial => "comments/comment", :collection => sprite.comments
-
-  %nav.bottom
-    .tag_component
-      %h3 Tags
-      .tags
-        - sprites.each do |sprite|
-          - sprite.tag_list.each do |tag|
-            = sprite_tag_link(sprite, tag)
-
-          - sprite.source_list.each do |source|
-            = sprite_tag_link(sprite, source)
-
-          - sprite.dimension_list.each do |dimension|
-            = sprite_tag_link(sprite, dimension)
-
-        - form_tag "/sprites/#{sprites[0].id}/add_tag" do
-          = text_field_tag :tag
-          = submit_tag "Add"
+  .info_component
+    %h3.name
+    %span.author
+    .sprite_container
+      =image_tag("")
+    %p.description
 
   %section
     .sprites
@@ -60,44 +14,13 @@
 
       = render :partial => "index_sprite", :collection => sprites
 
-      .tags
-        - tags = Sprite.with_ids(sprites).tag_counts
-        - tags.each do |tag|
-          = tag_link tag
-
+      - tags = Sprite.with_ids(sprites).tag_counts
       - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
-
-#comment.template
-  .comment{ 'data-commentable_id' => "${commentable_id}" }
-    %p ${body}
-    %p.attribution
-      %span.name ${name}
-      %span.time ${time}
 
 :coffeescript
   $( ->
     $('#bulb').click ->
       if $(this).hasClass('on') then $('nav').addClass('light') else $('nav').removeClass('light')
-
-    $('#new_comment textarea, #tag').keyup ->
-      el = $(this)
-      button = el.parent().find('input[type="submit"]')
-
-      if $(el).val() then $(button).removeAttr('disabled') else $(button).attr('disabled', true)
-
-    $('#new_comment textarea, #tag').keyup()
-
-    $(".tag .remove").die("click")
-
-    $(".tag .remove").live "click", ->
-      $this = $(this)
-      spriteId = $this.parent().attr("data-sprite_id")
-      tag = $this.prev().text()
-      $this.parent().fadeOut 150, ->
-        $this.parent().remove()
-
-      $.post "/sprites/" + spriteId + "/remove_tag",
-        tag: tag
 
     $('img').bind 'click mousedown mousemove', (event) ->
       event.preventDefault()
@@ -111,6 +34,9 @@
       $('section .sprite_container').removeClass('selected')
       $(prev_sprite).addClass('selected').mousedown()
 
+      $('.info_component').appendTo $('.sprites .sprite_container.selected')
+      $('.info_component').css('display', 'inline-block')
+
     $(document).bind "keydown", 'right', (event) ->
       event.preventDefault()
 
@@ -119,6 +45,9 @@
 
       $('section .sprite_container').removeClass('selected')
       $(next_sprite).addClass('selected').mousedown()
+
+      $('.info_component').appendTo $('.sprites .sprite_container.selected')
+      $('.info_component').css('display', 'inline-block')
 
     select_sprite = (el) ->
       $('section .sprite_container').removeClass('selected')
@@ -146,26 +75,8 @@
       author = collect_author_data(el)
 
       update_info_component(sprite, author)
-      update_tag_component(sprite)
-      update_comment_component(sprite)
-      update_edit_component(sprite)
 
-    $('.comment_component form').ajaxForm
-      dataType: 'json'
-      resetForm: true
-      beforeSerialize: ->
-        notify("Saving...")
-      success: (data) ->
-        notify("Complete!")
-        $('#new_comment textarea').val("")
-        $('#comment').tmpl(
-          body: data.body
-          name: data.name
-          commentable_id: data.commentable_id
-          time: data.time
-        ).insertBefore('.comment_component .comment:first')
-
-        update_comment_component(collect_sprite_data($('section .sprite_container.selected')))
+      $('.info_component').appendTo(el).css('display', 'inline-block')
 
     $('.edit_component form').ajaxForm
       dataType: 'json'
@@ -186,18 +97,6 @@
         update_sprite_info(sprite)
         update_info_component(sprite, author)
 
-    update_tag_component = (sprite) ->
-      $('.tag_component form').attr
-        'action': '/sprites/' + sprite.id + '/add_tag'
-        'data-sprite_id': sprite.id
-      $('.tag_component .tag').hide()
-      $('.tag_component .tag[data-sprite_id="' + sprite.id + '"]').css('display', 'inline-block')
-
-    update_comment_component = (sprite) ->
-      $('#comment_commentable_id').val(sprite.id)
-      $('.comment_component .comment').hide()
-      $('.comment_component .comment[data-commentable_id="' + sprite.id + '"]').show()
-
     update_info_component = (sprite, author) ->
       $('.info_component .name').text(sprite.name)
       if author.id
@@ -211,26 +110,10 @@
       $('.info_component a.delete').attr('href', '/sprites/' + sprite.id)
       $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
 
-    update_edit_component = (sprite) ->
-      $('.edit_component form').attr
-        action: 'sprites/' + sprite.id
-        id: 'edit_sprite_' + sprite.id
-
-      $('.edit_component #sprite_title').val(sprite.name)
-      $('.edit_component #sprite_description').val(sprite.description)
-
     update_sprite_info = (sprite) ->
       $('section .sprite_container[data-id="' + sprite.id + '"]').attr
         'data-name': $('.edit_component #sprite_title').val()
         'data-description': $('.edit_component #sprite_description').val()
-
-    $("#set_avatar").click ->
-      notify("Saving...")
-
-      data =
-        sprite_id: $('section .sprite_container.selected').data('id')
-
-      $.post("/users/#{current_user.id}/set_avatar", data, -> notify("Avatar successfully changed."))
 
     $('section .sprite_container').first().mousedown()
   )
@@ -240,10 +123,6 @@
     @import util
     @import blueprint/buttons
     @import partials/base
-
-    $nav_left: 280px
-    $nav_right: 200px
-    $nav_bottom: 150px
 
     #fullscreen
       a
@@ -257,29 +136,6 @@
       .author, .pagination
         a
           color: #fff
-
-      .comment
-        display: none
-
-      .comment
-        margin-bottom: 1.5em
-
-        p.attribution
-          font-size: 0.8em
-          margin: 0
-
-          .time
-            color: #999
-
-      .edit_component textarea
-        +bounds($nav_left - 40px, 50px)
-
-      .tag_component form
-        display: block
-        margin-top: 15px
-
-        input[type="submit"]
-          display: inline-block
 
     form
       input[type="text"]
@@ -305,16 +161,12 @@
 
     section
       min-height: 429px
-      padding-left: $nav_left + 40px
-      padding-right: $nav_right + 20px
-      padding-bottom: $nav_bottom + 40px
 
       .sprites
         +border-radius(8px)
         +bounds(100%)
         +box-sizing(border-box)
 
-        border: 1px solid $pixie_primary
         min-height: 429px
         overflow: auto
         padding: 15px
@@ -325,20 +177,24 @@
         &:hover
           background-color: $hover
 
-        &.selected
-          background-color: $pixie_primary
+    #fullscreen .info_component
+      +border-radius
+      +bounds(200px)
 
-    .info_component
-      margin-bottom: 30px
+      background-color: rgba(0, 28, 47, .9)
+      display: none
+      margin-bottom: -100px
+      margin-left: -76px
+      z-index: 500
 
       .sprite_container
-        +border-radius(8px)
+        +border-radius
         +bounds(96px)
         +contents-centered
 
         background-color: #fff
         display: block
-        margin-bottom: 7px
+        margin: auto
 
     h3
       margin-bottom: 0
@@ -353,29 +209,6 @@
 
       height: 100%
       position: relative
-
-      nav.left, nav.right, nav.bottom
-        +border-radius
-
-        background-color: $dark_highlight
-        padding: 15px
-
-        &.light
-          background-color: $light_highlight
-
-      nav.left
-        width: $nav_left
-
-      nav.right
-        bottom: $nav_bottom + 40px
-        min-height: 429px
-        overflow: auto
-        width: $nav_right
-
-      nav.bottom
-        +box-sizing(border-box)
-        color: #000
-        height: $nav_bottom
 
     button, a.button
       +button-button
