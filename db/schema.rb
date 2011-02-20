@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110213233034) do
+ActiveRecord::Schema.define(:version => 20110220193856) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -304,6 +304,15 @@ ActiveRecord::Schema.define(:version => 20110213233034) do
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
     t.integer  "parent_id"
+  end
+
+  create_table "projects", :force => true do |t|
+    t.integer  "user_id",       :null => false
+    t.string   "remote_origin"
+    t.string   "title",         :null => false
+    t.text     "description"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "script_members", :force => true do |t|
