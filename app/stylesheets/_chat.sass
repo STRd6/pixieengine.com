@@ -1,26 +1,37 @@
-#chatZone, #dragZone
-  margin-left: 8.5%
-  margin-top: 12em
-  width: 700px
+@import partials/base
+@import util
+
+#chatZone
+  +border-radius
+
+  background-color: rgba(0, 28, 47, 0.9)
+  cursor: move
+  padding: 10px
+  position: absolute
+  left: 0
+  top: 150px
+  max-width: 570px
 
   #send
+    +border-radius(0)
+
     margin: 0 0 0 -2px
     font-weight: bold
-    -webkit-border-radius: 0
     padding-left: 8px
     padding-right: 8px
     vertical-align: top
     height: 24px
 
 #chats
-  border: 1px solid #BBB
+  color: #fff
   display: inline-block
   font: 13px Helvetica, Arial
   height: 240px
   list-style: none
-  margin: 1em 0
-  overflow: auto
-  width: 511px
+  overflow-y: auto
+  overflow-x: hidden
+  width: 400px
+  word-wrap: break-word
 
   .name
     font-weight: bold
@@ -33,9 +44,6 @@
   li
     padding: 5px
     margin: 0
-
-  li:nth-child(odd)
-    background: #F6F6F6
 
 #active_users
   list-style: none
@@ -50,7 +58,6 @@
     margin-bottom: 5px
 
 #chat_body
-  width: 458px
+  width: 338px
   height: 18px
   margin-bottom: 5px
-
