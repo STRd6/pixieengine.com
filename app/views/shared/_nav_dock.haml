@@ -35,6 +35,9 @@
 
 :coffeescript
   $ ->
+    if localStorage.chat == 'active'
+      $('#chatZone').show()
+
     $(".osx-dock a").tipsy
       fade: false
       gravity: "s"
@@ -45,6 +48,12 @@
 
     $('#chat').mousedown ->
       $('#chatZone').toggle()
+
+      $('#chats').scrollTo
+        left: '0%'
+        top: '100%'
+
+      if $('#chatZone').css('display') == 'none' then localStorage.chat = false else localStorage.chat = 'active'
 
 %style
   :sass

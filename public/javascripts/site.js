@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Thu, 17 Feb 2011 02:55:47 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
+/* DO NOT MODIFY. This file was compiled Mon, 21 Feb 2011 20:20:24 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
