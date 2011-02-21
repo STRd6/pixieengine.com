@@ -10,6 +10,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   resources :projects do
     member do
       get :ide
+
+      post :save_file
     end
   end
 

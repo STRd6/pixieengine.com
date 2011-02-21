@@ -7,4 +7,13 @@
 
 - else
   %li{ :title => file_info[:name] }
-    %span.file{ 'data-id' => 'main', :class => file_info[:ext] }= file_info[:name]
+    - ext = file_info[:ext]
+    - path = file_info[:path]
+    - path_fragment = path.gsub(/[\/\.]/, "_")
+    - data_id = "file_#{path_fragment}"
+    - text_area_id = "text_area_#{path_fragment}"
+    %span.file{ 'data-id' => "##{data_id}", 'data-path' => path, :class => ext }= file_info[:name]
+    .tab_data{:id => data_id, :'data-lang' => ext}
+      - form_tag({:action => :save_file}, :method => :post, :format => :json) do |form|
+        = hidden_field_tag :path, path, { :id => nil }
+        = text_area_tag :contents, file_info[:contents], { :id => text_area_id }

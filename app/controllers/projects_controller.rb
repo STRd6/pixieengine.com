@@ -1,6 +1,8 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
+  before_filter :require_access, :only => [:save_file]
+
   def new
     @project = Project.new
   end
@@ -26,5 +28,27 @@ class ProjectsController < ApplicationController
     @project = Project.find params[:id]
 
     render :layout => "ide"
+  end
+
+  def save_file
+    #TODO Save
+
+    project.save_file(params[:path], params[:contents])
+
+    respond_to do |format|
+      format.json do
+        render :text => "ok"
+      end
+    end
+  end
+
+  private
+  def object
+    @object ||= Project.find params[:id]
+  end
+  helper_method :object
+
+  def project
+    object
   end
 end

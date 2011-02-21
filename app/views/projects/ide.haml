@@ -2,7 +2,7 @@
   #error
   %nav.left
     .actions
-      %button.save Save
+      %button#save Save
       %button#run Run
       %button#publish Publish
 
@@ -14,32 +14,71 @@
     #tabs
       %ul
 
-:plain
-  <script type="text/coffeescript">
-    $ ->
-      $('ul.filetree').treeview()
+:coffeescript
+  file_path = #{@project.web_path.to_json}
 
-      $('#tabs').tabs
-        add: (event, ui) ->
-          $tabs.tabs('select', '#' + ui.panel.id)
+  window.createEditor = (ui) ->
+    panel = $(ui.panel)
+    tab = $(ui.tab)
+    lang = panel.attr('data-lang')
+    src_id = "#" + panel.find('textarea').attr('id')
 
-          if shouldCreateEditor
-            fileData = createEditor(ui)
+    if lang = "js"
+      lang = "javascript"
 
-            $(ui.tab).data('updateSaved', fileData.updateSaved)
-            $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
-          else
-            if langClass
-              $(ui.tab).parent().find('span.lang').addClass(langClass)
+    savedCode = $(src_id).val()
 
-          langClass = null
+    codeTextArea = $(src_id).get(0)
+    editor = new CodeMirror.fromTextArea codeTextArea,
+      autoMatchParens: true
+      content: codeTextArea.value
+      height: "100%"
+      lineNumbers: true
+      parserfile: ["tokenize_" + lang + ".js?0", "parse_" + lang + ".js?0"]
+      path: "/javascripts/codemirror/"
+      stylesheet: ["/stylesheets/codemirror/main.css"]
+      tabMode: "shift"
+      textWrapping: false
 
-        remove: (event, ui) ->
-          $(ui.panel).find(".CodeMirror-wrapping").remove()
-          $('.filetree').append(ui.panel)
+    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
 
-        select: (event, ui) ->
-          window.currentPanel = ui.panel
+    # Listen for keypresses and update contents.
+    $(editor.win.document).keyup ->
+      currentCode = editor.getCode()
+      $(src_id).val(currentCode)
 
-        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
-  </script>
+    lang: lang
+    updateSaved: () ->
+      savedCode = editor.getCode()
+
+  $ ->
+    $('ul.filetree').treeview()
+
+    $tabs = $('#tabs').tabs
+      add: (event, ui) ->
+        $tabs.tabs('select', '#' + ui.panel.id)
+
+        if fileData = createEditor(ui)
+          $(ui.tab).data('updateSaved', fileData.updateSaved)
+          $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+
+        window.currentPanel = ui.panel
+
+      remove: (event, ui) ->
+        $(ui.panel).find(".CodeMirror-wrapping").remove()
+        $('.filetree').append(ui.panel)
+
+      select: (event, ui) ->
+        window.currentPanel = ui.panel
+
+      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+
+    $('.filetree .file').live 'click', ->
+      $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
+
+  $('#save').live 'click', ->
+    form = $(currentPanel).find('form')
+
+    form.ajaxSubmit
+      type: 'POST'
+      success: () ->
