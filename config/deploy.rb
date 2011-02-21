@@ -15,6 +15,13 @@ set :deploy_via, :remote_cache
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
 
+set :default_environment, {
+  'PATH' => "/home/daniel/.rvm/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global/bin:/home/daniel/.rvm/rubies/ree-1.8.7-2010.02/bin:$PATH",
+  'RUBY_VERSION' => 'ruby 1.8.7',
+  'GEM_HOME' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02',
+  'GEM_PATH' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global'
+}
+
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
 # via the :deploy_to variable:
