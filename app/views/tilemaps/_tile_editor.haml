@@ -79,7 +79,17 @@
 
 :coffeescript
   $('#bulb').click ->
+    if localStorage
+      if localStorage.tilemapEditor
+        delete localStorage.tilemapEditor
+      else
+        localStorage.tilemapEditor = true
+
     $(this).toggleClass('on')
+    $('#fullscreen, nav.left, nav.right, nav.bottom').toggleClass('light')
+
+  if localStorage && localStorage.tilemapEditor
+    $('#bulb').toggleClass('on')
     $('#fullscreen, nav.left, nav.right, nav.bottom').toggleClass('light')
 
   debugMode = true
