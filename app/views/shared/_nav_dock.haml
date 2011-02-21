@@ -3,10 +3,6 @@
     .cap.left
     %ul.osx-dock
       %li
-        %span Share with friends
-        %a{ :href => "#", :title => "Share with friends", :rel => "tipsy" }
-          %img{ :src => "/images/share_dock_icon.png" }
-      %li
         %span Pixel Editor
         %a{ :href => "/", :title => "Pixel Editor", :rel => "tipsy" }
           %img{ :src => "/images/pixie_dock.png" }
@@ -26,10 +22,10 @@
         %span Sound FX Editor
         %a{ :href => "/sfx-editor", :title => "Sound FX Editor", :rel => "tipsy" }
           %img{ :src => "/images/sfx_dock.png" }
-      %li
-        %span Placeholder
-        %a{ :href => "#", :title => "Placeholder", :rel => "tipsy" }
-          %img{ :src => "/images/sfx_dock_icon.png" }
+      %li#chat
+        %span Chat
+        %a{ :href => "#", :title => "Chat", :rel => "tipsy" }
+          %img{ :src => "/images/chat_dock.png" }
 
 #hide_dock
 
@@ -43,17 +39,20 @@
       $(this).toggleClass('show_dock')
       $('#dockContainer').slideToggle('slow')
 
+    $('#chat').mousedown ->
+      $('#chatZone').toggle()
+
 %style
   :sass
     @import util
 
     #hide_dock
-      +bounds(28px)
+      +bounds(30px)
 
       background: url("/images/hide_dock.png") no-repeat
       position: fixed
       bottom: 0
-      right: 185px
+      right: 240px
       z-index: 100
 
       &.show_dock
@@ -94,7 +93,7 @@
       list-style: none outside
 
       &.osx-dock
-        background: url(/images/dock_background.png) no-repeat right bottom
+        background: url(/images/dock_background_left.png) no-repeat right bottom
         display: inline-block
         height: 130px
         margin: 0 0 0 40px
