@@ -48,7 +48,8 @@
       top: '100%'
 
   $ ->
-    $('#chatZone').draggable()
+    $('#chatZone').draggable
+      handle: 'h3'
 
     scrollToBottomLeft $('#chats')
 
