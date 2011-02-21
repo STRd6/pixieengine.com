@@ -7,6 +7,12 @@ PixieStrd6Com::Application.routes.draw do |map|
     resources :comments, :feedbacks, :sprites, :users, :reports
   end
 
+  resources :projects do
+    member do
+      get :ide
+    end
+  end
+
   namespace :developer do
     resources :apps do
       member do

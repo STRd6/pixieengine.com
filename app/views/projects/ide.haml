@@ -1,0 +1,45 @@
+#content
+  #error
+  %nav.left
+    .actions
+      %button.save Save
+      %button#run Run
+      %button#publish Publish
+
+    %ul.filetree
+      - @project.file_info[:files].each do |file|
+        = render :partial => "file_tree_node", :locals => {:file_info => file}
+
+  %section
+    #tabs
+      %ul
+
+:plain
+  <script type="text/coffeescript">
+    $ ->
+      $('ul.filetree').treeview()
+
+      $('#tabs').tabs
+        add: (event, ui) ->
+          $tabs.tabs('select', '#' + ui.panel.id)
+
+          if shouldCreateEditor
+            fileData = createEditor(ui)
+
+            $(ui.tab).data('updateSaved', fileData.updateSaved)
+            $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+          else
+            if langClass
+              $(ui.tab).parent().find('span.lang').addClass(langClass)
+
+          langClass = null
+
+        remove: (event, ui) ->
+          $(ui.panel).find(".CodeMirror-wrapping").remove()
+          $('.filetree').append(ui.panel)
+
+        select: (event, ui) ->
+          window.currentPanel = ui.panel
+
+        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+  </script>

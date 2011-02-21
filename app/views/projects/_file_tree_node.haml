@@ -1,0 +1,10 @@
+- if files = file_info[:files]
+  %li.closed{ :title =>  file_info[:name]}
+    %span.folder= file_info[:name]
+    %ul
+      - files.each do |file|
+        = render :partial => "file_tree_node", :locals => {:file_info => file}
+
+- else
+  %li{ :title => file_info[:name] }
+    %span.file{ 'data-id' => 'main', :class => file_info[:ext] }= file_info[:name]
