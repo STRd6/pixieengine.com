@@ -82,10 +82,13 @@
       $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
 
       selected = $('.sprite_container.selected')
+      width = $(document).width()
+
+      console.log width
 
       $('.info_component').css
         display: 'inline-block'
-        left: selected.position().left - 125
+        left: (selected.position().left - 125).clamp(-35, width - 327)
         top: selected.position().top - 48
 
     $('section .sprite_container').first().mousedown()
