@@ -9,13 +9,12 @@
     %p.description
 
   %section
+    = will_paginate sprites
     .sprites
-      = will_paginate sprites
-
       = render :partial => "index_sprite", :collection => sprites
 
-      - tags = Sprite.with_ids(sprites).tag_counts
-      - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
+    - tags = Sprite.with_ids(sprites).tag_counts
+    - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
 :coffeescript
   $ ->
@@ -44,7 +43,7 @@
       update_info_component(sprite, author)
 
     shift_selected = (direction) ->
-      selected_index = $('.sprites .sprite_container.selected').index() - 1
+      selected_index = $('.sprites .sprite_container.selected').index()
       number_sprites = $('.sprites .sprite_container').length
 
       $('.sprites .sprite_container.selected').removeClass('selected')
@@ -119,7 +118,6 @@
         +box-sizing(border-box)
 
         overflow: auto
-        padding: 15px
 
       .sprite_container
         cursor: pointer
