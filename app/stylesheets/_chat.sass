@@ -5,12 +5,16 @@
   +border-radius
 
   background-color: transparentize($dark_highlight, 0.05)
-  cursor: move
   padding: 10px
   position: absolute
   left: 0
   top: 150px
   max-width: 570px
+
+  h3
+    +user-select(none)
+
+    cursor: move
 
   #send
     +border-radius(0)
