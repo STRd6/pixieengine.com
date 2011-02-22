@@ -158,3 +158,18 @@
     });
 
   })(jQuery);
+
+%style
+  :sass
+    #dockContainer
+      div#hide_dock
+        background: url(/images/hide_dock_light.png) no-repeat
+
+        &.show_dock
+          background: url(/images/show_dock_light.png) no-repeat
+
+      .cap
+        background: url(/images/dock_background_left_light.png) bottom left no-repeat
+
+      ul.osx-dock
+        background: url(/images/dock_background_left_light.png) no-repeat right bottom
