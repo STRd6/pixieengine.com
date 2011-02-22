@@ -35,19 +35,13 @@
 
 :coffeescript
   $ ->
-    if (localStorage.chat == 'active' && $('body').attr('id') == 'fullscreen')
-      $('#chatZone').show()
-      $('#chats').scrollTo
-        left: '0%'
-        top: '100%'
-
     $(".osx-dock a").tipsy
       fade: false
       gravity: "s"
 
     $('#hide_dock').mousedown ->
       $(this).toggleClass('show_dock')
-      $('#dockContainer').slideToggle('slow')
+      $('#dockContainer').slideToggle(175)
 
     $('#chat').mousedown ->
       $('#chatZone').toggle()
