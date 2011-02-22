@@ -65,10 +65,23 @@
     #fullscreen
       position: relative
 
+      &.light
+        #hide_dock
+          background: url(/images/hide_dock_light.png) no-repeat
+
+          &.show_dock
+            background: url(/images/show_dock_light.png) no-repeat
+
+        .cap
+          background: url(/images/dock_background_left_light.png) bottom left no-repeat
+
+        ul.osx-dock
+          background: url(/images/dock_background_left_light.png) no-repeat right bottom
+
     #hide_dock
       +bounds(30px)
 
-      background: url("/images/hide_dock.png") no-repeat
+      background: url(/images/hide_dock.png) no-repeat
       position: fixed
       bottom: 0
       right: 0
@@ -77,7 +90,7 @@
       z-index: 100
 
       &.show_dock
-        background: url("/images/show_dock.png") no-repeat
+        background: url(/images/show_dock.png) no-repeat
 
     #dockContainer
       +bounds(508px, 72px)
