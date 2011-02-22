@@ -1,35 +1,177 @@
-- @title = "Sprites"
+- @title = "Sprite Gallery"
 
-= will_paginate sprites
+.sprite_gallery
+  .info_component
+    %h3.name
+    %span.author
+    .sprite_container
+      =image_tag("")
+    %p.description
 
-- sprites.each do |sprite|
-  = render :partial => sprite
+  %section
+    = will_paginate sprites
+    .sprites
+      = render :partial => "index_sprite", :collection => sprites
 
-.tags
-  - tags = Sprite.with_ids(sprites).tag_counts
-  - tags.each do |tag|
-    = tag_link tag
+    - tags = Sprite.with_ids(sprites).tag_counts
+    - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-- @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
+:coffeescript
+  $ ->
+    $('#bulb').click ->
+      if $(this).hasClass('on') then $('nav').addClass('light') else $('nav').removeClass('light')
 
-- if current_user
-  :javascript
-    $(function() {
-      $('.favorites').click(function() {
-        var spriteId = $(this).attr('data-id');
-        if ($(this).hasClass('star')) {
-          $(this).removeClass('star').addClass('no-star');
-          $.get('/users/remove_favorite/' + spriteId);
-        } else {
-          $(this).removeClass('no-star').addClass('star');
-          $.post('/users/#{current_user.id}/add_to_collection', {
-            'format': 'js',
-            'collectable_type': "Sprite",
-            'collectable_id': spriteId,
-            'collection_name': "favorites"
-          }, "script");
-        }
-      });
-    });
+    $('img').bind 'click mousedown mousemove', (event) ->
+      event.preventDefault()
 
-= will_paginate sprites
+    $(document).bind "keydown", 'left', (event) ->
+      event.preventDefault()
+      shift_selected(-1)
+
+    $(document).bind "keydown", 'right', (event) ->
+      event.preventDefault()
+      shift_selected(1)
+
+    $('section .sprite_container').mousedown ->
+      el = $(this)
+
+      select_sprite(el)
+
+      sprite = collect_sprite_data(el)
+      author = collect_author_data(el)
+
+      update_info_component(sprite, author)
+
+    shift_selected = (direction) ->
+      selected_index = $('.sprites .sprite_container.selected').index()
+      number_sprites = $('.sprites .sprite_container').length
+
+      $('.sprites .sprite_container.selected').removeClass('selected')
+      selected = $('.sprites .sprite_container')[(selected_index + direction).mod(number_sprites)]
+      $(selected).addClass('selected').mousedown()
+
+    select_sprite = (el) ->
+      $('section .sprite_container').removeClass('selected')
+
+      el.addClass('selected')
+
+    collect_sprite_data = (sprite_el) ->
+      sprite =
+        id: $(sprite_el).attr('data-id')
+        name: $(sprite_el).attr('data-name')
+        description: $(sprite_el).attr('data-description') || "<span class='empty'>No Description</span>"
+        img: $(sprite_el).attr('data-original_url')
+
+    collect_author_data = (sprite_el) ->
+      author =
+        id: sprite_el.attr('data-author_id')
+        name: sprite_el.attr('data-author')
+
+    update_info_component = (sprite, author) ->
+      $('.info_component .name').text(sprite.name)
+      if author.id
+        $('.info_component .author').text("by ").append('<a href= "users/' + author.id + '"> ' + author.name + '</a>')
+      else
+        $('.info_component .author a').remove()
+        $('.info_component .author').text("by " + author.name)
+
+      $('.info_component .sprite_container img').attr('src', sprite.img)
+      $('.info_component p.description').html(sprite.description)
+      $('.info_component a.delete').attr('href', '/sprites/' + sprite.id)
+      $('#load_sprite').attr('href', '/sprites/' + sprite.id + '/load')
+
+      selected = $('.sprite_container.selected')
+      width = $(document).width()
+
+      $('.info_component').css
+        display: 'inline-block'
+        left: (selected.position().left - 125).clamp(-35, width - 327)
+        top: selected.position().top - 48
+
+    $('section .sprite_container').first().mousedown()
+
+%style
+  :sass
+    @import util
+    @import partials/base
+
+    #fullscreen
+      a
+        color: #000
+
+      &.light
+        .author, .pagination
+          a
+            color: #000
+
+        .info_component
+          background-color: rgba(178, 226, 255, 0.9)
+
+      .author, .pagination
+        a
+          color: #fff
+
+    section
+      .sprites
+        +border-radius(8px)
+        +bounds(100%)
+        +box-sizing(border-box)
+
+        overflow: auto
+
+      .sprite_container
+        cursor: pointer
+
+        &:hover
+          background-color: $hover
+
+    #fullscreen .info_component
+      +border-radius
+
+      background-color: rgba(0, 28, 47, 0.9)
+      display: none
+      width: 250px
+      padding-left: 20px
+      padding-right: 20px
+      position: absolute
+      z-index: 500
+
+      .empty
+        color: #888
+        font-style: italic
+
+      .sprite_container
+        +bounds(96px)
+        +contents-centered
+
+        display: block
+        margin: auto
+
+    h3
+      margin-bottom: 0
+
+      &.name
+        display: inline-block
+        margin-right: 10px
+
+    .sprite_gallery
+      +box-sizing(border-box)
+      +user-select(none)
+
+      height: 100%
+      position: relative
+
+    .pagination
+      color: $pixie_primary
+      margin-bottom: 5px
+
+    body
+      .sprite_container
+        +border-radius(8px)
+        +bounds(48px)
+        +contents-centered
+
+        background-color: white
+        display: inline-block
+        margin-right: 7px
+        margin-bottom: 3px

@@ -3,6 +3,16 @@ $sprite_container_bounds: 72px
 #fullscreen
   color: $dark_text
 
+  &.light
+    color: $light_text
+
+    .frame_sprites, .animations
+      background-color: $light_highlight
+
+    .demo
+      background-color: #fff
+      border: 4px dotted #ccc
+
   .x, .duplicate
     +bounds(24px, 29px)
 
@@ -10,9 +20,6 @@ $sprite_container_bounds: 72px
     display: inline-block
     right: -15px
     position: absolute
-
-  &.light
-    color: $light_text
 
   .x
     background-image: url(/images/x.png)
@@ -82,9 +89,6 @@ $sprite_container_bounds: 72px
     padding: 20px
     white-space: nowrap
 
-    &.light
-      background-color: $light_highlight
-
     &.highlight
       border: 2px solid $pixie_primary
 
@@ -95,10 +99,6 @@ $sprite_container_bounds: 72px
 
       background-color: #ccc
       border: 4px dotted #aaa
-
-      &.light
-        background-color: #fff
-        border: 4px dotted #ccc
 
     .sprite_container
       +box-shadow($dark_box_shadow, 2px, 2px, 15px)
@@ -151,9 +151,6 @@ $sprite_container_bounds: 72px
       text-align: center
       overflow-y: auto
       padding: 10px
-
-      &.light
-        background-color: $light_highlight
 
       .speed, .sprites
         visibility: hidden
