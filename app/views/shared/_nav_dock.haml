@@ -35,13 +35,22 @@
 
 :coffeescript
   $ ->
-    $(".osx-dock a").tipsy
+    if localStorage.dock == 'hide'
+      $('#dockContainer').hide()
+      $('#hide_dock').addClass('show_dock')
+
+    $('.osx-dock a').tipsy
       fade: false
-      gravity: "s"
+      gravity: 's'
 
     $('#hide_dock').mousedown ->
       $(this).toggleClass('show_dock')
       $('#dockContainer').slideToggle(175)
+
+      if $(this).hasClass('show_dock')
+        localStorage.dock = 'hide'
+      else
+        localStorage.dock = 'show'
 
     $('#chat').mousedown ->
       $('#chatZone').css
