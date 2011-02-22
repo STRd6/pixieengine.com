@@ -23,12 +23,10 @@
 
         = yield
 
-        = render :partial => "/shared/chat"
-
       - if @has_reg_popup
         = render :partial => 'shared/register_modal'
-      = render :partial => "/shared/footer"
-      = render :partial => "/shared/fb_app"
+      = render :partial => "/shared/chat"
+      = render :partial => "/shared/nav_dock"
 
     = render :partial => "/shared/feedback"
 
