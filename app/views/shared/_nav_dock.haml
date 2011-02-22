@@ -44,13 +44,20 @@
       $('#dockContainer').slideToggle(175)
 
     $('#chat').mousedown ->
+      $('#chatZone').css
+        top: localStorage.chatTop + "px" || "150px"
+        left: localStorage.chatLeft + "px" || "10px"
+
       $('#chatZone').toggle()
 
       $('#chats').scrollTo
         left: '0%'
         top: '100%'
 
-      if $('#chatZone').css('display') == 'none' then localStorage.chat = false else localStorage.chat = 'active'
+      if $('#chatZone').css('display') == 'none'
+        localStorage.chat = false
+      else
+        localStorage.chat = 'active'
 
 %style
   :sass
