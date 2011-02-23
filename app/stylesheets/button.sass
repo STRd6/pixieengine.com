@@ -4,7 +4,7 @@ $blueprint-button-active-font-color = "#f5fcff"
 $blueprint-button-hover-background-color = "#EBF7FF"
 $blueprint-button-hover-font-color = "#1084ce"
 
-button, #content a.button
+button, a.button
   +button-button
   +button-colors
   +button-hover-colors
@@ -24,15 +24,20 @@ button, #content a.button
 
 #content #pixie .pixie .actions
   a.button
+    color: $pixie_primary
     padding: 4px 3px 3px
 
   .pillbox-left
     +border-right-radius(0)
-    margin-right: 1px
+
+    margin: 0 1px 0 0
 
   .pillbox-middle
     +border-radius(0)
-    margin-right: 1px
+
+    margin: 0 1px 0 0
 
   .pillbox-right
     +border-left-radius(0)
+
+    margin: 0
