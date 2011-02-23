@@ -636,16 +636,6 @@
         nav.left, nav.right, nav.bottom
           background-color: $light_highlight
 
-    input
-      +box-sizing(border-box)
-
-      background-color: transparent
-      border: 2px solid #888
-      color: $pixie_primary
-      margin: 0
-      max-width: 120px
-      padding: 2px
-
       &#filename
         font-family: "Josefin Sans Std Light", Arial, serif
         font-size: 1.5em
@@ -681,6 +671,14 @@
 
         background-color: $dark_highlight
         width: $sidebar_width
+
+      input
+        +box-sizing(border-box)
+
+        color: $pixie_primary
+        margin: 0
+        max-width: 120px
+        padding: 2px
 
       nav.right
         +border-radius
