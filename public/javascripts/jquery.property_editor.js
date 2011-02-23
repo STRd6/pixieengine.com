@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Sun, 23 Jan 2011 02:03:26 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Wed, 23 Feb 2011 01:09:06 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -39,6 +39,7 @@
         cell = $("<td>").appendTo(row);
         $("<input>", {
           type: "text",
+          placeholder: "key",
           value: key
         }).appendTo(cell);
         cell = $("<td>").appendTo(row);
@@ -47,6 +48,7 @@
         }
         $("<input>", {
           type: "text",
+          placeholder: "value",
           value: value
         }).appendTo(cell);
         return row.appendTo(element);

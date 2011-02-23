@@ -37,6 +37,7 @@
 
       $("<input>",
         type: "text"
+        placeholder: "key"
         value: key
       ).appendTo cell
 
@@ -46,6 +47,7 @@
 
       $("<input>",
         type: "text"
+        placeholder: "value"
         value: value
       ).appendTo cell
 
