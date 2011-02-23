@@ -1,5 +1,5 @@
 #chatZone
-  .left
+  .left_content
     %h3 Pixie Chat
     %ul#chats
       - Chat.recent.reverse.each do |chat|
@@ -8,12 +8,11 @@
           %span.name= display_name + ":"
           %span.time= chat.created_at.strftime("%I:%M%p") + " "
           %span.message= chat.text.html_safe
+    = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
+    %button#send.button Send
+
   %ul#active_users
     = render :partial => 'shared/active_users'
-
-  = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
-
-  %button#send.button Send
 
 - #TODO: Use separate url for dev juggernaut script
 
