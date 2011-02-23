@@ -25,8 +25,6 @@
   $("form.edit_app").ajaxForm({
     beforeSerialize: function($form) {
       var code = editor.getCode();
-      console.log(code);
-      console.log($form.find("#app_code").get(0));
       $form.find("#app_code").val(code);
     },
     beforeSubmit: function() {
