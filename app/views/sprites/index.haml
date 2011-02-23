@@ -21,7 +21,7 @@
     $('#bulb').click ->
       if $(this).hasClass('on') then $('nav').addClass('light') else $('nav').removeClass('light')
 
-    $('img').bind 'click mousedown mousemove', (event) ->
+    $('img').bind 'mousedown mousemove', (event) ->
       event.preventDefault()
 
     $(document).bind "keydown", 'left', (event) ->
