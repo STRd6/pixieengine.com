@@ -1,7 +1,6 @@
-%ul#active_users
-  %li.header Online Now
-  - User.logged_in.each do |user|
-    %li
-      = image_tag user.avatar.url(:thumb)
-      - user_color = (user.favorite_color && user.favorite_color != "FFFFFF") ? user.favorite_color : "000"
-      = link_to user.display_name, user, :target => "_blank", :style => 'color: #' + user_color
+%li.header Online Now
+- User.logged_in.each do |user|
+  %li
+    = image_tag user.avatar.url(:thumb)
+    - user_color = (user.favorite_color && user.favorite_color != "FFFFFF") ? user.favorite_color : "000"
+    = link_to user.display_name, user, :target => "_blank", :style => 'color: #' + user_color

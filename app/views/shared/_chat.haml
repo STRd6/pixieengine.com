@@ -8,8 +8,8 @@
           %span.name= display_name + ":"
           %span.time= chat.created_at.strftime("%I:%M%p") + " "
           %span.message= chat.text.html_safe
-
-  = render :partial => 'shared/active_users'
+  %ul#active_users
+    = render :partial => 'shared/active_users'
 
   = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
 
