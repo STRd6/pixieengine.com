@@ -1,5 +1,6 @@
 class Developer::AppsController < DeveloperController
   resource_controller
+  layout "fullscreen"
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post, :new, :create]
@@ -417,7 +418,6 @@ bgMusic.play()
 
   def index
     @apps = App.all
-    render :layout => "fullscreen"
   end
 
   def fork_post
@@ -466,10 +466,6 @@ bgMusic.play()
 
   def mobile
     render :layout => "mobile"
-  end
-
-  def fullscreen
-    render :layout => "fullscreen"
   end
 
   def widget

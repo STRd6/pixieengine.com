@@ -83,6 +83,11 @@ class SpritesController < ResourceController::Base
     end
   end
 
+  def show
+    @sprite = Sprite.find(params[:id])
+    render :layout => "fullscreen"
+  end
+
   def update
     @sprite = Sprite.find(params[:id])
 

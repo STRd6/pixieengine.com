@@ -1,5 +1,6 @@
 class TilemapsController < ApplicationController
   respond_to :html, :json
+  layout "fullscreen"
 
   def create
     @tilemap = Tilemap.new(params[:tilemap])
@@ -9,7 +10,6 @@ class TilemapsController < ApplicationController
 
     respond_with(@tilemap) do |format|
       format.html do
-        render :layout => "fullscreen"
       end
     end
   end
@@ -17,7 +17,6 @@ class TilemapsController < ApplicationController
   def new
     respond_with(@tilemap) do |format|
       format.html do
-        render :layout => "fullscreen"
       end
     end
   end
@@ -32,7 +31,6 @@ class TilemapsController < ApplicationController
 
     respond_with(@tilemap) do |format|
       format.html do
-        render :layout => "fullscreen"
       end
     end
   end

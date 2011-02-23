@@ -1,6 +1,7 @@
 class SoundsController < ResourceController::Base
   actions :all
   respond_to :html, :json
+  layout "fullscreen"
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
   before_filter :require_user, :only => [:add_tag, :remove_tag]
@@ -19,7 +20,6 @@ class SoundsController < ResourceController::Base
 
   def index
     @sounds = Sound.all
-    render :layout => "fullscreen"
   end
 
   private
