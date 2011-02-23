@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 22 Feb 2011 00:27:03 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 23 Feb 2011 08:33:31 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.dropimagereader.coffee
  */
 
