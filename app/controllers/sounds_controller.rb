@@ -17,6 +17,11 @@ class SoundsController < ResourceController::Base
     end
   end
 
+  def index
+    @sounds = Sound.all
+    render :layout => "fullscreen"
+  end
+
   private
 
   def sound

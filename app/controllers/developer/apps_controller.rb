@@ -415,6 +415,11 @@ bgMusic.play()
     end
   end
 
+  def index
+    @apps = App.all
+    render :layout => "fullscreen"
+  end
+
   def fork_post
     fork = App.create(
       :parent => app,

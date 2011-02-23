@@ -6,4 +6,8 @@ class HomeController < ApplicationController
     @users = User.all(:select => "id, display_name, updated_at")
     @sprites = Sprite.all(:select => "id, title, updated_at", :limit => 10000)
   end
+
+  def about
+    render :layout => "fullscreen"
+  end
 end
