@@ -4,32 +4,25 @@
     %ul.osx-dock
       %li
         %span Pixel Editor
-        %a{ :href => "/", :title => "Pixel Editor" }
-          %img{ :src => "/images/pixie_dock.png" }
+        = link_to_unless_current image_tag("pixie_dock.png"), new_sprite_path, :title => "Pixel Editor"
       %li
         %span Sprite Gallery
-        %a{ :href => "/sprites", :title => "Sprite Gallery" }
-          %img{ :src => "/images/sprites_dock.png" }
+        = link_to_unless_current image_tag("sprites_dock.png"), sprites_path, :title => "Sprite Gallery"
       %li
         %span Animation Editor
-        %a{ :href => "/animations/new", :title => "Animation Editor" }
-          %img{ :src => "/images/animation_dock.png" }
+        = link_to_unless_current image_tag("animation_dock.png"), new_animation_path, :title => "Animation Editor"
       %li
-        %span Tilemaps Editor
-        %a{ :href => "/tilemaps/new?tileset_id=355", :title => "Tilemap Editor" }
-          %img{ :src => "/images/tilemap_dock.png" }
+        %span Tilemap Editor
+        = link_to_unless_current image_tag("tilemap_dock.png"), new_tilemap_path(:tileset_id => "355"), :title => "Tilemap Editor"
       %li
         %span IDE
-        %a{ :href => "/developer/apps", :title => "IDE" }
-          %img{ :src => "/images/ide_dock.png" }
+        = link_to_unless_current image_tag("ide_dock.png"), developer_apps_path, :title => "IDE"
       %li
         %span Sound FX Editor
-        %a{ :href => "/sfx-editor", :title => "Sound FX Editor" }
-          %img{ :src => "/images/sfx_dock.png" }
+        = link_to_unless_current image_tag("sfx_dock.png"), new_sound_path, :title => "Sound FX Editor"
       %li#chat
         %span Chat
-        %a{ :href => "#", :title => "Chat" }
-          %img{ :src => "/images/chat_dock.png" }
+        = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
 
 #hide_dock
 
@@ -159,10 +152,10 @@
             -webkit-transition: 0.15s linear
             -webkit-transition-property: -webkit-transform margin
             margin: 0
-            -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
 
             img
               width: 48px
+              -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
 
 
 
