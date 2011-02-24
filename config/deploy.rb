@@ -33,7 +33,11 @@ role :app, "67.207.139.110"
 role :web, "67.207.139.110"
 role :db,  "67.207.139.110", :primary => true
 
-after "deploy", "deploy:cleanup"
+
+after :deploy do
+  run "chmod -R g+w #{release_path}/tmp"
+end
+after :deploy, "deploy:cleanup"
 
 # Whenever task
 after "deploy:symlink", "deploy:update_crontab"
@@ -45,7 +49,7 @@ namespace :deploy do
   end
 end
 
-task :after_setup do
+after :setup do
   run "mkdir #{shared_path}/production"
   run "mkdir #{shared_path}/production/images"
   run "mkdir #{shared_path}/production/replays"
@@ -56,7 +60,7 @@ task :after_setup do
   run "touch #{shared_path}/log/nginx.error.log"
 end
 
-task :after_update_code do
+after "deploy:update_code" do
   run "ln -nfs #{shared_path}/production #{release_path}/public/production"
   run "ln -nfs #{shared_path}/local/authlogic.yml #{release_path}/config/authlogic.yml"
   run "ln -nfs #{shared_path}/local/local.rake #{release_path}/lib/tasks/local.rake"
