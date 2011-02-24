@@ -47,17 +47,6 @@
       top: '100%'
 
   $ ->
-    if localStorage.chat == 'active'
-      $('#chatZone').show()
-      $('#chatZone').css
-        display: "block"
-        top: localStorage.chatTop + "px" || "150px"
-        left: localStorage.chatLeft + "px" || "10px"
-
-      $('#chats').scrollTo
-        left: '0%'
-        top: '100%'
-
     $('#chatZone').draggable
       handle: 'h3'
       stop: ->

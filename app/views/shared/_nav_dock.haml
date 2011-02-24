@@ -4,22 +4,22 @@
     %ul.osx-dock
       %li
         %span Pixel Editor
-        = link_to image_tag("pixie_dock.png"), new_sprite_path, :title => "Pixel Editor"
+        = link_to_unless_current image_tag("pixie_dock.png"), new_sprite_path, :title => "Pixel Editor"
       %li
         %span Sprite Gallery
-        = link_to image_tag("sprites_dock.png"), sprites_path, :title => "Sprite Gallery"
+        = link_to_unless_current image_tag("sprites_dock.png"), sprites_path, :title => "Sprite Gallery"
       %li
         %span Animation Editor
-        = link_to image_tag("animation_dock.png"), new_animation_path, :title => "Animation Editor"
+        = link_to_unless_current image_tag("animation_dock.png"), new_animation_path, :title => "Animation Editor"
       %li
         %span Tilemap Editor
-        = link_to image_tag("tilemap_dock.png"), new_tilemap_path(:tileset_id => "355"), :title => "Tilemap Editor"
+        = link_to_unless_current image_tag("tilemap_dock.png"), new_tilemap_path(:tileset_id => "355"), :title => "Tilemap Editor"
       %li
         %span IDE
-        = link_to image_tag("ide_dock.png"), developer_apps_path, :title => "IDE"
+        = link_to_unless_current image_tag("ide_dock.png"), developer_apps_path, :title => "IDE"
       %li
         %span Sound FX Editor
-        = link_to image_tag("sfx_dock.png"), new_sound_path, :title => "Sound FX Editor"
+        = link_to_unless_current image_tag("sfx_dock.png"), new_sound_path, :title => "Sound FX Editor"
       %li#chat
         %span Chat
         = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
@@ -28,6 +28,13 @@
 
 :coffeescript
   $ ->
+    active_app = $('<img />',
+      class: 'active'
+      src: "/images/active_app.png"
+    ).css('padding-top', '12px')
+
+    $('.osx-dock li span + img').after(active_app)
+
     if localStorage.dock == 'hide'
       $('#dockContainer').hide()
       $('#hide_dock').addClass('show_dock')
@@ -58,8 +65,13 @@
 
       if $('#chatZone').css('display') == 'none'
         localStorage.chat = false
+        $('#chat img.active').remove()
       else
         localStorage.chat = 'active'
+        $('#chat').append(active_app.clone().css('padding-top', '10px'))
+
+    if localStorage.chat == 'active'
+      $('#chat').mousedown()
 
 %style
   :sass
@@ -140,6 +152,7 @@
           margin: 0px 7px 0 7px
           position: relative
           text-align: center
+          -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
           -webkit-transition: 0.15s linear
           -webkit-transition-property: -webkit-transform margin
 
@@ -155,30 +168,3 @@
 
             img
               width: 48px
-              -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
