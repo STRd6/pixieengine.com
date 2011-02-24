@@ -1,3 +1,44 @@
 - @title = "Sounds List"
 
-= render :partial => @sounds
+- @sounds.each do |sound|
+  = render :partial => "developer/apps/import_sound", :locals => {:import_sound => sound}
+
+#preview_sound
+  %audio
+
+:coffeescript
+  $('.control').mousedown ->
+    src = $(this).parent().data('wav_src') || $(this).parent().data('mp3_src')
+
+    $('#preview_sound audio').attr('src', src).get(0).play()
+
+%style
+  :sass
+    @import util
+    @import partials/base
+
+    .import_sound
+      +border-radius(8px)
+      +bounds(72px)
+      +contents-centered()
+
+      background-color: white
+      display: inline-block
+      margin-right: 10px
+      margin-bottom: 3px
+
+      &.selected
+        background-color: $pixie_primary
+
+      img
+        +max-bounds(64px)
+
+    .import_sound
+      color: #000
+      font-size: 10px
+      text-align: center
+
+      .control
+        +bounds(25px, 29px)
+
+        background-image: url(/images/play.png)
