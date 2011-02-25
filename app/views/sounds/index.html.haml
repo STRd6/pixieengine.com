@@ -18,14 +18,17 @@
     @import partials/base
 
     .import_sound
-      +border-radius(8px)
+      +border-radius
       +bounds(72px)
-      +contents-centered()
 
-      background-color: white
+      background: #fff url(/images/wav.png) no-repeat center center
+      color: #000
       display: inline-block
+      font-size: 10px
       margin-right: 10px
-      margin-bottom: 3px
+      margin-bottom: 10px
+      position: relative
+      text-align: center
 
       &.selected
         background-color: $pixie_primary
@@ -33,12 +36,19 @@
       img
         +max-bounds(64px)
 
-    .import_sound
-      color: #000
-      font-size: 10px
-      text-align: center
+      span
+        position: absolute
+        right: 0
+        left: 0
+        bottom: 0
+        top: 0
+        margin: auto
 
       .control
         +bounds(25px, 29px)
 
+        position: absolute
+        right: -11px
+        bottom: -15px
         background-image: url(/images/play.png)
+        cursor: pointer
