@@ -1,3 +1,8 @@
+# Clickable
+$(".clickable").live 'click', ->
+  document.location = $(this).find("a").eq(0).attr("href")
+
+# Local Storage
 getVal = (key) ->
   if localStorage
     try
@@ -10,6 +15,7 @@ setVal = (key, value) ->
     localStorage[key] = value
 
 $ ->
+  # THEME
   setLightTheme = (active) ->
     $('#fullscreen').toggleClass('light', active)
     $('iframe').contents().find('html').toggleClass("light", active)
