@@ -25,6 +25,8 @@ class App < ActiveRecord::Base
 
   after_save :generate_docs
 
+  scope :featured, where(:featured => true)
+
   def resource_code
     return "var App = #{
       {
@@ -34,6 +36,10 @@ class App < ActiveRecord::Base
         :width => width
       }.to_json
     };"
+  end
+
+  def display_name
+    title
   end
 
   def library_code

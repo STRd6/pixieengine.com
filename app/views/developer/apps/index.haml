@@ -1,3 +1,31 @@
-= button_link "New App", "application_go", new_developer_app_path
+%section
+  = render :partial => apps
 
-= render :partial => apps
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .app
+      +bounds(240px, 160px)
+      +border-radius
+      +box-shadow
+      +inline-block
+
+      background-color: $dark_highlight
+      margin: 1em
+      overflow: hidden
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+    .light
+      .app
+        background-color: $light_highlight

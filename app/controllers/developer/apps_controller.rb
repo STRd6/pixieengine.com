@@ -4,8 +4,9 @@ class Developer::AppsController < DeveloperController
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post, :new, :create]
-  before_filter :require_access, :only => [:edit, :update, :add_library, :remove_library]
+  before_filter :require_access, :only => [:add_library, :remove_library]
   before_filter :require_owner, :only => [:add_user]
+  before_filter :require_owner_or_admin, :only => [:edit, :update]
 
   respond_to :html, :xml, :json
 
@@ -544,6 +545,6 @@ bgMusic.play()
   end
 
   def collection
-    @collection ||= App.order("id DESC")
+    @collection ||= App.featured.order("id DESC")
   end
 end
