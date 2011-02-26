@@ -16,6 +16,13 @@ class App < ActiveRecord::Base
 
   has_many :app_data
 
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "apps/:id/:style.:extension",
+    :styles => {
+      :thumb => ["96x96#", :png]
+    }
+  )
+
   after_save :generate_docs
 
   def resource_code
