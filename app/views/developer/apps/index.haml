@@ -1,3 +1,7 @@
+.filters
+  %button= link_to "Featured", :filter => :featured
+  %button= link_to "All", :filter => :none
+
 %section
   = render :partial => apps
 
@@ -5,6 +9,11 @@
   :sass
     @import partials/base
     @import util
+
+    .filters
+      position: absolute
+      top: 0
+      left: 120px
 
     .app
       +bounds(240px, 160px)

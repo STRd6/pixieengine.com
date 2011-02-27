@@ -36,6 +36,7 @@ role :db,  "67.207.139.110", :primary => true
 
 after :deploy do
   run "chmod -R g+w #{release_path}/tmp"
+  run "chmod -R g+w #{release_path}/.bundle"
 end
 after :deploy, "deploy:cleanup"
 
