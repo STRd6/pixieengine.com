@@ -18,15 +18,17 @@ class Project < ActiveRecord::Base
   end
 
   def clone_repo
-    if remote_origin
+    if git?
       system "git", "clone", remote_origin, path
       system "cd #{path} && git checkout -b #{BRANCH_NAME}"
     end
   end
+  handle_asynchronously :clone_repo
 
   def git_push
     system "cd #{path} && git push origin #{BRANCH_NAME}"
   end
+  handle_asynchronously :git_push
 
   def git_commit
     #TODO: Maybe scope to specific files
@@ -35,6 +37,7 @@ class Project < ActiveRecord::Base
     #TODO: Shell escape user display name and add to commit message
     system "cd #{path} && git commit -am 'pixie'"
   end
+  handle_asynchronously :git_commit
 
   def save_file(path, contents)
     #TODO: Verify path is not sketch
@@ -46,8 +49,10 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit
-    git_push
+    if git?
+      git_commit
+      git_push
+    end
   end
 
   def file_info
@@ -84,5 +89,9 @@ class Project < ActiveRecord::Base
     #TODO: Project memberships
 
     user == self.user
+  end
+
+  def git?
+    remote_origin
   end
 end
