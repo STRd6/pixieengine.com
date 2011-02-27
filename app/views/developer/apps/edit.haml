@@ -1,1 +1,17 @@
 = render :partial => "form"
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    form
+      +border-radius
+
+      background-color: $dark_highlight
+      padding: 1em
+      width: 500px
+
+    .light
+      form
+        background-color: $light_highlight

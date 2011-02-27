@@ -1,4 +1,7 @@
-// For all the form styling goodness
+.light
+  input[type=file]
+    color: #000
+
 form
   label, input, textarea
     font-family: Verdana, sans-serif
@@ -17,6 +20,7 @@ form
 
   input[type=text], input[type=password], input[type=file], textarea
     +grid-width(8)
+    color: #fff
     margin: .5em
     padding: 5px
     &:focus
