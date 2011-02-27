@@ -10,21 +10,27 @@
     @import partials/base
     @import util
 
+    .light
+      .app
+        -webkit-box-shadow: 0 2px 4px transparentize(#000, 0.5), inset 0 1px transparentize(#fff, 0.7), inset 0 10px transparentize(#fff, 0.8), inset 0 5px 10px transparentize(#fff, 0.75), inset 0 -5px 10px transparentize(#000, 0.7)
+
     .filters
       position: absolute
       top: 0
       left: 120px
 
     .app
-      +bounds(240px, 160px)
       +border-radius
-      +classic-shadow(#fff)
+      +bounds(240px, 160px)
       +inline-block
 
-      background-color: $dark_highlight
+      background: tranparentize(#000, 0.75)
+      border: 1px solid tranparentize(#000, 0.5)
       margin: 1em
       overflow: hidden
       padding: 1em
+
+      -webkit-box-shadow: 0 2px 4px transparentize(#fff, 0.5), inset 0 1px transparentize(#fff, 0.7), inset 0 10px transparentize(#fff, 0.8), inset 0 5px 10px transparentize(#fff, 0.75), inset 0 -5px 10px transparentize(#000, 0.7)
 
       .title
         a
