@@ -35,6 +35,6 @@ class AnimationsController < ApplicationController
   end
 
   def index
-    @animations = Animation.all
+    @animations = Animation.all(:order => "id DESC")
   end
 end
