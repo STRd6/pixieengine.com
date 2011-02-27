@@ -1,0 +1,7 @@
+.animation.clickable
+  %h2.title= link_to animation.name, edit_animation_path(animation)
+  -animation.preview_urls.each do |preview|
+    .sprite_container
+      .name
+        = preview[0]
+      = image_tag(preview[1])
