@@ -34,7 +34,7 @@
       content: codeTextArea.value
       height: "100%"
       lineNumbers: true
-      parserfile: ["tokenize_" + lang + ".js?0", "parse_" + lang + ".js?0"]
+      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
       path: "/javascripts/codemirror/"
       stylesheet: ["/stylesheets/codemirror/main.css"]
       tabMode: "shift"
@@ -45,6 +45,12 @@
     # Listen for keypresses and update contents.
     $(editor.win.document).keyup ->
       currentCode = editor.getCode()
+
+      if currentCode != savedCode
+        tab.parent().addClass("unsaved")
+      else
+        tab.parent().removeClass("unsaved")
+
       $(src_id).val(currentCode)
 
     lang: lang
@@ -77,8 +83,11 @@
       $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
 
   $('#save').live 'click', ->
+    notify "Saving..."
+
     form = $(currentPanel).find('form')
 
     form.ajaxSubmit
       type: 'POST'
       success: () ->
+        notify "Saved!"
