@@ -27,6 +27,8 @@ class App < ActiveRecord::Base
 
   scope :featured, where(:featured => true)
 
+  scope :none
+
   def resource_code
     return "var App = #{
       {

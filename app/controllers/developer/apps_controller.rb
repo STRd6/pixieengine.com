@@ -1,4 +1,6 @@
 class Developer::AppsController < DeveloperController
+  FILTERS = ["featured", "none"]
+
   resource_controller
   layout "fullscreen"
   actions :all, :except => [:destroy]
@@ -528,13 +530,11 @@ bgMusic.play()
   end
   helper_method :app
 
-  private
   def apps
     collection
   end
   helper_method :apps
 
-  private
   def add_default_libraries
     default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
 
@@ -545,6 +545,18 @@ bgMusic.play()
   end
 
   def collection
-    @collection ||= App.featured.order("id DESC")
+    @collection ||= if filter
+      App.send(filter)
+    else
+      App.featured
+    end.order("id DESC")
+  end
+
+  def filter
+    if params[:filter] && FILTERS.include?(params[:filter])
+      params[:filter]
+    else
+      FILTERS.first
+    end
   end
 end
