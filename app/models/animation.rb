@@ -31,7 +31,7 @@ class Animation < ActiveRecord::Base
     end
 
     data["animations"].map do |animation|
-      [animation["name"], tileset[animation["frames"][0]]]
+      [animation["name"], tileset[animation["frames"][0]] || []]
     end
   end
 
