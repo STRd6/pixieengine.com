@@ -1,4 +1,6 @@
 class App < ActiveRecord::Base
+  include Commentable
+
   belongs_to :user
   belongs_to :parent, :class_name => "App"
 

@@ -10,6 +10,8 @@ class Developer::AppsController < DeveloperController
   before_filter :require_owner, :only => [:add_user]
   before_filter :require_owner_or_admin, :only => [:edit, :update]
 
+  before_filter :count_view, :only => [:fullscreen, :run, :mobile]
+
   respond_to :html, :xml, :json
 
   create.wants.html { redirect_to ide_developer_app_path(app) }
@@ -524,6 +526,14 @@ bgMusic.play()
     end
   end
 
+  def fullscreen
+
+  end
+
+  def run
+    
+  end
+
   private
   def app
     object
@@ -534,6 +544,10 @@ bgMusic.play()
     collection
   end
   helper_method :apps
+
+  def count_view
+    app.increment! :views_count
+  end
 
   def add_default_libraries
     default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
