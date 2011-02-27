@@ -15,7 +15,39 @@
       %ul
 
 :coffeescript
-  file_path = #{@project.web_path.to_json}
+  # Commands
+  save = () ->
+    notify "Saving..."
+
+    activeTab = $("#tabs ul li.ui-state-active")
+
+    form = $(currentPanel).find('form')
+
+    form.ajaxSubmit
+      type: 'POST'
+      dataType: "json"
+      success: () ->
+        notify "Saved!"
+
+        if updateSaved = activeTab.find('a').data('updateSaved')
+          updateSaved()
+
+        activeTab.removeClass("unsaved")
+
+  $('#save').live 'click', save
+
+  # key combos like ctrl+s
+  ctrlKeys =
+    s: save
+
+  bindKeys = (scopeDocument, ctrlKeys) ->
+    $.each ctrlKeys, (key, fn) ->
+      $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (event) ->
+        event.preventDefault()
+        fn()
+      )
+
+  bindKeys(document, ctrlKeys)
 
   window.createEditor = (ui) ->
     panel = $(ui.panel)
@@ -41,6 +73,8 @@
       textWrapping: false
 
     $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+
+    bindKeys(editor.win.document, ctrlKeys)
 
     # Listen for keypresses and update contents.
     $(editor.win.document).keyup ->
@@ -81,13 +115,3 @@
 
     $('.filetree .file').live 'click', ->
       $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
-
-  $('#save').live 'click', ->
-    notify "Saving..."
-
-    form = $(currentPanel).find('form')
-
-    form.ajaxSubmit
-      type: 'POST'
-      success: () ->
-        notify "Saved!"

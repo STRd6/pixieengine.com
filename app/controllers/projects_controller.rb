@@ -37,7 +37,9 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.json do
-        render :text => "ok"
+        render :json => {
+          :status => "ok"
+        }
       end
     end
   end
