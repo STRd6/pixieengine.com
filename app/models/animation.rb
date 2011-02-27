@@ -26,12 +26,15 @@ class Animation < ActiveRecord::Base
 
   def preview_urls
     data = JSON.parse(string_data)
+
+    return [] if data.class == Array
+
     tileset = data["tileset"].map do |tile|
       tile["src"]
     end
 
     data["animations"].map do |animation|
-      [animation["name"], tileset[animation["frames"][0]] || []]
+      [animation["name"], tileset[animation["frames"][0]]]
     end
   end
 
