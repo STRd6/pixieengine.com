@@ -1,7 +1,25 @@
 .animation.clickable
-  %h2.title= link_to animation.name, edit_animation_path(animation)
+  .title_container
+    %h2.title= link_to animation.name, edit_animation_path(animation)
+    %span.author
+      by
+      =animation.user.display_name
   -animation.preview_urls.each do |preview|
     .sprite_container
       .name
         = preview[0]
       = image_tag(preview[1])
+
+%style
+  :sass
+    .title_container
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
+    .animation
+      overflow-x: hidden
