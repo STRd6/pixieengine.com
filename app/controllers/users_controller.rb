@@ -116,7 +116,7 @@ class UsersController < ResourceController::Base
   def collection
     users = User
 
-    @collection ||= users.all(:order => 'id ASC')
+    @collection ||= users.all(:order => 'id ASC').paginate(:page => params[:page], :per_page => per_page)
   end
 
   def require_current_user

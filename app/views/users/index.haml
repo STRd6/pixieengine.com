@@ -1,4 +1,43 @@
-%h2 User List
-%ul
-- users.each do |user|
-  %li= link_to user.display_name, user
+.filters
+  = will_paginate users
+
+%section
+  = render :partial => users
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .filters
+      position: absolute
+      top: 0
+      left: 120px
+
+    .user
+      +bounds(240px, 160px)
+      +inline-block
+      +glass
+
+      background: tranparentize(#000, 0.75)
+      border: 1px solid tranparentize(#000, 0.5)
+      margin: 1em
+      overflow: hidden
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+    section
+      padding-bottom: 1em
+
+    .light
+      .app
+        background-color: $light_highlight
+

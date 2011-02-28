@@ -1,0 +1,4 @@
+.user.clickable
+  %h2.title= link_to user.display_name, user
+  .thumb= link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :title => user.display_name), user
+  %p.description= user.profile

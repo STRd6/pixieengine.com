@@ -143,4 +143,8 @@ class ApplicationController < ActionController::Base
   def hide_feedback
     @hide_feedback = true
   end
+
+  def per_page
+    40
+  end
 end
