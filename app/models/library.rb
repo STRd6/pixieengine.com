@@ -30,4 +30,31 @@ class Library < ActiveRecord::Base
   def test
     scripts.map(&:test).join(";\n")
   end
+  
+  def base_path
+    Rails.root.join 'public', 'production', 'libraries'
+  end
+
+  def path
+    base_path.join(id.to_s).to_s
+  end
+
+  def export_files
+    dir = path
+    src_dir = File.join(dir, 'src')
+    test_dir = File.join(dir, 'test')
+
+    FileUtils.mkdir_p(src_dir)
+    FileUtils.mkdir_p(test_dir)
+
+    scripts.each do |script|
+      open(File.join(src_dir, script.file_name), "w") do |f|
+        f.write(script.src)
+      end
+
+      open(File.join(test_dir, script.file_name), "w") do |f|
+        f.write(script.test_src)
+      end
+    end
+  end
 end

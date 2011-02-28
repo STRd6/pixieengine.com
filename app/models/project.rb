@@ -13,10 +13,6 @@ class Project < ActiveRecord::Base
     base_path.join(id.to_s).to_s
   end
 
-  def web_path
-    "/production/projects/#{id}/"
-  end
-
   def clone_repo
     if git?
       system "git", "clone", remote_origin, path

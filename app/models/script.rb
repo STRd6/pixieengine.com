@@ -22,4 +22,20 @@ class Script < ActiveRecord::Base
       LibraryScript.create(:library_id => lib_id, :script_id => id)
     end
   end
+
+  def file_name
+    name = "#{title.underscore.gsub(" ", '_').gsub(/[^A-Za-z0-9_\.-]/, '')}"
+
+    name = "#{name}.#{extension}" unless name.ends_with?(".#{extension}")
+
+    name
+  end
+
+  def extension
+    if lang == "coffeescript"
+      "coffee"
+    else
+      "js"
+    end
+  end
 end
