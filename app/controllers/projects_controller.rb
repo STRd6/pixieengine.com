@@ -7,6 +7,19 @@ class ProjectsController < ApplicationController
     @project = Project.new
   end
 
+  def edit
+  end
+
+  def update
+    project.update_attributes(params[:project])
+
+    respond_with(project) do |format|
+      format.html do
+        render :layout => "fullscreen"
+      end
+    end
+  end
+
   def create
     @project = Project.new(params[:project])
     @project.user = current_user
@@ -21,12 +34,10 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find params[:id]
+
   end
 
   def ide
-    @project = Project.find params[:id]
-
     render :layout => "ide"
   end
 
@@ -53,4 +64,5 @@ class ProjectsController < ApplicationController
   def project
     object
   end
+  helper_method :project
 end

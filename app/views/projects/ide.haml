@@ -7,7 +7,7 @@
       %button#publish Publish
 
     %ul.filetree
-      - @project.file_info[:files].each do |file|
+      - project.file_info[:files].each do |file|
         = render :partial => "file_tree_node", :locals => {:file_info => file}
 
   %section

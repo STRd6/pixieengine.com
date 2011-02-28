@@ -1,6 +1,6 @@
-- @title = @project.new_record? ? "Create a New Project" : "Edit your Project"
+- @title = project.new_record? ? "Create a New Project" : "Edit your Project"
 
-- form_for [@project] do |form|
+- form_for project, :html => {:multipart => true} do |form|
   = form.error_messages
 
   %p
@@ -14,5 +14,9 @@
   %p
     = form.label :remote_origin
     = form.text_field :remote_origin
+
+  %p
+    = form.label :import_zip, "Import .zip"
+    = form.file_field :import_zip
 
   = form.submit

@@ -3,6 +3,10 @@ class Project < ActiveRecord::Base
   
   after_create :clone_repo
 
+  after_save :import_files
+
+  attr_accessor :import_zip
+
   BRANCH_NAME = "pixie"
   
   def base_path
@@ -41,7 +45,7 @@ class Project < ActiveRecord::Base
 
     filepath = File.join self.path, path
 
-    File.open(filepath, 'w') do |file|
+    File.open(filepath, 'wb') do |file|
       file.write(contents)
     end
 
@@ -89,5 +93,12 @@ class Project < ActiveRecord::Base
 
   def git?
     remote_origin
+  end
+
+  def import_files
+    if import_zip
+      # write zip file contents to project dir
+      system 'unzip', import_zip.path, '-d', path
+    end
   end
 end
