@@ -91,6 +91,7 @@
     updateSaved: () ->
       savedCode = editor.getCode()
 
+  # Tree and Tabs setup
   $ ->
     $('ul.filetree').treeview()
 
@@ -115,3 +116,10 @@
 
     $('.filetree .file').live 'click', ->
       $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
+
+    $('#tabs span.ui-icon-close').live 'click', ->
+      parent = $(this).parent()
+
+      if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
+        index = $('li', $tabs).index(parent)
+        $tabs.tabs('remove', index)
