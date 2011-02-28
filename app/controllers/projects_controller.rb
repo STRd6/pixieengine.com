@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
 
   private
   def object
-    @object ||= Project.find params[:id]
+    @project ||= Project.find params[:id]
   end
   helper_method :object
 
