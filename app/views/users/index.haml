@@ -1,4 +1,7 @@
 .filters
+  =link_to "Featured", { :filter => :featured }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
+
   = will_paginate users
 
 %section
@@ -13,6 +16,9 @@
       position: absolute
       top: 0
       left: 120px
+
+      .pagination
+        display: inline-block
 
     .user
       +bounds(240px, 160px)
