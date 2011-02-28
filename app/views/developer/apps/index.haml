@@ -1,3 +1,44 @@
-= button_link "New App", "application_go", new_developer_app_path
+.filters
+  =link_to "Featured", { :filter => :featured }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
 
-= render :partial => apps
+%section
+  = render :partial => apps
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .filters
+      position: absolute
+      top: 0
+      left: 120px
+
+    .app
+      +bounds(240px, 160px)
+      +inline-block
+      +glass
+
+      background: tranparentize(#000, 0.75)
+      border: 1px solid tranparentize(#000, 0.5)
+      margin: 1em
+      overflow: hidden
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+    section
+      padding-bottom: 1em
+
+    .light
+      .app
+        background-color: $light_highlight
+

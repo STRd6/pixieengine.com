@@ -1,16 +1,23 @@
-class CommentsController < ResourceController::Base
-  actions :only, :create
-
+class CommentsController < ApplicationController
+  respond_to :html, :json
   before_filter :require_user
 
-  create.before do
-    object.commenter = current_user
-  end
+  def create
+    @comment = Comment.new(params[:comment])
+    @comment.commenter = current_user
 
-  create.response do |wants|
-    wants.html do
-      redirect_to :back
+    @comment.save
+
+    respond_with(@comment) do |format|
+      format.html do
+        redirect_to :back
+      end
+      format.json { render :json => {
+        :body => @comment.body,
+        :commentable_id => @comment.commentable_id,
+        :name => @comment.commenter.display_name,
+        :time => Time.zone.now.strftime("%I:%M%p")
+      }}
     end
-    wants.js { render :json => {:status => 'ok'} }
   end
 end

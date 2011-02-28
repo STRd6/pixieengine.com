@@ -1,4 +1,7 @@
-// For all the form styling goodness
+.light
+  input[type=file]
+    color: #000
+
 form
   label, input, textarea
     font-family: Verdana, sans-serif
@@ -17,6 +20,7 @@ form
 
   input[type=text], input[type=password], input[type=file], textarea
     +grid-width(8)
+    color: #fff
     margin: .5em
     padding: 5px
     &:focus
@@ -46,6 +50,14 @@ form
 
   input[disabled]
     background-color: #efefef
+
+  input[type=text]
+    +box-sizing(border-box)
+
+    color: $pixie_primary
+    margin: 0
+    max-width: 120px
+    padding: 2px
 
   #errorExplanation
     color: !error_color

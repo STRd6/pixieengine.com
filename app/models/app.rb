@@ -1,4 +1,6 @@
 class App < ActiveRecord::Base
+  include Commentable
+
   belongs_to :user
   belongs_to :parent, :class_name => "App"
 
@@ -16,7 +18,18 @@ class App < ActiveRecord::Base
 
   has_many :app_data
 
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "apps/:id/:style.:extension",
+    :styles => {
+      :thumb => ["96x96#", :png]
+    }
+  )
+
   after_save :generate_docs
+
+  scope :featured, where(:featured => true)
+
+  scope :none
 
   def resource_code
     return "var App = #{
@@ -27,6 +40,10 @@ class App < ActiveRecord::Base
         :width => width
       }.to_json
     };"
+  end
+
+  def display_name
+    title
   end
 
   def library_code

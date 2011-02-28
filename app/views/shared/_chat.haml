@@ -1,113 +1,91 @@
-#dragZone
-  %p.big Drag images here
-  %p.small To post them to chat
 #chatZone
-  %h3 Pixie Chat
-  %ul#chats
-    - Chat.recent.reverse.each do |chat|
-      %li
-        - display_name = chat.user ? chat.user.display_name : "Anonymous"
-        %span.name= display_name + ":"
-        %span.time= chat.created_at.strftime("%I:%M%p") + " "
-        %span.message= chat.text.html_safe
+  .left_content
+    %h3 Pixie Chat
+    %ul#chats
+      - Chat.recent.reverse.each do |chat|
+        %li
+          - display_name = chat.user ? chat.user.display_name : "Anonymous"
+          %span.name= display_name + ":"
+          %span.time= chat.created_at.strftime("%I:%M%p") + " "
+          %span.message= chat.text.html_safe
+    = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
+    %button#send.button Send
 
-  = render :partial => 'shared/active_users'
-
-  = text_field_tag :chat_body
-  %button#send.button Send
+  %ul#active_users
+    = render :partial => 'shared/active_users'
 
 - #TODO: Use separate url for dev juggernaut script
 
-:plain
-  <script src="http://pixie.strd6.com:8080/application.js" type="text/javascript" charset="utf-8"></script>
-  <script type="text/coffeescript">
-    jug = new Juggernaut
-    jug.subscribe "/chats", (data) ->
-      li = $("<li />")
+= javascript_include_tag "http://pixie.strd6.com:8080/application.js"
 
-      name = $('<span />').addClass("name").text(data.name + ":")
-      time = $('<span />').addClass("time").text(" " + data.time + " ")
-      message = $('<span />').addClass("message").html(data.message)
-      li.append(name).append(time).append(message)
-      $('#chats').append(li).scrollTo(
-        left: '0%'
-        top: '100%'
-      )
+:coffeescript
+  jug = new Juggernaut
+  jug.subscribe "/chats", (data) ->
+    li = $("<li />")
 
-    scrollToBottomLeft = (el) ->
-      el.scrollTo(
-        left: '0%'
-        top: '100%'
-      )
+    name = $ '<span />',
+      class: "name"
+      text: data.name + ":"
 
-    $ ->
-      scrollToBottomLeft $('#chats')
-      $('#chat_body').attr('placeholder', 'chat with your friends here')
+    time = $ '<span />',
+      class: "time"
+      text: " \#{data.time} "
 
-      window.setInterval ->
-        $.get('/active_users', $.noop, "script")
-      , 60000
+    message = $ '<span />',
+      class: "message"
+      html: data.message
 
-      send = (field) ->
-        if (field.val() != "")
-          $.post '/chat',
-            body: field.val()
+    li.append(name, time, message)
 
-          field.val("")
+    $('#chats').append(li).scrollTo
+      left: '0%'
+      top: '100%'
 
-      textBox = $('#send').prev()
+  scrollToBottomLeft = (el) ->
+    el.scrollTo
+      left: '0%'
+      top: '100%'
 
-      $('#chatZone').bind 'dragenter dragover', (e) ->
-        $('#dragZone').show()
-        $('#chatZone').hide()
+  $ ->
+    $('#chatZone').draggable
+      handle: 'h3'
+      stop: ->
+        localStorage.chatTop = $('#chatZone').offset().top
+        localStorage.chatLeft = $('#chatZone').offset().left
 
-      $('#dragZone').bind 'drop dragleave', ->
-        $('#dragZone').hide()
-        $('#chatZone').show()
+    scrollToBottomLeft $('#chats')
 
-      $("#dragZone, #chatZone").dropImageReader (file, event) ->
+    window.setInterval ->
+      $.get('/active_users', $.noop, "script")
+    , 60000
 
-        if event.target.readyState == FileReader.DONE
-          wrapper = $("<div />")
-          img = $ "<img/>",
-            alt: file.name
-            src: event.target.result
-            title: file.name
+    send = (field) ->
+      if field.val()
+        $.post '/chat',
+          body: field.val()
 
-          img.appendTo(wrapper)
+        field.val("")
 
-          $.post '/chat', body: wrapper.html(), ->
-            $('#dragZone').hide()
-            $('#chatZone').show()
+    textBox = $('#send').prev()
 
-            scrollToBottomLeft $('body')
-            scrollToBottomLeft $('#chats')
+    $("#chatZone").dropImageReader (file, event) ->
 
-      $('#chatZone #chat_body').keypress (e) ->
-        if(e.keyCode == 13)
-          send(textBox)
+      if event.target.readyState == FileReader.DONE
+        wrapper = $("<div />")
+        img = $ "<img/>",
+          alt: file.name
+          src: event.target.result
+          title: file.name
 
-      $('#send').click ->
+        img.appendTo(wrapper)
+
+        $.post '/chat', body: wrapper.html(), ->
+          scrollToBottomLeft $('body')
+          scrollToBottomLeft $('#chats')
+
+    $('#chatZone #chat_body').keypress (e) ->
+      if(e.keyCode == 13)
         send(textBox)
-  </script>
 
-%style
-  :sass
-    #dragZone
-      display: none
-      height: 350px
-      margin-left: -50px
-      margin-top: 15em
-      width: 700px
-
-      p
-        text-align: center
-
-        &.big
-          font-size: 150%
-          font-weight: bold
-          margin-bottom: 3px
-
-        &.small
-          font-size: 120%
-          margin-top: 3px
+    $('#send').click ->
+      send(textBox)

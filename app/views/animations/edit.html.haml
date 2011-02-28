@@ -2,4 +2,4 @@
 
 :coffeescript
   $ ->
-    window.loadData(JSON.parse(#{@animation.string_data}))
+    window.loadData(JSON.parse(#{@animation.string_data.to_json}))

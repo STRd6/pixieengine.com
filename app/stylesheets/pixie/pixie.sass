@@ -1,9 +1,12 @@
 @import "compass/css3/box-sizing"
 @import util
 
+.container
+  +user-select(none)
+
 .pixie
   .canvas
-    -moz-user-select: none
+    +user-select(none)
     background-color: #ccc
     +box-sizing(border-box)
     height: 100%
@@ -52,7 +55,6 @@
   // Holds all the actions
   .actions, .layers
     display: block
-    margin-left: 65px
 
     a.tool
       color: black

@@ -15,6 +15,13 @@ set :deploy_via, :remote_cache
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
 
+set :default_environment, {
+  'PATH' => "/home/daniel/.rvm/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global/bin:/home/daniel/.rvm/rubies/ree-1.8.7-2010.02/bin:$PATH",
+  'RUBY_VERSION' => 'ruby 1.8.7',
+  'GEM_HOME' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02',
+  'GEM_PATH' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global'
+}
+
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
 # via the :deploy_to variable:
@@ -26,7 +33,12 @@ role :app, "67.207.139.110"
 role :web, "67.207.139.110"
 role :db,  "67.207.139.110", :primary => true
 
-after "deploy", "deploy:cleanup"
+
+after :deploy do
+  run "chmod -R g+w #{release_path}/tmp"
+  run "chmod -R g+w #{release_path}/.bundle"
+end
+after :deploy, "deploy:cleanup"
 
 # Whenever task
 after "deploy:symlink", "deploy:update_crontab"
@@ -38,7 +50,7 @@ namespace :deploy do
   end
 end
 
-task :after_setup do
+after :setup do
   run "mkdir #{shared_path}/production"
   run "mkdir #{shared_path}/production/images"
   run "mkdir #{shared_path}/production/replays"
@@ -49,7 +61,7 @@ task :after_setup do
   run "touch #{shared_path}/log/nginx.error.log"
 end
 
-task :after_update_code do
+after "deploy:update_code" do
   run "ln -nfs #{shared_path}/production #{release_path}/public/production"
   run "ln -nfs #{shared_path}/local/authlogic.yml #{release_path}/config/authlogic.yml"
   run "ln -nfs #{shared_path}/local/local.rake #{release_path}/lib/tasks/local.rake"

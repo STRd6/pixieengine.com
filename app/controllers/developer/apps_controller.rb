@@ -1,10 +1,16 @@
 class Developer::AppsController < DeveloperController
+  FILTERS = ["featured", "none"]
+
   resource_controller
+  layout "fullscreen"
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post, :new, :create]
-  before_filter :require_access, :only => [:edit, :update, :add_library, :remove_library]
+  before_filter :require_access, :only => [:add_library, :remove_library]
   before_filter :require_owner, :only => [:add_user]
+  before_filter :require_owner_or_admin, :only => [:edit, :update]
+
+  before_filter :count_view, :only => [:fullscreen, :run, :mobile]
 
   respond_to :html, :xml, :json
 
@@ -415,6 +421,10 @@ bgMusic.play()
     end
   end
 
+  def index
+    @apps = App.all
+  end
+
   def fork_post
     fork = App.create(
       :parent => app,
@@ -461,10 +471,6 @@ bgMusic.play()
 
   def mobile
     render :layout => "mobile"
-  end
-
-  def fullscreen
-    render :layout => "fullscreen"
   end
 
   def widget
@@ -520,19 +526,29 @@ bgMusic.play()
     end
   end
 
+  def fullscreen
+
+  end
+
+  def run
+    
+  end
+
   private
   def app
     object
   end
   helper_method :app
 
-  private
   def apps
     collection
   end
   helper_method :apps
 
-  private
+  def count_view
+    app.increment! :views_count
+  end
+
   def add_default_libraries
     default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
 
@@ -543,6 +559,18 @@ bgMusic.play()
   end
 
   def collection
-    @collection ||= App.order("id DESC")
+    @collection ||= if filter
+      App.send(filter)
+    else
+      App.featured
+    end.order("id DESC")
+  end
+
+  def filter
+    if params[:filter] && FILTERS.include?(params[:filter])
+      params[:filter]
+    else
+      FILTERS.first
+    end
   end
 end

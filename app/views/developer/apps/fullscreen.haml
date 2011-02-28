@@ -2,9 +2,39 @@
 
 = render :partial => "app_iframe"
 
+.stats
+  .comments
+    Comments:
+    = app.comments_count
+  .views
+    Views:
+    = app.views_count
+
+-# = display_comments app
+
 %style
   :sass
     @import util
 
+    .stats
+      bottom: 0
+      padding-bottom: 1em
+      padding-right: 1em
+      position: absolute
+      right: 0
+
+      .comments
+        display: inline-block
+      .views
+        display: inline-block
+
     #fullscreen
-      +contents-centered
+      position: relative
+
+      iframe
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        bottom: 0
+        margin: auto

@@ -1,0 +1,170 @@
+#dockContainer
+  #dockWrapper
+    .cap.left
+    %ul.osx-dock
+      %li
+        %span Pixel Editor
+        = link_to_unless_current image_tag("pixie_dock.png"), new_sprite_path, :title => "Pixel Editor"
+      %li
+        %span Sprite Gallery
+        = link_to_unless_current image_tag("sprites_dock.png"), sprites_path, :title => "Sprite Gallery"
+      %li
+        %span Animation Editor
+        = link_to_unless_current image_tag("animation_dock.png"), new_animation_path, :title => "Animation Editor"
+      %li
+        %span Tilemap Editor
+        = link_to_unless_current image_tag("tilemap_dock.png"), new_tilemap_path(:tileset_id => "355"), :title => "Tilemap Editor"
+      %li
+        %span IDE
+        = link_to_unless_current image_tag("ide_dock.png"), developer_apps_path, :title => "IDE"
+      %li
+        %span Sound FX Editor
+        = link_to_unless_current image_tag("sfx_dock.png"), new_sound_path, :title => "Sound FX Editor"
+      %li#chat
+        %span Chat
+        = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
+
+#hide_dock
+
+:coffeescript
+  $ ->
+    active_app = $('<img />',
+      class: 'active'
+      src: "/images/active_app.png"
+    ).css('padding-top', '12px')
+
+    $('.osx-dock li span + img').after(active_app)
+
+    if localStorage.dock == 'hide'
+      $('#dockContainer').hide()
+      $('#hide_dock').addClass('show_dock')
+
+    $('.osx-dock a').tipsy
+      fade: false
+      gravity: 's'
+
+    $('#hide_dock').mousedown ->
+      $(this).toggleClass('show_dock')
+      $('#dockContainer').slideToggle(175)
+
+      if $(this).hasClass('show_dock')
+        localStorage.dock = 'hide'
+      else
+        localStorage.dock = 'show'
+
+    $('#chat').mousedown ->
+      $('#chatZone').css
+        top: localStorage.chatTop + "px" || "150px"
+        left: localStorage.chatLeft + "px" || "10px"
+
+      $('#chatZone').toggle()
+
+      $('#chats').scrollTo
+        left: '0%'
+        top: '100%'
+
+      if $('#chatZone').css('display') == 'none'
+        localStorage.chat = false
+        $('#chat img.active').remove()
+      else
+        localStorage.chat = 'active'
+        $('#chat').append(active_app.clone().css('padding-top', '10px'))
+
+    if localStorage.chat == 'active'
+      $('#chat').mousedown()
+
+%style
+  :sass
+    @import util
+
+    #fullscreen
+      position: relative
+
+      &.light
+        #hide_dock
+          background: url(/images/hide_dock_light.png) no-repeat
+
+          &.show_dock
+            background: url(/images/show_dock_light.png) no-repeat
+
+        .cap
+          background: url(/images/dock_background_left_light.png) bottom left no-repeat
+
+        ul.osx-dock
+          background: url(/images/dock_background_left_light.png) no-repeat right bottom
+
+    #hide_dock
+      +bounds(30px)
+
+      background: url(/images/hide_dock.png) no-repeat
+      position: fixed
+      bottom: 0
+      right: 0
+      left: 0
+      margin: auto
+      z-index: 100
+
+      &.show_dock
+        background: url(/images/show_dock.png) no-repeat
+
+    #dockContainer
+      +bounds(508px, 72px)
+      bottom: 0
+      left: 0
+      right: 0
+      margin: auto
+      position: fixed
+      z-index: 100
+
+    #dockWrapper
+      border-bottom: solid 2px rgba(255, 255, 255, .35)
+      display: inline-block
+      line-height: 0
+      position: relative
+      width: auto
+
+    .cap
+      +bounds(30px, 50px)
+
+      background: url(/images/dock_background_left.png) bottom left no-repeat
+
+      &.left
+        bottom: 0
+        left: 0
+        position: absolute
+
+    ul
+      list-style: none outside
+
+      &.osx-dock
+        background: url(/images/dock_background_left.png) no-repeat right bottom
+        display: inline-block
+        height: 70px
+        margin: 0 0 0 30px
+        overflow: hidden
+        padding: 0 30px 0 0
+
+        li
+          +bounds(50px)
+
+          display: block
+          float: left
+          margin: 0px 7px 0 7px
+          position: relative
+          text-align: center
+          -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
+          -webkit-transition: 0.15s linear
+          -webkit-transition-property: -webkit-transform margin
+
+          span
+            display: none
+
+          a
+            display: block
+            height: 50px
+            -webkit-transition: 0.15s linear
+            -webkit-transition-property: -webkit-transform margin
+            margin: 0
+
+            img
+              width: 48px

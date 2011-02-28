@@ -1,0 +1,2 @@
+.sprite_container{ 'data-author' => (index_sprite.user) ? index_sprite.user.display_name : "Anonymous", 'data-author_id' => index_sprite.user_id, 'data-id' => index_sprite.id, 'data-name' => index_sprite.display_name, 'data-description' => index_sprite.description, 'data-original_url' => index_sprite.image.url }
+  = image_tag index_sprite.image.url(:thumb)

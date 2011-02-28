@@ -5,7 +5,14 @@
   height: 100%
   padding: $editor_page_padding
 
-  a
+  form
+    +border-radius
+
+    background-color: $dark_highlight
+    padding: 1em
+    width: 500px
+
+  a:not(.button)
     color: #fff
 
   &.light
@@ -13,6 +20,14 @@
 
     a
       color: #000
+
+    form
+      background-color: $light_highlight
+
+  #login_link
+    position: absolute
+    top: 13px
+    right: 40px
 
   #sidebar, #header, #feedback, #footer, #chatZone
     display: none
@@ -25,6 +40,9 @@
     top: 0
     width: 80%
     margin: auto
+
+    a
+      color: #000
 
   #logo
     +bounds(68px, 34px)
@@ -84,6 +102,8 @@
   section
     +bounds(100%)
     +box-sizing(border-box)
+
+    overflow-y: auto
 
     .screen
       +bounds(100%)

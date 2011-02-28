@@ -21,7 +21,21 @@ class Animation < ActiveRecord::Base
   end
 
   def string_data
-    open(data.url, 'rb') { |f| f.read }.to_json
+    open(data.url, 'rb') { |f| f.read }
+  end
+
+  def preview_urls
+    data = JSON.parse(string_data)
+
+    return [] if data.class == Array
+
+    tileset = data["tileset"].map do |tile|
+      tile["src"]
+    end
+
+    data["animations"].map do |animation|
+      [animation["name"], tileset[animation["frames"][0]]]
+    end
   end
 
   def display_name

@@ -185,7 +185,7 @@ a
   +box-sizing(border-box)
   +grid-width(20)
   border-right = 1px solid !dark_gray
-  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 0 ($blueprint-grid-width + $blueprint-grid-margin)
+  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 20px ($blueprint-grid-width + $blueprint-grid-margin)
   position: relative
   top: -5px
 
@@ -283,7 +283,7 @@ div.no-star
 
 #tooltip
   +border-radius(5px)
-  +box-shadow()
+  +box-shadow
   background-color: black
   color: white
   display: none
@@ -316,3 +316,6 @@ div.no-star
 
 #fullscreen
   +scrollbars
+
+.clickable
+  cursor: pointer

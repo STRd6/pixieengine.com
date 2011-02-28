@@ -1,9 +1,12 @@
-/* DO NOT MODIFY. This file was compiled Thu, 17 Feb 2011 02:55:47 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 26 Feb 2011 19:43:30 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
   var getVal, setVal;
+  $(".clickable").live('click', function() {
+    return document.location = $(this).find("a").eq(0).attr("href");
+  });
   getVal = function(key) {
     if (localStorage) {
       try {
