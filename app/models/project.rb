@@ -74,7 +74,7 @@ class Project < ActiveRecord::Base
       }
     elsif File.file? file_path
       ext = File.extname(filename)[1..-1]
-      contents = File.read(file_path) if ext == "js"
+      contents = File.read(file_path)
       {
         :name => filename,
         :contents => contents,

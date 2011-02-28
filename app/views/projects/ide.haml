@@ -55,8 +55,10 @@
     lang = panel.attr('data-lang')
     src_id = "#" + panel.find('textarea').attr('id')
 
-    if lang = "js"
+    if lang == "js"
       lang = "javascript"
+    else if lang == "coffee"
+      lang = "coffeescript"
 
     savedCode = $(src_id).val()
 
