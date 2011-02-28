@@ -9,7 +9,7 @@
   %li{ :title => file_info[:name] }
     - ext = file_info[:ext]
     - path = file_info[:path]
-    - path_fragment = path.gsub(/[\/\.]/, "_")
+    - path_fragment = path.gsub(/[^A-Za-z0-9_-]/, "_")
     - data_id = "file_#{path_fragment}"
     - text_area_id = "text_area_#{path_fragment}"
     %span.file{ 'data-id' => "##{data_id}", 'data-path' => path, :class => ext }= file_info[:name]
