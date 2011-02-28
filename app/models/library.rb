@@ -39,6 +39,14 @@ class Library < ActiveRecord::Base
     base_path.join(id.to_s).to_s
   end
 
+  def zip_path
+    base_path.join("#{id}.zip").to_s
+  end
+
+  def clear_export_dir
+    system 'rm', '-rf', path
+  end
+
   def export_files
     dir = path
     src_dir = File.join(dir, 'src')
@@ -56,5 +64,11 @@ class Library < ActiveRecord::Base
         f.write(script.test_src)
       end
     end
+  end
+
+  def zip
+    clear_export_dir
+    export_files
+    system 'ruby', 'script/zip_lib.rb', id.to_s
   end
 end
