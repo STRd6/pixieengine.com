@@ -95,25 +95,25 @@
       canvas.getPixel(width - 1, y).color(color)
   ###
 
-  ###
   actions =
     undo:
-      hotkeys: ["ctrl+z"]
+      hotkeys: ["ctrl+z", "meta+z"]
       perform: (canvas) ->
         canvas.undo()
-        canvas.showPreview()
     redo:
-      hotkeys: ["ctrl+y"]
+      hotkeys: ["ctrl+y", "meta+z"]
       perform: (canvas) ->
         canvas.redo()
-        canvas.showPreview()
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-        pixel.color(TRANSPARENT)
+          pixel.color(TRANSPARENT)
     preview:
+      menu: false
       perform: (canvas) ->
-        canvas.showPreview()
+        canvas.preview()
+
+  ###
     left:
       perform: (canvas) ->
         #shiftImage(canvas, -1, 0)
@@ -176,6 +176,7 @@
       mouseenter: ->
         colorTransparent.call(this)
     fill:
+      hotkeys: ['f']
       mousedown: (e, newColor, pixel) ->
         originalColor = this.color()
         return if newColor == originalColor
@@ -183,6 +184,8 @@
         q = []
         pixel.color(newColor)
         q.push(pixel)
+
+        canvas = pixel.canvas
 
         while(q.length)
           pixel = q.pop()
@@ -278,6 +281,15 @@
       toolbar = $ DIV,
         class: 'toolbar'
 
+      actionbar = $ DIV,
+        class: 'actions'
+
+      preview = $ DIV,
+        class: 'preview'
+        style:
+          width: width
+          height: height
+
       currentTool = undefined
       active = false
       editingLayers = []
@@ -285,6 +297,8 @@
       undoStack = UndoStack()
       primaryColorPicker = ColorPicker().addClass('primary')
       secondaryColorPicker = ColorPicker().addClass('secondary')
+
+      tilePreview = true
 
       pixie
         .bind('contextmenu', falseFn)
@@ -294,9 +308,11 @@
           if(target.is('.swatch'))
             canvas.color(target.css('backgroundColor'), e.button)
 
-        ).bind('mouseup', (e) ->
+        ).bind('mouseup keyup', (e) ->
           active = false
           mode = undefined
+
+          #canvas.preview()
         )
 
       pixels = []
@@ -319,6 +335,47 @@
       canvas.append(frameDiv)
 
       $.extend canvas,
+        addAction: (name, action) ->
+          titleText = name
+          undoable = action.undoable
+
+          doIt = ->
+            undoStack.next() if undoable != false
+            action.perform(canvas)
+
+          if action.hotkeys
+            titleText += " (#{action.hotkeys})"
+
+            $.each action.hotkeys, (i, hotkey) ->
+              $(document).bind 'keydown', hotkey, (e) ->
+                doIt()
+                e.preventDefault()
+
+                false
+
+          if action.menu != false
+            iconImg = $("<img />",
+              src: IMAGE_DIR + name + '.png'
+            )
+
+            actionButton = $("<a />",
+              class: 'tool button'
+              id: 'action_button_' + name.replace(" ", "-").toLowerCase()
+              href: '#'
+              title: titleText
+              text: name
+            )
+            .prepend(iconImg)
+            .mousedown (e) ->
+              if !$(this).attr('disabled')
+                doIt()
+
+              _gaq.push(['_trackEvent', 'action_button', action.name])
+
+              return false
+
+            actionButton.appendTo(actionbar)
+
         addTool: (name, tool) ->
           alt = name
 
@@ -369,8 +426,7 @@
 
           return this
 
-        clear: ->
-          editingLayer.clear()
+        clear: -> editingLayer.clear()
 
         eachPixel: (fn) ->
           height.times (row) ->
@@ -403,8 +459,7 @@
           return s
 
         parseColor: (colorString) ->
-          if !colorString || colorString == transparent
-            return false
+          return false if !colorString || colorString == transparent
 
           bits = rgbParser.exec(colorString)
           return [
@@ -413,15 +468,49 @@
             this.toHex(bits[3])
           ].join('').toUpperCase()
 
+        preview: ->
+          tileCount = if tilePreview then 4 else 1
+          preview.css
+            backgroundImage: this.toCSSImageURL(),
+            width: tileCount * width,
+            height: tileCount * height
+
+        redo: ->
+          data = undoStack.popRedo()
+
+          if data
+            $.each data, ->
+              this.pixel.color(this.oldColor, true)
+
         setTool: (tool) ->
           currentTool = tool
-          if tool.cursor
-            canvas.css({cursor: tool.cursor})
-          else
-            canvas.css({cursor: "pointer"})
+          canvas.css('cursor', tool.cursor || "pointer")
+
+        toCSSImageURL: -> "url(#{this.toDataURL()})"
+
+        toDataURL: ->
+          canvas = $('<canvas width="' + width + '" height="' + height+ '"></canvas>').get(0)
+          context = canvas.getContext('2d')
+
+          this.eachPixel (pixel, x, y) ->
+            color = pixel.color()
+            context.fillStyle = color
+            context.fillRect(x, y, 1, 1)
+
+          return canvas.toDataURL("image/png")
+
+        undo: ->
+          data = undoStack.popUndo()
+
+          if data
+            $.each data, ->
+              this.pixel.color(this.oldColor, true)
 
       $.each tools, (key, tool) ->
         canvas.addTool(key, tool)
+
+      $.each actions, (key, action) ->
+        canvas.addAction(key, action)
 
       guideLayer = Layer()
         .bind("mousedown", (e) ->
@@ -458,9 +547,10 @@
       canvas.setTool(tools.pencil)
 
       canvas.append(guideLayer)
-
       viewport.append(canvas)
       $('nav.left').append(toolbar)
+      $('nav.top').append(actionbar)
+      $('nav.bottom').append(preview)
       pixie.append(viewport)
       $(this).append(pixie)
 )(jQuery)

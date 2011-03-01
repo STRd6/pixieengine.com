@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Tue, 01 Mar 2011 05:56:56 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 01 Mar 2011 09:26:46 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   (function($) {
-    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, TRANSPARENT, UndoStack, colorNeighbors, colorTransparent, falseFn, scale, tools;
+    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, TRANSPARENT, UndoStack, actions, colorNeighbors, colorTransparent, falseFn, scale, tools;
     DIV = "<div />";
     TRANSPARENT = "transparent";
     IMAGE_DIR = "/images/pixie/";
@@ -108,25 +108,34 @@
       $.each deferredColors, (y, color) ->
         canvas.getPixel(width - 1, y).color(color)
     */
+    actions = {
+      undo: {
+        hotkeys: ["ctrl+z", "meta+z"],
+        perform: function(canvas) {
+          return canvas.undo();
+        }
+      },
+      redo: {
+        hotkeys: ["ctrl+y", "meta+z"],
+        perform: function(canvas) {
+          return canvas.redo();
+        }
+      },
+      clear: {
+        perform: function(canvas) {
+          return canvas.eachPixel(function(pixel) {
+            return pixel.color(TRANSPARENT);
+          });
+        }
+      },
+      preview: {
+        menu: false,
+        perform: function(canvas) {
+          return canvas.preview();
+        }
+      }
+    };
     /*
-    actions =
-      undo:
-        hotkeys: ["ctrl+z"]
-        perform: (canvas) ->
-          canvas.undo()
-          canvas.showPreview()
-      redo:
-        hotkeys: ["ctrl+y"]
-        perform: (canvas) ->
-          canvas.redo()
-          canvas.showPreview()
-      clear:
-        perform: (canvas) ->
-          canvas.eachPixel (pixel) ->
-          pixel.color(TRANSPARENT)
-      preview:
-        perform: (canvas) ->
-          canvas.showPreview()
       left:
         perform: (canvas) ->
           #shiftImage(canvas, -1, 0)
@@ -200,8 +209,9 @@
         }
       },
       fill: {
+        hotkeys: ['f'],
         mousedown: function(e, newColor, pixel) {
-          var neighbors, originalColor, q, _results;
+          var canvas, neighbors, originalColor, q, _results;
           originalColor = this.color();
           if (newColor === originalColor) {
             return;
@@ -209,6 +219,7 @@
           q = [];
           pixel.color(newColor);
           q.push(pixel);
+          canvas = pixel.canvas;
           _results = [];
           while (q.length) {
             pixel = q.pop();
@@ -301,7 +312,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var active, canvas, currentTool, editingLayers, frameDiv, guideLayer, layerDiv, mode, pixels, pixie, primaryColorPicker, secondaryColorPicker, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, currentTool, editingLayers, frameDiv, guideLayer, layerDiv, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, tilePreview, toolbar, undoStack, viewport;
         pixie = $(DIV, {
           "class": 'pixie'
         });
@@ -314,6 +325,16 @@
         toolbar = $(DIV, {
           "class": 'toolbar'
         });
+        actionbar = $(DIV, {
+          "class": 'actions'
+        });
+        preview = $(DIV, {
+          "class": 'preview',
+          style: {
+            width: width,
+            height: height
+          }
+        });
         currentTool = void 0;
         active = false;
         editingLayers = [];
@@ -321,13 +342,14 @@
         undoStack = UndoStack();
         primaryColorPicker = ColorPicker().addClass('primary');
         secondaryColorPicker = ColorPicker().addClass('secondary');
+        tilePreview = true;
         pixie.bind('contextmenu', falseFn).bind('mousedown', function(e) {
           var target;
           target = $(e.target);
           if (target.is('.swatch')) {
             return canvas.color(target.css('backgroundColor'), e.button);
           }
-        }).bind('mouseup', function(e) {
+        }).bind('mouseup keyup', function(e) {
           active = false;
           return mode = void 0;
         });
@@ -348,6 +370,46 @@
         frameDiv.append(layerDiv);
         canvas.append(frameDiv);
         $.extend(canvas, {
+          addAction: function(name, action) {
+            var actionButton, doIt, iconImg, titleText, undoable;
+            titleText = name;
+            undoable = action.undoable;
+            doIt = function() {
+              if (undoable !== false) {
+                undoStack.next();
+              }
+              return action.perform(canvas);
+            };
+            if (action.hotkeys) {
+              titleText += " (" + action.hotkeys + ")";
+              $.each(action.hotkeys, function(i, hotkey) {
+                return $(document).bind('keydown', hotkey, function(e) {
+                  doIt();
+                  e.preventDefault();
+                  return false;
+                });
+              });
+            }
+            if (action.menu !== false) {
+              iconImg = $("<img />", {
+                src: IMAGE_DIR + name + '.png'
+              });
+              actionButton = $("<a />", {
+                "class": 'tool button',
+                id: 'action_button_' + name.replace(" ", "-").toLowerCase(),
+                href: '#',
+                title: titleText,
+                text: name
+              }).prepend(iconImg).mousedown(function(e) {
+                if (!$(this).attr('disabled')) {
+                  doIt();
+                }
+                _gaq.push(['_trackEvent', 'action_button', action.name]);
+                return false;
+              });
+              return actionButton.appendTo(actionbar);
+            }
+          },
           addTool: function(name, tool) {
             var alt, setMe, toolDiv;
             alt = name;
@@ -444,21 +506,58 @@
             bits = rgbParser.exec(colorString);
             return [this.toHex(bits[1]), this.toHex(bits[2]), this.toHex(bits[3])].join('').toUpperCase();
           },
+          preview: function() {
+            var tileCount;
+            tileCount = tilePreview ? 4 : 1;
+            return preview.css({
+              backgroundImage: this.toCSSImageURL(),
+              width: tileCount * width,
+              height: tileCount * height
+            });
+          },
+          redo: function() {
+            var data;
+            data = undoStack.popRedo();
+            if (data) {
+              return $.each(data, function() {
+                return this.pixel.color(this.oldColor, true);
+              });
+            }
+          },
           setTool: function(tool) {
             currentTool = tool;
-            if (tool.cursor) {
-              return canvas.css({
-                cursor: tool.cursor
-              });
-            } else {
-              return canvas.css({
-                cursor: "pointer"
+            return canvas.css('cursor', tool.cursor || "pointer");
+          },
+          toCSSImageURL: function() {
+            return "url(" + (this.toDataURL()) + ")";
+          },
+          toDataURL: function() {
+            var context;
+            canvas = $('<canvas width="' + width + '" height="' + height + '"></canvas>').get(0);
+            context = canvas.getContext('2d');
+            this.eachPixel(function(pixel, x, y) {
+              var color;
+              color = pixel.color();
+              context.fillStyle = color;
+              return context.fillRect(x, y, 1, 1);
+            });
+            return canvas.toDataURL("image/png");
+          },
+          undo: function() {
+            var data;
+            data = undoStack.popUndo();
+            if (data) {
+              return $.each(data, function() {
+                return this.pixel.color(this.oldColor, true);
               });
             }
           }
         });
         $.each(tools, function(key, tool) {
           return canvas.addTool(key, tool);
+        });
+        $.each(actions, function(key, action) {
+          return canvas.addAction(key, action);
         });
         guideLayer = Layer().bind("mousedown", function(e) {
           undoStack.next();
@@ -491,6 +590,8 @@
         canvas.append(guideLayer);
         viewport.append(canvas);
         $('nav.left').append(toolbar);
+        $('nav.top').append(actionbar);
+        $('nav.bottom').append(preview);
         pixie.append(viewport);
         return $(this).append(pixie);
       });
