@@ -35,7 +35,9 @@ class Project < ActiveRecord::Base
 
   def clone_repo
     if git?
-      system "git", "clone", remote_origin, path
+      FileUtils.mkdir_p path
+
+      git_util "clone", remote_origin, path
       git_util 'checkout', '-b', BRANCH_NAME
     end
   end
