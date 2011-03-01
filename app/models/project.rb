@@ -118,7 +118,7 @@ class Project < ActiveRecord::Base
   def import_files
     if import_zip
       # write zip file contents to project dir
-      system 'unzip', import_zip.path, '-d', path
+      system 'unzip', import_zip.path, '-o', '-d', path
     end
   end
 end
