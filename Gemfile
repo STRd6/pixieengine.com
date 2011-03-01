@@ -22,7 +22,7 @@ gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
 gem 'barista', '~> 1.0'
 gem "compass", ">= 0.10.2"
-gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git"
+gem "delayed_job", "2.1.4", :git => "git://github.com/collectiveidea/delayed_job.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'hpricot'

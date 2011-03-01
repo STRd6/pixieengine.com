@@ -8,9 +8,9 @@ GIT
 
 GIT
   remote: git://github.com/collectiveidea/delayed_job.git
-  revision: 411719b38c51a7fbd060ea139fd64adb20107a5d
+  revision: 4513aeea6f6a182a4bb2eff5dfd3f998a23da5ff
   specs:
-    delayed_job (2.1.2)
+    delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
 
@@ -194,7 +194,7 @@ DEPENDENCIES
   barista (~> 1.0)
   capistrano
   compass (>= 0.10.2)
-  delayed_job!
+  delayed_job (= 2.1.4)!
   exception_notification!
   factory_girl
   haml
