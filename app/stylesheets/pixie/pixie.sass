@@ -16,14 +16,16 @@
     width: 100%
 
   .viewport
+    +bounds(512px)
+    +max-bounds(960px)
+
     background-color: #ccc
     border: 1px solid #666
     display: inline-block
-    height: 512px
     margin-right: 1em
-    overflow: hidden
+    overflow: auto
     position: relative
-    width: 512px
+    resize: both
 
 .color_toggle
   +bounds(16px, 16px)
@@ -36,9 +38,9 @@ nav.left
     cursor: pointer
     display: inline-block
     height: auto
-    position: relative
+    position: absolute
+    top: 0
     vertical-align: top
-    width: 60px
 
     .tool
       +border-radius(8px)

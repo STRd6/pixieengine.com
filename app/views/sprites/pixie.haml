@@ -4,10 +4,10 @@
   - @meta_desc = "Load #{sprite.meta_desc}"
 
 = stylesheet_link_tag 'pixie/pixie'
-= javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'
+= javascript_include_tag 'pixie/jqcolor', 'http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'
 
-- width = @width || 32
-- height = @height || 32
+- width = @width || 60
+- height = @height || 60
 - data = @data
 
 .unsupported
@@ -20,10 +20,11 @@
 
   <iframe title="YouTube video player" class="youtube-player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/BrXPcaRlBqo" frameborder="0" allowFullScreen></iframe>
 
-%nav.top
-%nav.left
-
-%section#pixie
+.pixel_editor
+  %section#pixie
+    %nav.top
+    %nav.left
+    %nav.bottom
 
 #optionsModal{ :style => 'display: none' }
 
@@ -169,19 +170,49 @@
     $sidebar: 60px
 
     #fullscreen
+
+      &.light
+        nav
+          background-color: $light_highlight
+
       section
+        +bounds(100%)
+
         padding-top: $sidebar
         padding-left: $sidebar
+        position: relative
 
-      nav.left, nav.top
+      .pixel_editor
+        +bounds(100%)
+        +box-sizing(border-box)
+        +user-select(none)
+
+        cursor: default
+        position: relative
+
+      nav.left, nav.top, nav.bottom
         +border-radius
+        +box-sizing(border-box)
 
         background-color: $dark_highlight
+        padding: 1em
 
       nav.left
-        +bounds($sidebar, 100%)
+        +bounds($sidebar, 40%)
 
-        padding-top: 100px
+        margin-top: $sidebar + 20px
+        margin-bottom: $sidebar + 20px
 
       nav.top
-        +bounds(100%, $sidebar)
+        +bounds(60%, $sidebar)
+
+        margin-left: $sidebar + 20px
+        margin-right: $sidebar + 20px
+
+      nav.bottom
+        +bounds(30%, 100px)
+
+        margin-right: 100px
+
+      .pixie
+        margin: 1em
