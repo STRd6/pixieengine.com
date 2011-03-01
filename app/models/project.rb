@@ -49,6 +49,8 @@ class Project < ActiveRecord::Base
   handle_asynchronously :git_push
 
   def git_commit
+    git_util 'checkout', '-b', BRANCH_NAME
+
     #TODO: Maybe scope to specific files
     git_util "add", "."
 
