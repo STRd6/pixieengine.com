@@ -6,8 +6,8 @@ class ProjectTest < ActiveSupport::TestCase
       @project = Factory :project, :remote_origin => "git@github.com:STRd6/cardprinter.git"
     end
 
-    should "be able to commit and push changes" do
-      @project.git_push
+    should "have a url" do
+      assert @project.url == "https://github.com/STRd6/cardprinter"
     end
   end
 end

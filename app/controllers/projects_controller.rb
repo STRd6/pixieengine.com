@@ -33,6 +33,14 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def hook
+    push = HashWithIndifferentAccess.new(JSON.parse(params[:payload]))
+
+    url = push[:repository][:url]
+
+    Project.with_url(url).each(&:git_pull)
+  end
+
   def show
 
   end

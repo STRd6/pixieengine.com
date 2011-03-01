@@ -1,5 +1,7 @@
 class Project < ActiveRecord::Base
   belongs_to :user
+
+  before_validation :update_hook_url
   
   after_create :clone_repo
 
@@ -9,6 +11,10 @@ class Project < ActiveRecord::Base
 
   scope :for_user, lambda {|user|
     where(:user_id => user.id)
+  }
+
+  scope :with_url, lambda {|url|
+    where :url => url
   }
 
   BRANCH_NAME = "pixie"
@@ -42,6 +48,11 @@ class Project < ActiveRecord::Base
     end
   end
   handle_asynchronously :clone_repo
+
+  def git_pull
+    git_util "pull"
+  end
+  handle_asynchronously :git_pull
 
   def git_commit_and_push
     git_util 'checkout', BRANCH_NAME
@@ -109,6 +120,13 @@ class Project < ActiveRecord::Base
 
   def git?
     remote_origin
+  end
+
+  def update_hook_url
+    unless remote_origin.blank?
+      url = "https://github.com/" + remote_origin.gsub(".git", '').split(":")[-1].split("/")[-2..-1].join("/")
+      self.url = url
+    end
   end
 
   def import_files

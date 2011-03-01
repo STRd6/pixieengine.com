@@ -13,6 +13,10 @@ PixieStrd6Com::Application.routes.draw do |map|
 
       post :save_file
     end
+
+    collection do
+      post :hook
+    end
   end
 
   namespace :developer do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110227073652) do
+ActiveRecord::Schema.define(:version => 20110301062718) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -320,7 +320,10 @@ ActiveRecord::Schema.define(:version => 20110227073652) do
     t.text     "description"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.string   "url"
   end
+
+  add_index "projects", ["url"], :name => "index_projects_on_url"
 
   create_table "script_members", :force => true do |t|
     t.integer  "script_id",  :null => false
