@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+include FileUtils
+
+cd ARGV.shift
+
+system 'sudo', '-u', 'gitbot', 'git', *ARGV

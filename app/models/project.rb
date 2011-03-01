@@ -7,6 +7,10 @@ class Project < ActiveRecord::Base
 
   attr_accessor :import_zip
 
+  scope :for_user, lambda {|user|
+    where(:user_id => user.id)
+  }
+
   BRANCH_NAME = "pixie"
   
   def base_path
@@ -17,25 +21,37 @@ class Project < ActiveRecord::Base
     base_path.join(id.to_s).to_s
   end
 
+  def git_util(*args)
+    system 'script/git_util', path, *args
+  end
+
+  def init_repo_with_remote_origin
+    git_util 'init'
+    git_util 'add', '.'
+    git_util 'commit', '-m', 'First commit!'
+    git_util 'remote', 'add', 'origin', remote_origin
+    git_util 'push', '-u', 'origin', 'master'
+  end
+
   def clone_repo
     if git?
       system "git", "clone", remote_origin, path
-      system "cd #{path} && git checkout -b #{BRANCH_NAME}"
+      git_util 'checkout', '-b', BRANCH_NAME
     end
   end
   handle_asynchronously :clone_repo
 
   def git_push
-    system "cd #{path} && git push origin #{BRANCH_NAME}"
+     git_util "push", "origin", BRANCH_NAME
   end
   handle_asynchronously :git_push
 
   def git_commit
     #TODO: Maybe scope to specific files
-    system "cd #{path} && git add ."
+    git_util "add", "."
 
     #TODO: Shell escape user display name and add to commit message
-    system "cd #{path} && git commit -am 'pixie'"
+    git_util "commit", "-am", 'pixie'
   end
   handle_asynchronously :git_commit
 
