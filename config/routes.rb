@@ -65,6 +65,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         post :add_script
         post :remove_script
+        post :download
 
         get :test
       end
