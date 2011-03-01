@@ -31,45 +31,7 @@
   background-image: url(/images/pixie/color_switch_arrow.png)
   float: right
 
-.pixie
-  .frame
-    display: none
-    position: absolute
-    &.current
-      display: block
-
-  .layer
-    position: absolute
-    &.bottom
-      background: white url(../images/pixie/pixel_bg.png)
-
-  .pixel
-    border-bottom: 1px solid black
-    border-right: 1px solid black
-    float: left
-    height: 15px
-    margin: 0
-    padding: 0
-    width: 15px
-
-  // Holds all the actions
-  .actions, .layers
-    display: block
-
-    a.tool
-      color: black
-      margin: 5px
-      padding: .25em
-
-      &:hover
-        background-color: #CCC
-        text-decoration: none
-
-      &.active
-        background-color: #1084CE
-        text-decoration: none
-
-  // Holds all the tools
+nav.left
   .toolbar
     cursor: pointer
     display: inline-block
@@ -78,7 +40,6 @@
     vertical-align: top
     width: 60px
 
-    // Pencil, Eraser, etc. tool image styles
     .tool
       +border-radius(8px)
       +box-sizing(border-box)
@@ -97,6 +58,42 @@
 
       img
         border: none
+
+.pixie
+  .frame
+    display: none
+    position: absolute
+    &.current
+      display: block
+
+  .layer
+    position: absolute
+    //background: white url(../images/pixie/pixel_bg.png)
+
+  .pixel
+    border-bottom: 1px solid black
+    border-right: 1px solid black
+    float: left
+    height: 15px
+    margin: 0
+    padding: 0
+    width: 15px
+
+  .actions, .layers
+    display: block
+
+    a.tool
+      color: black
+      margin: 5px
+      padding: .25em
+
+      &:hover
+        background-color: #CCC
+        text-decoration: none
+
+      &.active
+        background-color: #1084CE
+        text-decoration: none
 
   .swatch
     border: 1px solid #666
