@@ -43,21 +43,18 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :clone_repo
 
-  def git_push
-     git_util "push", "origin", BRANCH_NAME
-  end
-  handle_asynchronously :git_push
-
-  def git_commit
-    git_util 'checkout', '-b', BRANCH_NAME
+  def git_commit_and_push
+    git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
     git_util "add", "."
 
     #TODO: Shell escape user display name and add to commit message
-    git_util "commit", "-am", 'pixie'
+    git_util "commit", "-am", 'Modified in browser at pixie.strd6.com'
+
+    git_util "push", '-u', "origin", BRANCH_NAME
   end
-  handle_asynchronously :git_commit
+  handle_asynchronously :git_commit_and_push
 
   def save_file(path, contents)
     #TODO: Verify path is not sketch
@@ -70,8 +67,7 @@ class Project < ActiveRecord::Base
     end
 
     if git?
-      git_commit
-      git_push
+      git_commit_and_push
     end
   end
 
