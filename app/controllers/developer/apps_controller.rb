@@ -1,6 +1,4 @@
 class Developer::AppsController < DeveloperController
-  FILTERS = ["featured", "none"]
-
   resource_controller
   layout "fullscreen"
   actions :all, :except => [:destroy]
@@ -566,11 +564,7 @@ bgMusic.play()
     end.order("id DESC")
   end
 
-  def filter
-    if params[:filter] && FILTERS.include?(params[:filter])
-      params[:filter]
-    else
-      FILTERS.first
-    end
+  def filters
+    ["featured", "none"]
   end
 end

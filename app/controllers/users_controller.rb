@@ -116,7 +116,11 @@ class UsersController < ResourceController::Base
   def collection
     users = User
 
-    @collection ||= users.all(:order => 'id ASC')
+    if filter
+      users = users.send(filter)
+    end
+
+    @collection ||= users.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def require_current_user
@@ -150,4 +154,8 @@ class UsersController < ResourceController::Base
     collection
   end
   helper_method :users
+
+  def filters
+    ["featured", "none"]
+  end
 end
