@@ -5,4 +5,4 @@ include FileUtils
 
 cd ARGV.shift
 
-system 'sudo', '-u', 'gitbot', 'git', *ARGV
+system 'sudo', 'HOME=/home/gitbot', '-u', 'gitbot', 'git', *ARGV
