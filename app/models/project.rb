@@ -39,6 +39,11 @@ class Project < ActiveRecord::Base
     git_util 'push', '-u', 'origin', 'master'
   end
 
+  def git_tag(tag, message)
+    git_util 'tag', '-am', message, tag
+    git_util 'push', '--tags'
+  end
+
   def clone_repo
     if git?
       FileUtils.mkdir_p path
