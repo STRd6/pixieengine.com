@@ -41,13 +41,37 @@ $sidebar: 50px
   nav.right
     +bounds(100px, 30%)
 
-    margin-bottom: 100px 
-    
+    margin-bottom: 100px
+
+    .swatch
+      border: 1px solid #666
+      +box-sizing(border-box)
+      float: left
+      margin: 4px
+      width: 16px
+      height: 16px
+
     .color_picker_holder
       height: 76px
       margin-bottom: 7px
       position: relative
       width: 74px
+
+      input.color
+        border: 2px solid
+        border-color= #CCC
+        height: 50px
+        position: absolute
+        width: 50px
+
+        &.primary
+          left: 0
+          top: 0
+          z-index: 10
+        &.secondary
+          left: 20px
+          top: 20px
+          z-index: 1
 
 .container
   +user-select(none)
@@ -157,31 +181,6 @@ nav.left
       &.active
         background-color: #1084CE
         text-decoration: none
-
-  .swatch
-    border: 1px solid #666
-    +box-sizing(border-box)
-    float: left
-    margin: 4px
-    width: 16px
-    height: 16px
-
-  // Current colors input field
-  input.color
-    border: 2px solid
-    border-color= #CCC
-    height: 50px
-    position: absolute
-    width: 50px
-
-    &.primary
-      left: 0
-      top: 0
-      z-index: 10
-    &.secondary
-      left: 20px
-      top: 20px
-      z-index: 1
 
   .preview
     border: 1px solid #AAA
