@@ -1,6 +1,5 @@
-%h2= user.display_name + "'s Profile"
-
 .profile
+  %h2= user.display_name + "'s Profile"
   .avatar
     = image_tag user.avatar.url(:large)
 
