@@ -1,31 +1,56 @@
-@import "compass/css3/box-sizing"
+@import partials/base
 @import util
+
+$sidebar: 50px
+
+#fullscreen
+
+  &.light
+    nav
+      background-color: $light_highlight
+
+  section
+    +bounds(100%)
+
+    overflow: hidden
+    padding-top: $sidebar
+    padding-left: $sidebar
+    position: relative
+
+  .pixel_editor
+    +bounds(100%)
+    +box-sizing(border-box)
+    +user-select(none)
+
+    cursor: default
+    position: relative
+
+  nav.left, nav.top, nav.right
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    padding: 1em
+
+  nav.top
+    +bounds(60%, $sidebar)
+
+    margin-left: $sidebar + 20px
+    margin-right: $sidebar + 20px
+
+  nav.right
+    +bounds(100px, 30%)
+
+    margin-bottom: 100px 
+    
+    .color_picker_holder
+      height: 76px
+      margin-bottom: 7px
+      position: relative
+      width: 74px
 
 .container
   +user-select(none)
-
-.pixie
-  .canvas
-    +user-select(none)
-    background-color: #ccc
-    +box-sizing(border-box)
-    height: 100%
-    margin-right: 1em
-    margin-bottom: 1em
-    position: relative
-    width: 100%
-
-  .viewport
-    +bounds(512px)
-    +max-bounds(960px)
-
-    background-color: #ccc
-    border: 1px solid #666
-    display: inline-block
-    margin-right: 1em
-    overflow: auto
-    position: relative
-    resize: both
 
 .color_toggle
   +bounds(16px, 16px)
@@ -34,6 +59,11 @@
   float: right
 
 nav.left
+  +bounds($sidebar, 40%)
+
+  margin-top: $sidebar + 20px
+  margin-bottom: $sidebar + 20px
+
   .toolbar
     cursor: pointer
     display: inline-block
@@ -62,6 +92,37 @@ nav.left
         border: none
 
 .pixie
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  margin: 1em
+  padding-bottom: 75px
+  padding-right: 125px
+
+  .canvas
+    +user-select(none)
+    background-color: #ccc
+    +box-sizing(border-box)
+    height: 100%
+    margin-right: 1em
+    margin-bottom: 1em
+    position: relative
+    width: 100%
+
+  .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    padding-bottom: 75px
+    padding-right: 125px
+
+    background-color: #ccc
+    border: 1px solid #666
+    display: inline-block
+    margin-right: 1em
+    overflow: auto
+    position: relative
+
   .frame
     display: none
     position: absolute
@@ -70,7 +131,7 @@ nav.left
 
   .layer
     position: absolute
-    //background: white url(../images/pixie/pixel_bg.png)
+    background: white url(../images/pixie/pixel_bg.png)
 
   .pixel
     border-bottom: 1px solid black
@@ -106,12 +167,6 @@ nav.left
     height: 16px
 
   // Current colors input field
-  .color_picker_holder
-    height: 76px
-    margin-bottom: 7px
-    position: relative
-    width: 74px
-
   input.color
     border: 2px solid
     border-color= #CCC
@@ -128,7 +183,6 @@ nav.left
       top: 20px
       z-index: 1
 
-  // Holds the preview image
   .preview
     border: 1px solid #AAA
     height: 150px
