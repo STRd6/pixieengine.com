@@ -1,4 +1,4 @@
-  (($) ->
+(($) ->
   DIV = "<div />"
   TRANSPARENT = "transparent"
   IMAGE_DIR = "/images/pixie/"
@@ -35,7 +35,7 @@
 
     next: ->
       last = this.last()
-      if (!last || !empty)
+      unless last && empty
         undos.push({})
         empty = true
 
@@ -44,7 +44,7 @@
     add: (object, data) ->
       last = this.last()
 
-      if !last[object]
+      unless last[object]
         last[object] = data
         empty = false
 
@@ -64,36 +64,41 @@
 
       return replayData
 
-  ###
-  infer action name and icon from key in json data.
-  assume menu == false when there is no icon key in the data
-  if no hotkey try to bind to the name of the json object key
-  ###
-
-  #TODO: clean up direction code
-  ###
-  shiftImage = (canvas, x, y) ->
+  shiftImageHorizontal = (canvas, byX) ->
     width = canvas.width
     height = canvas.height
+    index = if byX == -1 then 0 else width - 1
 
     deferredColors = []
 
-    if x?.abs() > 0
-      height.times (y) ->
-        # some mod stuff here to get the first column with x = 1 and the last with x = -1
-        deferredColors[y] = canvas.getPixel(0, width), y).color()
-    if y?.abs() > 0
-      width.times (x) ->
-        deferredColors[x] = canvas.getPixel(x, 0).color()
+    height.times (y) ->
+      deferredColors[y] = canvas.getPixel(index, y).color()
 
     canvas.eachPixel (pixel, x, y) ->
-      adjacentPixel = canvas.getPixel(x + 1, y)
+      adjacentPixel = canvas.getPixel(x - byX, y)
 
       pixel.color(adjacentPixel?.color())
 
     $.each deferredColors, (y, color) ->
-      canvas.getPixel(width - 1, y).color(color)
-  ###
+      canvas.getPixel(index, y).color(color)
+
+  shiftImageVertical = (canvas, byY) ->
+    width = canvas.width
+    height = canvas.height
+    index = if byY == -1 then 0 else height - 1
+
+    deferredColors = []
+
+    width.times (x) ->
+      deferredColors[x] = canvas.getPixel(x, index).color()
+
+    canvas.eachPixel (pixel, x, y) ->
+      adjacentPixel = canvas.getPixel(x, y - byY)
+
+      pixel.color(adjacentPixel?.color())
+
+    $.each deferredColors, (x, color) ->
+      canvas.getPixel(x, index).color(color)
 
   actions =
     undo:
@@ -112,36 +117,37 @@
       menu: false
       perform: (canvas) ->
         canvas.preview()
-
-  ###
     left:
+      menu: false
       perform: (canvas) ->
-        #shiftImage(canvas, -1, 0)
+        shiftImageHorizontal(canvas, -1)
     right:
+      menu: false
       perform: (canvas) ->
-        #shiftImage(canvas, 1, 0)
+        shiftImageHorizontal(canvas, 1)
     up:
+      menu: false
       perform: (canvas) ->
-        #shiftImage(canvas, 0, -1)
+        shiftImageVertical(canvas, -1)
     down:
+      menu: false
       perform: (canvas) ->
-        #shiftImage(canavs, 0, 1)
+        shiftImageVertical(canavs, 1)
     download:
       hotkeys: ["ctrl+s"]
       perform: (canvas) ->
-        #w = window.open()
-        #w.document.location = canvas.toDataURL()
+        w = window.open()
+        w.document.location = canvas.toDataURL()
     options:
       hotkeys: ["o"]
       perform: ->
-        # $('#optionsModal').removeAttr('style').modal(
-        #   persist: true
-        # ,
-        # onClose: ->
-        #   $.modal.close()
-        #   $('#optionsModal').attr('style', 'display: none')
-        # )
-  ###
+        $('#optionsModal').removeAttr('style').modal(
+          persist: true
+          ,
+          onClose: ->
+            $.modal.close()
+            $('#optionsModal').attr('style', 'display: none')
+        )
 
   colorNeighbors = (color) ->
     this.color(color)
@@ -185,7 +191,7 @@
         pixel.color(newColor)
         q.push(pixel)
 
-        canvas = pixel.canvas
+        canvas = this.canvas
 
         while(q.length)
           pixel = q.pop()
@@ -196,36 +202,27 @@
             if neighbor?.color() == originalColor
               neighbor.color(newColor)
               q.push(neighbor)
-  ###
-    zoomIn:
-      mousedown: ->
-        scale = (scale * 2).clamp(0.25, 4)
-        scaleCanvas(scale)
-    zoomOut:
-      mousedown: ->
-        scale = (scale / 2).clamp(0.25, 4)
-        scaleCanvas(scale)
-  ###
 
   $.fn.pixie = (options) ->
-    Pixel = (x, y, layerCanvas, canvas, undoStack) ->
+    Pixel = (x, y, layerCanvas, undoStack) ->
       color = TRANSPARENT
 
       self =
         x: x
         y: y
-        canvas: canvas
+        canvas: layerCanvas
 
         color: (newColor, skipUndo) ->
           if arguments.length >= 1
-            if !skipUndo
-              undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor})
+            undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor}) unless skipUndo
 
             color = newColor || TRANSPARENT
+            xPos = x * PIXEL_WIDTH
+            yPos = y * PIXEL_HEIGHT
 
-            layerCanvas.clearRect(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, PIXEL_WIDTH, PIXEL_HEIGHT)
+            layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
             layerCanvas.fillStyle = color
-            layerCanvas.fillRect(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, PIXEL_WIDTH, PIXEL_HEIGHT)
+            layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
             return this
           else
@@ -281,6 +278,9 @@
       toolbar = $ DIV,
         class: 'toolbar'
 
+      colorbar = $ DIV,
+        class: "toolbar"
+
       actionbar = $ DIV,
         class: 'actions'
 
@@ -292,13 +292,18 @@
 
       currentTool = undefined
       active = false
-      editingLayers = []
       mode = undefined
       undoStack = UndoStack()
       primaryColorPicker = ColorPicker().addClass('primary')
       secondaryColorPicker = ColorPicker().addClass('secondary')
 
       tilePreview = true
+
+      colorPickerHolder = $(DIV,
+        class: 'color_picker_holder'
+      ).append(primaryColorPicker, secondaryColorPicker)
+
+      colorbar.append(colorPickerHolder)
 
       pixie
         .bind('contextmenu', falseFn)
@@ -317,22 +322,43 @@
 
       pixels = []
 
-      frameDiv = $ DIV,
-        class: "frame current"
+      layer = Layer()
+        .bind("mousedown", (e) ->
+          undoStack.next()
+          active = true
+          if e.button == 0 then mode = "P" else mode = "S"
 
-      layerDiv = Layer()
+          e.preventDefault()
+        )
+        .bind("mousedown mousemove", (event) ->
+          offset = $(this).offset()
 
-      editingLayers = layerDiv
+          localY = event.pageY - offset.top
+          localX = event.pageX - offset.left
+
+          row = Math.floor(localY / PIXEL_HEIGHT)
+          col = Math.floor(localX / PIXEL_WIDTH)
+
+          pixel = canvas.getPixel(col, row)
+          eventType = undefined
+
+          if event.type == "mousedown"
+            eventType = event.type
+          else if pixel && event.type == "mousemove"
+            eventType = "mouseenter"
+
+          if pixel && active
+            currentTool[eventType].call(pixel, event, canvas.color(), pixel)
+        )
 
       height.times (row) ->
         pixels[row] = []
 
         width.times (col) ->
-          pixel = Pixel(col, row, layerDiv.get(0).getContext('2d'), canvas, undoStack)
+          pixel = Pixel(col, row, layer.get(0).getContext('2d'), undoStack)
           pixels[row][col] = pixel
 
-      frameDiv.append(layerDiv)
-      canvas.append(frameDiv)
+      canvas.append(layer)
 
       $.extend canvas,
         addAction: (name, action) ->
@@ -367,8 +393,7 @@
             )
             .prepend(iconImg)
             .mousedown (e) ->
-              if !$(this).attr('disabled')
-                doIt()
+              doIt() unless $(this).attr('disabled')
 
               _gaq.push(['_trackEvent', 'action_button', action.name])
 
@@ -396,10 +421,16 @@
                 setMe()
                 e.preventDefault()
 
-          toolDiv = $("<div><img src='" + tool.icon + "' alt='" + alt + "' title='" + alt + "'></img></div>")
-            .addClass('tool')
-            .attr('data-icon_name', name)
-            .click (e) ->
+          img = $ "<img />",
+            src: tool.icon
+            alt: alt
+            title: alt
+
+          toolDiv = $("<div />",
+            class: "tool"
+          )
+            .append(img)
+            .mousedown (e) ->
               setMe()
               return false
 
@@ -426,7 +457,7 @@
 
           return this
 
-        clear: -> editingLayer.clear()
+        clear: -> layer.clear()
 
         eachPixel: (fn) ->
           height.times (row) ->
@@ -437,10 +468,7 @@
           canvas
 
         getPixel: (x, y) ->
-          if y >= 0 && y < height
-            if x >= 0 && x < width
-              return pixels[y][x]
-
+          return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
           return undefined
 
         getNeighbors: (x, y) ->
@@ -459,7 +487,7 @@
           return s
 
         parseColor: (colorString) ->
-          return false if !colorString || colorString == transparent
+          return false unless colorString || colorString == transparent
 
           bits = rgbParser.exec(colorString)
           return [
@@ -489,7 +517,10 @@
         toCSSImageURL: -> "url(#{this.toDataURL()})"
 
         toDataURL: ->
-          canvas = $('<canvas width="' + width + '" height="' + height+ '"></canvas>').get(0)
+          canvas = $('<canvas />',
+            width: width
+            height: height
+          ).get(0)
           context = canvas.getContext('2d')
 
           this.eachPixel (pixel, x, y) ->
@@ -512,45 +543,12 @@
       $.each actions, (key, action) ->
         canvas.addAction(key, action)
 
-      guideLayer = Layer()
-        .bind("mousedown", (e) ->
-          undoStack.next()
-          active = true
-          if e.button == 0
-            mode = "P"
-          else
-            mode = "S"
-
-          e.preventDefault()
-        )
-        .bind("mousedown mousemove", (event) ->
-          offset = $(this).offset()
-
-          localY = event.pageY - offset.top
-          localX = event.pageX - offset.left
-
-          row = Math.floor(localY / PIXEL_HEIGHT)
-          col = Math.floor(localX / PIXEL_WIDTH)
-
-          pixel = canvas.getPixel(col, row)
-          eventType = undefined
-
-          if event.type == "mousedown"
-            eventType = event.type
-          else if pixel && event.type == "mousemove"
-            eventType = "mouseenter"
-
-          if pixel && active
-            currentTool[eventType].call(pixel, event, canvas.color(), pixel)
-        )
-
       canvas.setTool(tools.pencil)
 
-      canvas.append(guideLayer)
       viewport.append(canvas)
       $('nav.left').append(toolbar)
       $('nav.top').append(actionbar)
-      $('nav.bottom').append(preview)
+      $('nav.right').append(colorbar, preview)
       pixie.append(viewport)
       $(this).append(pixie)
 )(jQuery)

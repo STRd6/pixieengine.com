@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Tue, 01 Mar 2011 09:26:46 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 02 Mar 2011 01:01:32 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   (function($) {
-    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, TRANSPARENT, UndoStack, actions, colorNeighbors, colorTransparent, falseFn, scale, tools;
+    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, TRANSPARENT, UndoStack, actions, colorNeighbors, colorTransparent, falseFn, scale, shiftImageHorizontal, shiftImageVertical, tools;
     DIV = "<div />";
     TRANSPARENT = "transparent";
     IMAGE_DIR = "/images/pixie/";
@@ -46,7 +46,7 @@
         next: function() {
           var last;
           last = this.last();
-          if (!last || !empty) {
+          if (!(last && empty)) {
             undos.push({});
             empty = true;
             return redos = [];
@@ -80,34 +80,42 @@
         }
       };
     };
-    /*
-    infer action name and icon from key in json data.
-    assume menu == false when there is no icon key in the data
-    if no hotkey try to bind to the name of the json object key
-    */
-    /*
-    shiftImage = (canvas, x, y) ->
-      width = canvas.width
-      height = canvas.height
-
-      deferredColors = []
-
-      if x?.abs() > 0
-        height.times (y) ->
-          # some mod stuff here to get the first column with x = 1 and the last with x = -1
-          deferredColors[y] = canvas.getPixel(0, width), y).color()
-      if y?.abs() > 0
-        width.times (x) ->
-          deferredColors[x] = canvas.getPixel(x, 0).color()
-
-      canvas.eachPixel (pixel, x, y) ->
-        adjacentPixel = canvas.getPixel(x + 1, y)
-
-        pixel.color(adjacentPixel?.color())
-
-      $.each deferredColors, (y, color) ->
-        canvas.getPixel(width - 1, y).color(color)
-    */
+    shiftImageHorizontal = function(canvas, byX) {
+      var deferredColors, height, index, width;
+      width = canvas.width;
+      height = canvas.height;
+      index = byX === -1 ? 0 : width - 1;
+      deferredColors = [];
+      height.times(function(y) {
+        return deferredColors[y] = canvas.getPixel(index, y).color();
+      });
+      canvas.eachPixel(function(pixel, x, y) {
+        var adjacentPixel;
+        adjacentPixel = canvas.getPixel(x - byX, y);
+        return pixel.color(adjacentPixel != null ? adjacentPixel.color() : void 0);
+      });
+      return $.each(deferredColors, function(y, color) {
+        return canvas.getPixel(index, y).color(color);
+      });
+    };
+    shiftImageVertical = function(canvas, byY) {
+      var deferredColors, height, index, width;
+      width = canvas.width;
+      height = canvas.height;
+      index = byY === -1 ? 0 : height - 1;
+      deferredColors = [];
+      width.times(function(x) {
+        return deferredColors[x] = canvas.getPixel(x, index).color();
+      });
+      canvas.eachPixel(function(pixel, x, y) {
+        var adjacentPixel;
+        adjacentPixel = canvas.getPixel(x, y - byY);
+        return pixel.color(adjacentPixel != null ? adjacentPixel.color() : void 0);
+      });
+      return $.each(deferredColors, function(x, color) {
+        return canvas.getPixel(x, index).color(color);
+      });
+    };
     actions = {
       undo: {
         hotkeys: ["ctrl+z", "meta+z"],
@@ -133,37 +141,52 @@
         perform: function(canvas) {
           return canvas.preview();
         }
+      },
+      left: {
+        menu: false,
+        perform: function(canvas) {
+          return shiftImageHorizontal(canvas, -1);
+        }
+      },
+      right: {
+        menu: false,
+        perform: function(canvas) {
+          return shiftImageHorizontal(canvas, 1);
+        }
+      },
+      up: {
+        menu: false,
+        perform: function(canvas) {
+          return shiftImageVertical(canvas, -1);
+        }
+      },
+      down: {
+        menu: false,
+        perform: function(canvas) {
+          return shiftImageVertical(canavs, 1);
+        }
+      },
+      download: {
+        hotkeys: ["ctrl+s"],
+        perform: function(canvas) {
+          var w;
+          w = window.open();
+          return w.document.location = canvas.toDataURL();
+        }
+      },
+      options: {
+        hotkeys: ["o"],
+        perform: function() {
+          return $('#optionsModal').removeAttr('style').modal({
+            persist: true,
+            onClose: function() {
+              $.modal.close();
+              return $('#optionsModal').attr('style', 'display: none');
+            }
+          });
+        }
       }
     };
-    /*
-      left:
-        perform: (canvas) ->
-          #shiftImage(canvas, -1, 0)
-      right:
-        perform: (canvas) ->
-          #shiftImage(canvas, 1, 0)
-      up:
-        perform: (canvas) ->
-          #shiftImage(canvas, 0, -1)
-      down:
-        perform: (canvas) ->
-          #shiftImage(canavs, 0, 1)
-      download:
-        hotkeys: ["ctrl+s"]
-        perform: (canvas) ->
-          #w = window.open()
-          #w.document.location = canvas.toDataURL()
-      options:
-        hotkeys: ["o"]
-        perform: ->
-          # $('#optionsModal').removeAttr('style').modal(
-          #   persist: true
-          # ,
-          # onClose: ->
-          #   $.modal.close()
-          #   $('#optionsModal').attr('style', 'display: none')
-          # )
-    */
     colorNeighbors = function(color) {
       this.color(color);
       return $.each(this.canvas.getNeighbors(this.x, this.y), function(i, neighbor) {
@@ -219,7 +242,7 @@
           q = [];
           pixel.color(newColor);
           q.push(pixel);
-          canvas = pixel.canvas;
+          canvas = this.canvas;
           _results = [];
           while (q.length) {
             pixel = q.pop();
@@ -235,26 +258,17 @@
         }
       }
     };
-    /*
-      zoomIn:
-        mousedown: ->
-          scale = (scale * 2).clamp(0.25, 4)
-          scaleCanvas(scale)
-      zoomOut:
-        mousedown: ->
-          scale = (scale / 2).clamp(0.25, 4)
-          scaleCanvas(scale)
-    */
     return $.fn.pixie = function(options) {
       var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, width;
-      Pixel = function(x, y, layerCanvas, canvas, undoStack) {
+      Pixel = function(x, y, layerCanvas, undoStack) {
         var color, self;
         color = TRANSPARENT;
         self = {
           x: x,
           y: y,
-          canvas: canvas,
+          canvas: layerCanvas,
           color: function(newColor, skipUndo) {
+            var xPos, yPos;
             if (arguments.length >= 1) {
               if (!skipUndo) {
                 undoStack.add(self, {
@@ -264,9 +278,11 @@
                 });
               }
               color = newColor || TRANSPARENT;
-              layerCanvas.clearRect(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, PIXEL_WIDTH, PIXEL_HEIGHT);
+              xPos = x * PIXEL_WIDTH;
+              yPos = y * PIXEL_HEIGHT;
+              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
               layerCanvas.fillStyle = color;
-              layerCanvas.fillRect(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, PIXEL_WIDTH, PIXEL_HEIGHT);
+              layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
               return this;
             } else {
               return color;
@@ -312,7 +328,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, currentTool, editingLayers, frameDiv, guideLayer, layerDiv, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, tilePreview, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, layer, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, tilePreview, toolbar, undoStack, viewport;
         pixie = $(DIV, {
           "class": 'pixie'
         });
@@ -324,6 +340,9 @@
         });
         toolbar = $(DIV, {
           "class": 'toolbar'
+        });
+        colorbar = $(DIV, {
+          "class": "toolbar"
         });
         actionbar = $(DIV, {
           "class": 'actions'
@@ -337,12 +356,15 @@
         });
         currentTool = void 0;
         active = false;
-        editingLayers = [];
         mode = void 0;
         undoStack = UndoStack();
         primaryColorPicker = ColorPicker().addClass('primary');
         secondaryColorPicker = ColorPicker().addClass('secondary');
         tilePreview = true;
+        colorPickerHolder = $(DIV, {
+          "class": 'color_picker_holder'
+        }).append(primaryColorPicker, secondaryColorPicker);
+        colorbar.append(colorPickerHolder);
         pixie.bind('contextmenu', falseFn).bind('mousedown', function(e) {
           var target;
           target = $(e.target);
@@ -354,21 +376,42 @@
           return mode = void 0;
         });
         pixels = [];
-        frameDiv = $(DIV, {
-          "class": "frame current"
+        layer = Layer().bind("mousedown", function(e) {
+          undoStack.next();
+          active = true;
+          if (e.button === 0) {
+            mode = "P";
+          } else {
+            mode = "S";
+          }
+          return e.preventDefault();
+        }).bind("mousedown mousemove", function(event) {
+          var col, eventType, localX, localY, offset, pixel, row;
+          offset = $(this).offset();
+          localY = event.pageY - offset.top;
+          localX = event.pageX - offset.left;
+          row = Math.floor(localY / PIXEL_HEIGHT);
+          col = Math.floor(localX / PIXEL_WIDTH);
+          pixel = canvas.getPixel(col, row);
+          eventType = void 0;
+          if (event.type === "mousedown") {
+            eventType = event.type;
+          } else if (pixel && event.type === "mousemove") {
+            eventType = "mouseenter";
+          }
+          if (pixel && active) {
+            return currentTool[eventType].call(pixel, event, canvas.color(), pixel);
+          }
         });
-        layerDiv = Layer();
-        editingLayers = layerDiv;
         height.times(function(row) {
           pixels[row] = [];
           return width.times(function(col) {
             var pixel;
-            pixel = Pixel(col, row, layerDiv.get(0).getContext('2d'), canvas, undoStack);
+            pixel = Pixel(col, row, layer.get(0).getContext('2d'), undoStack);
             return pixels[row][col] = pixel;
           });
         });
-        frameDiv.append(layerDiv);
-        canvas.append(frameDiv);
+        canvas.append(layer);
         $.extend(canvas, {
           addAction: function(name, action) {
             var actionButton, doIt, iconImg, titleText, undoable;
@@ -411,7 +454,7 @@
             }
           },
           addTool: function(name, tool) {
-            var alt, setMe, toolDiv;
+            var alt, img, setMe, toolDiv;
             alt = name;
             tools[name].name = name;
             tools[name].icon = IMAGE_DIR + name + '.png';
@@ -430,7 +473,14 @@
                 });
               });
             }
-            toolDiv = $("<div><img src='" + tool.icon + "' alt='" + alt + "' title='" + alt + "'></img></div>").addClass('tool').attr('data-icon_name', name).click(function(e) {
+            img = $("<img />", {
+              src: tool.icon,
+              alt: alt,
+              title: alt
+            });
+            toolDiv = $("<div />", {
+              "class": "tool"
+            }).append(img).mousedown(function(e) {
               setMe();
               return false;
             });
@@ -467,7 +517,7 @@
             return this;
           },
           clear: function() {
-            return editingLayer.clear();
+            return layer.clear();
           },
           eachPixel: function(fn) {
             height.times(function(row) {
@@ -480,10 +530,8 @@
             return canvas;
           },
           getPixel: function(x, y) {
-            if (y >= 0 && y < height) {
-              if (x >= 0 && x < width) {
-                return pixels[y][x];
-              }
+            if (((0 <= y && y < height)) && ((0 <= x && x < width))) {
+              return pixels[y][x];
             }
             return void 0;
           },
@@ -500,7 +548,7 @@
           },
           parseColor: function(colorString) {
             var bits;
-            if (!colorString || colorString === transparent) {
+            if (!(colorString || colorString === transparent)) {
               return false;
             }
             bits = rgbParser.exec(colorString);
@@ -533,7 +581,10 @@
           },
           toDataURL: function() {
             var context;
-            canvas = $('<canvas width="' + width + '" height="' + height + '"></canvas>').get(0);
+            canvas = $('<canvas />', {
+              width: width,
+              height: height
+            }).get(0);
             context = canvas.getContext('2d');
             this.eachPixel(function(pixel, x, y) {
               var color;
@@ -559,39 +610,11 @@
         $.each(actions, function(key, action) {
           return canvas.addAction(key, action);
         });
-        guideLayer = Layer().bind("mousedown", function(e) {
-          undoStack.next();
-          active = true;
-          if (e.button === 0) {
-            mode = "P";
-          } else {
-            mode = "S";
-          }
-          return e.preventDefault();
-        }).bind("mousedown mousemove", function(event) {
-          var col, eventType, localX, localY, offset, pixel, row;
-          offset = $(this).offset();
-          localY = event.pageY - offset.top;
-          localX = event.pageX - offset.left;
-          row = Math.floor(localY / PIXEL_HEIGHT);
-          col = Math.floor(localX / PIXEL_WIDTH);
-          pixel = canvas.getPixel(col, row);
-          eventType = void 0;
-          if (event.type === "mousedown") {
-            eventType = event.type;
-          } else if (pixel && event.type === "mousemove") {
-            eventType = "mouseenter";
-          }
-          if (pixel && active) {
-            return currentTool[eventType].call(pixel, event, canvas.color(), pixel);
-          }
-        });
         canvas.setTool(tools.pencil);
-        canvas.append(guideLayer);
         viewport.append(canvas);
         $('nav.left').append(toolbar);
         $('nav.top').append(actionbar);
-        $('nav.bottom').append(preview);
+        $('nav.right').append(colorbar, preview);
         pixie.append(viewport);
         return $(this).append(pixie);
       });
