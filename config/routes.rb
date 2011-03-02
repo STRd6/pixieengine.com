@@ -111,7 +111,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :users do
+  resources :people, :controller => :users, :as => :users do
     member do
       get :collections
       get :favorites
