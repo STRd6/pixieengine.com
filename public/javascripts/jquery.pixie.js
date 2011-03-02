@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 02 Mar 2011 01:01:32 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 02 Mar 2011 09:41:39 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -328,7 +328,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, layer, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, tilePreview, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, layer, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(DIV, {
           "class": 'pixie'
         });
@@ -341,6 +341,9 @@
         toolbar = $(DIV, {
           "class": 'toolbar'
         });
+        swatches = $(DIV, {
+          "class": 'swatches'
+        });
         colorbar = $(DIV, {
           "class": "toolbar"
         });
@@ -349,10 +352,7 @@
         });
         preview = $(DIV, {
           "class": 'preview',
-          style: {
-            width: width,
-            height: height
-          }
+          style: "width: " + width + "px; height: " + height + "px;"
         });
         currentTool = void 0;
         active = false;
@@ -364,16 +364,17 @@
         colorPickerHolder = $(DIV, {
           "class": 'color_picker_holder'
         }).append(primaryColorPicker, secondaryColorPicker);
-        colorbar.append(colorPickerHolder);
-        pixie.bind('contextmenu', falseFn).bind('mousedown', function(e) {
+        colorbar.append(colorPickerHolder, swatches);
+        pixie.bind('contextmenu', falseFn).bind('mouseup keyup', function(e) {
+          active = false;
+          return mode = void 0;
+        });
+        $('nav.right').bind('mousedown', function(e) {
           var target;
           target = $(e.target);
           if (target.is('.swatch')) {
-            return canvas.color(target.css('backgroundColor'), e.button);
+            return canvas.color(target.css('backgroundColor'), e.button !== 0);
           }
-        }).bind('mouseup keyup', function(e) {
-          active = false;
-          return mode = void 0;
         });
         pixels = [];
         layer = Layer().bind("mousedown", function(e) {
@@ -453,6 +454,12 @@
               return actionButton.appendTo(actionbar);
             }
           },
+          addSwatch: function(color) {
+            return swatches.append($(DIV, {
+              "class": 'swatch',
+              style: "background-color: " + color
+            }));
+          },
           addTool: function(name, tool) {
             var alt, img, setMe, toolDiv;
             alt = name;
@@ -487,14 +494,14 @@
             return toolbar.append(toolDiv);
           },
           color: function(color, alternate) {
-            var parsedColor;
+            debugger;            var parsedColor;
             if (arguments.length === 0 || color === false) {
               if (mode === "S") {
                 return secondaryColorPicker.css('backgroundColor');
               } else {
                 return primaryColorPicker.css('backgroundColor');
               }
-            } else if (color) {
+            } else if (color === true) {
               if (mode === "S") {
                 return primaryColorPicker.css('backgroundColor');
               } else {
@@ -551,7 +558,7 @@
             if (!(colorString || colorString === transparent)) {
               return false;
             }
-            bits = rgbParser.exec(colorString);
+            bits = RGB_PARSER.exec(colorString);
             return [this.toHex(bits[1]), this.toHex(bits[2]), this.toHex(bits[3])].join('').toUpperCase();
           },
           preview: function() {
@@ -609,6 +616,9 @@
         });
         $.each(actions, function(key, action) {
           return canvas.addAction(key, action);
+        });
+        $.each(["#000", "#FFF", "#666", "#DCDCDC", "#EB070E", "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495", "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"], function(i, color) {
+          return canvas.addSwatch(color);
         });
         canvas.setTool(tools.pencil);
         viewport.append(canvas);

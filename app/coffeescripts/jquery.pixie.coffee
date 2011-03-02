@@ -278,6 +278,9 @@
       toolbar = $ DIV,
         class: 'toolbar'
 
+      swatches = $ DIV,
+        class: 'swatches'
+
       colorbar = $ DIV,
         class: "toolbar"
 
@@ -286,9 +289,7 @@
 
       preview = $ DIV,
         class: 'preview'
-        style:
-          width: width
-          height: height
+        style: "width: #{width}px; height: #{height}px;"
 
       currentTool = undefined
       active = false
@@ -303,22 +304,20 @@
         class: 'color_picker_holder'
       ).append(primaryColorPicker, secondaryColorPicker)
 
-      colorbar.append(colorPickerHolder)
+      colorbar.append(colorPickerHolder, swatches)
 
       pixie
         .bind('contextmenu', falseFn)
-        .bind('mousedown', (e) ->
-          target = $(e.target)
-
-          if(target.is('.swatch'))
-            canvas.color(target.css('backgroundColor'), e.button)
-
-        ).bind('mouseup keyup', (e) ->
+        .bind('mouseup keyup', (e) ->
           active = false
           mode = undefined
 
           #canvas.preview()
         )
+
+      $('nav.right').bind 'mousedown', (e) ->
+        target = $(e.target)
+        canvas.color(target.css('backgroundColor'), e.button != 0) if target.is('.swatch')
 
       pixels = []
 
@@ -401,6 +400,13 @@
 
             actionButton.appendTo(actionbar)
 
+        addSwatch: (color) ->
+          swatches.append(
+            $ DIV,
+              class: 'swatch'
+              style: "background-color: #{color}"
+          )
+
         addTool: (name, tool) ->
           alt = name
 
@@ -437,10 +443,11 @@
           toolbar.append(toolDiv)
 
         color: (color, alternate) ->
+          debugger
           if (arguments.length == 0 || color == false)
-            return if mode == "S" then secondaryColorPicker.css('backgroundColor') else primaryColorPicker.css('backgroundColor')
-          else if color
-            return if mode == "S" then primaryColorPicker.css('backgroundColor') else secondaryColorPicker.css('backgroundColor')
+            return (if mode == "S" then secondaryColorPicker.css('backgroundColor') else primaryColorPicker.css('backgroundColor'))
+          else if color == true
+            return (if mode == "S" then primaryColorPicker.css('backgroundColor') else secondaryColorPicker.css('backgroundColor'))
 
           parsedColor = null
           if color[0] != "#"
@@ -489,7 +496,7 @@
         parseColor: (colorString) ->
           return false unless colorString || colorString == transparent
 
-          bits = rgbParser.exec(colorString)
+          bits = RGB_PARSER.exec(colorString)
           return [
             this.toHex(bits[1])
             this.toHex(bits[2])
@@ -542,6 +549,13 @@
 
       $.each actions, (key, action) ->
         canvas.addAction(key, action)
+
+      $.each [
+        "#000", "#FFF", "#666", "#DCDCDC", "#EB070E"
+        "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
+        "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"
+      ], (i, color) ->
+        canvas.addSwatch(color)
 
       canvas.setTool(tools.pencil)
 
