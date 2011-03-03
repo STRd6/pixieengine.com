@@ -29,6 +29,10 @@ class App < ActiveRecord::Base
 
   scope :featured, where(:featured => true)
 
+  scope :for_user, lambda {|user|
+    where(:user_id => user.id)
+  }
+
   scope :none
 
   def resource_code

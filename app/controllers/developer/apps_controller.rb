@@ -558,13 +558,17 @@ bgMusic.play()
 
   def collection
     @collection ||= if filter
-      App.send(filter)
+      if filter == "own"
+        App.for_user(current_user)
+      else
+        App.send(filter)
+      end
     else
       App.featured
     end.order("id DESC")
   end
 
   def filters
-    ["featured", "none"]
+    ["featured", "own" "none"]
   end
 end
