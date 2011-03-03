@@ -56,6 +56,9 @@
     type = panel.attr('data-type')
     src_id = "#" + panel.find('textarea').attr('id')
 
+    if lang == "html"
+      lang = "xml"
+
     if type == "text"
       savedCode = $(src_id).val()
 
