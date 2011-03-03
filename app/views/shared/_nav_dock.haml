@@ -72,6 +72,8 @@
       else
         localStorage.chat = 'active'
         $('#chat').append(active_app.clone().css('padding-top', '10px'))
+    .click (event) ->
+      event.preventDefault()
 
     if localStorage.chat == 'active'
       $('#chat').mousedown()
