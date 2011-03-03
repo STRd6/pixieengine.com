@@ -1,4 +1,6 @@
 .filters
+  = button_link "Create App", "application_add", new_developer_app_path
+  Filter
   =link_to "Featured", { :filter => :featured }, { :class => "button" }
   =link_to "My Apps", { :filter => :own }, { :class => "button" }
   =link_to "All", { :filter => :none }, { :class => "button" }
