@@ -569,6 +569,6 @@ bgMusic.play()
   end
 
   def filters
-    ["featured", "own" "none"]
+    ["featured", "own", "none"]
   end
 end
