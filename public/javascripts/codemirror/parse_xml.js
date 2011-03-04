@@ -27,31 +27,31 @@ var XMLParser = Editor.Parser = (function() {
           source.next();
           if (source.equals("[")) {
             if (source.lookAhead("[CDATA[", true)) {
-              setState(inBlock("xml-cdata", "]]>"));
+              setState(inBlock("cdata", "]]>"));
               return null;
             }
             else {
-              return "xml-text";
+              return "text";
             }
           }
           else if (source.lookAhead("--", true)) {
-            setState(inBlock("xml-comment", "-->"));
+            setState(inBlock("comment", "-->"));
             return null;
           }
           else {
-            return "xml-text";
+            return "text";
           }
         }
         else if (source.equals("?")) {
           source.next();
           source.nextWhileMatches(/[\w\._\-]/);
-          setState(inBlock("xml-processing", "?>"));
-          return "xml-processing";
+          setState(inBlock("processing", "?>"));
+          return "processing";
         }
         else {
           if (source.equals("/")) source.next();
           setState(inTag);
-          return "xml-punctuation";
+          return "punctuation";
         }
       }
       else if (ch == "&") {
@@ -59,11 +59,11 @@ var XMLParser = Editor.Parser = (function() {
           if (source.next() == ";")
             break;
         }
-        return "xml-entity";
+        return "entity";
       }
       else {
         source.nextWhileMatches(/[^&<\n]/);
-        return "xml-text";
+        return "text";
       }
     }
 
@@ -71,15 +71,15 @@ var XMLParser = Editor.Parser = (function() {
       var ch = source.next();
       if (ch == ">") {
         setState(inText);
-        return "xml-punctuation";
+        return "punctuation";
       }
       else if (/[?\/]/.test(ch) && source.equals(">")) {
         source.next();
         setState(inText);
-        return "xml-punctuation";
+        return "punctuation";
       }
       else if (ch == "=") {
-        return "xml-punctuation";
+        return "punctuation";
       }
       else if (/[\'\"]/.test(ch)) {
         setState(inAttribute(ch));
@@ -87,7 +87,7 @@ var XMLParser = Editor.Parser = (function() {
       }
       else {
         source.nextWhileMatches(/[^\s\u00a0=<>\"\'\/?]/);
-        return "xml-name";
+        return "name";
       }
     }
 
@@ -99,7 +99,7 @@ var XMLParser = Editor.Parser = (function() {
             break;
           }
         }
-        return "xml-attribute";
+        return "attribute";
       };
     }
 
@@ -182,11 +182,11 @@ var XMLParser = Editor.Parser = (function() {
     function base() {
       return pass(element, base);
     }
-    var harmlessTokens = {"xml-text": true, "xml-entity": true, "xml-comment": true, "xml-processing": true};
+    var harmlessTokens = {"text": true, "entity": true, "comment": true, "processing": true};
     function element(style, content) {
       if (content == "<") cont(tagname, attributes, endtag(tokenNr == 1));
       else if (content == "</") cont(closetagname, expect(">"));
-      else if (style == "xml-cdata") {
+      else if (style == "cdata") {
         if (!context || context.name != "!cdata") pushContext("!cdata");
         if (/\]\]>$/.test(content)) popContext();
         cont();
@@ -195,9 +195,9 @@ var XMLParser = Editor.Parser = (function() {
       else {markErr(); cont();}
     }
     function tagname(style, content) {
-      if (style == "xml-name") {
+      if (style == "name") {
         currentTag = content.toLowerCase();
-        token.style = "xml-tagname";
+        token.style = "tagname";
         cont();
       }
       else {
@@ -206,8 +206,8 @@ var XMLParser = Editor.Parser = (function() {
       }
     }
     function closetagname(style, content) {
-      if (style == "xml-name") {
-        token.style = "xml-tagname";
+      if (style == "name") {
+        token.style = "tagname";
         if (context && content.toLowerCase() == context.name) popContext();
         else markErr();
       }
@@ -221,7 +221,7 @@ var XMLParser = Editor.Parser = (function() {
       };
     }
     function attributes(style) {
-      if (style == "xml-name") {token.style = "xml-attname"; cont(attribute, attributes);}
+      if (style == "name") {token.style = "attname"; cont(attribute, attributes);}
       else pass();
     }
     function attribute(style, content) {
@@ -230,7 +230,7 @@ var XMLParser = Editor.Parser = (function() {
       else pass();
     }
     function value(style) {
-      if (style == "xml-attribute") cont(value);
+      if (style == "attribute") cont(value);
       else pass();
     }
 
@@ -248,7 +248,7 @@ var XMLParser = Editor.Parser = (function() {
           token.indentation = computeIndentation(context);
         }
 
-        if (token.style == "whitespace" || token.type == "xml-comment")
+        if (token.style == "whitespace" || token.type == "comment")
           return token;
 
         while(true){

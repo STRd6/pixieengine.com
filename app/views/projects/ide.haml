@@ -14,6 +14,8 @@
     #tabs
       %ul
 
+= render :partial => "pixie"
+
 :coffeescript
   # Commands
   save = () ->
@@ -52,46 +54,55 @@
   window.createEditor = (ui) ->
     panel = $(ui.panel)
     tab = $(ui.tab)
+    path = panel.attr('data-path')
     lang = panel.attr('data-lang')
+    type = panel.attr('data-type')
     src_id = "#" + panel.find('textarea').attr('id')
 
-    if lang == "js"
-      lang = "javascript"
-    else if lang == "coffee"
-      lang = "coffeescript"
+    if lang == "html"
+      lang = "xml"
 
-    savedCode = $(src_id).val()
+    if type == "text"
+      savedCode = $(src_id).val()
 
-    codeTextArea = $(src_id).get(0)
-    editor = new CodeMirror.fromTextArea codeTextArea,
-      autoMatchParens: true
-      content: codeTextArea.value
-      height: "100%"
-      lineNumbers: true
-      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-      path: "/javascripts/codemirror/"
-      stylesheet: ["/stylesheets/codemirror/main.css"]
-      tabMode: "shift"
-      textWrapping: false
+      codeTextArea = $(src_id).get(0)
+      editor = new CodeMirror.fromTextArea codeTextArea,
+        autoMatchParens: true
+        content: codeTextArea.value
+        height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/javascripts/codemirror/"
+        stylesheet: ["/stylesheets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
 
-    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
 
-    bindKeys(editor.win.document, ctrlKeys)
+      bindKeys(editor.win.document, ctrlKeys)
 
-    # Listen for keypresses and update contents.
-    $(editor.win.document).keyup ->
-      currentCode = editor.getCode()
+      # Listen for keypresses and update contents.
+      $(editor.win.document).keyup ->
+        currentCode = editor.getCode()
 
-      if currentCode != savedCode
-        tab.parent().addClass("unsaved")
-      else
-        tab.parent().removeClass("unsaved")
+        if currentCode != savedCode
+          tab.parent().addClass("unsaved")
+        else
+          tab.parent().removeClass("unsaved")
 
-      $(src_id).val(currentCode)
+        $(src_id).val(currentCode)
 
-    lang: lang
-    updateSaved: () ->
-      savedCode = editor.getCode()
+      lang: lang
+      updateSaved: () ->
+        savedCode = editor.getCode()
+
+    else if type == "image"
+      pixelEditor = createPixelEditor
+        width: 32 #TODO: Real width
+        height: 32 #TODO: Real height
+        dataUrl: "/production/projects/#{project.id}\#{path}"
+
+      panel.empty().append(pixelEditor)
 
   # Tree and Tabs setup
   $ ->
@@ -117,7 +128,12 @@
       tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
     $('.filetree .file').live 'click', ->
-      $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
+      docSelector = $(this).data('id')
+
+      if $('#tabs ul li a[href="' + docSelector + '"]').length
+        $('#tabs ul li a[href="' + docSelector + '"]').click()
+      else
+        $tabs.tabs 'add', docSelector, $(this).text(), 0
 
     $('#tabs span.ui-icon-close').live 'click', ->
       parent = $(this).parent()

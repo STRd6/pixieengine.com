@@ -1,6 +1,5 @@
-%h2= user.display_name + "'s Profile"
-
 .profile
+  %h2= user.display_name
   .avatar
     = image_tag user.avatar.url(:large)
 
@@ -25,3 +24,16 @@
   .sprites
     = render :partial => user.sprites
   .clear
+
+%style
+  :sass
+    @import util
+
+    .tasks
+      +glass
+
+      background: tranparentize(#000, 0.75)
+      border: 1px solid tranparentize(#000, 0.5)
+      margin: 1em
+      overflow: hidden
+      padding: 1em

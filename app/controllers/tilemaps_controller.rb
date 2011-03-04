@@ -36,6 +36,6 @@ class TilemapsController < ApplicationController
   end
 
   def index
-    @tilemaps = Tilemap.all
+    @tilemaps = Tilemap.order("id DESC").all
   end
 end

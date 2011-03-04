@@ -2,10 +2,11 @@ class Project < ActiveRecord::Base
   belongs_to :user
 
   before_validation :update_hook_url
-  
-  after_create :clone_repo
 
+  after_save :create_directory
   after_save :import_files
+
+  after_create :clone_repo
 
   attr_accessor :import_zip
 
@@ -27,6 +28,10 @@ class Project < ActiveRecord::Base
     base_path.join(id.to_s).to_s
   end
 
+  def create_directory
+    FileUtils.mkdir_p path
+  end
+
   def git_util(*args)
     system 'script/git_util', path, *args
   end
@@ -39,10 +44,13 @@ class Project < ActiveRecord::Base
     git_util 'push', '-u', 'origin', 'master'
   end
 
+  def git_tag(tag, message)
+    git_util 'tag', '-am', message, tag
+    git_util 'push', '--tags'
+  end
+
   def clone_repo
     if git?
-      FileUtils.mkdir_p path
-
       git_util "clone", remote_origin, path
       git_util 'checkout', '-b', BRANCH_NAME
     end
@@ -101,14 +109,42 @@ class Project < ActiveRecord::Base
       }
     elsif File.file? file_path
       ext = File.extname(filename)[1..-1]
-      contents = File.read(file_path)
+      lang = lang_for(ext)
+      type = type_for(ext)
+
+      if type == "text"
+        contents = File.read(file_path)
+      end
+
       {
         :name => filename,
         :contents => contents,
         :ext => ext,
+        :lang => lang,
+        :type => type,
         :size => File.size(file_path),
         :path => file_path.sub(project_root_path, ''),
       }
+    end
+  end
+
+  def lang_for(extension)
+    case extension
+    when "js"
+      "javascript"
+    when "coffee"
+      "coffeescript"
+    when "html", "css"
+      extension
+    end
+  end
+
+  def type_for(extension)
+    case extension
+    when "js", "coffee", "html", "css"
+      "text"
+    when "png", "jpg", "jpeg", "gif"
+      "image"
     end
   end
 

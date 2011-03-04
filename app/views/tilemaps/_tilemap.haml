@@ -1,0 +1,8 @@
+.tilemap.clickable
+  %h2.title= link_to tilemap.title, edit_tilemap_path(tilemap)
+  %span.author
+    by
+    - if creator = tilemap.user
+      = creator.display_name
+    - else
+      Anonymous

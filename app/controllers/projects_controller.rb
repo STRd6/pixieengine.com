@@ -39,6 +39,8 @@ class ProjectsController < ApplicationController
     url = push[:repository][:url]
 
     Project.with_url(url).each(&:git_pull)
+
+    render :text => "ok"
   end
 
   def show
