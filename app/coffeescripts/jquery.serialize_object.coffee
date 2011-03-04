@@ -3,12 +3,17 @@ jQuery.fn.serializeObject = () ->
   objectData = {}
 
   $.each arrayData, () ->
-    if objectData[this.name]
+    if this.value?
+      value = this.value
+    else
+      value = ''
+
+    if objectData[this.name]?
       unless objectData[this.name].push
         objectData[this.name] = [objectData[this.name]]
 
-      objectData[this.name].push(this.value || '')
+      objectData[this.name].push value
     else
-      objectData[this.name] = this.value || ''
+      objectData[this.name] = value
 
-  return objectData;
+  return objectData
