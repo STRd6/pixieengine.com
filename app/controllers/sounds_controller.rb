@@ -13,13 +13,12 @@ class SoundsController < ResourceController::Base
   def new
     respond_with(@sound) do |format|
       format.html do
-        render :layout => "fullscreen"
       end
     end
   end
 
   def index
-    @sounds = Sound.all
+    @sounds = Sound.order("id DESC").all
   end
 
   private
