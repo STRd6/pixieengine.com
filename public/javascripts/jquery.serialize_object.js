@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 04 Mar 2011 22:20:14 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 04 Mar 2011 22:31:33 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.serialize_object.coffee
  */
 

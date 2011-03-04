@@ -17,6 +17,7 @@
 = render :partial => "pixie"
 
 :coffeescript
+
   # Commands
   save = () ->
     notify "Saving..."
@@ -58,18 +59,17 @@
     lang = panel.attr('data-lang')
     type = panel.attr('data-type')
     mtime = panel.attr('data-mtime')
-    src_id = "#" + panel.find('textarea').attr('id')
 
     if lang == "html"
       lang = "xml"
 
     if type == "text"
-      savedCode = $(src_id).val()
+      textArea = panel.find('textarea').get(0)
+      savedCode = textArea.value
 
-      codeTextArea = $(src_id).get(0)
-      editor = new CodeMirror.fromTextArea codeTextArea,
+      editor = new CodeMirror.fromTextArea textArea,
         autoMatchParens: true
-        content: codeTextArea.value
+        content: savedCode
         height: "100%"
         lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
@@ -91,7 +91,7 @@
         else
           tab.parent().removeClass("unsaved")
 
-        $(src_id).val(currentCode)
+        textArea.value = currentCode
 
       cssClass: lang
       updateSaved: () ->

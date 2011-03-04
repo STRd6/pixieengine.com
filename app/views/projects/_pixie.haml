@@ -5,73 +5,70 @@
 
   %button Save
 
-:plain
-  <script type="text/coffeescript">
-    $ ->
-      window.createPixelEditor = (options) ->
-        width = options.width
-        height = options.height
-        dataUrl = options.dataUrl
-        title = options.title
-        path = options.path
-        tab = null
+:coffeescript
+  $ ->
+    window.createPixelEditor = (options) ->
+      width = options.width
+      height = options.height
+      dataUrl = options.dataUrl
+      title = options.title
+      path = options.path
+      tab = null
 
-        $('<div />').pixie
-          width: width
-          height: height
-          frames: 1
-          initializer: (canvas) ->
-            if dataUrl
-              canvas.fromDataURL(dataUrl)
+      $('<div />').pixie
+        width: width
+        height: height
+        frames: 1
+        initializer: (canvas) ->
+          if dataUrl
+            canvas.fromDataURL(dataUrl)
 
-            promptForTitle = ->
-              $('#titleModal button').unbind()
+          promptForTitle = ->
+            $('#titleModal button').unbind()
 
-              $("#titleModal button").one 'click', ->
-                title = $("#titleModal input").val()
+            $("#titleModal button").one 'click', ->
+              title = $("#titleModal input").val()
 
-                tab.find("a").text title
+              tab.find("a").text title
 
+              $.modal.close()
+              postImage()
+
+            $("#titleModal").modal()
+
+              onClose: () ->
+                $('#titleModal button').unbind()
                 $.modal.close()
-                postImage()
 
-              $("#titleModal").modal()
+          postImage = ->
+            notify "Saving, please wait..."
 
-                onClose: () ->
-                  $('#titleModal button').unbind()
-                  $.modal.close()
+            postData =
+              'format': 'json',
+              'contents_base64': canvas.toBase64()
+              'path': path
 
-            postImage = ->
-              notify "Saving, please wait..."
+            $.post '/projects/#{project.id}/save_file', postData, (data) ->
+              $(".tool.button").last().removeAttr("disabled")
 
-              postData =
-                'format': 'json',
-                'contents_base64': canvas.toBase64()
-                'path': path
+              if data.status == "error"
+                notify data.message
+                return
 
-              $.post '/projects/#{project.id}/save_file', postData, (data) ->
-                $(".tool.button").last().removeAttr("disabled")
+              notify("Saved!")
 
-                if data.status == "error"
-                  notify data.message
-                  return
+              trackPageview("/event/save_drawing")
+              canvas.dirty(false)
+            , "json"
 
-                notify("Saved!")
+          canvas.addAction
+            name: "Save"
+            icon: "/images/icons/database_save.png"
+            perform: (canvas) ->
+              $(".tool.button").last().attr("disabled", true)
 
-                trackPageview("/event/save_drawing")
-                canvas.dirty(false)
-              , "json"
+              tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
 
-            canvas.addAction
-              name: "Save"
-              icon: "/images/icons/database_save.png"
-              perform: (canvas) ->
-                $(".tool.button").last().attr("disabled", true)
+              postImage()
 
-                tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
-
-                postImage()
-
-              undoable: false
-
-  </script>
+            undoable: false
