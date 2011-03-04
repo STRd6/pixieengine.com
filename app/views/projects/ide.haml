@@ -14,6 +14,8 @@
     #tabs
       %ul
 
+= render :partial => "pixie"
+
 :coffeescript
   # Commands
   save = () ->
@@ -52,6 +54,7 @@
   window.createEditor = (ui) ->
     panel = $(ui.panel)
     tab = $(ui.tab)
+    path = panel.attr('data-path')
     lang = panel.attr('data-lang')
     type = panel.attr('data-type')
     src_id = "#" + panel.find('textarea').attr('id')
@@ -94,7 +97,12 @@
         savedCode = editor.getCode()
 
     else if type == "image"
-      ;#TODO Create pixel editor
+      pixelEditor = createPixelEditor
+        width: 32 #TODO: Real width
+        height: 32 #TODO: Real height
+        dataUrl: "/production/projects/#{project.id}\#{path}"
+
+      panel.empty().append(pixelEditor)
 
   # Tree and Tabs setup
   $ ->
@@ -120,7 +128,12 @@
       tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
     $('.filetree .file').live 'click', ->
-      $tabs.tabs 'add', $(this).data('id'), $(this).text(), 0
+      docSelector = $(this).data('id')
+
+      if $('#tabs ul li a[href="' + docSelector + '"]').length
+        $('#tabs ul li a[href="' + docSelector + '"]').click()
+      else
+        $tabs.tabs 'add', docSelector, $(this).text(), 0
 
     $('#tabs span.ui-icon-close').live 'click', ->
       parent = $(this).parent()
