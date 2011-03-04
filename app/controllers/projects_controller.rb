@@ -52,9 +52,13 @@ class ProjectsController < ApplicationController
   end
 
   def save_file
-    #TODO Save
+    if params[:contents_base64]
+      contents = Base64.decode64(params[:contents_base64])
+    else
+      contents = params[:contents]
+    end
 
-    project.save_file(params[:path], params[:contents])
+    project.save_file(params[:path], contents)
 
     respond_to do |format|
       format.json do

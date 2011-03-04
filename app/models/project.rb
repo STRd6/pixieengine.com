@@ -123,6 +123,7 @@ class Project < ActiveRecord::Base
         :lang => lang,
         :type => type,
         :size => File.size(file_path),
+        :mtime => File.mtime(file_path).to_i,
         :path => file_path.sub(project_root_path, ''),
       }
     end

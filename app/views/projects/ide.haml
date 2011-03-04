@@ -57,6 +57,7 @@
     path = panel.attr('data-path')
     lang = panel.attr('data-lang')
     type = panel.attr('data-type')
+    mtime = panel.attr('data-mtime')
     src_id = "#" + panel.find('textarea').attr('id')
 
     if lang == "html"
@@ -92,7 +93,7 @@
 
         $(src_id).val(currentCode)
 
-      lang: lang
+      cssClass: lang
       updateSaved: () ->
         savedCode = editor.getCode()
 
@@ -100,9 +101,14 @@
       pixelEditor = createPixelEditor
         width: 32 #TODO: Real width
         height: 32 #TODO: Real height
-        dataUrl: "/production/projects/#{project.id}\#{path}"
+        dataUrl: "/production/projects/#{project.id}\#{path}?\#{mtime}"
+        path: path
 
       panel.empty().append(pixelEditor)
+
+      cssClass: "sprite"
+      updateSaved: () ->
+        ;#TODO
 
   # Tree and Tabs setup
   $ ->
@@ -114,7 +120,7 @@
 
         if fileData = createEditor(ui)
           $(ui.tab).data('updateSaved', fileData.updateSaved)
-          $(ui.tab).parent().find('span.lang').addClass(fileData.lang)
+          $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
 
         window.currentPanel = ui.panel
 

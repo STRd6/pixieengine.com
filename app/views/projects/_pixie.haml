@@ -13,6 +13,7 @@
         height = options.height
         dataUrl = options.dataUrl
         title = options.title
+        path = options.path
         tab = null
 
         $('<div />').pixie
@@ -45,8 +46,8 @@
 
               postData =
                 'format': 'json',
-                'app_sprite[sprite][file_base64_encoded]': canvas.toBase64()
-                'app_sprite[sprite][replay_data]': JSON.stringify(canvas.getReplayData())
+                'contents_base64': canvas.toBase64()
+                'path': path
 
               $.post '/projects/#{project.id}/save_file', postData, (data) ->
                 $(".tool.button").last().removeAttr("disabled")
@@ -55,17 +56,7 @@
                   notify data.message
                   return
 
-                sprite = data.app_sprite
-                sprite.cssImageUrl = canvas.toCSSImageURL()
-                sprite.width = width
-                sprite.height = height
-
                 notify("Saved!")
-
-                # Close tab
-                tab.find('span').first().click()
-
-                updateSpriteNode sprite
 
                 trackPageview("/event/save_drawing")
                 canvas.dirty(false)
@@ -79,10 +70,7 @@
 
                 tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
 
-                if title
-                  postImage()
-                else
-                  promptForTitle()
+                postImage()
 
               undoable: false
 
