@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 02 Mar 2011 09:41:39 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 04 Mar 2011 02:01:13 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -46,7 +46,7 @@
         next: function() {
           var last;
           last = this.last();
-          if (!(last && empty)) {
+          if (!last || !empty) {
             undos.push({});
             empty = true;
             return redos = [];
@@ -82,8 +82,8 @@
     };
     shiftImageHorizontal = function(canvas, byX) {
       var deferredColors, height, index, width;
-      width = canvas.width;
-      height = canvas.height;
+      width = canvas.width();
+      height = canvas.height();
       index = byX === -1 ? 0 : width - 1;
       deferredColors = [];
       height.times(function(y) {
@@ -121,13 +121,15 @@
         hotkeys: ["ctrl+z", "meta+z"],
         perform: function(canvas) {
           return canvas.undo();
-        }
+        },
+        undoable: false
       },
       redo: {
         hotkeys: ["ctrl+y", "meta+z"],
         perform: function(canvas) {
           return canvas.redo();
-        }
+        },
+        undoable: false
       },
       clear: {
         perform: function(canvas) {
@@ -140,31 +142,30 @@
         menu: false,
         perform: function(canvas) {
           return canvas.preview();
-        }
+        },
+        undoable: false
       },
       left: {
-        menu: false,
-        perform: function(canvas) {
-          return shiftImageHorizontal(canvas, -1);
-        }
-      },
-      right: {
+        hotkeys: ["left"],
         menu: false,
         perform: function(canvas) {
           return shiftImageHorizontal(canvas, 1);
         }
       },
-      up: {
+      right: {
+        hotkeys: ["left"],
         menu: false,
-        perform: function(canvas) {
-          return shiftImageVertical(canvas, -1);
-        }
+        perform: function(canvas) {}
+      },
+      up: {
+        hotkeys: ["left"],
+        menu: false,
+        perform: function(canvas) {}
       },
       down: {
+        hotkeys: ["left"],
         menu: false,
-        perform: function(canvas) {
-          return shiftImageVertical(canavs, 1);
-        }
+        perform: function(canvas) {}
       },
       download: {
         hotkeys: ["ctrl+s"],
@@ -198,6 +199,7 @@
     };
     tools = {
       pencil: {
+        cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default",
         hotkeys: ['p'],
         mousedown: function(e, color) {
           return this.color(color);
@@ -207,6 +209,7 @@
         }
       },
       brush: {
+        cursor: "url(" + IMAGE_DIR + "paintbrush.png) 4 14, default",
         hotkeys: ['b'],
         mousedown: function(e, color) {
           return colorNeighbors.call(this, color);
@@ -216,13 +219,18 @@
         }
       },
       dropper: {
+        cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default",
         hotkeys: ['i'],
         mousedown: function() {
           this.canvas.color(this.color());
           return this.canvas.setTool(tools.pencil);
+        },
+        mouseup: function() {
+          return this.canvas.setTool(tools.pencil);
         }
       },
       eraser: {
+        cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default",
         hotkeys: ['e'],
         mousedown: function() {
           return colorTransparent.call(this);
@@ -232,6 +240,7 @@
         }
       },
       fill: {
+        cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default",
         hotkeys: ['f'],
         mousedown: function(e, newColor, pixel) {
           var canvas, neighbors, originalColor, q, _results;
@@ -260,13 +269,13 @@
     };
     return $.fn.pixie = function(options) {
       var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, width;
-      Pixel = function(x, y, layerCanvas, undoStack) {
+      Pixel = function(x, y, layerCanvas, canvas, undoStack) {
         var color, self;
         color = TRANSPARENT;
         self = {
           x: x,
           y: y,
-          canvas: layerCanvas,
+          canvas: canvas,
           color: function(newColor, skipUndo) {
             var xPos, yPos;
             if (arguments.length >= 1) {
@@ -308,7 +317,7 @@
         context = layerElement.getContext("2d");
         return $.extend(layer, {
           clear: function() {
-            return context.clearRect(0, 0, width * PIXEL_WIDTH, height * PIXEL_HEIGHT);
+            return context.clearRect(0, 0, layerWidth, layerHeight);
           },
           drawGuide: function() {
             context.fillStyle = gridColor;
@@ -352,7 +361,7 @@
         });
         preview = $(DIV, {
           "class": 'preview',
-          style: "width: " + width + "px; height: " + height + "px;"
+          style: "width: " + width + "px height: " + height + "px"
         });
         currentTool = void 0;
         active = false;
@@ -367,7 +376,8 @@
         colorbar.append(colorPickerHolder, swatches);
         pixie.bind('contextmenu', falseFn).bind('mouseup keyup', function(e) {
           active = false;
-          return mode = void 0;
+          mode = void 0;
+          return canvas.preview();
         });
         $('nav.right').bind('mousedown', function(e) {
           var target;
@@ -408,7 +418,7 @@
           pixels[row] = [];
           return width.times(function(col) {
             var pixel;
-            pixel = Pixel(col, row, layer.get(0).getContext('2d'), undoStack);
+            pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack);
             return pixels[row][col] = pixel;
           });
         });
@@ -441,9 +451,8 @@
               actionButton = $("<a />", {
                 "class": 'tool button',
                 id: 'action_button_' + name.replace(" ", "-").toLowerCase(),
-                href: '#',
                 title: titleText,
-                text: name
+                text: name.capitalize()
               }).prepend(iconImg).mousedown(function(e) {
                 if (!$(this).attr('disabled')) {
                   doIt();
@@ -462,10 +471,9 @@
           },
           addTool: function(name, tool) {
             var alt, img, setMe, toolDiv;
-            alt = name;
-            tools[name].name = name;
-            tools[name].icon = IMAGE_DIR + name + '.png';
-            tools[name].cursor = 'url(' + IMAGE_DIR + name + '.png) 4 14, default';
+            alt = name.capitalize();
+            tool.name = name;
+            tool.icon = IMAGE_DIR + name + '.png';
             setMe = function() {
               canvas.setTool(tool);
               toolbar.children().removeClass("active");
@@ -494,7 +502,7 @@
             return toolbar.append(toolDiv);
           },
           color: function(color, alternate) {
-            debugger;            var parsedColor;
+            var parsedColor;
             if (arguments.length === 0 || color === false) {
               if (mode === "S") {
                 return secondaryColorPicker.css('backgroundColor');
@@ -530,11 +538,30 @@
             height.times(function(row) {
               return width.times(function(col) {
                 var pixel;
-                pixel = pixels[col][row];
+                pixel = pixels[row][col];
                 return fn.call(pixel, pixel, col, row);
               });
             });
             return canvas;
+          },
+          fromDataURL: function(dataURL) {
+            var context, image;
+            context = document.createElement('canvas').getContext('2d');
+            image = new Image();
+            image.onload = function() {
+              var getColor, imageData;
+              context.drawImage(image, 0, 0);
+              imageData = context.getImageData(0, 0, image.width, image.height);
+              getColor = function(x, y) {
+                var index;
+                index = (x + y * imageData.width) * 4;
+                return "rgba(" + [imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255].join(',') + ")";
+              };
+              return canvas.eachPixel(function(pixel, x, y) {
+                return pixel.color(getColor(x, y), true);
+              });
+            };
+            return image.src = dataURL;
           },
           getPixel: function(x, y) {
             if (((0 <= y && y < height)) && ((0 <= x && x < width))) {
@@ -587,19 +614,19 @@
             return "url(" + (this.toDataURL()) + ")";
           },
           toDataURL: function() {
-            var context;
-            canvas = $('<canvas />', {
+            var context, tempCanvas;
+            tempCanvas = $('<canvas />', {
               width: width,
               height: height
             }).get(0);
-            context = canvas.getContext('2d');
+            context = tempCanvas.getContext('2d');
             this.eachPixel(function(pixel, x, y) {
               var color;
               color = pixel.color();
               context.fillStyle = color;
               return context.fillRect(x, y, 1, 1);
             });
-            return canvas.toDataURL("image/png");
+            return tempCanvas.toDataURL("image/png");
           },
           undo: function() {
             var data;
@@ -623,9 +650,8 @@
         canvas.setTool(tools.pencil);
         viewport.append(canvas);
         $('nav.left').append(toolbar);
-        $('nav.top').append(actionbar);
         $('nav.right').append(colorbar, preview);
-        pixie.append(viewport);
+        pixie.append(actionbar, viewport);
         return $(this).append(pixie);
       });
     };

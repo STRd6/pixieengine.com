@@ -6,14 +6,13 @@ $sidebar: 50px
 #fullscreen
 
   &.light
-    nav
+    nav.left, nav.right, nav.top
       background-color: $light_highlight
 
   section
     +bounds(100%)
 
     overflow: hidden
-    padding-top: $sidebar
     padding-left: $sidebar
     position: relative
 
@@ -25,23 +24,39 @@ $sidebar: 50px
     cursor: default
     position: relative
 
-  nav.left, nav.top, nav.right
+  nav.left, nav.right
     +border-radius
     +box-sizing(border-box)
 
     background-color: $dark_highlight
     padding: 1em
 
-  nav.top
-    +bounds(60%, $sidebar)
-
-    margin-left: $sidebar + 20px
-    margin-right: $sidebar + 20px
-
   nav.right
-    +bounds(100px, 30%)
+    +bounds(150px, 68%)
 
     margin-bottom: 100px
+    height: 410px
+
+    .preview
+      background-color: #fff
+      border: 1px solid #AAA
+      height: 150px
+      position: absolute
+      top: 270px
+      left: 0
+      right: 0
+      margin: auto
+      width: 150px
+      cursor: default
+
+    .swatches
+      +bounds(48px, 175px)
+
+      position: absolute
+      left: 0
+      right: 0
+      top: 95px
+      margin: auto
 
     .swatch
       border: 1px solid #666
@@ -54,7 +69,11 @@ $sidebar: 50px
     .color_picker_holder
       height: 76px
       margin-bottom: 7px
-      position: relative
+      position: absolute
+      left: 0
+      right: 0
+      margin-left: auto
+      margin-right: auto
       width: 74px
 
       input.color
@@ -62,6 +81,7 @@ $sidebar: 50px
         border-color= #CCC
         height: 50px
         position: absolute
+        text-align: center
         width: 50px
 
         &.primary
@@ -83,9 +103,8 @@ $sidebar: 50px
   float: right
 
 nav.left
-  +bounds($sidebar, 40%)
+  +bounds($sidebar, 230px)
 
-  margin-top: $sidebar + 20px
   margin-bottom: $sidebar + 20px
 
   .toolbar
@@ -94,6 +113,8 @@ nav.left
     height: auto
     position: absolute
     top: 0
+    left: 0
+    right: 0
     vertical-align: top
 
     .tool
@@ -119,17 +140,14 @@ nav.left
   +bounds(100%)
   +box-sizing(border-box)
 
-  margin: 1em
-  padding-bottom: 75px
-  padding-right: 125px
+  margin: 0 1em 1em 1em
+  padding-bottom: 40px
+  padding-right: 175px
 
   .canvas
     +user-select(none)
-    background-color: #ccc
     +box-sizing(border-box)
     height: 100%
-    margin-right: 1em
-    margin-bottom: 1em
     position: relative
     width: 100%
 
@@ -137,11 +155,10 @@ nav.left
     +bounds(100%)
     +box-sizing(border-box)
 
-    padding-bottom: 75px
+    padding-bottom: 40px
     padding-right: 125px
 
-    background-color: #ccc
-    border: 1px solid #666
+    background-color: transparent
     display: inline-block
     margin-right: 1em
     overflow: auto
@@ -166,12 +183,16 @@ nav.left
     padding: 0
     width: 15px
 
+  .actions
+    position: fixed
+    top: 7px
+
   .actions, .layers
     display: block
 
     a.tool
       color: black
-      margin: 5px
+      margin: 1px
       padding: .25em
 
       &:hover
@@ -181,13 +202,6 @@ nav.left
       &.active
         background-color: #1084CE
         text-decoration: none
-
-  .preview
-    border: 1px solid #AAA
-    height: 150px
-    position: relative
-    width: 150px
-    cursor: default
 
   .toggle_holder
     display: block

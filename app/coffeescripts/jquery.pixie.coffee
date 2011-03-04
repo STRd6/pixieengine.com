@@ -35,7 +35,7 @@
 
     next: ->
       last = this.last()
-      unless last && empty
+      if !last || !empty
         undos.push({})
         empty = true
 
@@ -65,8 +65,8 @@
       return replayData
 
   shiftImageHorizontal = (canvas, byX) ->
-    width = canvas.width
-    height = canvas.height
+    width = canvas.width()
+    height = canvas.height()
     index = if byX == -1 then 0 else width - 1
 
     deferredColors = []
@@ -105,10 +105,12 @@
       hotkeys: ["ctrl+z", "meta+z"]
       perform: (canvas) ->
         canvas.undo()
+      undoable: false
     redo:
       hotkeys: ["ctrl+y", "meta+z"]
       perform: (canvas) ->
         canvas.redo()
+      undoable: false
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
@@ -117,22 +119,27 @@
       menu: false
       perform: (canvas) ->
         canvas.preview()
+      undoable: false
     left:
-      menu: false
-      perform: (canvas) ->
-        shiftImageHorizontal(canvas, -1)
-    right:
+      hotkeys: ["left"]
       menu: false
       perform: (canvas) ->
         shiftImageHorizontal(canvas, 1)
+    right:
+      hotkeys: ["left"]
+      menu: false
+      perform: (canvas) ->
+        #shiftImageHorizontal(canvas, 1)
     up:
+      hotkeys: ["left"]
       menu: false
       perform: (canvas) ->
-        shiftImageVertical(canvas, -1)
+        #shiftImageVertical(canvas, -1)
     down:
+      hotkeys: ["left"]
       menu: false
       perform: (canvas) ->
-        shiftImageVertical(canavs, 1)
+        #shiftImageVertical(canavs, 1)
     download:
       hotkeys: ["ctrl+s"]
       perform: (canvas) ->
@@ -159,29 +166,36 @@
 
   tools =
     pencil:
+      cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
       hotkeys: ['p']
       mousedown: (e, color) ->
         this.color(color)
       mouseenter: (e, color) ->
         this.color(color)
     brush:
+      cursor: "url(" + IMAGE_DIR + "paintbrush.png) 4 14, default"
       hotkeys: ['b']
       mousedown: (e, color) ->
         colorNeighbors.call(this, color)
       mouseenter: (e, color) ->
         colorNeighbors.call(this, color)
     dropper:
+      cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
       hotkeys: ['i']
       mousedown: ->
         this.canvas.color(this.color())
         this.canvas.setTool(tools.pencil)
+      mouseup: ->
+        this.canvas.setTool(tools.pencil)
     eraser:
+      cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e']
       mousedown: ->
         colorTransparent.call(this)
       mouseenter: ->
         colorTransparent.call(this)
     fill:
+      cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
       hotkeys: ['f']
       mousedown: (e, newColor, pixel) ->
         originalColor = this.color()
@@ -204,13 +218,13 @@
               q.push(neighbor)
 
   $.fn.pixie = (options) ->
-    Pixel = (x, y, layerCanvas, undoStack) ->
+    Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = TRANSPARENT
 
       self =
         x: x
         y: y
-        canvas: layerCanvas
+        canvas: canvas
 
         color: (newColor, skipUndo) ->
           if arguments.length >= 1
@@ -247,7 +261,7 @@
 
       return $.extend layer,
         clear: ->
-          context.clearRect(0, 0, width * PIXEL_WIDTH, height * PIXEL_HEIGHT)
+          context.clearRect(0, 0, layerWidth, layerHeight)
         drawGuide: ->
           context.fillStyle = gridColor
           height.times (row) ->
@@ -289,7 +303,7 @@
 
       preview = $ DIV,
         class: 'preview'
-        style: "width: #{width}px; height: #{height}px;"
+        style: "width: #{width}px height: #{height}px"
 
       currentTool = undefined
       active = false
@@ -312,7 +326,7 @@
           active = false
           mode = undefined
 
-          #canvas.preview()
+          canvas.preview()
         )
 
       $('nav.right').bind 'mousedown', (e) ->
@@ -354,7 +368,7 @@
         pixels[row] = []
 
         width.times (col) ->
-          pixel = Pixel(col, row, layer.get(0).getContext('2d'), undoStack)
+          pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack)
           pixels[row][col] = pixel
 
       canvas.append(layer)
@@ -386,9 +400,8 @@
             actionButton = $("<a />",
               class: 'tool button'
               id: 'action_button_' + name.replace(" ", "-").toLowerCase()
-              href: '#'
               title: titleText
-              text: name
+              text: name.capitalize()
             )
             .prepend(iconImg)
             .mousedown (e) ->
@@ -408,11 +421,10 @@
           )
 
         addTool: (name, tool) ->
-          alt = name
+          alt = name.capitalize()
 
-          tools[name].name = name
-          tools[name].icon = IMAGE_DIR + name + '.png'
-          tools[name].cursor = 'url(' + IMAGE_DIR + name + '.png) 4 14, default'
+          tool.name = name
+          tool.icon = IMAGE_DIR + name + '.png'
 
           setMe = ->
             canvas.setTool(tool)
@@ -443,7 +455,6 @@
           toolbar.append(toolDiv)
 
         color: (color, alternate) ->
-          debugger
           if (arguments.length == 0 || color == false)
             return (if mode == "S" then secondaryColorPicker.css('backgroundColor') else primaryColorPicker.css('backgroundColor'))
           else if color == true
@@ -469,10 +480,32 @@
         eachPixel: (fn) ->
           height.times (row) ->
             width.times (col) ->
-              pixel = pixels[col][row]
+              pixel = pixels[row][col]
               fn.call(pixel, pixel, col, row)
 
           canvas
+
+        fromDataURL: (dataURL) ->
+          context = document.createElement('canvas').getContext('2d')
+
+          image = new Image()
+          image.onload = ->
+            context.drawImage(image, 0, 0)
+            imageData = context.getImageData(0, 0, image.width, image.height)
+
+            getColor = (x, y) ->
+              index = (x + y * imageData.width) * 4
+              return "rgba(" + [
+                imageData.data[index + 0],
+                imageData.data[index + 1],
+                imageData.data[index + 2],
+                imageData.data[index + 3]/255
+              ].join(',') + ")"
+
+            canvas.eachPixel (pixel, x, y) ->
+              pixel.color(getColor(x, y), true)
+
+          image.src = dataURL
 
         getPixel: (x, y) ->
           return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
@@ -524,18 +557,19 @@
         toCSSImageURL: -> "url(#{this.toDataURL()})"
 
         toDataURL: ->
-          canvas = $('<canvas />',
+          tempCanvas = $('<canvas />',
             width: width
             height: height
           ).get(0)
-          context = canvas.getContext('2d')
+
+          context = tempCanvas.getContext('2d')
 
           this.eachPixel (pixel, x, y) ->
             color = pixel.color()
             context.fillStyle = color
             context.fillRect(x, y, 1, 1)
 
-          return canvas.toDataURL("image/png")
+          return tempCanvas.toDataURL("image/png")
 
         undo: ->
           data = undoStack.popUndo()
@@ -561,8 +595,7 @@
 
       viewport.append(canvas)
       $('nav.left').append(toolbar)
-      $('nav.top').append(actionbar)
       $('nav.right').append(colorbar, preview)
-      pixie.append(viewport)
+      pixie.append(actionbar, viewport)
       $(this).append(pixie)
 )(jQuery)

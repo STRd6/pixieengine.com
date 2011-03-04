@@ -6,8 +6,8 @@
 = stylesheet_link_tag 'pixie/pixie'
 = javascript_include_tag 'pixie/jqcolor', 'http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'
 
-- width = @width || 96
-- height = @height || 96
+- width = @width || 32
+- height = @height || 32
 - data = @data
 
 .unsupported
@@ -22,7 +22,6 @@
 
 .pixel_editor
   %section#pixie
-    %nav.top
     %nav.left
     %nav.right
 
