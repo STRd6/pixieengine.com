@@ -1,11 +1,14 @@
+
+%nav.top.actions
+  %button#save Save
+  %button#new New
+  %button#run Run
+  %button#publish Publish
+
 #content
   #error
-  %nav.left
-    .actions
-      %button#save Save
-      %button#run Run
-      %button#publish Publish
 
+  %nav.left
     %ul.filetree
       - project.file_info[:files].each do |file|
         = render :partial => "file_tree_node", :locals => {:file_info => file}
@@ -48,9 +51,18 @@
 
   $('#save').live 'click', save
 
+  newFileModal = () ->
+    alert "TODO: New File"
+    # Pop up new file modal
+    # User chooses editor type
+    # editor opens
+
+  $("#new").live 'click', newFileModal
+
   # key combos like ctrl+s
   ctrlKeys =
     s: save
+    #TODO Fix => n: newFileModal
 
   bindKeys = (scopeDocument, ctrlKeys) ->
     $.each ctrlKeys, (key, fn) ->

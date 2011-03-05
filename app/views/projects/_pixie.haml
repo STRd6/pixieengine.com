@@ -61,13 +61,16 @@
               canvas.dirty(false)
             , "json"
 
+          # TODO: Check if this is a 'new' file and add 'Save As' instead
+          # or have both 'save' and 'save as' as options
+
           canvas.addAction
             name: "Save"
             icon: "/images/icons/database_save.png"
             perform: (canvas) ->
               $(".tool.button").last().attr("disabled", true)
 
-              tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'));
+              tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
 
               postImage()
 
