@@ -143,4 +143,20 @@ class ApplicationController < ActionController::Base
   def hide_feedback
     @hide_feedback = true
   end
+
+  def per_page
+    40
+  end
+
+  def filters
+    []
+  end
+
+  def filter
+    if params[:filter] && filters.include?(params[:filter])
+      params[:filter]
+    else
+      filters.first
+    end
+  end
 end

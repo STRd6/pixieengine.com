@@ -1,6 +1,16 @@
 
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+-# fall back to local jQuery if necessary
+:javascript
+  if(!window.jQuery) {
+    document.write(unescape('%3Cscript src="/javascripts/jquery.min.js"%3E%3C/script%3E'));
+  }
+
 = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
+:javascript
+  if(!window.jQuery.ui) {
+    document.write(unescape('%3Cscript src="/javascripts/jquery.ui.min.js"%3E%3C/script%3E'));
+  }
 
 = javascript_include_tag 'rails', 'util', 'application', 'site', :cache => "main"
 
@@ -16,6 +26,7 @@
     jquery.property_editor
     jquery.pixie
     jquery.power_canvas
+    jquery.serialize_object
     jquery.tipsy
   ]
 

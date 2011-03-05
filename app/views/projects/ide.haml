@@ -1,0 +1,158 @@
+#content
+  #error
+  %nav.left
+    .actions
+      %button#save Save
+      %button#run Run
+      %button#publish Publish
+
+    %ul.filetree
+      - project.file_info[:files].each do |file|
+        = render :partial => "file_tree_node", :locals => {:file_info => file}
+
+  %section
+    #tabs
+      %ul
+
+= render :partial => "pixie"
+= render :partial => "file_template"
+
+:coffeescript
+  window.newFileNode = () ->
+    path = "/test.test"
+    data_id = path #TODO GSUBS!
+    $("#file_template").tmpl
+      name: "A new test file!"
+      path: path
+      ext: "test"
+      data_id: data_id
+
+  # Commands
+  save = () ->
+    notify "Saving..."
+
+    activeTab = $("#tabs ul li.ui-state-active")
+
+    form = $(currentPanel).find('form')
+
+    form.ajaxSubmit
+      type: 'POST'
+      dataType: "json"
+      success: () ->
+        notify "Saved!"
+
+        if updateSaved = activeTab.find('a').data('updateSaved')
+          updateSaved()
+
+        activeTab.removeClass("unsaved")
+
+  $('#save').live 'click', save
+
+  # key combos like ctrl+s
+  ctrlKeys =
+    s: save
+
+  bindKeys = (scopeDocument, ctrlKeys) ->
+    $.each ctrlKeys, (key, fn) ->
+      $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (event) ->
+        event.preventDefault()
+        fn()
+      )
+
+  bindKeys(document, ctrlKeys)
+
+  window.createEditor = (ui) ->
+    panel = $(ui.panel)
+    tab = $(ui.tab)
+    path = panel.attr('data-path')
+    lang = panel.attr('data-lang')
+    type = panel.attr('data-type')
+    mtime = panel.attr('data-mtime')
+
+    if lang == "html"
+      lang = "xml"
+
+    if type == "text"
+      textArea = panel.find('textarea').get(0)
+      savedCode = textArea.value
+
+      editor = new CodeMirror.fromTextArea textArea,
+        autoMatchParens: true
+        content: savedCode
+        height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/javascripts/codemirror/"
+        stylesheet: ["/stylesheets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
+
+      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+
+      bindKeys(editor.win.document, ctrlKeys)
+
+      # Listen for keypresses and update contents.
+      $(editor.win.document).keyup ->
+        currentCode = editor.getCode()
+
+        if currentCode != savedCode
+          tab.parent().addClass("unsaved")
+        else
+          tab.parent().removeClass("unsaved")
+
+        textArea.value = currentCode
+
+      cssClass: lang
+      updateSaved: () ->
+        savedCode = editor.getCode()
+
+    else if type == "image"
+      pixelEditor = createPixelEditor
+        width: 32 #TODO: Real width
+        height: 32 #TODO: Real height
+        dataUrl: "/production/projects/#{project.id}\#{path}?\#{mtime}"
+        path: path
+
+      panel.empty().append(pixelEditor)
+
+      cssClass: "sprite"
+      updateSaved: () ->
+        ;#TODO
+
+  # Tree and Tabs setup
+  $ ->
+    $('ul.filetree').treeview()
+
+    $tabs = $('#tabs').tabs
+      add: (event, ui) ->
+        $tabs.tabs('select', '#' + ui.panel.id)
+
+        if fileData = createEditor(ui)
+          $(ui.tab).data('updateSaved', fileData.updateSaved)
+          $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
+
+        window.currentPanel = ui.panel
+
+      remove: (event, ui) ->
+        $(ui.panel).find(".CodeMirror-wrapping").remove()
+        $('.filetree').append(ui.panel)
+
+      select: (event, ui) ->
+        window.currentPanel = ui.panel
+
+      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+
+    $('.filetree .file').live 'click', ->
+      docSelector = $(this).data('id')
+
+      if $('#tabs ul li a[href="' + docSelector + '"]').length
+        $('#tabs ul li a[href="' + docSelector + '"]').click()
+      else
+        $tabs.tabs 'add', docSelector, $(this).text(), 0
+
+    $('#tabs span.ui-icon-close').live 'click', ->
+      parent = $(this).parent()
+
+      if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
+        index = $('li', $tabs).index(parent)
+        $tabs.tabs('remove', index)

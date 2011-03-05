@@ -1,7 +1,34 @@
-= button_link "New Tilemap", "world_add", new_tilemap_path(:tileset_id => "355")
+- @title = "Tilemap Gallery"
 
-%h2 Tilemaps
+%nav.top
+  = button_link "New Tilemap", "world_add", new_tilemap_path(:tileset_id => "355")
 
-%ul
-  - @tilemaps.each do |tilemap|
-    %li= link_to tilemap.display_name, tilemap
+%section
+  = render :partial => @tilemaps
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .tilemap
+      +bounds(240px, 160px)
+      +glass
+      +inline-block
+
+      margin: 1em
+      overflow-y: auto
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+    .light
+      .animation
+        background-color: $light_highlight

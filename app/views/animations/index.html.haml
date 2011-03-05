@@ -1,3 +1,8 @@
+- @title = "Animation Gallery"
+
+%nav.top
+  = button_link "Create an Animation", "film_add", new_animation_path
+
 %section
   = render :partial => @animations
 
@@ -6,12 +11,22 @@
     @import partials/base
     @import util
 
+    .title_container
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
     .animation
       +bounds(240px, 160px)
       +glass
       +inline-block
 
       margin: 1em
+      overflow-x: hidden
       overflow-y: auto
       padding: 1em
 
@@ -41,7 +56,3 @@
           text-align: center
           top: -17px
           white-space: nowrap
-
-    .light
-      .animation
-        background-color: $light_highlight

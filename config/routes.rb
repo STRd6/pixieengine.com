@@ -7,6 +7,19 @@ PixieStrd6Com::Application.routes.draw do |map|
     resources :comments, :feedbacks, :sprites, :users, :reports
   end
 
+  resources :projects do
+    member do
+      get :ide
+
+      post :save_file
+    end
+
+    collection do
+      get :github_integration
+      post :hook
+    end
+  end
+
   namespace :developer do
     resources :apps do
       member do
@@ -57,6 +70,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         post :add_script
         post :remove_script
+        post :download
 
         get :test
       end
@@ -97,7 +111,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :users do
+  resources :people, :controller => :users, :as => :users do
     member do
       get :collections
       get :favorites

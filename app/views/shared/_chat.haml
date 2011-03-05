@@ -53,7 +53,9 @@
         localStorage.chatTop = $('#chatZone').offset().top
         localStorage.chatLeft = $('#chatZone').offset().left
 
-    scrollToBottomLeft $('#chats')
+    setTimeout ->
+      scrollToBottomLeft $('#chats')
+    , 3000
 
     window.setInterval ->
       $.get('/active_users', $.noop, "script")

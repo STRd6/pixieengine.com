@@ -10,16 +10,19 @@
         = link_to_unless_current image_tag("sprites_dock.png"), sprites_path, :title => "Sprite Gallery"
       %li
         %span Animation Editor
-        = link_to_unless_current image_tag("animation_dock.png"), new_animation_path, :title => "Animation Editor"
+        = link_to_unless_current image_tag("animation_dock.png"), animations_path, :title => "Animations"
       %li
         %span Tilemap Editor
-        = link_to_unless_current image_tag("tilemap_dock.png"), new_tilemap_path(:tileset_id => "355"), :title => "Tilemap Editor"
+        = link_to_unless_current image_tag("tilemap_dock.png"), tilemaps_path, :title => "Tilemaps"
       %li
         %span IDE
         = link_to_unless_current image_tag("ide_dock.png"), developer_apps_path, :title => "IDE"
       %li
-        %span Sound FX Editor
-        = link_to_unless_current image_tag("sfx_dock.png"), new_sound_path, :title => "Sound FX Editor"
+        %span Sound Gallery
+        = link_to_unless_current image_tag("sfx_dock.png"), sounds_path, :title => "Sound Gallery"
+      %li
+        %span Users
+        = link_to_unless_current image_tag("users_dock.png"), users_path, :title => "People"
       %li#chat
         %span Chat
         = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
@@ -69,6 +72,8 @@
       else
         localStorage.chat = 'active'
         $('#chat').append(active_app.clone().css('padding-top', '10px'))
+    .click (event) ->
+      event.preventDefault()
 
     if localStorage.chat == 'active'
       $('#chat').mousedown()
@@ -108,7 +113,7 @@
         background: url(/images/show_dock.png) no-repeat
 
     #dockContainer
-      +bounds(508px, 72px)
+      +bounds(580px, 72px)
       bottom: 0
       left: 0
       right: 0

@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
   }
 
+  scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
+
+  scope :none
+
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?
   end

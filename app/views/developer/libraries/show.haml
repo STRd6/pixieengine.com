@@ -1,6 +1,8 @@
 %h2= library.title
 %p= library.description
 
+= button_to "Download .zip", :action => "download"
+
 - library.component_libraries.each do |component_library|
   = link_to component_library.title, [:developer, component_library]
 
