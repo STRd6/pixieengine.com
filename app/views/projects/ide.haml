@@ -15,8 +15,17 @@
       %ul
 
 = render :partial => "pixie"
+= render :partial => "file_template"
 
 :coffeescript
+  window.newFileNode = () ->
+    path = "/test.test"
+    data_id = path #TODO GSUBS!
+    $("#file_template").tmpl
+      name: "A new test file!"
+      path: path
+      ext: "test"
+      data_id: data_id
 
   # Commands
   save = () ->
