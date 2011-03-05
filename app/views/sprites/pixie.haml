@@ -4,7 +4,7 @@
   - @meta_desc = "Load #{sprite.meta_desc}"
 
 = stylesheet_link_tag 'pixie/pixie'
-= javascript_include_tag 'pixie/jqcolor', 'http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'
+= javascript_include_tag 'pixie/jqcolor'
 
 - width = @width || 32
 - height = @height || 32
@@ -18,7 +18,7 @@
     please come back with a better browser:
     = link_to "Google Chrome", "http://www.google.com/chrome"
 
-  <iframe title="YouTube video player" class="youtube-player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/BrXPcaRlBqo" frameborder="0" allowFullScreen></iframe>
+  %iframe(allowFullScreen){ :title => "YouTube video player", :class=> "youtube-player", :type => "text/html", :width => "640", :height => "390",  :src => "http://www.youtube.com/embed/BrXPcaRlBqo", :frameborder => "0" }
 
 .pixel_editor
   %section#pixie
@@ -89,29 +89,21 @@
         // HAX: Global ref of canvas
         window.canvas = canvas;
 
-        canvas.addAction({
-          name: "Replay",
-          icon: "/images/icons/resultset_next.png",
+        canvas.addAction("Replay", {
           perform: function(canvas) {
             canvas.replay();
           },
           undoable: false
         });
 
-        canvas.addAction({
-          name: "New",
-          cssClass: "pillbox-left",
-          icon: "/images/icons/page_white_add.png",
+        canvas.addAction("New", {
           perform: function(canvas) {
             setNewDimensions();
           },
           undoable: false
         });
 
-        canvas.addAction({
-          name: "Save",
-          cssClass: "pillbox-right",
-          icon: "/images/icons/database_save.png",
+        canvas.addAction("Save", {
           perform: function(canvas) {
             $(".tool.button[title=Save]").attr("disabled", true);
             window.onbeforeunload = undefined;
@@ -120,8 +112,7 @@
           undoable: false
         });
 
-        canvas.addAction({
-          name: "Post to Chat",
+        canvas.addAction("Post to Chat", {
           icon: "/images/icons/picture_go.png",
           perform: function(canvas) {
             var wrapper = $("<div />");

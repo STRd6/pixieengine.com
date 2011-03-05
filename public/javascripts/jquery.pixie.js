@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 04 Mar 2011 02:01:13 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 05 Mar 2011 01:28:20 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -36,12 +36,12 @@
           return undo;
         },
         popRedo: function() {
-          var undo;
-          undo = redos.pop();
-          if (undo) {
-            undos.push(undo);
+          var redo;
+          redo = redos.pop();
+          if (redo) {
+            undos.push(redo);
           }
-          return undo;
+          return redo;
         },
         next: function() {
           var last;
@@ -82,8 +82,8 @@
     };
     shiftImageHorizontal = function(canvas, byX) {
       var deferredColors, height, index, width;
-      width = canvas.width();
-      height = canvas.height();
+      width = canvas.width;
+      height = canvas.height;
       index = byX === -1 ? 0 : width - 1;
       deferredColors = [];
       height.times(function(y) {
@@ -153,17 +153,43 @@
         }
       },
       right: {
-        hotkeys: ["left"],
+        hotkeys: ["right"],
         menu: false,
-        perform: function(canvas) {}
+        perform: function(canvas) {
+        var width = canvas.width;
+        var height = canvas.height;
+
+        var deferredColors = [];
+
+        height.times(function(y) {
+          deferredColors[y] = canvas.getPixel(width - 1, y).color();
+        });
+
+        for(var x = width-1; x >= 0; x--) {
+          for(var y = 0; y < height; y++) {
+            var currentPixel = canvas.getPixel(x, y);
+            var leftPixel = canvas.getPixel(x - 1, y);
+
+            if(leftPixel) {
+              currentPixel.color(leftPixel.color());
+            } else {
+              currentPixel.color(transparent);
+            }
+          }
+        }
+
+        $.each(deferredColors, function(y, color) {
+          canvas.getPixel(0, y).color(color);
+        });
+      }
       },
       up: {
-        hotkeys: ["left"],
+        hotkeys: ["up"],
         menu: false,
         perform: function(canvas) {}
       },
       down: {
-        hotkeys: ["left"],
+        hotkeys: ["down"],
         menu: false,
         perform: function(canvas) {}
       },
@@ -337,7 +363,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, layer, mode, pixels, pixie, preview, primaryColorPicker, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, initialStateData, lastClean, layer, mode, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(DIV, {
           "class": 'pixie'
         });
@@ -369,6 +395,8 @@
         undoStack = UndoStack();
         primaryColorPicker = ColorPicker().addClass('primary');
         secondaryColorPicker = ColorPicker().addClass('secondary');
+        replaying = false;
+        initialStateData = void 0;
         tilePreview = true;
         colorPickerHolder = $(DIV, {
           "class": 'color_picker_holder'
@@ -446,11 +474,10 @@
             }
             if (action.menu !== false) {
               iconImg = $("<img />", {
-                src: IMAGE_DIR + name + '.png'
+                src: action.icon || IMAGE_DIR + name + '.png'
               });
               actionButton = $("<a />", {
                 "class": 'tool button',
-                id: 'action_button_' + name.replace(" ", "-").toLowerCase(),
                 title: titleText,
                 text: name.capitalize()
               }).prepend(iconImg).mousedown(function(e) {
@@ -534,6 +561,29 @@
           clear: function() {
             return layer.clear();
           },
+          dirty: function(newDirty) {
+            var lastClean;
+            if (newDirty !== void 0) {
+              if (newDirty === false) {
+                lastClean = undoStack.last();
+              }
+              return this;
+            } else {
+              return lastClean !== undoStack.last();
+            }
+          },
+          displayInitialState: function() {
+            this.clear();
+            if (initialStateData) {
+              return $.each(initialStateData, function(f, data) {
+                return canvas.eachPixel(function(pixel, x, y) {
+                  var pos;
+                  pos = x + y * canvas.width;
+                  return pixel.color(data[pos], true);
+                });
+              });
+            }
+          },
           eachPixel: function(fn) {
             height.times(function(row) {
               return width.times(function(col) {
@@ -563,14 +613,17 @@
             };
             return image.src = dataURL;
           },
+          getNeighbors: function(x, y) {
+            return [this.getPixel(x + 1, y), this.getPixel(x, y + 1), this.getPixel(x - 1, y), this.getPixel(x, y - 1)];
+          },
           getPixel: function(x, y) {
             if (((0 <= y && y < height)) && ((0 <= x && x < width))) {
               return pixels[y][x];
             }
             return void 0;
           },
-          getNeighbors: function(x, y) {
-            return [this.getPixel(x + 1, y), this.getPixel(x, y + 1), this.getPixel(x - 1, y), this.getPixel(x, y - 1)];
+          getReplayData: function() {
+            return undoStack.replayData();
           },
           toHex: function(bits) {
             var s;
@@ -602,23 +655,58 @@
             data = undoStack.popRedo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.oldColor, true);
+                return this.pixel.color(this.newColor, true);
               });
             }
+          },
+          replay: function(steps) {
+            var delay, i, runStep;
+            if (!replaying) {
+              replaying = true;
+              canvas = this;
+              if (!steps) {
+                steps = this.getReplayData();
+                canvas.displayInitialState();
+              } else {
+                canvas.clear();
+              }
+              i = 0;
+              delay = (5000 / steps.length).clamp(1, 200);
+              runStep = function() {
+                var step;
+                step = steps[i];
+                if (step) {
+                  $.each(step, function(j, p) {
+                    return canvas.getPixel(p.x, p.y, p.z, p.f).color(p.color, true);
+                  });
+                  i++;
+                  return setTimeout(runStep, delay);
+                } else {
+                  return replaying = false;
+                }
+              };
+              return setTimeout(runStep, delay);
+            }
+          },
+          setInitialState: function(frameData) {
+            initialStateData = frameData;
+            return this.displayInitialState();
           },
           setTool: function(tool) {
             currentTool = tool;
             return canvas.css('cursor', tool.cursor || "pointer");
+          },
+          toBase64: function(f) {
+            var data;
+            data = this.toDataURL(f);
+            return data.substr(data.indexOf(',') + 1);
           },
           toCSSImageURL: function() {
             return "url(" + (this.toDataURL()) + ")";
           },
           toDataURL: function() {
             var context, tempCanvas;
-            tempCanvas = $('<canvas />', {
-              width: width,
-              height: height
-            }).get(0);
+            tempCanvas = $("<canvas width=" + width + " height=" + height + "></canvas>").get(0);
             context = tempCanvas.getContext('2d');
             this.eachPixel(function(pixel, x, y) {
               var color;
@@ -636,7 +724,9 @@
                 return this.pixel.color(this.oldColor, true);
               });
             }
-          }
+          },
+          width: width,
+          height: height
         });
         $.each(tools, function(key, tool) {
           return canvas.addTool(key, tool);
@@ -652,7 +742,11 @@
         $('nav.left').append(toolbar);
         $('nav.right').append(colorbar, preview);
         pixie.append(actionbar, viewport);
-        return $(this).append(pixie);
+        $(this).append(pixie);
+        if (initializer) {
+          initializer(canvas);
+        }
+        return lastClean = undoStack.last();
       });
     };
   })(jQuery);

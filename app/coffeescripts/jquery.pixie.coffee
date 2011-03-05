@@ -27,11 +27,11 @@
       return undo
 
     popRedo: ->
-      undo = redos.pop()
+      redo = redos.pop()
 
-      undos.push(undo) if undo
+      undos.push(redo) if redo
 
-      return undo
+      return redo
 
     next: ->
       last = this.last()
@@ -65,8 +65,8 @@
       return replayData
 
   shiftImageHorizontal = (canvas, byX) ->
-    width = canvas.width()
-    height = canvas.height()
+    width = canvas.width
+    height = canvas.height
     index = if byX == -1 then 0 else width - 1
 
     deferredColors = []
@@ -126,17 +126,42 @@
       perform: (canvas) ->
         shiftImageHorizontal(canvas, 1)
     right:
-      hotkeys: ["left"]
+      hotkeys: ["right"]
       menu: false
-      perform: (canvas) ->
-        #shiftImageHorizontal(canvas, 1)
+      perform: `function(canvas) {
+        var width = canvas.width;
+        var height = canvas.height;
+
+        var deferredColors = [];
+
+        height.times(function(y) {
+          deferredColors[y] = canvas.getPixel(width - 1, y).color();
+        });
+
+        for(var x = width-1; x >= 0; x--) {
+          for(var y = 0; y < height; y++) {
+            var currentPixel = canvas.getPixel(x, y);
+            var leftPixel = canvas.getPixel(x - 1, y);
+
+            if(leftPixel) {
+              currentPixel.color(leftPixel.color());
+            } else {
+              currentPixel.color(transparent);
+            }
+          }
+        }
+
+        $.each(deferredColors, function(y, color) {
+          canvas.getPixel(0, y).color(color);
+        });
+      }`
     up:
-      hotkeys: ["left"]
+      hotkeys: ["up"]
       menu: false
       perform: (canvas) ->
         #shiftImageVertical(canvas, -1)
     down:
-      hotkeys: ["left"]
+      hotkeys: ["down"]
       menu: false
       perform: (canvas) ->
         #shiftImageVertical(canavs, 1)
@@ -311,6 +336,8 @@
       undoStack = UndoStack()
       primaryColorPicker = ColorPicker().addClass('primary')
       secondaryColorPicker = ColorPicker().addClass('secondary')
+      replaying = false
+      initialStateData = undefined
 
       tilePreview = true
 
@@ -393,13 +420,11 @@
                 false
 
           if action.menu != false
-            iconImg = $("<img />",
-              src: IMAGE_DIR + name + '.png'
-            )
+            iconImg = $ "<img />",
+              src: action.icon || IMAGE_DIR + name + '.png'
 
             actionButton = $("<a />",
               class: 'tool button'
-              id: 'action_button_' + name.replace(" ", "-").toLowerCase()
               title: titleText
               text: name.capitalize()
             )
@@ -414,11 +439,9 @@
             actionButton.appendTo(actionbar)
 
         addSwatch: (color) ->
-          swatches.append(
-            $ DIV,
-              class: 'swatch'
-              style: "background-color: #{color}"
-          )
+          swatches.append $ DIV,
+            class: 'swatch'
+            style: "background-color: #{color}"
 
         addTool: (name, tool) ->
           alt = name.capitalize()
@@ -477,6 +500,23 @@
 
         clear: -> layer.clear()
 
+        dirty: (newDirty) ->
+          if newDirty != undefined
+            if newDirty == false
+              lastClean = undoStack.last()
+            return this
+          else
+            return lastClean != undoStack.last()
+
+        displayInitialState: ->
+          this.clear()
+
+          if initialStateData
+            $.each initialStateData, (f, data) ->
+              canvas.eachPixel (pixel, x, y) ->
+                pos = x + y*canvas.width
+                pixel.color(data[pos], true)
+
         eachPixel: (fn) ->
           height.times (row) ->
             width.times (col) ->
@@ -507,10 +547,6 @@
 
           image.src = dataURL
 
-        getPixel: (x, y) ->
-          return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
-          return undefined
-
         getNeighbors: (x, y) ->
           return [
             this.getPixel(x+1, y)
@@ -518,6 +554,12 @@
             this.getPixel(x-1, y)
             this.getPixel(x, y-1)
           ]
+
+        getPixel: (x, y) ->
+          return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
+          return undefined
+
+        getReplayData: -> undoStack.replayData()
 
         toHex: (bits) ->
           s = parseInt(bits).toString(16)
@@ -548,19 +590,54 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.oldColor, true)
+              this.pixel.color(this.newColor, true)
+
+        replay: (steps) ->
+          if !replaying
+            replaying = true
+            canvas = this
+
+            if !steps
+              steps = this.getReplayData()
+              canvas.displayInitialState()
+            else
+              canvas.clear()
+
+            i = 0
+            delay = (5000 / steps.length).clamp(1, 200)
+
+            runStep = ->
+              step = steps[i]
+
+              if step
+                $.each step, (j, p) ->
+                  canvas.getPixel(p.x, p.y, p.z, p.f).color(p.color, true)
+
+                i++
+
+                setTimeout(runStep, delay)
+              else
+                replaying = false
+
+            setTimeout(runStep, delay)
+
+        setInitialState: (frameData) ->
+          initialStateData = frameData
+
+          this.displayInitialState()
 
         setTool: (tool) ->
           currentTool = tool
           canvas.css('cursor', tool.cursor || "pointer")
 
+        toBase64: (f) ->
+          data = this.toDataURL(f)
+          return data.substr(data.indexOf(',') + 1)
+
         toCSSImageURL: -> "url(#{this.toDataURL()})"
 
         toDataURL: ->
-          tempCanvas = $('<canvas />',
-            width: width
-            height: height
-          ).get(0)
+          tempCanvas = $("<canvas width=#{width} height=#{height}></canvas>").get(0)
 
           context = tempCanvas.getContext('2d')
 
@@ -577,6 +654,9 @@
           if data
             $.each data, ->
               this.pixel.color(this.oldColor, true)
+
+        width: width
+        height: height
 
       $.each tools, (key, tool) ->
         canvas.addTool(key, tool)
@@ -598,4 +678,9 @@
       $('nav.right').append(colorbar, preview)
       pixie.append(actionbar, viewport)
       $(this).append(pixie)
+
+      if initializer
+        initializer(canvas)
+
+      lastClean = undoStack.last()
 )(jQuery)
