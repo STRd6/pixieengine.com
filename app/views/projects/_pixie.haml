@@ -1,10 +1,3 @@
-#titleModal
-  %p
-    = label_tag :title
-    = text_field_tag :title, "", {:title => 'title'}
-
-  %button Save
-
 :coffeescript
   $ ->
     window.createPixelEditor = (options) ->
@@ -15,7 +8,7 @@
       path = options.path
       tab = null
 
-      $('<div />').pixie
+      pixelEditor = $('<div />').pixie
         width: width
         height: height
         frames: 1
@@ -23,55 +16,14 @@
           if dataUrl
             canvas.fromDataURL(dataUrl)
 
-          promptForTitle = ->
-            $('#titleModal button').unbind()
-
-            $("#titleModal button").one 'click', ->
-              title = $("#titleModal input").val()
-
-              tab.find("a").text title
-
-              $.modal.close()
-              postImage()
-
-            $("#titleModal").modal()
-
-              onClose: () ->
-                $('#titleModal button').unbind()
-                $.modal.close()
-
-          postImage = ->
-            notify "Saving, please wait..."
-
-            postData =
-              'format': 'json',
-              'contents_base64': canvas.toBase64()
-              'path': path
-
-            $.post '/projects/#{project.id}/save_file', postData, (data) ->
-              $(".tool.button").last().removeAttr("disabled")
-
-              if data.status == "error"
-                notify data.message
-                return
-
-              notify("Saved!")
-
-              trackPageview("/event/save_drawing")
-              canvas.dirty(false)
-            , "json"
-
-          # TODO: Check if this is a 'new' file and add 'Save As' instead
-          # or have both 'save' and 'save as' as options
-
           canvas.addAction
             name: "Save"
             icon: "/images/icons/database_save.png"
             perform: (canvas) ->
-              $(".tool.button").last().attr("disabled", true)
-
               tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
 
-              postImage()
+              pixelEditor.trigger 'save',
+                contents_base64: canvas.toBase64()
+                path: path
 
             undoable: false

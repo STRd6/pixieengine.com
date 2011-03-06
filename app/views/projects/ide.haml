@@ -31,23 +31,31 @@
       data_id: data_id
 
   # Commands
-  save = () ->
+  save = (event, data) ->
     notify "Saving..."
 
     activeTab = $("#tabs ul li.ui-state-active")
 
-    form = $(currentPanel).find('form')
+    successCallback = (data) ->
+      notify "Saved!"
 
-    form.ajaxSubmit
-      type: 'POST'
-      dataType: "json"
-      success: () ->
-        notify "Saved!"
+      if updateSaved = activeTab.find('a').data('updateSaved')
+        updateSaved()
 
-        if updateSaved = activeTab.find('a').data('updateSaved')
-          updateSaved()
+      activeTab.removeClass("unsaved")
 
-        activeTab.removeClass("unsaved")
+    if data
+     postData = $.extend({format: 'json'}, data)
+
+     $.post '/projects/#{project.id}/save_file', postData, successCallback
+
+    else
+      form = $(currentPanel).find('form')
+
+      form.ajaxSubmit
+        type: 'POST'
+        dataType: "json"
+        success: successCallback
 
   $('#save').live 'click', save
 
@@ -125,11 +133,18 @@
         dataUrl: "/production/projects/#{project.id}\#{path}?\#{mtime}"
         path: path
 
+      pixelEditor.bind('save', save)
+
       panel.empty().append(pixelEditor)
 
       cssClass: "sprite"
       updateSaved: () ->
         ;#TODO
+
+    else if type == "sound"
+      ;#TODO Sound Editor embed
+    else if type == "tilemap"
+      ;#TODO Tilemap Editor embed
 
   # Tree and Tabs setup
   $ ->
