@@ -18,9 +18,13 @@
       %ul
 
 = render :partial => "pixie"
+= render :partial => "sfxr"
 = render :partial => "file_template"
 
 :coffeescript
+  window.log = (message) ->
+    console.log message
+
   window.newFileNode = () ->
     path = "/test.test"
     data_id = path #TODO GSUBS!
@@ -31,7 +35,7 @@
       data_id: data_id
 
   # Commands
-  save = (event, data) ->
+  window.save = (event, data) ->
     notify "Saving..."
 
     activeTab = $("#tabs ul li.ui-state-active")
@@ -39,8 +43,8 @@
     successCallback = (data) ->
       notify "Saved!"
 
-      if updateSaved = activeTab.find('a').data('updateSaved')
-        updateSaved()
+      # Check for update saved method
+      activeTab.find('a').data('updateSaved')?()
 
       activeTab.removeClass("unsaved")
 
@@ -52,10 +56,14 @@
     else
       form = $(currentPanel).find('form')
 
-      form.ajaxSubmit
-        type: 'POST'
-        dataType: "json"
-        success: successCallback
+      if form.length
+        form.ajaxSubmit
+          type: 'POST'
+          dataType: "json"
+          success: successCallback
+      else
+        # Check for special save method
+        activeTab.find('a').data('doSave')?()
 
   $('#save').live 'click', save
 
@@ -138,13 +146,38 @@
       panel.empty().append(pixelEditor)
 
       cssClass: "sprite"
-      updateSaved: () ->
-        ;#TODO
+      updateSaved: () -> #TODO
+      doSave: () ->
+        pixelEditor.trigger('doSave')
 
     else if type == "sound"
-      ;#TODO Sound Editor embed
+      contentsField = panel.find('[name=contents]')
+      soundData = contentsField.val()
+      hiddenContentsField = $ "<input />",
+        name: "contents"
+        type: "hidden"
+        val: soundData
+
+      soundEditor = createSoundEditor
+        soundData: soundData
+        path: path
+
+      soundEditor.bind('save', save)
+
+      panel.empty().append(soundEditor, hiddenContentsField)
+
+      #TODO: Save both .wav and .sfs files
+
+      cssClass: type
+      updateSaved: () -> #TODO
+      doSave: () ->
+        soundEditor.trigger('doSave')
+
     else if type == "tilemap"
-      ;#TODO Tilemap Editor embed
+      #TODO Tilemap Editor embed
+
+      cssClass: type
+      updateSaved: () -> #TODO
 
   # Tree and Tabs setup
   $ ->
@@ -156,6 +189,7 @@
 
         if fileData = createEditor(ui)
           $(ui.tab).data('updateSaved', fileData.updateSaved)
+          $(ui.tab).data('doSave', fileData.doSave)
           $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
 
         window.currentPanel = ui.panel

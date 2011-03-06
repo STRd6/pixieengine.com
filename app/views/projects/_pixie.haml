@@ -6,12 +6,15 @@
     title = options.title
     path = options.path
     tab = null
+    _canvas = null
 
     pixelEditor = $('<div />').pixie
       width: width
       height: height
       frames: 1
       initializer: (canvas) ->
+        _canvas = canvas
+
         if dataUrl
           canvas.fromDataURL(dataUrl)
 
@@ -21,8 +24,13 @@
           perform: (canvas) ->
             tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
 
-            pixelEditor.trigger 'save',
-              contents_base64: canvas.toBase64()
-              path: path
+            pixelEditor.trigger('doSave')
 
           undoable: false
+
+    pixelEditor.bind 'doSave', ->
+      pixelEditor.trigger 'save',
+        contents_base64: _canvas.toBase64()
+        path: path
+
+    return pixelEditor

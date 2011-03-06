@@ -37,6 +37,7 @@ package
   import flash.utils.ByteArray;
   import flash.utils.Dictionary;
   import flash.utils.Endian;
+  import flash.utils.setTimeout;
 
   import co.uk.mikestead.net.URLFileVariable;
   import co.uk.mikestead.net.URLRequestBuilder;
@@ -96,6 +97,7 @@ package
     private var _sfxrRect:Rectangle;         // Click rectangle for LD website link
     private var _volumeRect:Rectangle;       // Click rectangle for resetting volume
 
+    private var embeddedMode:Boolean = false;// True if this is embedded in a larger editor and save should spit out json
     private var publishButton:TinyButton;    // Button to publish to web
     private var status:TextField;            // Text status indicator
 
@@ -126,6 +128,9 @@ package
      */
     private function init(e:Event = null):void
     {
+      var flashvars:Object = this.root.loaderInfo.parameters;
+      embeddedMode = flashvars.embeddedMode;
+
       removeEventListener(Event.ADDED_TO_STAGE, init);
 
       _synth = new SfxrSynth();
@@ -144,9 +149,16 @@ package
       drawSliders();
       drawCopyPaste();
 
-      // Load settings if present
-      var settingsData:String = ExternalInterface.call("loadSettingsFile");
-      if(settingsData) {
+      var settingsData:String;
+
+      if (flashvars.soundData) {
+        settingsData = flashvars.soundData;
+      } else {
+        // Try external interface
+        settingsData = ExternalInterface.call("loadSettingsFile");
+      }
+
+      if (settingsData) {
         setSettingsFile(Base64.decodeToByteArray(settingsData));
       }
 
@@ -155,14 +167,14 @@ package
       updateCopyPaste();
 
       ExternalInterface.addCallback("getSaveData", function():String {
-        var filename:String = "test";
+        var baseFilePath:String = flashvars.baseFilePath;
 
         return JSON.encode({
           files: [{
-            path: "/sounds/sfs/" + filename + ".sfs",
+            path: baseFilePath + ".sfs",
             contents_base64: Base64.encodeByteArray(getSettingsFile())
           }, {
-            path: "/sounds/wav/" + filename + ".wav",
+            path: baseFilePath + ".wav",
             contents_base64: Base64.encodeByteArray(_synth.getWavFile())
           }]
         });
@@ -209,14 +221,20 @@ package
       addButton("SINEWAVE",   clickSinewave,     370, 28, 1, true);
       addButton("NOISE",      clickNoise,        490, 28, 1, true);
 
-      // Play / save / export
       addButton("PLAY SOUND",   clickPlaySound,   490, 228);
-      addButton("LOAD SOUND",   clickLoadSound,   490, 288);
-      addButton("SAVE SOUND",   clickSaveSound,   490, 318);
-
       status = addLabel("", 492, 356, 0);
-      publishButton =
-        addButton("PUBLISH .WAV", clickPostWav,     490, 378, 3);
+
+      if(embeddedMode) {
+        addButton("SAVE AS",   clickSaveSoundAs,   490, 318);
+        addButton("SAVE",      clickEmbeddedSave,  490, 378, 3);
+      } else {
+        addButton("LOAD SOUND",   clickLoadSound,   490, 288);
+        addButton("SAVE SOUND",   clickSaveSound,   490, 318);
+
+        publishButton =
+          addButton("PUBLISH .WAV", clickPostWav,     490, 378, 3);
+      }
+
       addButton("44100 HZ",     clickSampleRate,  490, 408);
       addButton("16-BIT",       clickBitDepth,    490, 438);
     }
@@ -619,6 +637,24 @@ package
       var file:ByteArray = getSettingsFile();
 
       new FileReference().save(file, "sfx.sfs");
+    }
+
+    /**
+     * Embedded Mode, should fire 'save' action to external editor
+     * @param  button  Button pressed
+     */
+    private function clickEmbeddedSave(button:TinyButton):void
+    {
+      ExternalInterface.call("save");
+    }
+
+    /**
+     * Embedded Mode, should fire 'save as' action to external editor
+     * @param  button  Button pressed
+     */
+    private function clickSaveSoundAs(button:TinyButton):void
+    {
+      // TODO: Fire save as external event
     }
 
     /**

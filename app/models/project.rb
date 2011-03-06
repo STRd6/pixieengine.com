@@ -114,6 +114,10 @@ class Project < ActiveRecord::Base
 
       if type == "text"
         contents = File.read(file_path)
+      elsif ext == "sfs"
+        contents = open(file_path, "rb") do |file|
+          Base64.encode64(file.read())
+        end
       end
 
       {
@@ -146,6 +150,8 @@ class Project < ActiveRecord::Base
       "text"
     when "png", "jpg", "jpeg", "gif"
       "image"
+    when "sfs"
+      "sound"
     end
   end
 
