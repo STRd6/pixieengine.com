@@ -41,6 +41,7 @@ package
   import co.uk.mikestead.net.URLFileVariable;
   import co.uk.mikestead.net.URLRequestBuilder;
 
+  import com.adobe.serialization.json.JSON;
   import com.hurlant.util.Base64;
 
   import ui.TinyButton;
@@ -152,6 +153,20 @@ package
       updateSliders();
       updateButtons();
       updateCopyPaste();
+
+      ExternalInterface.addCallback("getSaveData", function():String {
+        var filename:String = "test";
+
+        return JSON.encode({
+          files: [{
+            path: "/sounds/sfs/" + filename + ".sfs",
+            contents_base64: Base64.encodeByteArray(getSettingsFile())
+          }, {
+            path: "/sounds/wav/" + filename + ".wav",
+            contents_base64: Base64.encodeByteArray(_synth.getWavFile())
+          }]
+        });
+      });
     }
 
     //--------------------------------------------------------------------------
