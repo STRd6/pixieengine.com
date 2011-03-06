@@ -1,29 +1,28 @@
 :coffeescript
-  $ ->
-    window.createPixelEditor = (options) ->
-      width = options.width
-      height = options.height
-      dataUrl = options.dataUrl
-      title = options.title
-      path = options.path
-      tab = null
+  window.createPixelEditor = (options) ->
+    width = options.width
+    height = options.height
+    dataUrl = options.dataUrl
+    title = options.title
+    path = options.path
+    tab = null
 
-      pixelEditor = $('<div />').pixie
-        width: width
-        height: height
-        frames: 1
-        initializer: (canvas) ->
-          if dataUrl
-            canvas.fromDataURL(dataUrl)
+    pixelEditor = $('<div />').pixie
+      width: width
+      height: height
+      frames: 1
+      initializer: (canvas) ->
+        if dataUrl
+          canvas.fromDataURL(dataUrl)
 
-          canvas.addAction
-            name: "Save"
-            icon: "/images/icons/database_save.png"
-            perform: (canvas) ->
-              tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
+        canvas.addAction
+          name: "Save"
+          icon: "/images/icons/database_save.png"
+          perform: (canvas) ->
+            tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
 
-              pixelEditor.trigger 'save',
-                contents_base64: canvas.toBase64()
-                path: path
+            pixelEditor.trigger 'save',
+              contents_base64: canvas.toBase64()
+              path: path
 
-            undoable: false
+          undoable: false
