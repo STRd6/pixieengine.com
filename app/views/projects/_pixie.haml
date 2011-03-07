@@ -29,6 +29,9 @@
           undoable: false
 
     pixelEditor.bind 'doSave', ->
+      # Update mtime
+      pixelEditor.parent().attr("data-mtime", new Date().getTime())
+
       pixelEditor.trigger 'save',
         contents_base64: _canvas.toBase64()
         path: path
