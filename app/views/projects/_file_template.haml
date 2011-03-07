@@ -1,7 +1,12 @@
 #file_template.template
   %li(title="${name}")
-    %span.file(data-id="${data_id}" class="${ext}") ${name}
+    %span.file(data-id="#${data_id}" class="${ext}") ${name}
     .tab_data(id="${data_id}" data-ext="${ext}" data-path="${path}" data-lang="${lang}" data-type="${type}" data-mtime="${mtime}")
       - form_tag({:action => :save_file, :format => :json}, :method => :post) do |form|
         = hidden_field_tag :path, "${path}", { :id => nil }
         = text_area_tag :contents, '', { :id => nil }
+
+#directory_template.template
+  %li.closed(title="${name}")
+    %span.folder ${name}
+    %ul

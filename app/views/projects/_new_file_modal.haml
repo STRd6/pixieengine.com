@@ -1,0 +1,57 @@
+%form#new_file_modal.modal
+  %p
+    = label_tag :name
+    = text_field_tag :name, "", {:title => 'Name', :id => nil}
+
+  %button(data-type="image") Image
+  -# %button(data-type="text") Script
+
+  = hidden_field_tag :ext, "test", {:id => nil}
+  = hidden_field_tag :path, "test", {:id => nil}
+  = hidden_field_tag :type, "text", {:id => nil}
+
+= render :partial => "file_template"
+
+:coffeescript
+  window.newFileNode = (inputData) ->
+    unless inputData.name
+      alert "You need to enter a name!"
+      return
+
+    # Create/traverse directories
+    path = inputData.path
+    folderPaths = path.split("/")
+    addedTreeRoot = null
+
+    dirNode = $("ul.filetree")
+    folderPaths.each (dirName) ->
+      dirNode = (if (dir = dirNode.find("[title=\#{dirName}]")).length
+        dir.eq(0)
+      else
+        newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)
+        addedTreeRoot ||= newDir
+
+        newDir
+      ).children('ul')
+
+    inputData.name = "\#{inputData.name}.\#{inputData.ext}"
+    inputData.path = "/\#{inputData.path}/\#{inputData.name}"
+    data_id = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
+
+    data = $.extend({
+      data_id: data_id
+    }, inputData)
+
+    treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
+
+    treeNode.find(".file").click()
+
+    return treeNode
+
+  $("#new_file_modal button").live 'click', (event) ->
+    event.preventDefault()
+
+    newNode = newFileNode($("#new_file_modal").serializeObject())
+
+    if newNode
+      $.modal.close()

@@ -19,20 +19,11 @@
 
 = render :partial => "pixie"
 = render :partial => "sfxr"
-= render :partial => "file_template"
+= render :partial => "new_file_modal"
 
 :coffeescript
   window.log = (message) ->
     console.log message
-
-  window.newFileNode = () ->
-    path = "/test.test"
-    data_id = path #TODO GSUBS!
-    $("#file_template").tmpl
-      name: "A new test file!"
-      path: path
-      ext: "test"
-      data_id: data_id
 
   # Commands
   window.save = (event, data) ->
@@ -68,7 +59,8 @@
   $('#save').live 'click', save
 
   newFileModal = () ->
-    alert "TODO: New File"
+    $("#new_file_modal").modal()
+    # alert "TODO: New File"
     # Pop up new file modal
     # User chooses editor type
     # editor opens
