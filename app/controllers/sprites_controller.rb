@@ -1,5 +1,6 @@
 class SpritesController < ResourceController::Base
   respond_to :html, :json
+  layout "fullscreen"
   actions :all
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]

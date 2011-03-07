@@ -1,29 +1,121 @@
-@import "compass/css3/box-sizing"
+@import partials/base
 @import util
+
+$sidebar: 50px
+
+#fullscreen
+
+  a.button
+    &[title~="Undo"], &[title~="New"]
+      +border-right-radius(0)
+
+      margin-right: 0
+
+    &[title~="Redo"], &[title~="Save"]
+      +border-left-radius(0)
+
+      margin-left: -1px
+
+  #opacity
+    height: 73px
+    position: absolute
+    right: 1em
+
+  #opacity_val
+    position: absolute
+    right: -5px
+    bottom: -20px
+
+  &.light
+    nav.left, nav.right, nav.top
+      background-color: $light_highlight
+
+  section
+    +bounds(100%)
+
+    overflow: hidden
+    padding-left: $sidebar
+    position: relative
+
+  .pixel_editor
+    +bounds(100%)
+    +box-sizing(border-box)
+    +user-select(none)
+
+    cursor: default
+    position: relative
+
+  nav.left, nav.right
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    padding: 1em
+
+  nav.right
+    +bounds(150px, 68%)
+
+    margin-bottom: 100px
+    height: 410px
+
+    .preview
+      background-color: #fff
+      border: 1px solid #AAA
+      height: 150px
+      position: absolute
+      top: 270px
+      left: 0
+      right: 0
+      margin: auto
+      width: 150px
+      cursor: default
+
+    .swatches
+      +bounds(48px, 175px)
+
+      position: absolute
+      left: 0
+      right: 0
+      top: 95px
+      margin: auto
+
+    .swatch
+      border: 1px solid #666
+      +box-sizing(border-box)
+      float: left
+      margin: 4px
+      width: 16px
+      height: 16px
+
+    .color_picker_holder
+      height: 76px
+      margin-bottom: 7px
+      position: absolute
+      left: 0
+      right: 0
+      margin-left: auto
+      margin-right: auto
+      width: 74px
+
+      input.color
+        border: 2px solid
+        border-color= #CCC
+        height: 50px
+        position: absolute
+        text-align: center
+        width: 50px
+
+        &.primary
+          left: 0
+          top: 0
+          z-index: 10
+        &.secondary
+          left: 20px
+          top: 20px
+          z-index: 1
 
 .container
   +user-select(none)
-
-.pixie
-  .canvas
-    +user-select(none)
-    background-color: #ccc
-    +box-sizing(border-box)
-    height: 100%
-    margin-right: 1em
-    margin-bottom: 1em
-    position: relative
-    width: 100%
-
-  .viewport
-    background-color: #ccc
-    border: 1px solid #666
-    display: inline-block
-    height: 512px
-    margin-right: 1em
-    overflow: hidden
-    position: relative
-    width: 512px
 
 .color_toggle
   +bounds(16px, 16px)
@@ -31,54 +123,21 @@
   background-image: url(/images/pixie/color_switch_arrow.png)
   float: right
 
-.pixie
-  .frame
-    display: none
-    position: absolute
-    &.current
-      display: block
+nav.left
+  +bounds($sidebar, 230px)
 
-  .layer
-    position: absolute
-    &.bottom
-      background: white url(../images/pixie/pixel_bg.png)
+  margin-bottom: $sidebar + 20px
 
-  .pixel
-    border-bottom: 1px solid black
-    border-right: 1px solid black
-    float: left
-    height: 15px
-    margin: 0
-    padding: 0
-    width: 15px
-
-  // Holds all the actions
-  .actions, .layers
-    display: block
-
-    a.tool
-      color: black
-      margin: 5px
-      padding: .25em
-
-      &:hover
-        background-color: #CCC
-        text-decoration: none
-
-      &.active
-        background-color: #1084CE
-        text-decoration: none
-
-  // Holds all the tools
   .toolbar
     cursor: pointer
     display: inline-block
     height: auto
-    position: relative
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
     vertical-align: top
-    width: 60px
 
-    // Pencil, Eraser, etc. tool image styles
     .tool
       +border-radius(8px)
       +box-sizing(border-box)
@@ -89,7 +148,7 @@
       width: 40px
 
       &:hover
-        background-color: #CCC
+        background-color: #fff
 
       &.active
         +border-radius(8px)
@@ -98,44 +157,57 @@
       img
         border: none
 
-  .swatch
-    border: 1px solid #666
+.pixie
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  margin: 0 1em 1em 1em
+  padding-bottom: 40px
+  padding-right: 175px
+
+  .canvas
+    +user-select(none)
     +box-sizing(border-box)
-    float: left
-    margin: 4px
-    width: 16px
-    height: 16px
 
-  // Current colors input field
-  .color_picker_holder
-    height: 76px
-    margin-bottom: 7px
+    border: 1px solid #000
     position: relative
-    width: 74px
 
-  input.color
-    border: 2px solid
-    border-color= #CCC
-    height: 50px
+  .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    background-color: #ccc
+    display: inline-block
+    overflow: auto
+    position: relative
+
+    canvas:first-child
+      background: none
+      z-index: 5
+
+  .layer
     position: absolute
-    width: 50px
+    background: white url(/images/pixie/pixel_bg.png)
 
-    &.primary
-      left: 0
-      top: 0
-      z-index: 10
-    &.secondary
-      left: 20px
-      top: 20px
-      z-index: 1
+  .actions
+    position: fixed
+    top: 7px
 
-  // Holds the preview image
-  .preview
-    border: 1px solid #AAA
-    height: 150px
-    position: relative
-    width: 150px
-    cursor: default
+  .actions, .layers
+    display: block
+
+    a.tool
+      color: black
+      margin: 1px
+      padding: .25em
+
+      &:hover
+        background-color: #CCC
+        text-decoration: none
+
+      &.active
+        background-color: #1084CE
+        text-decoration: none
 
   .toggle_holder
     display: block
