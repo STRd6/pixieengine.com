@@ -49,9 +49,12 @@
     add: (object, data) ->
       last = this.last()
 
-      unless last[object]
+      if last[object]
+        last[object].newColor = data.newColor
+      else
         last[object] = data
         empty = false
+
 
       return this
 
@@ -83,7 +86,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(0, 0, 0, 0))
+          pixel.color(Color(0, 0, 0, 0), false, true)
     preview:
       menu: false
       perform: (canvas) ->
@@ -103,7 +106,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color());
+            pixel.color(rightPixel.color(), false, true);
+          } else {
+            pixel.color(Color(0, 0, 0, 0), false, true)
           }
         });
 
@@ -130,9 +135,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color());
+              currentPixel.color(leftPixel.color(), false, true);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0));
+              currentPixel.color(Color(0, 0, 0, 0), false, true);
             }
           }
         }
@@ -155,9 +160,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color());
+            pixel.color(lowerPixel.color(), false, true);
           } else {
-            pixel.color(Color(0, 0, 0, 0));
+            pixel.color(Color(0, 0, 0, 0), false, true);
           }
         });
 
@@ -184,9 +189,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color());
+              currentPixel.color(upperPixel.color(), false, true);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0));
+              currentPixel.color(Color(0, 0, 0, 0), false, true);
             }
           }
         }
@@ -216,8 +221,11 @@
     $.each this.canvas.getNeighbors(this.x, this.y), (i, neighbor) ->
       neighbor?.color(color)
 
-  colorTransparent = ->
-    this.color(Color(0, 0, 0, 0))
+  erase = (pixel, opacity) ->
+    inverseOpacity = (1 - opacity)
+    pixelColor = pixel.color()
+
+    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, true)
 
   tools =
     pencil:
@@ -245,16 +253,16 @@
     eraser:
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e', '4']
-      mousedown: ->
-        colorTransparent.call(this)
-      mouseenter: ->
-        colorTransparent.call(this)
+      mousedown: (e, color, pixel) ->
+        erase(pixel, color.opacity())
+      mouseenter: (e, color, pixel) ->
+        erase(pixel, color.opacity())
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
       hotkeys: ['f', '5']
       mousedown: (e, newColor, pixel) ->
         originalColor = this.color()
-        return if newColor == originalColor
+        return if newColor.equals(originalColor)
 
         q = []
         pixel.color(newColor)
@@ -268,7 +276,7 @@
           neighbors = canvas.getNeighbors(pixel.x, pixel.y)
 
           $.each neighbors, (index, neighbor) ->
-            if neighbor?.color() == originalColor
+            if neighbor?.color().equals(originalColor)
               neighbor.color(newColor)
               q.push(neighbor)
 
@@ -276,38 +284,29 @@
     tilePreview = true
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color(0, 0, 0, 0)
-      opacity = 0
 
       self =
         canvas: canvas
 
-        color: (newColor, skipUndo) ->
-          opacity = $('#opacity_val').text() / 100
-
-          if newColor
-            if !color.equals(Color(0, 0, 0, 0)) && opacity < 1 && !color.equals(newColor)
-              color = Color.mix(Color(newColor, opacity), Color(color, opacity))
-            else
-              color = Color(newColor, opacity) if newColor != undefined && !color.equals(newColor)
-
+        color: (newColor, skipUndo, replace) ->
           if arguments.length >= 1
-            undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor, opacity: opacity}) unless skipUndo
+            oldColor = color
 
             xPos = x * PIXEL_WIDTH
             yPos = y * PIXEL_HEIGHT
 
-            layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-            layerCanvas.fillStyle = color.toString()
+            if replace
+              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+            layerCanvas.fillStyle = newColor.toString()
             layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+
+            color = canvas.getColor(x, y)
+
+            undoStack.add(self, {pixel: self, oldColor: oldColor, newColor: color}) unless skipUndo
 
             return self
           else
-            if !color.equals(newColor)
-              return Color(color, opacity)
-            else
-              return color
-
-        opacity: opacity
+            color
 
         toString: -> "[Pixel: " + [this.x, this.y].join(",") + "]"
         x: x
@@ -331,6 +330,7 @@
       return $.extend layer,
         clear: ->
           context.clearRect(0, 0, layerWidth, layerHeight)
+        context: context
         drawGuide: ->
           context.fillStyle = gridColor
           height.times (row) ->
@@ -370,6 +370,9 @@
 
       actionbar = $ DIV,
         class: 'actions'
+
+      navRight = $("<nav class='right'></nav>")
+      navLeft = $("<nav class='left'></nav>")
 
       opacityVal = $("<div id=opacity_val>100</div>")
 
@@ -460,7 +463,7 @@
       $(document).bind 'keyup', ->
         canvas.preview()
 
-      $('nav.right').bind 'mousedown', (e) ->
+      $(navRight).bind 'mousedown', (e) ->
         target = $(e.target)
         color = Color.parse(target.css('backgroundColor'))
 
@@ -478,6 +481,7 @@
           e.preventDefault()
         )
         .bind("mousedown mousemove", (event) ->
+          opacity = $('#opacity_val').text() / 100
           offset = $(this).offset()
 
           localY = event.pageY - offset.top
@@ -495,7 +499,7 @@
             eventType = "mouseenter"
 
           if pixel && active && currentTool && currentTool[eventType]
-            currentTool[eventType].call(pixel, event, canvas.color(), pixel)
+            currentTool[eventType].call(pixel, event, Color(canvas.color(), opacity), pixel)
 
           lastPixel = pixel
         )
@@ -638,12 +642,19 @@
 
             getColor = (x, y) ->
               index = (x + y * imageData.width) * 4
+
               return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba()
 
             canvas.eachPixel (pixel, x, y) ->
               pixel.color(getColor(x, y), true)
 
           image.src = dataURL
+
+        getColor: (x, y) ->
+          context = layer.context
+          imageData = context.getImageData(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, 1, 1)
+
+          return Color(imageData.data[0], imageData.data[1], imageData.data[2], imageData.data[3] / 255)
 
         getNeighbors: (x, y) ->
           return [
@@ -679,7 +690,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.newColor, true)
+              this.pixel.color(this.newColor, true, true)
 
         replay: (steps) ->
           unless replaying
@@ -700,7 +711,7 @@
 
               if step
                 $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y).color(p.color, true)
+                  canvas.getPixel(p.x, p.y).color(p.color, true, true)
 
                 i++
 
@@ -738,11 +749,12 @@
           return tempCanvas.toDataURL("image/png")
 
         undo: ->
+          debugger
           data = undoStack.popUndo()
 
           if data
             $.each data, ->
-              this.pixel.color(this.oldColor, true)
+              this.pixel.color(this.oldColor, true, true)
 
         width: width
         height: height
@@ -763,9 +775,9 @@
       guideToggleHolder.append(guideToggle, guideLabel)
       $('#optionsModal').append(guideToggleHolder, previewToggleHolder)
 
-      $('nav.left').append(toolbar)
-      $('nav.right').append(colorbar, preview, opacitySlider)
-      pixie.append(actionbar, viewport)
+      $(navLeft).append(toolbar)
+      $(navRight).append(colorbar, preview, opacitySlider)
+      pixie.append(actionbar, viewport, navLeft, navRight)
       $(this).append(pixie)
 
       if initializer
