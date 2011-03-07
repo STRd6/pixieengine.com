@@ -5,6 +5,27 @@ $sidebar: 50px
 
 #fullscreen
 
+  a.button
+    &[title~="Undo"], &[title~="New"]
+      +border-right-radius(0)
+
+      margin-right: 0
+
+    &[title~="Redo"], &[title~="Save"]
+      +border-left-radius(0)
+
+      margin-left: -1px
+
+  #opacity
+    height: 73px
+    position: absolute
+    right: 1em
+
+  #opacity_val
+    position: absolute
+    right: -5px
+    bottom: -20px
+
   &.light
     nav.left, nav.right, nav.top
       background-color: $light_highlight
@@ -127,7 +148,7 @@ nav.left
       width: 40px
 
       &:hover
-        background-color: #CCC
+        background-color: #fff
 
       &.active
         +border-radius(8px)
@@ -147,41 +168,26 @@ nav.left
   .canvas
     +user-select(none)
     +box-sizing(border-box)
-    height: 100%
+
+    border: 1px solid #000
     position: relative
-    width: 100%
 
   .viewport
     +bounds(100%)
     +box-sizing(border-box)
 
-    padding-bottom: 40px
-    padding-right: 125px
-
-    background-color: transparent
+    background-color: #ccc
     display: inline-block
-    margin-right: 1em
     overflow: auto
     position: relative
 
-  .frame
-    display: none
-    position: absolute
-    &.current
-      display: block
+    canvas:first-child
+      background: none
+      z-index: 5
 
   .layer
     position: absolute
-    background: white url(../images/pixie/pixel_bg.png)
-
-  .pixel
-    border-bottom: 1px solid black
-    border-right: 1px solid black
-    float: left
-    height: 15px
-    margin: 0
-    padding: 0
-    width: 15px
+    background: white url(/images/pixie/pixel_bg.png)
 
   .actions
     position: fixed
