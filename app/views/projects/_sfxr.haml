@@ -15,8 +15,20 @@
     soundEditor.bind 'doSave', ->
       data = JSON.parse(soundEditor.find('embed').get(0).getSaveData())
 
+      sfsFileData = data.files[0].contents_base64
+
+      parent = soundEditor.parent()
+
+      parent.find('[name=contents]').val(sfsFileData)
+
+      # Save .sfs
       soundEditor.trigger 'save',
-        contents_base64: data.files[0].contents_base64
+        contents_base64: sfsFileData
         path: data.files[0].path
+
+      # Save .wav
+      soundEditor.trigger 'save',
+        contents_base64: data.files[1].contents_base64
+        path: data.files[1].path
 
     return soundEditor
