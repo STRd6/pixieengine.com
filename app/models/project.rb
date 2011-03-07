@@ -108,7 +108,7 @@ class Project < ActiveRecord::Base
         end.compact
       }
     elsif File.file? file_path
-      ext = File.extname(filename)[1..-1]
+      ext = (File.extname(filename)[1..-1] || "").downcase
       lang = lang_for(ext)
       type = type_for(ext)
 
@@ -146,9 +146,9 @@ class Project < ActiveRecord::Base
 
   def type_for(extension)
     case extension
-    when "js", "coffee", "html", "css"
+    when "", "js", "coffee", "html", "css", "lua", "cfg"
       "text"
-    when "png", "jpg", "jpeg", "gif"
+    when "png", "jpg", "jpeg", "gif", "bmp"
       "image"
     when "sfs"
       "sound"

@@ -104,6 +104,8 @@
       textArea = panel.find('textarea').get(0)
       savedCode = textArea.value
 
+      lang ||= "dummy"
+
       editor = new CodeMirror.fromTextArea textArea,
         autoMatchParens: true
         content: savedCode
