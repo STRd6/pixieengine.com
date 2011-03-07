@@ -149,18 +149,6 @@ var Color = (function () {
     return Color(array[0], array[1], array[2], array[3] ? array[3] : 1)
   }
 
-  Color.mix = function (color1, color2, amount) {
-    percent = amount ? amount.round / 100.0 : 0.5;
-
-    debugger
-
-    newColors = (color1.rgbData()).zip(color2.rgbData()).map(function(element) {
-      return (element[0] * percent) + (element[1] * (1 - percent))
-    });
-
-    return Color.fromArray(newColors);
-  };
-
   Color.parse = function (color) {
     color = color.replace(/^\s+/g, "") // trim leading whitespace
       [lowerCase]();
@@ -208,6 +196,10 @@ var Color = (function () {
     }
     // random color from #000000 to #FFFFFF
     return new Color(floor(random() * rangeEnd));
+  };
+
+  proto.opacity = function() {
+    return this.channels[3];
   };
 
   proto.toString = function () {

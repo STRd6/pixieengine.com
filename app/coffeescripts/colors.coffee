@@ -1,32 +1,19 @@
-Color = (I) ->
-  I ||= {}
-
-  if I.hex
-    rHex = parseInt(I.hex.substr(1, 2), 16)
-    gHex = parseInt(I.hex.substr(3, 2), 16)
-    bHex = parseInt(I.hex.substr(5, 2), 16)
-  else
-    rHex = gHex = bHex = undefined
-
-  if I.array
-    rArr = I.array[0]
-    gArr = I.array[1]
-    bArr = I.array[2]
-    aArr = I.array[3]
-  else
-    rArr = gArr = bArr = aArr = 0
-
-  $.reverseMerge I,
-    r: rHex || rArr || 0
-    g: gHex || gArr || 0
-    b: bHex || bArr || 0
-    a: aArr || 0
+Color = (color) ->
+  if typeof color == "string"
+    if color[0] = '#'
+      parseHex(color)
+    else if color.substr(0, 4) == 'rgb('
+      parseRGB(color)
+    else if color.substr(0, 4) == 'rgba'
+      parseRGBA(color)
+  if typeof color == "array"
+    Color(color[0], color[1], color[2], if color[3] then color[3] else 1)
 
   channels: [
-    typeof I.r == str && parseHex(I.r) || I.r
-    typeof I.g == str && parseHex(I.g) || I.g
-    typeof I.b == str && parseHex(I.b) || I.b
-    (typeof I.a != str && typeof I.a != "number") && 1 || typeof I.a == str && parseFloat(I.a) || I.a
+    typeof I.r == 'string' && parseHex(I.r) || I.r
+    typeof I.g == 'string' && parseHex(I.g) || I.g
+    typeof I.b == 'string' && parseHex(I.b) || I.b
+    (typeof I.a != 'string' && typeof I.a != 'number') && 1 || typeof I.a == 'string' && parseFloat(I.a) || I.a
   ]
 
   getValue = ->
@@ -40,16 +27,6 @@ Color = (I) ->
 
     hexTriplet: ->
       return "#" + ("00000" + getValue().toString(16)).substr(-6)
-
-    mix: (otherColor, amount) ->
-      percent = if amount then amount.round / 100.0 else 0.5
-
-      newColors = channels.zip(color2.channels).map (element) ->
-        return (element[0] * percent) + (element[1] * (1 - percent))
-
-      return Color(
-        array: newColors
-      )
 
     rgba: ->
       return "rgba(#{I.channels.join(',')})"
