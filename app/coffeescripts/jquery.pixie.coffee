@@ -1,14 +1,19 @@
 (($) ->
   DIV = "<div />"
-  TRANSPARENT = "transparent"
   IMAGE_DIR = "/images/pixie/"
   RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
   scale = 1
 
+  palette = [
+    "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
+    "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
+    "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"
+  ]
+
   falseFn = -> return false
 
   ColorPicker = ->
-    $('<input />',
+    $('<input/>',
       class: 'color'
     ).colorPicker()
 
@@ -64,45 +69,9 @@
 
       return replayData
 
-  shiftImageHorizontal = (canvas, byX) ->
-    width = canvas.width
-    height = canvas.height
-    index = if byX == -1 then 0 else width - 1
-
-    deferredColors = []
-
-    height.times (y) ->
-      deferredColors[y] = canvas.getPixel(index, y).color()
-
-    canvas.eachPixel (pixel, x, y) ->
-      adjacentPixel = canvas.getPixel(x - byX, y)
-
-      pixel.color(adjacentPixel?.color())
-
-    $.each deferredColors, (y, color) ->
-      canvas.getPixel(index, y).color(color)
-
-  shiftImageVertical = (canvas, byY) ->
-    width = canvas.width
-    height = canvas.height
-    index = if byY == -1 then 0 else height - 1
-
-    deferredColors = []
-
-    width.times (x) ->
-      deferredColors[x] = canvas.getPixel(x, index).color()
-
-    canvas.eachPixel (pixel, x, y) ->
-      adjacentPixel = canvas.getPixel(x, y - byY)
-
-      pixel.color(adjacentPixel?.color())
-
-    $.each deferredColors, (x, color) ->
-      canvas.getPixel(x, index).color(color)
-
   actions =
     undo:
-      hotkeys: ["ctrl+z", "meta+z"]
+      hotkeys: ['ctrl+z', 'meta+z']
       perform: (canvas) ->
         canvas.undo()
       undoable: false
@@ -114,7 +83,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(TRANSPARENT)
+          pixel.color(Color(0, 0, 0, 0))
     preview:
       menu: false
       perform: (canvas) ->
@@ -123,8 +92,25 @@
     left:
       hotkeys: ["left"]
       menu: false
-      perform: (canvas) ->
-        shiftImageHorizontal(canvas, 1)
+      perform: `function(canvas) {
+        var deferredColors = [];
+
+        canvas.height.times(function(y) {
+          deferredColors[y] = canvas.getPixel(0, y).color();
+        });
+
+        canvas.eachPixel(function(pixel, x, y) {
+          var rightPixel = canvas.getPixel(x + 1, y);
+
+          if(rightPixel) {
+            pixel.color(rightPixel.color());
+          }
+        });
+
+        $.each(deferredColors, function(y, color) {
+          canvas.getPixel(canvas.width - 1, y).color(color);
+        });
+      }`
     right:
       hotkeys: ["right"]
       menu: false
@@ -146,7 +132,7 @@
             if(leftPixel) {
               currentPixel.color(leftPixel.color());
             } else {
-              currentPixel.color(transparent);
+              currentPixel.color(Color(0, 0, 0, 0));
             }
           }
         }
@@ -158,13 +144,57 @@
     up:
       hotkeys: ["up"]
       menu: false
-      perform: (canvas) ->
-        #shiftImageVertical(canvas, -1)
+      perform: `function(canvas) {
+        var deferredColors = [];
+
+        canvas.width.times(function(x) {
+          deferredColors[x] = canvas.getPixel(x, 0).color();
+        });
+
+        canvas.eachPixel(function(pixel, x, y) {
+          var lowerPixel = canvas.getPixel(x, y + 1);
+
+          if(lowerPixel) {
+            pixel.color(lowerPixel.color());
+          } else {
+            pixel.color(Color(0, 0, 0, 0));
+          }
+        });
+
+        $.each(deferredColors, function(x, color) {
+          canvas.getPixel(x, canvas.height - 1).color(color);
+        });
+      }`
     down:
       hotkeys: ["down"]
       menu: false
-      perform: (canvas) ->
-        #shiftImageVertical(canavs, 1)
+      perform: `function(canvas) {
+        var width = canvas.width;
+        var height = canvas.height;
+
+        var deferredColors = [];
+
+        canvas.width.times(function(x) {
+          deferredColors[x] = canvas.getPixel(x, height - 1).color();
+        });
+
+        for(var x = 0; x < width; x++) {
+          for(var y = height-1; y >= 0; y--) {
+            var currentPixel = canvas.getPixel(x, y);
+            var upperPixel = canvas.getPixel(x, y-1);
+
+            if(upperPixel) {
+              currentPixel.color(upperPixel.color());
+            } else {
+              currentPixel.color(Color(0, 0, 0, 0));
+            }
+          }
+        }
+
+        $.each(deferredColors, function(x, color) {
+          canvas.getPixel(x, 0).color(color);
+        });
+      }`
     download:
       hotkeys: ["ctrl+s"]
       perform: (canvas) ->
@@ -187,26 +217,26 @@
       neighbor?.color(color)
 
   colorTransparent = ->
-    this.color(TRANSPARENT)
+    this.color(Color(0, 0, 0, 0))
 
   tools =
     pencil:
       cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
-      hotkeys: ['p']
+      hotkeys: ['p', '1']
       mousedown: (e, color) ->
         this.color(color)
       mouseenter: (e, color) ->
         this.color(color)
     brush:
-      cursor: "url(" + IMAGE_DIR + "paintbrush.png) 4 14, default"
-      hotkeys: ['b']
+      cursor: "url(" + IMAGE_DIR + "brush.png) 4 14, default"
+      hotkeys: ['b', '2']
       mousedown: (e, color) ->
         colorNeighbors.call(this, color)
       mouseenter: (e, color) ->
         colorNeighbors.call(this, color)
     dropper:
       cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
-      hotkeys: ['i']
+      hotkeys: ['i', '3']
       mousedown: ->
         this.canvas.color(this.color())
         this.canvas.setTool(tools.pencil)
@@ -214,14 +244,14 @@
         this.canvas.setTool(tools.pencil)
     eraser:
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
-      hotkeys: ['e']
+      hotkeys: ['e', '4']
       mousedown: ->
         colorTransparent.call(this)
       mouseenter: ->
         colorTransparent.call(this)
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
-      hotkeys: ['f']
+      hotkeys: ['f', '5']
       mousedown: (e, newColor, pixel) ->
         originalColor = this.color()
         return if newColor == originalColor
@@ -243,31 +273,45 @@
               q.push(neighbor)
 
   $.fn.pixie = (options) ->
+    tilePreview = true
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
-      color = TRANSPARENT
+      color = Color(0, 0, 0, 0)
+      opacity = 0
 
       self =
-        x: x
-        y: y
         canvas: canvas
 
         color: (newColor, skipUndo) ->
-          if arguments.length >= 1
-            undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor}) unless skipUndo
+          opacity = $('#opacity_val').text() / 100
 
-            color = newColor || TRANSPARENT
+          if newColor
+            if !color.equals(Color(0, 0, 0, 0)) && opacity < 1 && !color.equals(newColor)
+              color = Color.mix(Color(newColor, opacity), Color(color, opacity))
+            else
+              color = Color(newColor, opacity) if newColor != undefined && !color.equals(newColor)
+
+          if arguments.length >= 1
+            undoStack.add(self, {pixel: self, oldColor: color, newColor: newColor, opacity: opacity}) unless skipUndo
+
             xPos = x * PIXEL_WIDTH
             yPos = y * PIXEL_HEIGHT
 
             layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-            layerCanvas.fillStyle = color
+            layerCanvas.fillStyle = color.toString()
             layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
-            return this
+            return self
           else
-            color
+            if !color.equals(newColor)
+              return Color(color, opacity)
+            else
+              return color
+
+        opacity: opacity
 
         toString: -> "[Pixel: " + [this.x, this.y].join(",") + "]"
+        x: x
+        y: y
 
       return self
 
@@ -290,10 +334,10 @@
         drawGuide: ->
           context.fillStyle = gridColor
           height.times (row) ->
-            context.fillRect(0, row * PIXEL_HEIGHT, layerWidth, 1)
+            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth, 1)
 
           width.times (col) ->
-            context.fillRect(col * PIXEL_WIDTH, 0, 1, layerHeight)
+            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight)
 
     PIXEL_WIDTH = 16
     PIXEL_HEIGHT = 16
@@ -313,6 +357,7 @@
 
       canvas = $ DIV,
         class: 'canvas'
+        style: "width: #{(width * PIXEL_WIDTH) + 2}px; height: #{(height * PIXEL_HEIGHT) + 2}px;"
 
       toolbar = $ DIV,
         class: 'toolbar'
@@ -321,14 +366,72 @@
         class: 'swatches'
 
       colorbar = $ DIV,
-        class: "toolbar"
+        class: 'toolbar'
 
       actionbar = $ DIV,
         class: 'actions'
 
+      opacityVal = $("<div id=opacity_val>100</div>")
+
+      opacitySlider = $(DIV,
+        id: 'opacity'
+      ).slider(
+        orientation: 'vertical'
+        value: 100
+        min: 0
+        max: 100
+        slide: (event, ui) ->
+          $('#opacity_val').text(ui.value)
+      ).append(opacityVal)
+
+      $('#opacity_val').text($('#opacity').slider('value'))
+
       preview = $ DIV,
         class: 'preview'
-        style: "width: #{width}px height: #{height}px"
+        style: "width: #{width}px; height: #{height}px"
+
+      previewToggleHolder = $ DIV,
+        class: 'toggle_holder'
+
+      previewToggle = $('<input checked="true" class="preview_control" type="checkbox" />').change ->
+        if $(this).attr('checked')
+          tilePreview = true
+        else
+          tilePreview = false
+
+        canvas.preview()
+
+      previewLabel = $('<label class="preview_control">Tiled Preview</label>').click ->
+        if previewToggle.attr('checked')
+          previewToggle.removeAttr('checked')
+          tilePreview = false
+        else
+          previewToggle.attr('checked', 'true')
+          tilePreview = true
+
+        canvas.preview()
+
+      guideToggleHolder = $ DIV,
+        class: 'toggle_holder'
+
+      guideLabel = $("<label class='guide_control'>Display Guides</label>").click ->
+
+        if guideToggle.attr('checked')
+          guideToggle.removeAttr('checked')
+          guideLayer.clear()
+          $('.canvas').css('border', '1px solid transparent')
+        else
+          guideToggle.attr('checked', 'true')
+          guideLayer.drawGuide()
+          $('.canvas').css('border', '1px solid black')
+
+      guideToggle = $('<input class="guide_control" type="checkbox"></input>').change ->
+        if $(this).attr('checked')
+          guideLayer.drawGuide()
+          $('.canvas').css('border', '1px solid black')
+        else
+          guideLayer.clear()
+          $('.canvas').css('border', '1px solid transparent')
 
       currentTool = undefined
       active = false
@@ -339,8 +442,6 @@
       replaying = false
       initialStateData = undefined
 
-      tilePreview = true
-
       colorPickerHolder = $(DIV,
         class: 'color_picker_holder'
       ).append(primaryColorPicker, secondaryColorPicker)
@@ -349,19 +450,25 @@
 
       pixie
         .bind('contextmenu', falseFn)
-        .bind('mouseup keyup', (e) ->
+        .bind('mouseup', (e) ->
           active = false
           mode = undefined
 
           canvas.preview()
         )
 
+      $(document).bind 'keyup', ->
+        canvas.preview()
+
       $('nav.right').bind 'mousedown', (e) ->
         target = $(e.target)
-        canvas.color(target.css('backgroundColor'), e.button != 0) if target.is('.swatch')
+        color = Color.parse(target.css('backgroundColor'))
+
+        canvas.color(color, e.button != 0) if target.is('.swatch')
 
       pixels = []
 
+      lastPixel = undefined
       layer = Layer()
         .bind("mousedown", (e) ->
           undoStack.next()
@@ -384,12 +491,16 @@
 
           if event.type == "mousedown"
             eventType = event.type
-          else if pixel && event.type == "mousemove"
+          else if pixel && pixel != lastPixel && event.type == "mousemove"
             eventType = "mouseenter"
 
-          if pixel && active
+          if pixel && active && currentTool && currentTool[eventType]
             currentTool[eventType].call(pixel, event, canvas.color(), pixel)
+
+          lastPixel = pixel
         )
+
+        guideLayer = Layer()
 
       height.times (row) ->
         pixels[row] = []
@@ -398,11 +509,11 @@
           pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack)
           pixels[row][col] = pixel
 
-      canvas.append(layer)
+      canvas.append(layer, guideLayer)
 
       $.extend canvas,
         addAction: (name, action) ->
-          titleText = name
+          titleText = name.capitalize()
           undoable = action.undoable
 
           doIt = ->
@@ -410,7 +521,7 @@
             action.perform(canvas)
 
           if action.hotkeys
-            titleText += " (#{action.hotkeys})"
+            titleText += " (#{action.hotkeys}) "
 
             $.each action.hotkeys, (i, hotkey) ->
               $(document).bind 'keydown', hotkey, (e) ->
@@ -441,7 +552,7 @@
         addSwatch: (color) ->
           swatches.append $ DIV,
             class: 'swatch'
-            style: "background-color: #{color}"
+            style: "background-color: #{color.toString()}"
 
         addTool: (name, tool) ->
           alt = name.capitalize()
@@ -467,9 +578,7 @@
             alt: alt
             title: alt
 
-          toolDiv = $("<div />",
-            class: "tool"
-          )
+          toolDiv = $("<div class='tool'></div>")
             .append(img)
             .mousedown (e) ->
               setMe()
@@ -479,21 +588,15 @@
 
         color: (color, alternate) ->
           if (arguments.length == 0 || color == false)
-            return (if mode == "S" then secondaryColorPicker.css('backgroundColor') else primaryColorPicker.css('backgroundColor'))
+            return (if mode == "S" then Color.parse(secondaryColorPicker.css('backgroundColor')) else Color.parse(primaryColorPicker.css('backgroundColor')))
           else if color == true
-            return (if mode == "S" then primaryColorPicker.css('backgroundColor') else secondaryColorPicker.css('backgroundColor'))
-
-          parsedColor = null
-          if color[0] != "#"
-            parsedColor = "#" + (this.parseColor(color) || "FFFFFF")
-          else
-            parsedColor = color
+            return (if mode == "S" then Color.parse(primaryColorPicker.css('backgroundColor')) else Color.parse(secondaryColorPicker.css('backgroundColor')))
 
           if (mode == "S") ^ alternate
-            secondaryColorPicker.val(parsedColor)
+            secondaryColorPicker.val(color)
             secondaryColorPicker[0].onblur()
           else
-            primaryColorPicker.val(parsedColor)
+            primaryColorPicker.val(color)
             primaryColorPicker[0].onblur()
 
           return this
@@ -535,12 +638,7 @@
 
             getColor = (x, y) ->
               index = (x + y * imageData.width) * 4
-              return "rgba(" + [
-                imageData.data[index + 0],
-                imageData.data[index + 1],
-                imageData.data[index + 2],
-                imageData.data[index + 3]/255
-              ].join(',') + ")"
+              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba()
 
             canvas.eachPixel (pixel, x, y) ->
               pixel.color(getColor(x, y), true)
@@ -568,21 +666,12 @@
 
           return s
 
-        parseColor: (colorString) ->
-          return false unless colorString || colorString == transparent
-
-          bits = RGB_PARSER.exec(colorString)
-          return [
-            this.toHex(bits[1])
-            this.toHex(bits[2])
-            this.toHex(bits[3])
-          ].join('').toUpperCase()
-
         preview: ->
           tileCount = if tilePreview then 4 else 1
+
           preview.css
-            backgroundImage: this.toCSSImageURL(),
-            width: tileCount * width,
+            backgroundImage: this.toCSSImageURL()
+            width: tileCount * width
             height: tileCount * height
 
         redo: ->
@@ -593,12 +682,12 @@
               this.pixel.color(this.newColor, true)
 
         replay: (steps) ->
-          if !replaying
+          unless replaying
             replaying = true
             canvas = this
 
             if !steps
-              steps = this.getReplayData()
+              steps = canvas.getReplayData()
               canvas.displayInitialState()
             else
               canvas.clear()
@@ -611,7 +700,7 @@
 
               if step
                 $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y, p.z, p.f).color(p.color, true)
+                  canvas.getPixel(p.x, p.y).color(p.color, true)
 
                 i++
 
@@ -643,7 +732,7 @@
 
           this.eachPixel (pixel, x, y) ->
             color = pixel.color()
-            context.fillStyle = color
+            context.fillStyle = color.toString()
             context.fillRect(x, y, 1, 1)
 
           return tempCanvas.toDataURL("image/png")
@@ -664,18 +753,18 @@
       $.each actions, (key, action) ->
         canvas.addAction(key, action)
 
-      $.each [
-        "#000", "#FFF", "#666", "#DCDCDC", "#EB070E"
-        "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
-        "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"
-      ], (i, color) ->
-        canvas.addSwatch(color)
+      $.each palette, (i, color) ->
+        canvas.addSwatch(Color(color))
 
       canvas.setTool(tools.pencil)
 
       viewport.append(canvas)
+      previewToggleHolder.append(previewToggle, previewLabel)
+      guideToggleHolder.append(guideToggle, guideLabel)
+      $('#optionsModal').append(guideToggleHolder, previewToggleHolder)
+
       $('nav.left').append(toolbar)
-      $('nav.right').append(colorbar, preview)
+      $('nav.right').append(colorbar, preview, opacitySlider)
       pixie.append(actionbar, viewport)
       $(this).append(pixie)
 
