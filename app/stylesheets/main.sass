@@ -204,12 +204,19 @@ a
 
 // TODO: Good these up, embetter and embiggen
 // Error and notice styling
+
+#flashes
+  bottom: 1em
+  position: fixed
+  right: 1em
+  z-index: 500
+
 .notice
+  +bounds(200px, 100px)
   +box-sizing(border-box)
 
   background-color: #FFF6BF
   border: 2px solid #FFD324
-  margin-bottom: 10px
   padding: 4px 5px 4px
   position: relative
 
@@ -221,9 +228,8 @@ a
     cursor: pointer
     margin: auto
     position: absolute
-    top: 0
+    top: 9px
     right: 5px
-    bottom: 0
 
 #notice
   color: !p1
