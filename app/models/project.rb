@@ -79,9 +79,12 @@ class Project < ActiveRecord::Base
     #TODO: Verify path is not sketch
     return if path.index ".."
 
-    filepath = File.join self.path, path
+    file_path = File.join self.path, path
 
-    File.open(filepath, 'wb') do |file|
+    dir_path = file_path.split("/")[0...-1].join("/")
+    FileUtils.mkdir_p dir_path
+
+    File.open(file_path, 'wb') do |file|
       file.write(contents)
     end
 
