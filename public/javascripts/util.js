@@ -402,6 +402,12 @@ Array.prototype.sum = function() {
   });
 };
 
+Array.prototype.zip = function(arr) {
+  return results = this.map(function(element, i) {
+    return [element, arr[i]]
+  });
+};
+
 String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
 }
