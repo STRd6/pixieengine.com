@@ -203,6 +203,10 @@
     $('.filetree .file').live 'click', ->
       docSelector = $(this).data('id')
 
+      if $(docSelector).data("type") == "binary"
+        alert "Can't edit binary data... maybe there is a source file that can be edited?"
+        return
+
       if $('#tabs ul li a[href="' + docSelector + '"]').length
         $('#tabs ul li a[href="' + docSelector + '"]').click()
       else

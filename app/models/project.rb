@@ -152,6 +152,8 @@ class Project < ActiveRecord::Base
       "image"
     when "sfs"
       "sound"
+    when "wav", "mp3"
+      "binary"
     end
   end
 
