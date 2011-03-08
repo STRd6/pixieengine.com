@@ -4,233 +4,230 @@
 $sidebar: 50px
 
 #fullscreen
-
-  a.button
-    &[title~="Undo"], &[title~="New"]
-      +border-right-radius(0)
-
-      margin-right: 0
-
-    &[title~="Redo"], &[title~="Save"]
-      +border-left-radius(0)
-
-      margin-left: -1px
-
-  #opacity
-    height: 73px
-    position: absolute
-    right: 1em
-
-  #opacity_val
-    position: absolute
-    right: -5px
-    bottom: -20px
-
   &.light
-    nav.left, nav.right, nav.top
-      background-color: $light_highlight
-
-  section
-    +bounds(100%)
-
-    overflow: hidden
-    padding-left: $sidebar
-    position: relative
+    .pixie
+      nav.left, nav.right, nav.top
+        background-color: $light_highlight
 
   .pixel_editor
     +bounds(100%)
     +box-sizing(border-box)
     +user-select(none)
 
-    cursor: default
-    position: relative
+    section
+      +bounds(100%)
 
-  nav.left, nav.right
-    +border-radius
-    +box-sizing(border-box)
+      overflow: hidden
+      padding-left: $sidebar
+      position: relative
 
-    background-color: $dark_highlight
-    padding: 1em
+    .color_toggle
+      +bounds(16px)
 
-  nav.right
-    +bounds(150px, 68%)
+      background-image: url(/images/pixie/color_switch_arrow.png)
+      float: right
 
-    margin-bottom: 100px
-    height: 410px
-
-    .preview
-      background-color: #fff
-      border: 1px solid #AAA
-      height: 150px
-      position: absolute
-      top: 270px
-      left: 0
-      right: 0
-      margin: auto
-      width: 150px
       cursor: default
+      position: relative
 
-    .swatches
-      +bounds(48px, 175px)
-
-      position: absolute
-      left: 0
-      right: 0
-      top: 95px
-      margin: auto
-
-    .swatch
-      border: 1px solid #666
-      +box-sizing(border-box)
-      float: left
-      margin: 4px
-      width: 16px
-      height: 16px
-
-    .color_picker_holder
-      height: 76px
-      margin-bottom: 7px
-      position: absolute
-      left: 0
-      right: 0
-      margin-left: auto
-      margin-right: auto
-      width: 74px
-
-      input.color
-        border: 2px solid
-        border-color= #CCC
-        height: 50px
-        position: absolute
-        text-align: center
-        width: 50px
-
-        &.primary
-          left: 0
-          top: 0
-          z-index: 10
-        &.secondary
-          left: 20px
-          top: 20px
-          z-index: 1
-
-.container
-  +user-select(none)
-
-.color_toggle
-  +bounds(16px, 16px)
-
-  background-image: url(/images/pixie/color_switch_arrow.png)
-  float: right
-
-nav.left
-  +bounds($sidebar, 230px)
-
-  margin-bottom: $sidebar + 20px
-
-  .toolbar
-    cursor: pointer
-    display: inline-block
-    height: auto
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
-    vertical-align: top
-
-    .tool
-      +border-radius(8px)
-      +box-sizing(border-box)
-      height: 40px
-      margin: 5px auto 0
-      padding-top: 12px
-      text-align: center
-      width: 40px
-
-      &:hover
-        background-color: #fff
-
-      &.active
-        +border-radius(8px)
-        background-color= #1084CE
-
-      img
-        border: none
-
-.pixie
-  +bounds(100%)
-  +box-sizing(border-box)
-
-  margin: 0 1em 1em 1em
-  padding-bottom: 40px
-  padding-right: 175px
-
-  .canvas
-    +user-select(none)
-    +box-sizing(border-box)
-
-    border: 1px solid #000
-    position: relative
-
-  .viewport
+  .pixie
     +bounds(100%)
     +box-sizing(border-box)
 
-    background-color: #ccc
-    display: inline-block
-    overflow: auto
-    position: relative
+    margin: 0 1em 1em 1em
+    padding-bottom: 40px
+    padding-right: 175px
 
-    canvas:first-child
-      background: none
-      z-index: 5
+    nav.left, nav.right
+      +border-radius
+      +box-sizing(border-box)
 
-  .layer
-    position: absolute
-    background: white url(/images/pixie/pixel_bg.png)
+      background-color: $dark_highlight
+      padding: 1em
 
-  .actions
-    position: fixed
-    top: 7px
+    nav.left
+      +bounds($sidebar, 230px)
 
-  .actions, .layers
-    display: block
+      margin-bottom: $sidebar + 20px
 
-    a.tool
-      color: black
-      margin: 1px
-      padding: .25em
+      .toolbar
+        cursor: pointer
+        display: inline-block
+        height: auto
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        vertical-align: top
 
-      &:hover
-        background-color: #CCC
-        text-decoration: none
+        .tool
+          +border-radius
+          +bounds(40px)
+          +box-sizing(border-box)
 
-      &.active
-        background-color: #1084CE
-        text-decoration: none
+          margin: 5px auto 0
+          padding-top: 12px
+          text-align: center
 
-  .toggle_holder
-    display: block
-    margin-left: 70px
+          &:hover
+            background-color: #fff
 
-  .layers
-    display: inline-block
-    margin: 0
-    margin-top: 1em
-    width: 80px
+          &.active
+            +border-radius
 
-    h3
-      margin: 0
+            background-color= #1084CE
 
-    a.tool
+          img
+            border: none
+
+    nav.right
+      +bounds(150px, 410px)
+
+      margin-bottom: 100px
+
+      .preview
+        +bounds(150px)
+
+        background-color: #fff
+        border: 1px solid #AAA
+        position: absolute
+        top: 270px
+        left: 0
+        right: 0
+        margin: auto
+        cursor: default
+
+      .swatches
+        +bounds(48px, 175px)
+
+        position: absolute
+        left: 0
+        right: 0
+        top: 95px
+        margin: auto
+
+      .swatch
+        +bounds(16px)
+        +box-sizing(border-box)
+
+        border: 1px solid #666
+        float: left
+        margin: 4px
+
+      .color_picker_holder
+        +bounds(74px, 76px)
+
+        margin-bottom: 7px
+        position: absolute
+        left: 0
+        right: 0
+        margin-left: auto
+        margin-right: auto
+
+        input.color
+          +bounds(50px)
+
+          border: 2px solid
+          border-color: #CCC
+          position: absolute
+          text-align: center
+
+          &.primary
+            left: 0
+            top: 0
+            z-index: 10
+          &.secondary
+            left: 20px
+            top: 20px
+            z-index: 1
+
+    .canvas
+      +user-select(none)
+      +box-sizing(border-box)
+
+      border: 1px solid #000
+      position: relative
+
+    .viewport
+      +bounds(100%)
+      +box-sizing(border-box)
+
+      background-color: #ccc
       display: inline-block
-      height: auto
-      margin: 0
-      margin-top: 5px
-      width: auto
+      overflow: auto
+      position: relative
 
-      &.active
-        color: white
+      canvas:first-child
+        background: none
+        z-index: 5
+
+    .layer
+      position: absolute
+      background: white url(/images/pixie/pixel_bg.png)
+
+    .actions
+      position: fixed
+      top: 7px
+
+    .actions, .layers
+      display: block
+
+      a.tool
+        color: black
+        margin: 1px
+        padding: .25em
+
+        &:hover
+          background-color: #CCC
+          text-decoration: none
+
+        &.active
+          background-color: #1084CE
+          text-decoration: none
+
+    .toggle_holder
+      display: block
+      margin-left: 70px
+
+    .layers
+      display: inline-block
+      margin: 0
+      margin-top: 1em
+      width: 80px
+
+      h3
+        margin: 0
+
+      a.tool
+        display: inline-block
+        height: auto
+        margin: 0
+        margin-top: 5px
+        width: auto
+
+        &.active
+          color: white
+
+    a.button
+      &[title~="Undo"], &[title~="New"]
+        +border-right-radius(0)
+
+        margin-right: 0
+
+      &[title~="Redo"], &[title~="Save"]
+        +border-left-radius(0)
+
+        margin-left: -1px
+
+    #opacity
+      height: 73px
+      position: absolute
+      right: 1em
+
+    #opacity_val
+      position: absolute
+      right: -5px
+      bottom: -20px
 
 #newCanvasModal
   #resize_width, #resize_height
