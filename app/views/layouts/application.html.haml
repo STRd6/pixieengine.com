@@ -1,40 +1,32 @@
 <!DOCTYPE html>
-%html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
+%html{ 'xmlns' => "http://www.w3.org/1999/xhtml" }
   = render :partial => "shared/head"
 
-  %body
-    .container
-      = render :partial => "/shared/header"
+  %body#fullscreen
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }
+          = msg
+          .close
+    #logo
+    #bulb
 
-      #content
-        - if context
-          = render :partial => "#{context}/navigation"
-        #flashes
-          - flash.each do |key, msg|
-            %div{ :class => key }
-              = msg
-              .close
+    = yield
 
-        - if ab_test "test" #Dummy test
-          -#nothing
-
-        - if @title
-          %h1= @title
-
-        = yield
-
-      - if @has_reg_popup
-        = render :partial => 'shared/register_modal'
-      = render :partial => "/shared/chat"
-      = render :partial => "/shared/nav_dock"
-
-    = render :partial => "/shared/feedback"
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
+    = render :partial => "/shared/chat"
+    = render :partial => "/shared/nav_dock"
 
     #tooltip
       .icon
       .content
 
-    = javascript_include_tag "coffee-script"
+    #login_link
+      = render :partial => "/shared/login"
+
+    - if Rails.env.development?
+      = javascript_include_tag "coffee-script"
 
     = render :partial => "/shared/analytics"
 
