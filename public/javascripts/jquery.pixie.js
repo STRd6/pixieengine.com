@@ -1,14 +1,33 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 04:10:51 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 05:45:17 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   (function($) {
-    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, erase, falseFn, palette, scale, tools;
+    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, scale, tools;
+    DEBUG = false;
     DIV = "<div />";
     IMAGE_DIR = "/images/pixie/";
     RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/;
     scale = 1;
+    ColorUtil = {
+      additive: function(c1, c2) {
+        var A, B, G, R, a, ax, b, bx, g, gx, r, rx, _ref, _ref2;
+        _ref = c1.channels, R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
+        _ref2 = c2.channels, r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
+        if (a === 0) {
+          return c1;
+        }
+        if (A === 0) {
+          return c2;
+        }
+        ax = 1 - (1 - a) * (1 - A);
+        rx = (r * a / ax + R * A * (1 - a) / ax).round().clamp(0, 255);
+        gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255);
+        bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255);
+        return Color(rx, gx, bx, ax);
+      }
+    };
     palette = ["#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E", "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495", "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"];
     falseFn = function() {
       return false;
@@ -100,7 +119,7 @@
       clear: {
         perform: function(canvas) {
           return canvas.eachPixel(function(pixel) {
-            return pixel.color(Color(0, 0, 0, 0), false, true);
+            return pixel.color(Color(0, 0, 0, 0), false);
           });
         }
       },
@@ -125,9 +144,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false, true);
+            pixel.color(rightPixel.color(), false);
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true)
+            pixel.color(Color(0, 0, 0, 0), false)
           }
         });
 
@@ -155,9 +174,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, true);
+              currentPixel.color(leftPixel.color(), false);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false);
             }
           }
         }
@@ -181,9 +200,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, true);
+            pixel.color(lowerPixel.color(), false);
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true);
+            pixel.color(Color(0, 0, 0, 0), false);
           }
         });
 
@@ -211,9 +230,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, true);
+              currentPixel.color(upperPixel.color(), false);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false);
             }
           }
         }
@@ -254,7 +273,7 @@
       var inverseOpacity, pixelColor;
       inverseOpacity = 1 - opacity;
       pixelColor = pixel.color();
-      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, true);
+      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false);
     };
     tools = {
       pencil: {
@@ -326,6 +345,13 @@
         }
       }
     };
+    debugTools = {
+      inspector: {
+        mousedown: function() {
+          return console.log(this.color());
+        }
+      }
+    };
     return $.fn.pixie = function(options) {
       var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, tilePreview, width;
       tilePreview = true;
@@ -334,18 +360,16 @@
         color = Color(0, 0, 0, 0);
         self = {
           canvas: canvas,
-          color: function(newColor, skipUndo, replace) {
+          color: function(newColor, skipUndo) {
             var oldColor, xPos, yPos;
             if (arguments.length >= 1) {
               oldColor = color;
               xPos = x * PIXEL_WIDTH;
               yPos = y * PIXEL_HEIGHT;
-              if (replace) {
-                layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
-              }
-              layerCanvas.fillStyle = newColor.toString();
+              color = ColorUtil.additive(oldColor, newColor);
+              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+              layerCanvas.fillStyle = color.toString();
               layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
-              color = canvas.getColor(x, y);
               if (!skipUndo) {
                 undoStack.add(self, {
                   pixel: self,
@@ -751,7 +775,7 @@
             data = undoStack.popRedo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.newColor, true, true);
+                return this.pixel.color(this.newColor, true);
               });
             }
           },
@@ -773,7 +797,7 @@
                 step = steps[i];
                 if (step) {
                   $.each(step, function(j, p) {
-                    return canvas.getPixel(p.x, p.y).color(p.color, true, true);
+                    return canvas.getPixel(p.x, p.y).color(p.color, true);
                   });
                   i++;
                   return setTimeout(runStep, delay);
@@ -817,7 +841,7 @@
             data = undoStack.popUndo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.oldColor, true, true);
+                return this.pixel.color(this.oldColor, true);
               });
             }
           },
@@ -828,6 +852,12 @@
           tool.name = key;
           return canvas.addTool(tool);
         });
+        if (DEBUG) {
+          $.each(debugTools, function(key, tool) {
+            tool.name = key;
+            return canvas.addTool(tool);
+          });
+        }
         $.each(actions, function(key, action) {
           action.name = key;
           return canvas.addAction(action);

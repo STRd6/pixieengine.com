@@ -1,8 +1,26 @@
 (($) ->
+  DEBUG = false
+
   DIV = "<div />"
   IMAGE_DIR = "/images/pixie/"
   RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
   scale = 1
+
+  ColorUtil =
+    # http://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values/727339#727339
+    additive: (c1, c2) ->
+      [R, G, B, A] = c1.channels
+      [r, g, b, a] = c2.channels
+
+      return c1 if a == 0
+      return c2 if A == 0
+
+      ax = 1 - (1 - a) * (1 - A)
+      rx = (r * a / ax + R * A * (1 - a) / ax).round().clamp(0, 255)
+      gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255)
+      bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255)
+
+      return Color(rx, gx, bx, ax)
 
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
@@ -86,7 +104,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(0, 0, 0, 0), false, true)
+          pixel.color(Color(0, 0, 0, 0), false)
     preview:
       menu: false
       perform: (canvas) ->
@@ -106,9 +124,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false, true);
+            pixel.color(rightPixel.color(), false);
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true)
+            pixel.color(Color(0, 0, 0, 0), false)
           }
         });
 
@@ -135,9 +153,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, true);
+              currentPixel.color(leftPixel.color(), false);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false);
             }
           }
         }
@@ -160,9 +178,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, true);
+            pixel.color(lowerPixel.color(), false);
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true);
+            pixel.color(Color(0, 0, 0, 0), false);
           }
         });
 
@@ -189,9 +207,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, true);
+              currentPixel.color(upperPixel.color(), false);
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false);
             }
           }
         }
@@ -225,7 +243,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, true)
+    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false)
 
   tools =
     pencil:
@@ -280,6 +298,11 @@
               neighbor.color(newColor)
               q.push(neighbor)
 
+  debugTools =
+    inspector:
+      mousedown: ->
+        console.log(this.color())
+
   $.fn.pixie = (options) ->
     tilePreview = true
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
@@ -288,19 +311,18 @@
       self =
         canvas: canvas
 
-        color: (newColor, skipUndo, replace) ->
+        color: (newColor, skipUndo) ->
           if arguments.length >= 1
             oldColor = color
 
             xPos = x * PIXEL_WIDTH
             yPos = y * PIXEL_HEIGHT
 
-            if replace
-              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-            layerCanvas.fillStyle = newColor.toString()
-            layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+            color = ColorUtil.additive(oldColor, newColor)
 
-            color = canvas.getColor(x, y)
+            layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+            layerCanvas.fillStyle = color.toString()
+            layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
             undoStack.add(self, {pixel: self, oldColor: oldColor, newColor: color}) unless skipUndo
 
@@ -693,7 +715,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.newColor, true, true)
+              this.pixel.color(this.newColor, true)
 
         replay: (steps) ->
           unless replaying
@@ -714,7 +736,7 @@
 
               if step
                 $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y).color(p.color, true, true)
+                  canvas.getPixel(p.x, p.y).color(p.color, true)
 
                 i++
 
@@ -756,7 +778,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.oldColor, true, true)
+              this.pixel.color(this.oldColor, true)
 
         width: width
         height: height
@@ -764,6 +786,11 @@
       $.each tools, (key, tool) ->
         tool.name = key
         canvas.addTool(tool)
+
+      if DEBUG
+        $.each debugTools, (key, tool) ->
+          tool.name = key
+          canvas.addTool(tool)
 
       $.each actions, (key, action) ->
         action.name = key
