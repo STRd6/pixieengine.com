@@ -25,7 +25,7 @@ class App < ActiveRecord::Base
     }
   )
 
-  after_save :generate_docs
+  #after_save :generate_docs
 
   scope :featured, where(:featured => true)
 
