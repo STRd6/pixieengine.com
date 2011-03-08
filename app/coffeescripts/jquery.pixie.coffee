@@ -749,7 +749,6 @@
           return tempCanvas.toDataURL("image/png")
 
         undo: ->
-          debugger
           data = undoStack.popUndo()
 
           if data

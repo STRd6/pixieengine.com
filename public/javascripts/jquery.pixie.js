@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 07 Mar 2011 23:01:15 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 01:48:27 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -811,7 +811,7 @@
             return tempCanvas.toDataURL("image/png");
           },
           undo: function() {
-            debugger;            var data;
+            var data;
             data = undoStack.popUndo();
             if (data) {
               return $.each(data, function() {
