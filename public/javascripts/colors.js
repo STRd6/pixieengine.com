@@ -1,11 +1,11 @@
-/* DO NOT MODIFY. This file was compiled Mon, 07 Mar 2011 23:48:28 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 01:30:14 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/colors.coffee
  */
 
 (function() {
   var Color;
   Color = function(color) {
-    var getValue, self;
+    var a, b, g, getValue, parseRGB, parseRGBA, r, self;
     if (typeof color === "string") {
       if (color[0] = '#') {
         parseHex(color);
@@ -16,13 +16,30 @@
       }
     }
     if (typeof color === "array") {
-      Color(color[0], color[1], color[2], color[3] ? color[3] : 1);
+      r = parseInt(color[0]);
+      g = parseInt(color[1]);
+      b = parseInt(color[2]);
+      if (color[3]) {
+        a = parseFloat(color[3]);
+      } else {
+        a = 1;
+      }
     }
     ({
       channels: [typeof I.r === 'string' && parseHex(I.r) || I.r, typeof I.g === 'string' && parseHex(I.g) || I.g, typeof I.b === 'string' && parseHex(I.b) || I.b, (typeof I.a !== 'string' && typeof I.a !== 'number') && 1 || typeof I.a === 'string' && parseFloat(I.a) || I.a]
     });
     getValue = function() {
       return (channels[0] * 0x10000) | (channels[1] * 0x100) | channels[2];
+    };
+    parseRGB = function(color) {
+      var results;
+      results = color.match(/[\d,]+/).join(',').split(',');
+      return [parseInt(results[0]), parseInt(results[1]), parseInt(results[2])];
+    };
+    parseRGBA = function(color) {
+      var results;
+      results = color.match(/(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)/)[0].join(',').split(',');
+      return [parseInt(results[0]), parseInt(results[1]), parseInt(results[2]), parseFloat(results[3])];
     };
     self = {
       channels: channels,

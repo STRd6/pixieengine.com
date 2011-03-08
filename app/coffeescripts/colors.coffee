@@ -7,7 +7,13 @@ Color = (color) ->
     else if color.substr(0, 4) == 'rgba'
       parseRGBA(color)
   if typeof color == "array"
-    Color(color[0], color[1], color[2], if color[3] then color[3] else 1)
+    r = parseInt(color[0])
+    g = parseInt(color[1])
+    b = parseInt(color[2])
+    if color[3]
+      a = parseFloat(color[3])
+    else
+      a = 1
 
   channels: [
     typeof I.r == 'string' && parseHex(I.r) || I.r
@@ -18,6 +24,14 @@ Color = (color) ->
 
   getValue = ->
     (channels[0] * 0x10000) | (channels[1] * 0x100) | channels[2]
+
+  parseRGB = (color) ->
+    results = color.match(/[\d,]+/).join(',').split(',')
+    return [parseInt(results[0]), parseInt(results[1]), parseInt(results[2])]
+
+  parseRGBA = (color) ->
+    results = color.match(/(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)/)[0].join(',').split(',')
+    return [parseInt(results[0]), parseInt(results[1]), parseInt(results[2]), parseFloat(results[3])]
 
   self =
     channels: channels
