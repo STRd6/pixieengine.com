@@ -415,20 +415,21 @@
       navRight = $("<nav class='right'></nav>")
       navLeft = $("<nav class='left'></nav>")
 
-      opacityVal = $("<div id=opacity_val>100</div>")
+      opacityVal = $ DIV,
+        class: "val"
+        text: 100
 
-      opacitySlider = $(DIV,
-        id: 'opacity'
-      ).slider(
+      opacitySlider = $(DIV, class: "opacity").slider(
         orientation: 'vertical'
         value: 100
-        min: 0
+        min: 5
         max: 100
+        step: 5
         slide: (event, ui) ->
-          $('#opacity_val').text(ui.value)
+          opacityVal.text(ui.value)
       ).append(opacityVal)
 
-      $('#opacity_val').text($('#opacity').slider('value'))
+      opacityVal.text(opacitySlider.slider('value'))
 
       preview = $ DIV,
         class: 'preview'
@@ -524,7 +525,7 @@
           e.preventDefault()
         )
         .bind("mousedown mousemove", (event) ->
-          opacity = $('#opacity_val').text() / 100
+          opacity = opacityVal.text() / 100
           offset = $(this).offset()
 
           localY = event.pageY - offset.top

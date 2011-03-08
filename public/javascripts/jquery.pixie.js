@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 18:17:21 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 18:38:40 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -469,19 +469,23 @@
         });
         navRight = $("<nav class='right'></nav>");
         navLeft = $("<nav class='left'></nav>");
-        opacityVal = $("<div id=opacity_val>100</div>");
+        opacityVal = $(DIV, {
+          "class": "val",
+          text: 100
+        });
         opacitySlider = $(DIV, {
-          id: 'opacity'
+          "class": "opacity"
         }).slider({
           orientation: 'vertical',
           value: 100,
-          min: 0,
+          min: 5,
           max: 100,
+          step: 5,
           slide: function(event, ui) {
-            return $('#opacity_val').text(ui.value);
+            return opacityVal.text(ui.value);
           }
         }).append(opacityVal);
-        $('#opacity_val').text($('#opacity').slider('value'));
+        opacityVal.text(opacitySlider.slider('value'));
         preview = $(DIV, {
           "class": 'preview',
           style: "width: " + width + "px; height: " + height + "px"
@@ -572,7 +576,7 @@
           return e.preventDefault();
         }).bind("mousedown mousemove", function(event) {
           var col, eventType, localX, localY, offset, opacity, pixel, row;
-          opacity = $('#opacity_val').text() / 100;
+          opacity = opacityVal.text() / 100;
           offset = $(this).offset();
           localY = event.pageY - offset.top;
           localX = event.pageX - offset.left;
