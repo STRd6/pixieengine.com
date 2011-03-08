@@ -86,7 +86,7 @@
         window.canvas = canvas;
 
         canvas.addAction({
-          name: "Replay",
+          name: "replay",
           perform: function(canvas) {
             canvas.replay();
           },
@@ -94,7 +94,7 @@
         });
 
         canvas.addAction({
-          name: "New",
+          name: "new",
           perform: function(canvas) {
             setNewDimensions();
           },
@@ -102,7 +102,7 @@
         });
 
         canvas.addAction({
-          name: "Save",
+          name: "save",
           perform: function(canvas) {
             $(".tool.button[title=Save]").attr("disabled", true);
             window.onbeforeunload = undefined;
