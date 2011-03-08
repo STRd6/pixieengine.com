@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 21:07:35 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 21:11:39 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -803,7 +803,6 @@
               return layer.resize();
             });
             canvas.css({
-              borderColor: guideToggle.attr('checked') ? "black" : "transparent",
               width: width * PIXEL_WIDTH + 2,
               height: height * PIXEL_HEIGHT + 2
             });

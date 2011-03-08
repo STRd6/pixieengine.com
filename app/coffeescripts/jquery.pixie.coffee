@@ -738,7 +738,6 @@
             layer.resize()
 
           canvas.css
-            borderColor: if guideToggle.attr('checked') then "black" else "transparent"
             width: width * PIXEL_WIDTH + 2
             height: height * PIXEL_HEIGHT + 2
 
