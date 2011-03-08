@@ -516,7 +516,8 @@
       canvas.append(layer, guideLayer)
 
       $.extend canvas,
-        addAction: (name, action) ->
+        addAction: (action) ->
+          name = action.name
           titleText = name.capitalize()
           undoable = action.undoable
 
@@ -558,7 +559,8 @@
             class: 'swatch'
             style: "background-color: #{color.toString()}"
 
-        addTool: (name, tool) ->
+        addTool: (tool) ->
+          name = tool.name
           alt = name.capitalize()
 
           tool.name = name
@@ -760,10 +762,12 @@
         height: height
 
       $.each tools, (key, tool) ->
-        canvas.addTool(key, tool)
+        tool.name = key
+        canvas.addTool(tool)
 
       $.each actions, (key, action) ->
-        canvas.addAction(key, action)
+        action.name = key
+        canvas.addAction(action)
 
       $.each palette, (i, color) ->
         canvas.addSwatch(Color(color))

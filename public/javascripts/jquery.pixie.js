@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Mon, 07 Mar 2011 23:01:15 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 01:58:53 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -557,8 +557,9 @@
         });
         canvas.append(layer, guideLayer);
         $.extend(canvas, {
-          addAction: function(name, action) {
-            var actionButton, doIt, iconImg, titleText, undoable;
+          addAction: function(action) {
+            var actionButton, doIt, iconImg, name, titleText, undoable;
+            name = action.name;
             titleText = name.capitalize();
             undoable = action.undoable;
             doIt = function() {
@@ -601,8 +602,9 @@
               style: "background-color: " + (color.toString())
             }));
           },
-          addTool: function(name, tool) {
-            var alt, img, setMe, toolDiv;
+          addTool: function(tool) {
+            var alt, img, name, setMe, toolDiv;
+            name = tool.name;
             alt = name.capitalize();
             tool.name = name;
             tool.icon = IMAGE_DIR + name + '.png';
@@ -823,10 +825,12 @@
           height: height
         });
         $.each(tools, function(key, tool) {
-          return canvas.addTool(key, tool);
+          tool.name = key;
+          return canvas.addTool(tool);
         });
         $.each(actions, function(key, action) {
-          return canvas.addAction(key, action);
+          action.name = key;
+          return canvas.addAction(action);
         });
         $.each(palette, function(i, color) {
           return canvas.addSwatch(Color(color));
