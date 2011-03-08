@@ -86,21 +86,24 @@
         // HAX: Global ref of canvas
         window.canvas = canvas;
 
-        canvas.addAction("Replay", {
+        canvas.addAction({
+          name: "Replay",
           perform: function(canvas) {
             canvas.replay();
           },
           undoable: false
         });
 
-        canvas.addAction("New", {
+        canvas.addAction({
+          name: "New",
           perform: function(canvas) {
             setNewDimensions();
           },
           undoable: false
         });
 
-        canvas.addAction("Save", {
+        canvas.addAction({
+          name: "Save",
           perform: function(canvas) {
             $(".tool.button[title=Save]").attr("disabled", true);
             window.onbeforeunload = undefined;
@@ -109,7 +112,8 @@
           undoable: false
         });
 
-        canvas.addAction("Post to Chat", {
+        canvas.addAction({
+          name: "Post to Chat",
           icon: "/images/icons/picture_go.png",
           perform: function(canvas) {
             var wrapper = $("<div />");
