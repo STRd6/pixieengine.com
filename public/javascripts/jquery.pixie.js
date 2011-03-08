@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 18:53:24 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 21:07:35 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -252,18 +252,6 @@
           w = window.open();
           return w.document.location = canvas.toDataURL();
         }
-      },
-      options: {
-        hotkeys: ["o"],
-        perform: function() {
-          return $('#optionsModal').removeAttr('style').modal({
-            persist: true,
-            onClose: function() {
-              $.modal.close();
-              return $('#optionsModal').attr('style', 'display: none');
-            }
-          });
-        }
       }
     };
     colorNeighbors = function(color) {
@@ -356,8 +344,7 @@
       }
     };
     return $.fn.pixie = function(options) {
-      var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, tilePreview, width;
-      tilePreview = true;
+      var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, width;
       Pixel = function(x, y, layerCanvas, canvas, undoStack) {
         var color, redraw, self;
         color = Color(0, 0, 0, 0);
@@ -442,7 +429,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLayer, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(this).addClass("pixie");
         content = $(DIV, {
           "class": 'content'
@@ -486,53 +473,14 @@
           }
         }).append(opacityVal);
         opacityVal.text(opacitySlider.slider('value'));
+        tilePreview = true;
         preview = $(DIV, {
           "class": 'preview',
           style: "width: " + width + "px; height: " + height + "px"
         });
-        previewToggleHolder = $(DIV, {
-          "class": 'toggle_holder'
-        });
-        previewToggle = $('<input checked="true" class="preview_control" type="checkbox" />').change(function() {
-          if ($(this).attr('checked')) {
-            tilePreview = true;
-          } else {
-            tilePreview = false;
-          }
+        preview.mousedown(function() {
+          tilePreview = !tilePreview;
           return canvas.preview();
-        });
-        previewLabel = $('<label class="preview_control">Tiled Preview</label>').click(function() {
-          if (previewToggle.attr('checked')) {
-            previewToggle.removeAttr('checked');
-            tilePreview = false;
-          } else {
-            previewToggle.attr('checked', 'true');
-            tilePreview = true;
-          }
-          return canvas.preview();
-        });
-        guideToggleHolder = $(DIV, {
-          "class": 'toggle_holder'
-        });
-        guideLabel = $("<label class='guide_control'>Display Guides</label>").click(function() {
-          if (guideToggle.attr('checked')) {
-            guideToggle.removeAttr('checked');
-            guideLayer.clear();
-            return $('.canvas').css('border', '1px solid transparent');
-          } else {
-            guideToggle.attr('checked', 'true');
-            guideLayer.drawGuide();
-            return $('.canvas').css('border', '1px solid black');
-          }
-        });
-        guideToggle = $('<input class="guide_control" type="checkbox"></input>').change(function() {
-          if ($(this).attr('checked')) {
-            guideLayer.drawGuide();
-            return $('.canvas').css('border', '1px solid black');
-          } else {
-            guideLayer.clear();
-            return $('.canvas').css('border', '1px solid transparent');
-          }
         });
         currentTool = void 0;
         active = false;
@@ -924,9 +872,6 @@
         });
         canvas.setTool(tools.pencil);
         viewport.append(canvas);
-        previewToggleHolder.append(previewToggle, previewLabel);
-        guideToggleHolder.append(guideToggle, guideLabel);
-        $('#optionsModal').append(guideToggleHolder, previewToggleHolder);
         $(navLeft).append(toolbar);
         $(navRight).append(colorbar, preview, opacitySlider);
         content.append(actionbar, viewport, navLeft, navRight);

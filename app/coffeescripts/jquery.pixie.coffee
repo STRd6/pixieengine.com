@@ -226,16 +226,6 @@
       perform: (canvas) ->
         w = window.open()
         w.document.location = canvas.toDataURL()
-    options:
-      hotkeys: ["o"]
-      perform: ->
-        $('#optionsModal').removeAttr('style').modal(
-          persist: true
-          ,
-          onClose: ->
-            $.modal.close()
-            $('#optionsModal').attr('style', 'display: none')
-        )
 
   colorNeighbors = (color) ->
     this.color(color)
@@ -307,7 +297,6 @@
         console.log(this.color())
 
   $.fn.pixie = (options) ->
-    tilePreview = true
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color(0, 0, 0, 0)
 
@@ -431,52 +420,16 @@
 
       opacityVal.text(opacitySlider.slider('value'))
 
+      tilePreview = true
+
       preview = $ DIV,
         class: 'preview'
         style: "width: #{width}px; height: #{height}px"
 
-      previewToggleHolder = $ DIV,
-        class: 'toggle_holder'
-
-      previewToggle = $('<input checked="true" class="preview_control" type="checkbox" />').change ->
-        if $(this).attr('checked')
-          tilePreview = true
-        else
-          tilePreview = false
+      preview.mousedown ->
+        tilePreview = !tilePreview
 
         canvas.preview()
-
-      previewLabel = $('<label class="preview_control">Tiled Preview</label>').click ->
-        if previewToggle.attr('checked')
-          previewToggle.removeAttr('checked')
-          tilePreview = false
-        else
-          previewToggle.attr('checked', 'true')
-          tilePreview = true
-
-        canvas.preview()
-
-      guideToggleHolder = $ DIV,
-        class: 'toggle_holder'
-
-      guideLabel = $("<label class='guide_control'>Display Guides</label>").click ->
-
-        if guideToggle.attr('checked')
-          guideToggle.removeAttr('checked')
-          guideLayer.clear()
-          $('.canvas').css('border', '1px solid transparent')
-        else
-          guideToggle.attr('checked', 'true')
-          guideLayer.drawGuide()
-          $('.canvas').css('border', '1px solid black')
-
-      guideToggle = $('<input class="guide_control" type="checkbox"></input>').change ->
-        if $(this).attr('checked')
-          guideLayer.drawGuide()
-          $('.canvas').css('border', '1px solid black')
-        else
-          guideLayer.clear()
-          $('.canvas').css('border', '1px solid transparent')
 
       currentTool = undefined
       active = false
@@ -849,9 +802,6 @@
       canvas.setTool(tools.pencil)
 
       viewport.append(canvas)
-      previewToggleHolder.append(previewToggle, previewLabel)
-      guideToggleHolder.append(guideToggle, guideLabel)
-      $('#optionsModal').append(guideToggleHolder, previewToggleHolder)
 
       $(navLeft).append(toolbar)
       $(navRight).append(colorbar, preview, opacitySlider)
