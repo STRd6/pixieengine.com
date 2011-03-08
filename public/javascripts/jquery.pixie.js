@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 05:45:17 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 07:38:24 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -727,7 +727,7 @@
               getColor = function(x, y) {
                 var index;
                 index = (x + y * imageData.width) * 4;
-                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba();
+                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
               };
               return canvas.eachPixel(function(pixel, x, y) {
                 return pixel.color(getColor(x, y), true);

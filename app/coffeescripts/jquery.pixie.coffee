@@ -668,7 +668,7 @@
             getColor = (x, y) ->
               index = (x + y * imageData.width) * 4
 
-              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba()
+              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
 
             canvas.eachPixel (pixel, x, y) ->
               pixel.color(getColor(x, y), true)
