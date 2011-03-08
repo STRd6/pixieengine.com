@@ -401,3 +401,13 @@ Array.prototype.sum = function() {
     return sum + n;
   });
 };
+
+Array.prototype.zip = function(arr) {
+  return results = this.map(function(element, i) {
+    return [element, arr[i]]
+  });
+};
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
+}

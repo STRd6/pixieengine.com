@@ -78,9 +78,7 @@
                 canvas.dirty(false)
               , "json"
 
-            canvas.addAction
-              name: "Save"
-              icon: "/images/icons/database_save.png"
+            canvas.addAction "Save",
               perform: (canvas) ->
                 $(".tool.button").last().attr("disabled", true)
 

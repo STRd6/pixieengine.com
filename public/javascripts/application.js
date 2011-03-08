@@ -8,8 +8,8 @@ function notify(message) {
   }
 
   notice.append($("<div class='close'/>"));
-
-  notice.slideDown();
+  notice.hide()
+  notice.slideToggle().delay(4000).fadeOut();
 }
 
 function showTooltip(element, html) {
