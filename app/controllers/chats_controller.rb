@@ -23,13 +23,13 @@ class ChatsController < ApplicationController
     )
 
     unless cleaned_text.blank?
+      Chat.create({ :user => current_user, :text => cleaned_text })
+
       Juggernaut.publish("/chats", {
         :message => cleaned_text,
         :time => Time.zone.now.strftime("%I:%M%p"),
         :name => display_name
       })
-
-      Chat.create({ :user => current_user, :text => cleaned_text })
     end
 
     render :nothing => true
