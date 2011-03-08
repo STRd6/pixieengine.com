@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 01:58:53 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 04:10:51 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -401,9 +401,10 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
-        pixie = $(DIV, {
-          "class": 'pixie'
+        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
+        pixie = $(this).addClass("pixie");
+        content = $(DIV, {
+          "class": 'content'
         });
         viewport = $(DIV, {
           "class": 'viewport'
@@ -606,8 +607,7 @@
             var alt, img, name, setMe, toolDiv;
             name = tool.name;
             alt = name.capitalize();
-            tool.name = name;
-            tool.icon = IMAGE_DIR + name + '.png';
+            tool.icon || (tool.icon = IMAGE_DIR + name + '.png');
             setMe = function() {
               canvas.setTool(tool);
               toolbar.children().removeClass("active");
@@ -842,8 +842,8 @@
         $('#optionsModal').append(guideToggleHolder, previewToggleHolder);
         $(navLeft).append(toolbar);
         $(navRight).append(colorbar, preview, opacitySlider);
-        pixie.append(actionbar, viewport, navLeft, navRight);
-        $(this).append(pixie);
+        content.append(actionbar, viewport, navLeft, navRight);
+        pixie.append(content);
         if (initializer) {
           initializer(canvas);
         }

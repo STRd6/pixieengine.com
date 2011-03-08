@@ -349,8 +349,10 @@
     initializer = options.initializer
 
     return this.each ->
-      pixie = $ DIV,
-        class: 'pixie'
+      pixie = $(this).addClass("pixie")
+
+      content = $ DIV,
+        class: 'content'
 
       viewport = $ DIV,
         class: 'viewport'
@@ -563,8 +565,7 @@
           name = tool.name
           alt = name.capitalize()
 
-          tool.name = name
-          tool.icon = IMAGE_DIR + name + '.png'
+          tool.icon ||= IMAGE_DIR + name + '.png'
 
           setMe = ->
             canvas.setTool(tool)
@@ -780,8 +781,8 @@
 
       $(navLeft).append(toolbar)
       $(navRight).append(colorbar, preview, opacitySlider)
-      pixie.append(actionbar, viewport, navLeft, navRight)
-      $(this).append(pixie)
+      content.append(actionbar, viewport, navLeft, navRight)
+      pixie.append(content)
 
       if initializer
         initializer(canvas)
