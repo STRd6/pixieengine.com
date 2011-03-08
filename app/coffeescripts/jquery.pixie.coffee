@@ -22,6 +22,9 @@
 
       return Color(rx, gx, bx, ax)
 
+    replace: (c1, c2) ->
+      c2
+
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
     "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
@@ -104,7 +107,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(0, 0, 0, 0), false)
+          pixel.color(Color(0, 0, 0, 0), false, "replace")
     preview:
       menu: false
       perform: (canvas) ->
@@ -243,7 +246,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false)
+    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace")
 
   tools =
     pencil:
@@ -308,21 +311,28 @@
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color(0, 0, 0, 0)
 
+      redraw = () ->
+        xPos = x * PIXEL_WIDTH
+        yPos = y * PIXEL_HEIGHT
+
+        layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+        layerCanvas.fillStyle = color.toString()
+        layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+
       self =
         canvas: canvas
 
-        color: (newColor, skipUndo) ->
+        redraw: redraw
+
+        color: (newColor, skipUndo, blendMode) ->
           if arguments.length >= 1
+            blendMode ||= "additive"
+
             oldColor = color
 
-            xPos = x * PIXEL_WIDTH
-            yPos = y * PIXEL_HEIGHT
+            color = ColorUtil[blendMode](oldColor, newColor)
 
-            color = ColorUtil.additive(oldColor, newColor)
-
-            layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-            layerCanvas.fillStyle = color.toString()
-            layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+            redraw()
 
             undoStack.add(self, {pixel: self, oldColor: oldColor, newColor: color}) unless skipUndo
 
@@ -341,25 +351,31 @@
         class: "layer"
 
       gridColor = "#000"
-      layerWidth = width * PIXEL_WIDTH
-      layerHeight = height * PIXEL_HEIGHT
+      layerWidth = -> width * PIXEL_WIDTH
+      layerHeight = -> height * PIXEL_HEIGHT
       layerElement = layer.get(0)
-      layerElement.width = layerWidth
-      layerElement.height = layerHeight
+      layerElement.width = layerWidth()
+      layerElement.height = layerHeight()
 
       context = layerElement.getContext("2d")
 
       return $.extend layer,
         clear: ->
-          context.clearRect(0, 0, layerWidth, layerHeight)
+          context.clearRect(0, 0, layerWidth(), layerHeight())
+
         context: context
+
         drawGuide: ->
           context.fillStyle = gridColor
           height.times (row) ->
-            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth, 1)
+            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth(), 1)
 
           width.times (col) ->
-            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight)
+            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight())
+
+        resize: () ->
+          layerElement.width = layerWidth()
+          layerElement.height = layerHeight()
 
     PIXEL_WIDTH = 16
     PIXEL_HEIGHT = 16
@@ -381,7 +397,8 @@
 
       canvas = $ DIV,
         class: 'canvas'
-        style: "width: #{(width * PIXEL_WIDTH) + 2}px; height: #{(height * PIXEL_HEIGHT) + 2}px;"
+        width: width * PIXEL_WIDTH + 2
+        height: height * PIXEL_HEIGHT + 2
 
       toolbar = $ DIV,
         class: 'toolbar'
@@ -530,6 +547,8 @@
           lastPixel = pixel
         )
 
+      layers = [layer, guideLayer]
+
       height.times (row) ->
         pixels[row] = []
 
@@ -662,6 +681,8 @@
 
           image = new Image()
           image.onload = ->
+            canvas.resize(image.width, image.height)
+
             context.drawImage(image, 0, 0)
             imageData = context.getImageData(0, 0, image.width, image.height)
 
@@ -715,7 +736,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.newColor, true)
+              this.pixel.color(this.newColor, true, "replace")
 
         replay: (steps) ->
           unless replaying
@@ -745,6 +766,29 @@
                 replaying = false
 
             setTimeout(runStep, delay)
+
+        resize: (newWidth, newHeight) ->
+          this.width = width = newWidth
+          this.height = height = newHeight
+
+          pixels = pixels.slice(0, newHeight)
+
+          pixels.push [] while pixels.length < newHeight
+
+          pixels.each (row, y) ->
+            row.pop() while row.length > newWidth
+            row.push Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack) while row.length < newWidth
+
+          layers.each (layer) ->
+            layer.clear()
+            layer.resize()
+
+          canvas.css
+            borderColor: if guideToggle.attr('checked') then "black" else "transparent"
+
+          pixels.each (row) ->
+            row.each (pixel) ->
+              pixel.redraw()
 
         setInitialState: (frameData) ->
           initialStateData = frameData
@@ -778,7 +822,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.oldColor, true)
+              this.pixel.color(this.oldColor, true, "replace")
 
         width: width
         height: height

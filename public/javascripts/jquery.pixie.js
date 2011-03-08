@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 17:03:41 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 18:17:21 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -26,6 +26,9 @@
         gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255);
         bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255);
         return Color(rx, gx, bx, ax);
+      },
+      replace: function(c1, c2) {
+        return c2;
       }
     };
     palette = ["#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E", "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495", "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"];
@@ -119,7 +122,7 @@
       clear: {
         perform: function(canvas) {
           return canvas.eachPixel(function(pixel) {
-            return pixel.color(Color(0, 0, 0, 0), false);
+            return pixel.color(Color(0, 0, 0, 0), false, "replace");
           });
         }
       },
@@ -273,7 +276,7 @@
       var inverseOpacity, pixelColor;
       inverseOpacity = 1 - opacity;
       pixelColor = pixel.color();
-      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false);
+      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace");
     };
     tools = {
       pencil: {
@@ -356,20 +359,26 @@
       var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, tilePreview, width;
       tilePreview = true;
       Pixel = function(x, y, layerCanvas, canvas, undoStack) {
-        var color, self;
+        var color, redraw, self;
         color = Color(0, 0, 0, 0);
+        redraw = function() {
+          var xPos, yPos;
+          xPos = x * PIXEL_WIDTH;
+          yPos = y * PIXEL_HEIGHT;
+          layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+          layerCanvas.fillStyle = color.toString();
+          return layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+        };
         self = {
           canvas: canvas,
-          color: function(newColor, skipUndo) {
-            var oldColor, xPos, yPos;
+          redraw: redraw,
+          color: function(newColor, skipUndo, blendMode) {
+            var oldColor;
             if (arguments.length >= 1) {
+              blendMode || (blendMode = "additive");
               oldColor = color;
-              xPos = x * PIXEL_WIDTH;
-              yPos = y * PIXEL_HEIGHT;
-              color = ColorUtil.additive(oldColor, newColor);
-              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
-              layerCanvas.fillStyle = color.toString();
-              layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+              color = ColorUtil[blendMode](oldColor, newColor);
+              redraw();
               if (!skipUndo) {
                 undoStack.add(self, {
                   pixel: self,
@@ -396,25 +405,33 @@
           "class": "layer"
         });
         gridColor = "#000";
-        layerWidth = width * PIXEL_WIDTH;
-        layerHeight = height * PIXEL_HEIGHT;
+        layerWidth = function() {
+          return width * PIXEL_WIDTH;
+        };
+        layerHeight = function() {
+          return height * PIXEL_HEIGHT;
+        };
         layerElement = layer.get(0);
-        layerElement.width = layerWidth;
-        layerElement.height = layerHeight;
+        layerElement.width = layerWidth();
+        layerElement.height = layerHeight();
         context = layerElement.getContext("2d");
         return $.extend(layer, {
           clear: function() {
-            return context.clearRect(0, 0, layerWidth, layerHeight);
+            return context.clearRect(0, 0, layerWidth(), layerHeight());
           },
           context: context,
           drawGuide: function() {
             context.fillStyle = gridColor;
             height.times(function(row) {
-              return context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth, 1);
+              return context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth(), 1);
             });
             return width.times(function(col) {
-              return context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight);
+              return context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight());
             });
+          },
+          resize: function() {
+            layerElement.width = layerWidth();
+            return layerElement.height = layerHeight();
           }
         });
       };
@@ -425,7 +442,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
         pixie = $(this).addClass("pixie");
         content = $(DIV, {
           "class": 'content'
@@ -435,7 +452,8 @@
         });
         canvas = $(DIV, {
           "class": 'canvas',
-          style: "width: " + ((width * PIXEL_WIDTH) + 2) + "px; height: " + ((height * PIXEL_HEIGHT) + 2) + "px;"
+          width: width * PIXEL_WIDTH + 2,
+          height: height * PIXEL_HEIGHT + 2
         });
         toolbar = $(DIV, {
           "class": 'toolbar'
@@ -572,6 +590,7 @@
           }
           return lastPixel = pixel;
         });
+        layers = [layer, guideLayer];
         height.times(function(row) {
           pixels[row] = [];
           return width.times(function(col) {
@@ -722,6 +741,7 @@
             image = new Image();
             image.onload = function() {
               var getColor, imageData;
+              canvas.resize(image.width, image.height);
               context.drawImage(image, 0, 0);
               imageData = context.getImageData(0, 0, image.width, image.height);
               getColor = function(x, y) {
@@ -775,7 +795,7 @@
             data = undoStack.popRedo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.newColor, true);
+                return this.pixel.color(this.newColor, true, "replace");
               });
             }
           },
@@ -807,6 +827,37 @@
               };
               return setTimeout(runStep, delay);
             }
+          },
+          resize: function(newWidth, newHeight) {
+            this.width = width = newWidth;
+            this.height = height = newHeight;
+            pixels = pixels.slice(0, newHeight);
+            while (pixels.length < newHeight) {
+              pixels.push([]);
+            }
+            pixels.each(function(row, y) {
+              var _results;
+              while (row.length > newWidth) {
+                row.pop();
+              }
+              _results = [];
+              while (row.length < newWidth) {
+                _results.push(row.push(Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack)));
+              }
+              return _results;
+            });
+            layers.each(function(layer) {
+              layer.clear();
+              return layer.resize();
+            });
+            canvas.css({
+              borderColor: guideToggle.attr('checked') ? "black" : "transparent"
+            });
+            return pixels.each(function(row) {
+              return row.each(function(pixel) {
+                return pixel.redraw();
+              });
+            });
           },
           setInitialState: function(frameData) {
             initialStateData = frameData;
@@ -841,7 +892,7 @@
             data = undoStack.popUndo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.oldColor, true);
+                return this.pixel.color(this.oldColor, true, "replace");
               });
             }
           },
