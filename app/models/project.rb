@@ -93,6 +93,21 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def remove_file(path)
+    #TODO: Verify path is not sketch
+    return if path.index ".."
+
+    #TODO Handle directories
+
+    if git?
+      git_util "rm", path
+
+      git_commit_and_push
+    else
+      FileUtils.rm File.join(self.path, path)
+    end
+  end
+
   def file_info
     file_node_data path, path
   end
