@@ -79,4 +79,9 @@ class ProjectsController < ApplicationController
     object
   end
   helper_method :project
+
+  def projects
+    @projects ||= Project.all
+  end
+  helper_method :projects
 end
