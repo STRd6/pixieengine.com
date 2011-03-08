@@ -134,13 +134,11 @@
     overflow: auto
     position: relative
 
-    canvas:first-child
-      background: none
-      z-index: 5
-
   .layer
     position: absolute
-    background: white url(/images/pixie/pixel_bg.png)
+
+    &:first-child
+      background: white url(/images/pixie/pixel_bg.png)
 
   .actions
     position: absolute

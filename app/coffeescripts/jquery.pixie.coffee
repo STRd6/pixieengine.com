@@ -496,7 +496,9 @@
       pixels = []
 
       lastPixel = undefined
+
       layer = Layer()
+      guideLayer = Layer()
         .bind("mousedown", (e) ->
           undoStack.next()
           active = true
@@ -527,8 +529,6 @@
 
           lastPixel = pixel
         )
-
-        guideLayer = Layer()
 
       height.times (row) ->
         pixels[row] = []

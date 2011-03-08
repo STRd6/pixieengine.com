@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 07:38:24 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 17:03:41 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -542,7 +542,8 @@
         });
         pixels = [];
         lastPixel = void 0;
-        layer = Layer().bind("mousedown", function(e) {
+        layer = Layer();
+        guideLayer = Layer().bind("mousedown", function(e) {
           undoStack.next();
           active = true;
           if (e.button === 0) {
@@ -571,7 +572,6 @@
           }
           return lastPixel = pixel;
         });
-        guideLayer = Layer();
         height.times(function(row) {
           pixels[row] = [];
           return width.times(function(col) {
