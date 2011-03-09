@@ -1,9 +1,11 @@
 - @title = "Animation Gallery"
 
-%nav.top
-  = button_link "Create an Animation", "film_add", new_animation_path
+.filters
+  = button_link "Create Animation", "film_add", new_animation_path
+  =link_to "My Animations", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
 
-%section
+%section.gallery
   = render :partial => @animations
 
 %style

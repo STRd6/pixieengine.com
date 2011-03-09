@@ -1,9 +1,11 @@
 - @title = "Sound Gallery"
 
-%nav.top
-  = button_link "Create Sound Effects", "sound_add", new_sound_path
+.filters
+  = button_link "Create Sound Effect", "sound_add", new_sound_path
+  =link_to "My Sounds", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
 
-%section
+%section.gallery
   = render :partial => @sounds
 
 #preview_sound

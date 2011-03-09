@@ -5,6 +5,12 @@ class Animation < ActiveRecord::Base
     :path => "animations/:id/data.:extension"
   )
 
+  scope :for_user, lambda {|user|
+    where(:user_id => user.id)
+  }
+
+  scope :none
+
   attr_accessor :data_string
 
   before_validation :handle_data
