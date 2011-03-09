@@ -5,6 +5,7 @@ class SoundsController < ResourceController::Base
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
   before_filter :require_user, :only => [:add_tag, :remove_tag]
+  before_filter :filter_results, :only => [:index]
 
   create.before do
     sound.user = current_user
@@ -18,7 +19,20 @@ class SoundsController < ResourceController::Base
   end
 
   def index
-    @sounds = Sound.order("id DESC").all
+  end
+
+  def filter_results
+    @sounds ||= if filter
+      if filter == "own"
+        Sound.for_user(current_user)
+      else
+        Sound.send(filter)
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 
   private
