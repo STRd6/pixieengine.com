@@ -1,9 +1,11 @@
 - @title = "Tilemap Gallery"
 
-%nav.top
-  = button_link "New Tilemap", "world_add", new_tilemap_path(:tileset_id => "355")
+.filters
+  = button_link "Create Tilemap", "world_add", new_tilemap_path(:tileset_id => "355")
+  =link_to "My Tilemaps", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
 
-%section
+%section.gallery
   = render :partial => @tilemaps
 
 %style
