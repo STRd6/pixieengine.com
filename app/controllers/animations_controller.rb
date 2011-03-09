@@ -3,6 +3,7 @@ class AnimationsController < ApplicationController
   layout "fullscreen"
 
   before_filter :require_user
+  before_filter :filter_results, :only => [:index]
 
   def new
     respond_with(@animation) do |format|
@@ -35,6 +36,19 @@ class AnimationsController < ApplicationController
   end
 
   def index
-    @animations = Animation.all(:order => "id DESC")
+  end
+
+  def filter_results
+    @animations ||= if filter
+      if filter == "own"
+        Animation.for_user(current_user)
+      else
+        Animation.send(filter)
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 end
