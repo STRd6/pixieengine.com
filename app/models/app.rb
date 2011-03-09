@@ -86,6 +86,72 @@ class App < ActiveRecord::Base
     end
   end
 
+  def migrate_to_project
+    project = Project.create :title => title,
+      :description => description,
+      :user => user
+
+    # Import Main script
+    src_dir = File.join(project.path, 'src')
+
+    main_file = "main.#{extension}"
+
+    FileUtils.mkdir_p(src_dir)
+
+    open(File.join(src_dir, main_file), "w") do |f|
+      f.write(src)
+    end
+
+    # Import libraries
+    libraries.each do |library|
+      # Special core libraries, hard coded for migration
+      if [1, 2, 5, 7].include? library.id
+        library.export_code_file(project.path)
+      else
+        library.export_to_project project.path
+      end
+    end
+
+    #TODO Note lib dependencies/versions
+
+    #TODO Import Sounds
+
+    #TODO Import Sprites
+
+    author_name = if user
+      user.display_name
+    else
+      "Anonymous"
+    end
+
+    default_config = JSON.pretty_generate({
+      :author => author_name,
+      :name => title.to_filename,
+      :main => main_file,
+      :directories => {
+        :images => "images",
+        :sounds => "sounds",
+        :source => "src",
+        :compiled => "compiled",
+      },
+      :wrap_main => true,
+    })
+
+    # Create config
+    open(File.join(project.path, "pixie.json"), "w") do |f|
+      f.write(default_config)
+    end
+
+  end
+
+  def extension
+    if lang == "coffeescript"
+      "coffee"
+    else
+      "js"
+    end
+  end
+
   def generate_docs
     Dir.mktmpdir do |dir|
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
