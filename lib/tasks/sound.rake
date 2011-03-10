@@ -7,6 +7,7 @@ namespace :sound do
 
     canvas = Magick::Image.new(image_width, image_height)
     gc = Magick::Draw.new
+    gc.translate(0, image_height / 2)
     gc.fill('red')
 
     File.open(File.join(Rails.root, '/lib/file.raw')) do |file|
@@ -33,16 +34,17 @@ namespace :sound do
       ch1_abs_max = ch1_abs.max
       #ch2_abs_max = ch2_abs.max
 
-      polyline_container = []
+      xValues = []
+      yValues = []
 
       (0..length).each do |i|
         if i % interval_size == 0
-          polyline_container.push(i / interval_size)
-          polyline_container.push((channel1_data[i] / ch1_abs_max.to_f * image_height) + (image_height / 2))
+          xValues.push(i / interval_size)
+          yValues.push((channel1_data[i] / ch1_abs_max.to_f * image_height) + (image_height / 2))
         end
       end
 
-      gc.polyline(polyline_container)
+      gc.polyline(xValues, yValues)
 
     end
 
