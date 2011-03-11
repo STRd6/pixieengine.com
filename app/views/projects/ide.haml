@@ -172,6 +172,15 @@
 
   # Tree and Tabs setup
   $ ->
+    DEFAULT_CONFIG = #{default_project_config.to_json}
+    try
+      window.projectConfig = JSON.parse($("[data-path=/pixie.json]").find("[name=contents]").val())
+    catch e
+      window.projectConfig = {}
+    finally
+      # Merge in default configs
+      window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
     $('ul.filetree').treeview()
 
     $tabs = $('#tabs').tabs
