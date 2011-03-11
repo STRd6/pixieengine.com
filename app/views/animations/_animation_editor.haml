@@ -201,7 +201,7 @@
         pixelEditor = createPixelEditor
           width: 32
           height: 32
-          image: '/images/active_app.png' # $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+          image: $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
 
         pixelEditor.bind('save', save)
 
