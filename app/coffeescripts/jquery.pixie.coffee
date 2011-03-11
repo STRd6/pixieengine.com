@@ -127,9 +127,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false);
+            pixel.color(rightPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false)
+            pixel.color(Color(0, 0, 0, 0), false, 'replace')
           }
         });
 
@@ -156,9 +156,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false);
+              currentPixel.color(leftPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
@@ -181,9 +181,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false);
+            pixel.color(lowerPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false);
+            pixel.color(Color(0, 0, 0, 0), false, 'replace');
           }
         });
 
@@ -210,9 +210,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false);
+              currentPixel.color(upperPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
