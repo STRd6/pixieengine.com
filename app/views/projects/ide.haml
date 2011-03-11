@@ -40,9 +40,9 @@
       activeTab.removeClass("unsaved")
 
     if data
-     postData = $.extend({format: 'json'}, data)
+      postData = $.extend({format: 'json'}, data)
 
-     $.post '/projects/#{project.id}/save_file', postData, successCallback
+      $.post '/projects/#{project.id}/save_file', postData, successCallback
 
     else
       form = $(currentPanel).find('form')
