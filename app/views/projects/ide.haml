@@ -17,6 +17,10 @@
     #tabs
       %ul
 
+  #testZone
+    %span#close_app.ui-icon.ui-icon-close
+    %h3.ui-widget-header= project.title
+
 = render :partial => "pixie"
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
@@ -62,6 +66,27 @@
     $("#new_file_modal").modal()
 
   $("#new").live 'click', newFileModal
+
+  runApp = () ->
+    if runPath = projectConfig.run_path
+      zone = $("#testZone")
+      zone.css({top: 300, left: 0}).show()
+
+      # Recreate iframe
+      $("#testFrame").remove()
+      iframe = $ '<iframe />'
+        height: projectConfig.height
+        id: "testFrame"
+        src: "/production/projects/#{project.id}/\#{runPath}"
+        width: projectConfig.width
+
+      zone.append(iframe)
+    else
+      #TODO: Gather compiled code
+      # Cram compiled code in iframe
+      alert "TODO: Run!"
+
+  $("#run").live 'click', runApp
 
   # key combos like ctrl+s
   ctrlKeys =
@@ -172,6 +197,7 @@
     try
       window.projectConfig = JSON.parse($("[data-path=/pixie.json]").find("[name=contents]").val())
     catch e
+      console.warn?(e)
       window.projectConfig = {}
     finally
       # Merge in default configs
@@ -217,3 +243,15 @@
       if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
         index = $('li', $tabs).index(parent)
         $tabs.tabs('remove', index)
+
+    $("#testZone").draggable(
+      handle: "h3"
+      iframeFix: true
+    ).disableSelection()
+
+    closeApp = ->
+      $("#testZone").hide()
+      $("#testFrame").remove()
+
+    $('#close_app').click ->
+      closeApp()

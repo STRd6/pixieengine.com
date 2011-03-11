@@ -25,6 +25,8 @@ class Project < ActiveRecord::Base
       :source => "src",
       :compiled => "compiled",
     },
+    :width => 640,
+    :height => 320,
     :wrap_main => true,
   }
   BRANCH_NAME = "pixie"
@@ -39,6 +41,7 @@ class Project < ActiveRecord::Base
 
   def create_directory
     FileUtils.mkdir_p path
+    system 'chmod', "g+w", path
   end
 
   def git_util(*args)
