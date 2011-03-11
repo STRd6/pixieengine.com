@@ -1,3 +1,5 @@
+= stylesheet_link_tag 'pixie/pixie'
+
 .animation_editor
   %section
     .user_sprites
@@ -45,10 +47,11 @@
   .demo
   %p Drag sprites here to start animating
 
+= render :partial => "pixie"
+
 :coffeescript
   animation_id = null
   preview_dirty = false
-
   clear_frame_sprites = -> frame_sprites().remove()
 
   frame_sprites = ->
@@ -63,6 +66,33 @@
   active_animation_sprites = -> active_animation().parent().find('.sprites')
 
   clear_preview = -> $('.preview_box img').remove()
+
+  window.save = (event, data) ->
+    notify "Saving..."
+
+    $('.pixie').remove()
+    $('.animation_editor').show()
+
+    successCallback = (data) ->
+      notify "Saved!"
+
+      new_sprite = $('#load_sprite').tmpl(
+        alt: data.sprite.title
+        id: data.sprite.id
+        title: data.sprite.title
+        url: data.sprite.src
+      )
+
+      new_sprite.clone().appendTo('.user_sprites')
+
+      $(".frame_sprites .sprite_container.pixel_editor").before(new_sprite.clone()).remove()
+
+      $('.animations .animation .cover.active img').before(new_sprite.find('img')).remove()
+
+    if data
+      postData = $.extend({format: 'json'}, data)
+
+      $.post '/sprites', postData, successCallback
 
   window.update_active_animation = ->
     active_animation_sprites().parent().find('.sprites').children().remove()
@@ -165,6 +195,22 @@
 
   $('.frame_sprites .sprite_container').live
     click: -> $(this).addClass('selected')
+    dblclick: ->
+      $(this).addClass('pixel_editor')
+      unless $('#pixie.pixie').length
+        pixelEditor = createPixelEditor
+          width: 32
+          height: 32
+          image: '/images/active_app.png' # $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+
+        pixelEditor.bind('save', save)
+
+        $('#fullscreen').append(pixelEditor)
+        $('.animation_editor').hide()
+
+        doSave: () ->
+          pixelEditor.trigger('doSave')
+
     mouseenter: ->
       $('<div class="x" />').appendTo $(this)
       $('<div class="duplicate" />').appendTo $(this)
