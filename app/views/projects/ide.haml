@@ -60,10 +60,6 @@
 
   newFileModal = () ->
     $("#new_file_modal").modal()
-    # alert "TODO: New File"
-    # Pop up new file modal
-    # User chooses editor type
-    # editor opens
 
   $("#new").live 'click', newFileModal
 
@@ -89,12 +85,12 @@
     type = panel.attr('data-type')
     mtime = panel.attr('data-mtime')
 
-    if lang == "html"
-      lang = "xml"
-
     if type == "text"
       textArea = panel.find('textarea').get(0)
       savedCode = textArea.value
+
+      if lang == "html"
+        lang = "xml"
 
       lang ||= "dummy"
 
