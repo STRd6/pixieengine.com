@@ -45,7 +45,8 @@ class SpritesController < ResourceController::Base
         :sprite => {
           :id => @sprite.id,
           :title => @sprite.title,
-          :app_sprite_id => @sprite.app_sprite_id
+          :app_sprite_id => @sprite.app_sprite_id,
+          :src => @sprite.image.url
         }
       }
     else
