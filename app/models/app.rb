@@ -124,18 +124,11 @@ class App < ActiveRecord::Base
       "Anonymous"
     end
 
-    default_config = JSON.pretty_generate({
+    default_config = JSON.pretty_generate(Project::DEFAULT_CONFIG.merge(
       :author => author_name,
       :name => title.to_filename,
-      :main => main_file,
-      :directories => {
-        :images => "images",
-        :sounds => "sounds",
-        :source => "src",
-        :compiled => "compiled",
-      },
-      :wrap_main => true,
-    })
+      :main => main_file
+    ))
 
     # Create config
     open(File.join(project.path, "pixie.json"), "w") do |f|

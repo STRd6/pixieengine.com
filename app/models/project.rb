@@ -18,6 +18,15 @@ class Project < ActiveRecord::Base
     where :url => url
   }
 
+  DEFAULT_CONFIG = {
+    :directories => {
+      :images => "images",
+      :sounds => "sounds",
+      :source => "src",
+      :compiled => "compiled",
+    },
+    :wrap_main => true,
+  }
   BRANCH_NAME = "pixie"
   
   def base_path
