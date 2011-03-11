@@ -70,7 +70,7 @@
     update_info_component = (sprite, author) ->
       $('.info_component .name').html("<a href='/sprites/\#{sprite.id}'>\#{sprite.name}</a>")
       if author.id
-        $('.info_component .author').text("by ").append('<a href= "users/' + author.id + '"> ' + author.name + '</a>')
+        $('.info_component .author').text("by ").append('<a href= "people/' + author.id + '"> ' + author.name + '</a>')
       else
         $('.info_component .author a').remove()
         $('.info_component .author').text("by " + author.name)
