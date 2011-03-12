@@ -127,7 +127,9 @@ class App < ActiveRecord::Base
     default_config = JSON.pretty_generate(Project::DEFAULT_CONFIG.merge(
       :author => author_name,
       :name => title.to_filename,
-      :main => main_file
+      :main => main_file,
+      :width => width,
+      :height => height
     ))
 
     # Create config
