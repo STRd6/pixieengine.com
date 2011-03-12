@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
     :width => 640,
     :height => 480,
     :wrapMain => true,
+    :hotSwap => true,
   }
   BRANCH_NAME = "pixie"
   

@@ -26,6 +26,9 @@
 = render :partial => "new_file_modal"
 
 :coffeescript
+  window.compileCoffee = (src) ->
+    CoffeeScript.compile src, noWrap: true
+
   window.log = (message) ->
     console.log message
 
@@ -56,6 +59,27 @@
           type: 'POST'
           dataType: "json"
           success: successCallback
+
+        # Hot swap: inject code
+        if projectConfig.hotSwap
+          src = $(currentPanel).find("[name=contents]").val()
+          ext = $(currentPanel).data("ext")
+
+          if ext == "coffee"
+            code = compileCoffee(src)
+          else if ext = "js"
+            code = src
+
+          if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+            try
+              runningGameFrame.eval(code)
+            catch error
+              warn? error.message
+
+            try
+              runningGameFrame.eval("engine.reload()")
+            catch error
+              warn? error.message
       else
         # Check for special save method
         activeTab.find('a').data('doSave')?()
@@ -102,19 +126,21 @@
 
       srcDir = findDirectory(projectConfig.directories.source)
 
-      compiledCode = srcDir.find("[data-type=text]").map((index, element) ->
-        $element = $(element)
+      compiledCode = srcDir.find("span.file").map((index, span) ->
+        $span = $(span)
 
         # Save main for last
-        return if $element.parent().parent()[0] == srcDir[0] && $element.parent().attr("title") == projectConfig.main
+        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+        $element = $($span.attr("data-id"))
 
         compileNode($element)
       ).get()
 
-      mainCode = compileNode(srcDir.children("[title=\#{projectConfig.main}]").find("[data-type=text]"))
+      mainCode = compileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file").data('id')))
 
-      libCode = findDirectory(projectConfig.directories.lib).find("[data-ext=js]").map((index, element) ->
-        $(element).find("[name=contents]").val()
+      libCode = findDirectory(projectConfig.directories.lib).find("span.file").map((index, span) ->
+        $($(span).attr("data-id")).find("[name=contents]").val()
       ).get()
 
       crammedCode = CoffeeScript.compile "App = {}", noWrap: true
