@@ -15,6 +15,10 @@ class Sound < ActiveRecord::Base
     :path => "sounds/:id/:style.:extension"
   )
 
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "sounds/:id/:style.:extension"
+  )
+
   validates_attachment_presence :sfs
 
   acts_as_archive
@@ -22,6 +26,7 @@ class Sound < ActiveRecord::Base
   belongs_to :user
 
   before_validation :convert_to_mp3
+  after_save :generate_waveform
 
   def sfs_base64
     open(sfs.url, "rb") do |f|
@@ -36,6 +41,18 @@ class Sound < ActiveRecord::Base
       title
     end
   end
+
+  def generate_waveform
+    wf = WaveformRenderer.new(mp3.url)
+    temp = wf.render_waveform
+    temp.binmode
+
+    image = temp
+    temp.close
+
+    save
+  end
+  handle_asynchronously :generate_waveform
 
   def to_param
     if title.blank?
