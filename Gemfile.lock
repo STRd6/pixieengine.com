@@ -121,6 +121,7 @@ GEM
       rake
     multi_json (0.0.5)
     multipart-post (1.0.1)
+    narray (0.5.9.9)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -204,6 +205,7 @@ DEPENDENCIES
   juggernaut!
   mail
   mocha
+  narray
   oauth
   oauth2
   paperclip
