@@ -11,6 +11,16 @@
 = render :partial => "file_template"
 
 :coffeescript
+  window.findDirectory = (directoryPath) ->
+    folderPaths = directoryPath.split("/")
+
+    dirNode = $("ul.filetree")
+
+    folderPaths.each (dirName) ->
+      dirNode = dirNode.children("[title=\#{dirName}]").children("ul")
+
+    dirNode
+
   window.newFileNode = (inputData) ->
     unless inputData.name
       alert "You need to enter a name!"
@@ -23,7 +33,7 @@
 
     dirNode = $("ul.filetree")
     folderPaths.each (dirName) ->
-      dirNode = (if (dir = dirNode.find("[title=\#{dirName}]")).length
+      dirNode = (if (dir = dirNode.children("[title=\#{dirName}]")).length
         dir.eq(0)
       else
         newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)

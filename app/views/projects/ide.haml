@@ -1,4 +1,3 @@
-
 %nav.top.actions
   %button#save Save
   %button#new New
@@ -17,9 +16,10 @@
     #tabs
       %ul
 
-  #testZone
+  #test_zone(style="top: 300px; left: 50px;")
     %span#close_app.ui-icon.ui-icon-close
     %h3.ui-widget-header= project.title
+    %iframe#test_frame
 
 = render :partial => "pixie"
 = render :partial => "sfxr"
@@ -68,23 +68,80 @@
   $("#new").live 'click', newFileModal
 
   runApp = () ->
-    if runPath = projectConfig.run_path
-      zone = $("#testZone")
-      zone.css({top: 300, left: 0}).show()
+    width = projectConfig.width
+    height = projectConfig.height
 
-      # Recreate iframe
-      $("#testFrame").remove()
-      iframe = $ '<iframe />'
-        height: projectConfig.height
-        id: "testFrame"
-        src: "/production/projects/#{project.id}/\#{runPath}"
-        width: projectConfig.width
+    $("#test_frame").remove()
 
-      zone.append(iframe)
+    iframe = $ '<iframe />'
+      height: height
+      id: "test_frame"
+      width: width
+
+    zone = $("#test_zone")
+    zone.append(iframe).show()
+
+    if runPath = projectConfig.runPath
+      iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
       #TODO: Gather compiled code
+      errors = []
+
+      compileNode = (node) ->
+        ext = node.attr("data-ext")
+
+        if ext == "js"
+          node.find("[name=contents]").val()
+        else if ext == "coffee"
+          try
+            compiledCode = CoffeeScript.compile node.find("[name=contents]").val(), noWrap: true
+          catch error
+            errors.push error.message
+
+          compiledCode
+
+      srcDir = findDirectory(projectConfig.directories.source)
+
+      compiledCode = srcDir.find("[data-type=text]").map((index, element) ->
+        $element = $(element)
+
+        # Save main for last
+        return if $element.parent().parent()[0] == srcDir[0] && $element.parent().attr("title") == projectConfig.main
+
+        compileNode($element)
+      ).get()
+
+      mainCode = compileNode(srcDir.children("[title=\#{projectConfig.main}]").find("[data-type=text]"))
+
+      libCode = findDirectory(projectConfig.directories.lib).find("[data-ext=js]").map((index, element) ->
+        $(element).find("[name=contents]").val()
+      ).get()
+
+      crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+
+      crammedCode += libCode.join(";\n") + compiledCode.join(";\n")
+
+      if projectConfig.wrapMain
+        crammedCode += ";$(function(){ \#{mainCode} });"
+      else
+        crammedCode += ";" + mainCode
+
       # Cram compiled code in iframe
-      alert "TODO: Run!"
+
+      contentWindow = iframe.get(0).contentWindow
+      sandbox = contentWindow.document
+      sandbox.write(#{stylesheet_link_tag('app.css').to_json});
+      sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
+      sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
+
+      sandbox.write("<canvas width='\#{width}' height='\#{height}'></canvas>")
+
+      script = document.createElement 'script'
+      script.text = crammedCode
+
+      sandbox.body.appendChild(script)
+
+      sandbox.close()
 
   $("#run").live 'click', runApp
 
@@ -244,14 +301,14 @@
         index = $('li', $tabs).index(parent)
         $tabs.tabs('remove', index)
 
-    $("#testZone").draggable(
+    $("#test_zone").draggable(
       handle: "h3"
       iframeFix: true
     ).disableSelection()
 
     closeApp = ->
-      $("#testZone").hide()
-      $("#testFrame").remove()
+      $("#test_zone").hide()
+      $("#test_frame").remove()
 
     $('#close_app').click ->
       closeApp()

@@ -23,11 +23,12 @@ class Project < ActiveRecord::Base
       :images => "images",
       :sounds => "sounds",
       :source => "src",
+      :lib => "lib",
       :compiled => "compiled",
     },
     :width => 640,
-    :height => 320,
-    :wrap_main => true,
+    :height => 480,
+    :wrapMain => true,
   }
   BRANCH_NAME = "pixie"
   
