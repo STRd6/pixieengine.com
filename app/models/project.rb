@@ -132,11 +132,13 @@ class Project < ActiveRecord::Base
       {
         :name => filename,
         :ext => "directory",
-        :files => Dir.new(file_path).sort.map do |filename|
+        :files => Dir.new(file_path).map do |filename|
           next if filename[0...1] == "."
 
           file_node_data(File.join(file_path, filename), project_root_path)
-        end.compact
+        end.compact.sort_by do |file_data|
+          [file_data[:ext] == "directory" ? 0 : 1, file_data[:name]]
+        end
       }
     elsif File.file? file_path
       ext = (File.extname(filename)[1..-1] || "").downcase
