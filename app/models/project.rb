@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
 
   def git_pull
     git_util "pull"
-    system 'chmod', "g+w", '-r', path
+    system 'chmod', "g+w", '-R', path
   end
   handle_asynchronously :git_pull
 
