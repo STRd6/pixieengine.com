@@ -75,6 +75,8 @@ class Project < ActiveRecord::Base
       git_util "clone", remote_origin, path
       git_util 'checkout', '-b', BRANCH_NAME
     end
+
+    make_group_writable
   end
   handle_asynchronously :clone_repo
 
