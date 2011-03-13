@@ -111,14 +111,19 @@
       #TODO: Gather compiled code
       errors = []
 
-      compileNode = (node) ->
-        ext = node.attr("data-ext")
+      compileFileNode = (node) ->
+        $element = $(node.attr("data-id"))
+        src = $element.find("[name=contents]").val()
+        ext = $element.attr("data-ext")
 
+        compileCode(src, ext)
+
+      compileCode = (src, ext) ->
         if ext == "js"
-          node.find("[name=contents]").val()
+          src
         else if ext == "coffee"
           try
-            compiledCode = CoffeeScript.compile node.find("[name=contents]").val(), noWrap: true
+            compiledCode = CoffeeScript.compile src, noWrap: true
           catch error
             errors.push error.message
 
@@ -132,20 +137,18 @@
         # Save main for last
         return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
 
-        $element = $($span.attr("data-id"))
+        compileFileNode($span)
+      ).get().join(";\n")
 
-        compileNode($element)
-      ).get()
-
-      mainCode = compileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file").data('id')))
+      mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
 
       libCode = findDirectory(projectConfig.directories.lib).find("span.file").map((index, span) ->
-        $($(span).attr("data-id")).find("[name=contents]").val()
-      ).get()
+        compileFileNode($(span))
+      ).get().join(";\n")
 
       crammedCode = CoffeeScript.compile "App = {}", noWrap: true
 
-      crammedCode += libCode.join(";\n") + compiledCode.join(";\n")
+      crammedCode += libCode + ";\n" + compiledCode
 
       if projectConfig.wrapMain
         crammedCode += ";$(function(){ \#{mainCode} });"
