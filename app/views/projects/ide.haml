@@ -26,8 +26,59 @@
 = render :partial => "new_file_modal"
 
 :coffeescript
-  window.compileCoffee = (src) ->
-    CoffeeScript.compile src, noWrap: true
+  errors = []
+
+  window.compileFileNode = (node) ->
+    $element = $(node.attr("data-id"))
+    src = $element.find("[name=contents]").val()
+    ext = $element.attr("data-ext")
+
+    compileCode(src, ext)
+
+  window.compileCode = (src, ext) ->
+    if ext == "js"
+      src
+    else if ext == "coffee"
+      try
+        compiledCode = CoffeeScript.compile src, noWrap: true
+      catch error
+        errors.push error.message
+
+      compiledCode
+
+  window.runCodeInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+
+    sandbox.write("<canvas width='\#{projectConfig.width}' height='\#{projectConfig.height}'></canvas>")
+
+    script = document.createElement 'script'
+    script.text = code
+
+    sandbox.body.appendChild(script)
+
+    sandbox.close()
+
+  window.runTestInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{stylesheet_link_tag('qunit').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+    sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
+
+    script = document.createElement 'script'
+    script.text = code
+
+    sandbox.body.appendChild(script)
+
+    sandbox.close()
 
   window.log = (message) ->
     console.log message
@@ -65,10 +116,7 @@
           src = $(currentPanel).find("[name=contents]").val()
           ext = $(currentPanel).data("ext")
 
-          if ext == "coffee"
-            code = compileCoffee(src)
-          else if ext = "js"
-            code = src
+          code = compileCode(src, ext)
 
           if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
             try
@@ -108,27 +156,6 @@
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
-      #TODO: Gather compiled code
-      errors = []
-
-      compileFileNode = (node) ->
-        $element = $(node.attr("data-id"))
-        src = $element.find("[name=contents]").val()
-        ext = $element.attr("data-ext")
-
-        compileCode(src, ext)
-
-      compileCode = (src, ext) ->
-        if ext == "js"
-          src
-        else if ext == "coffee"
-          try
-            compiledCode = CoffeeScript.compile src, noWrap: true
-          catch error
-            errors.push error.message
-
-          compiledCode
-
       srcDir = findDirectory(projectConfig.directories.source)
 
       compiledCode = srcDir.find("span.file").map((index, span) ->
@@ -156,21 +183,7 @@
         crammedCode += ";" + mainCode
 
       # Cram compiled code in iframe
-
-      contentWindow = iframe.get(0).contentWindow
-      sandbox = contentWindow.document
-      sandbox.write(#{stylesheet_link_tag('app.css').to_json});
-      sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
-      sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
-
-      sandbox.write("<canvas width='\#{width}' height='\#{height}'></canvas>")
-
-      script = document.createElement 'script'
-      script.text = crammedCode
-
-      sandbox.body.appendChild(script)
-
-      sandbox.close()
+      runCodeInIframe(crammedCode, iframe)
 
   $("#run").live 'click', runApp
 
