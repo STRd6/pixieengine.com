@@ -28,6 +28,7 @@ class Project < ActiveRecord::Base
     },
     :width => 640,
     :height => 480,
+    :main => "main.coffee",
     :wrapMain => true,
     :hotSwap => true,
   }
