@@ -46,6 +46,11 @@ class Project < ActiveRecord::Base
     system 'chmod', "g+w", path
   end
 
+  def make_group_writable
+    system 'chmod', "g+w", '-R', path
+    system "sudo", "-u", "gitbot", 'chmod', "g+w", '-R', path
+  end
+
   def git_util(*args)
     system 'script/git_util', path, *args
   end
@@ -73,7 +78,7 @@ class Project < ActiveRecord::Base
 
   def git_pull
     git_util "pull"
-    system 'chmod', "g+w", '-R', path
+    make_group_writable
   end
   handle_asynchronously :git_pull
 
