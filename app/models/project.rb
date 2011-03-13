@@ -23,6 +23,7 @@ class Project < ActiveRecord::Base
       :images => "images",
       :sounds => "sounds",
       :source => "src",
+      :test => "test",
       :lib => "lib",
       :compiled => "compiled",
     },

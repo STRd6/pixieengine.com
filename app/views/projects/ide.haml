@@ -18,17 +18,35 @@
     #tabs
       %ul
 
-  #test_zone(style="top: 300px; left: 50px;")
+  #test_zone.window(style="top: 300px; left: 50px;")
     %span#close_app.ui-icon.ui-icon-close
     %h3.ui-widget-header= project.title
     %iframe#test_frame
+
+  #unit_test_window.window(style="top: 100px; left: 200px;")
+    %span.ui-icon.ui-icon-close
+    %h3.ui-widget-header Test #{project.title}
+    %iframe#unit_test_frame
 
 = render :partial => "pixie"
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
 
+#qunit_template.template
+  %div
+    %h1#qunit-header ${header}
+    %h2#qunit-banner
+    %h2#qunit-userAgent
+    %ol#qunit-tests
+    #qunit-fixture
+
 :coffeescript
   errors = []
+
+  window.compileDirectory = (directoryPath) ->
+    findDirectory(directoryPath).find("span.file").map((index, span) ->
+      compileFileNode($(span))
+    ).get().join(";\n")
 
   window.compileFileNode = (node) ->
     $element = $(node.attr("data-id"))
@@ -58,14 +76,11 @@
 
     sandbox.write("<canvas width='\#{projectConfig.width}' height='\#{projectConfig.height}'></canvas>")
 
-    script = document.createElement 'script'
-    script.text = code
-
-    sandbox.body.appendChild(script)
+    sandbox.write("<script>\#{code}<\/script>")
 
     sandbox.close()
 
-  window.runTestInIframe = (code, iframe) ->
+  window.testCodeInIframe = (code, iframe) ->
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
@@ -75,10 +90,9 @@
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
     sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
 
-    script = document.createElement 'script'
-    script.text = code
+    sandbox.write($("#qunit_template").tmpl(header: "Results").html())
 
-    sandbox.body.appendChild(script)
+    sandbox.write("<script>\#{code}<\/script>")
 
     sandbox.close()
 
@@ -152,8 +166,7 @@
       id: "test_frame"
       width: width
 
-    zone = $("#test_zone")
-    zone.append(iframe).show()
+    $("#test_zone").append(iframe).show()
 
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
@@ -171,9 +184,7 @@
 
       mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
 
-      libCode = findDirectory(projectConfig.directories.lib).find("span.file").map((index, span) ->
-        compileFileNode($(span))
-      ).get().join(";\n")
+      libCode = compileDirectory(projectConfig.directories.lib)
 
       crammedCode = CoffeeScript.compile "App = {}", noWrap: true
 
@@ -188,6 +199,39 @@
       runCodeInIframe(crammedCode, iframe)
 
   $("#run").live 'click', runApp
+
+  testApp = () ->
+    srcDir = findDirectory(projectConfig.directories.source)
+
+    compiledCode = srcDir.find("span.file").map((index, span) ->
+      $span = $(span)
+
+      # Skip main
+      return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+      compileFileNode($span)
+    ).get().join(";\n")
+
+    libCode = compileDirectory(projectConfig.directories.lib)
+    testCode = compileDirectory(projectConfig.directories.test)
+
+    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+    crammedCode += libCode + ";\n" + compiledCode
+    crammedCode += ";$(function(){ \#{testCode} });"
+
+    $("#unit_test_frame").remove()
+
+    iframe = $ '<iframe />'
+      height: 480
+      id: "unit_test_frame"
+      width: 640
+
+    $("#unit_test_window").append(iframe).show()
+
+    # Cram compiled code in iframe
+    testCodeInIframe(crammedCode, iframe)
+
+  $("#test").click testApp
 
   # key combos like ctrl+s
   ctrlKeys =
@@ -345,14 +389,10 @@
         index = $('li', $tabs).index(parent)
         $tabs.tabs('remove', index)
 
-    $("#test_zone").draggable(
+    $(".window").draggable(
       handle: "h3"
       iframeFix: true
     ).disableSelection()
 
-    closeApp = ->
-      $("#test_zone").hide()
-      $("#test_frame").remove()
-
-    $('#close_app').click ->
-      closeApp()
+    $('.window .ui-icon-close').click ->
+      $(this).parent().hide().children("iframe").remove()
