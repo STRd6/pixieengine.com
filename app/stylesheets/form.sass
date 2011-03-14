@@ -48,7 +48,7 @@ form
     margin = 0 $blueprint-grid-margin 0 0
 
   input[disabled]
-    background-color: #efefef
+    background-color: #ccc
 
   input[type=text]
     +box-sizing(border-box)
@@ -75,15 +75,48 @@ form
       color: !error_color
 
 // Custom log in page spacing
-#user_session_password
-  +grid-width(7)
+form.login
+  +bounds(500px, 260px)
 
-#forgot_password_link
-  color: black
-  display: block
-  font-size: .8em
-  font-weight: normal
-  margin-left = $blueprint-grid-width * 7
-  text-decoration: underline
-  &:hover
-    text-decoration: none
+  bottom: 0
+  left: 0
+  margin: auto
+  position: absolute
+  right: 0
+  top: 0
+
+  p
+    position: relative
+
+  label
+    padding-top: 0
+    vertical-align: middle
+    width: 175px
+
+  input
+    color: #000
+
+  input[type="radio"]
+    margin: 0
+    width: 22px
+
+  input[type="submit"]
+    margin-left: 175px + 15px
+
+  input[type="text"]
+    +bounds(200px, 29px)
+
+    max-width: 200px
+
+  #user_session_password
+    width: 200px
+
+  #forgot_password_link
+    color: #000
+    display: block
+    font-size: .8em
+    font-weight: normal
+    margin-left: 222px
+    text-decoration: underline
+    &:hover
+      text-decoration: none
