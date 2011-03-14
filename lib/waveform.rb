@@ -1,7 +1,3 @@
-require 'rubygems'
-require 'RMagick'
-require 'narray'
-
 class WaveformRenderer
   WIDTH  = 300
   HEIGHT = 150
@@ -21,9 +17,10 @@ class WaveformRenderer
     canvas = Magick::Image.new(width, height) { self.background_color = background_color }
     gc.draw(canvas)
 
-    pngfile = Tempfile.new(".png")
+    pngfile = Paperclip::Tempfile.new(["stream", ".png"])
+    pngfile.binmode
 
-    canvas.write(pngfile)
+    canvas.write(pngfile.path)
   end
 
 private

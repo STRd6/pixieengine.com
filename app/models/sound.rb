@@ -1,3 +1,5 @@
+require 'lib/waveform'
+
 class Sound < ActiveRecord::Base
   include Commentable
 
@@ -26,7 +28,7 @@ class Sound < ActiveRecord::Base
   belongs_to :user
 
   before_validation :convert_to_mp3
-  after_save :generate_waveform
+  after_create :generate_waveform
 
   def sfs_base64
     open(sfs.url, "rb") do |f|
@@ -43,12 +45,17 @@ class Sound < ActiveRecord::Base
   end
 
   def generate_waveform
-    wf = WaveformRenderer.new(mp3.url)
+    wf = WaveformRenderer.new(mp3.url(nil, false))
     temp = wf.render_waveform
-    temp.binmode
 
-    image = temp
-    temp.close
+    io = StringIO.new(temp.to_blob do |image|
+      image.format = "PNG"
+    end)
+
+    io.original_filename = "wav.png"
+    io.content_type = "image/png"
+
+    self.image = io
 
     save
   end
