@@ -89,7 +89,7 @@
           replayData[i].push
             x: pixel.x
             y: pixel.y
-            color: data.newColor
+            color: data.newColor.toString()
 
       return replayData
 
@@ -620,7 +620,7 @@
             $.each initialStateData, (f, data) ->
               canvas.eachPixel (pixel, x, y) ->
                 pos = x + y*canvas.width
-                pixel.color(data[pos], true)
+                pixel.color(Color(data[pos]), true, "replace")
 
         eachPixel: (fn) ->
           height.times (row) ->
@@ -711,7 +711,7 @@
 
               if step
                 $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y).color(p.color, true)
+                  canvas.getPixel(p.x, p.y).color(p.color, true, "replace")
 
                 i++
 
