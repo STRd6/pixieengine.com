@@ -84,4 +84,9 @@ class ProjectsController < ApplicationController
     @projects ||= Project.all
   end
   helper_method :projects
+
+  def default_project_config
+    Project::DEFAULT_CONFIG
+  end
+  helper_method :default_project_config
 end

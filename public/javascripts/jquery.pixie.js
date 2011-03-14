@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Fri, 11 Mar 2011 07:31:10 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Sat, 12 Mar 2011 21:49:06 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -96,7 +96,7 @@
               return replayData[i].push({
                 x: pixel.x,
                 y: pixel.y,
-                color: data.newColor
+                color: data.newColor.toString()
               });
             });
           });
@@ -672,7 +672,7 @@
                 return canvas.eachPixel(function(pixel, x, y) {
                   var pos;
                   pos = x + y * canvas.width;
-                  return pixel.color(data[pos], true);
+                  return pixel.color(Color(data[pos]), true, "replace");
                 });
               });
             }
@@ -769,7 +769,7 @@
                 step = steps[i];
                 if (step) {
                   $.each(step, function(j, p) {
-                    return canvas.getPixel(p.x, p.y).color(p.color, true);
+                    return canvas.getPixel(p.x, p.y).color(p.color, true, "replace");
                   });
                   i++;
                   return setTimeout(runStep, delay);

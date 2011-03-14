@@ -3,16 +3,24 @@
     = label_tag :name
     = text_field_tag :name, "", {:title => 'Name', :id => nil}
 
-  %button(data-type="image") Image
-  -# %button(data-type="text") Script
-
-  = hidden_field_tag :ext, "test", {:id => nil}
-  = hidden_field_tag :path, "test", {:id => nil}
-  = hidden_field_tag :type, "text", {:id => nil}
+  %h3 Choose Type
+  %button{ 'data-params' => {:type => "image", :directory => "images", :ext => "png"}.to_json } Image
+  %button{ 'data-params' => {:type => "sound", :directory => "sounds", :ext => "sfs"}.to_json } Sound
+  %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
 
 = render :partial => "file_template"
 
 :coffeescript
+  window.findDirectory = (directoryPath) ->
+    folderPaths = directoryPath.split("/")
+
+    dirNode = $("ul.filetree")
+
+    folderPaths.each (dirName) ->
+      dirNode = dirNode.children("[title=\#{dirName}]").children("ul")
+
+    dirNode
+
   window.newFileNode = (inputData) ->
     unless inputData.name
       alert "You need to enter a name!"
@@ -25,7 +33,7 @@
 
     dirNode = $("ul.filetree")
     folderPaths.each (dirName) ->
-      dirNode = (if (dir = dirNode.find("[title=\#{dirName}]")).length
+      dirNode = (if (dir = dirNode.children("[title=\#{dirName}]")).length
         dir.eq(0)
       else
         newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)
@@ -51,7 +59,13 @@
   $("#new_file_modal button").live 'click', (event) ->
     event.preventDefault()
 
-    newNode = newFileNode($("#new_file_modal").serializeObject())
+    params = $(this).data('params')
+
+    params.path = projectConfig.directories[params.directory]
+
+    params = $.extend $("#new_file_modal").serializeObject(), params
+
+    newNode = newFileNode(params)
 
     if newNode
       $.modal.close()
