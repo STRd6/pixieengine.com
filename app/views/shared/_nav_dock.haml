@@ -24,6 +24,8 @@
         %span Users
         = link_to_unless_current image_tag("users_dock.png"), users_path, :title => "People"
       %li#chat
+        %div#unread
+          %span 0
         %span Chat
         = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
 
@@ -72,11 +74,13 @@
       else
         localStorage.chat = 'active'
         $('#chat').append(active_app.clone().css('padding-top', '10px'))
+        $('#unread span').text(0).hide()
     .click (event) ->
       event.preventDefault()
 
     if localStorage.chat == 'active'
       $('#chat').mousedown()
+      $('#unread span').text(0).hide()
 
 %style
   :sass
@@ -97,6 +101,14 @@
 
         ul.osx-dock
           background: url(/images/dock_background_left_light.png) no-repeat right bottom
+
+    #unread
+      +border-radius(10px)
+      +bounds(16px)
+
+      background-color: #000
+      border: 2px solid #fff
+      color: #fff
 
     #hide_dock
       +bounds(30px)
