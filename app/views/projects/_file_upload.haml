@@ -1,0 +1,26 @@
+#import_drop_window.window(style="top: 100px; left: 50px;")
+  %span.ui-icon.ui-icon-close
+  %h3.ui-widget-header File Importer
+  #import_drop_zone
+
+:coffeescript
+  $("#import").live "click", ->
+    $("#import_drop_window").show()
+
+  $ ->
+    extractBase64Data = (dataUrl) ->
+      dataUrl.substring(dataUrl.indexOf(',') + 1)
+
+    $("#import_drop_zone").dropImageReader (file, event) ->
+      if event.target.readyState == FileReader.DONE
+        path = projectConfig.directories.images
+
+        window.save event,
+          contents_base64: extractBase64Data(event.target.result)
+          path: "/" + path + "/" + file.name
+
+        newFileNode
+          name: file.name.replace(/\.[^\.]*$/, '')
+          type: "image"
+          ext: "png"
+          path: path

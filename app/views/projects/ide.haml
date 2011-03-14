@@ -1,10 +1,11 @@
 %nav.top.actions
   %button#save Save
-  %button#new New
+  .button_group
+    %button#new> New
+    %button#import> Import
   .button_group
     %button#run> Run
     %button#test> Test
-  %button#publish Publish
 
 #content
   #error
@@ -31,6 +32,7 @@
 = render :partial => "pixie"
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
+= render :partial => "file_upload"
 
 #qunit_template.template
   %div
