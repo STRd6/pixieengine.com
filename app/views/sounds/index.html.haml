@@ -32,7 +32,7 @@
       color: #888
 
     .sound
-      +bounds(200px, 135px)
+      +bounds(200px, 155px)
       +glass
       +inline-block
 
@@ -43,27 +43,27 @@
 
     .sound_preview
       +border-radius
-      +bounds(72px)
+      +bounds(200px, 110px)
+      +contents-centered
 
-      background: #fff url(/images/wav.png) no-repeat center center
       color: #000
       display: inline-block
       font-size: 10px
-      margin-right: 10px
-      margin-bottom: 10px
-      position: relative
+      left: 0
+      right: 0
+      margin: auto
+      position: absolute
       text-align: center
 
-      &:hover
-        background: #fff url(/images/play.png) no-repeat center center
+
+      #play
+        +bounds(200px, 110px)
+
+        &:hover
+          background: url(/images/play.png) no-repeat center center
+          cursor: pointer
 
       img
-        +max-bounds(64px)
+        border: none
 
-      span
-        position: absolute
-        right: 0
-        left: 0
-        bottom: 0
-        top: 0
-        margin: auto
+        max-width: 200px

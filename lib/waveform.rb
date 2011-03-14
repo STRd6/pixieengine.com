@@ -1,6 +1,6 @@
 class WaveformRenderer
-  WIDTH  = 300
-  HEIGHT = 150
+  WIDTH  = 200
+  HEIGHT = 100
   GRAPH_BACKGROUND_COLOR = "none"
 
   def initialize(input)
