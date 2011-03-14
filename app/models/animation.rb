@@ -5,7 +5,7 @@ class Animation < ActiveRecord::Base
     :path => "animations/:id/data.:extension"
   )
 
-  scope :for_user, lambda {|user|
+  scope :for_user, lambda { |user|
     where(:user_id => user.id)
   }
 
