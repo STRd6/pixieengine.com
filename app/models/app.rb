@@ -25,7 +25,7 @@ class App < ActiveRecord::Base
     }
   )
 
-  after_save :generate_docs
+  #after_save :generate_docs
 
   scope :featured, where(:featured => true)
 
@@ -83,6 +83,67 @@ class App < ActiveRecord::Base
       f.write(resource_code)
       f.write(library_code)
       f.write(wrapped_code)
+    end
+  end
+
+  def migrate_to_project
+    project = Project.create :title => title,
+      :description => description,
+      :user => user
+
+    # Import Main script
+    src_dir = File.join(project.path, 'src')
+
+    main_file = "main.#{extension}"
+
+    FileUtils.mkdir_p(src_dir)
+
+    open(File.join(src_dir, main_file), "w") do |f|
+      f.write(src)
+    end
+
+    # Import libraries
+    libraries.each do |library|
+      # Special core libraries, hard coded for migration
+      if [1, 2, 5, 7].include? library.id
+        library.export_code_file(project.path)
+      else
+        library.export_to_project project.path
+      end
+    end
+
+    #TODO Note lib dependencies/versions
+
+    #TODO Import Sounds
+
+    #TODO Import Sprites
+
+    author_name = if user
+      user.display_name
+    else
+      "Anonymous"
+    end
+
+    default_config = JSON.pretty_generate(Project::DEFAULT_CONFIG.merge(
+      :author => author_name,
+      :name => title.to_filename,
+      :main => main_file,
+      :width => width,
+      :height => height
+    ))
+
+    # Create config
+    open(File.join(project.path, "pixie.json"), "w") do |f|
+      f.write(default_config)
+    end
+
+  end
+
+  def extension
+    if lang == "coffeescript"
+      "coffee"
+    else
+      "js"
     end
   end
 

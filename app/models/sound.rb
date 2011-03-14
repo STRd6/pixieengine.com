@@ -21,6 +21,12 @@ class Sound < ActiveRecord::Base
     :path => "sounds/:id/:style.:extension"
   )
 
+  scope :for_user, lambda {|user|
+    where(:user_id => user.id)
+  }
+
+  scope :none
+
   validates_attachment_presence :sfs
 
   acts_as_archive

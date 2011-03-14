@@ -1,14 +1,36 @@
-/* DO NOT MODIFY. This file was compiled Tue, 08 Mar 2011 04:10:51 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 12 Mar 2011 21:49:06 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   (function($) {
-    var ColorPicker, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, erase, falseFn, palette, scale, tools;
+    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, scale, tools;
+    DEBUG = false;
     DIV = "<div />";
     IMAGE_DIR = "/images/pixie/";
     RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/;
     scale = 1;
+    ColorUtil = {
+      additive: function(c1, c2) {
+        var A, B, G, R, a, ax, b, bx, g, gx, r, rx, _ref, _ref2;
+        _ref = c1.channels, R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
+        _ref2 = c2.channels, r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
+        if (a === 0) {
+          return c1;
+        }
+        if (A === 0) {
+          return c2;
+        }
+        ax = 1 - (1 - a) * (1 - A);
+        rx = (r * a / ax + R * A * (1 - a) / ax).round().clamp(0, 255);
+        gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255);
+        bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255);
+        return Color(rx, gx, bx, ax);
+      },
+      replace: function(c1, c2) {
+        return c2;
+      }
+    };
     palette = ["#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E", "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495", "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"];
     falseFn = function() {
       return false;
@@ -74,7 +96,7 @@
               return replayData[i].push({
                 x: pixel.x,
                 y: pixel.y,
-                color: data.newColor
+                color: data.newColor.toString()
               });
             });
           });
@@ -100,7 +122,7 @@
       clear: {
         perform: function(canvas) {
           return canvas.eachPixel(function(pixel) {
-            return pixel.color(Color(0, 0, 0, 0), false, true);
+            return pixel.color(Color(0, 0, 0, 0), false, "replace");
           });
         }
       },
@@ -125,9 +147,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false, true);
+            pixel.color(rightPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true)
+            pixel.color(Color(0, 0, 0, 0), false, 'replace')
           }
         });
 
@@ -155,9 +177,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, true);
+              currentPixel.color(leftPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
@@ -181,9 +203,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, true);
+            pixel.color(lowerPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true);
+            pixel.color(Color(0, 0, 0, 0), false, 'replace');
           }
         });
 
@@ -211,9 +233,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, true);
+              currentPixel.color(upperPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
@@ -230,18 +252,6 @@
           w = window.open();
           return w.document.location = canvas.toDataURL();
         }
-      },
-      options: {
-        hotkeys: ["o"],
-        perform: function() {
-          return $('#optionsModal').removeAttr('style').modal({
-            persist: true,
-            onClose: function() {
-              $.modal.close();
-              return $('#optionsModal').attr('style', 'display: none');
-            }
-          });
-        }
       }
     };
     colorNeighbors = function(color) {
@@ -254,7 +264,7 @@
       var inverseOpacity, pixelColor;
       inverseOpacity = 1 - opacity;
       pixelColor = pixel.color();
-      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, true);
+      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace");
     };
     tools = {
       pencil: {
@@ -326,26 +336,36 @@
         }
       }
     };
+    debugTools = {
+      inspector: {
+        mousedown: function() {
+          return console.log(this.color());
+        }
+      }
+    };
     return $.fn.pixie = function(options) {
-      var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, tilePreview, width;
-      tilePreview = true;
+      var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, width;
       Pixel = function(x, y, layerCanvas, canvas, undoStack) {
-        var color, self;
+        var color, redraw, self;
         color = Color(0, 0, 0, 0);
+        redraw = function() {
+          var xPos, yPos;
+          xPos = x * PIXEL_WIDTH;
+          yPos = y * PIXEL_HEIGHT;
+          layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+          layerCanvas.fillStyle = color.toString();
+          return layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
+        };
         self = {
           canvas: canvas,
-          color: function(newColor, skipUndo, replace) {
-            var oldColor, xPos, yPos;
+          redraw: redraw,
+          color: function(newColor, skipUndo, blendMode) {
+            var oldColor;
             if (arguments.length >= 1) {
+              blendMode || (blendMode = "additive");
               oldColor = color;
-              xPos = x * PIXEL_WIDTH;
-              yPos = y * PIXEL_HEIGHT;
-              if (replace) {
-                layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
-              }
-              layerCanvas.fillStyle = newColor.toString();
-              layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT);
-              color = canvas.getColor(x, y);
+              color = ColorUtil[blendMode](oldColor, newColor);
+              redraw();
               if (!skipUndo) {
                 undoStack.add(self, {
                   pixel: self,
@@ -372,25 +392,33 @@
           "class": "layer"
         });
         gridColor = "#000";
-        layerWidth = width * PIXEL_WIDTH;
-        layerHeight = height * PIXEL_HEIGHT;
+        layerWidth = function() {
+          return width * PIXEL_WIDTH;
+        };
+        layerHeight = function() {
+          return height * PIXEL_HEIGHT;
+        };
         layerElement = layer.get(0);
-        layerElement.width = layerWidth;
-        layerElement.height = layerHeight;
+        layerElement.width = layerWidth();
+        layerElement.height = layerHeight();
         context = layerElement.getContext("2d");
         return $.extend(layer, {
           clear: function() {
-            return context.clearRect(0, 0, layerWidth, layerHeight);
+            return context.clearRect(0, 0, layerWidth(), layerHeight());
           },
           context: context,
           drawGuide: function() {
             context.fillStyle = gridColor;
             height.times(function(row) {
-              return context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth, 1);
+              return context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth(), 1);
             });
             return width.times(function(col) {
-              return context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight);
+              return context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight());
             });
+          },
+          resize: function() {
+            layerElement.width = layerWidth();
+            return layerElement.height = layerHeight();
           }
         });
       };
@@ -401,7 +429,7 @@
       height = options.height || 8;
       initializer = options.initializer;
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLabel, guideLayer, guideToggle, guideToggleHolder, initialStateData, lastClean, lastPixel, layer, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, previewLabel, previewToggle, previewToggleHolder, primaryColorPicker, replaying, secondaryColorPicker, swatches, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLayer, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(this).addClass("pixie");
         content = $(DIV, {
           "class": 'content'
@@ -411,7 +439,8 @@
         });
         canvas = $(DIV, {
           "class": 'canvas',
-          style: "width: " + ((width * PIXEL_WIDTH) + 2) + "px; height: " + ((height * PIXEL_HEIGHT) + 2) + "px;"
+          width: width * PIXEL_WIDTH + 2,
+          height: height * PIXEL_HEIGHT + 2
         });
         toolbar = $(DIV, {
           "class": 'toolbar'
@@ -427,66 +456,31 @@
         });
         navRight = $("<nav class='right'></nav>");
         navLeft = $("<nav class='left'></nav>");
-        opacityVal = $("<div id=opacity_val>100</div>");
+        opacityVal = $(DIV, {
+          "class": "val",
+          text: 100
+        });
         opacitySlider = $(DIV, {
-          id: 'opacity'
+          "class": "opacity"
         }).slider({
           orientation: 'vertical',
           value: 100,
-          min: 0,
+          min: 5,
           max: 100,
+          step: 5,
           slide: function(event, ui) {
-            return $('#opacity_val').text(ui.value);
+            return opacityVal.text(ui.value);
           }
         }).append(opacityVal);
-        $('#opacity_val').text($('#opacity').slider('value'));
+        opacityVal.text(opacitySlider.slider('value'));
+        tilePreview = true;
         preview = $(DIV, {
           "class": 'preview',
           style: "width: " + width + "px; height: " + height + "px"
         });
-        previewToggleHolder = $(DIV, {
-          "class": 'toggle_holder'
-        });
-        previewToggle = $('<input checked="true" class="preview_control" type="checkbox" />').change(function() {
-          if ($(this).attr('checked')) {
-            tilePreview = true;
-          } else {
-            tilePreview = false;
-          }
+        preview.mousedown(function() {
+          tilePreview = !tilePreview;
           return canvas.preview();
-        });
-        previewLabel = $('<label class="preview_control">Tiled Preview</label>').click(function() {
-          if (previewToggle.attr('checked')) {
-            previewToggle.removeAttr('checked');
-            tilePreview = false;
-          } else {
-            previewToggle.attr('checked', 'true');
-            tilePreview = true;
-          }
-          return canvas.preview();
-        });
-        guideToggleHolder = $(DIV, {
-          "class": 'toggle_holder'
-        });
-        guideLabel = $("<label class='guide_control'>Display Guides</label>").click(function() {
-          if (guideToggle.attr('checked')) {
-            guideToggle.removeAttr('checked');
-            guideLayer.clear();
-            return $('.canvas').css('border', '1px solid transparent');
-          } else {
-            guideToggle.attr('checked', 'true');
-            guideLayer.drawGuide();
-            return $('.canvas').css('border', '1px solid black');
-          }
-        });
-        guideToggle = $('<input class="guide_control" type="checkbox"></input>').change(function() {
-          if ($(this).attr('checked')) {
-            guideLayer.drawGuide();
-            return $('.canvas').css('border', '1px solid black');
-          } else {
-            guideLayer.clear();
-            return $('.canvas').css('border', '1px solid transparent');
-          }
         });
         currentTool = void 0;
         active = false;
@@ -518,7 +512,8 @@
         });
         pixels = [];
         lastPixel = void 0;
-        layer = Layer().bind("mousedown", function(e) {
+        layer = Layer();
+        guideLayer = Layer().bind("mousedown", function(e) {
           undoStack.next();
           active = true;
           if (e.button === 0) {
@@ -529,7 +524,7 @@
           return e.preventDefault();
         }).bind("mousedown mousemove", function(event) {
           var col, eventType, localX, localY, offset, opacity, pixel, row;
-          opacity = $('#opacity_val').text() / 100;
+          opacity = opacityVal.text() / 100;
           offset = $(this).offset();
           localY = event.pageY - offset.top;
           localX = event.pageX - offset.left;
@@ -547,7 +542,7 @@
           }
           return lastPixel = pixel;
         });
-        guideLayer = Layer();
+        layers = [layer, guideLayer];
         height.times(function(row) {
           pixels[row] = [];
           return width.times(function(col) {
@@ -677,7 +672,7 @@
                 return canvas.eachPixel(function(pixel, x, y) {
                   var pos;
                   pos = x + y * canvas.width;
-                  return pixel.color(data[pos], true);
+                  return pixel.color(Color(data[pos]), true, "replace");
                 });
               });
             }
@@ -698,12 +693,13 @@
             image = new Image();
             image.onload = function() {
               var getColor, imageData;
+              canvas.resize(image.width, image.height);
               context.drawImage(image, 0, 0);
               imageData = context.getImageData(0, 0, image.width, image.height);
               getColor = function(x, y) {
                 var index;
                 index = (x + y * imageData.width) * 4;
-                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba();
+                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
               };
               return canvas.eachPixel(function(pixel, x, y) {
                 return pixel.color(getColor(x, y), true);
@@ -751,7 +747,7 @@
             data = undoStack.popRedo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.newColor, true, true);
+                return this.pixel.color(this.newColor, true, "replace");
               });
             }
           },
@@ -773,7 +769,7 @@
                 step = steps[i];
                 if (step) {
                   $.each(step, function(j, p) {
-                    return canvas.getPixel(p.x, p.y).color(p.color, true, true);
+                    return canvas.getPixel(p.x, p.y).color(p.color, true, "replace");
                   });
                   i++;
                   return setTimeout(runStep, delay);
@@ -783,6 +779,38 @@
               };
               return setTimeout(runStep, delay);
             }
+          },
+          resize: function(newWidth, newHeight) {
+            this.width = width = newWidth;
+            this.height = height = newHeight;
+            pixels = pixels.slice(0, newHeight);
+            while (pixels.length < newHeight) {
+              pixels.push([]);
+            }
+            pixels.each(function(row, y) {
+              var _results;
+              while (row.length > newWidth) {
+                row.pop();
+              }
+              _results = [];
+              while (row.length < newWidth) {
+                _results.push(row.push(Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack)));
+              }
+              return _results;
+            });
+            layers.each(function(layer) {
+              layer.clear();
+              return layer.resize();
+            });
+            canvas.css({
+              width: width * PIXEL_WIDTH + 2,
+              height: height * PIXEL_HEIGHT + 2
+            });
+            return pixels.each(function(row) {
+              return row.each(function(pixel) {
+                return pixel.redraw();
+              });
+            });
           },
           setInitialState: function(frameData) {
             initialStateData = frameData;
@@ -817,7 +845,7 @@
             data = undoStack.popUndo();
             if (data) {
               return $.each(data, function() {
-                return this.pixel.color(this.oldColor, true, true);
+                return this.pixel.color(this.oldColor, true, "replace");
               });
             }
           },
@@ -828,6 +856,12 @@
           tool.name = key;
           return canvas.addTool(tool);
         });
+        if (DEBUG) {
+          $.each(debugTools, function(key, tool) {
+            tool.name = key;
+            return canvas.addTool(tool);
+          });
+        }
         $.each(actions, function(key, action) {
           action.name = key;
           return canvas.addAction(action);
@@ -837,9 +871,6 @@
         });
         canvas.setTool(tools.pencil);
         viewport.append(canvas);
-        previewToggleHolder.append(previewToggle, previewLabel);
-        guideToggleHolder.append(guideToggle, guideLabel);
-        $('#optionsModal').append(guideToggleHolder, previewToggleHolder);
         $(navLeft).append(toolbar);
         $(navRight).append(colorbar, preview, opacitySlider);
         content.append(actionbar, viewport, navLeft, navRight);

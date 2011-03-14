@@ -1,8 +1,29 @@
 (($) ->
+  DEBUG = false
+
   DIV = "<div />"
   IMAGE_DIR = "/images/pixie/"
   RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
   scale = 1
+
+  ColorUtil =
+    # http://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values/727339#727339
+    additive: (c1, c2) ->
+      [R, G, B, A] = c1.channels
+      [r, g, b, a] = c2.channels
+
+      return c1 if a == 0
+      return c2 if A == 0
+
+      ax = 1 - (1 - a) * (1 - A)
+      rx = (r * a / ax + R * A * (1 - a) / ax).round().clamp(0, 255)
+      gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255)
+      bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255)
+
+      return Color(rx, gx, bx, ax)
+
+    replace: (c1, c2) ->
+      c2
 
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
@@ -68,7 +89,7 @@
           replayData[i].push
             x: pixel.x
             y: pixel.y
-            color: data.newColor
+            color: data.newColor.toString()
 
       return replayData
 
@@ -86,7 +107,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(0, 0, 0, 0), false, true)
+          pixel.color(Color(0, 0, 0, 0), false, "replace")
     preview:
       menu: false
       perform: (canvas) ->
@@ -106,9 +127,9 @@
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false, true);
+            pixel.color(rightPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true)
+            pixel.color(Color(0, 0, 0, 0), false, 'replace')
           }
         });
 
@@ -135,9 +156,9 @@
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, true);
+              currentPixel.color(leftPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
@@ -160,9 +181,9 @@
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, true);
+            pixel.color(lowerPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, true);
+            pixel.color(Color(0, 0, 0, 0), false, 'replace');
           }
         });
 
@@ -189,9 +210,9 @@
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, true);
+              currentPixel.color(upperPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, true);
+              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
             }
           }
         }
@@ -205,16 +226,6 @@
       perform: (canvas) ->
         w = window.open()
         w.document.location = canvas.toDataURL()
-    options:
-      hotkeys: ["o"]
-      perform: ->
-        $('#optionsModal').removeAttr('style').modal(
-          persist: true
-          ,
-          onClose: ->
-            $.modal.close()
-            $('#optionsModal').attr('style', 'display: none')
-        )
 
   colorNeighbors = (color) ->
     this.color(color)
@@ -225,7 +236,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, true)
+    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace")
 
   tools =
     pencil:
@@ -280,27 +291,37 @@
               neighbor.color(newColor)
               q.push(neighbor)
 
+  debugTools =
+    inspector:
+      mousedown: ->
+        console.log(this.color())
+
   $.fn.pixie = (options) ->
-    tilePreview = true
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color(0, 0, 0, 0)
+
+      redraw = () ->
+        xPos = x * PIXEL_WIDTH
+        yPos = y * PIXEL_HEIGHT
+
+        layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+        layerCanvas.fillStyle = color.toString()
+        layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
       self =
         canvas: canvas
 
-        color: (newColor, skipUndo, replace) ->
+        redraw: redraw
+
+        color: (newColor, skipUndo, blendMode) ->
           if arguments.length >= 1
+            blendMode ||= "additive"
+
             oldColor = color
 
-            xPos = x * PIXEL_WIDTH
-            yPos = y * PIXEL_HEIGHT
+            color = ColorUtil[blendMode](oldColor, newColor)
 
-            if replace
-              layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-            layerCanvas.fillStyle = newColor.toString()
-            layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
-
-            color = canvas.getColor(x, y)
+            redraw()
 
             undoStack.add(self, {pixel: self, oldColor: oldColor, newColor: color}) unless skipUndo
 
@@ -319,25 +340,31 @@
         class: "layer"
 
       gridColor = "#000"
-      layerWidth = width * PIXEL_WIDTH
-      layerHeight = height * PIXEL_HEIGHT
+      layerWidth = -> width * PIXEL_WIDTH
+      layerHeight = -> height * PIXEL_HEIGHT
       layerElement = layer.get(0)
-      layerElement.width = layerWidth
-      layerElement.height = layerHeight
+      layerElement.width = layerWidth()
+      layerElement.height = layerHeight()
 
       context = layerElement.getContext("2d")
 
       return $.extend layer,
         clear: ->
-          context.clearRect(0, 0, layerWidth, layerHeight)
+          context.clearRect(0, 0, layerWidth(), layerHeight())
+
         context: context
+
         drawGuide: ->
           context.fillStyle = gridColor
           height.times (row) ->
-            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth, 1)
+            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth(), 1)
 
           width.times (col) ->
-            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight)
+            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight())
+
+        resize: () ->
+          layerElement.width = layerWidth()
+          layerElement.height = layerHeight()
 
     PIXEL_WIDTH = 16
     PIXEL_HEIGHT = 16
@@ -359,7 +386,8 @@
 
       canvas = $ DIV,
         class: 'canvas'
-        style: "width: #{(width * PIXEL_WIDTH) + 2}px; height: #{(height * PIXEL_HEIGHT) + 2}px;"
+        width: width * PIXEL_WIDTH + 2
+        height: height * PIXEL_HEIGHT + 2
 
       toolbar = $ DIV,
         class: 'toolbar'
@@ -376,67 +404,32 @@
       navRight = $("<nav class='right'></nav>")
       navLeft = $("<nav class='left'></nav>")
 
-      opacityVal = $("<div id=opacity_val>100</div>")
+      opacityVal = $ DIV,
+        class: "val"
+        text: 100
 
-      opacitySlider = $(DIV,
-        id: 'opacity'
-      ).slider(
+      opacitySlider = $(DIV, class: "opacity").slider(
         orientation: 'vertical'
         value: 100
-        min: 0
+        min: 5
         max: 100
+        step: 5
         slide: (event, ui) ->
-          $('#opacity_val').text(ui.value)
+          opacityVal.text(ui.value)
       ).append(opacityVal)
 
-      $('#opacity_val').text($('#opacity').slider('value'))
+      opacityVal.text(opacitySlider.slider('value'))
+
+      tilePreview = true
 
       preview = $ DIV,
         class: 'preview'
         style: "width: #{width}px; height: #{height}px"
 
-      previewToggleHolder = $ DIV,
-        class: 'toggle_holder'
-
-      previewToggle = $('<input checked="true" class="preview_control" type="checkbox" />').change ->
-        if $(this).attr('checked')
-          tilePreview = true
-        else
-          tilePreview = false
+      preview.mousedown ->
+        tilePreview = !tilePreview
 
         canvas.preview()
-
-      previewLabel = $('<label class="preview_control">Tiled Preview</label>').click ->
-        if previewToggle.attr('checked')
-          previewToggle.removeAttr('checked')
-          tilePreview = false
-        else
-          previewToggle.attr('checked', 'true')
-          tilePreview = true
-
-        canvas.preview()
-
-      guideToggleHolder = $ DIV,
-        class: 'toggle_holder'
-
-      guideLabel = $("<label class='guide_control'>Display Guides</label>").click ->
-
-        if guideToggle.attr('checked')
-          guideToggle.removeAttr('checked')
-          guideLayer.clear()
-          $('.canvas').css('border', '1px solid transparent')
-        else
-          guideToggle.attr('checked', 'true')
-          guideLayer.drawGuide()
-          $('.canvas').css('border', '1px solid black')
-
-      guideToggle = $('<input class="guide_control" type="checkbox"></input>').change ->
-        if $(this).attr('checked')
-          guideLayer.drawGuide()
-          $('.canvas').css('border', '1px solid black')
-        else
-          guideLayer.clear()
-          $('.canvas').css('border', '1px solid transparent')
 
       currentTool = undefined
       active = false
@@ -474,7 +467,9 @@
       pixels = []
 
       lastPixel = undefined
+
       layer = Layer()
+      guideLayer = Layer()
         .bind("mousedown", (e) ->
           undoStack.next()
           active = true
@@ -483,7 +478,7 @@
           e.preventDefault()
         )
         .bind("mousedown mousemove", (event) ->
-          opacity = $('#opacity_val').text() / 100
+          opacity = opacityVal.text() / 100
           offset = $(this).offset()
 
           localY = event.pageY - offset.top
@@ -506,7 +501,7 @@
           lastPixel = pixel
         )
 
-        guideLayer = Layer()
+      layers = [layer, guideLayer]
 
       height.times (row) ->
         pixels[row] = []
@@ -625,7 +620,7 @@
             $.each initialStateData, (f, data) ->
               canvas.eachPixel (pixel, x, y) ->
                 pos = x + y*canvas.width
-                pixel.color(data[pos], true)
+                pixel.color(Color(data[pos]), true, "replace")
 
         eachPixel: (fn) ->
           height.times (row) ->
@@ -640,13 +635,15 @@
 
           image = new Image()
           image.onload = ->
+            canvas.resize(image.width, image.height)
+
             context.drawImage(image, 0, 0)
             imageData = context.getImageData(0, 0, image.width, image.height)
 
             getColor = (x, y) ->
               index = (x + y * imageData.width) * 4
 
-              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255).rgba()
+              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
 
             canvas.eachPixel (pixel, x, y) ->
               pixel.color(getColor(x, y), true)
@@ -693,7 +690,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.newColor, true, true)
+              this.pixel.color(this.newColor, true, "replace")
 
         replay: (steps) ->
           unless replaying
@@ -714,7 +711,7 @@
 
               if step
                 $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y).color(p.color, true, true)
+                  canvas.getPixel(p.x, p.y).color(p.color, true, "replace")
 
                 i++
 
@@ -723,6 +720,30 @@
                 replaying = false
 
             setTimeout(runStep, delay)
+
+        resize: (newWidth, newHeight) ->
+          this.width = width = newWidth
+          this.height = height = newHeight
+
+          pixels = pixels.slice(0, newHeight)
+
+          pixels.push [] while pixels.length < newHeight
+
+          pixels.each (row, y) ->
+            row.pop() while row.length > newWidth
+            row.push Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack) while row.length < newWidth
+
+          layers.each (layer) ->
+            layer.clear()
+            layer.resize()
+
+          canvas.css
+            width: width * PIXEL_WIDTH + 2
+            height: height * PIXEL_HEIGHT + 2
+
+          pixels.each (row) ->
+            row.each (pixel) ->
+              pixel.redraw()
 
         setInitialState: (frameData) ->
           initialStateData = frameData
@@ -756,7 +777,7 @@
 
           if data
             $.each data, ->
-              this.pixel.color(this.oldColor, true, true)
+              this.pixel.color(this.oldColor, true, "replace")
 
         width: width
         height: height
@@ -764,6 +785,11 @@
       $.each tools, (key, tool) ->
         tool.name = key
         canvas.addTool(tool)
+
+      if DEBUG
+        $.each debugTools, (key, tool) ->
+          tool.name = key
+          canvas.addTool(tool)
 
       $.each actions, (key, action) ->
         action.name = key
@@ -775,9 +801,6 @@
       canvas.setTool(tools.pencil)
 
       viewport.append(canvas)
-      previewToggleHolder.append(previewToggle, previewLabel)
-      guideToggleHolder.append(guideToggle, guideLabel)
-      $('#optionsModal').append(guideToggleHolder, previewToggleHolder)
 
       $(navLeft).append(toolbar)
       $(navRight).append(colorbar, preview, opacitySlider)

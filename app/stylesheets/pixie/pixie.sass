@@ -67,12 +67,12 @@
 
       background-color: #fff
       border: 1px solid #AAA
+      cursor: pointer
       position: absolute
       top: 270px
       left: 0
       right: 0
       margin: auto
-      cursor: default
 
     .swatches
       +bounds(48px, 175px)
@@ -123,24 +123,22 @@
     +box-sizing(border-box)
 
     border: 1px solid #000
-    position: relative
 
   .viewport
     +bounds(100%)
     +box-sizing(border-box)
+    +contents-centered
 
     background-color: #ccc
     display: inline-block
     overflow: auto
     position: relative
 
-    canvas:first-child
-      background: none
-      z-index: 5
-
   .layer
     position: absolute
-    background: white url(/images/pixie/pixel_bg.png)
+
+    &:first-child
+      background: white url(/images/pixie/pixel_bg.png)
 
   .actions
     position: absolute
@@ -196,15 +194,15 @@
 
       margin-left: -1px
 
-  #opacity
+  .opacity
     height: 73px
     position: absolute
     right: 1em
 
-  #opacity_val
-    position: absolute
-    right: -5px
-    bottom: -20px
+    .val
+      position: absolute
+      right: -5px
+      bottom: -20px
 
 #newCanvasModal
   #resize_width, #resize_height

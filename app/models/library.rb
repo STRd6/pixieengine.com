@@ -66,6 +66,35 @@ class Library < ActiveRecord::Base
     end
   end
 
+  def export_to_project(path)
+    dir = path
+    src_dir = File.join(dir, 'src', title.to_filename)
+    test_dir = File.join(dir, 'test', title.to_filename)
+
+    FileUtils.mkdir_p(src_dir)
+    FileUtils.mkdir_p(test_dir)
+
+    scripts.each do |script|
+      open(File.join(src_dir, script.file_name), "w") do |f|
+        f.write(script.src)
+      end
+
+      open(File.join(test_dir, script.file_name), "w") do |f|
+        f.write(script.test_src)
+      end
+    end
+  end
+
+  def export_code_file(dest_path)
+    lib_dir = File.join(dest_path, 'lib')
+
+    FileUtils.mkdir_p(lib_dir)
+
+    open(File.join(lib_dir, title.to_filename("js")), "w") do |f|
+      f.write(code)
+    end
+  end
+
   def zip
     clear_export_dir
     export_files

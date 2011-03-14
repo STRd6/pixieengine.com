@@ -18,6 +18,21 @@ class Project < ActiveRecord::Base
     where :url => url
   }
 
+  DEFAULT_CONFIG = {
+    :directories => {
+      :images => "images",
+      :sounds => "sounds",
+      :source => "src",
+      :test => "test",
+      :lib => "lib",
+      :compiled => "compiled",
+    },
+    :width => 640,
+    :height => 480,
+    :main => "main.coffee",
+    :wrapMain => true,
+    :hotSwap => true,
+  }
   BRANCH_NAME = "pixie"
   
   def base_path
@@ -30,6 +45,12 @@ class Project < ActiveRecord::Base
 
   def create_directory
     FileUtils.mkdir_p path
+    system 'chmod', "g+w", path
+  end
+
+  def make_group_writable
+    system 'chmod', "g+w", '-R', path
+    system "sudo", "-u", "gitbot", 'chmod', "g+w", '-R', path
   end
 
   def git_util(*args)
@@ -54,11 +75,14 @@ class Project < ActiveRecord::Base
       git_util "clone", remote_origin, path
       git_util 'checkout', '-b', BRANCH_NAME
     end
+
+    make_group_writable
   end
   handle_asynchronously :clone_repo
 
   def git_pull
     git_util "pull"
+    make_group_writable
   end
   handle_asynchronously :git_pull
 
@@ -119,11 +143,13 @@ class Project < ActiveRecord::Base
       {
         :name => filename,
         :ext => "directory",
-        :files => Dir.new(file_path).sort.map do |filename|
+        :files => Dir.new(file_path).map do |filename|
           next if filename[0...1] == "."
 
           file_node_data(File.join(file_path, filename), project_root_path)
-        end.compact
+        end.compact.sort_by do |file_data|
+          [file_data[:ext] == "directory" ? 0 : 1, file_data[:name]]
+        end
       }
     elsif File.file? file_path
       ext = (File.extname(filename)[1..-1] || "").downcase
@@ -153,7 +179,7 @@ class Project < ActiveRecord::Base
 
   def lang_for(extension)
     case extension
-    when "js"
+    when "js", "json"
       "javascript"
     when "coffee"
       "coffeescript"
@@ -164,7 +190,7 @@ class Project < ActiveRecord::Base
 
   def type_for(extension)
     case extension
-    when "", "js", "coffee", "html", "css", "lua", "cfg"
+    when "", "js", "json", "coffee", "html", "css", "lua", "cfg"
       "text"
     when "png", "jpg", "jpeg", "gif", "bmp"
       "image"

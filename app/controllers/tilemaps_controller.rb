@@ -2,6 +2,8 @@ class TilemapsController < ApplicationController
   respond_to :html, :json
   layout "fullscreen"
 
+  before_filter :filter_results, :only => [:index]
+
   def create
     @tilemap = Tilemap.new(params[:tilemap])
     @tilemap.user = current_user
@@ -36,6 +38,19 @@ class TilemapsController < ApplicationController
   end
 
   def index
-    @tilemaps = Tilemap.order("id DESC").all
+  end
+
+  def filter_results
+    @tilemaps ||= if filter
+      if filter == "own"
+        Tilemap.for_user(current_user)
+      else
+        Tilemap.send(filter)
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 end

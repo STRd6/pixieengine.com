@@ -1,8 +1,9 @@
-
 %nav.top.actions
   %button#save Save
   %button#new New
-  %button#run Run
+  .button_group
+    %button#run> Run
+    %button#test> Test
   %button#publish Publish
 
 #content
@@ -17,11 +18,84 @@
     #tabs
       %ul
 
+  #test_zone.window(style="top: 300px; left: 50px;")
+    %span#close_app.ui-icon.ui-icon-close
+    %h3.ui-widget-header= project.title
+    %iframe#test_frame
+
+  #unit_test_window.window(style="top: 100px; left: 200px;")
+    %span.ui-icon.ui-icon-close
+    %h3.ui-widget-header Test #{project.title}
+    %iframe#unit_test_frame
+
 = render :partial => "pixie"
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
 
+#qunit_template.template
+  %div
+    %h1#qunit-header ${header}
+    %h2#qunit-banner
+    %h2#qunit-userAgent
+    %ol#qunit-tests
+    #qunit-fixture
+
 :coffeescript
+  errors = []
+
+  window.compileDirectory = (directoryPath) ->
+    findDirectory(directoryPath).find("span.file").map((index, span) ->
+      compileFileNode($(span))
+    ).get().join(";\n")
+
+  window.compileFileNode = (node) ->
+    $element = $(node.attr("data-id"))
+    src = $element.find("[name=contents]").val()
+    ext = $element.attr("data-ext")
+
+    compileCode(src, ext)
+
+  window.compileCode = (src, ext) ->
+    if ext == "js"
+      src
+    else if ext == "coffee"
+      try
+        compiledCode = CoffeeScript.compile src, noWrap: true
+      catch error
+        errors.push error.message
+
+      compiledCode
+
+  window.runCodeInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+
+    sandbox.write("<canvas width='\#{projectConfig.width}' height='\#{projectConfig.height}'></canvas>")
+
+    sandbox.write("<script>\#{code}<\/script>")
+
+    sandbox.close()
+
+  window.testCodeInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{stylesheet_link_tag('qunit').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+    sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
+
+    sandbox.write($("#qunit_template").tmpl(header: "Results").html())
+
+    sandbox.write("<script>\#{code}<\/script>")
+
+    sandbox.close()
+
   window.log = (message) ->
     console.log message
 
@@ -40,9 +114,9 @@
       activeTab.removeClass("unsaved")
 
     if data
-     postData = $.extend({format: 'json'}, data)
+      postData = $.extend({format: 'json'}, data)
 
-     $.post '/projects/#{project.id}/save_file', postData, successCallback
+      $.post '/projects/#{project.id}/save_file', postData, successCallback
 
     else
       form = $(currentPanel).find('form')
@@ -52,6 +126,24 @@
           type: 'POST'
           dataType: "json"
           success: successCallback
+
+        # Hot swap: inject code
+        if projectConfig.hotSwap
+          src = $(currentPanel).find("[name=contents]").val()
+          ext = $(currentPanel).data("ext")
+
+          code = compileCode(src, ext)
+
+          if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+            try
+              runningGameFrame.eval(code)
+            catch error
+              warn? error.message
+
+            try
+              runningGameFrame.eval("engine.reload()")
+            catch error
+              warn? error.message
       else
         # Check for special save method
         activeTab.find('a').data('doSave')?()
@@ -60,12 +152,86 @@
 
   newFileModal = () ->
     $("#new_file_modal").modal()
-    # alert "TODO: New File"
-    # Pop up new file modal
-    # User chooses editor type
-    # editor opens
 
   $("#new").live 'click', newFileModal
+
+  runApp = () ->
+    width = projectConfig.width
+    height = projectConfig.height
+
+    $("#test_frame").remove()
+
+    iframe = $ '<iframe />'
+      height: height
+      id: "test_frame"
+      width: width
+
+    $("#test_zone").append(iframe).show()
+
+    if runPath = projectConfig.runPath
+      iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
+    else
+      srcDir = findDirectory(projectConfig.directories.source)
+
+      compiledCode = srcDir.find("span.file").map((index, span) ->
+        $span = $(span)
+
+        # Save main for last
+        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+        compileFileNode($span)
+      ).get().join(";\n")
+
+      mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
+
+      libCode = compileDirectory(projectConfig.directories.lib)
+
+      crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+
+      crammedCode += libCode + ";\n" + compiledCode
+
+      if projectConfig.wrapMain
+        crammedCode += ";$(function(){ \#{mainCode} });"
+      else
+        crammedCode += ";" + mainCode
+
+      # Cram compiled code in iframe
+      runCodeInIframe(crammedCode, iframe)
+
+  $("#run").live 'click', runApp
+
+  testApp = () ->
+    srcDir = findDirectory(projectConfig.directories.source)
+
+    compiledCode = srcDir.find("span.file").map((index, span) ->
+      $span = $(span)
+
+      # Skip main
+      return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+      compileFileNode($span)
+    ).get().join(";\n")
+
+    libCode = compileDirectory(projectConfig.directories.lib)
+    testCode = compileDirectory(projectConfig.directories.test)
+
+    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+    crammedCode += libCode + ";\n" + compiledCode
+    crammedCode += ";$(function(){ \#{testCode} });"
+
+    $("#unit_test_frame").remove()
+
+    iframe = $ '<iframe />'
+      height: 480
+      id: "unit_test_frame"
+      width: 640
+
+    $("#unit_test_window").append(iframe).show()
+
+    # Cram compiled code in iframe
+    testCodeInIframe(crammedCode, iframe)
+
+  $("#test").click testApp
 
   # key combos like ctrl+s
   ctrlKeys =
@@ -89,12 +255,12 @@
     type = panel.attr('data-type')
     mtime = panel.attr('data-mtime')
 
-    if lang == "html"
-      lang = "xml"
-
     if type == "text"
       textArea = panel.find('textarea').get(0)
       savedCode = textArea.value
+
+      if lang == "html"
+        lang = "xml"
 
       lang ||= "dummy"
 
@@ -172,6 +338,16 @@
 
   # Tree and Tabs setup
   $ ->
+    DEFAULT_CONFIG = #{default_project_config.to_json}
+    try
+      window.projectConfig = JSON.parse($("[data-path=/pixie.json]").find("[name=contents]").val())
+    catch e
+      console.warn?(e)
+      window.projectConfig = {}
+    finally
+      # Merge in default configs
+      window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
     $('ul.filetree').treeview()
 
     $tabs = $('#tabs').tabs
@@ -212,3 +388,11 @@
       if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
         index = $('li', $tabs).index(parent)
         $tabs.tabs('remove', index)
+
+    $(".window").draggable(
+      handle: "h3"
+      iframeFix: true
+    ).disableSelection()
+
+    $('.window .ui-icon-close').click ->
+      $(this).parent().hide().children("iframe").remove()

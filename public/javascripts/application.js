@@ -1,4 +1,4 @@
-function notify(message) {
+function notify(message, delay) {
   var notice = $("#flashes .notice").first();
   if(notice.length < 1) {
     notice = $("<div class='notice' />").html(message);
@@ -8,8 +8,13 @@ function notify(message) {
   }
 
   notice.append($("<div class='close'/>"));
-  notice.hide()
-  notice.slideToggle().delay(4000).fadeOut();
+  notice.hide();
+
+  if(delay) {
+    notice.slideToggle().delay(delay).fadeOut();
+  } else {
+    notice.slideToggle();
+  }
 }
 
 function showTooltip(element, html) {
