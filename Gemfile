@@ -31,6 +31,7 @@ gem 'json'
 gem 'juggernaut', :git => "git://github.com/maccman/juggernaut.git"
 gem 'mail'
 gem 'mocha'
+gem 'narray'
 gem 'oauth'
 gem "oauth2"
 gem 'paperclip'
