@@ -51,7 +51,7 @@ class Sound < ActiveRecord::Base
   end
 
   def generate_waveform
-    wf = WaveformRenderer.new(mp3.url(nil, false))
+    wf = WaveformRenderer.new(wav.url(nil, false))
     temp = wf.render_waveform
 
     io = StringIO.new(temp.to_blob do |image|
