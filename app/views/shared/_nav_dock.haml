@@ -113,7 +113,7 @@
         background: url(/images/show_dock.png) no-repeat
 
     #dockContainer
-      +bounds(580px, 72px)
+      +bounds(580px, 70px)
       bottom: 0
       left: 0
       right: 0
@@ -121,55 +121,57 @@
       position: fixed
       z-index: 100
 
-    #dockWrapper
-      border-bottom: solid 2px rgba(255, 255, 255, .35)
-      display: inline-block
-      line-height: 0
-      position: relative
-      width: auto
-
-    .cap
-      +bounds(30px, 50px)
-
-      background: url(/images/dock_background_left.png) bottom left no-repeat
-
-      &.left
-        bottom: 0
-        left: 0
-        position: absolute
-
-    ul
-      list-style: none outside
-
-      &.osx-dock
-        background: url(/images/dock_background_left.png) no-repeat right bottom
+      #dockWrapper
+        border-bottom: solid 2px rgba(255, 255, 255, .35)
         display: inline-block
-        height: 70px
-        margin: 0 0 0 30px
-        overflow: hidden
-        padding: 0 30px 0 0
+        line-height: 0
+        position: relative
+        width: auto
 
-        li
-          +bounds(50px)
+      .cap
+        +bounds(30px, 50px)
 
-          display: block
-          float: left
-          margin: 0px 7px 0 7px
-          position: relative
-          text-align: center
-          -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
-          -webkit-transition: 0.15s linear
-          -webkit-transition-property: -webkit-transform margin
+        background: url(/images/dock_background_left.png) bottom left no-repeat
 
-          span
-            display: none
+        &.left
+          bottom: 0
+          left: 0
+          position: absolute
 
-          a
+      ul
+        list-style: none outside
+
+        &.osx-dock
+          background: url(/images/dock_background_left.png) no-repeat right bottom
+          display: inline-block
+          height: 70px
+          margin: 0 0 0 30px
+          overflow: hidden
+          padding: 0 30px 0 0
+
+          li
+            +bounds(50px)
+
             display: block
-            height: 50px
+            float: left
+            margin: 0px 7px 0 7px
+            position: relative
+            text-align: center
+            -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
             -webkit-transition: 0.15s linear
             -webkit-transition-property: -webkit-transform margin
-            margin: 0
 
-            img
-              width: 48px
+            span
+              display: none
+
+    #dockContainer #dockWrapper .osx-dock li
+      a
+        color: transparent
+        display: block
+        height: 50px
+        -webkit-transition: 0.15s linear
+        -webkit-transition-property: -webkit-transform margin
+        margin: 0
+
+        img
+          width: 48px
