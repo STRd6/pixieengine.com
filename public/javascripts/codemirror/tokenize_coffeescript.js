@@ -307,12 +307,6 @@ var tokenizeRuby = (function() {
 			  return null;
 			}
 
-
-			if (ch == '/' && !source.peek().match(/[0-9 ]/)) {
-			  setState(inStaticString(REGEXPCLASS, '/')); 
-			  return null;
-			}
-
 			if (ch == '\"') {
 				setState(inRubyInsertableString(STRINGCLASS, "\""));
 				return null;
