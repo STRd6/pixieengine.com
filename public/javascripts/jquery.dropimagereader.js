@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Wed, 23 Feb 2011 08:33:31 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.dropimagereader.coffee
+/* DO NOT MODIFY. This file was compiled Mon, 14 Mar 2011 06:34:27 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.dropimagereader.coffee
  */
 
 (function() {
@@ -20,38 +20,12 @@
         return event.preventDefault();
       };
       return this.each(function() {
-        var $this, content, element;
+        var $this, element;
         element = this;
         $this = $(this);
-        content = $this.children();
-        $this.bind('dragenter dragover', function(event) {
-          var big, div, small;
-          stopFn(event);
-          div = $("<div>", {
-            "class": "drag_drop_placeholder"
-          });
-          big = $("<p>", {
-            "class": "big",
-            text: "drag images here"
-          });
-          small = $("<p>", {
-            "class": "small",
-            text: "to post them to chat"
-          });
-          div.append(big, small);
-          $this.css({
-            width: $this.width(),
-            height: $this.height()
-          });
-          $this.children().remove();
-          return $this.append(div);
-        });
-        $this.bind('dragleave drop', function(event) {
-          stopFn(event);
-          $this.children().remove();
-          return $this.append(content);
-        });
+        $this.bind('dragenter dragover dragleave', stopFn);
         return $this.bind('drop', function(event) {
+          stopFn(event);
           return Array.prototype.forEach.call(event.dataTransfer.files, function(file) {
             var imageType, reader;
             imageType = /image.*/;
