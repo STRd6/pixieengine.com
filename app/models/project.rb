@@ -76,7 +76,12 @@ class Project < ActiveRecord::Base
   def clone_repo
     if git?
       git_util "clone", remote_origin, path
+      # Try to checkout remote branch if it exists
+      git_util 'checkout', '-t', "origin/#{BRANCH_NAME}"
+      # Try to create branch in case previous command failed
       git_util 'checkout', '-b', BRANCH_NAME
+      # Push branch if it was just created
+      git_util "push", '-u', "origin", BRANCH_NAME
     end
 
     make_group_writable
@@ -89,20 +94,19 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :git_pull
 
-  def git_commit_and_push
+  def git_commit_and_push(message)
     git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
     git_util "add", "."
 
-    #TODO: Shell escape user display name and add to commit message
-    git_util "commit", "-am", 'Modified in browser at pixie.strd6.com'
+    git_util "commit", "-am", message, "--author", "#{user.display_name} <#{user.email}>"
 
     git_util "push", '-u', "origin", BRANCH_NAME
   end
   handle_asynchronously :git_commit_and_push
 
-  def save_file(path, contents)
+  def save_file(path, contents, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
 
@@ -116,7 +120,7 @@ class Project < ActiveRecord::Base
     end
 
     if git?
-      git_commit_and_push
+      git_commit_and_push(message || "Modified in browser at pixie.strd6.com")
     end
   end
 
