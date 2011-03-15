@@ -42,10 +42,14 @@ class TilemapsController < ApplicationController
 
   def filter_results
     @tilemaps ||= if filter
-      if filter == "own"
-        Tilemap.for_user(current_user)
+      if current_user
+        if filter == "own"
+          Tilemap.for_user(current_user)
+        else
+          Tilemap.send(filter)
+        end
       else
-        Tilemap.send(filter)
+        Tilemap.none
       end
     end.order("id DESC")
   end

@@ -2,7 +2,7 @@ class AnimationsController < ApplicationController
   respond_to :html, :json
   layout "fullscreen"
 
-  before_filter :require_user
+  before_filter :require_user, :except => [:index]
   before_filter :filter_results, :only => [:index]
 
   def new
@@ -40,10 +40,14 @@ class AnimationsController < ApplicationController
 
   def filter_results
     @animations ||= if filter
-      if filter == "own"
-        Animation.for_user(current_user)
+      if current_user
+        if filter == "own"
+          Animation.for_user(current_user)
+        else
+          Animation.send(filter)
+        end
       else
-        Animation.send(filter)
+        Animation.none
       end
     end.order("id DESC")
   end

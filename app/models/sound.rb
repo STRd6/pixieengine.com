@@ -1,3 +1,5 @@
+require 'lib/waveform'
+
 class Sound < ActiveRecord::Base
   include Commentable
 
@@ -15,6 +17,10 @@ class Sound < ActiveRecord::Base
     :path => "sounds/:id/:style.:extension"
   )
 
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "sounds/:id/:style.:extension"
+  )
+
   scope :for_user, lambda {|user|
     where(:user_id => user.id)
   }
@@ -28,6 +34,7 @@ class Sound < ActiveRecord::Base
   belongs_to :user
 
   before_validation :convert_to_mp3
+  after_create :generate_waveform
 
   def sfs_base64
     open(sfs.url, "rb") do |f|
@@ -42,6 +49,23 @@ class Sound < ActiveRecord::Base
       title
     end
   end
+
+  def generate_waveform
+    wf = WaveformRenderer.new(wav.url(nil, false))
+    temp = wf.render_waveform
+
+    io = StringIO.new(temp.to_blob do |image|
+      image.format = "PNG"
+    end)
+
+    io.original_filename = "wav.png"
+    io.content_type = "image/png"
+
+    self.image = io
+
+    save
+  end
+  handle_asynchronously :generate_waveform
 
   def to_param
     if title.blank?

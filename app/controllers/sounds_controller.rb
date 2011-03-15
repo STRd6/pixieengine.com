@@ -23,10 +23,14 @@ class SoundsController < ResourceController::Base
 
   def filter_results
     @sounds ||= if filter
-      if filter == "own"
-        Sound.for_user(current_user)
+      if current_user
+        if filter == "own"
+          Sound.for_user(current_user)
+        else
+          Sound.send(filter)
+        end
       else
-        Sound.send(filter)
+        Sound.none
       end
     end.order("id DESC")
   end

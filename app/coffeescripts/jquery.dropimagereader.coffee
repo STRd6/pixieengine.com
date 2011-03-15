@@ -10,7 +10,17 @@
 
   )($.event.fix)
 
-  $.fn.dropImageReader = (callback) ->
+  defaults =
+    callback: $.noop
+    matchType: /image.*/
+
+  $.fn.dropImageReader = (options) ->
+    if typeof options == "function"
+      options =
+        callback: options
+
+    options = $.extend({}, defaults, options)
+
     stopFn = (event) ->
       event.stopPropagation()
       event.preventDefault()
@@ -25,14 +35,12 @@
         stopFn(event)
 
         Array.prototype.forEach.call event.dataTransfer.files, (file) ->
-          imageType = /image.*/
-          if !file.type.match(imageType)
-            return
+          return unless file.type.match(options.matchType)
 
           reader = new FileReader()
 
           reader.onload = (evt) ->
-            callback.call(element, file, evt)
+            options.callback.call(element, file, evt)
 
           reader.readAsDataURL(file)
 
