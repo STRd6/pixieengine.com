@@ -7,6 +7,7 @@
   %button{ 'data-params' => {:type => "image", :directory => "images", :ext => "png"}.to_json } Image
   %button{ 'data-params' => {:type => "sound", :directory => "sounds", :ext => "sfs"}.to_json } Sound
   %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
+  %button{ 'data-params' => {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"}.to_json } Test
 
 = render :partial => "file_template"
 
