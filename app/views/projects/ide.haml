@@ -6,6 +6,7 @@
   .button_group
     %button#run> Run
     %button#test> Test
+  %button#tag Tag
 
 #content
   #error
@@ -33,6 +34,7 @@
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
+= render :partial => "tag_version_modal"
 
 #qunit_template.template
   %div

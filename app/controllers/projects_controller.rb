@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_access, :only => [:save_file]
+  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update]
 
   def new
     @project = Project.new
@@ -49,6 +49,21 @@ class ProjectsController < ApplicationController
 
   def ide
     render :layout => "ide"
+  end
+
+  def tag_version
+    tag = params[:tag]
+    message = params[:message].blank? ? "Tagged in browser at pixie.strd6.com" : params[:message]
+
+    project.tag_version(tag, message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
   end
 
   def save_file

@@ -65,10 +65,13 @@ class Project < ActiveRecord::Base
     git_util 'push', '-u', 'origin', 'master'
   end
 
-  def git_tag(tag, message)
-    git_util 'tag', '-am', message, tag
-    git_util 'push', '--tags'
+  def tag_version(tag, message)
+    if git?
+      git_util 'tag', '-am', message, tag
+      git_util 'push', '--tags'
+    end
   end
+  handle_asynchronously :tag_version
 
   def clone_repo
     if git?
