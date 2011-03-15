@@ -24,10 +24,10 @@
         %span Users
         = link_to_unless_current image_tag("users_dock.png"), users_path, :title => "People"
       %li#chat
-        %div#unread
-          %span 0
         %span Chat
         = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
+    %div#unread
+      %span 0
 
 #hide_dock
 
@@ -109,6 +109,9 @@
       background-color: #000
       border: 2px solid #fff
       color: #fff
+      position: absolute
+      right: 30px
+      top: -8px
 
     #hide_dock
       +bounds(30px)
@@ -170,8 +173,6 @@
             position: relative
             text-align: center
             -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
-            -webkit-transition: 0.15s linear
-            -webkit-transition-property: -webkit-transform margin
 
             span
               display: none
@@ -181,8 +182,6 @@
         color: transparent
         display: block
         height: 50px
-        -webkit-transition: 0.15s linear
-        -webkit-transition-property: -webkit-transform margin
         margin: 0
 
         img
