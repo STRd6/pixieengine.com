@@ -73,7 +73,9 @@ class ProjectsController < ApplicationController
       contents = params[:contents]
     end
 
-    project.save_file(params[:path], contents, params[:message])
+    message = params[:message].presence
+
+    project.save_file(params[:path], contents, message)
 
     respond_to do |format|
       format.json do
