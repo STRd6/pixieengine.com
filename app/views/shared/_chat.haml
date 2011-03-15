@@ -40,7 +40,10 @@
       left: '0%'
       top: '100%'
 
-    $('#unread span').text(parseInt($('#unread span').text()) + 1).show()
+    if $('#chatZone').css('display') == 'none'
+      $('#unread').show()
+
+    $('#unread p').text("!")
 
   scrollToBottomLeft = (el) ->
     el.scrollTo
