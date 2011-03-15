@@ -63,7 +63,7 @@
 
     window.setInterval ->
       $.get('/active_users', $.noop, "script")
-    , 6000
+    , 60000
 
     send = (field) ->
       if field.val()
