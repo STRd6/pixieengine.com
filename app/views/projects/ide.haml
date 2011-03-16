@@ -6,6 +6,8 @@
   .button_group
     %button#run> Run
     %button#test> Test
+
+  %button#build Build
   %button#tag Tag
 
   .status
@@ -201,6 +203,43 @@
 
   $("#new").live 'click', newFileModal
 
+  buildProjectCode = () ->
+    errors = []
+
+    srcDir = findDirectory(projectConfig.directories.source)
+
+    compiledCode = srcDir.find("span.file").map((index, span) ->
+      $span = $(span)
+
+      # Save main for last
+      return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+      compileFileNode($span)
+    ).get().join(";\n")
+
+    libCode = compileDirectory(projectConfig.directories.lib)
+
+    if projectConfig.main
+      mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
+
+      if projectConfig.wrapMain
+        mainCode = ";$(function(){ \#{mainCode} });"
+
+    else
+      mainCode = ""
+
+    displayErrors(errors)
+
+    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+    crammedCode += libCode + ";\n" + compiledCode + ";\n" + mainCode
+
+  $("#build").live 'click', (event) ->
+    projectCode = buildProjectCode()
+
+    save event,
+      contents: projectCode
+      path: (projectConfig.name || "project") + ".js"
+
   runApp = () ->
     width = projectConfig.width
     height = projectConfig.height
@@ -217,36 +256,7 @@
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
-      errors = []
-
-      srcDir = findDirectory(projectConfig.directories.source)
-
-      compiledCode = srcDir.find("span.file").map((index, span) ->
-        $span = $(span)
-
-        # Save main for last
-        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
-
-        compileFileNode($span)
-      ).get().join(";\n")
-
-      mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
-
-      libCode = compileDirectory(projectConfig.directories.lib)
-
-      displayErrors(errors)
-
-      crammedCode = CoffeeScript.compile "App = {}", noWrap: true
-
-      crammedCode += libCode + ";\n" + compiledCode
-
-      if projectConfig.wrapMain
-        crammedCode += ";$(function(){ \#{mainCode} });"
-      else
-        crammedCode += ";" + mainCode
-
-      # Cram compiled code in iframe
-      runCodeInIframe(crammedCode, iframe)
+      runCodeInIframe(buildProjectCode(), iframe)
 
   $("#run").live 'click', runApp
 
