@@ -12,6 +12,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :ide
 
       post :save_file
+      post :tag_version
     end
 
     collection do

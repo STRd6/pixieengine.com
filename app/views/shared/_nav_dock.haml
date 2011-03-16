@@ -26,6 +26,8 @@
       %li#chat
         %span Chat
         = link_to image_tag("chat_dock.png"), "#", :title => "Chat"
+    %div#unread.pulse
+      %p
 
 #hide_dock
 
@@ -60,13 +62,16 @@
         top: localStorage.chatTop + "px" || "150px"
         left: localStorage.chatLeft + "px" || "10px"
 
+      $('#unread p').text("")
+      $('#unread').hide()
+
       $('#chatZone').toggle()
 
       $('#chats').scrollTo
         left: '0%'
         top: '100%'
 
-      if $('#chatZone').css('display') == 'none'
+      if ($('#chatZone').css('display') == 'none')
         localStorage.chat = false
         $('#chat img.active').remove()
       else
@@ -81,6 +86,8 @@
 %style
   :sass
     @import util
+
+    +pulse
 
     #fullscreen
       position: relative
@@ -97,6 +104,30 @@
 
         ul.osx-dock
           background: url(/images/dock_background_left_light.png) no-repeat right bottom
+
+    #unread
+      +border-radius(10px)
+      +bounds(16px)
+
+      background-color: #000
+      border: 2px solid #fff
+      color: #fff
+      display: none
+      position: absolute
+      right: 30px
+      top: -8px
+
+      p
+        +bounds(16px)
+
+        font-size: 10px
+        margin-left: 6px
+        margin-top: 7px
+
+    .pulse
+      -webkit-animation-name: pulse
+      -webkit-animation-duration: 1.5s
+      -webkit-animation-iteration-count: 8
 
     #hide_dock
       +bounds(30px)
@@ -158,8 +189,6 @@
             position: relative
             text-align: center
             -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
-            -webkit-transition: 0.15s linear
-            -webkit-transition-property: -webkit-transform margin
 
             span
               display: none
@@ -169,8 +198,6 @@
         color: transparent
         display: block
         height: 50px
-        -webkit-transition: 0.15s linear
-        -webkit-transition-property: -webkit-transform margin
         margin: 0
 
         img

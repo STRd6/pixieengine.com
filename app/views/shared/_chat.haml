@@ -4,9 +4,8 @@
     %ul#chats
       - Chat.recent.reverse.each do |chat|
         %li
-          - display_name = chat.user ? chat.user.display_name : "Anonymous"
-          %span.name= display_name + ":"
-          %span.time= chat.created_at.strftime("%I:%M%p") + " "
+          %span.name= display_name(chat) + ":"
+          %span.time= time(chat) + " "
           %span.message= chat.text.html_safe
     = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
     %button#send.button Send
@@ -40,6 +39,11 @@
     $('#chats').append(li).scrollTo
       left: '0%'
       top: '100%'
+
+    if $('#chatZone').css('display') == 'none'
+      $('#unread').show()
+
+    $('#unread p').text("!")
 
   scrollToBottomLeft = (el) ->
     el.scrollTo

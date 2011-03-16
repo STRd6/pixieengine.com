@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_access, :only => [:save_file]
+  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update]
 
   def new
     @project = Project.new
@@ -51,6 +51,21 @@ class ProjectsController < ApplicationController
     render :layout => "ide"
   end
 
+  def tag_version
+    tag = params[:tag]
+    message = params[:message].blank? ? "Tagged in browser at pixie.strd6.com" : params[:message]
+
+    project.tag_version(tag, message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def save_file
     if params[:contents_base64]
       contents = Base64.decode64(params[:contents_base64])
@@ -58,7 +73,9 @@ class ProjectsController < ApplicationController
       contents = params[:contents]
     end
 
-    project.save_file(params[:path], contents)
+    message = params[:message].presence
+
+    project.save_file(params[:path], contents, message)
 
     respond_to do |format|
       format.json do

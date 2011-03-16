@@ -6,6 +6,12 @@
   .button_group
     %button#run> Run
     %button#test> Test
+  %button#tag Tag
+
+  .status
+    %label What are you working on?
+    %input.message(placeholder="(Click to edit)")
+
 
 #content
   #error
@@ -33,6 +39,7 @@
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
+= render :partial => "tag_version_modal"
 
 #qunit_template.template
   %div
@@ -43,6 +50,9 @@
     #qunit-fixture
 
 :coffeescript
+  $(".actions .status .message").live "click", ->
+    $(this).select()
+
   errors = []
 
   window.compileDirectory = (directoryPath) ->
@@ -106,6 +116,7 @@
     notify "Saving..."
 
     activeTab = $("#tabs ul li.ui-state-active")
+    message = $(".actions .status .message").val()
 
     successCallback = (data) ->
       notify "Saved!"
@@ -116,7 +127,10 @@
       activeTab.removeClass("unsaved")
 
     if data
-      postData = $.extend({format: 'json'}, data)
+      postData = $.extend(
+        format: 'json'
+        message: message
+      , data)
 
       $.post '/projects/#{project.id}/save_file', postData, successCallback
 
@@ -126,6 +140,8 @@
       if form.length
         form.ajaxSubmit
           type: 'POST'
+          data:
+            message: message
           dataType: "json"
           success: successCallback
 
