@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 00:49:19 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 04:54:30 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -122,7 +122,7 @@
       clear: {
         perform: function(canvas) {
           return canvas.eachPixel(function(pixel) {
-            return pixel.color(Color(), false, "replace");
+            return pixel.color(Color().toString(), false, "replace");
           });
         }
       },
@@ -264,7 +264,7 @@
       var inverseOpacity, pixelColor;
       inverseOpacity = 1 - opacity;
       pixelColor = pixel.color();
-      return pixel.color(Color(pixelColor, pixelColor.a() * inverseOpacity), false, "replace");
+      return pixel.color(Color(pixelColor.toString(), pixelColor.a() * inverseOpacity), false, "replace");
     };
     tools = {
       pencil: {
@@ -363,8 +363,8 @@
             var oldColor;
             if (arguments.length >= 1) {
               blendMode || (blendMode = "additive");
-              oldColor = color;
-              color = ColorUtil[blendMode](oldColor, newColor);
+              oldColor = Color(color);
+              color = ColorUtil[blendMode](Color(oldColor), Color(newColor));
               redraw();
               if (!skipUndo) {
                 undoStack.add(self, {
@@ -375,7 +375,7 @@
               }
               return self;
             } else {
-              return color;
+              return Color(color);
             }
           },
           toString: function() {
@@ -538,7 +538,7 @@
             eventType = "mouseenter";
           }
           if (pixel && active && currentTool && currentTool[eventType]) {
-            currentTool[eventType].call(pixel, event, Color(canvas.color(), opacity), pixel);
+            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel);
           }
           return lastPixel = pixel;
         });
@@ -629,7 +629,7 @@
             return toolbar.append(toolDiv);
           },
           color: function(color, alternate) {
-            debugger;            if (arguments.length === 0 || color === false) {
+            if (arguments.length === 0 || color === false) {
               if (mode === "S") {
                 return Color(secondaryColorPicker.css('backgroundColor'));
               } else {

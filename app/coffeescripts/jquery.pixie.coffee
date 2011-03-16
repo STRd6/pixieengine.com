@@ -107,7 +107,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(), false, "replace")
+          pixel.color(Color().toString(), false, "replace")
     preview:
       menu: false
       perform: (canvas) ->
@@ -236,7 +236,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor, pixelColor.a() * inverseOpacity), false, "replace")
+    pixel.color(Color(pixelColor.toString(), pixelColor.a() * inverseOpacity), false, "replace")
 
   tools =
     pencil:
@@ -317,9 +317,9 @@
           if arguments.length >= 1
             blendMode ||= "additive"
 
-            oldColor = color
+            oldColor = Color(color)
 
-            color = ColorUtil[blendMode](oldColor, newColor)
+            color = ColorUtil[blendMode](Color(oldColor), Color(newColor))
 
             redraw()
 
@@ -327,7 +327,7 @@
 
             return self
           else
-            color
+            Color(color)
 
         toString: -> "[Pixel: " + [this.x, this.y].join(",") + "]"
         x: x
@@ -496,7 +496,7 @@
             eventType = "mouseenter"
 
           if pixel && active && currentTool && currentTool[eventType]
-            currentTool[eventType].call(pixel, event, Color(canvas.color(), opacity), pixel)
+            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel)
 
           lastPixel = pixel
         )
@@ -589,7 +589,6 @@
           toolbar.append(toolDiv)
 
         color: (color, alternate) ->
-          debugger
           if (arguments.length == 0 || color == false)
             return (if mode == "S" then Color(secondaryColorPicker.css('backgroundColor')) else Color(primaryColorPicker.css('backgroundColor')))
           else if color == true

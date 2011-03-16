@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 00:49:19 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 02:19:19 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/color.coffee
  */
 
@@ -30,13 +30,14 @@
       return key.toString().toLowerCase().split(' ').join('');
     };
     window.Color = function(color) {
-      var a, alpha, c, channels, parsedColor, self;
-      color || (color = "rgba(0, 0, 0, 0)");
-      if (color.channels) {
-        return;
+      var a, alpha, c, channels, parsedColor, self, _ref;
+      if ((_ref = arguments[0]) != null ? _ref.channels : void 0) {
+        return Color(arguments[0].channels());
       }
       parsedColor = null;
-      if (arguments.length === 1 && Object.prototype.toString.call(arguments[0]) === '[object Array]') {
+      if (arguments.length === 0) {
+        parsedColor = [0, 0, 0, 0];
+      } else if (arguments.length === 1 && Object.prototype.toString.call(arguments[0]) === '[object Array]') {
         alpha = arguments[0][3] != null ? arguments[0][3] : 1;
         parsedColor = [parseInt(arguments[0][0]), parseInt(arguments[0][1]), parseInt(arguments[0][2]), parseFloat(alpha)];
       } else if (arguments.length === 2) {
@@ -52,7 +53,8 @@
         alpha = arguments[3] != null ? arguments[3] : 1;
         parsedColor = [parseInt(arguments[0]), parseInt(arguments[1]), parseInt(arguments[2]), parseFloat(alpha)];
       } else {
-        parsedColor = lookup[normalizeKey(color)] || parseHex(color) || parseRGB(color);
+        c = arguments[0];
+        parsedColor = lookup[normalizeKey(c)] || parseHex(c) || parseRGB(c);
       }
       if (!parsedColor) {
         return;
