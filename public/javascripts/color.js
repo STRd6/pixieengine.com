@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 15 Mar 2011 02:32:08 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 00:49:19 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/color.coffee
  */
 
@@ -100,6 +100,22 @@
         },
         rgba: function() {
           return "rgba(" + (self.r()) + ", " + (self.g()) + ", " + (self.b()) + ", " + (self.a()) + ")";
+        },
+        toHex: function() {
+          var hexFromNumber, hexString, padString;
+          hexString = function(number) {
+            return number.toString(16);
+          };
+          padString = function(hexString) {
+            if (hexString.length === 1) {
+              return hexString = "0" + hexString;
+            }
+            return hexString;
+          };
+          hexFromNumber = function(number) {
+            return padString(hexString(number));
+          };
+          return "#" + (hexFromNumber(channels[0])) + (hexFromNumber(channels[1])) + (hexFromNumber(channels[2]));
         },
         toString: function() {
           return self.rgba();

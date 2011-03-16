@@ -116,6 +116,20 @@
 
       rgba: -> "rgba(#{self.r()}, #{self.g()}, #{self.b()}, #{self.a()})"
 
+      toHex: ->
+        hexString = (number) ->
+          number.toString(16)
+        padString = (hexString) ->
+          if hexString.length == 1
+            return hexString = "0" + hexString
+
+          return hexString
+
+        hexFromNumber = (number) ->
+          return padString(hexString(number))
+
+        "##{hexFromNumber(channels[0])}#{hexFromNumber(channels[1])}#{hexFromNumber(channels[2])}"
+
       toString: -> self.rgba()
 
     return self

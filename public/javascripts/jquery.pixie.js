@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 15 Mar 2011 02:00:58 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 00:49:19 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -13,8 +13,8 @@
     ColorUtil = {
       additive: function(c1, c2) {
         var A, B, G, R, a, ax, b, bx, g, gx, r, rx, _ref, _ref2;
-        _ref = c1.channels, R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
-        _ref2 = c2.channels, r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
+        _ref = c1.channels(), R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
+        _ref2 = c2.channels(), r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
         if (a === 0) {
           return c1;
         }
@@ -629,7 +629,7 @@
             return toolbar.append(toolDiv);
           },
           color: function(color, alternate) {
-            if (arguments.length === 0 || color === false) {
+            debugger;            if (arguments.length === 0 || color === false) {
               if (mode === "S") {
                 return Color(secondaryColorPicker.css('backgroundColor'));
               } else {
@@ -643,10 +643,10 @@
               }
             }
             if ((mode === "S") ^ alternate) {
-              secondaryColorPicker.val(color);
+              secondaryColorPicker.val(color.toHex().substr(1));
               secondaryColorPicker[0].onblur();
             } else {
-              primaryColorPicker.val(color);
+              primaryColorPicker.val(color.toHex().substr(1));
               primaryColorPicker[0].onblur();
             }
             return this;

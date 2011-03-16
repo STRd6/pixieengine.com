@@ -9,8 +9,8 @@
   ColorUtil =
     # http://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values/727339#727339
     additive: (c1, c2) ->
-      [R, G, B, A] = c1.channels
-      [r, g, b, a] = c2.channels
+      [R, G, B, A] = c1.channels()
+      [r, g, b, a] = c2.channels()
 
       return c1 if a == 0
       return c2 if A == 0
@@ -589,16 +589,17 @@
           toolbar.append(toolDiv)
 
         color: (color, alternate) ->
+          debugger
           if (arguments.length == 0 || color == false)
             return (if mode == "S" then Color(secondaryColorPicker.css('backgroundColor')) else Color(primaryColorPicker.css('backgroundColor')))
           else if color == true
             return (if mode == "S" then Color(primaryColorPicker.css('backgroundColor')) else Color(secondaryColorPicker.css('backgroundColor')))
 
           if (mode == "S") ^ alternate
-            secondaryColorPicker.val(color)
+            secondaryColorPicker.val(color.toHex().substr(1))
             secondaryColorPicker[0].onblur()
           else
-            primaryColorPicker.val(color)
+            primaryColorPicker.val(color.toHex().substr(1))
             primaryColorPicker[0].onblur()
 
           return this
