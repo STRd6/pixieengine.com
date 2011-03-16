@@ -1,5 +1,5 @@
 class TilemapsController < ApplicationController
-  respond_to :html, :json
+  respond_to :html
   layout "fullscreen"
 
   before_filter :filter_results, :only => [:index]
