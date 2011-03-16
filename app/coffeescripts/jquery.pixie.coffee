@@ -9,8 +9,8 @@
   ColorUtil =
     # http://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values/727339#727339
     additive: (c1, c2) ->
-      [R, G, B, A] = c1.channels
-      [r, g, b, a] = c2.channels
+      [R, G, B, A] = c1.channels()
+      [r, g, b, a] = c2.channels()
 
       return c1 if a == 0
       return c2 if A == 0
@@ -107,7 +107,7 @@
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color(0, 0, 0, 0), false, "replace")
+          pixel.color(Color().toString(), false, "replace")
     preview:
       menu: false
       perform: (canvas) ->
@@ -129,7 +129,7 @@
           if(rightPixel) {
             pixel.color(rightPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, 'replace')
+            pixel.color(Color(), false, 'replace')
           }
         });
 
@@ -158,7 +158,7 @@
             if(leftPixel) {
               currentPixel.color(leftPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
+              currentPixel.color(Color(), false, 'replace');
             }
           }
         }
@@ -183,7 +183,7 @@
           if(lowerPixel) {
             pixel.color(lowerPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, 'replace');
+            pixel.color(Color(), false, 'replace');
           }
         });
 
@@ -212,7 +212,7 @@
             if(upperPixel) {
               currentPixel.color(upperPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
+              currentPixel.color(Color(), false, 'replace');
             }
           }
         }
@@ -236,7 +236,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace")
+    pixel.color(Color(pixelColor.toString(), pixelColor.a() * inverseOpacity), false, "replace")
 
   tools =
     pencil:
@@ -265,9 +265,9 @@
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e', '4']
       mousedown: (e, color, pixel) ->
-        erase(pixel, color.opacity())
+        erase(pixel, color.a())
       mouseenter: (e, color, pixel) ->
-        erase(pixel, color.opacity())
+        erase(pixel, color.a())
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
       hotkeys: ['f', '5']
@@ -298,7 +298,7 @@
 
   $.fn.pixie = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
-      color = Color(0, 0, 0, 0)
+      color = Color()
 
       redraw = () ->
         xPos = x * PIXEL_WIDTH
@@ -317,9 +317,9 @@
           if arguments.length >= 1
             blendMode ||= "additive"
 
-            oldColor = color
+            oldColor = Color(color)
 
-            color = ColorUtil[blendMode](oldColor, newColor)
+            color = ColorUtil[blendMode](Color(oldColor), Color(newColor))
 
             redraw()
 
@@ -327,7 +327,7 @@
 
             return self
           else
-            color
+            Color(color)
 
         toString: -> "[Pixel: " + [this.x, this.y].join(",") + "]"
         x: x
@@ -460,7 +460,7 @@
 
       $(navRight).bind 'mousedown', (e) ->
         target = $(e.target)
-        color = Color.parse(target.css('backgroundColor'))
+        color = Color(target.css('backgroundColor'))
 
         canvas.color(color, e.button != 0) if target.is('.swatch')
 
@@ -496,7 +496,7 @@
             eventType = "mouseenter"
 
           if pixel && active && currentTool && currentTool[eventType]
-            currentTool[eventType].call(pixel, event, Color(canvas.color(), opacity), pixel)
+            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel)
 
           lastPixel = pixel
         )
@@ -590,15 +590,15 @@
 
         color: (color, alternate) ->
           if (arguments.length == 0 || color == false)
-            return (if mode == "S" then Color.parse(secondaryColorPicker.css('backgroundColor')) else Color.parse(primaryColorPicker.css('backgroundColor')))
+            return (if mode == "S" then Color(secondaryColorPicker.css('backgroundColor')) else Color(primaryColorPicker.css('backgroundColor')))
           else if color == true
-            return (if mode == "S" then Color.parse(primaryColorPicker.css('backgroundColor')) else Color.parse(secondaryColorPicker.css('backgroundColor')))
+            return (if mode == "S" then Color(primaryColorPicker.css('backgroundColor')) else Color(secondaryColorPicker.css('backgroundColor')))
 
           if (mode == "S") ^ alternate
-            secondaryColorPicker.val(color)
+            secondaryColorPicker.val(color.toHex().substr(1))
             secondaryColorPicker[0].onblur()
           else
-            primaryColorPicker.val(color)
+            primaryColorPicker.val(color.toHex().substr(1))
             primaryColorPicker[0].onblur()
 
           return this

@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Sat, 12 Mar 2011 21:49:06 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Wed, 16 Mar 2011 04:54:30 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -13,8 +13,8 @@
     ColorUtil = {
       additive: function(c1, c2) {
         var A, B, G, R, a, ax, b, bx, g, gx, r, rx, _ref, _ref2;
-        _ref = c1.channels, R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
-        _ref2 = c2.channels, r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
+        _ref = c1.channels(), R = _ref[0], G = _ref[1], B = _ref[2], A = _ref[3];
+        _ref2 = c2.channels(), r = _ref2[0], g = _ref2[1], b = _ref2[2], a = _ref2[3];
         if (a === 0) {
           return c1;
         }
@@ -122,7 +122,7 @@
       clear: {
         perform: function(canvas) {
           return canvas.eachPixel(function(pixel) {
-            return pixel.color(Color(0, 0, 0, 0), false, "replace");
+            return pixel.color(Color().toString(), false, "replace");
           });
         }
       },
@@ -149,7 +149,7 @@
           if(rightPixel) {
             pixel.color(rightPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, 'replace')
+            pixel.color(Color(), false, 'replace')
           }
         });
 
@@ -179,7 +179,7 @@
             if(leftPixel) {
               currentPixel.color(leftPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
+              currentPixel.color(Color(), false, 'replace');
             }
           }
         }
@@ -205,7 +205,7 @@
           if(lowerPixel) {
             pixel.color(lowerPixel.color(), false, 'replace');
           } else {
-            pixel.color(Color(0, 0, 0, 0), false, 'replace');
+            pixel.color(Color(), false, 'replace');
           }
         });
 
@@ -235,7 +235,7 @@
             if(upperPixel) {
               currentPixel.color(upperPixel.color(), false, 'replace');
             } else {
-              currentPixel.color(Color(0, 0, 0, 0), false, 'replace');
+              currentPixel.color(Color(), false, 'replace');
             }
           }
         }
@@ -264,7 +264,7 @@
       var inverseOpacity, pixelColor;
       inverseOpacity = 1 - opacity;
       pixelColor = pixel.color();
-      return pixel.color(Color(pixelColor, pixelColor.opacity() * inverseOpacity), false, "replace");
+      return pixel.color(Color(pixelColor.toString(), pixelColor.a() * inverseOpacity), false, "replace");
     };
     tools = {
       pencil: {
@@ -302,10 +302,10 @@
         cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default",
         hotkeys: ['e', '4'],
         mousedown: function(e, color, pixel) {
-          return erase(pixel, color.opacity());
+          return erase(pixel, color.a());
         },
         mouseenter: function(e, color, pixel) {
-          return erase(pixel, color.opacity());
+          return erase(pixel, color.a());
         }
       },
       fill: {
@@ -347,7 +347,7 @@
       var Layer, PIXEL_HEIGHT, PIXEL_WIDTH, Pixel, height, initializer, width;
       Pixel = function(x, y, layerCanvas, canvas, undoStack) {
         var color, redraw, self;
-        color = Color(0, 0, 0, 0);
+        color = Color();
         redraw = function() {
           var xPos, yPos;
           xPos = x * PIXEL_WIDTH;
@@ -363,8 +363,8 @@
             var oldColor;
             if (arguments.length >= 1) {
               blendMode || (blendMode = "additive");
-              oldColor = color;
-              color = ColorUtil[blendMode](oldColor, newColor);
+              oldColor = Color(color);
+              color = ColorUtil[blendMode](Color(oldColor), Color(newColor));
               redraw();
               if (!skipUndo) {
                 undoStack.add(self, {
@@ -375,7 +375,7 @@
               }
               return self;
             } else {
-              return color;
+              return Color(color);
             }
           },
           toString: function() {
@@ -505,7 +505,7 @@
         $(navRight).bind('mousedown', function(e) {
           var color, target;
           target = $(e.target);
-          color = Color.parse(target.css('backgroundColor'));
+          color = Color(target.css('backgroundColor'));
           if (target.is('.swatch')) {
             return canvas.color(color, e.button !== 0);
           }
@@ -538,7 +538,7 @@
             eventType = "mouseenter";
           }
           if (pixel && active && currentTool && currentTool[eventType]) {
-            currentTool[eventType].call(pixel, event, Color(canvas.color(), opacity), pixel);
+            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel);
           }
           return lastPixel = pixel;
         });
@@ -631,22 +631,22 @@
           color: function(color, alternate) {
             if (arguments.length === 0 || color === false) {
               if (mode === "S") {
-                return Color.parse(secondaryColorPicker.css('backgroundColor'));
+                return Color(secondaryColorPicker.css('backgroundColor'));
               } else {
-                return Color.parse(primaryColorPicker.css('backgroundColor'));
+                return Color(primaryColorPicker.css('backgroundColor'));
               }
             } else if (color === true) {
               if (mode === "S") {
-                return Color.parse(primaryColorPicker.css('backgroundColor'));
+                return Color(primaryColorPicker.css('backgroundColor'));
               } else {
-                return Color.parse(secondaryColorPicker.css('backgroundColor'));
+                return Color(secondaryColorPicker.css('backgroundColor'));
               }
             }
             if ((mode === "S") ^ alternate) {
-              secondaryColorPicker.val(color);
+              secondaryColorPicker.val(color.toHex().substr(1));
               secondaryColorPicker[0].onblur();
             } else {
-              primaryColorPicker.val(color);
+              primaryColorPicker.val(color.toHex().substr(1));
               primaryColorPicker[0].onblur();
             }
             return this;
