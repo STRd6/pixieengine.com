@@ -75,19 +75,12 @@ class SpritesController < ResourceController::Base
     @sprites = sprites
 
     respond_with(@sprites) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-
-      format.json do
-        render :json
-      end
+      format.json { render :json }
     end
   end
 
   def show
     @sprite = Sprite.find(params[:id])
-    render :layout => "fullscreen"
   end
 
   def update
@@ -96,9 +89,6 @@ class SpritesController < ResourceController::Base
     @sprite.update_attributes(params[:sprite])
 
     respond_with(@sprite) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
       format.json { render :json => {
           :id => @sprite.id,
           :title => @sprite.display_name,
@@ -161,10 +151,6 @@ class SpritesController < ResourceController::Base
     respond_to do |format|
       format.json { render :json => {:status => "ok"} }
     end
-  end
-
-  index.wants.json do
-    render :json => collection
   end
 
   private
