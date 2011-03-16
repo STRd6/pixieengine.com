@@ -40,6 +40,7 @@
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
 = render :partial => "tag_version_modal"
+= render :partial => "errors"
 
 #qunit_template.template
   %div
@@ -63,18 +64,25 @@
   window.compileFileNode = (node) ->
     $element = $(node.attr("data-id"))
     src = $element.find("[name=contents]").val()
-    ext = $element.attr("data-ext")
+    ext = $element.data("ext")
 
-    compileCode(src, ext)
+    compileCode(src, ext, $element)
 
-  window.compileCode = (src, ext) ->
+  window.compileCode = (src, ext, $element) ->
     if ext == "js"
       src
     else if ext == "coffee"
       try
         compiledCode = CoffeeScript.compile src, noWrap: true
       catch error
-        errors.push error.message
+        if $element
+          errors.push
+            file: $element.data("path")
+            fileId: "#" + $element.attr("id")
+            message: error.message
+        else
+          errors.push
+            message: error.message
 
       compiledCode
 
@@ -110,6 +118,22 @@
 
   window.log = (message) ->
     console.log message
+
+  window.openFile = (docSelector) ->
+    if $(docSelector).data("type") == "binary"
+      alert "Can't edit binary data... maybe there is a source file that can be edited?"
+      return
+
+    if $('#tabs ul li a[href="' + docSelector + '"]').length
+      $('#tabs ul li a[href="' + docSelector + '"]').click()
+    else
+      path = $(docSelector).data("path")
+      if match = path.match /\/([^\/]*)$/
+        name = match[1]
+      else
+        name = path
+
+      $("#tabs").tabs 'add', docSelector, name, 0
 
   # Commands
   window.save = (event, data) ->
@@ -189,6 +213,8 @@
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
+      errors = []
+
       srcDir = findDirectory(projectConfig.directories.source)
 
       compiledCode = srcDir.find("span.file").map((index, span) ->
@@ -203,6 +229,8 @@
       mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
 
       libCode = compileDirectory(projectConfig.directories.lib)
+
+      displayErrors(errors)
 
       crammedCode = CoffeeScript.compile "App = {}", noWrap: true
 
@@ -219,6 +247,8 @@
   $("#run").live 'click', runApp
 
   testApp = () ->
+    errors = []
+
     srcDir = findDirectory(projectConfig.directories.source)
 
     compiledCode = srcDir.find("span.file").map((index, span) ->
@@ -232,6 +262,8 @@
 
     libCode = compileDirectory(projectConfig.directories.lib)
     testCode = compileDirectory(projectConfig.directories.test)
+
+    displayErrors(errors)
 
     crammedCode = CoffeeScript.compile "App = {}", noWrap: true
     crammedCode += libCode + ";\n" + compiledCode
@@ -389,16 +421,11 @@
       tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
     $('.filetree .file').live 'click', ->
-      docSelector = $(this).data('id')
+      openFile($(this).data('id'))
 
-      if $(docSelector).data("type") == "binary"
-        alert "Can't edit binary data... maybe there is a source file that can be edited?"
-        return
-
-      if $('#tabs ul li a[href="' + docSelector + '"]').length
-        $('#tabs ul li a[href="' + docSelector + '"]').click()
-      else
-        $tabs.tabs 'add', docSelector, $(this).text(), 0
+    $('.error .file').live 'click', ->
+      if id = $(this).data('id')
+        openFile(id)
 
     $('#tabs span.ui-icon-close').live 'click', ->
       parent = $(this).parent()

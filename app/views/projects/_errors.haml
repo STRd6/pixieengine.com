@@ -1,0 +1,22 @@
+#errors.window(style="top: 50px; left: 50px;")
+  %span.ui-icon.ui-icon-close
+  %h3.ui-widget-header Compile Errors
+  .content
+
+#error_template.template
+  .error
+    .file(data-id="${fileId}") in file: ${file}
+    .message ${message}
+
+:coffeescript
+
+  window.displayErrors = (errors) ->
+    if errors.length
+      $("#errors").show()
+
+      errorsDiv = $("#errors .content").empty()
+
+      errors.each (error) ->
+        $("#error_template").tmpl(error).appendTo(errorsDiv)
+    else
+      $("#errors").hide()
