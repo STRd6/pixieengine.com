@@ -42,6 +42,7 @@
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
 = render :partial => "tag_version_modal"
+= render :partial => "property_editor"
 = render :partial => "errors"
 
 #qunit_template.template
@@ -455,7 +456,7 @@
     $(".window").draggable(
       handle: "h3"
       iframeFix: true
-    ).disableSelection()
+    ).find("h3").disableSelection()
 
-    $('.window .ui-icon-close').click ->
+    $('.window .ui-icon-close').live "click", ->
       $(this).parent().hide().children("iframe").remove()
