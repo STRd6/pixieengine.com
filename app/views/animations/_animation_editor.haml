@@ -48,6 +48,7 @@
   %p Drag sprites here to start animating
 
 = render :partial => "pixie"
+= render :partial => "hitcircle_editor"
 
 :coffeescript
   animation_id = null
@@ -372,3 +373,9 @@
       tileset: tiles
       animations: animation_data
     }
+
+%style
+  :sass
+    .animation_editor
+      display: none
+
