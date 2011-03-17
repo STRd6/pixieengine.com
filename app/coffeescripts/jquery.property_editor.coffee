@@ -18,6 +18,8 @@
           catch e
             props[key] = value
 
+          return # This is necessary because the implicit return in the try catch got weird
+
       props
 
     element.setProps = (properties) ->
@@ -54,6 +56,8 @@
       row.appendTo element
 
     $('input', this.selector).live 'blur', (event) ->
+      element.trigger("change", element.getProps())
+
       $this = $(this)
 
       if (input = element.find("tr").last().find("input").first()).length

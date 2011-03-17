@@ -1,0 +1,17 @@
+#properties_editor_window.window(style="top: 100px; left: 300px;")
+  %span.ui-icon.ui-icon-close
+  %h3.ui-widget-header Properties
+  .content
+    #prop_editor
+
+:coffeescript
+  window.editProperties = (props) ->
+    propertyEditor.setProps(props)
+
+    $("#properties_editor_window").show()
+
+  $ ->
+    window.propertyEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
+    window.propertyEditor.bind "change", (event, newProperties) ->
+      if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+        runningGameFrame.eval "updateObjectProperties(\#{JSON.stringify(newProperties)})"

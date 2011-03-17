@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Wed, 23 Feb 2011 01:09:06 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Thu, 17 Mar 2011 04:31:18 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -17,10 +17,11 @@
           if (key = inputs.eq(0).val()) {
             value = inputs.eq(1).val();
             try {
-              return props[key] = JSON.parse(value);
+              props[key] = JSON.parse(value);
             } catch (e) {
-              return props[key] = value;
+              props[key] = value;
             }
+            return;
           }
         });
         return props;
@@ -55,6 +56,7 @@
       };
       $('input', this.selector).live('blur', function(event) {
         var $this, input;
+        element.trigger("change", element.getProps());
         $this = $(this);
         if ((input = element.find("tr").last().find("input").first()).length) {
           if (input.val()) {
