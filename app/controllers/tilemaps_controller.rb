@@ -10,17 +10,7 @@ class TilemapsController < ApplicationController
 
     @tilemap.save
 
-    respond_with(@tilemap) do |format|
-      format.html do
-      end
-    end
-  end
-
-  def new
-    respond_with(@tilemap) do |format|
-      format.html do
-      end
-    end
+    respond_with(@tilemap)
   end
 
   def show
@@ -31,13 +21,7 @@ class TilemapsController < ApplicationController
     @tilemap = Tilemap.find(params[:id])
     @parent_id = @tilemap.id
 
-    respond_with(@tilemap) do |format|
-      format.html do
-      end
-    end
-  end
-
-  def index
+    respond_with(@tilemap)
   end
 
   def filter_results

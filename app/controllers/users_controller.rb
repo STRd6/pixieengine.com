@@ -44,8 +44,7 @@ class UsersController < ResourceController::Base
         respond_to do |format|
           format.html do
             @registered = true
-            flash[:notice] = REGISTERED_FLASH
-            redirect_to user
+            redirect_to user, :notice => REGISTERED_FLASH
           end
           format.json { render :json => {:status => "ok"} }
         end
@@ -85,15 +84,13 @@ class UsersController < ResourceController::Base
   def install_plugin
     current_user.install_plugin(Plugin.find(params[:plugin_id]))
 
-    flash[:notice] = "Plugin installed"
-    redirect_to :back
+    redirect_to :back, :notice => "Plugin installed"
   end
 
   def uninstall_plugin
     current_user.uninstall_plugin(Plugin.find(params[:plugin_id]))
 
-    flash[:notice] = "Plugin uninstalled"
-    redirect_to :back
+    redirect_to :back, :notice => "Plugin uninstalled"
   end
 
   def do_unsubscribe
@@ -107,8 +104,7 @@ class UsersController < ResourceController::Base
       user.update_attribute(:subscribed, false)
     end
 
-    flash[:notice] = "You have been unsubscribed"
-    redirect_to root_path
+    redirect_to root_path, :notice => "You have been unsubscribed"
   end
 
   private
@@ -125,8 +121,7 @@ class UsersController < ResourceController::Base
 
   def require_current_user
     unless current_user?
-      flash[:notice] = "You can only edit your own account"
-      redirect_to root_url
+      redirect_to root_url, :notice => "You can only edit your own account"
     end
   end
 

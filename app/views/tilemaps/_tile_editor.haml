@@ -1,3 +1,5 @@
+= stylesheet_link_tag 'pixie/pixie'
+
 - data ||= nil
 
 - num_layers = 2
@@ -77,6 +79,8 @@
     .name ${text}
     .preview
 
+= render :partial => "pixie"
+
 :coffeescript
   debugMode = false
 
@@ -110,6 +114,27 @@
       x: localX
       y: localY
     }
+
+  window.spriteSave = (event, data) ->
+    notify "Saving..."
+
+    $('.pixie').remove()
+    $('.tile_editor').show()
+
+    successCallback = (data) ->
+      notify "Saved!"
+
+      img = $ "<img/>",
+        alt: data.sprite.title
+        src: data.sprite.src
+        title: data.sprite.title
+
+      $('.component .tiles').append img
+
+    if data
+      postData = $.extend({format: 'json'}, data)
+
+      $.post '/sprites', postData, successCallback
 
   addScreenLayer = () ->
     $("<div />",
@@ -379,11 +404,31 @@
     if mode = clickMode event
       $(this).addClass(mode).siblings().removeClass(mode)
 
-  $(".tiles img, #saved_selections .selection").live "mousedown", (event) ->
-    event.preventDefault()
+  $(document).bind 'keydown', 'p', (e) ->
+    $('.tiles img.primary')
 
-    if mode = clickMode event
-      selectTile($(this), mode)
+    imgSource = $('.tiles img.primary').attr('src')
+
+    unless $('.pixie').length
+      pixelEditor = createPixelEditor
+        width: 32
+        height: 32
+        image: if imgSource.indexOf('data:image/png') >= 0 then imgSource else imgSource.replace('http://images.pixie.strd6.com', '/s3')
+
+      pixelEditor.bind('save', spriteSave)
+
+      $('#fullscreen').append(pixelEditor)
+      $('.tile_editor').hide()
+
+      doSave: () ->
+        pixelEditor.trigger('doSave')
+
+  $(".tiles img, #saved_selections .selection").live
+    mousedown: (event) ->
+      event.preventDefault()
+
+      if mode = clickMode event
+        selectTile($(this), mode)
 
   $(".tiles img, #saved_selections .selection").live 'mouseup', (event) ->
     if event.which == 2

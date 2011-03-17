@@ -197,7 +197,7 @@
     click: -> $(this).addClass('selected')
     dblclick: ->
       $(this).addClass('pixel_editor')
-      unless $('#pixie.pixie').length
+      unless $('.pixie').length
         pixelEditor = createPixelEditor
           width: 32
           height: 32

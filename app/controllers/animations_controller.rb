@@ -6,11 +6,9 @@ class AnimationsController < ApplicationController
   before_filter :filter_results, :only => [:index]
 
   def new
-    respond_with(@animation) do |format|
-      format.html do
-        @user_sprites = current_user.sprites || []
-      end
-    end
+    @user_sprites = current_user.sprites
+
+    respond_with(@animation)
   end
 
   def create
@@ -19,23 +17,14 @@ class AnimationsController < ApplicationController
 
     @animation.save
 
-    respond_with(@animation) do |format|
-      format.html do
-      end
-    end
+    respond_with(@animation)
   end
 
   def edit
     @animation = Animation.find(params[:id])
+    @user_sprites = current_user.sprites
 
-    respond_with(@animation) do |format|
-      format.html do
-        @user_sprites = current_user.sprites || []
-      end
-    end
-  end
-
-  def index
+    respond_with(@animation)
   end
 
   def filter_results
@@ -56,3 +45,4 @@ class AnimationsController < ApplicationController
     ["own", "none"]
   end
 end
+
