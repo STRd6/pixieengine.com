@@ -194,7 +194,7 @@
     stop_animation()
 
   $('.frame_sprites .sprite_container').live
-    mousedown: -> $(this).addClass('selected')
+    click: -> $(this).addClass('selected')
     dblclick: ->
       $(this).addClass('pixel_editor')
       unless $('.pixie').length
