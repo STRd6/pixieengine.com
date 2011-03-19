@@ -34,7 +34,7 @@
 
 #load_sprite.template
   .sprite_container
-    %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}" }
+    %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}" }
 
 #create_animation.template
   .name ${name}
@@ -100,6 +100,21 @@
     frame_sprites().clone().appendTo(active_animation_sprites())
 
     active_animation().parent().find('.speed').text($('#animation_speed').val())
+
+  $(".frame_sprites").dropImageReader (file, event) ->
+    if event.target.readyState == FileReader.DONE
+      sprite_container = $("<div class='sprite_container'></div>")
+
+      img = $ "<img/>",
+        alt: file.name
+        src: event.target.result
+        title: file.name
+        'data-hit_circles': circles: []
+
+      sprite_container.append(img)
+
+      $('.frame_sprites .demo, .frame_sprites p').remove()
+      $(this).append sprite_container
 
   $('.animation').live 'mousedown', ->
     update_active_animation()
@@ -196,21 +211,24 @@
 
   $('.frame_sprites .sprite_container').live
     click: -> $(this).addClass('selected')
-    dblclick: ->
-      $(this).addClass('pixel_editor')
-      unless $('.pixie').length
-        pixelEditor = createPixelEditor
-          width: 32
-          height: 32
-          image: $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+    dblclick: (event) ->
+      target = $(event.target)
 
-        pixelEditor.bind('save', save)
+      if !(target.is('.duplicate') || target.is('.x'))
+        $(this).addClass('pixel_editor')
+        unless $('.pixie').length
+          pixelEditor = createPixelEditor
+            width: 32
+            height: 32
+            image: $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
 
-        $('#fullscreen').append(pixelEditor)
-        $('.animation_editor').hide()
+          pixelEditor.bind('save', save)
 
-        doSave: () ->
-          pixelEditor.trigger('doSave')
+          $('#fullscreen').append(pixelEditor)
+          $('.animation_editor').hide()
+
+          doSave: () ->
+            pixelEditor.trigger('doSave')
 
     mouseenter: ->
       $('<div class="x" />').appendTo $(this)
@@ -218,25 +236,43 @@
     mouseleave: ->
       $(this).find('.x, .duplicate').remove()
 
-  $(document).mousedown ->
+  $('.animation_editor').mousedown ->
     frame_selected_sprite().removeClass('selected')
 
-  $(document).bind "keydown", 'left', (event) ->
+  $(document).bind "keydown", 'h', (event) ->
+    event.preventDefault()
+
+    selected_sprite = frame_selected_sprite()
+
+    if $(selected_sprite).length
+      image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+      image_circles = null
+
+      if $(selected_sprite).find('img[data-hit_circles]').length && $(selected_sprite).find('img').data('hit_circles').circles.length
+        image_circles = $(selected_sprite).find('img').data('hit_circles').circles
+      else if $(selected_sprite).prev().length && $(selected_sprite).prev().find('img[data-hit_circles]').length &&  $(selected_sprite).prev().find('img').data('hit_circles').circles.length
+        image_circles = $(selected_sprite).prev().find('img').data('hit_circles').circles
+
+      loadImage(image_src, image_circles)
+
+      $('.animation_editor').hide()
+      $('.hitcircle_editor').show()
+
+  change_selected = (event) ->
     preview_dirty = true
     event.preventDefault()
 
     selected_sprite = frame_selected_sprite()
     selected_sprite.find('.x, .duplicate').remove()
+
+  $(document).bind "keydown", 'left', (event) ->
+    change_selected(event)
 
     if selected_sprite.prev().length
       selected_sprite.prev().before(selected_sprite)
 
   $(document).bind "keydown", 'right', (event) ->
-    preview_dirty = true
-    event.preventDefault()
-
-    selected_sprite = frame_selected_sprite()
-    selected_sprite.find('.x, .duplicate').remove()
+    change_selected(event)
 
     if selected_sprite.next().length
       selected_sprite.next().after(selected_sprite)
@@ -286,6 +322,8 @@
     , "json")
 
   window.loadData = (data) ->
+    console.log data
+
     if !data
       $('#create_animation').tmpl(
         name: "Animation 1"
@@ -302,7 +340,7 @@
       $('#placeholder').tmpl().appendTo('.frame_sprites')
       $('.frame_sprites .demo').next().text("There were no animations found in this file. Drag sprites here to start animating.")
     else
-      animation_el = $(data.animations).each (i, animation) ->
+      $(data.animations).each (i, animation) ->
 
         animation_el = $('#create_animation').tmpl(
           name: animation.name
@@ -311,11 +349,13 @@
 
         $.each animation.frames, (i, frame) ->
           active_animation().removeClass('active')
+
           $('#load_sprite').tmpl(
             url: data.tileset[frame].src
             alt: data.tileset[frame].title
             title: data.tileset[frame].title
             id: data.tileset[frame].id
+            circles: JSON.stringify({ circles: data.tileset[frame].circles })
           ).appendTo($('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
 
         last_sprite_img = $('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
@@ -338,10 +378,13 @@
     tiles = []
 
     $('.animations .animation').find('.sprites img').each (i, img) ->
+      circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
+
       tile =
         id: $(img).data('id')
         src: $(img).attr('src')
         title: $(img).attr('title') || $(img).attr('alt')
+        circles: circles
 
       if $.inArray(tile.id, ids) == -1
         ids.push tile.id
@@ -369,13 +412,7 @@
     ).get()
 
     return {
-      version: "1.2"
+      version: "1.3"
       tileset: tiles
       animations: animation_data
     }
-
-%style
-  :sass
-    .animation_editor
-      display: none
-
