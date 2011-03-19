@@ -413,7 +413,7 @@
       pixelEditor = createPixelEditor
         width: 32
         height: 32
-        image: if imgSource.indexOf('data:image/png') >= 0 then imgSource else imgSource.replace('http://images.pixie.strd6.com', '/s3')
+        image: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
       pixelEditor.bind('save', spriteSave)
 
