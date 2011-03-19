@@ -266,21 +266,22 @@
       $('.animation_editor').hide()
       $('.hitcircle_editor').show()
 
-  change_selected = (event) ->
+  $(document).bind "keydown", 'left', (event) ->
     preview_dirty = true
     event.preventDefault()
 
     selected_sprite = frame_selected_sprite()
     selected_sprite.find('.x, .duplicate').remove()
 
-  $(document).bind "keydown", 'left', (event) ->
-    change_selected(event)
-
     if selected_sprite.prev().length
       selected_sprite.prev().before(selected_sprite)
 
   $(document).bind "keydown", 'right', (event) ->
-    change_selected(event)
+    preview_dirty = true
+    event.preventDefault()
+
+    selected_sprite = frame_selected_sprite()
+    selected_sprite.find('.x, .duplicate').remove()
 
     if selected_sprite.next().length
       selected_sprite.next().after(selected_sprite)
