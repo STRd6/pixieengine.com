@@ -109,7 +109,8 @@
         alt: file.name
         src: event.target.result
         title: file.name
-        'data-hit_circles': circles: []
+
+      img.attr('data-hit_circles', JSON.stringify({ circles: [] }))
 
       sprite_container.append(img)
 
@@ -242,16 +243,23 @@
   $(document).bind "keydown", 'h', (event) ->
     event.preventDefault()
 
+    find_hit_circles = (sprite_el) ->
+      if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').data('hit_circles').circles.length
+        return $(sprite_el).find('img').data('hit_circles').circles
+
+      return null
+
     selected_sprite = frame_selected_sprite()
+
+
 
     if $(selected_sprite).length
       image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
-      image_circles = null
 
-      if $(selected_sprite).find('img[data-hit_circles]').length && $(selected_sprite).find('img').data('hit_circles').circles.length
-        image_circles = $(selected_sprite).find('img').data('hit_circles').circles
-      else if $(selected_sprite).prev().length && $(selected_sprite).prev().find('img[data-hit_circles]').length &&  $(selected_sprite).prev().find('img').data('hit_circles').circles.length
-        image_circles = $(selected_sprite).prev().find('img').data('hit_circles').circles
+      image_circles = find_hit_circles(selected_sprite)
+
+      # if image_circles == null
+      #   image_circles = find_hit_circles($(selected_sprite).prev())
 
       loadImage(image_src, image_circles)
 
