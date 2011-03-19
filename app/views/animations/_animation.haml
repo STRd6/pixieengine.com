@@ -8,4 +8,7 @@
     .sprite_container
       .name
         = preview[0]
-      = image_tag(preview[1])
+      - if preview[1][0..13] == "data:image/png"
+        %img{ :src => preview[1] }
+      - else
+        = image_tag(preview[1])
