@@ -147,17 +147,25 @@ class Project < ActiveRecord::Base
     filename = File.basename file_path
 
     if File.directory? file_path
-      {
-        :name => filename,
-        :ext => "directory",
-        :files => Dir.new(file_path).map do |filename|
-          next if filename[0...1] == "."
+      if filename == "docs"
+        {
+          :name => "Documentation",
+          :ext => "documentation",
+          :path => file_path.sub(project_root_path, '')
+        }
+      else
+        {
+          :name => filename,
+          :ext => "directory",
+          :files => Dir.new(file_path).map do |filename|
+            next if filename[0...1] == "."
 
-          file_node_data(File.join(file_path, filename), project_root_path)
-        end.compact.sort_by do |file_data|
-          [file_data[:ext] == "directory" ? 0 : 1, file_data[:name]]
-        end
-      }
+            file_node_data(File.join(file_path, filename), project_root_path)
+          end.compact.sort_by do |file_data|
+            [file_data[:ext] == "directory" ? 0 : 1, file_data[:name]]
+          end
+        }
+      end
     elsif File.file? file_path
       ext = (File.extname(filename)[1..-1] || "").downcase
       lang = lang_for(ext)
@@ -231,4 +239,19 @@ class Project < ActiveRecord::Base
       system 'unzip', import_zip.path, '-o', '-d', path
     end
   end
+
+  def generate_docs
+    Dir.mktmpdir do |dir|
+      jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
+      doc_dir = File.join path, "docs"
+
+      FileUtils.cp File.join(path, "#{title}.js"), dir
+
+      FileUtils.mkdir_p(doc_dir)
+
+      cmd = "java -jar #{jsdoc_toolkit_dir}jsrun.jar #{jsdoc_toolkit_dir}app/run.js #{dir} -c=config/jsdoc.conf -d=#{doc_dir}"
+      system(cmd)
+    end
+  end
+  handle_asynchronously :generate_docs
 end

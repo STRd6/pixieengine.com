@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update]
+  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
 
   def new
     @project = Project.new
@@ -66,6 +66,18 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def generate_docs
+    project.generate_docs
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def save_file
     if params[:contents_base64]
       contents = Base64.decode64(params[:contents_base64])
@@ -103,7 +115,7 @@ class ProjectsController < ApplicationController
   helper_method :projects
 
   def default_project_config
-    Project::DEFAULT_CONFIG
+    Project::DEFAULT_CONFIG.merge(:name => project.title)
   end
   helper_method :default_project_config
 end

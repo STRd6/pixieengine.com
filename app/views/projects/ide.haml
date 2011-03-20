@@ -7,8 +7,10 @@
     %button#run> Run
     %button#test> Test
 
-  %button#build Build
-  %button#tag Tag
+  .button_group
+    %button#build> Build
+    %button#generate_docs> Doc
+    %button#tag> Tag
 
   .status
     %label What are you working on?
@@ -54,6 +56,13 @@
     #qunit-fixture
 
 :coffeescript
+
+  $("#generate_docs").click ->
+    notify("Scheduling docs generation...")
+
+    $.post #{generate_docs_project_path(project).to_json}, ->
+      notify("Docs scheduled for generation", 3000)
+
   $(".actions .status .message").live "click", ->
     $(this).select()
 
