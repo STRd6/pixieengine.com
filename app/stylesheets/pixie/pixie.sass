@@ -77,16 +77,17 @@
     .swatches
       +bounds(48px, 175px)
 
-      position: absolute
       left: 0
+      margin: auto
+      position: absolute
       right: 0
       top: 95px
-      margin: auto
 
     .swatch
       +bounds(16px)
       +box-sizing(border-box)
 
+      cursor: pointer
       border: 1px solid #666
       float: left
       margin: 4px
@@ -195,11 +196,13 @@
       margin-left: -1px
 
   .opacity
+    cursor: pointer
     height: 73px
     position: absolute
     right: 1em
 
     .val
+      cursor: pointer
       position: absolute
       right: -5px
       bottom: -20px
