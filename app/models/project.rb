@@ -68,6 +68,7 @@ class Project < ActiveRecord::Base
       end
     end
   end
+  handle_asynchronously :update_libs
 
   def git_util(*args)
     system 'script/git_util', path, *args

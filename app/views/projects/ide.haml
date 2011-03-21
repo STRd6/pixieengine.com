@@ -9,6 +9,7 @@
 
   .button_group
     %button#build> Build
+    %button#update_libs> Update Libs
     %button#generate_docs> Doc
     %button#tag> Tag
 
@@ -60,7 +61,13 @@
     notify("Scheduling docs generation...")
 
     $.post #{generate_docs_project_path(project).to_json}, ->
-      notify("Docs scheduled for generation", 3000)
+      notify("Docs scheduled for generation", 4000)
+
+  $("#update_libs").click ->
+    notify("Scheduling library update...")
+
+    $.post #{update_libs_project_path(project).to_json}, ->
+      notify("Library update scheduled", 4000)
 
   $(".actions .status .message").live "click", ->
     $(this).select()
