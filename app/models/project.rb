@@ -43,6 +43,10 @@ class Project < ActiveRecord::Base
     base_path.join(id.to_s).to_s
   end
 
+  def config_path
+    File.join path, "pixie.json"
+  end
+
   def create_directory
     FileUtils.mkdir_p path
     system 'chmod', "g+w", path
@@ -51,6 +55,18 @@ class Project < ActiveRecord::Base
   def make_group_writable
     system 'chmod', "g+w", '-R', path
     system "sudo", "-u", "gitbot", 'chmod', "g+w", '-R', path
+  end
+
+  def update_libs
+    lib_path = File.join path, config[:directories][:lib]
+
+    config[:libs].each do |filename, url|
+      file_path = File.join lib_path, filename
+
+      File.open(file_path, 'wb') do |file|
+        file.write(open(url) {|f| f.read})
+      end
+    end
   end
 
   def git_util(*args)
@@ -254,4 +270,8 @@ class Project < ActiveRecord::Base
     end
   end
   handle_asynchronously :generate_docs
+
+  def config
+    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path)))
+  end
 end
