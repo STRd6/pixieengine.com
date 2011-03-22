@@ -78,6 +78,18 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def update_libs
+    project.update_libs
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def save_file
     if params[:contents_base64]
       contents = Base64.decode64(params[:contents_base64])

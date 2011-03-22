@@ -14,6 +14,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       post :save_file
       post :tag_version
       post :generate_docs
+      post :update_libs
     end
 
     collection do
