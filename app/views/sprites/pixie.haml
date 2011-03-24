@@ -79,7 +79,7 @@
           FB.ui({
             method: 'feed',
             link: 'http://pixie.strd6.com',
-            picture: #{sprites_url(:only_path => false).to_json} + "/" + data.id,
+            picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/original.png",
             message: 'Check out my awesome pixel art!'
           }, function(response) {
             if (response && response.post_id) {
