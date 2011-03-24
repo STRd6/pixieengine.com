@@ -108,6 +108,11 @@ class ApplicationController < ActionController::Base
     session[:return_to] = nil
   end
 
+  def facebook?
+    !!params[:fb_sig]
+  end
+  helper_method :facebook?
+
   def context
     nil
   end

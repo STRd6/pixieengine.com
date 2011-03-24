@@ -36,3 +36,6 @@
         $(function() {
           trackPageview("/event/registered");
         });
+
+    - if facebook?
+      = render :partial => "/shared/fb_app"

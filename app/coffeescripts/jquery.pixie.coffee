@@ -366,14 +366,13 @@
           layerElement.width = layerWidth()
           layerElement.height = layerHeight()
 
-    PIXEL_WIDTH = 16
-    PIXEL_HEIGHT = 16
-
     options ||= {}
 
     width = options.width || 8
     height = options.height || 8
     initializer = options.initializer
+    PIXEL_WIDTH = options.pixelWidth || options.pixelSize || 16
+    PIXEL_HEIGHT = options.pixelHeight || options.pixelSize || 16
 
     return this.each ->
       pixie = $(this).addClass("pixie")

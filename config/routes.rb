@@ -136,6 +136,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
+  match 'facebook' => "sprites#new", :as => :facebook
+
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
   match 'sfx-editor' => "sounds#new", :as => :new_sound
 

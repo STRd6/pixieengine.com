@@ -70,17 +70,37 @@
         'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
       };
 
+      if(#{facebook?}) {
+        postData.format = "json";
+      }
+
       $.post('/sprites', postData, function(data) {
-        eval(data);
-        trackPageview("/event/save_drawing");
-        canvas.dirty(false);
-        $(".tool.button[title=Save]").removeAttr("disabled");
+        if(#{facebook?}) {
+          FB.ui({
+            method: 'feed',
+            link: 'http://pixie.strd6.com',
+            picture: #{sprites_url(:only_path => false).to_json} + "/" + data.id,
+            message: 'Check out my awesome pixel art!'
+          }, function(response) {
+            if (response && response.post_id) {
+              alert('Post was published.');
+            } else {
+              alert('Post was not published.');
+            }
+          });
+        } else {
+          eval(data);
+          trackPageview("/event/save_drawing");
+          canvas.dirty(false);
+          $(".tool.button[title=Save]").removeAttr("disabled");
+        }
       }, "script");
     }
 
     $('#pixie').pixie({
       width: #{width},
       height: #{height},
+      pixelSize: #{facebook?} ? 8 : 16,
       initializer: function(canvas) {
         // HAX: Global ref of canvas
         window.canvas = canvas;
@@ -93,44 +113,55 @@
           undoable: false
         });
 
-        canvas.addAction({
-          name: "new",
-          perform: function(canvas) {
-            setNewDimensions();
-          },
-          undoable: false
-        });
+        if(#{facebook?}) {
+          canvas.addAction({
+            name: "Post to FB",
+            icon: "/images/icons/user_comment.png",
+            perform: function(canvas) {
+              postImage();
+            },
+            undoable: false
+          });
+        } else {
+          canvas.addAction({
+            name: "new",
+            perform: function(canvas) {
+              setNewDimensions();
+            },
+            undoable: false
+          });
 
-        canvas.addAction({
-          name: "save",
-          perform: function(canvas) {
-            $(".tool.button[title=Save]").attr("disabled", true);
-            window.onbeforeunload = undefined;
-            postImage();
-          },
-          undoable: false
-        });
+          canvas.addAction({
+            name: "save",
+            perform: function(canvas) {
+              $(".tool.button[title=Save]").attr("disabled", true);
+              window.onbeforeunload = undefined;
+              postImage();
+            },
+            undoable: false
+          });
 
-        canvas.addAction({
-          name: "Post to Chat",
-          icon: "/images/icons/picture_go.png",
-          perform: function(canvas) {
-            var wrapper = $("<div />");
-            var img = $("<img />");
-            img.attr('src', canvas.toDataURL());
+          canvas.addAction({
+            name: "Post to Chat",
+            icon: "/images/icons/picture_go.png",
+            perform: function(canvas) {
+              var wrapper = $("<div />");
+              var img = $("<img />");
+              img.attr('src', canvas.toDataURL());
 
-            img.appendTo(wrapper);
+              img.appendTo(wrapper);
 
-            $.post ('/chat', { body: wrapper.html() }, function() {
-              $('body').scrollTo({
-                left: '0%',
-                top: '100%'
+              $.post ('/chat', { body: wrapper.html() }, function() {
+                $('body').scrollTo({
+                  left: '0%',
+                  top: '100%'
+                });
               });
-            });
 
-            $("#chatZone").fadeIn();
-          }
-        });
+              $("#chatZone").fadeIn();
+            }
+          });
+        }
 
         $.each(installedTools, function(i, tool) {
           canvas.addTool(tool);
