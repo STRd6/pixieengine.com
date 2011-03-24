@@ -88,12 +88,15 @@
               alert('Post was not published.');
             }
           });
+
+          notify("Saved!");
         } else {
           eval(data);
-          trackPageview("/event/save_drawing");
-          canvas.dirty(false);
-          $(".tool.button[title=Save]").removeAttr("disabled");
         }
+
+        trackPageview("/event/save_drawing");
+        canvas.dirty(false);
+        $(".tool.button[title=Save]").removeAttr("disabled");
       }, "script");
     }
 
