@@ -34,6 +34,8 @@ class Project < ActiveRecord::Base
     :hotSwap => true,
   }
   BRANCH_NAME = "pixie"
+
+  DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
   
   def base_path
     Rails.root.join 'public', 'production', 'projects'
@@ -83,15 +85,18 @@ class Project < ActiveRecord::Base
   end
 
   def tag_version(tag, message)
-    if git?
-      git_util 'tag', '-am', message, tag
+    git_util 'tag', '-am', message, tag
+
+    if push_enabled?
       git_util 'push', '--tags'
     end
   end
   handle_asynchronously :tag_version
 
   def clone_repo
-    if git?
+    create_directory
+
+    if remote_origin.present?
       git_util "clone", remote_origin, path
       # Try to checkout remote branch if it exists
       git_util 'checkout', '-t', "origin/#{BRANCH_NAME}"
@@ -99,6 +104,11 @@ class Project < ActiveRecord::Base
       git_util 'checkout', '-b', BRANCH_NAME
       # Push branch if it was just created
       git_util "push", '-u', "origin", BRANCH_NAME
+    else
+      # Clone Demo Project
+      git_util "clone", DEMO_ORIGIN, path
+      # Checkout local pixie branch
+      git_util 'checkout', '-b', BRANCH_NAME
     end
 
     make_group_writable
@@ -119,7 +129,9 @@ class Project < ActiveRecord::Base
 
     git_util "commit", "-am", message, "--author", "#{user.display_name} <#{user.email}>"
 
-    git_util "push", '-u', "origin", BRANCH_NAME
+    if push_enabled?
+      git_util "push", '-u', "origin", BRANCH_NAME
+    end
   end
   handle_asynchronously :git_commit_and_push
 
@@ -136,9 +148,7 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    if git?
-      git_commit_and_push(message || "Modified in browser at pixie.strd6.com")
-    end
+    git_commit_and_push(message || "Modified in browser at pixie.strd6.com")
   end
 
   def remove_file(path)
@@ -146,14 +156,10 @@ class Project < ActiveRecord::Base
     return if path.index ".."
 
     #TODO Handle directories
+    
+    git_util "rm", path
 
-    if git?
-      git_util "rm", path
-
-      git_commit_and_push
-    else
-      FileUtils.rm File.join(self.path, path)
-    end
+    git_commit_and_push
   end
 
   def file_info
@@ -239,8 +245,8 @@ class Project < ActiveRecord::Base
     user == self.user
   end
 
-  def git?
-    remote_origin
+  def push_enabled?
+    remote_origin.present?
   end
 
   def update_hook_url
