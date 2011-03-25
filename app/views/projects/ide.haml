@@ -141,6 +141,9 @@
     if $(docSelector).data("type") == "binary"
       alert "Can't edit binary data... maybe there is a source file that can be edited?"
       return
+    if $(docSelector).data("size") > 100000
+      alert "This file is too large for our editor!"
+      return
 
     if $('#tabs ul li a[href="' + docSelector + '"]').length
       $('#tabs ul li a[href="' + docSelector + '"]').click()
