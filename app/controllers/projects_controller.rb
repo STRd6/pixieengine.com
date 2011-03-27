@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :except => [:index, :show]
+  before_filter :require_user, :except => [:index, :show, :hook]
   before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
 
   def new
