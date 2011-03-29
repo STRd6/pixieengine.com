@@ -1,1 +1,6 @@
-%li= link_to project.title, project
+.project.clickable
+  - if project.user == current_user
+    %h2.title= link_to project.title, ide_project_path(project)
+  - else
+    %h2.title= link_to project.title, project_path(project)
+  %p.description= project.description

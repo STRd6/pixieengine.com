@@ -1,8 +1,9 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :except => [:index, :show]
+  before_filter :require_user, :except => [:index, :show, :hook]
   before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
+  before_filter :filter_results, :only => [:index]
 
   def new
     @project = Project.new
@@ -45,7 +46,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-
   end
 
   def ide
@@ -109,6 +109,24 @@ class ProjectsController < ApplicationController
         }
       end
     end
+  end
+
+  def filter_results
+    @projects ||= if filter
+      if current_user
+        if filter == "own"
+          Project.for_user(current_user)
+        else
+          Project.send(filter)
+        end
+      else
+        Project.none
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 
   private

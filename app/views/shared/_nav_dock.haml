@@ -194,11 +194,12 @@
               display: none
 
     #dockContainer #dockWrapper .osx-dock li
+
+      img:not(.active)
+        +bounds(48px)
+
       a
         color: transparent
         display: block
         height: 50px
         margin: 0
-
-        img
-          width: 48px
