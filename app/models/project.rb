@@ -8,6 +8,8 @@ class Project < ActiveRecord::Base
 
   after_create :clone_repo
 
+  validates_presence_of :title
+
   attr_accessor :import_zip
 
   scope :for_user, lambda {|user|
