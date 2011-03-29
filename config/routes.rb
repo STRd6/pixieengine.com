@@ -164,7 +164,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'
 
-  root :to => "sprites#new"
+  root :to => "projects#info"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
