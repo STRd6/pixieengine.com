@@ -12,7 +12,7 @@ form
     display: inline-block
     font-size: 12px
     font-weight: bold
-    +grid-width(4)
+    +grid-width(3)
     margin-right = $blueprint-grid-margin
     padding-top: .5em
     text-align: right
@@ -20,7 +20,6 @@ form
 
   input[type=text], input[type=password], input[type=file], textarea
     +grid-width(8)
-    margin: .5em
     padding: 5px
     &:focus
       border-width: 2px
@@ -40,7 +39,7 @@ form
   input[type=button], input[type=submit]
     display: block
     margin-top: 1em
-    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 4
+    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 3
 
   input[type=radio], input[type=checkbox]
     display: inline-block
