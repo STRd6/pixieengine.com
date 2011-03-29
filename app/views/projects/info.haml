@@ -33,8 +33,17 @@
     = javascript_include_tag "http://twitter.com/javascripts/blogger.js"
     %script{ :type => "text/javascript", :src => "http://twitter.com/statuses/user_timeline/strd6.json?callback=twitterCallback2&amp;count=5" }
 
-  %h2
-    = link_to "Get started!", "github_integration"
+  %h2 Get started!
+  %ol
+    %li
+      Follow our
+      = link_to "set up guide", "projects/github_integration"
+      to get up and running with your first project
+    %li
+      Let the ideas flow from your brain into the game
+    %li
+      That's it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
+      =link_to "Notch", "http://minecraft.net"
 
   %h2 Current Favorites
 
@@ -51,6 +60,16 @@
   :sass
     @import partials/base
     @import util
+
+    #twitter_div
+      +bounds(300px, 300px)
+      +inline-block
+      +glass
+
+      float: right
+      margin: 1em
+      overflow: hidden
+      padding: 1em
 
     .centered_form
       +border-radius
