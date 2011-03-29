@@ -1,27 +1,82 @@
-- @title = "Info"
+- @title = "Pixie"
 
-%p
-  Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping the second you think of a new feature, it is in your game.
+.centered_form
+  %h1 Why Pixie?
+  %p
+    Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
 
-%p
-  Pixie tightly integrates a wide range of design tools such as Animations, Tilemaps, and Pixel art with your game code.
+  %p
+    Pixie tightly integrates a wide range of design tools such as Animations, Tilemaps, and Pixel art with your game code.
 
-%ul
-  Features
-  %li
-    Live coding
-  %li
-    Live art editing
-  %li
-    Fully integrated Tilemap, Animation, Pixel Editors
+  %ul
+    Features
+    %li
+      Live coding
+    %li
+      Live art editing
+    %li
+      Fully integrated Tilemap, Animation, Pixel Editors
+    %li
+      Entirely web based
+    %li
+      No installation of anything, ever
+    %li
+      Games are live on the internet as soon as you finish coding them
+    %li
+      Wide audience. Pixie games are playable by anyone with a modern web browser
 
-%h2
-  Getting started
-%ol
-  %li
-    Since Pixie is web based you already have all the required software installed.
-  %li
-    Follow our
-    = link_to "tutorial", "github_integration"
-    to set up your first project
+  #twitter_div
+    %h2.sidebar-title Developer Updates
+    %ul#twitter_update_list
+    %a{ :href => "http://twitter.com/strd6", :id => "twitter-link", :style => "display:block;text-align:right;" }
 
+    = javascript_include_tag "http://twitter.com/javascripts/blogger.js"
+    %script{ :type => "text/javascript", :src => "http://twitter.com/statuses/user_timeline/strd6.json?callback=twitterCallback2&amp;count=5" }
+
+  %h2
+    = link_to "Get started!", "github_integration"
+
+  %h2 Current Favorites
+
+  %h2 Want to do it in Flash?
+  %p Although we prefer the HTML / javascript approach, these guys make awesome game engines too
+  %p
+  Chevy Ray:
+  = link_to "FlashPunk", "http://flashpunk.net/"
+  %p
+  Adam Atomic:
+  = link_to "Flixel", "http://flixel.org/"
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .centered_form
+      +border-radius
+      +bounds(825px, 900px)
+
+      background-color: $dark_highlight
+      padding: 1em
+      position: absolute
+      left: 0
+      right: 0
+      top: 100px
+      margin: auto
+
+      h1
+        text-align: center
+
+      h2
+        margin-left: 17px
+
+      input[type="text"]
+        color: #000
+        margin: 0
+        max-width: 600px
+        padding: 5px
+        width: 324px
+
+    .light
+      .centered_form
+        background-color: $light_highlight
