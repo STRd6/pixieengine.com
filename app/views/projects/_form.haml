@@ -1,30 +1,63 @@
 - @title = project.new_record? ? "Create a New Project" : "Edit your Project"
 
-- form_for project, :html => {:multipart => true} do |form|
-  = form.error_messages
-  %h2= @title
-
-  %p
-    = form.label :title
-    = form.text_field :title
-
-  %p
-    = form.label :description
-    = form.text_area :description
-
-  = link_to_function "Advanced Options", "$(this).next().toggle()"
-  .advanced_options
-    %p
-      = form.label :remote_origin
-      = form.text_field :remote_origin
+.centered_form
+  - form_for project, :html => {:multipart => true} do |form|
+    = form.error_messages
+    %h2= @title
 
     %p
-      = form.label :import_zip, "Import .zip"
-      = form.file_field :import_zip
+      = form.label :title
+      = form.text_field :title
 
-  = form.submit
+    %p
+      = form.label :description
+      = form.text_area :description
+
+    = link_to_function "Advanced Options", "$(this).next().toggle()"
+    .advanced_options
+      %p
+        = form.label :remote_origin
+        = form.text_field :remote_origin
+
+      %p
+        = form.label :import_zip, "Import .zip"
+        = form.file_field :import_zip
+
+    = form.submit
 
 %style
   :sass
+    @import partials/base
+    @import util
+
     .advanced_options
       display: none
+
+    .centered_form
+      +bounds(525px, 500px)
+
+      position: absolute
+      left: 0
+      right: 0
+      top: 100px
+      margin: auto
+
+    form
+      +border-radius
+
+      background-color: $dark_highlight
+      padding: 1em
+
+      h2
+        margin-left: 17px
+
+      input[type="text"]
+        color: #000
+        margin: 0
+        max-width: 600px
+        padding: 5px
+        width: 324px
+
+    .light
+      form
+        background-color: $light_highlight
