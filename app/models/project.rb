@@ -18,6 +18,8 @@ class Project < ActiveRecord::Base
     where :url => url
   }
 
+  scope :none
+
   DEFAULT_CONFIG = {
     :directories => {
       :images => "images",
@@ -36,7 +38,7 @@ class Project < ActiveRecord::Base
   BRANCH_NAME = "pixie"
 
   DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
-  
+
   def base_path
     Rails.root.join 'public', 'production', 'projects'
   end
@@ -156,7 +158,7 @@ class Project < ActiveRecord::Base
     return if path.index ".."
 
     #TODO Handle directories
-    
+
     git_util "rm", path
 
     git_commit_and_push
