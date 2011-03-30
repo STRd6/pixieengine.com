@@ -192,7 +192,7 @@ $sprite_container_bounds: 72px
 
   .preview_box
     +border-radius
-    +bounds(125px)
+    +bounds(150px)
     +inline-block
 
     position: absolute
@@ -202,15 +202,18 @@ $sprite_container_bounds: 72px
 
     .animation_speed
       position: absolute
-      left: 15px
-      top: -10px
+      left: 28px
+      top: -18px
+
+    .speed
+      height: 10px
 
     input
       margin-bottom: 5px
       width: 30px
 
     .sprite_container
-      +bounds(96px)
+      +bounds(150px)
 
       margin: auto
       position: absolute
@@ -220,11 +223,13 @@ $sprite_container_bounds: 72px
       right: 0
 
     .sprites
-      +bounds($sprite_container_bounds)
+      +bounds(150px)
 
     img
       display: none
       margin: auto
+      max-height: 125px
+      max-width: 125px
       position: absolute
       top: 0
       left: 0

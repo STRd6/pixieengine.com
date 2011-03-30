@@ -18,14 +18,14 @@
       %h3.filename #{@animation.name}
     - else
       %h3.filename Title
-    %button#save Save
+    %button.save Save
     .animations
-      %button#new_animation New
+      %button.new_animation New
 
   .preview_box
     %div.animation_speed
       Speed
-      %input{ :id => "animation_speed", :value => "110" }
+      %input.speed{ :value => "110" }
       ms
     .sprite_container
       .sprites
@@ -77,12 +77,11 @@
     successCallback = (data) ->
       notify "Saved!"
 
-      new_sprite = $('#load_sprite').tmpl(
+      new_sprite = $('#load_sprite').tmpl
         alt: data.sprite.title
         id: data.sprite.id
         title: data.sprite.title
         url: data.sprite.src
-      )
 
       new_sprite.clone().appendTo('.user_sprites')
 
@@ -99,7 +98,7 @@
     active_animation_sprites().parent().find('.sprites').children().remove()
     frame_sprites().clone().appendTo(active_animation_sprites())
 
-    active_animation().parent().find('.speed').text($('#animation_speed').val())
+    active_animation().parent().find('.speed').text($('input.speed').val())
 
   $(".frame_sprites").dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -120,7 +119,7 @@
   $('.animation').live 'mousedown', ->
     update_active_animation()
 
-    $('#animation_speed').val($(this).find('.speed').text())
+    $('.speed').val($(this).find('.speed').text())
     stop_animation()
     clear_frame_sprites()
 
@@ -129,7 +128,7 @@
     active_animation().removeClass('active')
     $(this).find('.cover').addClass('active')
 
-  $('#new_animation').mousedown ->
+  $('.new_animation').mousedown ->
     update_active_animation()
     stop_animation()
 
@@ -188,9 +187,9 @@
 
       preview_sprites.first().addClass('active')
 
-      animation_id = setInterval(play_next, $('#animation_speed').val())
+      animation_id = setInterval(play_next, $('input.speed').val())
     else
-      animation_id = setInterval(play_next, $('#animation_speed').val())
+      animation_id = setInterval(play_next, $('input.speed').val())
 
   pause_animation = ->
     clearInterval(animation_id)
@@ -241,25 +240,21 @@
     frame_selected_sprite().removeClass('selected')
 
   $(document).bind "keydown", 'h', (event) ->
+    window.editorActive = true
     event.preventDefault()
 
     find_hit_circles = (sprite_el) ->
-      if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').data('hit_circles').circles.length
-        return $(sprite_el).find('img').data('hit_circles').circles
+      if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').attr('data-hit_circles').length
+        return JSON.parse($(sprite_el).find('img').attr('data-hit_circles')).circles
 
       return null
 
     selected_sprite = frame_selected_sprite()
 
-
-
     if $(selected_sprite).length
       image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
 
       image_circles = find_hit_circles(selected_sprite)
-
-      # if image_circles == null
-      #   image_circles = find_hit_circles($(selected_sprite).prev())
 
       loadImage(image_src, image_circles)
 
@@ -308,7 +303,7 @@
 
     newEl.insertAfter(parent)
 
-  $("#save").click ->
+  $(".save").click ->
     notify("Saving...")
 
     postData =
@@ -334,15 +329,15 @@
     if !data
       $('#create_animation').tmpl(
         name: "Animation 1"
-        speed: $('#animation_speed').val()
-      ).insertBefore($('#new_animation'))
+        speed: $('.speed').val()
+      ).insertBefore($('.new_animation'))
 
       $('#placeholder').tmpl().appendTo('.frame_sprites')
     else if !data.animations.length
       $('#create_animation').tmpl(
         name: "Animation 1"
-        speed: $('#animation_speed').val()
-      ).insertBefore($('#new_animation'))
+        speed: $('.speed').val()
+      ).insertBefore($('.new_animation'))
 
       $('#placeholder').tmpl().appendTo('.frame_sprites')
       $('.frame_sprites .demo').next().text("There were no animations found in this file. Drag sprites here to start animating.")
@@ -352,7 +347,7 @@
         animation_el = $('#create_animation').tmpl(
           name: animation.name
           speed: animation.speed
-        ).insertBefore('nav.right #new_animation')
+        ).insertBefore('nav.right .new_animation')
 
         $.each animation.frames, (i, frame) ->
           active_animation().removeClass('active')
@@ -369,7 +364,7 @@
 
         $('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
 
-      $('#animation_speed').val(active_animation().find('.speed').text())
+      $('.speed').val(active_animation().find('.speed').text())
       stop_animation()
       clear_frame_sprites()
 
