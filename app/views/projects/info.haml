@@ -10,51 +10,86 @@
 
   %ul
     Features
-    %li
-      Live coding
-    %li
-      Live art editing
-    %li
-      Fully integrated Tilemap, Animation, Pixel Editors
-    %li
-      Entirely web based
-    %li
-      No installation of anything, ever
-    %li
-      Games are live on the internet as soon as you finish coding them
-    %li
-      Wide audience. Pixie games are playable by anyone with a modern web browser
+    %li Live coding
+    %li Live art editing
+    %li Fully integrated Tilemap, Animation, Pixel Editors
+    %li Entirely web based
+    %li No installation of anything, ever
+    %li Games are live on the internet as soon as you finish coding them
+    %li Wide audience. Pixie games are playable by anyone with a modern web browser
 
   #twitter_div
     %h2.sidebar-title Developer Updates
-    %ul#twitter_update_list
-    %a{ :href => "http://twitter.com/strd6", :id => "twitter-link", :style => "display:block;text-align:right;" }
+    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+    :javascript
+      new TWTR.Widget({
+        version: 2,
+        type: 'profile',
+        rpp: 5,
+        interval: 60000,
+        width: 350,
+        height: 300,
+        theme: {
+          shell: {
+            background: '#1084ce',
+            color: '#000000'
+          },
+          tweets: {
+            background: '#1084ce',
+            color: '#000000',
+            links: '#000000'
+          }
+        },
+        features: {
+          scrollbar: true,
+          loop: false,
+          live: true,
+          hashtags: true,
+          timestamp: true,
+          avatars: false,
+          behavior: 'all'
+        }
+      }).render().setUser('strd6').start();
 
-    = javascript_include_tag "http://twitter.com/javascripts/blogger.js"
-    %script{ :type => "text/javascript", :src => "http://twitter.com/statuses/user_timeline/strd6.json?callback=twitterCallback2&amp;count=5" }
+  .block
+    %h2 Get started!
+    %ol
+      %li
+        Follow our
+        = link_to "guide", github_integration_projects_path
+        to get up and running with your first project
+      %li
+        Get to work on your game. If you don't know where to start, take a look at some tutorials
+        %div
+          - fave1 = App.find(44)
+          %span.tutorial= link_to image_tag(fave1.image.url(:thumb), :alt => fave1.display_name, :title => fave1.display_name), fullscreen_developer_app_path(fave1)
+          - fave2 = App.find(69)
+          %span.tutorial= link_to image_tag(fave2.image.url(:thumb), :alt => fave2.display_name, :title => fave2.display_name), fullscreen_developer_app_path(fave2)
+          - fave3 = App.find(15)
+          %span.tutorial= link_to image_tag(fave3.image.url(:thumb), :alt => fave3.display_name, :title => fave3.display_name), fullscreen_developer_app_path(fave3)
+          - fave4 = App.find(14)
+          %span.tutorial= link_to image_tag(fave4.image.url(:thumb), :alt => fave4.display_name, :title => fave4.display_name), fullscreen_developer_app_path(fave4)
 
-  %h2 Get started!
-  %ol
-    %li
-      Follow our
-      = link_to "set up guide", github_integration_projects_path
-      to get up and running with your first project
-    %li
-      Let the ideas flow from your brain into the game
-    %li
-      That's it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
-      =link_to "Notch", "http://minecraft.net"
+      %li
+        That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
+        =link_to "Notch", "http://minecraft.net"
 
-  %h2 Current Favorites
+  .block
+    %h2 Current Favorites
+    - fave1 = App.find(44)
+    %span.thumb= link_to image_tag(fave1.image.url(:thumb), :alt => fave1.display_name, :title => fave1.display_name), fullscreen_developer_app_path(fave1)
+    - fave2 = App.find(69)
+    %span.thumb= link_to image_tag(fave2.image.url(:thumb), :alt => fave2.display_name, :title => fave2.display_name), fullscreen_developer_app_path(fave2)
+    - fave3 = App.find(15)
+    %span.thumb= link_to image_tag(fave3.image.url(:thumb), :alt => fave3.display_name, :title => fave3.display_name), fullscreen_developer_app_path(fave3)
+    - fave4 = App.find(14)
+    %span.thumb= link_to image_tag(fave4.image.url(:thumb), :alt => fave4.display_name, :title => fave4.display_name), fullscreen_developer_app_path(fave4)
 
-  %h2 Want to do it in Flash?
-  %p Although we prefer the HTML / javascript approach, these guys make awesome game engines too
-  %p
-  Chevy Ray:
-  = link_to "FlashPunk", "http://flashpunk.net/"
-  %p
-  Adam Atomic:
-  = link_to "Flixel", "http://flixel.org/"
+  .block
+    %h2 Want to do it in Flash?
+    %p Although we prefer the HTML / JavaScript approach, there are some awesome Flash game engines out there.
+    .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
+    .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
 
 %style
   :sass
@@ -62,32 +97,80 @@
     @import util
 
     #twitter_div
-      +bounds(300px, 300px)
-      +inline-block
-      +glass
+      +border-radius
 
+      background-color: $pixie_primary
       float: right
-      margin: 1em
-      overflow: hidden
+      margin-left: 1em
+      margin-top: 1em
       padding: 1em
+
+    .thumb
+      margin-left: 0.5em
+      margin-right: 0.5em
+
+      img
+        +border-radius
+
+    .engine
+      +bounds(100px)
+
+      display: inline-block
+      margin-left: 0.5em
+      margin-right: 0.5em
+      position: relative
+
+      a
+        +border-radius
+        +bounds(100px)
+
+        background-color: #000
+        display: inline-block
+
+        img
+          position: absolute
+          bottom: 0
+          left: 0
+          right: 0
+          top: 0
+          margin: auto
+
+    .tutorial
+      img
+        +border-radius
+        +bounds(50px)
+
+    .block
+      +border-radius
+
+      background-color: $pixie_primary
+      margin-bottom: 1em
+      margin-top: 1em
+      padding: 1em
+      width: 400px
 
     .centered_form
       +border-radius
-      +bounds(825px, 900px)
+      +bounds(825px, 1000px)
 
       background-color: $dark_highlight
-      padding: 1em
+      padding-bottom: 1em
+      padding-left: 4em
+      padding-right: 4em
+      padding-top: 1em
       position: absolute
       left: 0
       right: 0
-      top: 100px
+      top: 50px
       margin: auto
 
       h1
         text-align: center
 
       h2
+        color: #000
         margin-left: 17px
+        text-align: center
 
       input[type="text"]
         color: #000
