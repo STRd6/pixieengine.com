@@ -15,9 +15,9 @@
 
   %nav.right
     - if @animation
-      %h3#filename #{@animation.name}
+      %h3.filename #{@animation.name}
     - else
-      %h3#filename Title
+      %h3.filename Title
     %button#save Save
     .animations
       %button#new_animation New
@@ -286,7 +286,7 @@
     if selected_sprite.next().length
       selected_sprite.next().after(selected_sprite)
 
-  $('.animations .name, #filename').liveEdit()
+  $('.animations .name, .filename').liveEdit()
 
   $('.x').live 'mousedown', ->
     parent = $(this).parent()
@@ -314,7 +314,7 @@
     postData =
       format: 'json'
       animation:
-        name: $("#filename").text()
+        name: $(this).parent().find('.filename').text()
         states: saveData().length
         data_string: JSON.stringify(saveData())
 
