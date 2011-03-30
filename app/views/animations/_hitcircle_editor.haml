@@ -16,10 +16,10 @@
   animationJSON = null
   currentFrame = 0
   active = {}
+  window.editorActive = false
 
   frames = null
 
-  # Display properties
   showCircles = true
   activeColor = "rgba(255, 0, 255, 0.5)"
   circleColor = "rgba(255, 0, 0, 0.5)"
@@ -57,11 +57,12 @@
               canvas.fillCircle(circle.x, circle.y, circle.radius, color)
 
       setInterval ->
-        canvas.fill('#CCC')
-        character.draw(canvas)
+        if window.editorActive
+          canvas.fill('#CCC')
+          character.draw(canvas)
       , 33
 
-      canvas.click (e) ->
+      canvas.mousedown (e) ->
         point =
           x: event.offsetX
           y: event.offsetY
@@ -87,25 +88,6 @@
           active[key] = undefined
 
         active[activeType] = activeComponent
-
-  nextFrame = ->
-    active["circles"] = undefined
-    currentFrame++
-
-    if currentFrame == animation.frameCount()
-      currentFrame = 0
-    else if currentFrame >= frames.length
-      # Copy first frame of hit circles
-      circlesCopy = frames[0].circles.slice(0).map (circle) ->
-        return {
-          x: circle.x
-          y: circle.y
-          radius: circle.radius
-        }
-
-      frames.push({ circles: circlesCopy })
-
-  previousFrame = -> currentFrame-- if currentFrame > 0
 
   generateComponentMethods = (component, creator) ->
     getter = -> frames[currentFrame][component]
@@ -136,11 +118,9 @@
     }
 
   Circles = generateComponentMethods "circles", ->
-    return {
-      x: 0
-      y: 0
-      radius: 50
-    }
+    x: 0
+    y: 0
+    radius: 50
 
   move = (x, y) ->
     $.each active, (name, component) ->
@@ -163,12 +143,13 @@
     "shift+-": -> Circles.grow(-10)
     "shift+tab": -> Circles.prev()
     "tab": -> Circles.next()
-    "d del": -> Circles.remove()
+    "d del backspace": -> Circles.remove()
+    "shift": -> $.noop
 
   $.each keyEvents, (key, fn) ->
-    $(document).bind 'keydown', key, ->
+    $(document).bind 'keydown', key, (event) ->
       fn()
-      return false
+      event.preventDefault()
 
   Button = (text, callback) ->
     $("<a class='button' />").text(text).mousedown (event) ->
@@ -186,9 +167,11 @@
   add_circle = Button("Add Circle", -> Circles.add())
   remove_circle = Button("Remove Circle", -> Circles.remove())
 
-  toggle_show = Button("Toggle Circles", -> showCircles = !showCircles)
+  toggle_show = Button("Show / Hide", -> showCircles = !showCircles)
 
   $('#back').mousedown ->
+    window.editorActive = false
+
     $('.hitcircle_editor').hide()
     $('.animation_editor').show()
 
@@ -197,19 +180,17 @@
   $('.actions').append(size_group, add_group, toggle_show)
 
   LoaderProxy = ->
-    return {
-      draw: $.noop
-      frame: $.noop
-      update: $.noop
-      width: null
-      height: null
-    }
+    draw: $.noop
+    frame: $.noop
+    update: $.noop
+    width: null
+    height: null
 
   Sprite = (image, sourceX, sourceY, width, height) ->
-    sourceX = sourceX || 0
-    sourceY = sourceY || 0
-    width = width || image.width
-    height = height || image.height
+    sourceX ||= 0
+    sourceY ||= 0
+    width ||= image.width
+    height ||= image.height
 
     return {
       update: $.noop
@@ -230,9 +211,6 @@
         return this unless newFrame == undefined
 
         return 0
-
-      frameCount: ->
-        return 1
 
       width: width
       height: height
@@ -261,9 +239,9 @@
       frames = [circles: hitCircles || []]
 
   $("#export").click ->
-    selected_sprite_src = $('.frame_sprites .sprite_container.selected img').attr('src')
+    window.editorActive = false
 
-    console.log $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]')
+    selected_sprite_src = $('.frame_sprites .sprite_container.selected img').attr('src')
 
     $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(frames[0]))
 
