@@ -29,8 +29,8 @@
       ms
     .sprite_container
       .sprites
-      #play
-      #stop
+      .play
+      .stop
 
 #load_sprite.template
   .sprite_container
@@ -200,14 +200,14 @@
 
     clear_preview()
 
-    $('#play').removeClass("pause")
+    $('.play').removeClass("pause")
 
-  $('#play').mousedown ->
+  $('.play').mousedown ->
     if $(this).hasClass("pause") then pause_animation() else play_animation()
 
     $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
 
-  $('#stop').mousedown ->
+  $('.stop').mousedown ->
     stop_animation()
 
   $('.frame_sprites .sprite_container').live
@@ -331,8 +331,6 @@
     , "json")
 
   window.loadData = (data) ->
-    console.log data
-
     if !data
       $('#create_animation').tmpl(
         name: "Animation 1"
