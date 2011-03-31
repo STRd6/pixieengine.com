@@ -1,22 +1,24 @@
 - @title = "Pixie"
 
 .centered_form
-  %h1 Why Pixie?
-  %p
-    Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
+  .blurb
+    %h1 Why Pixie?
+    %p
+      Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
 
-  %p
-    Pixie tightly integrates a wide range of design tools such as Animations, Tilemaps, and Pixel art with your game code.
+    %p
+      Pixie is a full game design stack, tightly integrating a wide range of tools such as animations, tilemaps, and pixel art with your game code.
 
-  %ul
-    Features
-    %li Live coding
-    %li Live art editing
-    %li Fully integrated Tilemap, Animation, Pixel Editors
-    %li Entirely web based
-    %li No installation of anything, ever
-    %li Games are live on the internet as soon as you finish coding them
-    %li Wide audience. Pixie games are playable by anyone with a modern web browser
+  .features
+    %h3 Features
+    %ul
+      %li Live coding
+      %li Live art editing
+      %li Fully integrated tilemap, animation, pixel editors
+      %li Entirely web based
+      %li No installation of anything, ever
+      %li Games are live on the internet as soon as you finish coding them
+      %li Wide audience. Pixie games are playable by anyone with a modern web browser
 
   #twitter_div
     %h2.sidebar-title Developer Updates
@@ -28,14 +30,14 @@
         rpp: 5,
         interval: 60000,
         width: 350,
-        height: 300,
+        height: 350,
         theme: {
           shell: {
-            background: '#1084ce',
+            background: 'transparent',
             color: '#000000'
           },
           tweets: {
-            background: '#1084ce',
+            background: 'transparent',
             color: '#000000',
             links: '#000000'
           }
@@ -51,13 +53,12 @@
         }
       }).render().setUser('strd6').start();
 
-  .block
-    %h2 Get started!
+  %button=link_to "Get Started!", github_integration_projects_path
+
+  .block.get_started
     %ol
       %li
-        Follow our
-        = link_to "guide", github_integration_projects_path
-        to get up and running with your first project
+        Click the big button to get up and running with your first project
       %li
         Get to work on your game. If you don't know where to start, take a look at some tutorials
         %div
@@ -96,27 +97,62 @@
     @import partials/base
     @import util
 
+    #fullscreen.light .centered_form button
+      +bounds(424px, 50px)
+
+      margin-top: -312px
+
+      a
+        color: $pixie_primary
+        font-size: 200%
+
+        &:hover
+          text-decoration: none
+
+    .features
+      margin-left: 450px
+      width: 375px
+
+    h3
+      margin-bottom: 0
+
+    ul
+      list-style-type: disc
+      list-style-position: inside
+
+      li
+        margin-left: 1em
+
+    .blurb
+      padding-left: 7em
+      padding-right: 7em
+
     #twitter_div
       +border-radius
+      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
 
-      background-color: $pixie_primary
+      background-color: $light_background
       float: right
       margin-left: 1em
       margin-top: 1em
-      padding: 1em
+      padding-bottom: 0
+      padding-left: 1em
+      padding-right: 1em
+      padding-top: 1em
 
     .thumb
-      margin-left: 0.5em
-      margin-right: 0.5em
+      margin-left: 0
+      margin-right: 0
 
       img
         +border-radius
+        +bounds(96px)
 
     .engine
       +bounds(100px)
 
       display: inline-block
-      margin-left: 0.5em
+      margin-left: 63px
       margin-right: 0.5em
       position: relative
 
@@ -140,24 +176,31 @@
         +border-radius
         +bounds(50px)
 
+        margin-left: 15px
+        margin-right: 15px
+
     .block
       +border-radius
+      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
 
-      background-color: $pixie_primary
+      background-color: $light_background
       margin-bottom: 1em
       margin-top: 1em
       padding: 1em
       width: 400px
 
+    .get_started
+      margin-top: -136px
+
     .centered_form
       +border-radius
-      +bounds(825px, 1000px)
+      +bounds(825px, 900px)
+      +glass
 
-      background-color: $dark_highlight
       padding-bottom: 1em
-      padding-left: 4em
-      padding-right: 4em
-      padding-top: 1em
+      padding-left: 6em
+      padding-right: 6em
+      padding-top: 3em
       position: absolute
       left: 0
       right: 0
@@ -168,7 +211,6 @@
         text-align: center
 
       h2
-        color: #000
         margin-left: 17px
         text-align: center
 
