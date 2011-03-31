@@ -1,0 +1,32 @@
+.centered_content
+  %h2 Thanks for subscribing to Pixie!
+
+  %p What are you waiting for?
+  %p Start making awesome games. Get started #{link_to "here", github_integration_projects_path}
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .centered_content
+      +bounds(525px, 250px)
+      +border-radius
+
+      background-color: $dark_highlight
+      position: absolute
+      left: 0
+      right: 0
+      top: 100px
+      margin: auto
+      padding: 1em
+
+      h2
+        text-align: center
+
+    p
+      font-size: 125%
+
+    .light
+      .centered_content
+        background-color: $light_highlight

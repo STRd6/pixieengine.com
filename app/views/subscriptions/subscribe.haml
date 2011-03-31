@@ -1,0 +1,51 @@
+
+.centered_form
+  %h2 Subscribe to Pixie
+
+  %ul
+    Subscribed users have access to the following features:
+    %li Up to five projects
+    %li Private items
+
+  %a.button{ :href => "https://spreedly.com/STRd6-test/subscribers/#{current_user.id}/subscribe/9356/#{current_user.display_name}" } Subscribe Now
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    ul
+      font-size: 125%
+      list-style-type: disc
+
+      li
+        margin-left: 2em
+
+    a.button
+      +bounds(200px, 50px)
+
+      font-size: 175%
+      position: absolute
+      bottom: 1em
+      left: 0
+      right: 0
+      margin: auto
+
+    .centered_form
+      +bounds(525px, 250px)
+      +border-radius
+
+      background-color: $dark_highlight
+      position: absolute
+      left: 0
+      right: 0
+      top: 100px
+      margin: auto
+      padding: 1em
+
+      h2
+        text-align: center
+
+    .light
+      .centered_form
+        background-color: $light_highlight
