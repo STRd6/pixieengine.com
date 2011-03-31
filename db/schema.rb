@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110312085143) do
+ActiveRecord::Schema.define(:version => 20110331013342) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(:version => 20110312085143) do
     t.datetime "avatar_updated_at"
     t.boolean  "subscribed",          :default => true,  :null => false
     t.string   "favorite_color"
+    t.boolean  "paying",              :default => false, :null => false
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
