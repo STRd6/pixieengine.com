@@ -7,7 +7,8 @@
     %li Up to five projects
     %li Private items
 
-  %a.button{ :href => "https://spreedly.com/STRd6-test/subscribers/#{current_user.id}/subscribe/9356/#{current_user.display_name}" } Subscribe Now
+  %a.button{ :href => "https://spreedly.com/STRd6-test/subscribers/#{current_user.id}/subscribe/9356/#{current_user.display_name}" }
+    %div Subscribe Now
 
 %style
   :sass
@@ -23,6 +24,7 @@
 
     a.button
       +bounds(200px, 50px)
+      +contents-centered
 
       font-size: 175%
       position: absolute
@@ -30,6 +32,10 @@
       left: 0
       right: 0
       margin: auto
+      text-align: center
+
+      div
+        height: 28px
 
     .centered_form
       +bounds(525px, 250px)
