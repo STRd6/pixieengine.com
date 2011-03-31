@@ -1,4 +1,8 @@
 PixieStrd6Com::Application.routes.draw do |map|
+  get "subscriptions/subscribe"
+  get "subscriptions/thanks"
+  post "subscriptions/changed"
+
   namespace :abingo do
     match "dashboard" => 'dashboard#index'
   end
