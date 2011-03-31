@@ -178,6 +178,22 @@ class User < ActiveRecord::Base
     ]
   end
 
+  def self.update_paying(subscriber_ids)
+    users = User.all
+
+    users.each do |user|
+      user.paying = false
+      user.save
+    end
+
+    subscriber_ids.each do |subscriber_id|
+      user = User.find(subscriber_id)
+
+      user.paying = true if user
+      user.save
+    end
+  end
+
   def self.visit_report
     esac = "
       CASE

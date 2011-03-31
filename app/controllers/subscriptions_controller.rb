@@ -7,10 +7,8 @@ class SubscriptionsController < ApplicationController
 
   def changed
     subscriber_ids = params[:subscriber_ids].split(',')
-    subscriber_ids.each do |subscriber_id|
-      user = User.find(subscriber_id)
-      user.spreedly_refresh if user
-    end
+
+    User.update_paying(subscriber_ids)
 
     head(:ok)
   end
