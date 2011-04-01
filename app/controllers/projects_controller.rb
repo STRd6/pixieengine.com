@@ -12,6 +12,21 @@ class ProjectsController < ApplicationController
   def edit
   end
 
+  def info
+    fave_ids = [44, 12, 25, 14]
+    tut_ids = [15, 56, 69, 14]
+
+    @favorites = fave_ids.map do |id|
+      App.find(id)
+    end
+
+    @tutorials = tut_ids.map do |id|
+      App.find(id)
+    end
+
+    render :layout => "plain"
+  end
+
   def update
     project.update_attributes(params[:project])
 

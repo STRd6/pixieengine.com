@@ -2,7 +2,8 @@
 
 .centered_form
   .blurb
-    %h1 Why Pixie?
+    .logo
+      = image_tag('/images/logo_large.png')
     %p
       Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
 
@@ -12,13 +13,14 @@
   .features
     %h3 Features
     %ul
-      %li Live coding
-      %li Live art editing
-      %li Fully integrated tilemap, animation, pixel editors
-      %li Entirely web based
-      %li No installation of anything, ever
+      %li Entirely web based. Nothing to install!
+      %li Live code and art editing
+      %li Github integration to seamlessly handing versioning
+      %li Robust, well-tested game libraries to take the pain out of scripting
+      %li Fully integrated tilemap, animation, and pixel editors
       %li Games are live on the internet as soon as you finish coding them
-      %li Wide audience. Pixie games are playable by anyone with a modern web browser
+      %li Wide audience. Playable by anyone with a modern web browser
+      %li Remix art from community members
 
   #twitter_div
     %h2.sidebar-title Developer Updates
@@ -62,14 +64,8 @@
       %li
         Get to work on your game. If you don't know where to start, take a look at some tutorials
         %div
-          - fave1 = App.find(44)
-          %span.tutorial= link_to image_tag(fave1.image.url(:thumb), :alt => fave1.display_name, :title => fave1.display_name), fullscreen_developer_app_path(fave1)
-          - fave2 = App.find(69)
-          %span.tutorial= link_to image_tag(fave2.image.url(:thumb), :alt => fave2.display_name, :title => fave2.display_name), fullscreen_developer_app_path(fave2)
-          - fave3 = App.find(15)
-          %span.tutorial= link_to image_tag(fave3.image.url(:thumb), :alt => fave3.display_name, :title => fave3.display_name), fullscreen_developer_app_path(fave3)
-          - fave4 = App.find(14)
-          %span.tutorial= link_to image_tag(fave4.image.url(:thumb), :alt => fave4.display_name, :title => fave4.display_name), fullscreen_developer_app_path(fave4)
+          - @tutorials.each do |tutorial|
+            %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), fullscreen_developer_app_path(tutorial)
 
       %li
         That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
@@ -77,14 +73,8 @@
 
   .block
     %h2 Current Favorites
-    - fave1 = App.find(44)
-    %span.thumb= link_to image_tag(fave1.image.url(:thumb), :alt => fave1.display_name, :title => fave1.display_name), fullscreen_developer_app_path(fave1)
-    - fave2 = App.find(69)
-    %span.thumb= link_to image_tag(fave2.image.url(:thumb), :alt => fave2.display_name, :title => fave2.display_name), fullscreen_developer_app_path(fave2)
-    - fave3 = App.find(15)
-    %span.thumb= link_to image_tag(fave3.image.url(:thumb), :alt => fave3.display_name, :title => fave3.display_name), fullscreen_developer_app_path(fave3)
-    - fave4 = App.find(14)
-    %span.thumb= link_to image_tag(fave4.image.url(:thumb), :alt => fave4.display_name, :title => fave4.display_name), fullscreen_developer_app_path(fave4)
+    - @favorites.each do |favorite|
+      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_developer_app_path(favorite)
 
   .block
     %h2 Want to do it in Flash?
@@ -112,6 +102,11 @@
     .features
       margin-left: 450px
       width: 375px
+
+    .logo
+      +contents-centered
+
+      height: 55px
 
     h3
       margin-bottom: 0
@@ -206,9 +201,6 @@
       right: 0
       top: 50px
       margin: auto
-
-      h1
-        text-align: center
 
       h2
         margin-left: 17px
