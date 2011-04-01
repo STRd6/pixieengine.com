@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Thu, 17 Mar 2011 04:31:18 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Fri, 01 Apr 2011 08:56:43 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -54,6 +54,32 @@
         }).appendTo(cell);
         return row.appendTo(element);
       };
+      $('input', this.selector).live('keydown', function(event) {
+        var $this, changeAmount, num;
+        if (event.type === "keydown") {
+          if (!(event.which === 38 || event.which === 40)) {
+            return;
+          }
+        }
+        event.preventDefault();
+        $this = $(this);
+        changeAmount = event.which === 38 ? 1 : -1;
+        if ($this.val().length) {
+          if ($this.val() === "true") {
+            $this.val("false");
+          } else if ($this.val() === "false") {
+            $this.val("true");
+          } else if (!isNaN($this.val())) {
+            if (parseFloat($this.val()).abs() <= 1) {
+              num = parseFloat($this.val());
+              $this.val((num + (0.1 * changeAmount)).toFixed(1));
+            } else {
+              $this.val(parseInt($this.val()) + changeAmount);
+            }
+          }
+          return element.trigger("change", element.getProps());
+        }
+      });
       $('input', this.selector).live('blur', function(event) {
         var $this, input;
         element.trigger("change", element.getProps());

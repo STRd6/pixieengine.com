@@ -55,6 +55,30 @@
 
       row.appendTo element
 
+    $('input', this.selector).live 'keydown', (event) ->
+      if event.type == "keydown"
+        return unless (event.which == 38 || event.which == 40)
+
+      event.preventDefault()
+
+      $this = $(this)
+
+      changeAmount = if event.which == 38 then 1 else -1
+
+      if $this.val().length
+        if $this.val() == "true"
+          $this.val("false")
+        else if $this.val() == "false"
+          $this.val("true")
+        else if !isNaN($this.val())
+          if parseFloat($this.val()).abs() <= 1
+            num = parseFloat($this.val())
+            $this.val((num + (0.1 * changeAmount)).toFixed(1))
+          else
+            $this.val(parseInt($this.val()) + changeAmount)
+
+        element.trigger("change", element.getProps())
+
     $('input', this.selector).live 'blur', (event) ->
       element.trigger("change", element.getProps())
 
