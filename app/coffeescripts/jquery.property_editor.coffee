@@ -66,16 +66,22 @@
       changeAmount = if event.which == 38 then 1 else -1
 
       if $this.val().length
-        if $this.val() == "true"
-          $this.val("false")
-        else if $this.val() == "false"
-          $this.val("true")
-        else if !isNaN($this.val())
-          if parseFloat($this.val()).abs() <= 1
-            num = parseFloat($this.val())
-            $this.val((num + (0.1 * changeAmount)).toFixed(1))
-          else
+        if event.shiftKey
+          changeAmount *= 5
+
+          if !isNaN($this.val())
             $this.val(parseInt($this.val()) + changeAmount)
+        else
+          if $this.val() == "true"
+            $this.val("false")
+          else if $this.val() == "false"
+            $this.val("true")
+          else if !isNaN($this.val())
+            if parseFloat($this.val()).abs() <= 1
+              num = parseFloat($this.val())
+              $this.val((num + (0.1 * changeAmount)).toFixed(1))
+            else
+              $this.val(parseInt($this.val()) + changeAmount)
 
         element.trigger("change", element.getProps())
 
