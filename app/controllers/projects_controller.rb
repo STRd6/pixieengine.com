@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :except => [:index, :show, :hook]
+  before_filter :require_user, :except => [:index, :show, :hook, :info, :github_integration]
   before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
   before_filter :filter_results, :only => [:index]
 
@@ -10,6 +10,21 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+  end
+
+  def info
+    fave_ids = [44, 12, 25, 14]
+    tut_ids = [15, 56, 69, 14]
+
+    @favorites = fave_ids.map do |id|
+      App.find(id)
+    end
+
+    @tutorials = tut_ids.map do |id|
+      App.find(id)
+    end
+
+    render :layout => "plain"
   end
 
   def update
