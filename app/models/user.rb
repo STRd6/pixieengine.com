@@ -178,20 +178,18 @@ class User < ActiveRecord::Base
     ]
   end
 
-  def self.update_paying(subscriber_ids)
-    users = User.all
+  def refresh_from_spreedly
+    Spreedly.configure('pixie', APP_CONFIG[:spreedly_token])
 
-    users.each do |user|
-      user.paying = false
-      user.save
+    subscriber = Spreedly::Subscriber.find(self.id)
+
+    if subscriber
+      self.update_attribute(:paying, subscriber.active)
+    else
+      self.update_attribute(:paying, false)
     end
 
-    subscriber_ids.each do |subscriber_id|
-      user = User.find(subscriber_id)
-
-      user.paying = true if user
-      user.save
-    end
+    save
   end
 
   def self.visit_report
@@ -203,7 +201,6 @@ class User < ActiveRecord::Base
         ELSE 3
       END
     "
-
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
   end
 

@@ -6,10 +6,13 @@ class SubscriptionsController < ApplicationController
   end
 
   def changed
-    subscriber_ids = params[:subscriber_ids].split(',')
+    subscriber_ids = params[:subscriber_ids].split(",")
 
-    User.update_paying(subscriber_ids)
+    subscriber_ids.each do |subscriber_id|
+      user = User.find(subscriber_id)
+      user.refresh_from_spreedly if user
+    end
 
-    head(:ok)
+    render :nothing => true
   end
 end
