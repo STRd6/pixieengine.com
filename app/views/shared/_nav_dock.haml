@@ -33,6 +33,10 @@
 
 :coffeescript
   $ ->
+    $(document).bind 'keydown', 'd', (event) ->
+      event.preventDefault()
+      $('#hide_dock').mousedown()
+
     active_app = $('<img />',
       class: 'active'
       src: "/images/active_app.png"
