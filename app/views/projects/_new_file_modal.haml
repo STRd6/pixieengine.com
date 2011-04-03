@@ -4,10 +4,11 @@
     = text_field_tag :name, "", {:title => 'Name', :id => nil}
 
   %h3 Choose Type
-  %button{ 'data-params' => {:type => "image", :directory => "images", :ext => "png"}.to_json } Image
-  %button{ 'data-params' => {:type => "sound", :directory => "sounds", :ext => "sfs"}.to_json } Sound
-  %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
-  %button{ 'data-params' => {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"}.to_json } Test
+  .button_group
+    %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
+    %button{ 'data-params' => {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"}.to_json } Test
+    %button{ 'data-params' => {:type => "image", :directory => "images", :ext => "png"}.to_json } Image
+    %button{ 'data-params' => {:type => "sound", :directory => "sounds", :ext => "sfs"}.to_json } Sound
 
 = render :partial => "file_template"
 
@@ -70,3 +71,10 @@
 
     if newNode
       $.modal.close()
+
+%style
+  :sass
+    #new_file_modal
+      h3
+        display: inline-block
+        margin-right: 1em
