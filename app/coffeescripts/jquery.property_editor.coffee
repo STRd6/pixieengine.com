@@ -67,7 +67,7 @@
 
       if $this.val().length
         if event.shiftKey
-          changeAmount *= 5
+          changeAmount *= 10
 
           if !isNaN($this.val())
             $this.val(parseInt($this.val()) + changeAmount)
@@ -77,9 +77,21 @@
           else if $this.val() == "false"
             $this.val("true")
           else if !isNaN($this.val())
-            if parseFloat($this.val()).abs() <= 1
+            if parseFloat($this.val()).abs() < 1
               num = parseFloat($this.val())
               $this.val((num + (0.1 * changeAmount)).toFixed(1))
+            else if parseInt($this.val()) == 1
+              num = parseInt($this.val())
+              if event.which == 38
+                $this.val(num + 1)
+              else
+                $this.val((num - 0.1).toFixed(1))
+            else if parseInt($this.val()) == -1
+              num = parseInt($this.val())
+              if event.which == 38
+                $this.val(num + 0.1).toFixed(1)
+              else
+                $this.val(num - 1)
             else
               $this.val(parseInt($this.val()) + changeAmount)
 
