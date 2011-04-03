@@ -1,0 +1,103 @@
+#hotkeysModal.modalElement
+  %h2 Keyboard Shortcuts
+  %dl.keyboard_mappings
+    .left_col
+      %dt
+        ctrl h
+        %em or
+        ⌘ h
+    %dd Bring up this help dialog
+  %dl.keyboard_mappings
+    .left_col
+      %dt
+        ctrl s
+        %em or
+        ⌘ s
+    %dd Save game to github
+  %dl.keyboard_mappings
+    .left_col
+      %dt esc
+    %dd Enter developer mode
+  .rule
+  %h3 Developer Mode
+  %dl.keyboard_mappings
+    .left_col
+      %dt right click
+    %dd Edit object properties
+  %dl.keyboard_mappings
+    .left_col
+      %dt ↑
+    %dd Increment numeric values. Flip booleans
+  %dl.keyboard_mappings
+    .left_col
+      %dt ↓
+    %dd Decrement numeric values. Flip booleans
+  %dl.keyboard_mappings
+    .left_col
+      %dt shift ↑
+    %dd Increment numeric values by 5
+  %dl.keyboard_mappings
+    .left_col
+      %dt shift ↓
+    %dd Decrement numeric values by 5
+
+:coffeescript
+  $(document).bind 'keydown', 'ctrl+h meta+h', (e) ->
+    e.preventDefault()
+
+    $('#hotkeysModal').modal
+      onOpen: (dialog) ->
+        dialog.overlay.fadeIn 200, ->
+          dialog.data.show()
+          dialog.container.show()
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    section
+      margin-top: 1em
+
+    .left_col
+      display: inline-block
+      text-align: right
+      width: 165px
+
+    dl
+      width: 500px
+
+    dt
+      +border-radius(2px)
+      +text-shadow(#ccc, 1px, 1px, 0)
+
+      background: #eee
+      color: #333
+      display: inline-block
+      margin-left: 80px
+      min-width: 10px
+      padding: 1px 6px
+      text-align: center
+
+      em
+        +text-shadow(#eee, 0, 0, 0)
+
+        color: #888
+        font-size: 10px
+        font-style: normal
+        font-weight: normal
+
+    dd
+      color: #ccc
+      display: inline
+      width: 300px
+
+    .rule
+      width: 96%
+      padding: 0 10px
+      margin-left: -10px
+      clear: both
+      margin: 7px 0
+      height: 0
+      overflow: hidden
+      border-bottom: 1px solid #ddd
