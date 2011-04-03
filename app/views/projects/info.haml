@@ -82,6 +82,10 @@
     .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
     .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
 
+  .pixel_editor
+    %h3 Like the old Pixie better?
+    =link_to image_tag('/images/dock/pixel.png', :alt => "Pixel Editor", :title => "Pixel Editor", :id => "pixie"), new_sprite_path
+
 %style
   :sass
     @import partials/base
@@ -98,6 +102,17 @@
 
         &:hover
           text-decoration: none
+
+    .pixel_editor
+      h3
+        text-align: center
+
+      #pixie
+        left: 0
+        right: 0
+        margin: auto
+        position: absolute
+
 
     .features
       margin-left: 450px
@@ -189,7 +204,7 @@
 
     .centered_form
       +border-radius
-      +bounds(825px, 900px)
+      +bounds(825px, 960px)
       +glass
 
       padding-bottom: 1em
