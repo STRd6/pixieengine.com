@@ -180,44 +180,47 @@
 
   # Commands
   window.save = (event, data) ->
-    notify "Saving..."
+    if #{!!current_user}
+      notify "Saving..."
 
-    activeTab = $("#tabs ul li.ui-state-active")
-    message = $(".actions .status .message").val()
+      activeTab = $("#tabs ul li.ui-state-active")
+      message = $(".actions .status .message").val()
 
-    successCallback = (data) ->
-      notify "Saved!"
+      successCallback = (data) ->
+        notify "Saved!"
 
-      # Check for update saved method
-      activeTab.find('a').data('updateSaved')?()
+        # Check for update saved method
+        activeTab.find('a').data('updateSaved')?()
 
-      activeTab.removeClass("unsaved")
+        activeTab.removeClass("unsaved")
 
-    if data
-      postData = $.extend(
-        format: 'json'
-        message: message
-      , data)
+      if data
+        postData = $.extend(
+          format: 'json'
+          message: message
+        , data)
 
-      $.post '/projects/#{project.id}/save_file', postData, successCallback
+        $.post '/projects/#{project.id}/save_file', postData, successCallback
 
-    else
-      form = $(currentPanel).find('form')
-
-      if form.length
-        form.ajaxSubmit
-          type: 'POST'
-          data:
-            message: message
-          dataType: "json"
-          success: successCallback
-
-        # Hot swap: inject code
-        if projectConfig.hotSwap
-          hotSwap()
       else
-        # Check for special save method
-        activeTab.find('a').data('doSave')?()
+        form = $(currentPanel).find('form')
+
+        if form.length
+          form.ajaxSubmit
+            type: 'POST'
+            data:
+              message: message
+            dataType: "json"
+            success: successCallback
+
+          # Hot swap: inject code
+          if projectConfig.hotSwap
+            hotSwap()
+        else
+          # Check for special save method
+          activeTab.find('a').data('doSave')?()
+    else
+      window.location.href = '/login'
 
   $('#save').live 'click', save
 
