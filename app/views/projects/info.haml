@@ -1,95 +1,12 @@
 - @title = "Pixie"
 
-.centered_form
-  .blurb
-    .logo
-      = image_tag('/images/logo_large.png')
-    %p
-      Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
-
-    %p
-      Pixie is a full game design stack, tightly integrating a wide range of tools such as animations, tilemaps, and pixel art with your game code.
-
-  .features
-    %h3 Features
-    %ul
-      %li Entirely web based. Nothing to install!
-      %li Live code and art editing
-      %li Github integration to seamlessly handle versioning
-      %li Robust, well-tested game libraries to take the pain out of scripting
-      %li Fully integrated tilemap, animation, and pixel editors
-      %li Games are live on the internet as soon as you finish coding them
-      %li Wide audience. Playable by anyone with a modern web browser
-      %li Remix art from community members
-
-  #twitter_div
-    %h2.sidebar-title Developer Updates
-    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-    :javascript
-      new TWTR.Widget({
-        version: 2,
-        type: 'profile',
-        rpp: 5,
-        interval: 60000,
-        width: 350,
-        height: 350,
-        theme: {
-          shell: {
-            background: 'transparent',
-            color: '#000000'
-          },
-          tweets: {
-            background: 'transparent',
-            color: '#000000',
-            links: '#000000'
-          }
-        },
-        features: {
-          scrollbar: true,
-          loop: false,
-          live: true,
-          hashtags: true,
-          timestamp: true,
-          avatars: false,
-          behavior: 'all'
-        }
-      }).render().setUser('strd6').start();
-
-  %button.clickable=link_to "Get Started!", ide_project_path(8)
-
-  .block.get_started
-    %ol
-      %li
-        Click the big button to get up and running with your first project
-      %li
-        Get to work on your game. If you don't know where to start, take a look at some tutorials
-        %div
-          - @tutorials.each do |tutorial|
-            %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), fullscreen_developer_app_path(tutorial)
-
-      %li
-        That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
-        =link_to "Notch", "http://minecraft.net"
-
-  .block
-    %h2 Current Favorites
-    - @favorites.each do |favorite|
-      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_developer_app_path(favorite)
-
-  .block
-    %h2 Pixie Dust Make You Sneeze?
-    %p Although we prefer the web based approach, there are some awesome Flash game engines out there.
-    .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
-    .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
-
-  .pixel_editor
-    %h3 Like the old Pixie better?
-    =link_to image_tag('/images/dock/pixel.png', :alt => "Pixel Editor", :title => "Pixel Editor", :id => "pixie"), new_sprite_path
-
 %style
   :sass
     @import partials/base
     @import util
+
+    body#fullscreen
+      height: auto
 
     #fullscreen.light .centered_form button
       +bounds(424px, 50px)
@@ -207,14 +124,7 @@
       +bounds(825px, 960px)
       +glass
 
-      padding-bottom: 1em
-      padding-left: 6em
-      padding-right: 6em
-      padding-top: 2em
-      position: absolute
-      left: 0
-      right: 0
-      top: 50px
+      padding: 2em 6em
       margin: auto
 
       h2
@@ -231,3 +141,89 @@
     .light
       .centered_form
         background-color: $light_highlight
+
+.centered_form
+  .blurb
+    .logo
+      = image_tag('/images/logo_large.png')
+    %p
+      Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
+
+    %p
+      Pixie is a full game design stack, tightly integrating a wide range of tools such as animations, tilemaps, and pixel art with your game code.
+
+  .features
+    %h3 Features
+    %ul
+      %li Entirely web based. Nothing to install!
+      %li Live code and art editing
+      %li Github integration to seamlessly handle versioning
+      %li Robust, well-tested game libraries to take the pain out of scripting
+      %li Fully integrated tilemap, animation, and pixel editors
+      %li Games are live on the internet as soon as you finish coding them
+      %li Wide audience. Playable by anyone with a modern web browser
+      %li Remix art from community members
+
+  #twitter_div
+    %h2.sidebar-title Developer Updates
+    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+    :javascript
+      new TWTR.Widget({
+        version: 2,
+        type: 'profile',
+        rpp: 5,
+        interval: 60000,
+        width: 350,
+        height: 350,
+        theme: {
+          shell: {
+            background: 'transparent',
+            color: '#000000'
+          },
+          tweets: {
+            background: 'transparent',
+            color: '#000000',
+            links: '#000000'
+          }
+        },
+        features: {
+          scrollbar: true,
+          loop: false,
+          live: true,
+          hashtags: true,
+          timestamp: true,
+          avatars: false,
+          behavior: 'all'
+        }
+      }).render().setUser('strd6').start();
+
+  %button.clickable=link_to "Get Started!", ide_project_path(8)
+
+  .block.get_started
+    %ol
+      %li
+        Click the big button to get up and running with your first project
+      %li
+        Get to work on your game. If you don't know where to start, take a look at some tutorials
+        %div
+          - @tutorials.each do |tutorial|
+            %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), fullscreen_developer_app_path(tutorial)
+
+      %li
+        That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
+        =link_to "Notch", "http://minecraft.net"
+
+  .block
+    %h2 Current Favorites
+    - @favorites.each do |favorite|
+      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_developer_app_path(favorite)
+
+  .block
+    %h2 Pixie Dust Make You Sneeze?
+    %p Although we prefer the web based approach, there are some awesome Flash game engines out there.
+    .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
+    .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
+
+  .pixel_editor
+    %h3 Like the old Pixie better?
+    =link_to image_tag('/images/dock/pixel.png', :alt => "Pixel Editor", :title => "Pixel Editor", :id => "pixie"), new_sprite_path
