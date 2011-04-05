@@ -55,7 +55,7 @@
         }
       }).render().setUser('strd6').start();
 
-  %button=link_to "Get Started!", github_integration_projects_path
+  %button.clickable=link_to "Get Started!", ide_project_path(8)
 
   .block.get_started
     %ol
@@ -210,7 +210,7 @@
       padding-bottom: 1em
       padding-left: 6em
       padding-right: 6em
-      padding-top: 3em
+      padding-top: 2em
       position: absolute
       left: 0
       right: 0
