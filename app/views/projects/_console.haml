@@ -1,0 +1,25 @@
+#console_window.window(style="top: 75px; left: 50px;")
+  %span.ui-icon.ui-icon-close
+  %h3.ui-widget-header Console
+  %textarea
+  %button Run
+
+:coffeescript
+  $("#console").live "click", ->
+    $("#console_window").show()
+
+  $ ->
+    $("#console_window button").click ->
+      input = $("#console_window textarea")
+      src = input.val()
+      code = compileCode src, "coffee"
+
+      if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+        if code
+          try
+            runningGameFrame.eval(code)
+            input.val('')
+          catch error
+            warn? error.message
+      else
+        alert "Game isn't running"
