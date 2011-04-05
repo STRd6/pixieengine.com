@@ -2,9 +2,19 @@
 
 = render :partial => "project_iframe"
 
+.actions
+  = button_link "View Source", "script", url_for(:action => :ide), :target => "_blank"
+
 %style
   :sass
     @import util
+
+    .actions
+      bottom: 0
+      left: 0
+      padding-bottom: 1em
+      padding-left: 1em
+      position: absolute
 
     #fullscreen
       position: relative
