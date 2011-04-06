@@ -84,7 +84,11 @@ var RubyParser = Editor.Parser = (function() {
 
       // Adjust column and indented.
       if (token.type == "whitespace" && column == 0) {
-        indented = token.value.length;
+        if(token.content == "\n") {
+          indented = 0;
+        } else {
+          indented = token.value.length;
+        }
       }
       column += token.value.length;
       if (token.content == "\n"){
