@@ -6,8 +6,6 @@ class ProjectsController < ApplicationController
   before_filter :require_access, :except => PUBLIC_ACTIONS
   before_filter :filter_results, :only => [:index]
 
-  DEMO_ID = 8
-
   def new
     @project = Project.new
   end
@@ -68,10 +66,6 @@ class ProjectsController < ApplicationController
 
   def ide
     @has_reg_popup = true
-
-    if demo?
-      @project = Project.find DEMO_ID
-    end
 
     render :layout => "ide"
   end
@@ -159,7 +153,15 @@ class ProjectsController < ApplicationController
 
   private
   def object
-    @project ||= Project.find params[:id]
+    @project ||= if demo?
+      if current_user
+        current_user.demo_project
+      else
+        Project.find Project::DEMO_ID
+      end
+    else
+      Project.find params[:id]
+    end
   end
   helper_method :object
 

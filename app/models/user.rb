@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   has_many :sprites
   has_many :invites
 
+  has_many :projects
+
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :user_plugins
@@ -41,6 +43,16 @@ class User < ActiveRecord::Base
 
   def to_s
     display_name
+  end
+
+  def demo_project
+    project = projects.where(:demo => true).first
+
+    unless project
+      project = projects.create! :demo => true, :title => "Demo", :description => "A demo project to help you get started"
+    end
+
+    return project
   end
 
   def send_forgot_password_email

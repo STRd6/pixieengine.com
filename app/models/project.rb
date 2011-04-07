@@ -40,6 +40,12 @@ class Project < ActiveRecord::Base
   BRANCH_NAME = "pixie"
 
   DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
+  
+  DEMO_ID = 8
+
+  def demo_path
+    File.join base_path, DEMO_ID.to_s
+  end
 
   def base_path
     Rails.root.join 'public', 'production', 'projects'
@@ -54,8 +60,10 @@ class Project < ActiveRecord::Base
   end
 
   def create_directory
-    FileUtils.mkdir_p path
-    system 'chmod', "g+w", path
+    unless demo?
+      FileUtils.mkdir_p path
+      system 'chmod', "g+w", path
+    end
   end
 
   def make_group_writable
@@ -98,7 +106,7 @@ class Project < ActiveRecord::Base
   handle_asynchronously :tag_version
 
   def clone_repo
-    create_directory
+    create_directory unless demo?
 
     if remote_origin.present?
       git_util "clone", remote_origin, path
@@ -109,10 +117,14 @@ class Project < ActiveRecord::Base
       # Push branch if it was just created
       git_util "push", '-u', "origin", BRANCH_NAME
     else
-      # Clone Demo Project
-      git_util "clone", DEMO_ORIGIN, path
-      # Checkout local pixie branch
-      git_util 'checkout', '-b', BRANCH_NAME
+      if demo?
+        FileUtils.cp_r demo_path, path
+      else
+        # Clone Demo Project
+        git_util "clone", DEMO_ORIGIN, path
+        # Checkout local pixie branch
+        git_util 'checkout', '-b', BRANCH_NAME
+      end
     end
 
     make_group_writable
@@ -152,8 +164,9 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push(message || "Modified in browser at pixie.strd6.com")
+    git_commit_and_push_without_delay(message || "Modified in browser at pixie.strd6.com")
   end
+  handle_asynchronously :save_file
 
   def remove_file(path)
     #TODO: Verify path is not sketch
