@@ -67,9 +67,11 @@ class ProjectsController < ApplicationController
   end
 
   def ide
-    if params[:id] == "demo"
+    if demo?
       @project = Project.find DEMO_ID
     end
+
+    render :layout => "ide"
   end
 
   def tag_version
@@ -147,6 +149,10 @@ class ProjectsController < ApplicationController
 
   def filters
     ["own", "none"]
+  end
+
+  def demo?
+    params[:id] == "demo"
   end
 
   private
