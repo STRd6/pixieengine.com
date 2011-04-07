@@ -187,7 +187,7 @@
 
   # Commands
   window.save = (event, data) ->
-    if #{!!current_user}
+    requireLogin ->
       notify "Saving..."
 
       activeTab = $("#tabs ul li.ui-state-active")
@@ -226,8 +226,6 @@
         else
           # Check for special save method
           activeTab.find('a').data('doSave')?()
-    else
-      window.location.href = '/login'
 
   $('#save').live 'click', save
 

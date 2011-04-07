@@ -67,6 +67,8 @@ class ProjectsController < ApplicationController
   end
 
   def ide
+    @has_reg_popup = true
+
     if demo?
       @project = Project.find DEMO_ID
     end

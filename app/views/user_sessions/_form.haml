@@ -3,16 +3,15 @@
   = form.error_messages
 
   = form.hidden_field :login, :value => "yes"
-  .span-18.last
+  %p
     = form.label :email
     = form.text_field :email
   
-  .span-18.last
+  %p
     = form.label :password
     = form.password_field :password
 
-  .span-18.last.prepend-3
-    = form.submit "Log In"
+  .actions
+    %button.affirmative Log In
 
 = link_to "Forgot your password?", new_password_reset_path
-.clear
