@@ -74,6 +74,8 @@ class Project < ActiveRecord::Base
   def update_libs
     lib_path = File.join path, config[:directories][:lib]
 
+    FileUtils.mkdir_p lib_path
+
     config[:libs].each do |filename, url|
       file_path = File.join lib_path, filename
 
@@ -81,6 +83,8 @@ class Project < ActiveRecord::Base
         file.write(open(url) {|f| f.read})
       end
     end
+
+    make_group_writable
   end
   handle_asynchronously :update_libs
 
