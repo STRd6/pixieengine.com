@@ -41,7 +41,7 @@ class Project < ActiveRecord::Base
 
   DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
   
-  DEMO_ID = 8
+  DEMO_ID = 13
 
   def demo_path
     File.join base_path, DEMO_ID.to_s
