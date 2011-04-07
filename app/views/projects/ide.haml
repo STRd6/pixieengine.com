@@ -466,7 +466,7 @@
     $('.filetree .file').live 'click', ->
       openFile($(this).data('id'))
 
-    $('.error .file').live 'click', ->
+    $('.error.file').live 'click', ->
       if id = $(this).data('id')
         openFile(id)
 
@@ -513,3 +513,6 @@
     #prop_editor
       input[placeholder="key"]
         color: #DB0000
+
+    .file.error
+      cursor: pointer
