@@ -11,16 +11,41 @@
     extractBase64Data = (dataUrl) ->
       dataUrl.substring(dataUrl.indexOf(',') + 1)
 
-    $("#import_drop_zone").dropImageReader (file, event) ->
-      if event.target.readyState == FileReader.DONE
-        path = projectConfig.directories.images
+    $("#import_drop_zone").dropImageReader
+      matchType: /.*/
+      callback: (file, event) ->
+        if event.target.readyState == FileReader.DONE
+          if file.type == "application/javascript"
+            path = projectConfig.directories.lib
+            type = "text"
+            ext = "js"
+            lang = "javascript"
 
-        window.save event,
-          contents_base64: extractBase64Data(event.target.result)
-          path: "/" + path + "/" + file.name
+          else if file.type == ""
+            ext = file.name.match(/\.([^\.]*)$/, '')?[1]
 
-        newFileNode
-          name: file.name.replace(/\.[^\.]*$/, '')
-          type: "image"
-          ext: "png"
-          path: path
+            if ext == "coffee"
+              path = projectConfig.directories.source
+              type = "text"
+              lang = "coffeescript"
+
+          else if file.type.match(/image.*/)
+            path = projectConfig.directories.images
+            type = "image"
+            ext = "png"
+
+          if path
+            contentsBase64 = extractBase64Data(event.target.result)
+            window.save event,
+              contents_base64: contentsBase64
+              path: "/" + path + "/" + file.name
+
+            contents = Base64.decode(contentsBase64) unless type == "image"
+
+            newFileNode
+              name: file.name.replace(/\.[^\.]*$/, '')
+              type: type
+              ext: ext
+              lang: lang
+              path: path
+              contents: contents
