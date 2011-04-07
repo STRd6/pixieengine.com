@@ -1,16 +1,29 @@
 .centered_content
   %h2 Thanks for subscribing to Pixie!
 
-  %p What are you waiting for?
-  %p Start making awesome games. Get started #{link_to "here", github_integration_projects_path}
+  %p What are you waiting for? Start making awesome games.
+
+  %button.clickable=link_to "Get Started!", ide_project_path(8)
 
 %style
   :sass
     @import partials/base
     @import util
 
+    #fullscreen.light .centered_content button
+      +bounds(424px, 50px)
+
+      margin-left: 38px
+
+      a
+        color: $pixie_primary
+        font-size: 200%
+
+        &:hover
+          text-decoration: none
+
     .centered_content
-      +bounds(525px, 250px)
+      +bounds(500px, 150px)
       +border-radius
 
       background-color: $dark_highlight
