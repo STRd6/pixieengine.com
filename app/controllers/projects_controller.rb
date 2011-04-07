@@ -1,9 +1,12 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :except => [:index, :show, :hook, :info, :ide, :github_integration]
-  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
+  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
+  before_filter :require_user, :except => PUBLIC_ACTIONS
+  before_filter :require_access, :except => PUBLIC_ACTIONS
   before_filter :filter_results, :only => [:index]
+
+  DEMO_ID = 8
 
   def new
     @project = Project.new
@@ -64,7 +67,9 @@ class ProjectsController < ApplicationController
   end
 
   def ide
-    render :layout => "ide"
+    if params[:id] == "demo"
+      @project = Project.find DEMO_ID
+    end
   end
 
   def tag_version

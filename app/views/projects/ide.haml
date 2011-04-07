@@ -59,7 +59,12 @@
     %ol#qunit-tests
     #qunit-fixture
 
+
+- project_id = params[:id]
+
 :coffeescript
+  window.projectId = #{project_id.to_json}
+
   $("#generate_docs").click ->
     notify("Scheduling docs generation...")
 
@@ -202,7 +207,7 @@
           message: message
         , data)
 
-        $.post '/projects/#{project.id}/save_file', postData, successCallback
+        $.post "/projects/\#{projectId}/save_file", postData, successCallback
 
       else
         form = $(currentPanel).find('form')
