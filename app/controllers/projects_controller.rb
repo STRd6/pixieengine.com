@@ -155,7 +155,12 @@ class ProjectsController < ApplicationController
   def object
     @project ||= if demo?
       if current_user
-        current_user.demo_project
+        # Use the source demo project if this one is likely to be too new
+        if current_user.demo_project.created_at < 2.minutes.ago
+          current_user.demo_project
+        else
+          Project.find Project::DEMO_ID
+        end
       else
         Project.find Project::DEMO_ID
       end
