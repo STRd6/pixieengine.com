@@ -187,6 +187,28 @@
       catch error
         warn? error.message
 
+  window.removeFile = (node) ->
+    notify "Removing..."
+
+    docSelector = node.remove().data("id")
+
+    # Close file if open
+    if $('#tabs ul li a[href="' + docSelector + '"]').length
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+    path = $(docSelector).remove().data("path")
+    message = $(".actions .status .message").val()
+
+    postData = 
+      path: path
+      format: 'json'
+      message: message
+
+    successCallback = (data) ->
+      notify "Removed!"
+
+    $.post "/projects/\#{projectId}/remove_file", postData, successCallback
+
   # Commands
   window.save = (event, data) ->
     requireLogin ->
@@ -396,7 +418,7 @@
       pixelEditor = createPixelEditor
         width: 32 #TODO: Real width
         height: 32 #TODO: Real height
-        dataUrl: "/production/projects/#{project.id}\#{path}?\#{mtime}"
+        dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
         path: path
 
       pixelEditor.bind('save', save)

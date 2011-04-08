@@ -129,6 +129,20 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def remove_file
+    message = params[:message].presence
+
+    project.remove_file(params[:path], message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def filter_results
     @projects ||= if filter
       if current_user

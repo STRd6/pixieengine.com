@@ -141,7 +141,7 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :git_pull
 
-  def git_commit_and_push(message)
+  def git_commit_and_push(message="Modified in browser at pixie.strd6.com")
     git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
@@ -168,19 +168,21 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(message || "Modified in browser at pixie.strd6.com")
+    git_commit_and_push_without_delay(message)
   end
   handle_asynchronously :save_file
 
-  def remove_file(path)
+  def remove_file(path, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
+    return if path.first == "/"
 
     #TODO Handle directories
 
+    FileUtils.rm File.join(self.path, path)
     git_util "rm", path
 
-    git_commit_and_push
+    git_commit_and_push(message)
   end
 
   def file_info
@@ -195,7 +197,7 @@ class Project < ActiveRecord::Base
         {
           :name => "Documentation",
           :ext => "documentation",
-          :path => file_path.sub(project_root_path, '')
+          :path => file_path.sub(project_root_path + File::SEPARATOR, '')
         }
       else
         {
@@ -231,7 +233,7 @@ class Project < ActiveRecord::Base
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,
-        :path => file_path.sub(project_root_path, ''),
+        :path => file_path.sub(project_root_path + File::SEPARATOR, ''),
       }
     end
   end

@@ -3,7 +3,7 @@
 
 :coffeescript
   $ ->
-    $('.filetree .file').contextMenu menu: "file_tree_context_menu", (action, el, pos) ->
+    $('.filetree .file:not(.documentation)').contextMenu menu: "file_tree_context_menu", (action, node) ->
       switch action
         when "delete"
-          console.log el
+          removeFile(node)
