@@ -289,7 +289,7 @@ class Project < ActiveRecord::Base
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
       doc_dir = File.join path, "docs"
 
-      FileUtils.cp File.join(path, "#{title}.js"), dir
+      FileUtils.cp File.join(path, "#{config[:name] || title}.js"), dir
 
       FileUtils.mkdir_p(doc_dir)
 
@@ -300,6 +300,6 @@ class Project < ActiveRecord::Base
   handle_asynchronously :generate_docs
 
   def config
-    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path)))
+    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path))).reverseMerge(DEFAULT_CONFIG)
   end
 end
