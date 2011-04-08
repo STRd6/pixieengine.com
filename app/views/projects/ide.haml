@@ -488,6 +488,9 @@
     $('.window .ui-icon-close').live "click", ->
       $(this).parent().hide().children("iframe").remove()
 
+    # Hack to pre-load main file
+    $("#file__src_main_coffee").prev().click()
+
 %style
   :sass
     #properties_editor_window
