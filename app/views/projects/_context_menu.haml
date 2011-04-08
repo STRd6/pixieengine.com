@@ -1,0 +1,9 @@
+#file_tree_context_menu.context_menu
+  %li= link_to "Delete", "#delete"
+
+:coffeescript
+  $ ->
+    $('.filetree .file').contextMenu menu: "file_tree_context_menu", (action, el, pos) ->
+      switch action
+        when "delete"
+          console.log el
