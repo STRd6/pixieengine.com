@@ -41,34 +41,35 @@
     %button.close_tip.left Close
 
 :coffeescript
-  $("#tooltip .next_tip").live "click", ->
+  $ ->
+    $("#tooltip .next_tip").live "click", ->
+      nextTip()
+
+    $("#tooltip .close_tip").live "click", ->
+      hideTooltip()
+
+    tipIndex = -1
+    nextTip = () ->
+      tipIndex += 1
+      tips = $("#tips .tip")
+      moreTips = tipIndex < tips.length - 1
+
+      tip = tips.eq(tipIndex)
+
+      targetElement = $(tip.attr("data-element_selector"))
+
+      # TODO Highlight target element
+
+      hideTooltip()
+
+      if tip.length
+        tipMessage = tip.html()
+
+        tipMessage += $("#tips .close").html()
+
+        if moreTips
+          tipMessage += $("#tips .next").html()
+
+        showTooltip(targetElement, tipMessage)
+
     nextTip()
-
-  $("#tooltip .close_tip").live "click", ->
-    hideTooltip()
-
-  tipIndex = -1
-  nextTip = () ->
-    tipIndex += 1
-    tips = $("#tips .tip")
-    moreTips = tipIndex < tips.length - 1
-
-    tip = tips.eq(tipIndex)
-
-    targetElement = $(tip.attr("data-element_selector"))
-
-    # TODO Highlight target element
-
-    hideTooltip()
-
-    if tip.length
-      tipMessage = tip.html()
-
-      tipMessage += $("#tips .close").html()
-
-      if moreTips
-        tipMessage += $("#tips .next").html()
-
-      showTooltip(targetElement, tipMessage)
-
-  nextTip()
