@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
 
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
   before_filter :require_user, :except => PUBLIC_ACTIONS
-  before_filter :require_access, :except => PUBLIC_ACTIONS
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create]
   before_filter :filter_results, :only => [:index]
 
   def new
