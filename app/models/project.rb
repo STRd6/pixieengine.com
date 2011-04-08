@@ -141,7 +141,8 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :git_pull
 
-  def git_commit_and_push(message="Modified in browser at pixie.strd6.com")
+  def git_commit_and_push(message)
+    message ||= "Modified in browser at pixie.strd6.com"
     git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
