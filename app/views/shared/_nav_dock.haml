@@ -33,6 +33,10 @@
 
 :coffeescript
   $ ->
+    $(document).bind 'keydown', 'c', (event) ->
+      event.preventDefault()
+      $('#chat').mousedown()
+
     $(document).bind 'keydown', 'd', (event) ->
       event.preventDefault()
       $('#hide_dock').mousedown()
