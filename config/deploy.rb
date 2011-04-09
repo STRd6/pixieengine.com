@@ -75,7 +75,7 @@ namespace :delayed_job do
     run "cd #{current_path}; RAILS_ENV=#{rails_env} script/delayed_job restart"
   end
 end
-after "deploy:update_code", "delayed_job:restart"
+after "deploy:symlink", "delayed_job:restart"
 
 # Passenger start Tasks
 namespace :deploy do

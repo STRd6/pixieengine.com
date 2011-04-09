@@ -16,6 +16,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :ide
       get :fullscreen
 
+      post :remove_file
       post :save_file
       post :tag_version
       post :generate_docs

@@ -41,6 +41,12 @@ class Project < ActiveRecord::Base
 
   DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
 
+  DEMO_ID = 34
+
+  def demo_path
+    File.join base_path, DEMO_ID.to_s
+  end
+
   def base_path
     Rails.root.join 'public', 'production', 'projects'
   end
@@ -54,8 +60,10 @@ class Project < ActiveRecord::Base
   end
 
   def create_directory
-    FileUtils.mkdir_p path
-    system 'chmod', "g+w", path
+    unless demo?
+      FileUtils.mkdir_p path
+      system 'chmod', "g+w", path
+    end
   end
 
   def make_group_writable
@@ -66,6 +74,8 @@ class Project < ActiveRecord::Base
   def update_libs
     lib_path = File.join path, config[:directories][:lib]
 
+    FileUtils.mkdir_p lib_path
+
     config[:libs].each do |filename, url|
       file_path = File.join lib_path, filename
 
@@ -73,6 +83,8 @@ class Project < ActiveRecord::Base
         file.write(open(url) {|f| f.read})
       end
     end
+
+    make_group_writable
   end
   handle_asynchronously :update_libs
 
@@ -98,7 +110,7 @@ class Project < ActiveRecord::Base
   handle_asynchronously :tag_version
 
   def clone_repo
-    create_directory
+    create_directory unless demo?
 
     if remote_origin.present?
       git_util "clone", remote_origin, path
@@ -109,10 +121,14 @@ class Project < ActiveRecord::Base
       # Push branch if it was just created
       git_util "push", '-u', "origin", BRANCH_NAME
     else
-      # Clone Demo Project
-      git_util "clone", DEMO_ORIGIN, path
-      # Checkout local pixie branch
-      git_util 'checkout', '-b', BRANCH_NAME
+      if demo?
+        FileUtils.cp_r demo_path, path
+      else
+        # Clone Demo Project
+        git_util "clone", DEMO_ORIGIN, path
+        # Checkout local pixie branch
+        git_util 'checkout', '-b', BRANCH_NAME
+      end
     end
 
     make_group_writable
@@ -126,6 +142,7 @@ class Project < ActiveRecord::Base
   handle_asynchronously :git_pull
 
   def git_commit_and_push(message)
+    message ||= "Modified in browser at pixie.strd6.com"
     git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
@@ -152,18 +169,21 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push(message || "Modified in browser at pixie.strd6.com")
+    git_commit_and_push_without_delay(message)
   end
+  handle_asynchronously :save_file
 
-  def remove_file(path)
+  def remove_file(path, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
+    return if path.first == "/"
 
     #TODO Handle directories
 
+    FileUtils.rm File.join(self.path, path)
     git_util "rm", path
 
-    git_commit_and_push
+    git_commit_and_push(message)
   end
 
   def file_info
@@ -178,7 +198,7 @@ class Project < ActiveRecord::Base
         {
           :name => "Documentation",
           :ext => "documentation",
-          :path => file_path.sub(project_root_path, '')
+          :path => file_path.sub(project_root_path + File::SEPARATOR, '')
         }
       else
         {
@@ -214,7 +234,7 @@ class Project < ActiveRecord::Base
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,
-        :path => file_path.sub(project_root_path, ''),
+        :path => file_path.sub(project_root_path + File::SEPARATOR, ''),
       }
     end
   end
@@ -272,7 +292,7 @@ class Project < ActiveRecord::Base
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
       doc_dir = File.join path, "docs"
 
-      FileUtils.cp File.join(path, "#{title}.js"), dir
+      FileUtils.cp File.join(path, "#{config[:name] || title}.js"), dir
 
       FileUtils.mkdir_p(doc_dir)
 
@@ -283,6 +303,6 @@ class Project < ActiveRecord::Base
   handle_asynchronously :generate_docs
 
   def config
-    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path)))
+    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path))).reverse_merge(DEFAULT_CONFIG)
   end
 end

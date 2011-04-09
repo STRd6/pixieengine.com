@@ -1,19 +1,19 @@
-.centered_form
-  - form_for user do |form|
-    = form.error_messages
-    %h2 Sign Up For Pixie!
+- form_for user do |form|
+  = form.error_messages
+  %h2 Sign Up For Pixie!
 
-    %p
-      = form.label :display_name
-      = form.text_field :display_name
-    %p
-      = form.label :email
-      = form.text_field :email
-    %p
-      = form.label :password
-      = form.password_field :password
+  %p
+    = form.label :display_name
+    = form.text_field :display_name
+  %p
+    = form.label :email
+    = form.text_field :email
+  %p
+    = form.label :password
+    = form.password_field :password
 
-    = form.submit "Sign Up"
+  .actions
+    %button.affirmative Sign Up
 
 :coffeescript
   $ ->
@@ -25,17 +25,15 @@
     @import partials/base
     @import util
 
-    .centered_form
-      +bounds(525px, 500px)
+    #fullscreen > form
+      +border-radius
 
       position: absolute
       left: 0
       right: 0
       top: 100px
       margin: auto
-
-    form
-      +border-radius
+      width: 525px
 
       background-color: $dark_highlight
       padding: 1em
@@ -50,6 +48,21 @@
         padding: 5px
         width: 324px
 
-    .light
-      form
+      .light &
         background-color: $light_highlight
+
+    #simplemodal-container form
+      width: 448px
+
+      h2
+        display: none
+
+      .actions
+        padding: 0
+
+      input[type="text"]
+        color: #000
+        margin: 0
+        max-width: 600px
+        padding: 5px
+        width: 324px

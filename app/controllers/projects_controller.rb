@@ -1,8 +1,9 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :except => [:index, :show, :hook, :info, :ide, :github_integration]
-  before_filter :require_access, :only => [:save_file, :tag_version, :edit, :update, :generate_docs]
+  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
+  before_filter :require_user, :except => PUBLIC_ACTIONS
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create]
   before_filter :filter_results, :only => [:index]
 
   def new
@@ -64,6 +65,8 @@ class ProjectsController < ApplicationController
   end
 
   def ide
+    @has_reg_popup = true
+
     render :layout => "ide"
   end
 
@@ -126,6 +129,20 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def remove_file
+    message = params[:message].presence
+
+    project.remove_file(params[:path], message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def filter_results
     @projects ||= if filter
       if current_user
@@ -144,9 +161,26 @@ class ProjectsController < ApplicationController
     ["own", "none"]
   end
 
+  def demo?
+    params[:id] == "demo"
+  end
+
   private
   def object
-    @project ||= Project.find params[:id]
+    @project ||= if demo?
+      if current_user
+        # Use the source demo project if this one is likely to be too new
+        if current_user.demo_project.created_at < 2.minutes.ago
+          current_user.demo_project
+        else
+          Project.find Project::DEMO_ID
+        end
+      else
+        Project.find Project::DEMO_ID
+      end
+    else
+      Project.find params[:id]
+    end
   end
   helper_method :object
 

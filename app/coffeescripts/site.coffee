@@ -2,6 +2,16 @@
 $(".clickable").live 'click', ->
   document.location = $(this).find("a").eq(0).attr("href")
 
+# Tooltips
+window.showTooltip = (element, html) ->
+  position = element.offset() || {top: 50, left: 50}
+
+  position.left += element.width() + 42
+  $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html)
+
+window.hideTooltip = ->
+  $("#tooltip").stop().fadeOut()
+
 # Local Storage
 getVal = (key) ->
   if localStorage

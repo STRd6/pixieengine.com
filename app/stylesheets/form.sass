@@ -2,7 +2,21 @@
   input[type=file]
     color: #000
 
+button.affirmative
+  float: right
+
+button.negative
+  float: left
+
 form
+  .actions
+    +box-sizing(border-box)
+
+    padding-left: 120px
+    padding-right: 71px
+    overflow: auto
+    width: 100%
+
   label, input, textarea
     font-family: Verdana, sans-serif
     font-size: 12px
@@ -75,8 +89,6 @@ form
 
 // Custom log in page spacing
 form.login
-  +bounds(500px, 260px)
-
   left: 0
   margin: auto
   position: absolute

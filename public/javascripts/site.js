@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 26 Feb 2011 19:43:30 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 08 Apr 2011 03:50:41 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -7,6 +7,18 @@
   $(".clickable").live('click', function() {
     return document.location = $(this).find("a").eq(0).attr("href");
   });
+  window.showTooltip = function(element, html) {
+    var position;
+    position = element.offset() || {
+      top: 50,
+      left: 50
+    };
+    position.left += element.width() + 42;
+    return $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html);
+  };
+  window.hideTooltip = function() {
+    return $("#tooltip").stop().fadeOut();
+  };
   getVal = function(key) {
     if (localStorage) {
       try {

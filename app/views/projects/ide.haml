@@ -31,7 +31,7 @@
     #tabs
       %ul
 
-  #test_zone.window(style="top: 300px; left: 50px;")
+  #test_zone.window(style="top: 125px; left: 300px;")
     %span#close_app.ui-icon.ui-icon-close
     %h3.ui-widget-header= project.title
     %iframe#test_frame
@@ -41,6 +41,8 @@
     %h3.ui-widget-header Test #{project.title}
     %iframe#unit_test_frame
 
+= render :partial => "context_menu"
+= render :partial => "tips"
 = render :partial => "pixie"
 = render :partial => "sfxr"
 = render :partial => "new_file_modal"
@@ -59,7 +61,12 @@
     %ol#qunit-tests
     #qunit-fixture
 
+
+- project_id = params[:id]
+
 :coffeescript
+  window.projectId = #{project_id.to_json}
+
   $("#generate_docs").click ->
     notify("Scheduling docs generation...")
 
@@ -180,9 +187,31 @@
       catch error
         warn? error.message
 
+  window.removeFile = (node) ->
+    notify "Removing..."
+
+    docSelector = node.remove().data("id")
+
+    # Close file if open
+    if $('#tabs ul li a[href="' + docSelector + '"]').length
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+    path = $(docSelector).remove().data("path")
+    message = $(".actions .status .message").val()
+
+    postData = 
+      path: path
+      format: 'json'
+      message: message
+
+    successCallback = (data) ->
+      notify "Removed!"
+
+    $.post "/projects/\#{projectId}/remove_file", postData, successCallback
+
   # Commands
   window.save = (event, data) ->
-    if #{!!current_user}
+    requireLogin ->
       notify "Saving..."
 
       activeTab = $("#tabs ul li.ui-state-active")
@@ -202,7 +231,7 @@
           message: message
         , data)
 
-        $.post '/projects/#{project.id}/save_file', postData, successCallback
+        $.post "/projects/\#{projectId}/save_file", postData, successCallback
 
       else
         form = $(currentPanel).find('form')
@@ -221,8 +250,6 @@
         else
           # Check for special save method
           activeTab.find('a').data('doSave')?()
-    else
-      window.location.href = '/login'
 
   $('#save').live 'click', save
 
@@ -391,7 +418,7 @@
       pixelEditor = createPixelEditor
         width: 32 #TODO: Real width
         height: 32 #TODO: Real height
-        dataUrl: "/production/projects/#{project.id}\#{path}?\#{mtime}"
+        dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
         path: path
 
       pixelEditor.bind('save', save)
@@ -484,6 +511,9 @@
 
     $('.window .ui-icon-close').live "click", ->
       $(this).parent().hide().children("iframe").remove()
+
+    # Hack to pre-load main file
+    $("#file_src_main_coffee").prev().click()
 
 %style
   :sass
