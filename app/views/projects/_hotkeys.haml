@@ -3,17 +3,14 @@
   %dl.keyboard_mappings
     .left_col
       %dt
-        ctrl h
-        %em or
-        ⌘ h
-    %dd Bring up this help dialog
-  %dl.keyboard_mappings
-    .left_col
-      %dt
         ctrl s
         %em or
         ⌘ s
     %dd Save game to github
+  %dl.keyboard_mappings
+    .left_col
+      %dt c
+    %dd Toggle chat
   %dl.keyboard_mappings
     .left_col
       %dt d
@@ -22,6 +19,10 @@
     .left_col
       %dt esc
     %dd Enter developer mode
+  %dl.keyboard_mappings
+    .left_col
+      %dt ?
+    %dd Bring up this help dialog
   .rule
   %h3 Developer Mode
   %dl.keyboard_mappings
@@ -46,7 +47,7 @@
     %dd Decrement numeric values by 5
 
 :coffeescript
-  $(document).bind 'keydown', 'ctrl+h meta+h', (e) ->
+  $(document).bind 'keydown', 'shift+/', (e) ->
     e.preventDefault()
 
     $('#hotkeysModal').modal
