@@ -1,36 +1,36 @@
 = javascript_include_tag 'pixie/jqcolor'
 
-.centered
-  - form_for user, :html => { :multipart => true } do |form|
-    = form.error_messages
 
-    %h2 Edit Profile
+- form_for user, :html => { :multipart => true } do |form|
+  = form.error_messages
 
-    %p
-      = form.label :display_name
-      = form.text_field :display_name
+  %h2 Edit Profile
 
-    %p
-      = form.label :favorite_color
-      = form.text_field :favorite_color
+  %p
+    = form.label :display_name
+    = form.text_field :display_name
 
-    %p
-      = form.label :profile
-      = form.text_area :profile
+  %p
+    = form.label :favorite_color
+    = form.text_field :favorite_color
 
-    %p
-      = form.label :avatar
-      = form.file_field :avatar
+  %p
+    = form.label :profile
+    = form.text_area :profile
 
-    = form.submit "Update Information"
+  %p
+    = form.label :avatar
+    = form.file_field :avatar
+
+  = form.submit "Update Information"
 
 :coffeescript
   $ ->
     $("#user_favorite_color").colorPicker()
 
 %style
-  :sass
-    .centered
+  :sass    
+    form
       margin: auto
-      width: 512px
+      width: 300px
 
