@@ -7,7 +7,12 @@ class ProjectsController < ApplicationController
   before_filter :filter_results, :only => [:index]
 
   def new
-    @project = Project.new
+    if current_user.projects.size > 0 && !current_user.paying
+      flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
+      redirect_to subscribe_path
+    else
+      @project = Project.new
+    end
   end
 
   def edit
