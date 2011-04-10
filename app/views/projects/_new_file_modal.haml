@@ -1,9 +1,11 @@
 %form#new_file_modal.modal
+  %h3 New File
+
   %p
     = label_tag :name
     = text_field_tag :name, "", {:title => 'Name', :id => nil}
 
-  %h3 Choose Type
+  = label_tag "Choose Type"
   .button_group
     %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
     %button{ 'data-params' => {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"}.to_json } Test
