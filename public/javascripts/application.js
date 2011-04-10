@@ -1,22 +1,3 @@
-function notify(message, delay) {
-  var notice = $("#flashes .notice").first();
-  if(notice.length < 1) {
-    notice = $("<div class='notice' />").html(message);
-    $('#flashes').append(notice);
-  } else {
-    notice.html(message);
-  }
-
-  notice.append($("<div class='close'/>"));
-  notice.hide();
-
-  if(delay) {
-    notice.slideToggle().delay(delay).fadeOut();
-  } else {
-    notice.slideToggle();
-  }
-}
-
 function trackPageview(pageName) {
   _gaq.push(['_trackPageview', pageName]);
 }
