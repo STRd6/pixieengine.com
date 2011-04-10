@@ -1,12 +1,12 @@
 #registerModal.modalElement
   #registration
-    %h2 Please Register
+    %h2 Log in continue
     = render :partial => 'users/form', :locals => {:user => User.new}
   #logIn{:style => "display: none;"}
     %h2 Please Sign In
     = render :partial => 'user_sessions/form'
-  = link_to_function "Or create a new account with Pixie", "$('#registration').show(); $('#logIn').hide(); $(this).hide().next().show();", :class => "button", :style => "display: none;"
-  = link_to_function "Or log in with your Pixie account", "$('#registration').hide(); $('#logIn').show(); $(this).hide().prev().show();", :class => "button"
+  = link_to_function "Create a new account with Pixie", "$('#registration').show(); $('#logIn').hide(); $(this).hide().next().show();", :style => "display: none;"
+  = link_to_function "Log in with existing account", "$('#registration').hide(); $('#logIn').show(); $(this).hide().prev().show();"
 
 :javascript
   var logInCallback;
@@ -59,3 +59,9 @@
     ajaxifyForm("#new_user", true);
     ajaxifyForm("#new_user_session");
   });
+
+%style
+  :sass
+    #fullscreen #registerModal
+      a
+        color: #fff
