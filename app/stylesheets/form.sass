@@ -1,132 +1,52 @@
 .light
-  input[type=file]
-    color: #000
-
-button.affirmative
-  float: right
-
-button.negative
-  float: left
+  form
+    background-color: $light_highlight
 
 form
+  +border-radius
+
+  background-color: $dark_highlight
+  padding-bottom: 1em
+  padding-left: 2em
+  padding-right: 2em
+  padding-top: 1em
+
   .actions
     +box-sizing(border-box)
 
-    padding-left: 120px
-    padding-right: 71px
     overflow: auto
     width: 100%
 
   label, input, textarea
     font-family: Verdana, sans-serif
     font-size: 12px
-    letter-spacing: .5px
+    letter-spacing: 0.5px
 
   label
-    display: inline-block
-    font-size: 12px
-    font-weight: bold
-    +grid-width(3)
-    margin-right = $blueprint-grid-margin
-    padding-top: .5em
-    text-align: right
-    vertical-align: top
-
-  input[type=text], input[type=password], input[type=file], textarea
-    +grid-width(8)
-    padding: 5px
-    &:focus
-      border-width: 2px
-      border-color: !main_color
-
-  input[type=text], input[type=password], textarea
-    border: 2px solid !light_gray
-
-  textarea
-    height = ($blueprint-grid-width + $blueprint-grid-margin) * 4
-    &.code
-      font-family: monospace, 'courier new'
-      font-size: 12px
-      white-space: pre
-      width: 700px
-
-  input[type=button], input[type=submit]
     display: block
-    margin-top: 1em
-    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 3
+    font-weight: bold
+    margin-right: 1em
+    padding-top: 0.5em
 
-  input[type=radio], input[type=checkbox]
-    display: inline-block
-    +grid-width(1)
-    margin = 0 $blueprint-grid-margin 0 0
+  input
+    margin-right: 1em
 
   input[disabled]
     background-color: #ccc
 
-  input[type=text]
+  input[type=text], input[type=password], input[type=file], textarea
     +box-sizing(border-box)
 
-    color: #000
     margin: 0
-    max-width: 120px
-    padding: 2px
+    padding: 5px
 
-  #errorExplanation
-    color: !error_color
-    margin-bottom: 1em
+    &:focus
+      border-width: 2px
+      border-color: $pixie_primary
 
-    h2
-      color: !error_color
+  input[type=text], input[type=password], textarea
+    border: 2px solid $light_gray
+    width: 300px
 
-  .field_with_errors
-    +inline-block
-
-    input
-      border-color: !error_color
-
-    label
-      color: !error_color
-
-// Custom log in page spacing
-form.login
-  left: 0
-  margin: auto
-  position: absolute
-  right: 0
-  top: 100px
-
-  p
-    position: relative
-
-  label
-    padding-top: 0
-    vertical-align: middle
-    width: 175px
-
-  input
-    color: #000
-
-  input[type="radio"]
-    margin: 0
-    width: 22px
-
-  input[type="submit"]
-    margin-left: 175px + 15px
-
-  input[type="text"]
-    +bounds(200px, 29px)
-
-    max-width: 200px
-
-  #user_session_password
-    width: 200px
-
-  #forgot_password_link
-    color: #000
-    display: block
-    font-size: .8em
-    font-weight: normal
-    margin-left: 222px
-    text-decoration: underline
-    &:hover
-      text-decoration: none
+  textarea
+    +bounds(300px, 150px)
