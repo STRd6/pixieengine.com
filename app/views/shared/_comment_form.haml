@@ -1,4 +1,5 @@
 - form_for Comment.new(:commentable => commentable) do |form|
+  %h3 Comments
   = form.hidden_field :commentable_type
   = form.hidden_field :commentable_id
   = form.text_area :body
@@ -6,15 +7,17 @@
   = submit_tag "Post Comment"
 
 :coffeescript
-  $(->
+  $ ->
     commentForm = $("#new_comment")
 
     commentForm.submit ->
-      if (loggedIn)
+      if loggedIn
         return true
       else
         requireLogin ->
           commentForm.submit()
-  )
 
-
+%style
+  :sass
+    form
+      width: 350px
