@@ -1,5 +1,4 @@
 .comments_area
-  %h3 Comments
   .comments
     - commentable.comments.each do |comment|
       = render :partial => "comments/comment", :locals => {:comment => comment}
