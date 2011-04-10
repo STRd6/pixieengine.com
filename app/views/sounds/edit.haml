@@ -3,6 +3,8 @@
 - form_for sound do |form|
   = form.error_messages
 
+  %h2= "Edit #{sound.display_name}"
+
   %p
     = form.label :title
     = form.text_field :title
@@ -12,3 +14,9 @@
     = form.text_area :description
 
   = form.submit
+
+%style
+  :sass
+    form
+      margin: auto
+      width: 300px
