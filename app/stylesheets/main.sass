@@ -50,21 +50,7 @@ a
 .clear
   clear: both
 
-// Grid container
-.container
-  margin: 0
-  margin-left = $blueprint-grid-margin
-  padding-left = ($blueprint-grid-width + $blueprint-grid-margin) * 4
-  position: relative
-  width: auto
-
 #sidebar
-  +grid-width(4)
-  display: block
-  left: 0
-  margin-right = $blueprint-grid-margin
-  position: absolute
-
   #logo
     height: 70px
     position: relative
@@ -73,7 +59,7 @@ a
     #logo_type
       +bounds(110px, 40px)
 
-      color = !main_color
+      color = $pixie_primary
       font-size: 32px
       letter-spacing: .25em
       a
@@ -87,20 +73,17 @@ a
           color: inherit
 
   #description
-    color = !light_gray
+    color = $light_gray
     font-size: 11px
     font-style: italic
     letter-spacing: .1em
-    margin-top = $blueprint-grid-width - $blueprint-grid-margin
     text-align: justify
 
 #header
   +box-sizing(border-box)
-  +grid-width(20)
   border-bottom = 1px solid !dark_gray
   border-left = 1px solid !dark_gray
   display: inline-block
-  height= ($blueprint-grid-width + $blueprint-grid-margin) * 2 - $blueprint-grid-margin
   position: relative
 
   // Apply to all header links (navigation and log in link)
@@ -116,7 +99,6 @@ a
 
   #nav
     +box-sizing(border-box)
-    +grid-width(14)
     bottom: 0
     display: inline-block
     padding-left = 35px
@@ -125,11 +107,9 @@ a
 
     // Text straight in a span means it's the current page
     span
-      +grid-width(2)
       color = !main_color
       display: inline-block
       font-weight: bold
-      margin-right = $blueprint-grid-margin
       text-align: center
       text-decoration: none
 
@@ -142,7 +122,6 @@ a
           border-bottom = 4px solid !dark_gray
 
   #login_link
-    +grid-width(8)
     bottom: 0
     color = !light_gray
     display: inline-block
@@ -179,9 +158,7 @@ a
 
 #content
   +box-sizing(border-box)
-  +grid-width(20)
   border-right = 1px solid !dark_gray
-  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 20px ($blueprint-grid-width + $blueprint-grid-margin)
   position: relative
   top: -5px
 
@@ -190,12 +167,7 @@ a
     letter-spacing: .5px
     line-height: 1.8
 
-.profile
-  @include single-column
-  margin-right = $blueprint-grid-margin
-
 #footer
-  +grid-width(20)
   margin-top: 2em
 
 // TODO: Good these up, embetter and embiggen

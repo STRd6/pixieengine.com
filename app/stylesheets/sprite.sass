@@ -1,9 +1,6 @@
 .sprite, .sound
-  +grid-width(4)
   display: inline-block
   height: auto
-  margin-right = $blueprint-grid-margin
-  margin-bottom = $blueprint-grid-margin*2
   position: relative
   vertical-align: top
   word-wrap: break-word
@@ -12,14 +9,14 @@
     border = 1px solid !light_gray
     display: block
     margin: .5em 0
-  
+
   .favorites
     cursor: pointer
     display: inline-block
-    
+
   .title a
     vertical-align: top
-    
+
   .user
     color: #666
     a
@@ -30,10 +27,6 @@
     +inline-block
     input
       +inline-block
-
-      &[type=text]
-        +grid-width(3)
-
 
       &[type=button], &[type=submit]
         margin: 0
