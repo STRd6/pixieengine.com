@@ -19,7 +19,7 @@
   - if current_user
     %li.avatar
       = link_to "#{image_tag "icons/status_online.png"} Set as Avatar".html_safe, "#", :class => "button", "data-sprite_id" => sprite.id
-    %li.listMenu.menu
+    %li.listMenu.menu.collection
       = link_to "#{image_tag "icons/photo_add.png"} Add to Collection".html_safe, '#', :class => "button", "data-sprite_id" => sprite.id
       %ul.round{:style => "display: none;"}
         - current_user.collections.each do |collection|
@@ -159,3 +159,9 @@
       );
     });
   });
+
+%style
+  :sass
+    .collection
+      ul
+        padding-top: 0.5em
