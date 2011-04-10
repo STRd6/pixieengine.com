@@ -1,15 +1,15 @@
-.light
-  form
-    background-color: $light_highlight
+body > form
+  button
+    height: 30px
 
-form
+body > form
   +border-radius
 
   background-color: $dark_highlight
-  padding-bottom: 1em
-  padding-left: 2em
-  padding-right: 2em
-  padding-top: 1em
+  padding: 1.5em 2em
+
+  .light &
+    background-color: $light_highlight
 
   .actions
     +box-sizing(border-box)
@@ -17,36 +17,36 @@ form
     overflow: auto
     width: 100%
 
-  label, input, textarea
-    font-family: Verdana, sans-serif
-    font-size: 12px
-    letter-spacing: 0.5px
+label, input, textarea
+  font-family: Verdana, sans-serif
+  font-size: 12px
+  letter-spacing: 0.5px
 
-  label
-    display: block
-    font-weight: bold
-    margin-right: 1em
-    padding-top: 0.5em
+label
+  display: block
+  font-weight: bold
+  margin-right: 1em
+  padding-top: 0.5em
 
-  input
-    margin-right: 1em
+input
+  margin-bottom: 1em
+  margin-right: 1em
 
-  input[disabled]
-    background-color: #ccc
+input[disabled]
+  background-color: #ccc
 
-  input[type=text], input[type=password], input[type=file], textarea
-    +box-sizing(border-box)
+input[type=text], input[type=password], input[type=file], textarea
+  +box-sizing(border-box)
 
-    margin: 0
-    padding: 5px
+  padding: 5px
 
-    &:focus
-      border-width: 2px
-      border-color: $pixie_primary
+  &:focus
+    border-width: 2px
+    border-color: $pixie_primary
 
-  input[type=text], input[type=password], textarea
-    border: 2px solid $light_gray
-    width: 300px
+input[type=text], input[type=password], textarea
+  border: 2px solid $light_gray
+  width: 300px
 
-  textarea
-    +bounds(300px, 150px)
+textarea
+  +bounds(300px, 150px)
