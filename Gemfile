@@ -40,7 +40,6 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "sanitize"
-gem "spreedly"
 gem "SystemTimer"
 gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
