@@ -1,0 +1,28 @@
+%h2 How to Integrate With an Existing Github Project
+
+%ol.numbered
+  %li
+    Go to your github repository admin panel. In the 'Collaborators' panel add
+    PixieCode to the collaborators.
+
+    = image_tag "tuts/pixie_user.png"
+  %li
+    On your github repository in the 'Service Hooks' panel add
+    http://pixie.strd6.com/projects/hook to your 'Post-Receive URLs'
+
+    = image_tag "tuts/web_hooks.png"
+
+  %li
+    = link_to "Create a project on Pixie", new_project_path
+
+    Choose whatever you want for the title and description.
+    Add your repository's SSH url as the remote origin.
+
+    It should look something like: git@github.com:my_username/my_repo.git
+
+    = image_tag "tuts/new_project.png"
+
+  %li
+    Done! When you make changes to your code in Pixie it will be pushed to the
+    'pixie' branch of your repo. You may then merge it in to master at your own
+    convenience.

@@ -1,4 +1,6 @@
 class App < ActiveRecord::Base
+  include Commentable
+
   belongs_to :user
   belongs_to :parent, :class_name => "App"
 
@@ -8,12 +10,30 @@ class App < ActiveRecord::Base
   has_many :app_sprites
   has_many :sprites, :through => :app_sprites
 
+  has_many :app_sounds
+  has_many :sounds, :through => :app_sounds
+
   has_many :app_members
   has_many :members, :through => :app_members, :source => :user
 
   has_many :app_data
 
-  after_save :generate_docs
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "apps/:id/:style.:extension",
+    :styles => {
+      :thumb => ["96x96#", :png]
+    }
+  )
+
+  #after_save :generate_docs
+
+  scope :featured, where(:featured => true)
+
+  scope :for_user, lambda {|user|
+    where(:user_id => user.id)
+  }
+
+  scope :none
 
   def resource_code
     return "var App = #{
@@ -24,6 +44,10 @@ class App < ActiveRecord::Base
         :width => width
       }.to_json
     };"
+  end
+
+  def display_name
+    title
   end
 
   def library_code
@@ -59,6 +83,67 @@ class App < ActiveRecord::Base
       f.write(resource_code)
       f.write(library_code)
       f.write(wrapped_code)
+    end
+  end
+
+  def migrate_to_project
+    project = Project.create :title => title,
+      :description => description,
+      :user => user
+
+    # Import Main script
+    src_dir = File.join(project.path, 'src')
+
+    main_file = "main.#{extension}"
+
+    FileUtils.mkdir_p(src_dir)
+
+    open(File.join(src_dir, main_file), "w") do |f|
+      f.write(src)
+    end
+
+    # Import libraries
+    libraries.each do |library|
+      # Special core libraries, hard coded for migration
+      if [1, 2, 5, 7].include? library.id
+        library.export_code_file(project.path)
+      else
+        library.export_to_project project.path
+      end
+    end
+
+    #TODO Note lib dependencies/versions
+
+    #TODO Import Sounds
+
+    #TODO Import Sprites
+
+    author_name = if user
+      user.display_name
+    else
+      "Anonymous"
+    end
+
+    default_config = JSON.pretty_generate(Project::DEFAULT_CONFIG.merge(
+      :author => author_name,
+      :name => title.to_filename,
+      :main => main_file,
+      :width => width,
+      :height => height
+    ))
+
+    # Create config
+    open(File.join(project.path, "pixie.json"), "w") do |f|
+      f.write(default_config)
+    end
+
+  end
+
+  def extension
+    if lang == "coffeescript"
+      "coffee"
+    else
+      "js"
     end
   end
 

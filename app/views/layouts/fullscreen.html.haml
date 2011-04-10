@@ -8,15 +8,23 @@
         %div{ :class => key }
           = msg
           .close
+    =link_to image_tag('/images/pixie.png', :alt => "About", :title => "About Pixie", :id => "logo"), root_path
+    #bulb
 
     = yield
 
     - if @has_reg_popup
       = render :partial => 'shared/register_modal'
+    = render :partial => "/shared/feedback"
+    = render :partial => "/shared/chat"
+    = render :partial => "/shared/nav_dock"
 
     #tooltip
       .icon
       .content
+
+    #login_link
+      = render :partial => "/shared/login"
 
     - if Rails.env.development?
       = javascript_include_tag "coffee-script"
@@ -29,3 +37,6 @@
         $(function() {
           trackPageview("/event/registered");
         });
+
+    - if facebook?
+      = render :partial => "/shared/fb_app"

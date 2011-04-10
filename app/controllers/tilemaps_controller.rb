@@ -1,5 +1,8 @@
 class TilemapsController < ApplicationController
   respond_to :html, :json
+  layout "fullscreen"
+
+  before_filter :filter_results, :only => [:index]
 
   def create
     @tilemap = Tilemap.new(params[:tilemap])
@@ -7,19 +10,7 @@ class TilemapsController < ApplicationController
 
     @tilemap.save
 
-    respond_with(@tilemap) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
-  end
-
-  def new
-    respond_with(@tilemap) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
+    respond_with(@tilemap)
   end
 
   def show
@@ -30,14 +21,24 @@ class TilemapsController < ApplicationController
     @tilemap = Tilemap.find(params[:id])
     @parent_id = @tilemap.id
 
-    respond_with(@tilemap) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
+    respond_with(@tilemap)
   end
 
-  def index
-    @tilemaps = Tilemap.all
+  def filter_results
+    @tilemaps ||= if filter
+      if current_user
+        if filter == "own"
+          Tilemap.for_user(current_user)
+        else
+          Tilemap.send(filter)
+        end
+      else
+        Tilemap.none
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 end

@@ -2,7 +2,7 @@
 %html{ 'xmlns' => "http://www.w3.org/1999/xhtml",  'xmlns:fb' => "http://www.facebook.com/2008/fbml" }
   = render :partial => "/shared/head"
 
-  %body
+  %body#fullscreen.ide
     -# IDE Specific
     = stylesheet_link_tag 'pixie/pixie'
     = stylesheet_link_tag "jquery.treeview"
@@ -10,35 +10,33 @@
 
     = javascript_include_tag "jquery.treeview.js"
     = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
-    = javascript_include_tag 'pixie/jqcolor', 'pixie/pixie'
 
-    #logo
-      #logo_type
-        = link_to "pixie IDE", new_sprite_path
-    .container
-      #content
-        #flashes
-          - flash.each do |key, msg|
-            %div{ :class => key }= msg
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }
+          = msg
+          .close
 
-        - if ab_test "test" #Dummy test
-          -#nothing
+    =link_to image_tag('/images/pixie.png', :alt => "About", :title => "About Pixie", :id => "logo"), root_path
+    #bulb
 
-        - if @title
-          %h1= @title
+    - if @title
+      %h1= @title
 
-        = yield
+    = yield
 
-        = render :partial => "/shared/chat"
-
-      - if @has_reg_popup
-        = render :partial => 'shared/register_modal'
-      = render :partial => "/shared/footer"
-      = render :partial => "/shared/fb_app"
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
+    = render :partial => "/shared/feedback"
+    = render :partial => "/shared/chat"
+    = render :partial => "/shared/nav_dock"
 
     #tooltip
       .icon
       .content
+
+    #login_link
+      = render :partial => "/shared/login"
 
     = javascript_include_tag "coffee-script"
 

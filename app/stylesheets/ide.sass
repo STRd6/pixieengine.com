@@ -1,12 +1,81 @@
 @import constants
 @import util
+@import partials/base
+
+$nav_left: 220px
+
+#fullscreen
+  #content
+    padding-left: $nav_left + 20px
+
+nav.top.actions .status
+  input
+    background-color: #fff
+    color: #000
+    padding-left: 5px
+
+ul#libraries
+  color: #000
+  padding-top: 7px
+  padding-bottom: 7px
+
+.import_sprite, .import_sound
+  +border-radius
+  +bounds(72px)
+  +contents-centered
+
+  background-color: white
+  display: inline-block
+  margin-right: 10px
+  margin-bottom: 3px
+
+  &.selected
+    background-color: $pixie_primary
+
+  img
+    +max-bounds(64px)
+
+.import_sound
+  color: #000
+  font-size: 10px
+  text-align: center
+
+  .control
+    +bounds(25px, 29px)
+
+    background-image: url(/images/play.png)
+    cursor: pointer
+
+button.save
+  +border-right-radius(0)
+
+  margin-right: 0
+
+nav.left
+  +border-radius
+  +box-sizing(border-box)
+
+  background-color: $dark_highlight
+  height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+  padding: 10px
+  width: $nav_left
+
+  .light &
+    background-color: $light_highlight
+
+.treeview ul
+  background-color: transparent
+
+.treeview .hover
+  color: $pixie_primary
 
 ul.filetree
-  display: inline-block
-  height: 650px
-  margin: 1em
+  margin-top: 0.25em
+  margin-left: 1em
+  margin-right: 1em
   overflow-x: hidden
-  width: 150px
   vertical-align: top
 
   .tab_data
@@ -35,14 +104,23 @@ ul.filetree
     &.import_sprites
       background-image: url(/images/icons/image_add.png)
 
+    &.import_sounds
+      background-image: url(/images/icons/sound_add.png)
+
     &.file
       white-space: nowrap
-      &.coffeescript
+      &.coffeescript, &.coffee
         background-image: url(/images/icons/cup.png)
-      &.javascript
+      &.javascript, &.js
         background-image: url(/images/icons/script.png)
-      &.sprite
+      &.sprite, &.png, &.gif, &.jpg, &.jpeg, &.bmp
         background-image: url(/images/icons/picture.png)
+        margin: 0
+      &.sound, &.sfs
+        background-image: url(/images/icons/sound.png)
+        margin: 0
+      &.wav, &.mp3
+        background-image: url(/images/icons/cd.png)
         margin: 0
       &.documentation
         background-image: url(/images/icons/book_open.png)
@@ -52,23 +130,37 @@ ul.filetree
         background-image: url(/images/icons/book_add.png)
 
 #tabs
-  display: inline-block
-  margin: 1em
-  margin-right: 0
-  width: 712px
-  vertical-align: top
+  +bounds(100%, 100%)
+  +box-sizing(border-box)
+
+  .ui-tabs-nav
+    +box-sizing(border-box)
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 1
 
   &.ui-tabs
     .ui-tabs-hide
       display: none
 
     .ui-tabs-panel
+      +box-sizing(border-box)
+      height: 100%
       padding: 0
+      padding-top: 30px
       position: relative
       button.save, button.new_save
         position: absolute
         right: 1.5em
         top: 0.5em
+
+  form
+    height: 100%
+
+  button.save, button.new_save
+    display: none
 
   li
     .ui-icon-close
@@ -101,7 +193,7 @@ ul.filetree
         &.sound
           background-image: url(/images/icons/sound.png)
         &.sprite
-          background-image: url(/images/icons/photo.png)
+          background-image: url(/images/icons/image.png)
         &.documentation
           background-image: url(/images/icons/book.png)
 
@@ -118,33 +210,51 @@ ul.filetree
 #titleModal, #libraries
   display: none
 
-#testZone
+.window, #test_zone, #testZone
   background-color: #EEE
   display: none
   margin-top: 1em
   padding: 0.5em
   position: absolute
+  z-index: 1000
 
   h3
     cursor: move
     padding-left: 5px
 
-#testFrame
+  .ui-icon-close, #close_app
+    cursor: pointer
+    float: right
+    left: -5px
+    position: relative
+    top: 6px
+
+#test_frame, #testFrame
   background-color: #EEE
   border: 1px solid black
-
-#close_app
-  float: right
-  position: relative
-  left: -5px
-  top: 6px
 
 .container
   padding-left: 0
 
 .actions
   display: inline-block
-  margin: 1em
+  text-align: center
+
+  a
+    color: $pixie_primary
+
+  .status
+    +inline-block
+    .message
+      +border-radius(2px)
+      +inline-block
+      background-color: transparent
+      border: 1px solid $pixie_primary
+      color: white
+      height: 16px
+      padding-left: 1em
+      text-align: left
+      width: 200px
 
 #content
   border: none
@@ -196,3 +306,19 @@ ul#libraries
       padding: 0
       position: relative
       vertical-align: top
+
+#import_drop_zone
+  background: transparent url(/images/import.png) no-repeat center center
+  height: 160px
+  width: 320px
+
+#errors
+  .content
+    padding: 0 1em 1em
+  .error
+    color: black
+    .file[data-id^="#"]
+      cursor: pointer
+      font-weight: bold
+    .message
+      color: red

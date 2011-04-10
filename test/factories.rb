@@ -54,3 +54,9 @@ Factory.define :sound do |sound|
   sound.wav File.new("#{RAILS_ROOT}/test/test.wav")
   sound.sfs File.new("#{RAILS_ROOT}/test/test.sfs")
 end
+
+Factory.define :project do |project|
+  project.user {Factory :user}
+  project.title "TESTING"
+  project.description "this is a test project"
+end

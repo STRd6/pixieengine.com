@@ -1,0 +1,55 @@
+=scrollbars
+  ::-webkit-scrollbar-corner, ::-webkit-resizer
+    +bounds(0)
+    background-color: transparent
+
+  ::-webkit-scrollbar
+    +bounds(16px)
+
+  ::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment
+    +bounds(2px)
+    display: block
+    background-color: transparent
+
+  ::-webkit-scrollbar-track-piece:vertical
+    -webkit-border-image: url(/images/scroll/vertical_track.png) 16 0 16 0
+    border-color: transparent
+    border-width: 16px 0 0 0
+
+  ::-webkit-scrollbar-track-piece:vertical:decrement
+    border-width: 16px 0 0 0
+
+  ::-webkit-scrollbar-track-piece:vertical:increment
+    border-width: 0 0 16px 0
+
+  ::-webkit-scrollbar-track-piece:horizontal:decrement, ::-webkit-scrollbar-track-piece:horizontal:increment
+    -webkit-border-image: url(/images/scroll/horizontal_track.png) 0 16 0 16
+    border-color: transparent
+
+  ::-webkit-scrollbar-track-piece:horizontal:decrement
+    border-width: 0 0 0 16px
+
+  ::-webkit-scrollbar-track-piece:horizontal:increment
+    border-width: 0 16px 0 0
+
+  ::-webkit-scrollbar-corner
+    display: none
+
+  &.light
+    ::-webkit-scrollbar-track-piece:horizontal
+      -webkit-border-image: url(/images/scroll/horizontal_track_light.png) 0 16 0 16
+
+    ::-webkit-scrollbar-track-piece:vertical
+      -webkit-border-image: url(/images/scroll/vertical_track_light.png) 16 0 16 0
+
+  ::-webkit-scrollbar-thumb:vertical
+    -webkit-border-image: url(/images/scroll/vertical_thumb.png) 16 0 16 0
+    border-color: transparent
+    border-width: 16px 0
+    min-height: 20px
+
+  ::-webkit-scrollbar-thumb:horizontal
+    -webkit-border-image: url(/images/scroll/horizontal_thumb.png) 0 16 0 16
+    border-color: transparent
+    border-width: 0 16px
+    min-width: 20px

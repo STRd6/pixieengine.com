@@ -1,3 +1,37 @@
-= button_link "New App", "application_go", new_developer_app_path
+- @title = "Application Gallery"
 
-= render :partial => apps
+.filters
+  = button_link "Create Project", "application_add", new_project_path
+  Filter
+  =link_to "Featured", { :filter => :featured }, { :class => "button" }
+  =link_to "My Apps", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
+
+%section.gallery
+  = render :partial => apps
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .app
+      +bounds(240px, 160px)
+      +inline-block
+      +glass
+
+      margin: 1em
+      overflow: hidden
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+    section
+      padding-bottom: 1em

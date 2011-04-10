@@ -33,6 +33,12 @@ class Developer::LibrariesController < DeveloperController
     
   end
 
+  def download
+    library.zip
+
+    send_file library.zip_path, :type=>"application/zip"
+  end
+
   create.before do
     library.user = current_user
 

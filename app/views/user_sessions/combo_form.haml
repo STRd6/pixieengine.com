@@ -1,4 +1,4 @@
-- form_for @user_session || UserSession.new, :url => authenticate_path do |form|
+- form_for @user_session || UserSession.new, :html => { :class => 'login' }, :url => authenticate_path do |form|
   = form.error_messages
 
   %h2 What is your email address?
@@ -18,7 +18,8 @@
     = form.password_field :password
     = link_to "Forgot your password?", new_password_reset_path, :id => "forgot_password_link"
 
-  = form.submit "Log In"
+  .actions
+    %button.affirmative Log In
 
 :javascript
   $(function() {

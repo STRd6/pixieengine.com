@@ -1,0 +1,53 @@
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .centered_form
+      +border-radius
+      +box-sizing(border-box)
+      +glass
+
+      background-color: $dark_highlight
+      margin: auto
+      padding: 2em 3em
+      width: 525px
+
+      a.button
+        +bounds(250px, 75px)
+        +box-sizing(border-box)
+        +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #D2EEFF))
+
+        font-size: 200%
+        padding-top: 0.8em
+        text-align: center
+
+      ul
+        font-family: "Josefin Sans", Arial, serif
+        font-size: 18px
+        font-weight: 600
+        letter-spacing: 0.1em
+        margin: 1em 0em 1em 7.5em
+
+      h3
+        font-size: 18px
+
+    .light
+      .centered_form
+        background-color: mix(#FFF2D6, #FFF)
+
+.centered_form
+  %h1 Pixie Premium
+
+  %h3
+    A Premium Account grants you the following benefits:
+
+  %ul
+    %li 15 Active Projects
+    %li 1500MB of Storage
+    %li Only $15 per month
+    %li Free for 30 days!
+
+  %center
+    %a.button{ :href => "https://spreedly.com/pixie/subscribers/#{current_user.id}/subscribe/10491/#{current_user.display_name}?email=#{current_user.email}" }
+      Subscribe Now

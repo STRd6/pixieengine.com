@@ -1,35 +1,67 @@
-- @title = "Sprites"
+- @title = "Sprite Gallery"
 
-= will_paginate sprites
-
-- sprites.each do |sprite|
-  = render :partial => sprite
+- tags = Sprite.with_ids(sprites).tag_counts
+- @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
 .tags
-  - tags = Sprite.with_ids(sprites).tag_counts
   - tags.each do |tag|
     = tag_link tag
 
-- @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
+.sprite_gallery
+  = will_paginate sprites
+  %section
+    .sprites
+      = render :partial => "index_sprite", :collection => sprites
 
-- if current_user
-  :javascript
-    $(function() {
-      $('.favorites').click(function() {
-        var spriteId = $(this).attr('data-id');
-        if ($(this).hasClass('star')) {
-          $(this).removeClass('star').addClass('no-star');
-          $.get('/users/remove_favorite/' + spriteId);
-        } else {
-          $(this).removeClass('no-star').addClass('star');
-          $.post('/users/#{current_user.id}/add_to_collection', {
-            'format': 'js',
-            'collectable_type': "Sprite",
-            'collectable_id': spriteId,
-            'collection_name': "favorites"
-          }, "script");
-        }
-      });
-    });
+:coffeescript
+  $ ->
+    $(".sprite_gallery img").live 'dragstart', (event) ->
+      $this = $(this)
+      name = $this.data('name')
+      event.dataTransfer.setData('DownloadURL', "image/png:\#{name}.png:\#{$this.attr('src')}")
 
-= will_paginate sprites
+%style
+  :sass
+    @import util
+    @import partials/base
+
+    .tags
+      padding-top: 0.5em
+      position: absolute
+      top: 0
+      left: 100px
+
+    .sprite_gallery
+      +box-sizing(border-box)
+      padding-top: 23px
+      position: relative
+
+      section
+        .sprites
+          +bounds(100%)
+          +box-sizing(border-box)
+
+      .pagination
+        color: $pixie_primary
+        margin-bottom: 5px
+        position: absolute
+        top: 0
+
+    .sprite_container
+      +border-radius(8px)
+      +bounds(48px)
+
+      background-color: white
+      cursor: pointer
+      display: inline-block
+      margin-right: 7px
+      margin-bottom: 3px
+
+      &:hover
+        background-color: $hover
+
+      a
+        +bounds(100%)
+        +contents-centered
+
+        display: block

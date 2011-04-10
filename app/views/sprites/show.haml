@@ -1,4 +1,4 @@
-- @title = sprite.title || "sprite#{sprite.id}"
+- @title = sprite.title || "sprite #{sprite.id}"
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
 
@@ -153,7 +153,7 @@
 
       var spriteId = $(this).attr("data-sprite_id");
 
-      $.post("/users/#{(current_user) ? current_user.id : 0}/set_avatar",
+      $.post("/people/#{(current_user) ? current_user.id : 0}/set_avatar",
         { sprite_id: spriteId },
         function(data) { notify("Avatar successfully changed."); }
       );

@@ -1,0 +1,30 @@
+- @title = "Project Gallery"
+
+.filters
+  =button_link "Create Project", "application_add", new_project_path
+  =link_to "My Projects", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
+
+%section.gallery
+  = render :partial => projects
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .project
+      +bounds(240px, 160px)
+      +inline-block
+      +glass
+
+      margin: 1em
+      overflow: hidden
+      padding: 1em
+
+      .title
+        a
+          white-space: nowrap
+
+    section
+      padding-bottom: 1em

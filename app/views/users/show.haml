@@ -1,13 +1,12 @@
-%h2= user.display_name + "'s Profile"
-
 .profile
+  %h2= user.display_name
   .avatar
     = image_tag user.avatar.url(:large)
 
   - unless user.profile.blank?
     %p= user.profile
 
-= render :partial => "tasks", :locals => {:user => user}
+= render :partial => "tasks", :user => user
 
 .extra_info
   .favorite_color
@@ -17,7 +16,7 @@
 %ul.actions
   %li= link_to "#{image_tag "icons/photos.png"} Collections".html_safe, url_for(:action => :collections), :class => "button"
   - if current_user?
-    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, edit_user_path(current_user), :class => "button"
+    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, [:edit, current_user], :class => "button"
 
 - if user.sprites.size > 0
   %h3
@@ -25,3 +24,14 @@
   .sprites
     = render :partial => user.sprites
   .clear
+
+%style
+  :sass
+    @import util
+
+    .tasks
+      +glass
+
+      margin: 1em
+      overflow: hidden
+      padding: 1em

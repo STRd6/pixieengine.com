@@ -1,13 +1,14 @@
 class AnimationsController < ApplicationController
   respond_to :html, :json
+  layout "fullscreen"
+
+  before_filter :require_user, :except => [:index]
+  before_filter :filter_results, :only => [:index]
 
   def new
-    respond_with(@animation) do |format|
-      format.html do
-        @user_sprites = current_user.sprites || []
-        render :layout => "fullscreen"
-      end
-    end
+    @user_sprites = current_user.sprites
+
+    respond_with(@animation)
   end
 
   def create
@@ -16,28 +17,32 @@ class AnimationsController < ApplicationController
 
     @animation.save
 
-    respond_with(@animation) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
-  end
-
-  def show
-    @animation = Animation.find(params[:id])
+    respond_with(@animation)
   end
 
   def edit
     @animation = Animation.find(params[:id])
+    @user_sprites = current_user.sprites
 
-    respond_with(@animation) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
+    respond_with(@animation)
   end
 
-  def index
-    @animations = Animation.all
+  def filter_results
+    @animations ||= if filter
+      if current_user
+        if filter == "own"
+          Animation.for_user(current_user)
+        else
+          Animation.send(filter)
+        end
+      else
+        Animation.none
+      end
+    end.order("id DESC")
+  end
+
+  def filters
+    ["own", "none"]
   end
 end
+

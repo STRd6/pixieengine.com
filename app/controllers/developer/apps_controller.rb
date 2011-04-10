@@ -1,10 +1,14 @@
 class Developer::AppsController < DeveloperController
   resource_controller
+  layout "fullscreen"
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post, :new, :create]
-  before_filter :require_access, :only => [:edit, :update, :add_library, :remove_library]
+  before_filter :require_access, :only => [:add_library, :remove_library]
   before_filter :require_owner, :only => [:add_user]
+  before_filter :require_owner_or_admin, :only => [:edit, :update]
+
+  before_filter :count_view, :only => [:fullscreen, :run, :mobile]
 
   respond_to :html, :xml, :json
 
@@ -358,6 +362,38 @@ bgMusic.play()
     end
   end
 
+  def import_app_sounds
+    if has_access?
+      sound_data = params[:sound_data]
+
+      app_sounds = []
+
+      sound_data.each_value do |sound|
+        (app_sound = AppSound.create(
+          :app_id => sound["app_id"],
+          :sound_id => sound["app_sound_id"],
+          :name => (sound["app_sound_name"] == "undefined") ? "Sound #{sound["app_sound_id"]}" : sound["app_sound_name"]
+        )
+        app_sounds << {
+          :id => app_sound.id,
+          :sound_id => app_sound.sound_id,
+          :name => app_sound.name,
+          :cssImageUrl => "url(/images/icons/sound)"
+        }) unless AppSound.find_by_app_id_and_sound_id(app.id, sound["app_sound_id"])
+      end
+
+      respond_to do |format|
+        format.json { render :json => app_sounds }
+      end
+
+    else
+      render :json => {
+        :status => "error",
+        :message => "You do not have access to this app"
+      }
+    end
+  end
+
   def set_app_data
     if has_access?
       app_datum_data = params[:app_datum]
@@ -383,6 +419,10 @@ bgMusic.play()
     end
   end
 
+  def index
+    @apps = App.all
+  end
+
   def fork_post
     fork = App.create(
       :parent => app,
@@ -393,6 +433,8 @@ bgMusic.play()
       :width => app.width,
       :height => app.height,
       :code => app.code,
+      :src => app.src,
+      :lang => app.lang,
       :test => app.test,
       :user => current_user
     )
@@ -410,6 +452,7 @@ bgMusic.play()
 
   def ide
     @user_sprites = (current_user) ? current_user.sprites : []
+    @user_sounds = (current_user) ? Sound.find_all_by_user_id(current_user) : []
     render :layout => "ide"
   end
 
@@ -426,10 +469,6 @@ bgMusic.play()
 
   def mobile
     render :layout => "mobile"
-  end
-
-  def fullscreen
-    render :layout => "fullscreen"
   end
 
   def widget
@@ -485,19 +524,29 @@ bgMusic.play()
     end
   end
 
+  def fullscreen
+
+  end
+
+  def run
+    
+  end
+
   private
   def app
     object
   end
   helper_method :app
 
-  private
   def apps
     collection
   end
   helper_method :apps
 
-  private
+  def count_view
+    app.increment! :views_count
+  end
+
   def add_default_libraries
     default_library = Library.create(:user_id => current_user.id, :title => app.title, :description => "Scripts for #{app.title} belong here")
 
@@ -508,6 +557,18 @@ bgMusic.play()
   end
 
   def collection
-    @collection ||= App.order("id DESC")
+    @collection ||= if filter
+      if filter == "own"
+        App.for_user(current_user)
+      else
+        App.send(filter)
+      end
+    else
+      App.featured
+    end.order("id DESC")
+  end
+
+  def filters
+    ["featured", "own", "none"]
   end
 end

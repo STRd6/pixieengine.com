@@ -1,4 +1,6 @@
 class SpritesController < ResourceController::Base
+  respond_to :html, :json
+  layout "fullscreen"
   actions :all
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
@@ -43,7 +45,8 @@ class SpritesController < ResourceController::Base
         :sprite => {
           :id => @sprite.id,
           :title => @sprite.title,
-          :app_sprite_id => @sprite.app_sprite_id
+          :app_sprite_id => @sprite.app_sprite_id,
+          :src => @sprite.image.url
         }
       }
     else
@@ -66,6 +69,36 @@ class SpritesController < ResourceController::Base
     end
 
     render :action => :pixie
+  end
+
+  def index
+    @sprites = sprites
+
+    respond_with(@sprites) do |format|
+      format.json { render :json }
+    end
+  end
+
+  def show
+    @sprite = Sprite.find(params[:id])
+  end
+
+  def update
+    @sprite = Sprite.find(params[:id])
+
+    @sprite.update_attributes(params[:sprite])
+
+    respond_with(@sprite) do |format|
+      format.json { render :json => {
+          :id => @sprite.id,
+          :title => @sprite.display_name,
+          :description => @sprite.description || "",
+          :img => @sprite.image.url,
+          :author => (@sprite.user) ? @sprite.user.display_name : "Anonymous",
+          :author_id => @sprite.user_id
+        }
+      }
+    end
   end
 
   def load
@@ -120,10 +153,6 @@ class SpritesController < ResourceController::Base
     end
   end
 
-  index.wants.json do
-    render :json => collection
-  end
-
   private
 
   def collection
@@ -138,7 +167,7 @@ class SpritesController < ResourceController::Base
 
   def per_page
     if params[:per_page].blank?
-      Sprite.per_page
+      172
     else
       params[:per_page].to_i
     end

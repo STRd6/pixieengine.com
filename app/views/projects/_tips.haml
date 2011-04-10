@@ -1,0 +1,79 @@
+#tips{:style => "display: none;"}
+  .tip{ 'data-element_selector' => "nav.left"}
+    .text
+      This is the code editor where you can edit your applications in the CoffeeScript language.
+  .tip{ 'data-element_selector' => "ul.filetree"}
+    .text
+      The files you need to create your app are here.
+  .tip{ 'data-element_selector' => "#run"}
+    .text
+      Press the run button to run your project!
+  .tip{ 'data-element_selector' => "#test_frame"}
+    .text
+      See the results, then make changes to your code as you wish.
+  .tip{ 'data-element_selector' => ".file.documentation"}
+    .text
+      You can read up on the provided classes in the documentation book.
+  .tip{ 'data-element_selector' => "#import"}
+    .text
+      Click "Import" to add your own images, javascript, and coffeescript files.
+  .tip{ 'data-element_selector' => "#import_drop_zone"}
+    .text
+      Drag files from your desktop to the "import drop zone" to import them.
+  .tip{ 'data-element_selector' => "#test"}
+    .text
+      Click the "Test" button to run unit-tests. These can come in handy if you're
+      working with heavily algorithmic stuff or library code.
+  .tip{ 'data-element_selector' => "#save"}
+    .text
+      Click "Save" to save changes to a file.
+  .tip{ 'data-element_selector' => ".actions .status"}
+    .text
+      All your changes are backed by version control. Your current status is
+      saved as a commit message.
+  .tip{ 'data-element_selector' => "#tag"}
+    .text
+      You can even "Tag" a specific version to keep track of milestones in your
+      program's destiny.
+  .tip{ 'data-element_selector' => "ul.filetree"}
+    .text
+      That's it for the tips. The IDE is a work in progress, so ask or leave feedback if you have any questions!
+      = link_to "Feedback", "/survey", :class => "button"
+  .next
+    %button.next_tip.right Next
+  .close
+    %button.close_tip.left Close
+
+:coffeescript
+  $ ->
+    $("#tooltip .next_tip").live "click", ->
+      nextTip()
+
+    $("#tooltip .close_tip").live "click", ->
+      hideTooltip()
+
+    tipIndex = -1
+    nextTip = () ->
+      tipIndex += 1
+      tips = $("#tips .tip")
+      moreTips = tipIndex < tips.length - 1
+
+      tip = tips.eq(tipIndex)
+
+      targetElement = $(tip.attr("data-element_selector"))
+
+      # TODO Highlight target element
+
+      hideTooltip()
+
+      if tip.length
+        tipMessage = tip.html()
+
+        tipMessage += $("#tips .close").html()
+
+        if moreTips
+          tipMessage += $("#tips .next").html()
+
+        showTooltip(targetElement, tipMessage)
+
+    nextTip()

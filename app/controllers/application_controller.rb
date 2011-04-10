@@ -23,9 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def track_visits
-    if current_user
-      Visit.track(current_user, controller_name, action_name)
-    end
+    Visit.track(current_user, controller_name, action_name, request.session_options[:id])
   end
 
   def current_user_session
@@ -41,8 +39,7 @@ class ApplicationController < ActionController::Base
   def require_user
     unless current_user
       store_location
-      flash[:notice] = "You must be logged in to access this page"
-      redirect_to new_user_session_url
+      redirect_to new_user_session_url, :notice => "You must be logged in to access this page"
       return false
     end
   end
@@ -50,41 +47,40 @@ class ApplicationController < ActionController::Base
   def require_no_user
     if current_user
       store_location
-      flash[:notice] = "You must be logged out to access this page"
-      redirect_to root_url
+      redirect_to root_url, :notice => "You must be logged out to access this page"
     end
   end
 
   def require_owner
     unless owner?
-      flash[:notice] = "You can only edit your own dealies!"
-      redirect_to root_url
+      redirect_to root_url, :notice => "You can only edit your own items!"
     end
   end
 
   def require_access
     unless has_access?
-      flash[:notice] = "You do not have access to do this!"
-      redirect_to root_url
+      redirect_to root_url, :notice => "You do not have access to do this!"
     end
   end
 
   def require_admin
     unless admin?
-      flash[:notice] = "Admin required"
-      redirect_to root_url
+      redirect_to root_url, :notice => "Admin required"
     end
   end
 
   def require_owner_or_admin
     unless owner? || admin?
-      flash[:notice] = "You can only edit your own dealies!"
-      redirect_to root_url
+      redirect_to root_url, :notice => "You can only edit your own items!"
     end
   end
 
-  def owner?
-    (current_user == object.user) && current_user
+  def owner?(specified_object = nil)
+    if specified_object
+      (current_user == specified_object.user) && current_user
+    else
+      (current_user == object.user) && current_user
+    end
   end
   helper_method :owner?
 
@@ -98,8 +94,8 @@ class ApplicationController < ActionController::Base
   end
   helper_method :admin?
 
-  def owner_or_admin?
-    owner? || admin?
+  def owner_or_admin?(specified_object = nil)
+    owner?(specified_object) || admin?
   end
   helper_method :owner_or_admin?
 
@@ -111,6 +107,11 @@ class ApplicationController < ActionController::Base
     redirect_to(session[:return_to] || default)
     session[:return_to] = nil
   end
+
+  def facebook?
+    !!params[:fb_sig]
+  end
+  helper_method :facebook?
 
   def context
     nil
@@ -140,5 +141,21 @@ class ApplicationController < ActionController::Base
 
   def hide_feedback
     @hide_feedback = true
+  end
+
+  def per_page
+    40
+  end
+
+  def filters
+    []
+  end
+
+  def filter
+    if params[:filter] && filters.include?(params[:filter])
+      params[:filter]
+    else
+      filters.first
+    end
   end
 end

@@ -1,0 +1,84 @@
+:coffeescript
+  window.createPixelEditor = (options) ->
+    width = options.width
+    height = options.height
+    dataUrl = options.dataUrl
+    title = options.title
+    path = options.path
+    tab = null
+    _canvas = null
+
+    pixelEditor = $('<div />').pixie
+      width: width
+      height: height
+      frames: 1
+      initializer: (canvas) ->
+        _canvas = canvas
+
+        if dataUrl
+          canvas.fromDataURL(dataUrl)
+
+        canvas.addAction
+          name: "Save"
+          icon: "/images/icons/database_save.png"
+          perform: (canvas) ->
+            tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
+
+            pixelEditor.trigger('doSave')
+
+          undoable: false
+
+    pixelEditor.bind 'doSave', ->
+      # Update mtime
+      pixelEditor.parent().attr("data-mtime", new Date().getTime())
+
+      pixelEditor.trigger 'save',
+        contents_base64: _canvas.toBase64()
+        path: path
+
+    return pixelEditor
+
+
+  window.createPropertyPixelEditor = (options) ->
+    width = options.width
+    height = options.height
+    dataUrl = options.spriteName
+    target = options.target
+    _canvas = null
+
+    pixelEditor = $('<div />').pixie
+      width: width
+      height: height
+      initializer: (canvas) ->
+        _canvas = canvas
+
+        if dataUrl
+          canvas.fromDataURL(dataUrl)
+
+        canvas.addAction
+          name: "Store"
+          icon: "/images/icons/database_save.png"
+          perform: (canvas) ->
+            pixelEditor.trigger('doSave')
+
+          undoable: false
+
+    pixelEditor.bind 'doSave', ->
+      options.target.val(_canvas.toDataURL()).trigger('blur')
+
+      $.modal.close()
+
+    pixelEditor.modal
+      containerCss:
+        height: 600
+        width: 800
+        maxHeight: 600
+        maxWidth: 800
+
+    return pixelEditor
+
+  $("td").live "dblclick", () ->
+    if $(this).prev().children("input").val() == "spriteName"
+      createPropertyPixelEditor $.extend(propertyEditor.getProps(),
+        target: $(this).children("input")
+      )

@@ -1,0 +1,43 @@
+:coffeescript
+  window.createPixelEditor = (options) ->
+    width = options.width
+    height = options.height
+    image = options.image
+    title = options.title
+    _canvas = null
+
+    pixelEditor = $('<div />').pixie
+      width: width
+      height: height
+      frames: 1
+      initializer: (canvas) ->
+        _canvas = canvas
+
+        if image
+          canvas.fromDataURL(image)
+
+        canvas.addAction
+          name: "Save"
+          icon: "/images/icons/database_save.png"
+          perform: (canvas) ->
+            pixelEditor.trigger('doSave')
+
+          undoable: false
+
+        canvas.addAction
+          name: "Back to Animation"
+          icon: "/images/icons/arrow_left.png"
+          perform: (canvas) ->
+            pixelEditor.remove()
+            $('.animation_editor').show()
+            $('.frame_sprites .pixel_editor').removeClass('pixel_editor selected')
+          undoable: false
+
+    pixelEditor.bind 'doSave', ->
+      pixelEditor.trigger 'save',
+        'sprite[title]': title
+        'sprite[width]': width
+        'sprite[height]': height
+        'sprite[file_base64_encoded]': _canvas.toBase64()
+
+    return pixelEditor

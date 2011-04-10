@@ -1,10 +1,33 @@
 PixieStrd6Com::Application.routes.draw do |map|
+  get "subscriptions/subscribe"
+  get "subscriptions/thanks"
+  post "subscriptions/changed"
+
   namespace :abingo do
     match "dashboard" => 'dashboard#index'
   end
 
   namespace :admin do
-    resources :comments, :feedbacks, :sprites, :users
+    resources :comments, :feedbacks, :sprites, :users, :reports
+  end
+
+  resources :projects do
+    member do
+      get :ide
+      get :fullscreen
+
+      post :remove_file
+      post :save_file
+      post :tag_version
+      post :generate_docs
+      post :update_libs
+    end
+
+    collection do
+      get :github_integration
+      post :hook
+      get :info
+    end
   end
 
   namespace :developer do
@@ -16,6 +39,8 @@ PixieStrd6Com::Application.routes.draw do |map|
         post :create_app_sprite
         post :import_app_sprites
         post :publish
+        post :create_app_sound
+        post :import_app_sounds
         post :set_app_data
         post :fork_post
 
@@ -55,6 +80,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       member do
         post :add_script
         post :remove_script
+        post :download
 
         get :test
       end
@@ -95,7 +121,7 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
-  resources :users do
+  resources :people, :controller => :users, :as => :users do
     member do
       get :collections
       get :favorites
@@ -116,6 +142,8 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
+
+  match 'facebook' => "sprites#new", :as => :facebook
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
   match 'sfx-editor' => "sounds#new", :as => :new_sound
@@ -142,7 +170,7 @@ PixieStrd6Com::Application.routes.draw do |map|
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'
 
-  root :to => "sprites#new"
+  root :to => "projects#info"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

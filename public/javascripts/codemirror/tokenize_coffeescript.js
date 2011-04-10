@@ -17,32 +17,29 @@ var tokenizeRuby = (function() {
 	function wordRegexp(words) {
 		return new RegExp("^(?:" + words.join("|") + ")$");
 	}
-	var NORMALCONTEXT = 'rb-normal';
-	var ERRORCLASS = 'rb-error';
-	var COMMENTCLASS = 'rb-comment';
-	var SYMBOLCLASS = 'rb-symbol';
-	var CONSTCLASS = 'rb-constant';
-	var OPCLASS = 'rb-operator';
-	var INSTANCEMETHODCALLCLASS = 'rb-method'
-	var VARIABLECLASS = 'rb-variable';
-	var STRINGCLASS = 'rb-string';
-	var FIXNUMCLASS =  'rb-fixnum rb-numeric';
-	var METHODCALLCLASS = 'rb-method-call';
-	var HEREDOCCLASS = 'rb-heredoc';
-	var ERRORCLASS = 'rb-parse-error';
-	var BLOCKCOMMENT = 'rb-block-comment';
-	var FLOATCLASS = 'rb-float';
-	var HEXNUMCLASS = 'rb-hexnum';
-	var BINARYCLASS = 'rb-binary';
-	var ASCIICODE = 'rb-ascii'
-	var LONGCOMMENTCLASS = 'rb-long-comment';
-	var WHITESPACEINLONGCOMMENTCLASS = 'rb-long-comment-whitespace';
-	var KEWORDCLASS = 'rb-keyword';
-	var REGEXPCLASS = 'rb-regexp';
-	var GLOBALVARCLASS = 'rb-global-variable';
-	var EXECCLASS = 'rb-exec';
-	var INTRANGECLASS = 'rb-range';
-	var OPCLASS = 'rb-operator';
+	var NORMALCONTEXT = 'normal';
+	var COMMENTCLASS = 'comment';
+	var SYMBOLCLASS = 'symbol';
+	var CONSTCLASS = 'constant';
+	var OPCLASS = 'operator';
+	var INSTANCEMETHODCALLCLASS = 'method'
+	var VARIABLECLASS = 'variable';
+	var STRINGCLASS = 'string';
+	var FIXNUMCLASS =  'fixnum numeric';
+	var METHODCALLCLASS = 'method-call';
+	var HEREDOCCLASS = 'heredoc';
+	var BLOCKCOMMENT = 'block-comment';
+	var FLOATCLASS = 'float';
+	var HEXNUMCLASS = 'hexnum';
+	var BINARYCLASS = 'binary';
+	var ASCIICODE = 'ascii'
+	var LONGCOMMENTCLASS = 'long-comment';
+	var WHITESPACEINLONGCOMMENTCLASS = 'long-comment-whitespace';
+	var KEWORDCLASS = 'keyword';
+	var REGEXPCLASS = 'regexp';
+	var GLOBALVARCLASS = 'global-variable';
+	var EXECCLASS = 'exec';
+	var INTRANGECLASS = 'range';
 
 
 	var identifierStarters = /[_A-Za-z]/;    
@@ -237,10 +234,10 @@ var tokenizeRuby = (function() {
 			}
 
 			if (ch == '@') {
-				type = 'rb-instance-var';
+				type = 'instance-var';
 				if (source.peek() == '@') {
 				  source.next()
-				  type = 'rb-class-var';
+				  type = 'class-var';
 				}
 				source.nextWhile(matcher(/[\w\d]/));
 				word = source.get();
@@ -310,12 +307,6 @@ var tokenizeRuby = (function() {
 			  return null;
 			}
 
-
-			if (ch == '/' && !source.peek().match(/[0-9 ]/)) {
-			  setState(inStaticString(REGEXPCLASS, '/')); 
-			  return null;
-			}
-
 			if (ch == '\"') {
 				setState(inRubyInsertableString(STRINGCLASS, "\""));
 				return null;
@@ -369,14 +360,14 @@ var tokenizeRuby = (function() {
 				}
 				word = source.get();
 				/* for now, all identifiers are considered method calls */
-				//type = 'rb-identifier';
+				//type = 'identifier';
 				type = INSTANCEMETHODCALLCLASS;
 
 				if (keywords.test(word)) {
 				  type = KEWORDCLASS;
 				}
 				if (wasDef) {
-				  type = 'rb-method rb-methodname';
+				  type = 'method methodname';
 				}                
 
 				wasDef = (word == 'def');

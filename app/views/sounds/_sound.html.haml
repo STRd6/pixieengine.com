@@ -1,11 +1,16 @@
 .sound
-  %span.title= link_to(sound.display_name, sound)
-
-  = link_to(image_tag("wav.png"), sound)
-
-  .user
-    By
-    - if sound.user
-      = link_to sound.user, sound.user
-    - else
-      Anonymous
+  %div{ :style => "position: absolute"}
+    .title_container
+      %h2.title= link_to sound.display_name, edit_sound_path(sound)
+      %span.author
+        by
+        - if sound.user
+          = sound.user.display_name
+        - else
+          Anonymous
+    .sound_preview{ 'data-sound_id' => sound.id, 'data-title' => sound.title || "Sound #{sound.id}", 'data-wav_src' => sound.wav.url, 'data-mp3_src' => sound.mp3.url }
+      - if sound.image && (sound.image.url != "/images/original/missing.png")
+        = image_tag(sound.image.url)
+      - else
+        = image_tag('/images/wav.png')     
+      #play

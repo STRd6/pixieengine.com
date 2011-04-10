@@ -1,4 +1,4 @@
-function notify(message) {
+function notify(message, delay) {
   var notice = $("#flashes .notice").first();
   if(notice.length < 1) {
     notice = $("<div class='notice' />").html(message);
@@ -7,20 +7,14 @@ function notify(message) {
     notice.html(message);
   }
 
-  notice.append($("<div class='close'><span>x</span></div>"));
+  notice.append($("<div class='close'/>"));
+  notice.hide();
 
-  notice.slideDown();
-}
-
-function showTooltip(element, html) {
-  var position = element.offset();
-
-  position.left += element.width() + 42;
-  $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html);
-}
-
-function hideTooltip() {
-  $("#tooltip").stop().fadeOut();
+  if(delay) {
+    notice.slideToggle().delay(delay).fadeOut();
+  } else {
+    notice.slideToggle();
+  }
 }
 
 function trackPageview(pageName) {

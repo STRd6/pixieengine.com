@@ -15,33 +15,30 @@ var RubyParser = Editor.Parser = (function() {
     this.info = info;
   }
   
-  var NORMALCONTEXT = 'rb-normal';
-  var ERRORCLASS = 'rb-error';
-  var COMMENTCLASS = 'rb-comment';
-  var SYMBOLCLASS = 'rb-symbol';
-  var CONSTCLASS = 'rb-constant';
-  var OPCLASS = 'rb-operator';
-  var INSTANCEMETHODCALLCLASS = 'rb-method'
-  var VARIABLECLASS = 'rb-variable';
-  var STRINGCLASS = 'rb-string';
-  var FIXNUMCLASS =  'rb-fixnum rb-numeric';
-  var METHODCALLCLASS = 'rb-method-call';
-  var HEREDOCCLASS = 'rb-heredoc';
-  var ERRORCLASS = 'rb-parse-error';
-  var BLOCKCOMMENT = 'rb-block-comment';
-  var FLOATCLASS = 'rb-float';
-  var HEXNUMCLASS = 'rb-hexnum';
-  var BINARYCLASS = 'rb-binary';
-  var ASCIICODE = 'rb-ascii'
-  var LONGCOMMENTCLASS = 'rb-long-comment';
-  var WHITESPACEINLONGCOMMENTCLASS = 'rb-long-comment-whitespace';
-  var KEWORDCLASS = 'rb-keyword';
-  var REGEXPCLASS = 'rb-regexp';
-  var GLOBALVARCLASS = 'rb-global-variable';
-  var EXECCLASS = 'rb-exec';
-  var INTRANGECLASS = 'rb-range';
-  var OPCLASS = 'rb-operator';
-  var METHODPARAMCLASS = 'rb-method-parameter';
+  var NORMALCONTEXT = 'normal';
+  var COMMENTCLASS = 'comment';
+  var SYMBOLCLASS = 'symbol';
+  var CONSTCLASS = 'constant';
+  var OPCLASS = 'operator';
+  var INSTANCEMETHODCALLCLASS = 'method'
+  var VARIABLECLASS = 'variable';
+  var STRINGCLASS = 'string';
+  var FIXNUMCLASS =  'fixnum numeric';
+  var METHODCALLCLASS = 'method-call';
+  var HEREDOCCLASS = 'heredoc';
+  var BLOCKCOMMENT = 'block-comment';
+  var FLOATCLASS = 'float';
+  var HEXNUMCLASS = 'hexnum';
+  var BINARYCLASS = 'binary';
+  var ASCIICODE = 'ascii'
+  var LONGCOMMENTCLASS = 'long-comment';
+  var WHITESPACEINLONGCOMMENTCLASS = 'long-comment-whitespace';
+  var KEWORDCLASS = 'keyword';
+  var REGEXPCLASS = 'regexp';
+  var GLOBALVARCLASS = 'global-variable';
+  var EXECCLASS = 'exec';
+  var INTRANGECLASS = 'range';
+  var METHODPARAMCLASS = 'method-parameter';
 
   // The parser-iterator-producing function itself.
   function parseRuby(input, basecolumn) {
@@ -87,7 +84,11 @@ var RubyParser = Editor.Parser = (function() {
 
       // Adjust column and indented.
       if (token.type == "whitespace" && column == 0) {
-        indented = token.value.length;
+        if(token.content == "\n") {
+          indented = 0;
+        } else {
+          indented = token.value.length;
+        }
       }
       column += token.value.length;
       if (token.content == "\n"){
@@ -286,7 +287,7 @@ var RubyParser = Editor.Parser = (function() {
         lastToken = token;
         return;
       } 
-      if (token.style == 'rb-method' || token.style == 'rb-variable') {
+      if (token.style == 'method' || token.style == 'variable') {
         //console.log('is "'+token.content+'" registered?');
         if (isRegistered(token.content)) {
           mark(registeredMark(token.content));
@@ -328,7 +329,7 @@ var RubyParser = Editor.Parser = (function() {
     
     function blockparams(token, value) {
       //console.log('blockparams', token);
-      if (token.style == 'rb-method' || token.style == 'rb-variable') {
+      if (token.style == 'method' || token.style == 'variable') {
         mark(METHODPARAMCLASS);
         register(token.value, METHODPARAMCLASS);
       }
@@ -348,7 +349,7 @@ var RubyParser = Editor.Parser = (function() {
     // A function definition creates a new context, and the variables
     // in its argument list have to be added to this context.
     function functiondef(token, value){
-      if (token.style == 'rb-method' || token.style == 'rb-variable') {
+      if (token.style == 'method' || token.style == 'variable') {
         register(value, METHODPARAMCLASS);
         mark(METHODPARAMCLASS);
         cont(functiondef);

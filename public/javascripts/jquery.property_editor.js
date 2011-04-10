@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Sun, 23 Jan 2011 02:03:26 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Sun, 03 Apr 2011 23:39:11 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -17,10 +17,11 @@
           if (key = inputs.eq(0).val()) {
             value = inputs.eq(1).val();
             try {
-              return props[key] = JSON.parse(value);
+              props[key] = JSON.parse(value);
             } catch (e) {
-              return props[key] = value;
+              props[key] = value;
             }
+            return;
           }
         });
         return props;
@@ -39,6 +40,7 @@
         cell = $("<td>").appendTo(row);
         $("<input>", {
           type: "text",
+          placeholder: "key",
           value: key
         }).appendTo(cell);
         cell = $("<td>").appendTo(row);
@@ -47,12 +49,61 @@
         }
         $("<input>", {
           type: "text",
+          placeholder: "value",
           value: value
         }).appendTo(cell);
         return row.appendTo(element);
       };
+      $('input', this.selector).live('keydown', function(event) {
+        var $this, changeAmount, num;
+        if (event.type === "keydown") {
+          if (!(event.which === 38 || event.which === 40)) {
+            return;
+          }
+        }
+        event.preventDefault();
+        $this = $(this);
+        changeAmount = event.which === 38 ? 1 : -1;
+        if ($this.val().length) {
+          if (event.shiftKey) {
+            changeAmount *= 10;
+            if (!isNaN($this.val())) {
+              $this.val(parseInt($this.val()) + changeAmount);
+            }
+          } else {
+            if ($this.val() === "true") {
+              $this.val("false");
+            } else if ($this.val() === "false") {
+              $this.val("true");
+            } else if (!isNaN($this.val())) {
+              if (parseFloat($this.val()).abs() < 1) {
+                num = parseFloat($this.val());
+                $this.val((num + (0.1 * changeAmount)).toFixed(1));
+              } else if (parseInt($this.val()) === 1) {
+                num = parseInt($this.val());
+                if (event.which === 38) {
+                  $this.val(num + 1);
+                } else {
+                  $this.val((num - 0.1).toFixed(1));
+                }
+              } else if (parseInt($this.val()) === -1) {
+                num = parseInt($this.val());
+                if (event.which === 38) {
+                  $this.val(num + 0.1).toFixed(1);
+                } else {
+                  $this.val(num - 1);
+                }
+              } else {
+                $this.val(parseInt($this.val()) + changeAmount);
+              }
+            }
+          }
+          return element.trigger("change", element.getProps());
+        }
+      });
       $('input', this.selector).live('blur', function(event) {
         var $this, input;
+        element.trigger("change", element.getProps());
         $this = $(this);
         if ((input = element.find("tr").last().find("input").first()).length) {
           if (input.val()) {

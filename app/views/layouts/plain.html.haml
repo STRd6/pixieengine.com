@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+%html{ 'xmlns' => "http://www.w3.org/1999/xhtml" }
+  = render :partial => "shared/head"
+
+  %body#fullscreen.light
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }
+          = msg
+          .close
+
+    = yield
+
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
+    = render :partial => "/shared/feedback"
+    = render :partial => "/shared/chat"
+
+    #login_link
+      = render :partial => "/shared/login"
+
+    - if Rails.env.development?
+      = javascript_include_tag "coffee-script"
+
+    = render :partial => "/shared/analytics"
+
+    - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
+      = render :partial => "/shared/conversion"
+      :javascript
+        $(function() {
+          trackPageview("/event/registered");
+        });
+
+    - if facebook?
+      = render :partial => "/shared/fb_app"

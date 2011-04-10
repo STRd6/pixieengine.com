@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110126042922) do
+ActiveRecord::Schema.define(:version => 20110407221353) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -79,6 +79,19 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
   add_index "app_members", ["app_id"], :name => "index_app_members_on_app_id"
   add_index "app_members", ["user_id"], :name => "index_app_members_on_user_id"
 
+  create_table "app_sounds", :force => true do |t|
+    t.integer  "app_id",     :null => false
+    t.integer  "sound_id",   :null => false
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "app_sounds", ["app_id", "name"], :name => "index_app_sounds_on_app_id_and_name", :unique => true
+  add_index "app_sounds", ["app_id", "sound_id"], :name => "index_app_sounds_on_app_id_and_sound_id", :unique => true
+  add_index "app_sounds", ["app_id"], :name => "index_app_sounds_on_app_id"
+  add_index "app_sounds", ["sound_id"], :name => "index_app_sounds_on_sound_id"
+
   create_table "app_sprites", :force => true do |t|
     t.integer  "app_id",     :null => false
     t.integer  "sprite_id",  :null => false
@@ -93,19 +106,26 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
   add_index "app_sprites", ["sprite_id"], :name => "index_app_sprites_on_sprite_id"
 
   create_table "apps", :force => true do |t|
-    t.integer  "user_id",                                 :null => false
-    t.string   "title",                                   :null => false
+    t.integer  "user_id",                                        :null => false
+    t.string   "title",                                          :null => false
     t.text     "description"
     t.text     "html"
     t.text     "code"
     t.text     "test"
     t.integer  "parent_id"
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
-    t.integer  "width",       :default => 480
-    t.integer  "height",      :default => 300
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
+    t.integer  "width",              :default => 480
+    t.integer  "height",             :default => 300
     t.text     "src"
-    t.string   "lang",        :default => "coffeescript"
+    t.string   "lang",               :default => "coffeescript"
+    t.boolean  "featured"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.integer  "comments_count",     :default => 0,              :null => false
+    t.integer  "views_count",        :default => 0,              :null => false
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|
@@ -128,6 +148,10 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
     t.string   "mp3_content_type"
     t.integer  "mp3_file_size"
     t.datetime "mp3_updated_at"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
   end
 
   create_table "archived_sprites", :id => false, :force => true do |t|
@@ -293,6 +317,19 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
     t.integer  "parent_id"
   end
 
+  create_table "projects", :force => true do |t|
+    t.integer  "user_id",                          :null => false
+    t.string   "remote_origin"
+    t.string   "title",                            :null => false
+    t.text     "description"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.string   "url"
+    t.boolean  "demo",          :default => false, :null => false
+  end
+
+  add_index "projects", ["url"], :name => "index_projects_on_url"
+
   create_table "script_members", :force => true do |t|
     t.integer  "script_id",  :null => false
     t.integer  "user_id",    :null => false
@@ -332,12 +369,16 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
     t.string   "sfs_content_type"
     t.integer  "sfs_file_size"
     t.datetime "sfs_uploaded_at"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
     t.string   "mp3_file_name"
     t.string   "mp3_content_type"
     t.integer  "mp3_file_size"
     t.datetime "mp3_updated_at"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
   end
 
   create_table "sprites", :force => true do |t|
@@ -431,6 +472,7 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
     t.datetime "avatar_updated_at"
     t.boolean  "subscribed",          :default => true,  :null => false
     t.string   "favorite_color"
+    t.boolean  "paying",              :default => false, :null => false
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
@@ -457,10 +499,11 @@ ActiveRecord::Schema.define(:version => 20110126042922) do
   add_index "versions", ["versioned_id", "versioned_type"], :name => "index_versions_on_versioned_id_and_versioned_type"
 
   create_table "visits", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at", :null => false
+    t.integer  "user_id"
+    t.string   "controller",               :null => false
+    t.string   "action",                   :null => false
+    t.datetime "created_at",               :null => false
+    t.string   "session_id", :limit => 32
   end
 
   add_index "visits", ["user_id"], :name => "index_visits_on_user_id"

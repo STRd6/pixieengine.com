@@ -1,0 +1,23 @@
+- config = project.config
+%iframe#app.no_border{ :width => config[:width], :height => config[:height]}
+
+:javascript
+  function runApp() {
+    var sandbox = $("#app")[0].contentWindow.document;
+
+    sandbox.open();
+
+    sandbox.write(#{stylesheet_link_tag('app.css').to_json});
+    sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
+
+    sandbox.write("<canvas width='#{config[:width]}' height='#{config[:height]}'></canvas>");
+    sandbox.write('<script src=#{rewrite_asset_path("/production/projects/#{project.id}/#{config[:name]}.js").to_json}><\/script>');
+
+    sandbox.close();
+
+    // Set focus
+    $("#app")[0].contentWindow.focus();
+  }
+
+  runApp();

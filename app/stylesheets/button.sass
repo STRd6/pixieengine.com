@@ -1,33 +1,56 @@
 $blueprint-button-font-color = "#0C639B"
 $blueprint-button-active-background-color = "#0C639B"
-$blueprint-button-active-font-color = "whiteSmoke"
+$blueprint-button-active-font-color = "#f5fcff"
 $blueprint-button-hover-background-color = "#EBF7FF"
+$blueprint-button-hover-font-color = "#1084ce"
 
-button, #content a.button
+button, a.button
   +button-button
   +button-colors
   +button-hover-colors
   +button-active-colors
   +border-radius(4px)
+  +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #90cff8))
+
+  &:active
+    +linear-gradient(color-stops(#0c639b, #70c2f6 33%, #90cff8))
 
   &[disabled]
+    +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #b2e2ff))
+    border-color: #f5fcff
     color: #AAA
     cursor: default
 
-    &:hover
-      color: #AAA
+  .button_group > &
+    +border-radius(0)
+    margin: 0 -1px 0 0
+    &:first-child
+      +border-left-radius(4px)
+    &:last-child
+      +border-right-radius(4px)
+      margin: 0
+
+.button_group
+  +inline-block
+
+  margin-right: 0.5em
 
 #content #pixie .pixie .actions
   a.button
+    color: $pixie_primary
     padding: 4px 3px 3px
 
   .pillbox-left
     +border-right-radius(0)
-    margin-right: 1px
+
+    margin: 0 1px 0 0
 
   .pillbox-middle
     +border-radius(0)
-    margin-right: 1px
+
+    margin: 0 1px 0 0
 
   .pillbox-right
     +border-left-radius(0)
+
+    margin: 0

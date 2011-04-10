@@ -1,5 +1,22 @@
-// For all the form styling goodness
+.light
+  input[type=file]
+    color: #000
+
+button.affirmative
+  float: right
+
+button.negative
+  float: left
+
 form
+  .actions
+    +box-sizing(border-box)
+
+    padding-left: 120px
+    padding-right: 71px
+    overflow: auto
+    width: 100%
+
   label, input, textarea
     font-family: Verdana, sans-serif
     font-size: 12px
@@ -9,7 +26,7 @@ form
     display: inline-block
     font-size: 12px
     font-weight: bold
-    +grid-width(4)
+    +grid-width(3)
     margin-right = $blueprint-grid-margin
     padding-top: .5em
     text-align: right
@@ -17,7 +34,6 @@ form
 
   input[type=text], input[type=password], input[type=file], textarea
     +grid-width(8)
-    margin: .5em
     padding: 5px
     &:focus
       border-width: 2px
@@ -37,7 +53,7 @@ form
   input[type=button], input[type=submit]
     display: block
     margin-top: 1em
-    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 4
+    margin-left: ($blueprint-grid-width + $blueprint-grid-margin) * 3
 
   input[type=radio], input[type=checkbox]
     display: inline-block
@@ -45,7 +61,15 @@ form
     margin = 0 $blueprint-grid-margin 0 0
 
   input[disabled]
-    background-color: #efefef
+    background-color: #ccc
+
+  input[type=text]
+    +box-sizing(border-box)
+
+    color: #000
+    margin: 0
+    max-width: 120px
+    padding: 2px
 
   #errorExplanation
     color: !error_color
@@ -64,15 +88,45 @@ form
       color: !error_color
 
 // Custom log in page spacing
-#user_session_password
-  +grid-width(7)
+form.login
+  left: 0
+  margin: auto
+  position: absolute
+  right: 0
+  top: 100px
 
-#forgot_password_link
-  color: black
-  display: block
-  font-size: .8em
-  font-weight: normal
-  margin-left = $blueprint-grid-width * 7
-  text-decoration: underline
-  &:hover
-    text-decoration: none
+  p
+    position: relative
+
+  label
+    padding-top: 0
+    vertical-align: middle
+    width: 175px
+
+  input
+    color: #000
+
+  input[type="radio"]
+    margin: 0
+    width: 22px
+
+  input[type="submit"]
+    margin-left: 175px + 15px
+
+  input[type="text"]
+    +bounds(200px, 29px)
+
+    max-width: 200px
+
+  #user_session_password
+    width: 200px
+
+  #forgot_password_link
+    color: #000
+    display: block
+    font-size: .8em
+    font-weight: normal
+    margin-left: 222px
+    text-decoration: underline
+    &:hover
+      text-decoration: none

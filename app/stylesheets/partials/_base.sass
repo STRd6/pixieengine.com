@@ -11,9 +11,29 @@ $blueprint-grid-width: ($blueprint-container-size + $blueprint-grid-margin) / $b
 
 =grid-width(!cols)
   width = ($blueprint-grid-width + $blueprint-grid-margin) * !cols - $blueprint-grid-margin
-  
+
 @mixin single-column
   display: inline-block
   +grid-width(9)
   position: relative
   vertical-align: top
+
+$default-border-radius: 8px
+
+$default-box-shadow-color: #333
+$default-box-shadow-h-offset: 1px
+$default-box-shadow-v-offset: 1px
+$default-box-shadow-blur: 5px
+$default-box-shadow-spread: 0
+
+$dark_background: #00010d
+$dark_highlight: #001c2f
+$dark_box_shadow: #566669
+$dark_text: #fff
+$pixie_primary: #1084ce
+$light_highlight: #b2e2ff
+$light_background: #d2eeff
+$light_text: mix($pixie_primary, black)
+
+$editor_page_padding: 3em
+$hover: #FFF6BF

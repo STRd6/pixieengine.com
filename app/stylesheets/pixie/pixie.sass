@@ -1,62 +1,156 @@
-@import "compass/css3/box-sizing"
+@import partials/base
 @import util
 
 .pixie
-  .canvas
-    -moz-user-select: none
-    background-color: #ccc
+  $sidebar_left: 50px
+  $sidebar_right: 150px
+  $margin: 12px
+
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  padding: $margin
+
+  .content
     +box-sizing(border-box)
+
     height: 100%
-    margin-right: 1em
-    margin-bottom: 1em
+
+    padding-left: $sidebar_left + $margin
+    padding-right: $sidebar_right + $margin
+    padding-top: 34px
+
     position: relative
-    width: 100%
+
+  .light &
+    nav.left, nav.right, nav.top
+      background-color: $light_highlight
+
+  nav.left, nav.right
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+
+  nav.left
+    +bounds($sidebar_left, 100%)
+    padding: 0
+
+    .tool
+      +border-radius
+      +bounds(40px)
+      +box-sizing(border-box)
+
+      cursor: pointer
+      margin: 5px auto 0
+      padding-top: 12px
+      text-align: center
+
+      &:hover
+        background-color: #fff
+
+      &.active
+        +border-radius
+
+        background-color= #1084CE
+
+      img
+        border: none
+
+  nav.right
+    +bounds($sidebar_right, 100%)
+
+    padding: 1em
+
+    .preview
+      +bounds(150px)
+
+      background-color: #fff
+      border: 1px solid #AAA
+      cursor: pointer
+      position: absolute
+      top: 270px
+      left: 0
+      right: 0
+      margin: auto
+
+    .swatches
+      +bounds(48px, 175px)
+
+      left: 0
+      margin: auto
+      position: absolute
+      right: 0
+      top: 95px
+
+    .swatch
+      +bounds(16px)
+      +box-sizing(border-box)
+
+      cursor: pointer
+      border: 1px solid #666
+      float: left
+      margin: 4px
+
+    .color_picker_holder
+      +bounds(74px, 76px)
+
+      margin-bottom: 7px
+      position: absolute
+      left: 0
+      right: 0
+      margin-left: auto
+      margin-right: auto
+
+      input.color
+        +bounds(50px)
+
+        border: 2px solid
+        border-color: #CCC
+        position: absolute
+        text-align: center
+
+        &.primary
+          left: 0
+          top: 0
+          z-index: 10
+        &.secondary
+          left: 20px
+          top: 20px
+          z-index: 1
+
+  .canvas
+    +user-select(none)
+    +box-sizing(border-box)
+
+    border: 1px solid #000
 
   .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
+    +contents-centered
+
     background-color: #ccc
-    border: 1px solid #666
     display: inline-block
-    height: 512px
-    margin-right: 1em
-    overflow: hidden
+    overflow: auto
     position: relative
-    width: 512px
-
-.color_toggle
-  +bounds(16px, 16px)
-
-  background-image: url(/images/pixie/color_switch_arrow.png)
-  float: right
-
-.pixie
-  .frame
-    display: none
-    position: absolute
-    &.current
-      display: block
 
   .layer
     position: absolute
-    &.bottom
-      background: white url(../images/pixie/pixel_bg.png)
 
-  .pixel
-    border-bottom: 1px solid black
-    border-right: 1px solid black
-    float: left
-    height: 15px
-    margin: 0
-    padding: 0
-    width: 15px
+    &:first-child
+      background: white url(/images/pixie/pixel_bg.png)
 
-  // Holds all the actions
+  .actions
+    position: absolute
+    top: 0
+
   .actions, .layers
     display: block
-    margin-left: 65px
 
     a.tool
       color: black
-      margin: 5px
+      margin: 1px
       padding: .25em
 
       &:hover
@@ -66,74 +160,6 @@
       &.active
         background-color: #1084CE
         text-decoration: none
-
-  // Holds all the tools
-  .toolbar
-    cursor: pointer
-    display: inline-block
-    height: auto
-    position: relative
-    vertical-align: top
-    width: 60px
-
-    // Pencil, Eraser, etc. tool image styles
-    .tool
-      +border-radius(8px)
-      +box-sizing(border-box)
-      height: 40px
-      margin: 5px auto 0
-      padding-top: 12px
-      text-align: center
-      width: 40px
-
-      &:hover
-        background-color: #CCC
-
-      &.active
-        +border-radius(8px)
-        background-color= #1084CE
-
-      img
-        border: none
-
-  .swatch
-    border: 1px solid #666
-    +box-sizing(border-box)
-    float: left
-    margin: 4px
-    width: 16px
-    height: 16px
-
-  // Current colors input field
-  .color_picker_holder
-    height: 76px
-    margin-bottom: 7px
-    position: relative
-    width: 74px
-
-  input.color
-    border: 2px solid
-    border-color= #CCC
-    height: 50px
-    position: absolute
-    width: 50px
-
-    &.primary
-      left: 0
-      top: 0
-      z-index: 10
-    &.secondary
-      left: 20px
-      top: 20px
-      z-index: 1
-
-  // Holds the preview image
-  .preview
-    border: 1px solid #AAA
-    height: 150px
-    position: relative
-    width: 150px
-    cursor: default
 
   .toggle_holder
     display: block
@@ -157,6 +183,29 @@
 
       &.active
         color: white
+
+  a.button
+    &[title~="Undo"], &[title~="New"]
+      +border-right-radius(0)
+
+      margin-right: 0
+
+    &[title~="Redo"], &[title~="Save"]
+      +border-left-radius(0)
+
+      margin-left: -1px
+
+  .opacity
+    cursor: pointer
+    height: 73px
+    position: absolute
+    right: 1em
+
+    .val
+      cursor: pointer
+      position: absolute
+      right: -5px
+      bottom: -20px
 
 #newCanvasModal
   #resize_width, #resize_height

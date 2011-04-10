@@ -1,4 +1,69 @@
-- @title = "Sounds List"
+- @title = "Sound Gallery"
 
-- @sounds.each do |sound|
-  = render :partial => sound
+.filters
+  = button_link "Create Sound Effect", "sound_add", new_sound_path
+  =link_to "My Sounds", { :filter => :own }, { :class => "button" }
+  =link_to "All", { :filter => :none }, { :class => "button" }
+
+%section.gallery
+  = render :partial => @sounds
+
+#preview_sound
+  %audio
+
+:coffeescript
+  $('.sound_preview').mousedown ->
+    src = $(this).data('wav_src') || $(this).data('mp3_src')
+
+    $('#preview_sound audio').attr('src', src).get(0).play()
+
+%style
+  :sass
+    @import util
+    @import partials/base
+
+    .title_container
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
+    .sound
+      +bounds(200px, 155px)
+      +glass
+      +inline-block
+
+      margin: 1em
+      overflow-x: hidden
+      overflow-y: auto
+      padding: 1em
+
+    .sound_preview
+      +border-radius
+      +bounds(200px, 110px)
+      +contents-centered
+
+      color: #000
+      display: inline-block
+      font-size: 10px
+      left: 0
+      right: 0
+      margin: auto
+      position: absolute
+      text-align: center
+
+
+      #play
+        +bounds(200px, 110px)
+
+        &:hover
+          background: url(/images/play.png) no-repeat center center
+          cursor: pointer
+
+      img
+        border: none
+
+        max-width: 200px

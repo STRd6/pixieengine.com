@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails', '3.0.5'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -22,7 +22,7 @@ gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
 gem 'barista', '~> 1.0'
 gem "compass", ">= 0.10.2"
-gem "delayed_job", :git => "git://github.com/collectiveidea/delayed_job.git"
+gem "delayed_job", "2.1.4", :git => "git://github.com/collectiveidea/delayed_job.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'hpricot'
@@ -31,6 +31,7 @@ gem 'json'
 gem 'juggernaut', :git => "git://github.com/maccman/juggernaut.git"
 gem 'mail'
 gem 'mocha'
+gem 'narray'
 gem 'oauth'
 gem "oauth2"
 gem 'paperclip'
@@ -39,6 +40,7 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "sanitize"
+gem "spreedly"
 gem "SystemTimer"
 gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"

@@ -1,5 +1,5 @@
 /* Main css file for Pixie.
-  Copyright STRd6 2010
+  Copyright STRd6 2011
 
 @import constants
 @import icon
@@ -7,10 +7,8 @@
 html
   height: 100%
 
-// Basic layout and font styles
 body
   background-color: white
-  color: #333333
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif
   font-size: 12px
   line-height: 1.5
@@ -18,9 +16,8 @@ body
   padding: 0
 
 h1, h2, h3, h4, h5, h6
-  color = !main_color
-  font-family: 'Josefin Sans Std Light', Arial, serif
-  font-weight: normal
+  font-family: 'Josefin Sans', Arial, serif
+  font-weight: 600
   letter-spacing: .1em
   margin: 0 0 .5em 0
 
@@ -35,7 +32,7 @@ p, label
   font-family: Verdana, sans-serif
 
 a
-  color = !link_color
+  color: $pixie_primary
   font-weight: bold
   text-decoration: none
   &:hover
@@ -71,17 +68,19 @@ a
   #logo
     height: 70px
     position: relative
+    +contents-centered
 
     #logo_type
-      bottom: 0
+      +bounds(110px, 40px)
+
       color = !main_color
       font-size: 32px
-      height: 40px
       letter-spacing: .25em
-      position: absolute
-      text-align: center
-      width: 100%
       a
+        +bounds(110px, 55px)
+        +replace-text('/images/logo_large.png')
+
+        display: block
         font-weight: normal
         text-decoration: none
         &:visited
@@ -182,7 +181,7 @@ a
   +box-sizing(border-box)
   +grid-width(20)
   border-right = 1px solid !dark_gray
-  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 0 ($blueprint-grid-width + $blueprint-grid-margin)
+  padding = ($blueprint-grid-width - $blueprint-grid-margin) $blueprint-grid-width 20px ($blueprint-grid-width + $blueprint-grid-margin)
   position: relative
   top: -5px
 
@@ -201,43 +200,49 @@ a
 
 // TODO: Good these up, embetter and embiggen
 // Error and notice styling
+
+#flashes
+  bottom: 1em
+  position: fixed
+  right: 220px
+  z-index: 500
+
 .notice
+  +bounds(200px, 100px)
   +box-sizing(border-box)
 
   background-color: #FFF6BF
   border: 2px solid #FFD324
-  margin-bottom: 10px
-  padding: 5px 5px 5px
+  color: black
+  padding: 4px 5px 4px
+  position: relative
 
   .close
-    +border-radius(20px)
-    +bounds(13px, 13px)
+    +bounds(8px)
 
+    background-image: url(/images/closelabel.png)
+    background-repeat: no-repeat
     cursor: pointer
-    font-weight: bold
-    float: right
-    margin-top: 2px
-    text-align: center
-
-    &:hover
-      background-color: #DEBE3E
-
-    span
-      +bounds(13px, 16px)
-
-      display: table-cell
-      line-height: 0
-      vertical-align: middle
+    margin: auto
+    position: absolute
+    top: 9px
+    right: 5px
 
 #notice
-  color= !p1
-  border-color= !main_color
-  background-color= !s2
+  color: !p1
+  border-color: !main_color
+  background-color: !s2
 
 #error
-  color= !error_color
-  border-color= !error_color
-  background-color= !s2
+  color: !error_color
+  border-color: !error_color
+  background-color: !s2
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  width: 75%
+  margin: auto
 
 // Specifics
 .chunk
@@ -270,7 +275,7 @@ div.no-star
 
 #feedback
   position: fixed
-  left: -10px
+  left: -15px
   top: 50%
 
   a
@@ -281,7 +286,7 @@ div.no-star
 
 #tooltip
   +border-radius(5px)
-  +box-shadow()
+  +box-shadow
   background-color: black
   color: white
   display: none
@@ -306,37 +311,19 @@ div.no-star
 .noselect
   +user-select(none)
 
-#fullscreen
-  background-color: #00010D
-  height: 100%
-
-  #sidebar, #header, #feedback, #footer, #chatZone
-    display: none
-
-  #flashes
-    left: 0
-    position: fixed
-    top: 0
-    width: 100%
-
-  #content
-    +bounds(100%, 100%)
-    +box-sizing(border-box)
-
-    border: none
-    margin: 0
-    padding: 0
-
-    .subnav
-      display: none
-
-  .container
-    height: 100%
-    margin: 0
-    padding: 0
-
 .template
   display: none
 
 .unsupported
   display: none
+
+#fullscreen
+  +scrollbars
+
+.clickable
+  cursor: pointer
+
+nav.top
+  position: absolute
+  top: 0
+  left: 120px

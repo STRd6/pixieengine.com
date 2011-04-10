@@ -1,0 +1,9 @@
+:coffeescript
+  window.displayErrors = (errors) ->
+    errors.each (error) ->
+      $.pnotify
+        pnotify_title: 'Compile Errors'
+        pnotify_text: '<div class="file error" data-id=' + error.fileId + '>In file: <b>' + error.file + '</b>\n' + error.message + '</div>'
+        pnotify_type: 'error'
+        pnotify_hide: false
+

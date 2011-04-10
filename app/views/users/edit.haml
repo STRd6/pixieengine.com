@@ -22,7 +22,6 @@
 
   = form.submit "Update Information"
 
-:javascript
-  $(function() {
-    $("#user_favorite_color").colorPicker();
-  });
+:coffeescript
+  $ ->
+    $("#user_favorite_color").colorPicker()

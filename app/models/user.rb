@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   has_many :sprites
   has_many :invites
 
+  has_many :projects
+
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :user_plugins
@@ -31,12 +33,26 @@ class User < ActiveRecord::Base
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
   }
 
+  scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
+
+  scope :none
+
   after_create do
     Notifier.welcome_email(self).deliver unless email.blank?
   end
 
   def to_s
     display_name
+  end
+
+  def demo_project
+    project = projects.where(:demo => true).first
+
+    unless project
+      project = projects.create! :demo => true, :title => "Demo", :description => "A demo project to help you get started"
+    end
+
+    return project
   end
 
   def send_forgot_password_email
@@ -172,6 +188,32 @@ class User < ActiveRecord::Base
         :link => {:action => :new, :controller => :invites},
       }
     ]
+  end
+
+  def refresh_from_spreedly
+    Spreedly.configure('pixie', APP_CONFIG[:spreedly_token])
+
+    subscriber = Spreedly::Subscriber.find(self.id)
+
+    if subscriber
+      self.update_attribute(:paying, subscriber.active)
+    else
+      self.update_attribute(:paying, false)
+    end
+
+    save
+  end
+
+  def self.visit_report
+    esac = "
+      CASE
+        WHEN login_count BETWEEN 0 AND 1 THEN 0
+        WHEN login_count BETWEEN 2 AND 5 THEN 1
+        WHEN login_count BETWEEN 6 AND 12 THEN 2
+        ELSE 3
+      END
+    "
+    User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
   end
 
   private

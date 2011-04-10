@@ -4,7 +4,6 @@
   - @meta_desc = "Load #{sprite.meta_desc}"
 
 = stylesheet_link_tag 'pixie/pixie'
-= javascript_include_tag 'pixie/jqcolor', 'pixie/jquery.hotkeys', 'pixie/pixie', 'http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'
 
 - width = @width || 32
 - height = @height || 32
@@ -18,9 +17,9 @@
     please come back with a better browser:
     = link_to "Google Chrome", "http://www.google.com/chrome"
 
-  <iframe title="YouTube video player" class="youtube-player" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/BrXPcaRlBqo" frameborder="0" allowFullScreen></iframe>
+  %iframe(allowFullScreen){ :title => "YouTube video player", :class=> "youtube-player", :type => "text/html", :width => "640", :height => "390",  :src => "http://www.youtube.com/embed/BrXPcaRlBqo", :frameborder => "0" }
 
-#pixie
+%section#pixie
 
 #optionsModal{ :style => 'display: none' }
 
@@ -71,8 +70,30 @@
         'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
       };
 
+      if(#{facebook?}) {
+        postData.format = "json";
+      }
+
       $.post('/sprites', postData, function(data) {
-        eval(data);
+        if(#{facebook?}) {
+          FB.ui({
+            method: 'feed',
+            link: 'http://pixie.strd6.com',
+            picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/large.png",
+            message: 'Check out my awesome pixel art!'
+          }, function(response) {
+            if (response && response.post_id) {
+              alert('Post was published.');
+            } else {
+              alert('Post was not published.');
+            }
+          });
+
+          notify("Saved!");
+        } else {
+          eval(data);
+        }
+
         trackPageview("/event/save_drawing");
         canvas.dirty(false);
         $(".tool.button[title=Save]").removeAttr("disabled");
@@ -82,60 +103,68 @@
     $('#pixie').pixie({
       width: #{width},
       height: #{height},
-      frames: #{data ? data.length : 1},
+      pixelSize: #{facebook?} ? 8 : 16,
       initializer: function(canvas) {
         // HAX: Global ref of canvas
         window.canvas = canvas;
 
         canvas.addAction({
-          name: "Replay",
-          icon: "/images/icons/resultset_next.png",
+          name: "replay",
           perform: function(canvas) {
             canvas.replay();
           },
           undoable: false
         });
 
-        canvas.addAction({
-          name: "New",
-          cssClass: "pillbox-left",
-          icon: "/images/icons/page_white_add.png",
-          perform: function(canvas) {
-            setNewDimensions();
-          },
-          undoable: false
-        });
+        if(#{facebook?}) {
+          canvas.addAction({
+            name: "Post to FB",
+            icon: "/images/icons/user_comment.png",
+            perform: function(canvas) {
+              postImage();
+            },
+            undoable: false
+          });
+        } else {
+          canvas.addAction({
+            name: "new",
+            perform: function(canvas) {
+              setNewDimensions();
+            },
+            undoable: false
+          });
 
-        canvas.addAction({
-          name: "Save",
-          cssClass: "pillbox-right",
-          icon: "/images/icons/database_save.png",
-          perform: function(canvas) {
-            $(".tool.button[title=Save]").attr("disabled", true);
-            window.onbeforeunload = undefined;
-            postImage();
-          },
-          undoable: false
-        });
+          canvas.addAction({
+            name: "save",
+            perform: function(canvas) {
+              $(".tool.button[title=Save]").attr("disabled", true);
+              window.onbeforeunload = undefined;
+              postImage();
+            },
+            undoable: false
+          });
 
-        canvas.addAction({
-          name: "Post to Chat",
-          icon: "/images/icons/picture_go.png",
-          perform: function(canvas) {
-            var wrapper = $("<div />");
-            var img = $("<img />");
-            img.attr('src', canvas.toDataURL());
+          canvas.addAction({
+            name: "Post to Chat",
+            icon: "/images/icons/picture_go.png",
+            perform: function(canvas) {
+              var wrapper = $("<div />");
+              var img = $("<img />");
+              img.attr('src', canvas.toDataURL());
 
-            img.appendTo(wrapper);
+              img.appendTo(wrapper);
 
-            $.post ('/chat', { body: wrapper.html() }, function() {
-              $('body').scrollTo({
-                left: '0%',
-                top: '100%'
+              $.post ('/chat', { body: wrapper.html() }, function() {
+                $('body').scrollTo({
+                  left: '0%',
+                  top: '100%'
+                });
               });
-            });
-          }
-        });
+
+              $("#chatZone").fadeIn();
+            }
+          });
+        }
 
         $.each(installedTools, function(i, tool) {
           canvas.addTool(tool);

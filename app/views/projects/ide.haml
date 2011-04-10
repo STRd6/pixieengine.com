@@ -1,0 +1,548 @@
+%nav.top.actions
+  %button#save Save
+  .button_group
+    %button#new> New
+    %button#import> Import
+  .button_group
+    %button#run> Run
+    %button#test> Test
+    %button#console> Console
+
+  .button_group
+    %button#build> Build
+    %button#update_libs> Update Libs
+    %button#generate_docs> Doc
+    %button#tag> Tag
+
+  .status
+    %label What are you working on?
+    %input.message(placeholder="(Click to edit)")
+
+#content
+  #error
+
+  %nav.left
+    %ul.filetree
+      - unless project.file_info.nil?
+        - project.file_info[:files].each do |file|
+          = render :partial => "file_tree_node", :locals => {:file_info => file}
+
+  %section
+    #tabs
+      %ul
+
+  #test_zone.window(style="top: 125px; left: 300px;")
+    %span#close_app.ui-icon.ui-icon-close
+    %h3.ui-widget-header= project.title
+    %iframe#test_frame
+
+  #unit_test_window.window(style="top: 100px; left: 200px;")
+    %span.ui-icon.ui-icon-close
+    %h3.ui-widget-header Test #{project.title}
+    %iframe#unit_test_frame
+
+= render :partial => "context_menu"
+= render :partial => "tips"
+= render :partial => "pixie"
+= render :partial => "sfxr"
+= render :partial => "new_file_modal"
+= render :partial => "file_upload"
+= render :partial => "console"
+= render :partial => "tag_version_modal"
+= render :partial => "property_editor"
+= render :partial => "errors"
+= render :partial => "hotkeys"
+
+#qunit_template.template
+  %div
+    %h1#qunit-header ${header}
+    %h2#qunit-banner
+    %h2#qunit-userAgent
+    %ol#qunit-tests
+    #qunit-fixture
+
+
+- project_id = params[:id]
+
+:coffeescript
+  window.projectId = #{project_id.to_json}
+
+  $("#generate_docs").click ->
+    notify("Scheduling docs generation...")
+
+    $.post #{generate_docs_project_path(project).to_json}, ->
+      notify("Docs scheduled for generation", 4000)
+
+  $("#update_libs").click ->
+    notify("Scheduling library update...")
+
+    $.post #{update_libs_project_path(project).to_json}, ->
+      notify("Library update scheduled", 4000)
+
+  $(".actions .status .message").live "click", ->
+    $(this).select()
+
+  errors = []
+
+  window.compileDirectory = (directoryPath) ->
+    findDirectory(directoryPath).find("span.file").map((index, span) ->
+      compileFileNode($(span))
+    ).get().join(";\n")
+
+  window.compileFileNode = (node) ->
+    $element = $(node.attr("data-id"))
+    src = $element.find("[name=contents]").val()
+    ext = $element.data("ext")
+
+    compileCode(src, ext, $element)
+
+  window.compileCode = (src, ext, $element) ->
+    if ext == "js"
+      src
+    else if ext == "coffee"
+      try
+        compiledCode = CoffeeScript.compile src, noWrap: true
+      catch error
+        if $element
+          errors.push
+            file: $element.data("path")
+            fileId: "#" + $element.attr("id")
+            message: error.message
+        else
+          errors.push
+            message: error.message
+
+      compiledCode
+
+  window.runCodeInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+
+    sandbox.write("<canvas width='\#{projectConfig.width}' height='\#{projectConfig.height}'></canvas>")
+
+    sandbox.write("<script>\#{code}<\/script>")
+
+    sandbox.close()
+
+  window.testCodeInIframe = (code, iframe) ->
+    contentWindow = iframe.get(0).contentWindow
+    sandbox = contentWindow.document
+    sandbox.open()
+    sandbox.write(#{stylesheet_link_tag('app').to_json})
+    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{stylesheet_link_tag('qunit').to_json})
+    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
+    sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
+
+    sandbox.write($("#qunit_template").tmpl(header: "Results").html())
+
+    sandbox.write("<script>\#{code}<\/script>")
+
+    sandbox.close()
+
+  window.log = (message) ->
+    console.log message
+
+  window.openFile = (docSelector) ->
+    if $(docSelector).data("type") == "binary"
+      alert "Can't edit binary data... maybe there is a source file that can be edited?"
+      return
+    if $(docSelector).data("size") > 100000
+      alert "This file is too large for our editor!"
+      return
+
+    if $('#tabs ul li a[href="' + docSelector + '"]').length
+      $('#tabs ul li a[href="' + docSelector + '"]').click()
+    else
+      path = $(docSelector).data("path")
+      if match = path.match /\/([^\/]*)$/
+        name = match[1]
+      else
+        name = path
+
+      $("#tabs").tabs 'add', docSelector, name, 0
+
+  window.onbeforeunload = ->
+    if $("li.unsaved").length
+      "You have some unsaved changes, if you leave now you will lose your work."
+
+  hotSwap = () ->
+    src = $(currentPanel).find("[name=contents]").val()
+    ext = $(currentPanel).data("ext")
+
+    code = compileCode(src, ext)
+
+    if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+      try
+        runningGameFrame.eval(code)
+      catch error
+        warn? error.message
+
+      try
+        runningGameFrame.eval("engine.reload()")
+      catch error
+        warn? error.message
+
+  window.removeFile = (node) ->
+    notify "Removing..."
+
+    docSelector = node.remove().data("id")
+
+    # Close file if open
+    if $('#tabs ul li a[href="' + docSelector + '"]').length
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+    path = $(docSelector).remove().data("path")
+    message = $(".actions .status .message").val()
+
+    postData = 
+      path: path
+      format: 'json'
+      message: message
+
+    successCallback = (data) ->
+      notify "Removed!"
+
+    $.post "/projects/\#{projectId}/remove_file", postData, successCallback
+
+  # Commands
+  window.save = (event, data) ->
+    requireLogin ->
+      notify "Saving..."
+
+      activeTab = $("#tabs ul li.ui-state-active")
+      message = $(".actions .status .message").val()
+
+      successCallback = (data) ->
+        notify "Saved!"
+
+        # Check for update saved method
+        activeTab.find('a').data('updateSaved')?()
+
+        activeTab.removeClass("unsaved")
+
+      if data
+        postData = $.extend(
+          format: 'json'
+          message: message
+        , data)
+
+        $.post "/projects/\#{projectId}/save_file", postData, successCallback
+
+      else
+        form = $(currentPanel).find('form')
+
+        if form.length
+          form.ajaxSubmit
+            type: 'POST'
+            data:
+              message: message
+            dataType: "json"
+            success: successCallback
+
+          # Hot swap: inject code
+          if projectConfig.hotSwap
+            hotSwap()
+        else
+          # Check for special save method
+          activeTab.find('a').data('doSave')?()
+
+  $('#save').live 'click', save
+
+  newFileModal = () ->
+    $("#new_file_modal").modal()
+
+  $("#new").live 'click', newFileModal
+
+  buildProjectCode = () ->
+    errors = []
+
+    srcDir = findDirectory(projectConfig.directories.source)
+
+    compiledCode = srcDir.find("span.file").map((index, span) ->
+      $span = $(span)
+
+      # Save main for last
+      return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+      compileFileNode($span)
+    ).get().join(";\n")
+
+    libCode = compileDirectory(projectConfig.directories.lib)
+
+    if projectConfig.main
+      mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
+
+      if projectConfig.wrapMain
+        mainCode = ";$(function(){ \#{mainCode} });"
+
+    else
+      mainCode = ""
+
+    displayErrors(errors)
+
+    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+    crammedCode += libCode + ";\n" + compiledCode + ";\n" + mainCode
+
+  $("#build").live 'click', (event) ->
+    projectCode = buildProjectCode()
+
+    save event,
+      contents: projectCode
+      path: (projectConfig.name || "project") + ".js"
+
+  runApp = () ->
+    width = projectConfig.width
+    height = projectConfig.height
+
+    $("#test_frame").remove()
+
+    iframe = $ '<iframe />'
+      height: height
+      id: "test_frame"
+      width: width
+
+    $("#test_zone").append(iframe).show()
+
+    if runPath = projectConfig.runPath
+      iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
+    else
+      runCodeInIframe(buildProjectCode(), iframe)
+
+  $("#run").live 'click', runApp
+
+  testApp = () ->
+    errors = []
+
+    srcDir = findDirectory(projectConfig.directories.source)
+
+    compiledCode = srcDir.find("span.file").map((index, span) ->
+      $span = $(span)
+
+      # Skip main
+      return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+      compileFileNode($span)
+    ).get().join(";\n")
+
+    libCode = compileDirectory(projectConfig.directories.lib)
+    testCode = compileDirectory(projectConfig.directories.test)
+
+    displayErrors(errors)
+
+    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
+    crammedCode += libCode + ";\n" + compiledCode
+    crammedCode += ";$(function(){ \#{testCode} });"
+
+    $("#unit_test_frame").remove()
+
+    iframe = $ '<iframe />'
+      height: 480
+      id: "unit_test_frame"
+      width: 640
+
+    $("#unit_test_window").append(iframe).show()
+
+    # Cram compiled code in iframe
+    testCodeInIframe(crammedCode, iframe)
+
+  $("#test").click testApp
+
+  # key combos like ctrl+s
+  ctrlKeys =
+    s: save
+    h: hotSwap
+    #TODO Fix => n: newFileModal
+
+  bindKeys = (scopeDocument, ctrlKeys) ->
+    $.each ctrlKeys, (key, fn) ->
+      $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (event) ->
+        event.preventDefault()
+        fn()
+      )
+
+  bindKeys(document, ctrlKeys)
+
+  window.createEditor = (ui) ->
+    panel = $(ui.panel)
+    tab = $(ui.tab)
+    path = panel.attr('data-path')
+    lang = panel.attr('data-lang')
+    type = panel.attr('data-type')
+    mtime = panel.attr('data-mtime')
+
+    if type == "text"
+      textArea = panel.find('textarea').get(0)
+      savedCode = textArea.value
+
+      if lang == "html"
+        lang = "xml"
+
+      lang ||= "dummy"
+
+      editor = new CodeMirror.fromTextArea textArea,
+        autoMatchParens: true
+        content: savedCode
+        height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/javascripts/codemirror/"
+        stylesheet: ["/stylesheets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
+
+      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+
+      bindKeys(editor.win.document, ctrlKeys)
+
+      # Listen for keypresses and update contents.
+      $(editor.win.document).keyup ->
+        currentCode = editor.getCode()
+
+        if currentCode != savedCode
+          tab.parent().addClass("unsaved")
+        else
+          tab.parent().removeClass("unsaved")
+
+        textArea.value = currentCode
+
+      cssClass: lang
+      updateSaved: () ->
+        savedCode = editor.getCode()
+
+    else if type == "image"
+      pixelEditor = createPixelEditor
+        width: 32 #TODO: Real width
+        height: 32 #TODO: Real height
+        dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
+        path: path
+
+      pixelEditor.bind('save', save)
+
+      panel.empty().append(pixelEditor)
+
+      cssClass: "sprite"
+      updateSaved: () -> #TODO
+      doSave: () ->
+        pixelEditor.trigger('doSave')
+
+    else if type == "sound"
+      contentsField = panel.find('[name=contents]')
+      soundData = contentsField.val()
+      hiddenContentsField = $ "<input />",
+        name: "contents"
+        type: "hidden"
+        val: soundData
+
+      soundEditor = createSoundEditor
+        soundData: soundData
+        path: path
+
+      soundEditor.bind('save', save)
+
+      panel.empty().append(soundEditor, hiddenContentsField)
+
+      cssClass: type
+      doSave: () ->
+        soundEditor.trigger('doSave')
+
+    else if type == "tilemap"
+      #TODO Tilemap Editor embed
+
+      cssClass: type
+      updateSaved: () -> #TODO
+
+  # Tree and Tabs setup
+  $ ->
+    DEFAULT_CONFIG = #{default_project_config.to_json}
+    try
+      window.projectConfig = JSON.parse($("[data-path=/pixie.json]").find("[name=contents]").val())
+    catch e
+      console.warn?(e)
+      window.projectConfig = {}
+    finally
+      # Merge in default configs
+      window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
+    $('ul.filetree').treeview()
+
+    $tabs = $('#tabs').tabs
+      add: (event, ui) ->
+        $tabs.tabs('select', '#' + ui.panel.id)
+
+        if fileData = createEditor(ui)
+          $(ui.tab).data('updateSaved', fileData.updateSaved)
+          $(ui.tab).data('doSave', fileData.doSave)
+          $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
+
+        window.currentPanel = ui.panel
+
+      remove: (event, ui) ->
+        $(ui.panel).find(".CodeMirror-wrapping").remove()
+        $('.filetree').append(ui.panel)
+
+      select: (event, ui) ->
+        window.currentPanel = ui.panel
+
+      tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+
+    $('.filetree .file').live 'click', ->
+      openFile($(this).data('id'))
+
+    $('.error.file').live 'click', ->
+      if id = $(this).data('id')
+        openFile(id)
+
+    $('#tabs span.ui-icon-close').live 'click', ->
+      parent = $(this).parent()
+
+      if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
+        index = $('li', $tabs).index(parent)
+        $tabs.tabs('remove', index)
+
+    $(".window").draggable(
+      handle: "h3"
+      iframeFix: true
+    ).find("h3").disableSelection()
+
+    $('.window .ui-icon-close').live "click", ->
+      $(this).parent().hide().children("iframe").remove()
+
+    # Hack to pre-load main file
+    $("#file_src_main_coffee").prev().click()
+
+%style
+  :sass
+    #properties_editor_window
+      h3
+        margin-left: 1px
+        margin-right: 1px
+
+    tr
+      display: block
+      margin-bottom: -2px
+
+    td
+      display: inline-block
+      margin-left: -1px
+      margin-right: -1px
+
+    .window, #test_zone, #testZone
+      padding: 0.4em
+
+      h3
+        margin-bottom: 0
+
+      iframe
+        margin-bottom: -5px
+
+    #prop_editor
+      input[placeholder="key"]
+        color: #DB0000
+
+    .file.error
+      cursor: pointer

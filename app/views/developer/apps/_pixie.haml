@@ -35,10 +35,7 @@
                 $.modal.close()
                 postImage()
 
-              $("#titleModal").modal
-                containerCss:
-                  height: 200
-                  width: 400
+              $("#titleModal").modal()
 
                 onClose: () ->
                   $('#titleModal button').unbind()
@@ -81,9 +78,7 @@
                 canvas.dirty(false)
               , "json"
 
-            canvas.addAction
-              name: "Save"
-              icon: "/images/icons/database_save.png"
+            canvas.addAction "Save",
               perform: (canvas) ->
                 $(".tool.button").last().attr("disabled", true)
 

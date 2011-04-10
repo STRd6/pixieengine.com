@@ -22,4 +22,16 @@ class Script < ActiveRecord::Base
       LibraryScript.create(:library_id => lib_id, :script_id => id)
     end
   end
+
+  def file_name
+    title.to_filename(extension)
+  end
+
+  def extension
+    if lang == "coffeescript"
+      "coffee"
+    else
+      "js"
+    end
+  end
 end
