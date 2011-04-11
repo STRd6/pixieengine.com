@@ -14,7 +14,12 @@
   function requireLogin(callback) {
     if(!loggedIn) {
       logInCallback = callback;
-      $("#registerModal").modal();
+      $("#registerModal").modal({
+        containerCss: {
+          height: 460,
+          width: 300
+        }
+      });
       trackPageview("/event/login_screen");
     } else {
       callback();
