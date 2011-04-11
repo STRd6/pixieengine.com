@@ -19,13 +19,8 @@ class ProjectsController < ApplicationController
   end
 
   def info
-    tut_ids = [15, 56, 69, 14]
-
-    @favorites = Project.find [53, 51, 52, 49]
-
-    @tutorials = tut_ids.map do |id|
-      App.find(id)
-    end
+    @favorites = Project.find [53, 51, 55, 49]
+    @tutorials = Project.find [50, 56, 69, 14]
 
     render :layout => "plain"
   end
