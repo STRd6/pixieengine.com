@@ -11,7 +11,8 @@
   .button_group
     %button#build> Build
     %button#update_libs> Update Libs
-    %button#generate_docs> Doc
+    - if admin?
+      %button#generate_docs> Doc
     %button#tag> Tag
 
   .status

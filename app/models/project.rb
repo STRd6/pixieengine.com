@@ -296,7 +296,7 @@ class Project < ActiveRecord::Base
 
       FileUtils.mkdir_p(doc_dir)
 
-      cmd = "java -jar #{jsdoc_toolkit_dir}jsrun.jar #{jsdoc_toolkit_dir}app/run.js #{dir} -c=config/jsdoc.conf -d=#{doc_dir}"
+      cmd = "java -jar #{jsdoc_toolkit_dir}jsrun.jar #{jsdoc_toolkit_dir}app/run.js #{dir} -c=config/jsdoc.conf -d=#{doc_dir} -n"
       system(cmd)
     end
   end
