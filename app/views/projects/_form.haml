@@ -12,6 +12,10 @@
     = form.label :description
     = form.text_area :description
 
+  %p
+    = form.label :image, "Screenshot"
+    = form.file_field :image
+
   %div.advanced_toggle
     = link_to_function "Advanced Options", "$(this).parent().next().toggle()"
 

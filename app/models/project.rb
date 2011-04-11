@@ -1,4 +1,11 @@
 class Project < ActiveRecord::Base
+  has_attached_file :image, S3_OPTS.merge(
+    :path => "projects/:id/:style.:extension",
+    :styles => {
+      :thumb => ["96x96#", :png]
+    }
+  )
+
   belongs_to :user
 
   before_validation :update_hook_url
@@ -38,10 +45,12 @@ class Project < ActiveRecord::Base
     :hotSwap => true,
   }
   BRANCH_NAME = "pixie"
-
   DEMO_ORIGIN = "git://github.com/STRd6/PixieEngine.git"
-
   DEMO_ID = 34
+
+  def display_name
+    title
+  end
 
   def demo_path
     File.join base_path, DEMO_ID.to_s

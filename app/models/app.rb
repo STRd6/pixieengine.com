@@ -88,6 +88,7 @@ class App < ActiveRecord::Base
 
   def migrate_to_project
     project = Project.create :title => title,
+      :image => image,
       :description => description,
       :user => user
 
