@@ -95,6 +95,7 @@ GEM
     coffee-script (2.1.1)
       coffee-script-source
     coffee-script-source (1.0.0)
+    colored (1.2)
     compass (0.10.6)
       haml (>= 3.0.4)
     daemons (1.1.0)
@@ -155,6 +156,14 @@ GEM
       activesupport (= 3.0.5)
       bundler (~> 1.0)
       railties (= 3.0.5)
+    rails_best_practices (0.7.5)
+      activesupport
+      colored (~> 1.2)
+      erubis (~> 2.6.6)
+      haml (~> 3.0.18)
+      i18n
+      ruby-progressbar (~> 0.0.9)
+      ruby_parser (~> 2.0.4)
     railties (3.0.5)
       actionpack (= 3.0.5)
       activesupport (= 3.0.5)
@@ -166,8 +175,12 @@ GEM
     riddle (1.2.2)
     rmagick (2.13.1)
     ruby-openid (2.1.8)
+    ruby-progressbar (0.0.9)
+    ruby_parser (2.0.6)
+      sexp_processor (~> 3.0)
     sanitize (1.2.1)
       nokogiri (~> 1.4.1)
+    sexp_processor (3.0.5)
     shoulda (2.11.3)
     therubyracer (0.8.0)
     thinking-sphinx (2.0.1)
@@ -212,6 +225,7 @@ DEPENDENCIES
   pg
   rack-openid (>= 0.2.1)
   rails (= 3.0.5)
+  rails_best_practices
   require
   rmagick
   ruby-openid

@@ -53,3 +53,7 @@ group :test do
   gem "shoulda"
   gem "factory_girl"
 end
+
+group :tools do
+  gem "rails_best_practices"
+end
