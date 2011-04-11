@@ -1,11 +1,16 @@
-%h1 Forgot Password
-
-%p Enter your email address and instructions on how to reset your password will be mailed to you:
-
-
 - form_tag password_resets_path do
+  %h1 Forgot Password
+
+  %p Enter your email address and instructions on how to reset your password will be mailed to you:
+
   %p
     = label_tag :email
     = text_field_tag :email
 
   = submit_tag "Reset my password"
+
+%style
+  :sass
+    form
+      width: 400px
+      margin: auto
