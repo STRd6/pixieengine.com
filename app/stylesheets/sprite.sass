@@ -8,7 +8,7 @@
   word-wrap: break-word
 
   img
-    border = 1px solid !light_gray
+    border: 1px solid #aaa
     display: block
     margin: .5em 0
 
@@ -19,10 +19,6 @@
   .title a
     vertical-align: top
 
-  .user
-    color: #666
-    a
-      color = !dark_gray
 
 .tags
   form
@@ -36,8 +32,9 @@
 .tag
   +inline-block
   +border-radius(4px)
+
   background-color: #FFF
-  border = 1px solid !dark_gray
+  border: 1px solid $dark_gray
   font-weight: bold
   margin-right: 5px
   padding: 4px 8px
