@@ -1,3 +1,9 @@
+# Notifications
+window.notify = (message, delay) ->
+  $.pnotify
+    pnotify_text: message
+    pnotify_delay: delay
+
 # Clickable
 $(".clickable").live 'click', ->
   document.location = $(this).find("a").eq(0).attr("href")
@@ -40,3 +46,7 @@ $ ->
   if active = getVal('light')
     $('#bulb').toggleClass('on', active)
     setLightTheme active
+
+  # Display Flash Notice
+  $("#flashes .notice").each ->
+    notify($(this).html())

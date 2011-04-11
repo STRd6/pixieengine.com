@@ -191,17 +191,13 @@ class User < ActiveRecord::Base
   end
 
   def refresh_from_spreedly
-    Spreedly.configure('pixie', APP_CONFIG[:spreedly_token])
-
-    subscriber = Spreedly::Subscriber.find(self.id)
+    subscriber = Subscriber.find(self.id)
 
     if subscriber
       self.update_attribute(:paying, subscriber.active)
     else
       self.update_attribute(:paying, false)
     end
-
-    save
   end
 
   def self.visit_report

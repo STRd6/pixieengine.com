@@ -23,6 +23,12 @@ module ApplicationHelper
     Rails.application.config.session_options[:key]
   end
 
+  def subscription_link(user)
+    subscription_plan_id = 9356
+
+    link_to "Subscribe", "https://spreedly.com/STRd6-test/subscribers/#{user.id}/subscribe/#{subscription_plan_id}/#{user.email}"
+  end
+
   private
   def oauth_button(name, options = {})
     "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>".html_safe
