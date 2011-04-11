@@ -19,15 +19,26 @@
     %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, [:edit, current_user], :class => "button"
 
 - if user.sprites.size > 0
-  %h3
-    = "#{user}'s creations"
   .sprites
-    = render :partial => user.sprites
+    %h3
+      = "#{user}'s creations"
+    - user.sprites.each do |sprite|
+      .sprite
+        - if current_user
+          .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
+
+        %span.title= link_to(sprite.display_name, sprite)
+
+        = image_link sprite
+
   .clear
 
 %style
   :sass
     @import util
+
+    .sprites
+      padding-top: 5em
 
     .tasks
       +glass
