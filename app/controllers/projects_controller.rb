@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
 
   def info
     @favorites = Project.find [53, 51, 55, 49]
-    @tutorials = Project.find [50, 56, 69, 14]
+    @tutorials = Project.find [50, 49, 52, 62]
 
     render :layout => "plain"
   end
