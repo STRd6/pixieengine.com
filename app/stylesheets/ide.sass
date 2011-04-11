@@ -5,12 +5,10 @@
 $nav_left: 220px
 
 #fullscreen
+  padding-top: 4em
   #content
     padding-left: $nav_left + 20px
-
-  nav.left
-    left: 3em
-    top: 4em
+    position: relative
 
 nav.top.actions .status
   input
@@ -245,47 +243,15 @@ ul.filetree
   display: inline-block
   text-align: center
 
-  a
-    color: $pixie_primary
-
   .status
     +inline-block
-    .message
-      +border-radius(2px)
-      +inline-block
-      background-color: transparent
-      border: 1px solid $pixie_primary
-      color: white
-      height: 16px
-      padding-left: 1em
-      text-align: left
-      width: 200px
 
-#content
-  border: none
-  padding: 20px 0px 0px 1em
-  width: 1280px
+    .message
+      width: 200px
 
 #logo
   height: 70px
   position: relative
-
-  #logo_type
-    bottom: 0
-    color: !main_color
-    font-size: 32px
-    height: 40px
-    letter-spacing: .25em
-    position: absolute
-    text-align: center
-    width: 260px
-    a
-      font-weight: normal
-      text-decoration: none
-      &:visited
-        color: inherit
-
-
 
 ul#libraries
   background-color: #FFF

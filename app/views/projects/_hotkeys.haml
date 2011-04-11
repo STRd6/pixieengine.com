@@ -61,48 +61,46 @@
     @import partials/base
     @import util
 
-    section
-      margin-top: 1em
+    #hotkeysModal
+      .left_col
+        display: inline-block
+        text-align: right
+        width: 165px
 
-    .left_col
-      display: inline-block
-      text-align: right
-      width: 165px
+      dl
+        width: 500px
 
-    dl
-      width: 500px
+      dt
+        +border-radius(2px)
+        +text-shadow(#ccc, 1px, 1px, 0)
 
-    dt
-      +border-radius(2px)
-      +text-shadow(#ccc, 1px, 1px, 0)
+        background: #eee
+        color: #333
+        display: inline-block
+        margin-left: 80px
+        min-width: 10px
+        padding: 1px 6px
+        text-align: center
 
-      background: #eee
-      color: #333
-      display: inline-block
-      margin-left: 80px
-      min-width: 10px
-      padding: 1px 6px
-      text-align: center
+        em
+          +text-shadow(#eee, 0, 0, 0)
 
-      em
-        +text-shadow(#eee, 0, 0, 0)
+          color: #888
+          font-size: 10px
+          font-style: normal
+          font-weight: normal
 
-        color: #888
-        font-size: 10px
-        font-style: normal
-        font-weight: normal
+      dd
+        color: #ccc
+        display: inline
+        width: 300px
 
-    dd
-      color: #ccc
-      display: inline
-      width: 300px
-
-    .rule
-      width: 96%
-      padding: 0 10px
-      margin-left: -10px
-      clear: both
-      margin: 7px 0
-      height: 0
-      overflow: hidden
-      border-bottom: 1px solid #ddd
+      .rule
+        width: 96%
+        padding: 0 10px
+        margin-left: -10px
+        clear: both
+        margin: 7px 0
+        height: 0
+        overflow: hidden
+        border-bottom: 1px solid #ddd
