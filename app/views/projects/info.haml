@@ -1,4 +1,4 @@
-- @title = "Pixie"
+- @title = "PixieEngine - Create Games"
 
 %style
   :sass
@@ -216,7 +216,7 @@
   .block
     %h2 Current Favorites
     - @favorites.each do |favorite|
-      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_developer_app_path(favorite)
+      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_project_path(favorite)
 
   .block
     %h2 Pixie Dust Make You Sneeze?

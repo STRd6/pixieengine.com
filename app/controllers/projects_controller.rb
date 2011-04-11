@@ -19,12 +19,9 @@ class ProjectsController < ApplicationController
   end
 
   def info
-    fave_ids = [53, 51, 52, 49]
     tut_ids = [15, 56, 69, 14]
 
-    @favorites = fave_ids.map do |id|
-      Project.find(id)
-    end
+    @favorites = Project.find [53, 51, 52, 49]
 
     @tutorials = tut_ids.map do |id|
       App.find(id)
