@@ -15,7 +15,7 @@
     %button#tag> Tag
 
   .status
-    %label What are you working on?
+    %label.inline What are you working on?
     %input.message(placeholder="(Click to edit)")
 
 #content
@@ -199,7 +199,7 @@
     path = $(docSelector).remove().data("path")
     message = $(".actions .status .message").val()
 
-    postData = 
+    postData =
       path: path
       format: 'json'
       message: message
