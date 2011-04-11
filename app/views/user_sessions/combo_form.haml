@@ -4,7 +4,7 @@
 
   %label(for="user_session_email")
     %h3 What is your email address?
-    = form.text_field :email, :value => session[:email]
+    = form.text_field :email
 
   %h3 Do you have a Pixie password?
 
@@ -48,6 +48,5 @@
 
 %style
   :sass
-    form
-      margin: auto
+    #new_user_session
       width: 450px
