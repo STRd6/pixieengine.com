@@ -50,123 +50,6 @@ a
 .clear
   clear: both
 
-#sidebar
-  #logo
-    height: 70px
-    position: relative
-    +contents-centered
-
-    #logo_type
-      +bounds(110px, 40px)
-
-      color = $pixie_primary
-      font-size: 32px
-      letter-spacing: .25em
-      a
-        +bounds(110px, 55px)
-        +replace-text('/images/logo_large.png')
-
-        display: block
-        font-weight: normal
-        text-decoration: none
-        &:visited
-          color: inherit
-
-  #description
-    color = $light_gray
-    font-size: 11px
-    font-style: italic
-    letter-spacing: .1em
-    text-align: justify
-
-#header
-  +box-sizing(border-box)
-  border-bottom = 1px solid !dark_gray
-  border-left = 1px solid !dark_gray
-  display: inline-block
-  position: relative
-
-  // Apply to all header links (navigation and log in link)
-  a
-    +box-sizing(border-box)
-    color = !dark_gray
-    display: inline-block
-    height: 100%
-    margin: 0
-    padding: 0
-    text-align: center
-    text-decoration: none
-
-  #nav
-    +box-sizing(border-box)
-    bottom: 0
-    display: inline-block
-    padding-left = 35px
-    position: absolute
-    z-index: 1
-
-    // Text straight in a span means it's the current page
-    span
-      color = !main_color
-      display: inline-block
-      font-weight: bold
-      text-align: center
-      text-decoration: none
-
-      a
-        // HAX
-        border-bottom: 4px solid white
-        display: inline-block
-        width: 100%
-        &:hover
-          border-bottom = 4px solid !dark_gray
-
-  #login_link
-    bottom: 0
-    color = !light_gray
-    display: inline-block
-    padding-bottom: 4px
-    position: absolute
-    right: 0
-    text-align: center
-    word-spacing: .1em
-    a
-      font-weight: normal
-      text-align: center
-      text-decoration: underline
-      &:hover
-        text-decoration: none
-
-  form.search
-    +border-bottom-radius(6px)
-
-    background-color: !light_gray
-    padding: 0.5em 1em
-    position: absolute
-    right: 0px
-    top: 0px
-
-    input
-      display: inline
-      margin: 0
-      &[type="text"]
-        width: 160px
-
-      &[type="submit"]
-        padding: 4px 6px
-
-
-#content
-  +box-sizing(border-box)
-  border-right = 1px solid !dark_gray
-  position: relative
-  top: -5px
-
-  p
-    font-family: Verdana, sans-serif
-    letter-spacing: .5px
-    line-height: 1.8
-
 #footer
   margin-top: 2em
 
@@ -299,3 +182,6 @@ nav.top
   position: absolute
   top: 0
   left: 120px
+
+.inline
+  display: inline
