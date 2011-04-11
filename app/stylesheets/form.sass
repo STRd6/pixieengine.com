@@ -21,6 +21,22 @@ body > form
     overflow: auto
     width: 100%
 
+form
+  .field_with_errors
+    input
+      border: 2px solid #CD0A0A
+
+  .errorExplanation
+    +border-radius(5px)
+
+    background-color: #FEF1EC
+    border: 1px solid #CD0A0A
+    color: #CD0A0A
+    padding: 1em 1.5ex
+
+    h2
+      font-size: 165%
+
 label, input, textarea
   font-family: Verdana, sans-serif
   font-size: 12px
