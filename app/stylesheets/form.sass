@@ -6,7 +6,9 @@ body > form
   +border-radius
 
   background-color: $dark_highlight
+  margin: auto
   padding: 1.5em 2em
+  width: 300px
 
   input
     margin-bottom: 1em
@@ -23,6 +25,11 @@ body > form
 
 form
   .field_with_errors
+    display: inline
+
+    label
+      color: #CD0A0A
+
     input
       border: 2px solid #CD0A0A
 
@@ -32,10 +39,11 @@ form
     background-color: #FEF1EC
     border: 1px solid #CD0A0A
     color: #CD0A0A
-    padding: 1em 1.5ex
+    margin-bottom: 1.5em
+    padding: 1em 1.5em
 
     h2
-      font-size: 165%
+      font-size: 150%
 
 label, input, textarea
   font-family: Verdana, sans-serif
