@@ -1,6 +1,6 @@
 - form_for user do |form|
   = form.error_messages
-  %h2 Sign Up For Pixie!
+  %h2 Sign up for Pixie!
 
   %p
     = form.label :display_name
@@ -12,8 +12,7 @@
     = form.label :password
     = form.password_field :password
 
-  .actions
-    %button.affirmative Sign Up
+  %button Sign Up
 
 :coffeescript
   $ ->
@@ -22,19 +21,6 @@
 
 %style
   :sass
-    @import partials/base
-    @import util
-
-    #simplemodal-container
-      a.button
-        margin-left: 125px
-
-      form
-        .actions
-          display: inline
-
-        h2
-          display: none
-
-        .actions
-          padding: 0
+    form
+      margin: auto
+      width: 450px
