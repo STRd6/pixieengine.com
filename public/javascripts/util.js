@@ -411,3 +411,7 @@ Array.prototype.zip = function(arr) {
 String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
 }
+
+Object.isArray = function (object) {
+  return Object.prototype.toString.call(object) == '[object Array]';
+}
