@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Thu, 24 Mar 2011 04:42:25 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Tue, 12 Apr 2011 06:34:10 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -665,10 +665,11 @@
               return lastClean !== undoStack.last();
             }
           },
-          displayInitialState: function() {
+          displayInitialState: function(stateData) {
             this.clear();
-            if (initialStateData) {
-              return $.each(initialStateData, function(f, data) {
+            stateData || (stateData = initialStateData);
+            if (stateData) {
+              return $.each(stateData, function(f, data) {
                 return canvas.eachPixel(function(pixel, x, y) {
                   var pos;
                   pos = x + y * canvas.width;
@@ -751,7 +752,7 @@
               });
             }
           },
-          replay: function(steps) {
+          replay: function(steps, parentData) {
             var delay, i, runStep;
             if (!replaying) {
               replaying = true;
@@ -760,7 +761,11 @@
                 steps = canvas.getReplayData();
                 canvas.displayInitialState();
               } else {
-                canvas.clear();
+                if (parentData) {
+                  canvas.displayInitialState(parentData);
+                } else {
+                  canvas.clear();
+                }
               }
               i = 0;
               delay = (5000 / steps.length).clamp(1, 200);

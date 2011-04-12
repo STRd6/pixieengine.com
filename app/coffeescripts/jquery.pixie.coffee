@@ -612,11 +612,13 @@
           else
             return lastClean != undoStack.last()
 
-        displayInitialState: ->
+        displayInitialState: (stateData) ->
           this.clear()
 
-          if initialStateData
-            $.each initialStateData, (f, data) ->
+          stateData ||= initialStateData
+
+          if stateData
+            $.each stateData, (f, data) ->
               canvas.eachPixel (pixel, x, y) ->
                 pos = x + y*canvas.width
                 pixel.color(Color(data[pos]), true, "replace")
@@ -691,7 +693,7 @@
             $.each data, ->
               this.pixel.color(this.newColor, true, "replace")
 
-        replay: (steps) ->
+        replay: (steps, parentData) ->
           unless replaying
             replaying = true
             canvas = this
@@ -700,7 +702,10 @@
               steps = canvas.getReplayData()
               canvas.displayInitialState()
             else
-              canvas.clear()
+              if parentData
+                canvas.displayInitialState(parentData)
+              else
+                canvas.clear()
 
             i = 0
             delay = (5000 / steps.length).clamp(1, 200)

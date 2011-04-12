@@ -8,6 +8,7 @@
 - width = @width || 32
 - height = @height || 32
 - data = @data
+- parent_data = sprite.parent_data
 
 .unsupported
   %h3 Pixie requires a modern browser!
@@ -175,7 +176,7 @@
         }(#{data.to_json}));
 
         if(#{!!@replay_data}) {
-          canvas.replay(#{@replay_data});
+          canvas.replay(#{@replay_data || "null"}, #{parent_data.to_json});
         }
 
         window.onbeforeunload = function() {

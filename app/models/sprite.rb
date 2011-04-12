@@ -149,6 +149,10 @@ class Sprite < ActiveRecord::Base
     save
   end
 
+  def parent_data
+    parent.data[:frame_data] if parent
+  end
+
   def self.bulk_import_files(directory_path, tag_list=nil)
     dir = Dir.new(directory_path)
 
