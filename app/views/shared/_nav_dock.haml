@@ -1,210 +1,211 @@
-#dockContainer
-  #dockWrapper
-    .cap.left
-    %ul.osx-dock
-      %li
-        %span Pixel Editor
-        = link_to_unless_current image_tag("dock/pixel.png"), new_sprite_path, :title => "Pixel Editor"
-      %li
-        %span Sprite Gallery
-        = link_to_unless_current image_tag("dock/sprites.png"), sprites_path, :title => "Sprite Gallery"
-      %li
-        %span Animation Editor
-        = link_to_unless_current image_tag("dock/animations.png"), animations_path, :title => "Animations"
-      %li
-        %span Projects
-        = link_to_unless_current image_tag("dock/ide.png"), projects_path, :title => "Projects"
-      %li
-        %span Sound Gallery
-        = link_to_unless_current image_tag("dock/sounds.png"), sounds_path, :title => "Sound Gallery"
-      %li
-        %span Users
-        = link_to_unless_current image_tag("dock/people.png"), users_path, :title => "People"
-      %li#chat
-        %span Chat
-        = link_to image_tag("dock/chat.png"), "#", :title => "Chat"
-    %div#unread.pulse
-      %p
+- unless @hide_dock
+  #dockContainer
+    #dockWrapper
+      .cap.left
+      %ul.osx-dock
+        %li
+          %span Pixel Editor
+          = link_to_unless_current image_tag("dock/pixel.png"), new_sprite_path, :title => "Pixel Editor"
+        %li
+          %span Sprite Gallery
+          = link_to_unless_current image_tag("dock/sprites.png"), sprites_path, :title => "Sprite Gallery"
+        %li
+          %span Animation Editor
+          = link_to_unless_current image_tag("dock/animations.png"), animations_path, :title => "Animations"
+        %li
+          %span Projects
+          = link_to_unless_current image_tag("dock/ide.png"), projects_path, :title => "Projects"
+        %li
+          %span Sound Gallery
+          = link_to_unless_current image_tag("dock/sounds.png"), sounds_path, :title => "Sound Gallery"
+        %li
+          %span Users
+          = link_to_unless_current image_tag("dock/people.png"), users_path, :title => "People"
+        %li#chat
+          %span Chat
+          = link_to image_tag("dock/chat.png"), "#", :title => "Chat"
+      %div#unread.pulse
+        %p
 
-#hide_dock
+  #hide_dock
 
-:coffeescript
-  $ ->
-    $(document).bind 'keydown', 'c', (event) ->
-      event.preventDefault()
-      $('#chat').mousedown()
+  :coffeescript
+    $ ->
+      $(document).bind 'keydown', 'c', (event) ->
+        event.preventDefault()
+        $('#chat').mousedown()
 
-    $(document).bind 'keydown', 'd', (event) ->
-      event.preventDefault()
-      $('#hide_dock').mousedown()
+      $(document).bind 'keydown', 'd', (event) ->
+        event.preventDefault()
+        $('#hide_dock').mousedown()
 
-    active_app = $('<img />',
-      class: 'active'
-      src: "/images/active_app.png"
-    ).css('padding-top', '12px')
+      active_app = $('<img />',
+        class: 'active'
+        src: "/images/active_app.png"
+      ).css('padding-top', '12px')
 
-    $('.osx-dock li span + img').after(active_app)
+      $('.osx-dock li span + img').after(active_app)
 
-    if localStorage.dock == 'hide'
-      $('#dockContainer').hide()
-      $('#hide_dock').addClass('show_dock')
+      if localStorage.dock == 'hide'
+        $('#dockContainer').hide()
+        $('#hide_dock').addClass('show_dock')
 
-    $('.osx-dock a').tipsy
-      fade: false
-      gravity: 's'
+      $('.osx-dock a').tipsy
+        fade: false
+        gravity: 's'
 
-    $('#hide_dock').mousedown ->
-      $(this).toggleClass('show_dock')
-      $('#dockContainer').slideToggle(175)
+      $('#hide_dock').mousedown ->
+        $(this).toggleClass('show_dock')
+        $('#dockContainer').slideToggle(175)
 
-      if $(this).hasClass('show_dock')
-        localStorage.dock = 'hide'
-      else
-        localStorage.dock = 'show'
+        if $(this).hasClass('show_dock')
+          localStorage.dock = 'hide'
+        else
+          localStorage.dock = 'show'
 
-    $('#chat').mousedown ->
-      $('#chatZone').css
-        top: localStorage.chatTop + "px" || "150px"
-        left: localStorage.chatLeft + "px" || "10px"
+      $('#chat').mousedown ->
+        $('#chatZone').css
+          top: localStorage.chatTop + "px" || "150px"
+          left: localStorage.chatLeft + "px" || "10px"
 
-      $('#unread p').text("")
-      $('#unread').hide()
+        $('#unread p').text("")
+        $('#unread').hide()
 
-      $('#chatZone').toggle()
+        $('#chatZone').toggle()
 
-      $('#chats').scrollTo
-        left: '0%'
-        top: '100%'
+        $('#chats').scrollTo
+          left: '0%'
+          top: '100%'
 
-      if ($('#chatZone').css('display') == 'none')
-        localStorage.chat = false
-        $('#chat img.active').remove()
-      else
-        localStorage.chat = 'active'
-        $('#chat').append(active_app.clone().css('padding-top', '10px'))
-    .click (event) ->
-      event.preventDefault()
+        if ($('#chatZone').css('display') == 'none')
+          localStorage.chat = false
+          $('#chat img.active').remove()
+        else
+          localStorage.chat = 'active'
+          $('#chat').append(active_app.clone().css('padding-top', '10px'))
+      .click (event) ->
+        event.preventDefault()
 
-    if localStorage.chat == 'active'
-      $('#chat').mousedown()
+      if localStorage.chat == 'active'
+        $('#chat').mousedown()
 
-%style
-  :sass
-    @import util
+  %style
+    :sass
+      @import util
 
-    +pulse
+      +pulse
 
-    #fullscreen
-      position: relative
+      #fullscreen
+        position: relative
 
-      &.light
-        #hide_dock
-          background: url(/images/hide_dock_light.png) no-repeat
+        &.light
+          #hide_dock
+            background: url(/images/hide_dock_light.png) no-repeat
 
-          &.show_dock
-            background: url(/images/show_dock_light.png) no-repeat
+            &.show_dock
+              background: url(/images/show_dock_light.png) no-repeat
 
-        .cap
-          background: url(/images/dock_background_left_light.png) bottom left no-repeat
+          .cap
+            background: url(/images/dock_background_left_light.png) bottom left no-repeat
 
-        ul.osx-dock
-          background: url(/images/dock_background_left_light.png) no-repeat right bottom
+          ul.osx-dock
+            background: url(/images/dock_background_left_light.png) no-repeat right bottom
 
-    #unread
-      +border-radius(10px)
-      +bounds(16px)
-
-      background-color: #000
-      border: 2px solid #fff
-      color: #fff
-      display: none
-      position: absolute
-      right: 30px
-      top: -8px
-
-      p
+      #unread
+        +border-radius(10px)
         +bounds(16px)
 
-        font-size: 10px
-        margin-left: 6px
-        margin-top: 7px
+        background-color: #000
+        border: 2px solid #fff
+        color: #fff
+        display: none
+        position: absolute
+        right: 30px
+        top: -8px
 
-    .pulse
-      -webkit-animation-name: pulse
-      -webkit-animation-duration: 1.5s
-      -webkit-animation-iteration-count: 8
+        p
+          +bounds(16px)
 
-    #hide_dock
-      +bounds(30px)
+          font-size: 10px
+          margin-left: 6px
+          margin-top: 7px
 
-      background: url(/images/hide_dock.png) no-repeat
-      position: fixed
-      bottom: 0
-      right: 0
-      left: 0
-      margin: auto
-      z-index: 100
+      .pulse
+        -webkit-animation-name: pulse
+        -webkit-animation-duration: 1.5s
+        -webkit-animation-iteration-count: 8
 
-      &.show_dock
-        background: url(/images/show_dock.png) no-repeat
+      #hide_dock
+        +bounds(30px)
 
-    #dockContainer
-      +bounds(508px, 70px)
-      bottom: 0
-      left: 0
-      right: 0
-      margin: auto
-      position: fixed
-      z-index: 100
+        background: url(/images/hide_dock.png) no-repeat
+        position: fixed
+        bottom: 0
+        right: 0
+        left: 0
+        margin: auto
+        z-index: 100
 
-      #dockWrapper
-        border-bottom: solid 2px rgba(255, 255, 255, .35)
-        display: inline-block
-        line-height: 0
-        position: relative
-        width: auto
+        &.show_dock
+          background: url(/images/show_dock.png) no-repeat
 
-      .cap
-        +bounds(30px, 50px)
+      #dockContainer
+        +bounds(508px, 70px)
+        bottom: 0
+        left: 0
+        right: 0
+        margin: auto
+        position: fixed
+        z-index: 100
 
-        background: url(/images/dock_background_left.png) bottom left no-repeat
-
-        &.left
-          bottom: 0
-          left: 0
-          position: absolute
-
-      ul
-        list-style: none outside
-
-        &.osx-dock
-          background: url(/images/dock_background_left.png) no-repeat right bottom
+        #dockWrapper
+          border-bottom: solid 2px rgba(255, 255, 255, .35)
           display: inline-block
-          height: 70px
-          margin: 0 0 0 30px
-          overflow: hidden
-          padding: 0 30px 0 0
+          line-height: 0
+          position: relative
+          width: auto
 
-          li
-            +bounds(50px)
+        .cap
+          +bounds(30px, 50px)
 
-            display: block
-            float: left
-            margin: 0px 7px 0 7px
-            position: relative
-            text-align: center
-            -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
+          background: url(/images/dock_background_left.png) bottom left no-repeat
 
-            span
-              display: none
+          &.left
+            bottom: 0
+            left: 0
+            position: absolute
 
-    #dockContainer #dockWrapper .osx-dock li
+        ul
+          list-style: none outside
 
-      img:not(.active)
-        +bounds(48px)
+          &.osx-dock
+            background: url(/images/dock_background_left.png) no-repeat right bottom
+            display: inline-block
+            height: 70px
+            margin: 0 0 0 30px
+            overflow: hidden
+            padding: 0 30px 0 0
 
-      a
-        color: transparent
-        display: block
-        height: 50px
-        margin: 0
+            li
+              +bounds(50px)
+
+              display: block
+              float: left
+              margin: 0px 7px 0 7px
+              position: relative
+              text-align: center
+              -webkit-box-reflect: below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.45, transparent), to(rgba(255, 255, 255, 0.25)))
+
+              span
+                display: none
+
+      #dockContainer #dockWrapper .osx-dock li
+
+        img:not(.active)
+          +bounds(48px)
+
+        a
+          color: transparent
+          display: block
+          height: 50px
+          margin: 0
