@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
 
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
   before_filter :require_user, :except => PUBLIC_ACTIONS
-  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create]
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork]
   before_filter :filter_results, :only => [:index]
 
   def new
@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
   end
 
   def info
-    @favorites = Project.find [53, 51, 55, 49]
+    @favorites = Project.find [53, 51, 8, 49]
     @tutorials = Project.find [50, 49, 52, 62]
 
     render :layout => "plain"
@@ -46,6 +46,15 @@ class ProjectsController < ApplicationController
         render :layout => "fullscreen"
       end
     end
+  end
+
+  def fork
+    respond_with Project.create(
+      :parent => project,
+      :title => "#{project.title} (#{current_user.display_name}'s Fork)",
+      :description => project.description,
+      :user => current_user
+    )
   end
 
   def hook
@@ -161,6 +170,7 @@ class ProjectsController < ApplicationController
   def demo?
     params[:id] == "demo"
   end
+  helper_method :demo?
 
   private
   def object

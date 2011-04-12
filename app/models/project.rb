@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   )
 
   belongs_to :user
+  belongs_to :parent, :class_name => "Project"
 
   before_validation :update_hook_url
 
@@ -69,7 +70,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_directory
-    unless demo?
+    unless demo? || parent
       FileUtils.mkdir_p path
       system 'chmod', "g+w", path
     end
@@ -119,7 +120,7 @@ class Project < ActiveRecord::Base
   handle_asynchronously :tag_version
 
   def clone_repo
-    create_directory unless demo?
+    create_directory unless demo? || parent
 
     if remote_origin.present?
       git_util "clone", remote_origin, path
@@ -132,6 +133,8 @@ class Project < ActiveRecord::Base
     else
       if demo?
         FileUtils.cp_r demo_path, path
+      elsif parent
+        FileUtils.cp_r parent.path, path
       else
         # Clone Demo Project
         git_util "clone", DEMO_ORIGIN, path

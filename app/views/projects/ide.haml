@@ -1,19 +1,23 @@
 %nav.top.actions
-  %button#save Save
-  .button_group
-    %button#new> New
-    %button#import> Import
+  - if demo? || has_access?
+    %button#save Save
+    .button_group
+      %button#new> New
+      %button#import> Import
+  - else
+    %button#fork Fork
+
   .button_group
     %button#run> Run
     %button#test> Test
     %button#console> Console
-
-  .button_group
-    %button#build> Build
-    %button#update_libs> Update Libs
-    - if admin?
-      %button#generate_docs> Doc
-    %button#tag> Tag
+  - if demo? || has_access?
+    .button_group
+      %button#build> Build
+      %button#update_libs> Update Libs
+      - if admin?
+        %button#generate_docs> Doc
+      %button#tag> Tag
 
   .status
     %label.inline What are you working on?
@@ -73,6 +77,21 @@
 
 :coffeescript
   window.projectId = #{project_id.to_json}
+
+  $("#fork").click ->
+    requireLogin ->
+      notify("Sending fork request...")
+      $.post(
+        #{fork_project_path(project).to_json},
+        format: 'json',
+        (data) ->
+          notify("Hardcore Forking Action...", 15000)
+
+          setTimeout ->
+            notify("<a href='/projects/\#{data.project.id}/ide'>Your carriage awaits!</a>")
+            window.location = "/projects/\#{data.project.id}/ide"
+          , 15000
+      )
 
   $("#generate_docs").click ->
     notify("Scheduling docs generation...")
