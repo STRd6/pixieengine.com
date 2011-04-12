@@ -22,11 +22,18 @@
 #content
   #error
 
-  %nav.left
-    %ul.filetree
-      - unless project.file_info.nil?
-        - project.file_info[:files].each do |file|
-          = render :partial => "file_tree_node", :locals => {:file_info => file}
+  .nav_left_container
+    .relative
+      %nav
+        %ul.filetree
+          - unless project.file_info.nil?
+            - project.file_info[:files].each do |file|
+              = render :partial => "file_tree_node", :locals => {:file_info => file}
+      .help
+        %h3 Need help?
+        .button_group
+          %button(class="help_tooltips")> View tooltips
+          %button(class="help_hotkeys")> Show hotkeys
 
   %section
     #tabs
@@ -61,7 +68,6 @@
     %h2#qunit-userAgent
     %ol#qunit-tests
     #qunit-fixture
-
 
 - project_id = params[:id]
 

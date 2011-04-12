@@ -2,11 +2,13 @@
 @import partials/base
 
 $nav_left: 220px
+$help_height: 75px
+$inner_margin: 20px
 
 #fullscreen
   padding-top: 4em
   #content
-    padding-left: $nav_left + 20px
+    padding-left: $nav_left + $inner_margin
     position: relative
 
 nav.top.actions .status
@@ -52,20 +54,64 @@ button.save
 
   margin-right: 0
 
-nav.left
-  +border-radius
+.nav_left_container
   +box-sizing(border-box)
 
-  background-color: $dark_highlight
   height: 100%
   overflow-x: hidden
-  overflow-y: auto
-  padding-bottom: 1em
-  padding-top: 1em
+  overflow-y: hidden
   width: $nav_left
 
-  .light &
-    background-color: $light_highlight
+  left: 0
+  position: absolute
+  top: 0
+
+  nav
+    +border-radius
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    overflow-y: auto
+    padding-bottom: 1em
+    padding-top: 1em
+
+    .light &
+      background-color: $light_highlight
+
+  .relative
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    padding-bottom: $help_height + $inner_margin
+    position: relative
+
+  .help
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    bottom: 0
+    left: 0
+    height: $help_height
+    position: absolute
+    padding: 1em
+    width: 100%
+
+    .light &
+      background-color: $light_highlight
+
+    .button_group
+      display: block
+      margin: auto
+      width: 180px
+
+      button
+        font-size: 80%
+
+    h3
+      margin: 0
+      text-align: center
 
 .treeview ul
   background-color: transparent

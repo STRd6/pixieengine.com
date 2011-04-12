@@ -75,5 +75,12 @@
           tipMessage += $("#tips .next").html()
 
         showTooltip(targetElement, tipMessage)
+      else
+        tipIndex = -1
+
+        if tips.length
+          nextTip()
 
     nextTip()
+
+    $('.help_tooltips').mousedown nextTip

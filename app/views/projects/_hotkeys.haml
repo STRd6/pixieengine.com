@@ -47,7 +47,7 @@
     %dd Decrement numeric values by 5
 
 :coffeescript
-  $(document).bind 'keydown', 'shift+/', (e) ->
+  hotkeyHandler = (e) ->
     e.preventDefault()
 
     $('#hotkeysModal').modal
@@ -55,6 +55,10 @@
         dialog.overlay.fadeIn 200, ->
           dialog.data.show()
           dialog.container.show()
+
+  $('.help_hotkeys').mousedown(hotkeyHandler)
+
+  $(document).bind 'keydown', 'shift+/', hotkeyHandler
 
 %style
   :sass
