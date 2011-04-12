@@ -21,6 +21,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       post :tag_version
       post :generate_docs
       post :update_libs
+      post :fork
     end
 
     collection do
