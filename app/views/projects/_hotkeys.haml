@@ -1,55 +1,34 @@
 #hotkeysModal.modalElement
   %h2 Keyboard Shortcuts
+
+#hotkeys.template
   %dl.keyboard_mappings
     .left_col
-      %dt
-        ctrl s
-        %em or
-        ⌘ s
-    %dd Save game to github
-  %dl.keyboard_mappings
-    .left_col
-      %dt c
-    %dd Toggle chat
-  %dl.keyboard_mappings
-    .left_col
-      %dt d
-    %dd Toggle dock
-  %dl.keyboard_mappings
-    .left_col
-      %dt esc
-    %dd Enter developer mode
-  %dl.keyboard_mappings
-    .left_col
-      %dt ?
-    %dd Bring up this help dialog
-  .rule
-  %h3 Developer Mode
-  %dl.keyboard_mappings
-    .left_col
-      %dt right click
-    %dd Edit object properties
-  %dl.keyboard_mappings
-    .left_col
-      %dt ↑
-    %dd Increment numeric values. Flip booleans
-  %dl.keyboard_mappings
-    .left_col
-      %dt ↓
-    %dd Decrement numeric values. Flip booleans
-  %dl.keyboard_mappings
-    .left_col
-      %dt shift ↑
-    %dd Increment numeric values by 5
-  %dl.keyboard_mappings
-    .left_col
-      %dt shift ↓
-    %dd Decrement numeric values by 5
+      %dt {{html key}}
+    %dd ${action}
 
 :coffeescript
-  hotkeyHandler = (e) ->
-    e.preventDefault()
+  data =
+    "Save game to github": ["ctrl s", "⌘ s"]
+    "Toggle chat": "c"
+    "Toggle dock": "d"
+    "Enter developer mode": "esc"
+    "Bring up this help dialog": "?"
+    "Edit object properties": "right click"
+    "Increment numeric values. Flip booleans": "↑"
+    "Decrement numeric values. Flip booleans": "↓"
+    "Increment numeric values by 10": "shift ↑"
+    "Decrement numeric values by 10": "shift ↓"
 
+  $.each data, (key, value) ->
+    $('#hotkeys').tmpl(
+      action: key
+      key: [].concat(value).join(' <em>or</em> ')
+    ).appendTo('#hotkeysModal')
+
+  $('#hotkeysModal dt:contains("right click")').parent().parent().before("<div class='rule'></div><h2>Developer Mode</h3>")
+
+  hotkeyHandler = (e) ->
     $('#hotkeysModal').modal
       onOpen: (dialog) ->
         dialog.overlay.fadeIn 200, ->
@@ -68,7 +47,7 @@
     #hotkeysModal
       .keyboard_mappings
         margin-bottom: 1em
-    
+
       .left_col
         display: inline-block
         margin-right: 1em
