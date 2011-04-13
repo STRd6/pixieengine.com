@@ -92,3 +92,21 @@ namespace :deploy do
     run "touch #{current_release}/tmp/restart.txt"
   end
 end
+
+namespace :tail do
+  desc "tail Rails log files"
+  task :logs, :roles => :app do
+    run "tail -fn50 #{shared_path}/log/production.log" do |channel, stream, data|
+      puts data
+      break if stream == :err
+    end
+  end
+
+  desc "tail delayed_job log files"
+  task :jobs, :roles => :app do
+    run "tail -fn50 #{shared_path}/log/delayed_job.log" do |channel, stream, data|
+      puts data
+      break if stream == :err
+    end
+  end
+end
