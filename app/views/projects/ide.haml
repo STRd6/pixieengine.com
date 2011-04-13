@@ -4,6 +4,7 @@
     .button_group
       %button#new> New
       %button#import> Import
+      %button#export> Export
   - else
     %button#fork Fork
 
@@ -77,6 +78,12 @@
 
 :coffeescript
   window.projectId = #{project_id.to_json}
+
+  $("#export").click ->
+    requireLogin ->
+      notify("Exporting .zip ...")
+
+      window.location = #{download_project_path(project).to_json}
 
   $("#fork").click ->
     requireLogin ->

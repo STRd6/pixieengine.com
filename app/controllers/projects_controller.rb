@@ -23,6 +23,11 @@ class ProjectsController < ApplicationController
   def index
   end
 
+  def download
+    project.zip_for_export
+    send_file project.zip_path, :type=>"application/zip"
+  end
+
   def info
     @favorites = Project.find [53, 51, 8, 49]
     @tutorials = Project.find [50, 49, 52, 62]

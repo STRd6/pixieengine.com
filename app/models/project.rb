@@ -299,6 +299,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def zip_path
+    "#{path}.zip"
+  end
+
+  def zip_for_export
+    system 'ruby', 'script/zip_lib.rb', id.to_s, self.class.table_name
+  end
+
   def generate_docs
     Dir.mktmpdir do |dir|
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
