@@ -1,28 +1,43 @@
-%h2 How to Integrate With an Existing Github Project
+.content
+  %h2 How to Integrate With an Existing Github Project
 
-%ol.numbered
-  %li
-    Go to your github repository admin panel. In the 'Collaborators' panel add
-    PixieCode to the collaborators.
+  %ul.steps
+    %li
+      Go to your github repository admin panel. In the 'Collaborators' panel add
+      PixieCode to the collaborators.
+    %li= image_tag "tuts/pixie_user.png"
 
-    = image_tag "tuts/pixie_user.png"
-  %li
-    On your github repository in the 'Service Hooks' panel add
-    http://pixie.strd6.com/projects/hook to your 'Post-Receive URLs'
+    %li
+      On your github repository in the 'Service Hooks' panel add
+      http://pixie.strd6.com/projects/hook to your 'Post-Receive URLs'
+    %li= image_tag "tuts/web_hooks.png"
 
-    = image_tag "tuts/web_hooks.png"
+    %li
+      = link_to "Create a project on Pixie", new_project_path
 
-  %li
-    = link_to "Create a project on Pixie", new_project_path
+      Choose whatever you want for the title and description.
+      Add your repository's SSH url as the remote origin.
 
-    Choose whatever you want for the title and description.
-    Add your repository's SSH url as the remote origin.
+      It should look something like: git@github.com:my_username/my_repo.git
 
-    It should look something like: git@github.com:my_username/my_repo.git
+    %li= image_tag "tuts/new_project.png"
 
-    = image_tag "tuts/new_project.png"
+    %li
+      Done! When you make changes to your code in Pixie it will be pushed to the
+      'pixie' branch of your repo. You may then merge it in to master at your own
+      convenience.
 
-  %li
-    Done! When you make changes to your code in Pixie it will be pushed to the
-    'pixie' branch of your repo. You may then merge it in to master at your own
-    convenience.
+%style
+  :sass
+    #fullscreen
+      height: auto
+
+      & > .content
+        margin: auto
+        width: 1000px
+
+      ul.steps
+        font-size: 14px
+
+        li
+          margin: 1em 0

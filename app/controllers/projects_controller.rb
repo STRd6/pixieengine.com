@@ -6,6 +6,8 @@ class ProjectsController < ApplicationController
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork]
   before_filter :filter_results, :only => [:index]
 
+  before_filter :hide_dock, :only => [:github_integration, :info]
+
   def new
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
