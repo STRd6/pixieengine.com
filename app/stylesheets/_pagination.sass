@@ -1,4 +1,5 @@
 .pagination
+  +clearfix
   margin-bottom: 1em
 
   a, span, em
@@ -24,15 +25,3 @@
     &:hover, &:focus
       background-color: $hover
       text-decoration: none
-
-  /* self-clearing method:
-  &:after
-    content: "."
-    display: block
-    height: 0
-    clear: both
-    visibility: hidden
-  * html &
-    height: 1%
-  *:first-child+html &
-    overflow: hidden
