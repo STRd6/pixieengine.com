@@ -9,7 +9,8 @@
 
     %li
       On your github repository in the 'Service Hooks' panel add
-      http://pixie.strd6.com/projects/hook to your 'Post-Receive URLs'
+      = hook_projects_path(:only_path => false)
+      to your 'Post-Receive URLs'
     %li= image_tag "tuts/web_hooks.png"
 
     %li
