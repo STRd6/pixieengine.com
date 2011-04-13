@@ -20,6 +20,9 @@ class ProjectsController < ApplicationController
   def edit
   end
 
+  def index
+  end
+
   def info
     @favorites = Project.find [53, 51, 8, 49]
     @tutorials = Project.find [50, 49, 52, 62]
