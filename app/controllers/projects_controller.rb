@@ -152,17 +152,15 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if filter
-      if current_user
-        if filter == "own"
-          Project.for_user(current_user)
-        else
-          Project.send(filter)
-        end
+    @projects ||= if current_user
+      if filter == "own"
+        Project.for_user(current_user)
       else
-        Project.none
+        Project.send(filter)
       end
-    end.order("id DESC")
+    else
+      Project
+    end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def filters
@@ -207,4 +205,8 @@ class ProjectsController < ApplicationController
     Project::DEFAULT_CONFIG.merge(:name => project.title)
   end
   helper_method :default_project_config
+
+  def per_page
+    20
+  end
 end

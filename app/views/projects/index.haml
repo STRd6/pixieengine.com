@@ -5,13 +5,21 @@
   =link_to "My Projects", { :filter => :own }, { :class => "button" }
   =link_to "All", { :filter => :none }, { :class => "button" }
 
-%section.gallery
-  = render :partial => projects
+.gallery
+  = will_paginate projects
+  %section
+    = render :partial => projects
 
 %style
   :sass
     @import partials/base
     @import util
+
+    .gallery
+      +bounds(100%)
+
+    .pagination
+      margin-left: 1em
 
     .project
       +bounds(240px, 160px)
@@ -30,6 +38,3 @@
       .title
         a
           white-space: nowrap
-
-    section
-      padding-bottom: 1em
