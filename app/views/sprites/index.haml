@@ -7,9 +7,9 @@
   - tags.each do |tag|
     = tag_link tag
 
-.sprite_gallery
+%section
   = will_paginate sprites
-  %section
+  .sprite_gallery
     .sprites
       = render :partial => "index_sprite", :collection => sprites
 
@@ -30,16 +30,6 @@
       position: absolute
       top: 0
       left: 100px
-
-    .sprite_gallery
-      +box-sizing(border-box)
-      padding-top: 23px
-      position: relative
-
-      section
-        .sprites
-          +bounds(100%)
-          +box-sizing(border-box)
 
       .pagination
         color: $pixie_primary

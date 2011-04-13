@@ -2,10 +2,11 @@
   =link_to "Featured", { :filter => :featured }, { :class => "button" }
   =link_to "All", { :filter => :none }, { :class => "button" }
 
-  = will_paginate users
-
 %section
-  = render :partial => users
+  = will_paginate users
+  .gallery
+    = render :partial => users
+  = will_paginate users
 
 %style
   :sass
@@ -17,7 +18,7 @@
       +inline-block
       +glass
 
-      margin: 1em
+      margin: 0 1em 1em 0
       overflow: hidden
       padding: 1em
 
@@ -29,11 +30,3 @@
         float: left
         margin-bottom: 1em
         margin-right: 1em
-
-    section
-      padding-bottom: 1em
-
-    .light
-      .app
-        background-color: $light_highlight
-
