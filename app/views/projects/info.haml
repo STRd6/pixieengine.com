@@ -8,64 +8,39 @@
     body#fullscreen
       height: auto
 
-    #fullscreen.light .centered_form button
-      +bounds(424px, 50px)
+    #get_started
+      +bounds(100%, 75px)
+      +box-sizing(border-box)
 
-      margin-top: -312px
+      margin: 0
+      margin-bottom: 1em
 
       a
         color: $pixie_primary
-        font-size: 200%
+        font-size: 250%
 
         &:hover
           text-decoration: none
+    p
+      margin: 1em 0
 
-    .pixel_editor
-      h3
-        text-align: center
+    .column
+      +inline-block
+      font-size: 14px
+      width: 430px
 
-      #pixie
-        left: 0
-        right: 0
-        margin: auto
-        position: absolute
-
-
-    .features
-      margin-left: 450px
-      width: 375px
+    .column_group
+      overflow: auto
+      width: 100%
 
     .logo
-      +contents-centered
-
-      height: 55px
-
-    h3
-      margin-bottom: 0
-
-    ul
-      list-style-type: disc
-      list-style-position: inside
-
-      li
-        margin-left: 1em
+      margin: auto
+      width: 110px
 
     .blurb
       padding-left: 7em
       padding-right: 7em
-
-    #twitter_div
-      +border-radius
-      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
-
-      background-color: $light_background
-      float: right
-      margin-left: 1em
-      margin-top: 1em
-      padding-bottom: 0
-      padding-left: 1em
-      padding-right: 1em
-      padding-top: 1em
+      font-size: 14px
 
     .thumb
       margin-left: 0
@@ -112,20 +87,16 @@
 
       background-color: $light_background
       margin-bottom: 1em
-      margin-top: 1em
       padding: 1em
-      width: 400px
-
-    .get_started
-      margin-top: -136px
 
     .centered_form
       +border-radius
-      +bounds(825px, 960px)
+      +box-sizing(border-box)
       +glass
 
-      padding: 2em 6em
+      padding: 2em 3em
       margin: auto
+      width: 960px
 
       h2
         margin-left: 17px
@@ -142,6 +113,18 @@
       .centered_form
         background-color: $light_highlight
 
+    .links
+      li
+        display: inline
+
+        &:not(:first-of-type):before
+          content: " | "
+
+    /* Spacing hacks
+    .features
+      h2
+        margin-bottom: 19px
+
 .centered_form
   .blurb
     .logo
@@ -152,78 +135,95 @@
     %p
       Pixie is a full game design stack, tightly integrating a wide range of tools such as animations, tilemaps, and pixel art with your game code.
 
-  .features
-    %h3 Features
-    %ul
-      %li Entirely web based. Nothing to install!
-      %li Live code and art editing
-      %li Robust, well-tested game libraries to take the pain out of scripting
-      %li Fully integrated tilemap, animation, and pixel editors
-      %li Box2D integration. You don't need to roll your own physics
-      %li Games are live on the internet as soon as you finish coding them
-      %li Github integration to seamlessly handle versioning
-      %li Wide audience. Playable by anyone with a modern web browser
+  .column_group
+    .column.left
+      %button#get_started.clickable=link_to "Get Started!", ide_project_path("demo")
 
-  #twitter_div
-    %h2.sidebar-title Developer Updates
-    <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-    :javascript
-      new TWTR.Widget({
-        version: 2,
-        type: 'profile',
-        rpp: 5,
-        interval: 60000,
-        width: 350,
-        height: 350,
-        theme: {
-          shell: {
-            background: 'transparent',
-            color: '#000000'
-          },
-          tweets: {
-            background: 'transparent',
-            color: '#000000',
-            links: '#000000'
-          }
-        },
-        features: {
-          scrollbar: true,
-          loop: false,
-          live: true,
-          hashtags: true,
-          timestamp: true,
-          avatars: false,
-          behavior: 'all'
-        }
-      }).render().setUser('PixiePlatform').start();
+      .block
+        %ol.numbered
+          %li
+            Click the big button to get up and running with your first project
+          %li
+            Get to work on your game. If you don't know where to start, take a look at some tutorials
+            %div
+              - @tutorials.each do |tutorial|
+                %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), ide_project_path(tutorial)
 
-  %button.clickable=link_to "Get Started!", ide_project_path("demo")
+          %li
+            That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
+            =link_to "Notch", "http://minecraft.net"
 
-  .block.get_started
-    %ol
-      %li
-        Click the big button to get up and running with your first project
-      %li
-        Get to work on your game. If you don't know where to start, take a look at some tutorials
-        %div
-          - @tutorials.each do |tutorial|
-            %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), ide_project_path(tutorial)
+    .column.right
+      .features.block
+        %h2 Features
+        %ul.disc
+          %li Entirely web based. Nothing to install!
+          %li Live code and art editing
+          %li Robust, well-tested game libraries to take the pain out of scripting
+          %li
+            Fully integrated 
+            = link_to "tilemap", new_tilemap_path(:tileset_id=>355)
+            ,
+            = link_to "animation", new_animation_path
+            , and
+            = link_to "pixel editors", new_sprite_path
+          %li
+            = link_to "Box2D integration", ide_project_path(69)
+            \. You don't need to roll your own physics
+          %li Games are live on the internet as soon as you finish coding them
+          %li 
+            = link_to "Github integration", github_integration_projects_path
+            to seamlessly handle versioning
+          %li Wide audience. Playable by anyone with a modern web browser
 
-      %li
-        That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
-        =link_to "Notch", "http://minecraft.net"
+  .column_group
+    .column.left
+      .block
+        %h2 Current Favorites
+        - @favorites.each do |favorite|
+          %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_project_path(favorite)
 
-  .block
-    %h2 Current Favorites
-    - @favorites.each do |favorite|
-      %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_project_path(favorite)
+      .block
+        %h2 Pixie Dust Make You Sneeze?
+        %p Although we prefer the web based approach, there are some awesome Flash game engines out there.
+        .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
+        .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
 
-  .block
-    %h2 Pixie Dust Make You Sneeze?
-    %p Although we prefer the web based approach, there are some awesome Flash game engines out there.
-    .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
-    .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
+    .column.right
+      #twitter_div.block
+        %h2.sidebar-title Developer Updates
+        <script src="http://widgets.twimg.com/j/2/widget.js"></script>
+        :javascript
+          new TWTR.Widget({
+            version: 2,
+            type: 'profile',
+            rpp: 5,
+            interval: 60000,
+            width: 350,
+            height: 310,
+            theme: {
+              shell: {
+                background: 'transparent',
+                color: '#000000'
+              },
+              tweets: {
+                background: 'transparent',
+                color: '#000000',
+                links: '#000000'
+              }
+            },
+            features: {
+              scrollbar: true,
+              loop: false,
+              live: true,
+              hashtags: true,
+              timestamp: true,
+              avatars: false,
+              behavior: 'all'
+            }
+          }).render().setUser('PixiePlatform').start();
 
-  .pixel_editor
-    %h3 Like the old Pixie better?
-    =link_to image_tag('/images/dock/pixel.png', :alt => "Pixel Editor", :title => "Pixel Editor", :id => "pixie"), new_sprite_path
+  %center
+    %ul.links
+      %li= link_to "Blog", "http://blog.pixieengine.com"
+      %li= link_to "Forums", "http://forums.pixieengine.com"
