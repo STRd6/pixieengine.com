@@ -1,33 +1,25 @@
+- site_hotkeys = { "Save game to github" => ["ctrl s", "⌘ s"], "Toggle chat" => "c", "Toggle dock" => "d", "Enter developer mode" => "esc", "Bring up this help dialog" => "?" }
+
 #hotkeysModal.modalElement
   %h2 Keyboard Shortcuts
+  - site_hotkeys.each do |key, value|
+    %dl.keyboard_mappings
+      .left_col
+        %dt= raw Array(value).join(" <em>or</em> ")
+      %dd= key
 
-#hotkeys.template
-  %dl.keyboard_mappings
-    .left_col
-      %dt {{html key}}
-    %dd ${action}
+  - if section_title
+    .rule
+    %h2= section_title
+
+  - if page_hotkeys
+    - page_hotkeys.each do |key, value|
+      %dl.keyboard_mappings
+        .left_col
+          %dt= raw Array(value).join(" <em>or</em> ")
+        %dd= key
 
 :coffeescript
-  data =
-    "Save game to github": ["ctrl s", "⌘ s"]
-    "Toggle chat": "c"
-    "Toggle dock": "d"
-    "Enter developer mode": "esc"
-    "Bring up this help dialog": "?"
-    "Edit object properties": "right click"
-    "Increment numeric values. Flip booleans": "↑"
-    "Decrement numeric values. Flip booleans": "↓"
-    "Increment numeric values by 10": "shift ↑"
-    "Decrement numeric values by 10": "shift ↓"
-
-  $.each data, (key, value) ->
-    $('#hotkeys').tmpl(
-      action: key
-      key: [].concat(value).join(' <em>or</em> ')
-    ).appendTo('#hotkeysModal')
-
-  $('#hotkeysModal dt:contains("right click")').parent().parent().before("<div class='rule'></div><h2>Developer Mode</h3>")
-
   hotkeyHandler = (e) ->
     $('#hotkeysModal').modal
       onOpen: (dialog) ->
@@ -38,56 +30,3 @@
   $('.help_hotkeys').mousedown(hotkeyHandler)
 
   $(document).bind 'keydown', 'shift+/', hotkeyHandler
-
-%style
-  :sass
-    @import partials/base
-    @import util
-
-    #hotkeysModal
-      .keyboard_mappings
-        margin-bottom: 1em
-
-      .left_col
-        display: inline-block
-        margin-right: 1em
-        text-align: right
-        width: 165px
-
-      dl
-        width: 500px
-
-      dt
-        +border-radius(2px)
-        +text-shadow(#ccc, 1px, 1px, 0)
-
-        background: #eee
-        color: #333
-        display: inline-block
-        margin-left: 80px
-        min-width: 10px
-        padding: 2px 8px
-        text-align: center
-
-        em
-          +text-shadow(#eee, 0, 0, 0)
-
-          color: #888
-          font-size: 10px
-          font-style: normal
-          font-weight: normal
-
-      dd
-        color: #ccc
-        display: inline
-        width: 300px
-
-      .rule
-        width: 96%
-        padding: 0 10px
-        margin-left: -10px
-        clear: both
-        margin: 7px 0
-        height: 0
-        overflow: hidden
-        border-bottom: 1px solid #ddd
