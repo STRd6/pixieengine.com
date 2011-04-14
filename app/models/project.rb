@@ -30,6 +30,9 @@ class Project < ActiveRecord::Base
     where :url => url
   }
 
+  scope :featured, where(:featured => true)
+  scope :tutorial, where(:tutorial => true)
+
   scope :none
 
   DEFAULT_CONFIG = {
