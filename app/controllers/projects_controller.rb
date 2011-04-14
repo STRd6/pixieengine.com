@@ -215,6 +215,6 @@ class ProjectsController < ApplicationController
   helper_method :default_project_config
 
   def per_page
-    20
+    24
   end
 end
