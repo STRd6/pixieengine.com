@@ -64,7 +64,10 @@
 = render :partial => "tag_version_modal"
 = render :partial => "property_editor"
 = render :partial => "errors"
-= render :partial => "hotkeys"
+
+- page_hotkeys = { "Edit object properties" => "right click", "Increment numeric values. Flip booleans" => "↑", "Decrement numeric values. Flip booleans" => "↓", "Increment numeric values by 10" => "shift ↑", "Decrement numeric values by 10" => "shift ↓" }
+
+= render :partial => "hotkeys", :locals => { :page_hotkeys => page_hotkeys, :section_title => "Developer Mode" }
 
 #qunit_template.template
   %div
