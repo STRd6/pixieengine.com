@@ -11,7 +11,9 @@
 = display_comments project
 
 :coffeescript
-  $("#show_comments").click ->
+  $("#show_comments").click (event) ->
+    event.preventDefault()
+
     if $(this).toggleClass("active").is(".active")
       $(".comments_area").show()
     else
