@@ -2,22 +2,53 @@
   %h3 Comments
   = form.hidden_field :commentable_type
   = form.hidden_field :commentable_id
-  = form.text_area :body
-  .clear
-  = submit_tag "Post Comment"
+  = form.text_area :body, :placeholder => "type your comment here"
+
+  %button Post Comment
+
+#comment_template.template
+  .comment
+    - if current_user
+      = avatar_link current_user
+    - else
+      = image_tag "avatars/thumb/missing.png"
+    %p ${text}
+    %p.attribution
+      - if current_user
+        %span.name= link_to current_user.display_name, current_user
+      - else
+        %span.name You
+      %span.time Just moments ago
 
 :coffeescript
   $ ->
     commentForm = $("#new_comment")
 
-    commentForm.submit ->
+    postComment = ->
+      text = $.trim(commentForm.find("textarea").val())
+
+      if text.length
+        commentForm.ajaxSubmit
+          type: 'POST'
+          dataType: "json"
+
+        newComment = $("#comment_template").tmpl
+          text: text
+
+        commentForm.siblings(".comments").prepend(newComment)
+
+      else
+        alert("Please enter a comment first")
+
+    commentForm.submit (e) ->
+      e.preventDefault()
+
       if loggedIn
-        return true
+        postComment()
+
+        return false
       else
         requireLogin ->
-          commentForm.submit()
+          postComment()
 
-%style
-  :sass
-    form
-      width: 350px
+        return false

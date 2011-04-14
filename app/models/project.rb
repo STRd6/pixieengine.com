@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  include Commentable
+
   has_attached_file :image, S3_OPTS.merge(
     :path => "projects/:id/:style.:extension",
     :styles => {

@@ -1,5 +1,6 @@
 .comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
+  = avatar_link comment.commenter
   %p= comment.body
   %p.attribution
-    %span.name= comment.commenter.display_name
-    %span.time= "#{time_ago_in_words(comment.created_at)} ago."
+    %span.name= link_to comment.commenter.display_name, comment.commenter
+    %span.time= "#{time_ago_in_words(comment.created_at)} ago"

@@ -1,14 +1,23 @@
-#content
-  .comment
-    margin-bottom: 1.5em
+.comment
+  margin-bottom: 1.5em
 
-    p.attribution
-      font-size: 0.8em
-      margin: 0px
+  .avatar
+    float: left
 
-      .time
-        color: #999
+  p.attribution
+    font-size: 0.8em
+    margin: 0px
 
-  form.new_comment
-    textarea
-      height: 80px
+    .time
+      color: #999
+
+form.new_comment
+  textarea
+    display: block
+    height: 80px
+
+.comments_area
+  background-color: $dark_highlight
+
+  .light &
+    background-color: $light_highlight
