@@ -34,6 +34,10 @@
 
   = button_to_function "New Canvas", "newCanvas()"
 
+- page_hotkeys = { "Pencil" => ["p", 1], "Brush" => ["b", 2], "Eye Dropper" => ["I", 3], "Eraser" => ["e", 4], "Fill" => ["f", 5] }
+
+= render :partial => "shared/hotkeys", :locals => { :page_hotkeys => page_hotkeys, :section_title => "Pixel Editor" }
+
 :javascript
   function newCanvas() {
     var newWidth = $('#resize_width').val();
