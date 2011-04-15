@@ -162,6 +162,22 @@
 
 %style
   :sass
+    @import util
+    @import partials/base
+
     .collection
       ul
         padding-top: 0.5em
+
+
+    .comments_area
+      +border-radius
+
+      margin-top: 1em
+      max-height: 600px
+      padding: 1.5em 2em
+      overflow: auto
+      width: 300px
+
+      textarea
+        height: 75px
