@@ -2,19 +2,92 @@
 
 = render :partial => "project_iframe"
 
-.actions
-  = button_link "View Source", "script", url_for(:action => :ide), :target => "_blank"
+%ul.actions_bar
+  %li.stats>
+    = pluralize project.views_count, "view"
+  %li#show_comments.action>= icon_link "Comments", "comment", '#'
+  %li.action>= icon_link "View Source", "script", url_for(:action => :ide), :target => "_blank"
+
+= display_comments project
+
+:coffeescript
+  $("#show_comments").click (event) ->
+    event.preventDefault()
+
+    if $(this).toggleClass("active").is(".active")
+      $(".comments_area").show()
+    else
+      $(".comments_area").hide()
 
 %style
   :sass
     @import util
 
-    .actions
+    $action_bar_height: 28px
+
+    ul.actions_bar
+      +linear-gradient(color-stops(#7F7F7F, #666))
+      +bounds(100%, $action_bar_height)
+      +box-sizing(border-box)
+
       bottom: 0
       left: 0
-      padding-bottom: 1em
-      padding-left: 1em
-      position: absolute
+      padding-left: 3em
+      position: fixed
+
+      li
+        +bounds(auto, $action_bar_height)
+        +border-right-radius(2px)
+        +box-sizing(border-box)
+        +inline-block
+
+        padding: 4px 8px
+        margin-right: 1px
+
+        &:first-child
+          +border-radius(2px)
+
+        &.action
+          +linear-gradient(color-stops($light_gray, lighten($light_gray, 5%), darken($light_gray, 15%)))
+
+          &:hover
+            +linear-gradient(color-stops($hover, lighten($hover, 5%), darken($hover, 15%)))
+
+          &:active, &.active
+            +linear-gradient(color-stops(darken($hover, 35%), darken($hover, 15%)))
+
+        a
+          color: $light_text
+          text-decoration: none
+
+        &.stats
+          +border-radius
+          +box-shadow(darken($dark_gray, 20%), 1px, 1px, 2px, 0, inset)
+          +linear-gradient(color-stops($dark_gray, darken($dark_gray, 15%)))
+
+          color: $dark_text
+          cursor: default
+          height: $action_bar_height - 4px
+          margin: 2px 8px 2px 0
+          padding: 4px 12px
+
+      img
+        vertical-align: middle
+
+    .comments_area
+      +border-radius
+
+      bottom: $action_bar_height + 8px
+      display: none
+      left: 3em
+      max-height: 600px
+      padding: 1.5em 2em
+      overflow: auto
+      position: fixed
+      width: 300px
+
+      textarea
+        height: 75px
 
     #fullscreen
       position: relative

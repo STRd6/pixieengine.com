@@ -6,7 +6,9 @@ class ProjectsController < ApplicationController
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork]
   before_filter :filter_results, :only => [:index]
 
-  before_filter :hide_dock, :only => [:github_integration, :info]
+  before_filter :count_view, :only => [:fullscreen]
+
+  before_filter :hide_dock, :only => [:github_integration, :info, :fullscreen]
 
   def new
     if current_user.projects.size > 0 && !current_user.paying
@@ -23,15 +25,16 @@ class ProjectsController < ApplicationController
   def index
   end
 
+  def fullscreen
+    @has_reg_popup = true
+  end
+
   def download
     project.zip_for_export
     send_file project.zip_path, :type=>"application/zip"
   end
 
   def info
-    @favorites = Project.find [53, 51, 8, 49]
-    @tutorials = Project.find [50, 49, 52, 62]
-
     render :layout => "plain"
   end
 

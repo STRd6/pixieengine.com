@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  include Commentable
+
   has_attached_file :image, S3_OPTS.merge(
     :path => "projects/:id/:style.:extension",
     :styles => {
@@ -27,6 +29,9 @@ class Project < ActiveRecord::Base
   scope :with_url, lambda {|url|
     where :url => url
   }
+
+  scope :featured, where(:featured => true)
+  scope :tutorial, where(:tutorial => true)
 
   scope :none
 

@@ -146,7 +146,7 @@
           %li
             Get to work on your game. If you don't know where to start, take a look at some tutorials
             %div
-              - @tutorials.each do |tutorial|
+              - Project.tutorial.limit(4).each do |tutorial|
                 %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), ide_project_path(tutorial)
 
           %li
@@ -180,7 +180,7 @@
     .column.left
       .block
         %h2 Current Favorites
-        - @favorites.each do |favorite|
+        - Project.featured.limit(4).each do |favorite|
           %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_project_path(favorite)
 
       .block
@@ -199,8 +199,8 @@
             type: 'profile',
             rpp: 5,
             interval: 60000,
-            width: 350,
             height: 310,
+            width: "100%",
             theme: {
               shell: {
                 background: 'transparent',
