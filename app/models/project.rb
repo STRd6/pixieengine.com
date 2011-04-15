@@ -186,9 +186,9 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(message)
+    git_commit_and_push_without_delay(message) if Rails.env.production?
   end
-  handle_asynchronously :save_file
+  handle_asynchronously :save_file if Rails.env.production?
 
   def remove_file(path, message=nil)
     #TODO: Verify path is not sketch

@@ -7,8 +7,11 @@
     = pluralize project.views_count, "view"
   %li#show_comments.action>= icon_link "Comments", "comment", '#'
   %li.action>= icon_link "View Source", "script", url_for(:action => :ide), :target => "_blank"
+  %li#show_controls.action>= icon_link "Controls", "keyboard", '#'
 
 = display_comments project
+
+= render :partial => "game_keys"
 
 :coffeescript
   $("#show_comments").click (event) ->
@@ -18,6 +21,11 @@
       $(".comments_area").show()
     else
       $(".comments_area").hide()
+
+  $("#show_controls").click (event) ->
+    event.preventDefault()
+
+    showGameKeys()
 
 %style
   :sass

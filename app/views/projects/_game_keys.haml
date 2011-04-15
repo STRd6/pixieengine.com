@@ -1,0 +1,34 @@
+#game_key_template.template
+  %dl.keyboard_mappings
+    .left_col
+      %dt {{html keys}}
+    %dd ${action}
+
+#game_keys_modal.modal
+  %h2 Controls
+  .game_controls
+
+%style
+  :sass
+    #game_keys_modal
+      max-height: 500px
+      overflow-y: auto
+      overflow-x: hidden
+
+:coffeescript
+  window.showGameKeys = ->
+    controls = $("#game_keys_modal .game_controls").empty()
+
+    if window.gameControlData
+      for action, keys of window.gameControlData
+        $("#game_key_template")
+          .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
+          .appendTo(controls)
+    else
+      controls.text("This game hasn't defined any controls")
+
+    $('#game_keys_modal').modal
+      onOpen: (dialog) ->
+        dialog.overlay.fadeIn 150, ->
+          dialog.data.show()
+          dialog.container.show()
