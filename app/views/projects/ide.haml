@@ -65,7 +65,7 @@
 = render :partial => "property_editor"
 = render :partial => "errors"
 
-- page_hotkeys = { "Save game to github" => ["ctrl s", "⌘ s"], "Edit object properties" => "right click", "Increment numeric values. Flip booleans" => "↑", "Decrement numeric values. Flip booleans" => "↓", "Increment numeric values by 10" => "shift ↑", "Decrement numeric values by 10" => "shift ↓", "Enter developer mode" => "esc" }
+- page_hotkeys = [["Save game to github", ["ctrl s", "⌘ s"]], ["Edit object properties", "right click"], ["Increment numeric values. Flip booleans", "↑"], ["Decrement numeric values. Flip booleans", "↓"], ["Increment numeric values by 10", "shift ↑"], ["Decrement numeric values by 10", "shift ↓"], ["Enter developer mode", "esc"]]
 
 = render :partial => "shared/hotkeys", :locals => { :page_hotkeys => page_hotkeys, :section_title => "Developer Mode" }
 

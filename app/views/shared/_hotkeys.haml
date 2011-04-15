@@ -1,23 +1,23 @@
-- site_hotkeys = { "Toggle chat" => "c", "Toggle dock" => "d", "Bring up this help dialog" => "?" }
+- site_hotkeys = [["Toggle chat", "c"], ["Toggle dock", "d"], ["Bring up this help dialog", "?"]]
 
 #hotkeysModal.modalElement
   %h2 Keyboard Shortcuts
-  - site_hotkeys.each do |key, value|
+  - site_hotkeys.each do |array|
     %dl.keyboard_mappings
       .left_col
-        %dt= raw Array(value).join(" <em>or</em> ")
-      %dd= key
+        %dt= raw Array(array[1]).join(" <em>or</em> ")
+      %dd= array[0]
 
-  - if section_title
+  - if local_assigns[:section_title]
     .rule
     %h2= section_title
 
-  - if page_hotkeys
-    - page_hotkeys.each do |key, value|
+  - if local_assigns[:page_hotkeys]
+    - page_hotkeys.each do |array|
       %dl.keyboard_mappings
         .left_col
-          %dt= raw Array(value).join(" <em>or</em> ")
-        %dd= key
+          %dt= raw Array(array[1]).join(" <em>or</em> ")
+        %dd= array[0]
 
 :coffeescript
   hotkeyHandler = (e) ->
