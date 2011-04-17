@@ -162,6 +162,7 @@ class ApplicationController < ActionController::Base
       filters.first
     end
   end
+  helper_method :filter
 
   def count_view
     object.increment! :views_count

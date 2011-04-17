@@ -1,9 +1,11 @@
 - @title = "Project Gallery"
 
 .filters
-  =button_link "Create Project", "application_add", new_project_path
-  =link_to "My Projects", { :filter => :own }, { :class => "button" }
-  =link_to "All", { :filter => :none }, { :class => "button" }
+  = button_link "Create Project", "application_add", new_project_path
+
+  = filter_link "Featured", :featured
+  = filter_link "My Projects", :own
+  = filter_link "All", :none
 
 %section
   = will_paginate projects

@@ -175,7 +175,7 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["own", "none"]
+    ["featured", "own", "none"]
   end
 
   def demo?
