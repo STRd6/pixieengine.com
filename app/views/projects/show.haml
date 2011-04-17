@@ -1,13 +1,43 @@
-= link_to "IDE", ide_project_path(project), { :class => "button" }
-- if admin?
-  - featured = project.featured? ? "active" : ""
-  = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
+%style
+  :sass
+    #fullscreen
+      height: auto
 
-%h2= project.title
+    .content
+      margin: auto
+      width: 1000px
 
-%p= project.description
+      .project
+        img
+          margin: 0 1em 1em 0
+          float: left
 
-%p= project.remote_origin
+        .image_and_text
+          overflow: auto
+          width: 100%
+
+.content
+  .project
+    %h2= project.title
+
+    .image_and_text
+      = image_tag project.image.url(:thumb)
+
+      %p= project.description
+
+    %p= project.remote_origin
+
+    .creator
+      Created by
+      = link_to project.user.display_name, project.user
+
+    .actions
+      = button_link "IDE", "application_edit", ide_project_path(project)
+      - if has_access?
+        = button_link "Edit Info", "pencil", edit_project_path(project)
+      - if admin?
+        - featured = project.featured? ? "active" : ""
+        = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
 
 
 :coffeescript
