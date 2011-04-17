@@ -10,6 +10,8 @@ class ProjectsController < ApplicationController
 
   before_filter :hide_dock, :only => [:github_integration, :info, :fullscreen]
 
+  before_filter :redirect_to_user_page_if_logged_in, :only => :info
+
   def new
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
@@ -166,6 +168,8 @@ class ProjectsController < ApplicationController
     @projects ||= if current_user
       if filter == "own"
         Project.for_user(current_user)
+      elsif filter == "for_user"
+        Project.for_user(User.find(params[:user_id]))
       else
         Project.send(filter)
       end
@@ -175,7 +179,7 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["featured", "own", "none"]
+    ["featured", "own", "none", "for_user"]
   end
 
   def demo?
@@ -219,5 +223,9 @@ class ProjectsController < ApplicationController
 
   def per_page
     24
+  end
+
+  def redirect_to_user_page_if_logged_in
+    redirect_to current_user if current_user
   end
 end

@@ -64,7 +64,6 @@ class UsersController < ResourceController::Base
   end
 
   def show
-    @user = User.find(params[:id])
   end
 
   def add_to_collection

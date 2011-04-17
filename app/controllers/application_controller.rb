@@ -150,6 +150,12 @@ class ApplicationController < ActionController::Base
   def per_page
     40
   end
+  helper_method :per_page
+
+  def page
+    params[:page]
+  end
+  helper_method :page
 
   def filters
     []

@@ -1,52 +1,129 @@
-.profile
-  %h2= user.display_name
-  .avatar
-    = image_tag user.avatar.url(:large)
+.content
+  .profile
+    = render :partial => "tasks", :user => user
 
-  - unless user.profile.blank?
-    %p= user.profile
+    %h2= user.display_name
+    .info
+      = image_tag user.avatar.url(:large), :class => :avatar
+      %p= user.profile
 
-= render :partial => "tasks", :user => user
+    %label
+      %h3 Favorite Color
+      .favorite_color{:style => "background: ##{user.favorite_color}"}
 
-.extra_info
-  .favorite_color
-    Favorite Color:
-    .color{:style => "background: ##{user.favorite_color}"}
+    %ul.actions
+      %li= button_link "Collections", "photos", {:action => :collections}
+      - if current_user?
+        %li= button_link "Edit your profile", "user_edit", [:edit, user]
 
-%ul.actions
-  %li= link_to "#{image_tag "icons/photos.png"} Collections".html_safe, url_for(:action => :collections), :class => "button"
-  - if current_user?
-    %li= link_to "#{image_tag "icons/user_edit.png"} Edit your profile".html_safe, [:edit, current_user], :class => "button"
+  - if user.projects.size > 0
+    .projects
+      %h3
+        Projects
+        = link_to "(View All)", projects_path(:filter => :for_user, :user_id => user.id)
+      - user.projects.limit(6).each do |project|
+        = render :partial => "project", :object => project
+  - if user.sprites.size > 0
+    .sprites
+      %h3
+        Sprites
+        = link_to "(View All)", :action => :sprites
+      - user.sprites.limit(20).each do |sprite|
+        .sprite
 
-- if user.sprites.size > 0
-  .sprites
-    %h3
-      = "#{user}'s creations"
-    - user.sprites.each do |sprite|
-      .sprite
-        - if current_user
-          .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
+          %span.title= link_to(sprite.display_name, sprite)
 
-        %span.title= link_to(sprite.display_name, sprite)
-
-        = image_link sprite
-
-  .clear
+          = image_link sprite
 
 %style
   :sass
     @import util
+    #fullscreen
+      height: auto
+
+    .content
+      margin: auto
+      width: 1000px
 
     .sprites
-      padding-top: 5em
+      padding-top: 2em
+
+      .sprite
+        overflow: hidden
+        white-space: nowrap
+
+      h3
+        a
+          font-size: 0.75em
 
     .tasks
       +glass
 
+      float: right
+
       margin: 1em
+      margin-right: 2.5em
+      overflow: hidden
+      padding: 1em
+      width: 270px
+
+      .task
+        font-size: 1.1em
+        margin-bottom: 0.5em
+        position: relative
+        img
+          vertical-align: top
+        .value
+          left: 160px
+          position: absolute
+          top: 0
+
+
+    .favorite_color
+      +inline-block
+      border: 1px solid !light_gray
+      height: 50px
+      width: 50px
+
+    .profile
+      min-height: 284px
+
+      label
+        margin-bottom: 1em
+
+      p
+        margin-bottom: 0.5em
+        width: 400px
+
+      .avatar
+        float: left
+        margin: 0 1em 1em 0
+
+
+    .projects
+      h3
+        a
+          font-size: 0.75em
+
+    .project
+      +bounds(290px, 160px)
+      +inline-block
+      +glass
+
+      margin: 0 1em 1em 0
       overflow: hidden
       padding: 1em
 
-    .profile
-      p
-        width: 400px
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+      .title
+        a
+          color: $dark_text
+          text-decoration: none
+          white-space: nowrap
+
+          .light &
+            color: $light_text

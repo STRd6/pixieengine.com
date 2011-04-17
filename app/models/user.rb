@@ -17,10 +17,12 @@ class User < ActiveRecord::Base
 
   has_many :libraries
   has_many :collections
-  has_many :sprites
+  has_many :sprites,
+    :order => "id DESC"
   has_many :invites
 
-  has_many :projects
+  has_many :projects,
+    :order => "id DESC"
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
