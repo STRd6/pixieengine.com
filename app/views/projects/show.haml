@@ -1,7 +1,23 @@
 = link_to "IDE", ide_project_path(project), { :class => "button" }
+- if admin?
+  - featured = project.featured? ? "active" : ""
+  = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
 
 %h2= project.title
 
 %p= project.description
 
 %p= project.remote_origin
+
+
+:coffeescript
+  $("#feature").click (event) ->
+    event.preventDefault()
+
+    if $(this).is(".active")
+      #TODO: Unfeature
+    else
+      $(this).addClass("active")
+
+      $.post $(this).attr("href"),
+        format: "json"

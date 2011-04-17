@@ -17,12 +17,13 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :fullscreen
       get :download
 
+      post :feature
+      post :fork
+      post :generate_docs
       post :remove_file
       post :save_file
       post :tag_version
-      post :generate_docs
       post :update_libs
-      post :fork
     end
 
     collection do

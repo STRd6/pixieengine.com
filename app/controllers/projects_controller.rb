@@ -3,7 +3,9 @@ class ProjectsController < ApplicationController
 
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
   before_filter :require_user, :except => PUBLIC_ACTIONS
-  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork]
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature]
+  before_filter :require_admin, :only => :feature
+
   before_filter :filter_results, :only => [:index]
 
   before_filter :count_view, :only => [:fullscreen]
@@ -25,6 +27,22 @@ class ProjectsController < ApplicationController
   end
 
   def index
+  end
+
+  def feature
+    project.update_attribute(:featured, true)
+
+    respond_to do |format|
+      format.html do
+        redirect_to :project
+      end
+
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
   end
 
   def fullscreen
