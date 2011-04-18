@@ -27,14 +27,16 @@
 
       .collection
         +border-radius
-        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+        +box-shadow($dark_highlight, 1px, 1px, 4px, 0, inset)
 
-        background-color: $dark_background
+        background-color: $cookie_cutter_dark
         margin-bottom: 1em
         padding: 1em
 
         .light &
-          background-color: $light_background
+          +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+
+          background-color: $cookie_cutter_light
 
       .sprite
         +bounds(114px, 100px)
