@@ -72,9 +72,9 @@
 
     .tasks
       +border-radius
-      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+      +box-shadow($dark_highlight, 1px, 1px, 4px, 0, inset)
 
-      background-color: $dark_background
+      background-color: #003F66
       float: right
       margin: 1em
       margin-right: 0.5em
@@ -83,6 +83,8 @@
       width: 295px
 
       .light &
+        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+
         background-color: $light_background
 
       .task
@@ -132,15 +134,17 @@
     .project
       +border-radius
       +bounds(295px, 160px)
-      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+      +box-shadow($dark_highlight, 1px, 1px, 4px, 0, inset)
       +inline-block
 
-      background-color: $dark_background
+      background-color: #003F66
       margin: 0 0.5em 1em 0.5em
       overflow: hidden
       padding: 1em
 
       .light &
+        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+
         background-color: $light_background
 
       .thumb
