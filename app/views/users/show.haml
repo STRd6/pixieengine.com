@@ -2,32 +2,38 @@
   .profile
     = render :partial => "tasks", :user => user
 
-    %h2= user.display_name
+    %h2
+      = user.display_name
+      - if current_user?
+        = link_to "Edit profile", [:edit, user]
     .info
       = image_tag user.avatar.url(:large), :class => :avatar
+      %h3 About Me
       %p= user.profile
+
 
     %label
       %h3 Favorite Color
       .favorite_color{:style => "background: ##{user.favorite_color}"}
 
-    %ul.actions
-      %li= button_link "Collections", "photos", {:action => :collections}
-      - if current_user?
-        %li= button_link "Edit your profile", "user_edit", [:edit, user]
-
   - if user.projects.size > 0
     .projects
       %h3
         Projects
-        = link_to "(View All)", projects_path(:filter => :for_user, :user_id => user.id)
+        (
+        = link_to "View All", projects_path(:filter => :for_user, :user_id => user.id)
+        |
+        = link_to " View Collections", { :action => :collections }
+        )
       - user.projects.limit(6).each do |project|
         = render :partial => "project", :object => project
   - if user.sprites.size > 0
     .sprites
       %h3
         Sprites
-        = link_to "(View All)", :action => :sprites
+        (
+        = link_to "View All", :action => :sprites
+        )
       - user.sprites.limit(20).each do |sprite|
         .sprite
 
@@ -42,8 +48,15 @@
       height: auto
 
     .content
+      +glass
+
+      background-color: $dark_highlight
       margin: auto
+      padding: 2em
       width: 1000px
+
+      .light &
+        background-color: $light_highlight
 
     .sprites
       padding-top: 2em
@@ -55,17 +68,22 @@
       h3
         a
           font-size: 0.75em
+          letter-spacing: 0
 
     .tasks
-      +glass
+      +border-radius
+      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
 
+      background-color: $dark_background
       float: right
-
       margin: 1em
-      margin-right: 2.5em
+      margin-right: 0.5em
       overflow: hidden
       padding: 1em
-      width: 270px
+      width: 295px
+
+      .light &
+        background-color: $light_background
 
       .task
         font-size: 1.1em
@@ -88,6 +106,12 @@
     .profile
       min-height: 284px
 
+      h2
+        a
+          font-size: 0.75em
+          letter-spacing: 0
+          margin-left: 0.25em
+
       label
         margin-bottom: 1em
 
@@ -106,13 +130,18 @@
           font-size: 0.75em
 
     .project
-      +bounds(290px, 160px)
+      +border-radius
+      +bounds(295px, 160px)
+      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
       +inline-block
-      +glass
 
-      margin: 0 1em 1em 0
+      background-color: $dark_background
+      margin: 0 0.5em 1em 0.5em
       overflow: hidden
       padding: 1em
+
+      .light &
+        background-color: $light_background
 
       .thumb
         float: left
