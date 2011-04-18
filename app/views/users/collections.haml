@@ -1,6 +1,46 @@
-%h2= user.display_name + "'s Collections"
+.centered_content
+  %h1= user.display_name + "'s Collections"
 
-- user.collections.each do |collection|
-  %h3= link_to collection.name, :controller => :collections, :action => :show, :id => collection.id
-  - collection.sprites[0..7].each do |sprite|
-    = render :partial => sprite if sprite
+  - user.collections.each do |collection|
+    .collection
+      %h2= collection.name
+      - collection.sprites.each do |sprite|
+        = render :partial => sprite if sprite
+
+%style
+  :sass
+    @import partials/base
+    @import util
+
+    .centered_content
+      +border-radius
+      +glass
+
+      background-color: $dark_highlight
+      padding: 2em
+      margin-left: auto
+      margin-right: auto
+      width: 800px
+
+      .light &
+        background-color: $light_highlight
+
+      .collection
+        +border-radius
+        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+
+        background-color: $dark_background
+        margin-bottom: 1em
+        padding: 1em
+
+        .light &
+          background-color: $light_background
+
+      .sprite
+        +bounds(114px, 100px)
+
+        margin-right: 1em
+        overflow: hidden
+        text-overflow: ellipsis
+        white-space: nowrap
+

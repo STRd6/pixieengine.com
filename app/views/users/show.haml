@@ -22,8 +22,6 @@
         Projects
         (
         = link_to "View All", projects_path(:filter => :for_user, :user_id => user.id)
-        |
-        = link_to " View Collections", { :action => :collections }
         )
       - user.projects.limit(6).each do |project|
         = render :partial => "project", :object => project
@@ -33,6 +31,8 @@
         Sprites
         (
         = link_to "View All", :action => :sprites
+        |
+        = link_to " View Collections", { :action => :collections }
         )
       - user.sprites.limit(20).each do |sprite|
         .sprite
