@@ -16,6 +16,14 @@
       %h3 Favorite Color
       .favorite_color{:style => "background: ##{user.favorite_color}"}
 
+  - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
+    .messages
+      %h3
+        Messages
+
+      = render :partial => messages
+
+
   - if user.projects.size > 0
     .projects
       %h3
@@ -25,6 +33,7 @@
         )
       - user.projects.limit(6).each do |project|
         = render :partial => "project", :object => project
+
   - if user.sprites.size > 0
     .sprites
       %h3

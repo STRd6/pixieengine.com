@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110419003514) do
+ActiveRecord::Schema.define(:version => 20110419212708) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -211,9 +211,11 @@ ActiveRecord::Schema.define(:version => 20110419003514) do
     t.text     "body",             :null => false
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.integer  "commentee_id"
   end
 
   add_index "comments", ["commentable_id", "commentable_type"], :name => "index_comments_on_commentable_id_and_commentable_type"
+  add_index "comments", ["commentee_id"], :name => "index_comments_on_commentee_id"
   add_index "comments", ["commenter_id"], :name => "index_comments_on_commenter_id"
 
   create_table "delayed_jobs", :force => true do |t|
