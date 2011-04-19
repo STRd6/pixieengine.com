@@ -26,11 +26,22 @@
       margin: 0 1em 1em 0
       overflow: hidden
       padding: 1em
+      position: relative
+
+      .gloss
+        +gloss
+
+        display: inline-block
+        position: absolute
+        left: 1em
 
       .thumb
         float: left
         margin-bottom: 1em
         margin-right: 1em
+
+        img
+          +border-radius(17px)
 
       .title
         a

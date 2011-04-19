@@ -1,4 +1,6 @@
 .project.clickable
   %h2.title= link_to project.display_name, ide_project_path(project)
-  .thumb= link_to image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name), fullscreen_project_path(project)
+  - if project.image?
+    .gloss
+    .thumb= link_to image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name, :class => "show"), fullscreen_project_path(project)
   %p.description= project.description
