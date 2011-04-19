@@ -262,13 +262,17 @@ ul.filetree
   background-color: #EEE
   display: none
   margin-top: 1em
-  padding: 0.5em
+  padding: 0.4em
   position: absolute
   z-index: 1000
 
   h3
     cursor: move
+    margin-bottom: 0
     padding-left: 5px
+
+  iframe
+    margin-bottom: -5px
 
   .ui-icon-close, #close_app
     cursor: pointer
@@ -328,13 +332,31 @@ ul#libraries
   height: 160px
   width: 320px
 
-#errors
-  .content
-    padding: 0 1em 1em
-  .error
-    color: black
-    .file[data-id^="#"]
-      cursor: pointer
-      font-weight: bold
-    .message
-      color: red
+.ide
+  .file.error
+    cursor: pointer
+
+  #properties_editor_window
+    h3
+      margin-left: -1px
+      margin-right: 3px
+
+  #prop_editor
+    input
+      border: 1px solid #aaa
+      margin-right: 4px
+      padding: 2px
+      width: 130px
+
+    input[placeholder="key"]
+      color: #DB0000
+
+    tr
+      display: block
+      margin-bottom: -2px
+
+    td
+      display: inline-block
+      margin-left: -1px
+      margin-right: -1px
+
