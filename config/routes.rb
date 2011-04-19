@@ -16,6 +16,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :ide
       get :fullscreen
       get :download
+      get :arcade
 
       post :feature
       post :fork
@@ -151,6 +152,7 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
   match 'sfx-editor' => "sounds#new", :as => :new_sound
+  match 'arcade' => "projects#arcade"
 
   # Catch old urls
   match 'creation(/:dummy(/:dummy))' => "sprites#new"

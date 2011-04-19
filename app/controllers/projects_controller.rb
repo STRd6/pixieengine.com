@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo]
+  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade]
   before_filter :require_user, :except => PUBLIC_ACTIONS
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature]
   before_filter :require_admin, :only => :feature
@@ -27,6 +27,10 @@ class ProjectsController < ApplicationController
   end
 
   def index
+  end
+
+  def arcade
+    @projects = Project.completed
   end
 
   def feature

@@ -1,18 +1,12 @@
-- @title = "Project Gallery"
-
-.filters
-  = button_link "Create Project", "application_add", new_project_path
-
-  = link_to "Arcade", "arcade", :class => "button"
-  = filter_link "Featured", :featured
-  = filter_link "My Projects", :own
-  = filter_link "All", :none
+- @title = "Arcade"
 
 %section
-  = will_paginate projects
   .gallery
-    = render :partial => projects
-  = will_paginate projects
+    - @projects.each do |project|
+      .project.clickable
+        %h2.title= link_to project.display_name, fullscreen_project_path(project)
+        .thumb= link_to image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name), fullscreen_project_path(project)
+        %p.description= project.description
 
 %style
   :sass
