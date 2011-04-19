@@ -1,7 +1,7 @@
-%h2 Invite a Friend
-
 - form_for @invite do |form|
   = form.error_messages
+
+  %h2 Invite a Friend
 
   %p
     = form.label :to, "Friend's name"
@@ -13,12 +13,13 @@
 
   = form.submit "Invite friend"
 
-%p
-  When you invite a friend they will receive an email similar to the sample
-  below:
+.centered_content
+  %p
+    When you invite a friend they will receive an email similar to the sample
+    below:
 
-%pre
-  = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})
+  %pre
+    = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})
 
 :javascript
   $(function() {
@@ -26,3 +27,11 @@
       _gaq.push(['_trackEvent', 'action_button', 'invite friend']);
     });
   });
+
+%style
+  :sass
+    .centered_content
+      margin-left: auto
+      margin-right: auto
+      margin-top: 2em
+      width: 475px
