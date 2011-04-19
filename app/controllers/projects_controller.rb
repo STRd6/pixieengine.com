@@ -3,8 +3,8 @@ class ProjectsController < ApplicationController
 
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade]
   before_filter :require_user, :except => PUBLIC_ACTIONS
-  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature]
-  before_filter :require_admin, :only => :feature
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :complete]
+  before_filter :require_admin, :only => [:feature, :complete]
 
   before_filter :filter_results, :only => [:index]
 
@@ -31,6 +31,18 @@ class ProjectsController < ApplicationController
 
   def arcade
     @projects = Project.completed
+  end
+
+  def complete
+    project.update_attribute(:completed, true)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
   end
 
   def feature
