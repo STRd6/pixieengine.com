@@ -32,6 +32,7 @@ class Project < ActiveRecord::Base
 
   scope :featured, where(:featured => true)
   scope :tutorial, where(:tutorial => true)
+  scope :completed, where(:completed => true)
 
   scope :none
 
