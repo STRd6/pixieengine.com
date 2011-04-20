@@ -329,6 +329,11 @@ class Project < ActiveRecord::Base
   handle_asynchronously :generate_docs
 
   def config
-    @config ||= HashWithIndifferentAccess.new(JSON.parse(File.read(config_path))).reverse_merge(DEFAULT_CONFIG)
+    @config ||=
+      if File.exist? config_path
+        HashWithIndifferentAccess.new(JSON.parse(File.read(config_path))).reverse_merge(DEFAULT_CONFIG)
+      else
+        {}.merge(DEFAULT_CONFIG)
+      end
   end
 end

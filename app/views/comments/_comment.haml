@@ -3,4 +3,4 @@
   %p= comment.body
   %p.attribution
     %span.name= link_to comment.commenter.display_name, comment.commenter
-    %span.time= "#{time_ago_in_words(comment.created_at)} ago"
+    %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
