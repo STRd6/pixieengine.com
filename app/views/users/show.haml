@@ -18,16 +18,9 @@
   - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
     .messages
       %h3
-        Comments on:
+        Messages
 
-      - messages.each do |comment|
-        .comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
-          .comment_sprite
-            = image_link user.sprites.find comment.commentable_id
-          %p= comment.body
-          %p.attribution
-            %span.name= link_to comment.commenter.display_name, comment.commenter
-            %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
+      = render :partial => messages
 
   - if user.projects.size > 0
     .projects
@@ -71,11 +64,6 @@
 
       .light &
         background-color: $light_highlight
-
-      .messages
-        .comment_sprite
-          float: left
-          margin-right: 1em
 
     .sprites
       padding-top: 2em
