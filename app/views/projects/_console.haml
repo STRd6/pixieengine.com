@@ -1,12 +1,20 @@
 #console_window.window(style="top: 75px; left: 50px;")
   %span.ui-icon.ui-icon-close
   %h3.ui-widget-header Console
-  %textarea
-  %button Run
+  %textarea(placeholder="Execute CoffeeScript in your running game")
+  %button Execute
 
 :coffeescript
   $("#console").live "click", ->
-    $("#console_window").show()
+    if $(this).hasClass('active')
+      $("#console_window").hide()
+    else
+      $("#console_window").show()
+
+    $(this).toggleClass('active')
+
+  $("#console_window .ui-icon-close").live "click", ->
+    $("#console").removeClass('active')
 
   $ ->
     $("#console_window button").click ->
@@ -15,7 +23,7 @@
       code = compileCode src, "coffee"
 
       if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
-        if code
+        if src.length && code
           try
             runningGameFrame.eval(code)
             input.val('')
