@@ -6,7 +6,7 @@
     .button_group
       %button#new> New
       %button#import> Import
-      %button#export> Export
+      %button#export(title="Download your project files")> Export
   - else
     %button#fork Fork
 
@@ -16,15 +16,15 @@
     %button#console> Console
   - if demo? || has_access?
     .button_group
-      %button#build> Build
-      %button#update_libs{ :title => "Update to the latest libs defined in pixie.json"}> Update Libs
+      %button#build(title="Compile src files into single JS file")> Build
+      %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
       - if admin?
-        %button#generate_docs> Doc
-      %button#tag> Tag
+        %button#generate_docs(title="Build library documentation")> Doc
+      %button#tag(title="Tag a stable build")> Tag
 
   .status
     %label.inline What are you working on?
-    %input.message(placeholder="(Click to edit)" type="text")
+    %input.message(placeholder="Your commit message" type="text")
 
 #content
   #error
@@ -553,6 +553,6 @@
     # Hack to pre-load main file
     $("#file_src_main_coffee").prev().click()
 
-    $('#update_libs').tipsy
+    $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
       fade: false
       gravity: 'n'
