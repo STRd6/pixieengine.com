@@ -2,10 +2,19 @@
   %span.ui-icon.ui-icon-close
   %h3.ui-widget-header File Importer
   #import_drop_zone
+    %p Drag files from your desktop here and we'll add them to your project.
 
 :coffeescript
-  $("#import").live "click", ->
-    $("#import_drop_window").show()
+  $("#import").live "mousedown", ->
+    if $(this).hasClass('active')
+      $("#import_drop_window").hide()
+    else
+      $("#import_drop_window").show()
+
+    $(this).toggleClass('active')
+
+  $("#import_drop_window .ui-icon-close").live "click", ->
+    $("#import").removeClass('active')
 
   $ ->
     extractBase64Data = (dataUrl) ->
