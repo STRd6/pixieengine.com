@@ -17,7 +17,7 @@
   - if demo? || has_access?
     .button_group
       %button#build> Build
-      %button#update_libs> Update Libs
+      %button#update_libs{ :title => "Update to the latest libs defined in pixie.json"}> Update Libs
       - if admin?
         %button#generate_docs> Doc
       %button#tag> Tag
@@ -552,3 +552,7 @@
 
     # Hack to pre-load main file
     $("#file_src_main_coffee").prev().click()
+
+    $('#update_libs').tipsy
+      fade: false
+      gravity: 'n'
