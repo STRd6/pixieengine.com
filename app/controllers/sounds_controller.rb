@@ -1,5 +1,4 @@
-class SoundsController < ResourceController::Base
-  actions :all
+class SoundsController < ApplicationController
   respond_to :html, :json
   layout "fullscreen"
 
@@ -7,8 +6,11 @@ class SoundsController < ResourceController::Base
   before_filter :require_user, :only => [:add_tag, :remove_tag]
   before_filter :filter_results, :only => [:index]
 
-  create.before do
-    sound.user = current_user
+  def create
+    @sound = Sound.new(params[:sound])
+    @sound.user = current_user
+
+    @sound.save
   end
 
   def new
@@ -22,27 +24,40 @@ class SoundsController < ResourceController::Base
   end
 
   def filter_results
-    @sounds ||= if filter
-      if current_user
-        if filter == "own"
-          Sound.for_user(current_user)
-        else
-          Sound.send(filter)
-        end
+    @sounds ||= if current_user
+      if filter == "own"
+        Sound.for_user(current_user)
+      elsif filter == "for_user"
+        Sound.for_user(User.find(params[:user_id]))
       else
-        Sound.none
+        Sound.send(filter)
       end
-    end.order("id DESC")
+    else
+      Sound
+    end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def filters
-    ["own", "none"]
+    ["own", "none", "for_user"]
+  end
+
+  def per_page
+    24
   end
 
   private
+  def object
+    @sound ||= Sound.find params[:id]
+  end
+  helper_method :object
 
   def sound
     object
   end
   helper_method :sound
+
+  def sounds
+    @sounds ||= Sound.all
+  end
+  helper_method :sounds
 end
