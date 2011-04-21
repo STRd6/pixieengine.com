@@ -30,7 +30,7 @@
         = link_to "View All", projects_path(:filter => :for_user, :user_id => user.id)
         )
       - user.projects.limit(6).each do |project|
-        = render :partial => "project", :object => project
+        = render :partial => "projects/project", :object => project
 
   - if user.sprites.size > 0
     .sprites
@@ -105,7 +105,6 @@
           position: absolute
           top: 0
 
-
     .favorite_color
       +inline-block
       border: 1px solid !light_gray
@@ -148,16 +147,31 @@
       margin: 0 0.5em 1em 0.5em
       overflow: hidden
       padding: 1em
+      position: relative
 
       .light &
         +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
 
         background-color: $cookie_cutter_light
 
+      .gloss
+        +gloss
+
+        display: inline-block
+        position: absolute
+        left: 1em
+
       .thumb
         float: left
         margin-bottom: 1em
         margin-right: 1em
+
+        img
+          +border-radius(17px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
+
+          .light &
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
 
       .title
         a
