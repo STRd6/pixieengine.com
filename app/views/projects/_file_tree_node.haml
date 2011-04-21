@@ -22,6 +22,6 @@
     - else
       %span.file{ 'data-id' => "##{data_id}", :class => ext }= file_info[:name]
       .tab_data{:id => data_id, 'data-ext' => ext, 'data-path' => path, 'data-lang' => lang, 'data-type' => type, 'data-mtime' => mtime, 'data-size' => size}
-        - form_tag({:action => :save_file, :format => :json}, :method => :post) do |form|
+        = form_tag({:action => :save_file, :format => :json}, :method => :post) do
           = hidden_field_tag :path, path, { :id => nil }
           = text_area_tag :contents, file_info[:contents], { :id => nil }
