@@ -556,3 +556,11 @@
     $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
       fade: false
       gravity: 'n'
+
+    jug = new Juggernaut
+
+    $.each projectConfig.libs, (lib, url) ->
+      jug.subscribe "/projects/#{project.id}/" + url, (data) ->
+        lib_element = $("[title=" + lib + "]").find('span').data('id')
+        $(lib_element).find('[name="contents"]').val(data[lib])
+        notify("Your libraries have finished updating!")

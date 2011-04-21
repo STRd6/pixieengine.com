@@ -98,6 +98,10 @@ class Project < ActiveRecord::Base
       File.open(file_path, 'wb') do |file|
         file.write(open(url) {|f| f.read})
       end
+
+      Juggernaut.publish("/projects/#{id}/#{url}", {
+        "#{filename}" => IO.read(file_path)
+      })
     end
 
     make_group_writable
