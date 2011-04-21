@@ -27,22 +27,45 @@ class AnimationsController < ApplicationController
     respond_with(@animation)
   end
 
+  def index
+  end
+
   def filter_results
-    @animations ||= if filter
-      if current_user
-        if filter == "own"
-          Animation.for_user(current_user)
-        else
-          Animation.send(filter)
-        end
+    @animations ||= if current_user
+      if filter == "own"
+        Animation.for_user(current_user)
+      elsif filter == "for_user"
+        Animation.for_user(User.find(params[:user_id]))
       else
-        Animation.none
+        Animation.send(filter)
       end
-    end.order("id DESC")
+    else
+      Animation
+    end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def filters
-    ["own", "none"]
+    ["own", "none", "for_user"]
   end
+
+  def per_page
+    24
+  end
+
+  private
+  def object
+    @animation ||= animation.find params[:id]
+  end
+  helper_method :object
+
+  def animation
+    object
+  end
+  helper_method :animation
+
+  def animations
+    @animations ||= Animation.all
+  end
+  helper_method :animations
 end
 
