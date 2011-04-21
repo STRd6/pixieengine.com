@@ -5,7 +5,8 @@
 
   = link_to "Arcade", "arcade", :class => "button"
   = filter_link "Featured", :featured
-  = filter_link "My Projects", :own
+  - if current_user
+    = filter_link "My Projects", :own
   = filter_link "All", :none
 
 %section
