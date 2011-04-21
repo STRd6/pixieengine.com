@@ -1,32 +1,24 @@
 .filters
-  =link_to "Featured", { :filter => :featured }, { :class => "button" }
-  =link_to "All", { :filter => :none }, { :class => "button" }
+  = filter_link "Featured", :featured
+  = filter_link "All", :none
 
 %section
-  = will_paginate users
   .gallery
+    = will_paginate users
     = render :partial => users
-  = will_paginate users
+    = will_paginate users
 
 %style
   :sass
-    @import partials/base
     @import util
+    @import partials/base
 
-    .user
-      +bounds(240px, 160px)
-      +inline-block
-      +glass
+    .gallery .user .thumb
+      img
+        +box-shadow(none)
 
-      margin: 0 1em 1em 0
-      overflow: hidden
-      padding: 1em
+        .light &
+          +box-shadow(none)
 
-      .title
-        a
-          white-space: nowrap
-
-      .thumb
-        float: left
-        margin-bottom: 1em
-        margin-right: 1em
+      a img
+        +border-radius(0)
