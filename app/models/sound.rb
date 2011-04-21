@@ -21,7 +21,7 @@ class Sound < ActiveRecord::Base
     :path => "sounds/:id/:style.:extension"
   )
 
-  scope :for_user, lambda {|user|
+  scope :for_user, lambda { |user|
     where(:user_id => user.id)
   }
 
