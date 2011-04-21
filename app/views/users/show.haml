@@ -29,8 +29,7 @@
         (
         = link_to "View All", projects_path(:filter => :for_user, :user_id => user.id)
         )
-      - user.projects.limit(6).each do |project|
-        = render :partial => "projects/project", :object => project
+      = render :partial => "projects/project", :collection => user.projects.limit(6)
 
   - if user.sprites.size > 0
     .sprites
@@ -43,9 +42,7 @@
         )
       - user.sprites.limit(20).each do |sprite|
         .sprite
-
           %span.title= link_to(sprite.display_name, sprite)
-
           = image_link sprite
 
 %style
