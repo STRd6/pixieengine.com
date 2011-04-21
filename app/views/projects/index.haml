@@ -9,25 +9,48 @@
   = filter_link "All", :none
 
 %section
-  = will_paginate projects
   .gallery
+    = will_paginate projects
     = render :partial => projects
-  = will_paginate projects
+    = will_paginate projects
 
 %style
   :sass
     @import partials/base
     @import util
 
-    .project
-      +bounds(240px, 160px)
-      +inline-block
+    .pagination
+      margin-left: 0.5em
+
+    .gallery
       +glass
 
-      margin: 0 1em 1em 0
+      background-color: $dark_highlight
+      margin: auto
+      padding: 2em
+      width: 1000px
+
+      .light &
+        background-color = $light_highlight
+
+    .project
+      +border-radius
+      +bounds(295px, 160px)
+      +box-shadow(#000F1A, 2px, 2px, 4px, 0, inset)
+      +inline-block
+
+      background-color: $cookie_cutter_dark
+      margin-bottom: 1em
+      margin-left: 0.5em
+      margin-right: 0.5em
       overflow: hidden
       padding: 1em
       position: relative
+
+      .light &
+        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+
+        background-color: $cookie_cutter_light
 
       .gloss
         +gloss
@@ -43,11 +66,16 @@
 
         img
           +border-radius(17px)
-          +box-shadow(rgba(255, 255, 255, 0.5), 0, 4px, 6px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
 
           .light &
-            +box-shadow(rgba(0, 0, 0, 0.5), 0, 4px, 6px)
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
 
       .title
         a
+          color: $dark_text
+          text-decoration: none
           white-space: nowrap
+
+          .light &
+            color: $light_text
