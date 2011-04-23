@@ -18,7 +18,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :download
       get :arcade
 
-      post :complete
+      post :add_to_arcade
       post :feature
       post :fork
       post :generate_docs

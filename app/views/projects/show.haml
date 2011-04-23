@@ -38,11 +38,11 @@
       - if admin?
         - featured = project.featured? ? "active" : ""
         = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
-        - completed = project.completed? ? "active"  : ""
-        = button_link "Arcade", "sport_shuttlecock", complete_project_path(project), :class => "button #{completed}", :id => "complete"
+        - arcade = project.arcade? ? "active"  : ""
+        = button_link "Arcade", "sport_shuttlecock", add_to_arcade_project_path(project), :class => "button #{arcade}", :id => "arcade"
 
 :coffeescript
-  $("#feature, #complete").click (event) ->
+  $("#feature, #arcade").click (event) ->
     event.preventDefault()
 
     if $(this).is(".active")
