@@ -559,7 +559,7 @@
 
     jug = new Juggernaut
 
-    $.each projectConfig.libs, (lib, url) ->
+    $.each projectConfig.libs || [], (lib, url) ->
       jug.subscribe "/projects/#{project.id}/" + url, (data) ->
         lib_element = $("[title=" + lib + "]").find('span').data('id')
         if data[lib].length
