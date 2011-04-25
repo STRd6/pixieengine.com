@@ -9,8 +9,6 @@
   </head>
 
   <body>
-    {+include("static/header.html")+}
-
     <div class="index">
       <div class="menu">
         <!-- begin publish.classesIndex -->
@@ -64,12 +62,6 @@
           <div class="props">
             <table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.alias+}.">
               <caption>{+classType+}Summary</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Constructor Attributes</th>
-                  <th scope="col">Constructor Name and Description</th>
-                </tr>
-              </thead>
               <tbody>
                 <tr>
                   <td class="attributes">{!
@@ -95,20 +87,13 @@
               <table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class {+data.alias+}.">
                 <caption>Field Summary</caption>
 
-                <thead>
-                  <tr>
-                    <th scope="col">Field Attributes</th>
-                    <th scope="col">Field Name and Description</th>
-                  </tr>
-                </thead>
-
                 <tbody>
                   <for each="member" in="ownProperties">
                     <tr>
                       <td class="attributes">{!
                         if (member.isPrivate) output += "&lt;private&gt; ";
                         if (member.isInner) output += "&lt;inner&gt; ";
-                        if (member.isStatic) output += "&lt;static&gt; ";
+                        if (member.isStatic) output += "<em>static</em>";
                         if (member.isConstant) output += "&lt;constant&gt; ";
                       !}&nbsp;</td>
                       <td class="nameDescription">
@@ -163,20 +148,13 @@
               <table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class {+data.alias+}.">
                 <caption>Method Summary</caption>
 
-                <thead>
-                  <tr>
-                    <th scope="col">Method Attributes</th>
-                    <th scope="col">Method Name and Description</th>
-                  </tr>
-                </thead>
-
                 <tbody>
                   <for each="member" in="ownMethods">
                     <tr>
                       <td class="attributes">{!
                         if (member.isPrivate) output += "&lt;private&gt; ";
                         if (member.isInner) output += "&lt;inner&gt; ";
-                        if (member.isStatic) output += "&lt;static&gt; ";
+                        if (member.isStatic) output += "<em>static</em>";
                       !}&nbsp;</td>
                       <td class="nameDescription">
                         <div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name.replace(/\^\d+$/, ''))+}</b>{+makeSignature(member.params)+}
@@ -228,20 +206,13 @@
             <table class="summaryTable" cellspacing="0" summary="A summary of the events documented in the class {+data.alias+}.">
               <caption>Event Summary</caption>
 
-              <thead>
-                <tr>
-                  <th scope="col">Event Attributes</th>
-                  <th scope="col">Event Name and Description</th>
-                </tr>
-              </thead>
-
               <tbody>
                 <for each="member" in="ownEvents">
                   <tr>
                     <td class="attributes">{!
                       if (member.isPrivate) output += "&lt;private&gt; ";
                       if (member.isInner) output += "&lt;inner&gt; ";
-                      if (member.isStatic) output += "&lt;static&gt; ";
+                      if (member.isStatic) output += "<em>static</em>";
                     !}&nbsp;</td>
                     <td class="nameDescription">
                       <div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}
@@ -395,7 +366,7 @@
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
                     if (member.isInner) output += "&lt;inner&gt; ";
-                    if (member.isStatic) output += "&lt;static&gt; ";
+                    if (member.isStatic) output += "<em>static</em>";
                     if (member.isConstant) output += "&lt;constant&gt; ";
                   !}
                   </span>
@@ -469,7 +440,7 @@
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
                     if (member.isInner) output += "&lt;inner&gt; ";
-                    if (member.isStatic) output += "&lt;static&gt; ";
+                    if (member.isStatic) output += "<em>static</em>";
                   !}
                   </span>
 
@@ -576,7 +547,7 @@
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
                     if (member.isInner) output += "&lt;inner&gt; ";
-                    if (member.isStatic) output += "&lt;static&gt; ";
+                    if (member.isStatic) output += "<em>static</em>";
                   !}
                   </span>
 
