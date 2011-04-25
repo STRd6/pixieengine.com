@@ -100,7 +100,7 @@ class Project < ActiveRecord::Base
       end
 
       Juggernaut.publish("/projects/#{id}/#{url}", {
-        "#{filename}" => IO.read(file_path)
+        filename => IO.read(file_path)
       })
     end
 
