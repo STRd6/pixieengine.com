@@ -21,7 +21,7 @@
         .selection
 
   %nav.bottom
-    .component#tile_select
+    .component.tile_select
       %h3 Tiles
       .tiles
         - unless data
@@ -37,8 +37,8 @@
 
   %nav.left
     .component
-      %h3#filename Tilemap
-      %button#save Save
+      %h3.filename Tilemap
+      %button.save Save
 
     .component
       %h3 Layer
@@ -54,13 +54,13 @@
 
     .component{ :style => "display: none"}
       %h3 Properties
-      %table#prop_editor
-      %button#prop_save Save Properties
+      %table.prop_editor
+      %button.prop_save Save Properties
 
   %nav.right
     .component
       %h3 Saved Selections
-      #saved_selections
+      .saved_selections
 
   .tools.component
     %h3 Tools
@@ -280,7 +280,7 @@
 
     savedSelection = $("#saved_selection").tmpl(
       text: "Selection" + (++savedSelectionCount)
-    ).appendTo("#saved_selections")
+    ).appendTo(".saved_selections")
 
     preview = savedSelection.find(".preview")
 
@@ -355,7 +355,7 @@
   stamp = (x, y, mode) ->
     if (tile = $(".tiles").find("." + mode)).length
       replaceTile(x, y, tile)
-    else if selection = $("#saved_selections").find("." + mode).data("selectionData")
+    else if selection = $(".saved_selections").find("." + mode).data("selectionData")
       selection.each (row, tileY) ->
         row.each (src, tileX) ->
           if src
@@ -390,7 +390,7 @@
     tool.addClass(mode).siblings().removeClass(mode)
 
   selectTile = (tile, mode) ->
-    $("#saved_selections .selection").removeClass(mode)
+    $(".saved_selections .selection").removeClass(mode)
     $(".tiles img").removeClass(mode)
     tile.addClass(mode)
 
@@ -423,14 +423,14 @@
       doSave: () ->
         pixelEditor.trigger('doSave')
 
-  $(".tiles img, #saved_selections .selection").live
+  $(".tiles img, .saved_selections .selection").live
     mousedown: (event) ->
       event.preventDefault()
 
       if mode = clickMode event
         selectTile($(this), mode)
 
-  $(".tiles img, #saved_selections .selection").live 'mouseup', (event) ->
+  $(".tiles img, .saved_selections .selection").live 'mouseup', (event) ->
     if event.which == 2
       $(this).remove()
 
@@ -440,7 +440,7 @@
     propEditor.setProps(propElement.data("properties"))
     propEditor.parent().show()
 
-  $("#prop_save").click (event) ->
+  $(".prop_save").click (event) ->
     if propElement
       propElement.data("properties", propEditor.getProps())
       propEditor.parent().hide()
@@ -509,7 +509,7 @@
 
   $(tileTray).sortable()
 
-  $("#tile_select").dropImageReader (file, event) ->
+  $(".component.tile_select").dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       img = $ "<img/>",
         alt: file.name
@@ -518,17 +518,17 @@
 
       $(this).find(".tiles").append img
 
-  $('#filename, .layer_select .name, #saved_selections .name').liveEdit()
+  $('.filename, .layer_select .name, .saved_selections .name').liveEdit()
 
-  propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
+  propEditor = $(".prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
-  $("#save").click () ->
+  $("button.save").click () ->
     notify("Saving...")
 
     postData =
       format: 'json'
       tilemap:
-        title: $("#filename").text()
+        title: $(".filename").text()
         width: tilesWide
         height: tilesTall
         parent_id: #{@parent_id.to_json}
@@ -538,8 +538,6 @@
       id = data.tilemap.id
 
       notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
-
-      $("#flashes .notice")
 
     , "json")
 
@@ -681,7 +679,7 @@
         nav.left, nav.right, nav.bottom
           background-color: $light_highlight
 
-      &#filename
+      &.filename
         font-family: "Josefin Sans Std Light", Arial, serif
         font-size: 1.5em
         font-weight: bold
@@ -745,7 +743,7 @@
 
             margin-bottom: 10px
 
-          button#save, button.new
+          button.save, button.new
             margin-top: auto
             margin-bottom: auto
             position: absolute
@@ -821,7 +819,7 @@
         color: $pixie_primary
         width: 100%
 
-      #saved_selections
+      .saved_selections
         .selection
           padding: 1px
 
