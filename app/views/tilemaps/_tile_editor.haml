@@ -2,8 +2,6 @@
 
 - data ||= nil
 
-- num_layers = 2
-
 - tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
 - tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
 
@@ -14,9 +12,6 @@
   %section
     .screen
       .layers
-        - num_layers.times do
-          .layer
-
         .cursor
         .selection
 
@@ -44,13 +39,6 @@
       %h3 Layer
       %button.new New Layer
       .layer_select
-        .choice.active
-          .name Background
-          .show.on
-
-        .choice
-          .name Foreground
-          .show.on
 
     .component{ :style => "display: none"}
       %h3 Properties
@@ -84,6 +72,7 @@
 :coffeescript
   $.fn.tileEditor = (options) ->
     options = $.extend(
+      layers: 2
       tilesWide: 20
       tilesTall: 15
       tileWidth: 32
@@ -113,14 +102,7 @@
       tileTray = "nav.bottom .tiles"
       layerSelect = "nav.left .layer_select"
 
-      $(".screen .layers, .screen .layer", tileEditor).css
-        width: tilesWide * tileWidth
-        height: tilesTall * tileHeight
-
       positionElementIndices = []
-
-      $(".screen .layer").length.times () ->
-        positionElementIndices.push {}
 
       $.fn.tilePosition = (event) ->
         offset = this.offset()
@@ -157,6 +139,8 @@
       addScreenLayer = () ->
         $("<div />",
           class: "layer"
+          width: tilesWide * tileWidth
+          height: tilesTall * tileHeight
         ).appendTo("section .layers")
 
         $(".screen").find(".cursor, .selection").appendTo("section .layers")
@@ -405,12 +389,16 @@
 
       selectTool = (name, mode) ->
         tool = $(".tools .tool[data-tool="+name+"]")
-        tool.addClass(mode).siblings().removeClass(mode)
+        tool.takeClass(mode)
 
       selectTile = (tile, mode) ->
         $(".saved_selections .selection").removeClass(mode)
         $(".tiles img").removeClass(mode)
         tile.addClass(mode)
+
+      $(".screen .layers").css
+        width: tilesWide * tileWidth
+        height: tilesTall * tileHeight
 
       $(".tile_editor").bind "contextmenu", (event) ->
         unless debugMode
@@ -420,7 +408,7 @@
         event.preventDefault()
 
         if mode = clickMode event
-          $(this).addClass(mode).siblings().removeClass(mode)
+          $(this).takeClass(mode)
 
       $(".tiles img, .saved_selections .selection").live
         mousedown: (event) ->
@@ -449,7 +437,7 @@
 
       $(".layer_select .choice .name").live 'mousedown', (event) ->
         $layer = $(this).parent()
-        $layer.addClass("active").siblings().removeClass("active")
+        $layer.takeClass("active")
 
         currentLayer = $layer.index()
 
@@ -680,6 +668,9 @@
           height: tileHeight
 
         $(layerSelect).find(".name").first().trigger("mousedown")
+
+      options.layers.times ->
+        addNewLayer()
 
   $(".tile_editor").tileEditor
     tileWidth: #{tile_width}
