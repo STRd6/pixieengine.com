@@ -666,36 +666,6 @@
     $sidebar_width: 220px
     $bottom_bar_height: 140px
 
-    #fullscreen
-      &.light
-        color: $light_text
-
-        nav.left, nav.right, nav.bottom
-          background-color: $light_highlight
-
-      &.filename
-        font-family: "Josefin Sans Std Light", Arial, serif
-        font-size: 1.5em
-        font-weight: bold
-        height: 27px
-        letter-spacing: 0.1em
-        margin-bottom: 0.5em
-
-    nav.left, nav.right, nav.bottom, .tools
-      +box-sizing(border-box)
-
-      min-height: 142px
-      padding: 10px
-
-    table.properties
-      background-color: transparent
-      border-spacing: 0
-      tr
-        td
-          width: 50%
-          input
-            width: 100%
-
     .tile_editor
       +box-sizing(border-box)
       +user-select(none)
@@ -704,11 +674,31 @@
       height: 100%
       position: relative
 
+      &>nav
+        background-color: $dark_highlight
+
+        .light &
+          background-color: $light_highlight
+
       &>nav.left
         +border-radius
 
-        background-color: $dark_highlight
         width: $sidebar_width
+
+      nav.left, nav.right, nav.bottom, .tools
+        +box-sizing(border-box)
+
+        min-height: 142px
+        padding: 10px
+
+      table.properties
+        background-color: transparent
+        border-spacing: 0
+        tr
+          td
+            width: 50%
+            input
+              width: 100%
 
       input
         +box-sizing(border-box)
@@ -718,10 +708,17 @@
         max-width: 120px
         padding: 2px
 
+      .filename
+        font-family: "Josefin Sans Std Light", Arial, serif
+        font-size: 1.5em
+        font-weight: bold
+        height: 27px
+        letter-spacing: 0.1em
+        margin-bottom: 0.5em
+
       nav.right
         +border-radius
 
-        background-color: $dark_highlight
         width: $sidebar_width
 
       nav.left, nav.right
@@ -752,7 +749,6 @@
         +border-radius
         +box-sizing(border-box)
 
-        background-color: $dark_highlight
         height: $bottom_bar_height
         padding-left: $sidebar_width
         padding-right: $sidebar_width
