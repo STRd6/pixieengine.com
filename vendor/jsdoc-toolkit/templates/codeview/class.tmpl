@@ -23,15 +23,8 @@
           {!
             var classType = "";
 
-            if (data.isBuiltin()) {
-              classType += "Built-In ";
-            }
-
-            if (data.isNamespace) {
-              if (data.is('FUNCTION')) {
-                classType += "Function ";
-              }
-              classType += "Namespace ";
+            if (data.comment.getTag("module").length) {
+              classType += "Module ";
             } else {
               classType += "Class ";
             }

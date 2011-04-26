@@ -59,11 +59,10 @@ body
   font-size: 0.75em !important
   padding: 15px 0
   color: #000
-  font-family: Arial, Geneva, sans-serif
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif
 
 input, select, textarea
   color: #000
-  font-family: Arial, Geneva, sans-serif
 
 a
   &:link, &:hover, &:active, &:visited
@@ -82,17 +81,15 @@ div
     height: 0
     clear: both
   &.index
+    height: 80%
     position: fixed
     margin-top: 50px
 
     *.heading1
       margin-bottom: 0.5em
-      border-bottom: 1px solid #999999
       padding: 0.5em 0 0.1em 0
-      font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif
       font-size: 1.3em
       letter-spacing: 1px
-    float: left
     width: 30%
     min-width: 100px
     max-width: 250px
@@ -100,7 +97,9 @@ div
       +border-radius(15px)
       +box-shadow(#c4c4c4, 0, 0, 10px)
 
+      height: 100%
       margin: 0 15px 0 -15px
+      overflow-y: auto
       padding: 15px 15px 15px 30px
 
 div
@@ -122,21 +121,22 @@ div
     min-width: 300px
   &.innerContent
     padding: 0 0 0 2.5em
+
+    .inheritsList
+      margin-bottom: 1em
   &.content
-    margin-left: 230px
+    margin-left: 220px
 
     ul, ol
       margin-bottom: 3em
     *.classTitle
       margin-bottom: 0.5em
-      margin-left: -250px
-      font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif
+      margin-left: -240px
       font-size: 2.5em
       letter-spacing: 2px
       span
         font-family: Consolas, "Courier New", Courier, monospace
     p.summary
-      display: none
       font-size: 1.2em
     ul *
       &.classname a, &.filename a
@@ -154,10 +154,10 @@ div
         margin-bottom: 1em
         padding: 1em
         overflow: hidden
+        width: 96%
 
         div.sectionTitle
           padding-bottom: 10px
-          font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif
           font-size: 1.4em
           letter-spacing: 1px
       &.hr
@@ -173,7 +173,6 @@ table.summaryTable
 
   caption
     padding: 0 10px 10px 10px
-    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif
     font-size: 1.4em
     letter-spacing: 1px
   td, th
