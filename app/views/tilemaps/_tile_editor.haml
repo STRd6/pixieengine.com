@@ -93,6 +93,9 @@
     return this.each ->
       tileEditor = $(this).addClass("tile_editor")
 
+      tileEditor.mousedown ->
+        window.currentComponent = tileEditor
+
       debugMode = false
 
       firstGID = 1
@@ -517,8 +520,9 @@
 
       $.each hotkeys, (key, fn) ->
         $(document).bind "keydown", key, (event) ->
-          event.preventDefault()
-          fn(event)
+          if window.currentComponent == tileEditor
+            event.preventDefault()
+            fn(event)
 
       $(tileTray).sortable()
 
