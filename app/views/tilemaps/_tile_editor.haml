@@ -51,6 +51,8 @@
 = render :partial => "pixie"
 
 :coffeescript
+  templates = $("#tile_editor_templates")
+
   $.fn.tileEditor = (options) ->
     options = $.extend(
       layers: 2
@@ -129,7 +131,7 @@
         positionElementIndices.push {}
 
       addNewLayer = () ->
-        $("#layer_select").tmpl(
+        templates.find(".layer_select.template").tmpl(
           name: "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
         ).appendTo(layerSelect).find('.name').mousedown()
 
@@ -261,7 +263,7 @@
         rowY = undefined
         row = undefined
 
-        savedSelection = $("#saved_selection").tmpl(
+        savedSelection = templates.find(".saved_selection.template").tmpl(
           text: "Selection" + (++savedSelectionCount)
         ).appendTo(".saved_selections")
 
@@ -631,7 +633,7 @@
 
           addScreenLayer()
 
-          $("#layer_select").tmpl(
+          templates.find(".layer_select.template").tmpl(
             name: layer.name
           ).appendTo(layerSelect)
 
