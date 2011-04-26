@@ -1,13 +1,5 @@
 = stylesheet_link_tag 'pixie/pixie'
 
-- data ||= nil
-
-- tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
-- tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
-
-- tiles_wide = params[:tiles_wide].blank? ? 15 : params[:tiles_wide].to_i
-- tiles_tall = params[:tiles_tall].blank? ? 10 : params[:tiles_tall].to_i
-
 .tile_editor
   %section
     .screen
@@ -19,15 +11,14 @@
     .component.tile_select
       %h3 Tiles
       .tiles
-        - unless data
-          - sprites = Collection.find(params[:tileset_id]).sprites
-          - sprites.each do |sprite|
-            - active = if sprite == sprites.first
-              - "primary"
-            - elsif sprite == sprites.second
-              - "secondary"
+        - sprites = Collection.find(params[:tileset_id] || 355).sprites
+        - sprites.each do |sprite|
+          - active = if sprite == sprites.first
+            - "primary"
+          - elsif sprite == sprites.second
+            - "secondary"
 
-            = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
+          = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
 
   %nav.left
@@ -115,7 +106,7 @@
           y: localY
         }
 
-      window.spriteSave = (event, data) ->
+      spriteSave = (event, data) ->
         notify "Saving..."
 
         $('.pixie').remove()
@@ -396,10 +387,6 @@
         $(".tiles img").removeClass(mode)
         tile.addClass(mode)
 
-      $(".screen .layers").css
-        width: tilesWide * tileWidth
-        height: tilesTall * tileHeight
-
       $(".tile_editor").bind "contextmenu", (event) ->
         unless debugMode
           event.preventDefault()
@@ -546,7 +533,7 @@
 
         , "json")
 
-      window.saveData = () ->
+      saveData = () ->
         tileIndexLookup = {}
 
         tileset = $("nav.bottom .tiles img").map((i) ->
@@ -617,7 +604,7 @@
           layers: layers
         }
 
-      window.loadData = (data) ->
+      loadData = (data) ->
         tilesWide = data.width
         tilesTall = data.height
         tileWidth = data.tileWidth
@@ -663,20 +650,21 @@
               if tile >= 0
                 replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
 
-        $(".screen .cursor").css
-          width: tileWidth
-          height: tileHeight
-
         $(layerSelect).find(".name").first().trigger("mousedown")
 
-      options.layers.times ->
-        addNewLayer()
+      if options.data
+        loadData options.data
+      else
+        options.layers.times ->
+          addNewLayer()
 
-  $(".tile_editor").tileEditor
-    tileWidth: #{tile_width}
-    tileHeight: #{tile_height}
-    tilesWide: #{tiles_wide}
-    tilesTall: #{tiles_tall}
+      $(".screen .cursor").css
+        width: tileWidth
+        height: tileHeight
+
+      $(".screen .layers").css
+        width: tilesWide * tileWidth
+        height: tilesTall * tileHeight
 
 %style
   :sass
@@ -892,7 +880,7 @@
 
       .screen
         .layers
-          background-image: url('/images/tile_grid_#{tile_width}.png')
+          background-image: url('/images/tile_grid_32.png')
           border-bottom: 1px solid #414141
           border-right: 1px solid #414141
 
@@ -902,7 +890,6 @@
           top: 0
 
         .cursor
-          +bounds(#{tile_width}px, #{tile_height}px)
           border: 1px solid green
           position: absolute
 

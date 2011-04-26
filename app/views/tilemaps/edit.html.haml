@@ -1,5 +1,6 @@
-= render :partial => "tile_editor", :locals => {:data => @tilemap.string_data}
+= render :partial => "tile_editor"
 
 :coffeescript
-  $ () ->
-    window.loadData(JSON.parse(#{@tilemap.string_data}))
+  $ ->
+    $(".tile_editor").tileEditor
+      data: JSON.parse(#{@tilemap.string_data})
