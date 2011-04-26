@@ -68,6 +68,15 @@
                     <div class="description">{+resolveLinks(summarize(data.desc))+}</div>
                   </td>
                 </tr>
+                <tr>
+                  <td></td>
+                  <td class="instanceVariables">{!
+                    if (data.comment.getTag("instanceVariables").length) {
+                      output += "<b>Instance Variables (I):</b> ";
+                      output += data.comment.getTag("instanceVariables")[0];
+                    }
+                  !}&nbsp;</td>
+                </tr>
               </tbody>
             </table>
           </div>
