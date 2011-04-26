@@ -100,7 +100,7 @@
         notify "Saving..."
 
         $('.pixie').remove()
-        $('.tile_editor').show()
+        tileEditor.show()
 
         successCallback = (data) ->
           notify "Saved!"
@@ -377,7 +377,7 @@
         $(".tiles img").removeClass(mode)
         tile.addClass(mode)
 
-      $(".tile_editor").bind "contextmenu", (event) ->
+      tileEditor.bind "contextmenu", (event) ->
         unless debugMode
           event.preventDefault()
 
@@ -472,7 +472,7 @@
             pixelEditor.bind('save', spriteSave)
 
             $('#fullscreen').append(pixelEditor)
-            $('.tile_editor').hide()
+            tileEditor.hide()
 
             doSave: () ->
               pixelEditor.trigger('doSave')
