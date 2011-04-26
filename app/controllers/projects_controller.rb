@@ -29,6 +29,10 @@ class ProjectsController < ApplicationController
   def index
   end
 
+  def debug
+    render :layout => "widget"
+  end
+
   def arcade
     @projects = Project.arcade
   end

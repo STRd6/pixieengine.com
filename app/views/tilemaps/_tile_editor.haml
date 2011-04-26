@@ -2,8 +2,6 @@
 
 - data ||= nil
 
-- num_layers = 2
-
 - tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
 - tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
 
@@ -14,14 +12,11 @@
   %section
     .screen
       .layers
-        - num_layers.times do
-          .layer
-
         .cursor
         .selection
 
   %nav.bottom
-    .component#tile_select
+    .component.tile_select
       %h3 Tiles
       .tiles
         - unless data
@@ -37,30 +32,23 @@
 
   %nav.left
     .component
-      %h3#filename Tilemap
-      %button#save Save
+      %h3.filename Tilemap
+      %button.save Save
 
     .component
       %h3 Layer
       %button.new New Layer
       .layer_select
-        .choice.active
-          .name Background
-          .show.on
-
-        .choice
-          .name Foreground
-          .show.on
 
     .component{ :style => "display: none"}
       %h3 Properties
-      %table#prop_editor
-      %button#prop_save Save Properties
+      %table.prop_editor
+      %button.prop_save Save Properties
 
   %nav.right
     .component
       %h3 Saved Selections
-      #saved_selections
+      .saved_selections
 
   .tools.component
     %h3 Tools
@@ -82,589 +70,613 @@
 = render :partial => "pixie"
 
 :coffeescript
-  debugMode = false
+  $.fn.tileEditor = (options) ->
+    options = $.extend(
+      layers: 2
+      tilesWide: 20
+      tilesTall: 15
+      tileWidth: 32
+      tileHeight: 32
+    , options)
 
-  firstGID = 1
+    return this.each ->
+      tileEditor = $(this).addClass("tile_editor")
 
-  tilesWide = #{tiles_wide}
-  tilesTall = #{tiles_tall}
+      tileEditor.mousedown ->
+        window.currentComponent = tileEditor
 
-  tileWidth = #{tile_width}
-  tileHeight = #{tile_height}
+      debugMode = false
 
-  currentLayer = 0
+      firstGID = 1
 
-  modeDown = null
+      tilesWide = options.tilesWide
+      tilesTall = options.tilesTall
 
-  tileTray = "nav.bottom .tiles"
-  layerSelect = "nav.left .layer_select"
+      tileWidth = options.tileWidth
+      tileHeight = options.tileHeight
 
-  positionElementIndices = []
+      currentLayer = 0
 
-  $(".screen .layer").length.times () ->
-    positionElementIndices.push {}
+      modeDown = null
 
-  $.fn.tilePosition = (event) ->
-    offset = this.offset()
+      tileTray = "nav.bottom .tiles"
+      layerSelect = "nav.left .layer_select"
 
-    localY = (event.pageY - offset.top).snap(tileHeight).clamp(0, (tilesTall - 1) * tileHeight)
-    localX = (event.pageX - offset.left).snap(tileWidth).clamp(0, (tilesWide - 1) * tileWidth)
+      positionElementIndices = []
 
-    return {
-      x: localX
-      y: localY
-    }
+      $.fn.tilePosition = (event) ->
+        offset = this.offset()
 
-  window.spriteSave = (event, data) ->
-    notify "Saving..."
+        localY = (event.pageY - offset.top).snap(tileHeight).clamp(0, (tilesTall - 1) * tileHeight)
+        localX = (event.pageX - offset.left).snap(tileWidth).clamp(0, (tilesWide - 1) * tileWidth)
 
-    $('.pixie').remove()
-    $('.tile_editor').show()
+        return {
+          x: localX
+          y: localY
+        }
 
-    successCallback = (data) ->
-      notify "Saved!"
+      window.spriteSave = (event, data) ->
+        notify "Saving..."
 
-      img = $ "<img/>",
-        alt: data.sprite.title
-        src: data.sprite.src
-        title: data.sprite.title
+        $('.pixie').remove()
+        $('.tile_editor').show()
 
-      $('.component .tiles').append img
+        successCallback = (data) ->
+          notify "Saved!"
 
-    if data
-      postData = $.extend({format: 'json'}, data)
+          img = $ "<img/>",
+            alt: data.sprite.title
+            src: data.sprite.src
+            title: data.sprite.title
 
-      $.post '/sprites', postData, successCallback
+          $('.component .tiles').append img
 
-  addScreenLayer = () ->
-    $("<div />",
-      class: "layer"
-    ).appendTo("section .layers")
+        if data
+          postData = $.extend({format: 'json'}, data)
 
-    $(".screen").find(".cursor, .selection").appendTo("section .layers")
+          $.post '/sprites', postData, successCallback
 
-    positionElementIndices.push {}
+      addScreenLayer = () ->
+        $("<div />",
+          class: "layer"
+          width: tilesWide * tileWidth
+          height: tilesTall * tileHeight
+        ).appendTo("section .layers")
 
-  addNewLayer = () ->
-    $("#layer_select").tmpl(
-      name: "Layer " + ($(".layer_select .choice").length + 1)
-    ).appendTo(layerSelect).find('.name').mousedown()
+        $(".screen").find(".cursor, .selection").appendTo("section .layers")
 
-    addScreenLayer()
+        positionElementIndices.push {}
 
-  selectNextVisibleLayer = () ->
-    shownLayers = $(".layer_select .choice .show.on")
+      addNewLayer = () ->
+        $("#layer_select").tmpl(
+          name: "Layer " + ($(".layer_select .choice").length + 1)
+        ).appendTo(layerSelect).find('.name').mousedown()
 
-    if shownLayers.length
-      shownLayers.eq(0).parent().find(".name").mousedown()
+        addScreenLayer()
 
-  prevTile = (mode) ->
-    tileCount = $(".tiles img").length
+      selectNextVisibleLayer = () ->
+        shownLayers = $(".layer_select .choice .show.on")
 
-    cur = $(".tiles ." + mode).removeClass(mode).index()
+        if shownLayers.length
+          shownLayers.eq(0).parent().find(".name").mousedown()
 
-    $(".tiles img").eq((cur - 1).mod(tileCount)).addClass(mode)
+      prevTile = (mode) ->
+        tileCount = $(".tiles img").length
 
-  nextTile = (mode) ->
-    tileCount = $(".tiles img").length
+        cur = $(".tiles ." + mode).removeClass(mode).index()
 
-    cur = $(".tiles ." + mode).removeClass(mode).index()
+        $(".tiles img").eq((cur - 1).mod(tileCount)).addClass(mode)
 
-    $(".tiles img").eq((cur + 1).mod(tileCount)).addClass(mode)
+      nextTile = (mode) ->
+        tileCount = $(".tiles img").length
 
-  inBounds = (x, y) ->
-    (0 <= x < tileWidth * tilesWide) && (0 <= y < tileHeight * tilesTall)
+        cur = $(".tiles ." + mode).removeClass(mode).index()
 
-  replaceTile = (x, y, tile) ->
-    return unless inBounds(x, y)
+        $(".tiles img").eq((cur + 1).mod(tileCount)).addClass(mode)
 
-    posString = x + "x" + y
+      inBounds = (x, y) ->
+        (0 <= x < tileWidth * tilesWide) && (0 <= y < tileHeight * tilesTall)
 
-    tile = tile.clone().removeClass("primary secondary").css(
-      position: "absolute"
-      top: y
-      left: x
-    ).attr("data-pos", posString)
+      replaceTile = (x, y, tile) ->
+        return unless inBounds(x, y)
 
-    targetLayer = $(".screen .layer").eq(currentLayer)
+        posString = x + "x" + y
 
-    removeTile(x, y)
+        tile = tile.clone().removeClass("primary secondary").css(
+          position: "absolute"
+          top: y
+          left: x
+        ).attr("data-pos", posString)
 
-    targetLayer.append(tile)
+        targetLayer = $(".screen .layer").eq(currentLayer)
 
-    positionElementIndices[currentLayer][posString] = tile.get()
-
-  removeTile = (x, y) ->
-    tileAt(x, y).remove()
-
-    posString = x + "x" + y
-    positionElementIndices[currentLayer][posString] = undefined
-
-  tileAt = (x, y) ->
-    posString = x + "x" + y
-
-    $(positionElementIndices[currentLayer][posString])
-
-  getNeighborPositions = (position) ->
-    neighbors = [
-      [position[0] - tileWidth, position[1]]
-      [position[0] + tileWidth, position[1]]
-      [position[0], position[1] - tileHeight]
-      [position[0], position[1] + tileHeight]
-    ].select (neighborPos) ->
-      inBounds(neighborPos[0], neighborPos[1])
-
-  floodFill = (x, y, tile) ->
-    inSelection = isInSelection(x, y)
-    targetSrc = tileAt(x, y).attr("src")
-    paintSrc = tile.attr("src")
-
-    return if targetSrc == paintSrc
-
-    queue = []
-
-    replaceTile(x, y, tile)
-    queue.push([x, y])
-
-    while queue.length
-      position = queue.pop()
-
-      neighbors = getNeighborPositions(position);
-
-      neighbors.each (neighbor, index) ->
-        if inSelection == isInSelection(neighbor[0], neighbor[1])
-          if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
-            replaceTile(neighbor[0], neighbor[1], tile)
-            queue.push(neighbor)
-
-
-  selectionCache = null
-  isInSelection = (x, y) ->
-    if selectionCache
-      selectionCache.top <= y < selectionCache.top + selectionCache.height &&
-      selectionCache.left <= x < selectionCache.left + selectionCache.width
-    else
-      false
-
-  clearSelection = () ->
-    $(".screen .selection").removeClass("active")
-    selectionCache = null
-
-  selectionEach = (callback) ->
-    $selection = $(".screen .selection")
-
-    if $selection.hasClass("active")
-      pos = $selection.position()
-      selectionWidth = $selection.outerWidth()
-      selectionHeight = $selection.outerHeight()
-
-      y = pos.top
-      while y < pos.top + selectionHeight
-        x = pos.left
-        while x < pos.left + selectionWidth
-          callback(x, y)
-
-          x += tileWidth
-        y += tileHeight
-
-      clearSelection()
-
-  selectionDelete = () ->
-    selectionEach(removeTile)
-
-  savedSelectionCount = 0
-
-  harvestSelection = (remove) ->
-    rowY = undefined
-    row = undefined
-
-    savedSelection = $("#saved_selection").tmpl(
-      text: "Selection" + (++savedSelectionCount)
-    ).appendTo("#saved_selections")
-
-    preview = savedSelection.find(".preview")
-
-    selectionData = []
-
-    selectionEach (x, y) ->
-      if y != rowY
-        rowY = y
-        row = []
-        selectionData.push row
-
-      tile = tileAt(x, y).clone()
-      row.push tile.attr("src")
-
-      tile.css(
-        position: "absolute"
-        top: (selectionData.length - 1) * tileHeight
-        left: (row.length - 1) * tileWidth
-      )
-
-      preview.append(tile)
-
-      if remove
         removeTile(x, y)
 
-    savedSelection.data("selectionData", selectionData)
-
-    selectTile(savedSelection, "primary")
+        targetLayer.append(tile)
 
-    selectTool("stamp", "primary")
-
-  selectionCopy = () ->
-    harvestSelection()
-
-  selectionCut = () ->
-    harvestSelection(true)
+        positionElementIndices[currentLayer][posString] = tile.get()
 
-  selectionStart = null
-  select = (x, y) ->
-    if selectionStart
-      $selection = $(".screen .selection")
-      pos = $selection.position()
+      removeTile = (x, y) ->
+        tileAt(x, y).remove()
 
-      deltaX = x - selectionStart.x
-      deltaY = y - selectionStart.y
+        posString = x + "x" + y
+        positionElementIndices[currentLayer][posString] = undefined
 
-      selectionWidth = deltaX.abs() + tileWidth
-      selectionHeight = deltaY.abs() + tileHeight
+      tileAt = (x, y) ->
+        posString = x + "x" + y
 
-      selectionLeft = if deltaX < 0 then x else selectionStart.x
-      selectionTop = if deltaY < 0 then y else selectionStart.y
+        $(positionElementIndices[currentLayer][posString])
 
-      selectionCache =
-        height: selectionHeight
-        left: selectionLeft
-        top: selectionTop
-        width: selectionWidth
+      getNeighborPositions = (position) ->
+        neighbors = [
+          [position[0] - tileWidth, position[1]]
+          [position[0] + tileWidth, position[1]]
+          [position[0], position[1] - tileHeight]
+          [position[0], position[1] + tileHeight]
+        ].select (neighborPos) ->
+          inBounds(neighborPos[0], neighborPos[1])
 
-      $selection.css selectionCache
+      floodFill = (x, y, tile) ->
+        inSelection = isInSelection(x, y)
+        targetSrc = tileAt(x, y).attr("src")
+        paintSrc = tile.attr("src")
 
-    else
-      selectionCache =
-        height: tileHeight
-        left: x
-        top: y
-        width: tileWidth
-
-      $(".screen .selection").addClass('active').css selectionCache
+        return if targetSrc == paintSrc
 
-      selectionStart = {x: x, y: y}
-
-  stamp = (x, y, mode) ->
-    if (tile = $(".tiles").find("." + mode)).length
-      replaceTile(x, y, tile)
-    else if selection = $("#saved_selections").find("." + mode).data("selectionData")
-      selection.each (row, tileY) ->
-        row.each (src, tileX) ->
-          if src
-            targetX = x + tileX * tileWidth
-            targetY = y + tileY * tileHeight
+        queue = []
 
-            replaceTile(targetX, targetY, $(".tiles img[src="+src+"]").eq(0))
-
-  currentTool = (mode) ->
-    $(".tools .tool." + mode).data("tool")
+        replaceTile(x, y, tile)
+        queue.push([x, y])
 
-  entered = (x, y) ->
-    if mode = modeDown
-      switch currentTool(mode)
-        when "stamp"
-          stamp(x, y, mode)
-        when "eraser"
-          removeTile(x, y)
-        when "fill"
-          floodFill(x, y, $(".tiles").find("." + mode))
-        when "selection"
-          select(x, y)
+        while queue.length
+          position = queue.pop()
 
-  clickMode = (event) ->
-    if event.which == 1
-      "primary"
-    else if event.which == 3
-      "secondary"
+          neighbors = getNeighborPositions(position);
 
-  selectTool = (name, mode) ->
-    tool = $(".tools .tool[data-tool="+name+"]")
-    tool.addClass(mode).siblings().removeClass(mode)
+          neighbors.each (neighbor, index) ->
+            if inSelection == isInSelection(neighbor[0], neighbor[1])
+              if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
+                replaceTile(neighbor[0], neighbor[1], tile)
+                queue.push(neighbor)
 
-  selectTile = (tile, mode) ->
-    $("#saved_selections .selection").removeClass(mode)
-    $(".tiles img").removeClass(mode)
-    tile.addClass(mode)
 
-  $(".tile_editor").bind "contextmenu", (event) ->
-    unless debugMode
-      event.preventDefault()
-
-  $(".tools .tool").live 'mousedown', (event) ->
-    event.preventDefault()
-
-    if mode = clickMode event
-      $(this).addClass(mode).siblings().removeClass(mode)
-
-  $(document).bind 'keydown', 'p', (e) ->
-    $('.tiles img.primary')
-
-    imgSource = $('.tiles img.primary').attr('src')
-
-    unless $('.pixie').length
-      pixelEditor = createPixelEditor
-        width: 32
-        height: 32
-        image: imgSource.replace('http://images.pixie.strd6.com', '/s3')
-
-      pixelEditor.bind('save', spriteSave)
-
-      $('#fullscreen').append(pixelEditor)
-      $('.tile_editor').hide()
-
-      doSave: () ->
-        pixelEditor.trigger('doSave')
+      selectionCache = null
+      isInSelection = (x, y) ->
+        if selectionCache
+          selectionCache.top <= y < selectionCache.top + selectionCache.height &&
+          selectionCache.left <= x < selectionCache.left + selectionCache.width
+        else
+          false
 
-  $(".tiles img, #saved_selections .selection").live
-    mousedown: (event) ->
-      event.preventDefault()
+      clearSelection = () ->
+        $(".screen .selection").removeClass("active")
+        selectionCache = null
 
-      if mode = clickMode event
-        selectTile($(this), mode)
+      selectionEach = (callback) ->
+        $selection = $(".screen .selection")
 
-  $(".tiles img, #saved_selections .selection").live 'mouseup', (event) ->
-    if event.which == 2
-      $(this).remove()
-
-  propElement = null
-  $(".tiles img").live "dblclick", (event) ->
-    propElement = $(this)
-    propEditor.setProps(propElement.data("properties"))
-    propEditor.parent().show()
+        if $selection.hasClass("active")
+          pos = $selection.position()
+          selectionWidth = $selection.outerWidth()
+          selectionHeight = $selection.outerHeight()
 
-  $("#prop_save").click (event) ->
-    if propElement
-      propElement.data("properties", propEditor.getProps())
-      propEditor.parent().hide()
+          y = pos.top
+          while y < pos.top + selectionHeight
+            x = pos.left
+            while x < pos.left + selectionWidth
+              callback(x, y)
 
-  $(".layer_select").parent().find('.new').click () ->
-    addNewLayer()
+              x += tileWidth
+            y += tileHeight
 
-  $(".layer_select .choice .name").live 'mousedown', (event) ->
-    $layer = $(this).parent()
-    $layer.addClass("active").siblings().removeClass("active")
+          clearSelection()
 
-    currentLayer = $layer.index()
+      selectionDelete = () ->
+        selectionEach(removeTile)
 
-  $(".layer_select").delegate ".show", 'mousedown', (event) ->
-    $this = $(this)
-    $choice = $this.parent()
+      savedSelectionCount = 0
 
-    if $this.toggleClass("on").hasClass("on")
-      $(".screen .layers .layer").eq($choice.index()).fadeIn()
-      $choice.find(".name").mousedown()
-    else
-      $(".screen .layers .layer").eq($choice.index()).fadeOut()
-      selectNextVisibleLayer()
+      harvestSelection = (remove) ->
+        rowY = undefined
+        row = undefined
 
-  $(".screen .layers").bind "mousemove", (event) ->
-    pos = $(this).tilePosition(event)
+        savedSelection = $("#saved_selection").tmpl(
+          text: "Selection" + (++savedSelectionCount)
+        ).appendTo(".saved_selections")
 
-    oldPos = $(".screen .cursor").position()
+        preview = savedSelection.find(".preview")
 
-    unless oldPos.left == pos.x && oldPos.top == pos.y
-      entered(pos.x, pos.y)
+        selectionData = []
 
-      $(".screen .cursor").css
-        left: pos.x
-        top: pos.y
+        selectionEach (x, y) ->
+          if y != rowY
+            rowY = y
+            row = []
+            selectionData.push row
+
+          tile = tileAt(x, y).clone()
+          row.push tile.attr("src")
 
-  $(".screen .layers").bind "mousedown", (event) ->
-    if modeDown = clickMode event
-      pos = $(this).tilePosition(event)
+          tile.css(
+            position: "absolute"
+            top: (selectionData.length - 1) * tileHeight
+            left: (row.length - 1) * tileWidth
+          )
+
+          preview.append(tile)
 
-      entered(pos.x, pos.y)
+          if remove
+            removeTile(x, y)
 
-  $(document).bind "mouseup", (event) ->
-    selectionStart = null
-    modeDown = null
+        savedSelection.data("selectionData", selectionData)
+
+        selectTile(savedSelection, "primary")
 
-  hotkeys =
-    a: (event) ->
-      prevTile("primary")
-    z: (event) ->
-      nextTile("primary")
-    s: (event) ->
-      prevTile("secondary")
-    x: (event) ->
-      nextTile("secondary")
-    backspace: selectionDelete
-    del: selectionDelete
-    esc: clearSelection
-    "ctrl+c": selectionCopy
-    "ctrl+x": selectionCut
+        selectTool("stamp", "primary")
+
+      selectionCopy = () ->
+        harvestSelection()
 
-  $.each hotkeys, (key, fn) ->
-    $(document).bind "keydown", key, (event) ->
-      event.preventDefault()
-      fn(event)
+      selectionCut = () ->
+        harvestSelection(true)
 
-  $(tileTray).sortable()
+      selectionStart = null
+      select = (x, y) ->
+        if selectionStart
+          $selection = $(".screen .selection")
+          pos = $selection.position()
+
+          deltaX = x - selectionStart.x
+          deltaY = y - selectionStart.y
 
-  $("#tile_select").dropImageReader (file, event) ->
-    if event.target.readyState == FileReader.DONE
-      img = $ "<img/>",
-        alt: file.name
-        src: event.target.result
-        title: file.name
+          selectionWidth = deltaX.abs() + tileWidth
+          selectionHeight = deltaY.abs() + tileHeight
+
+          selectionLeft = if deltaX < 0 then x else selectionStart.x
+          selectionTop = if deltaY < 0 then y else selectionStart.y
+
+          selectionCache =
+            height: selectionHeight
+            left: selectionLeft
+            top: selectionTop
+            width: selectionWidth
 
-      $(this).find(".tiles").append img
+          $selection.css selectionCache
 
-  $('#filename, .layer_select .name, #saved_selections .name').liveEdit()
+        else
+          selectionCache =
+            height: tileHeight
+            left: x
+            top: y
+            width: tileWidth
+
+          $(".screen .selection").addClass('active').css selectionCache
+
+          selectionStart = {x: x, y: y}
+
+      stamp = (x, y, mode) ->
+        if (tile = $(".tiles").find("." + mode)).length
+          replaceTile(x, y, tile)
+        else if selection = $(".saved_selections").find("." + mode).data("selectionData")
+          selection.each (row, tileY) ->
+            row.each (src, tileX) ->
+              if src
+                targetX = x + tileX * tileWidth
+                targetY = y + tileY * tileHeight
 
-  propEditor = $("#prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
+                replaceTile(targetX, targetY, $(".tiles img[src="+src+"]").eq(0))
 
-  $("#save").click () ->
-    notify("Saving...")
+      currentTool = (mode) ->
+        $(".tools .tool." + mode).data("tool")
 
-    postData =
-      format: 'json'
-      tilemap:
-        title: $("#filename").text()
-        width: tilesWide
-        height: tilesTall
-        parent_id: #{@parent_id.to_json}
-        data_string: JSON.stringify(saveData())
+      entered = (x, y) ->
+        if mode = modeDown
+          switch currentTool(mode)
+            when "stamp"
+              stamp(x, y, mode)
+            when "eraser"
+              removeTile(x, y)
+            when "fill"
+              floodFill(x, y, $(".tiles").find("." + mode))
+            when "selection"
+              select(x, y)
 
-    $.post('/tilemaps', postData, (data) ->
-      id = data.tilemap.id
+      clickMode = (event) ->
+        if event.which == 1
+          "primary"
+        else if event.which == 3
+          "secondary"
+
+      selectTool = (name, mode) ->
+        tool = $(".tools .tool[data-tool="+name+"]")
+        tool.takeClass(mode)
+
+      selectTile = (tile, mode) ->
+        $(".saved_selections .selection").removeClass(mode)
+        $(".tiles img").removeClass(mode)
+        tile.addClass(mode)
+
+      $(".screen .layers").css
+        width: tilesWide * tileWidth
+        height: tilesTall * tileHeight
+
+      $(".tile_editor").bind "contextmenu", (event) ->
+        unless debugMode
+          event.preventDefault()
+
+      $(".tools .tool").live 'mousedown', (event) ->
+        event.preventDefault()
+
+        if mode = clickMode event
+          $(this).takeClass(mode)
+
+      $(".tiles img, .saved_selections .selection").live
+        mousedown: (event) ->
+          event.preventDefault()
+
+          if mode = clickMode event
+            selectTile($(this), mode)
+
+      $(".tiles img, .saved_selections .selection").live 'mouseup', (event) ->
+        if event.which == 2
+          $(this).remove()
+
+      propElement = null
+      $(".tiles img").live "dblclick", (event) ->
+        propElement = $(this)
+        propEditor.setProps(propElement.data("properties"))
+        propEditor.parent().show()
+
+      $(".prop_save").click (event) ->
+        if propElement
+          propElement.data("properties", propEditor.getProps())
+          propEditor.parent().hide()
 
-      notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
+      $(".layer_select").parent().find('.new').click () ->
+        addNewLayer()
+
+      $(".layer_select .choice .name").live 'mousedown', (event) ->
+        $layer = $(this).parent()
+        $layer.takeClass("active")
+
+        currentLayer = $layer.index()
+
+      $(".layer_select").delegate ".show", 'mousedown', (event) ->
+        $this = $(this)
+        $choice = $this.parent()
 
-      $("#flashes .notice")
+        if $this.toggleClass("on").hasClass("on")
+          $(".screen .layers .layer").eq($choice.index()).fadeIn()
+          $choice.find(".name").mousedown()
+        else
+          $(".screen .layers .layer").eq($choice.index()).fadeOut()
+          selectNextVisibleLayer()
 
-    , "json")
+      $(".screen .layers").bind "mousemove", (event) ->
+        pos = $(this).tilePosition(event)
 
-  window.saveData = () ->
-    tileIndexLookup = {}
+        oldPos = $(".screen .cursor").position()
 
-    tileset = $("nav.bottom .tiles img").map((i) ->
-      $this = $(this)
-      src = $this.attr("src")
+        unless oldPos.left == pos.x && oldPos.top == pos.y
+          entered(pos.x, pos.y)
 
-      tileIndexLookup[src] = i
+          $(".screen .cursor").css
+            left: pos.x
+            top: pos.y
 
-      mapTileData = {
-        src: src
-      }
+      $(".screen .layers").bind "mousedown", (event) ->
+        if modeDown = clickMode event
+          pos = $(this).tilePosition(event)
 
-      if mapTileId = $this.data('guid')
-        mapTileData.guid mapTileId
+          entered(pos.x, pos.y)
 
-      if pixieId = $this.data("pixie_id")
-        mapTileData.pixieId = mapTileSpriteId
+      $(document).bind "mouseup", (event) ->
+        selectionStart = null
+        modeDown = null
 
-      if props = $this.data("properties")
-        mapTileData.properties = props
+      hotkeys =
+        a: (event) ->
+          prevTile("primary")
+        z: (event) ->
+          nextTile("primary")
+        s: (event) ->
+          prevTile("secondary")
+        x: (event) ->
+          nextTile("secondary")
+        p: ->
+          imgSource = $('.tiles img.primary').attr('src')
 
-      return mapTileData
-    ).get()
+          unless $('.pixie').length
+            pixelEditor = createPixelEditor
+              width: 32
+              height: 32
+              image: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
-    layers = []
+            pixelEditor.bind('save', spriteSave)
 
-    $(".layer_select .choice").each (i) ->
-      $this = $(this)
+            $('#fullscreen').append(pixelEditor)
+            $('.tile_editor').hide()
 
-      screenLayer = $(".screen .layers .layer").eq(i)
+            doSave: () ->
+              pixelEditor.trigger('doSave')
 
-      tileLookup = {}
+        backspace: selectionDelete
+        del: selectionDelete
+        esc: clearSelection
+        "ctrl+c": selectionCopy
+        "ctrl+x": selectionCut
 
-      screenLayer.find("img").each () ->
-        src = this.getAttribute("src")
+      $.each hotkeys, (key, fn) ->
+        $(document).bind "keydown", key, (event) ->
+          if window.currentComponent == tileEditor
+            event.preventDefault()
+            fn(event)
 
-        tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src]
+      $(tileTray).sortable()
 
-      tiles = []
+      $(".component.tile_select").dropImageReader (file, event) ->
+        if event.target.readyState == FileReader.DONE
+          img = $ "<img/>",
+            alt: file.name
+            src: event.target.result
+            title: file.name
 
-      tilesTall.times (y) ->
-        row = []
-        tiles.push row
+          $(this).find(".tiles").append img
 
-        tilesWide.times (x) ->
-          posString = x * tileWidth + "x" + y * tileHeight
+      $('.filename, .layer_select .name, .saved_selections .name').liveEdit()
 
-          imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
+      propEditor = $(".prop_editor").propertyEditor({test: true, foo: "bar", noice: 13})
 
-          row.push imgIndex
+      $("button.save").click () ->
+        notify("Saving...")
 
-      layer =
-        name: $this.text()
-        tiles: tiles
+        postData =
+          format: 'json'
+          tilemap:
+            title: $(".filename").text()
+            width: tilesWide
+            height: tilesTall
+            parent_id: #{@parent_id.to_json}
+            data_string: JSON.stringify(saveData())
 
-      layers.push layer
+        $.post('/tilemaps', postData, (data) ->
+          id = data.tilemap.id
 
-    return {
-      version: "1.0"
-      orientation: "orthogonal"
-      width: tilesWide
-      height: tilesTall
-      tileWidth: tileWidth
-      tileHeight: tileHeight
+          notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
 
-      tileset: tileset
+        , "json")
 
-      layers: layers
-    }
+      window.saveData = () ->
+        tileIndexLookup = {}
 
-  window.loadData = (data) ->
-    tilesWide = data.width
-    tilesTall = data.height
-    tileWidth = data.tileWidth
-    tileHeight = data.tileHeight
+        tileset = $("nav.bottom .tiles img").map((i) ->
+          $this = $(this)
+          src = $this.attr("src")
 
-    $('.screen .layers').css('background-image', 'url(/images/tile_grid_' + tileWidth + '.png)')
+          tileIndexLookup[src] = i
 
-    positionElementIndices = []
+          mapTileData = {
+            src: src
+          }
 
-    tileLookup = {}
+          if mapTileId = $this.data('guid')
+            mapTileData.guid mapTileId
 
-    $(tileTray).html('')
-    data.tileset.each (tile, index) ->
-      active = if index == 0
-        "primary"
-      else if index == 1
-        "secondary"
+          if pixieId = $this.data("pixie_id")
+            mapTileData.pixieId = mapTileSpriteId
 
-      tileLookup[index] = $("<img />",
-        class: active
-        "data-guid": tile.guid
-        "data-pixie_id": tile.pixieId
-        src: tile.src
-      ).appendTo(tileTray)
+          if props = $this.data("properties")
+            mapTileData.properties = props
 
-      if tile.properties
-        tileLookup[index].data("properties", tile.properties)
+          return mapTileData
+        ).get()
 
-    $("section .layers .layer").remove()
+        layers = []
 
-    $(layerSelect).html('')
-    data.layers.each (layer, i) ->
-      currentLayer = i
+        $(".layer_select .choice").each (i) ->
+          $this = $(this)
 
-      addScreenLayer()
+          screenLayer = $(".screen .layers .layer").eq(i)
 
-      $("#layer_select").tmpl(
-        name: layer.name
-      ).appendTo(layerSelect)
+          tileLookup = {}
 
-      layer.tiles.each (row, y) ->
-        row.each (tile, x) ->
-          if tile >= 0
-            replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+          screenLayer.find("img").each () ->
+            src = this.getAttribute("src")
 
-    $(".screen .cursor").css
-      width: tileWidth
-      height: tileHeight
+            tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src]
 
-    $(layerSelect).find(".name").first().trigger("mousedown")
+          tiles = []
+
+          tilesTall.times (y) ->
+            row = []
+            tiles.push row
+
+            tilesWide.times (x) ->
+              posString = x * tileWidth + "x" + y * tileHeight
+
+              imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
+
+              row.push imgIndex
+
+          layer =
+            name: $this.text()
+            tiles: tiles
+
+          layers.push layer
+
+        return {
+          version: "1.0"
+          orientation: "orthogonal"
+          width: tilesWide
+          height: tilesTall
+          tileWidth: tileWidth
+          tileHeight: tileHeight
+
+          tileset: tileset
+
+          layers: layers
+        }
+
+      window.loadData = (data) ->
+        tilesWide = data.width
+        tilesTall = data.height
+        tileWidth = data.tileWidth
+        tileHeight = data.tileHeight
+
+        $('.screen .layers').css('background-image', 'url(/images/tile_grid_' + tileWidth + '.png)')
+
+        positionElementIndices = []
+
+        tileLookup = {}
+
+        $(tileTray).html('')
+        data.tileset.each (tile, index) ->
+          active = if index == 0
+            "primary"
+          else if index == 1
+            "secondary"
+
+          tileLookup[index] = $("<img />",
+            class: active
+            "data-guid": tile.guid
+            "data-pixie_id": tile.pixieId
+            src: tile.src
+          ).appendTo(tileTray)
+
+          if tile.properties
+            tileLookup[index].data("properties", tile.properties)
+
+        $("section .layers .layer").remove()
+
+        $(layerSelect).html('')
+        data.layers.each (layer, i) ->
+          currentLayer = i
+
+          addScreenLayer()
+
+          $("#layer_select").tmpl(
+            name: layer.name
+          ).appendTo(layerSelect)
+
+          layer.tiles.each (row, y) ->
+            row.each (tile, x) ->
+              if tile >= 0
+                replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+        $(".screen .cursor").css
+          width: tileWidth
+          height: tileHeight
+
+        $(layerSelect).find(".name").first().trigger("mousedown")
+
+      options.layers.times ->
+        addNewLayer()
+
+  $(".tile_editor").tileEditor
+    tileWidth: #{tile_width}
+    tileHeight: #{tile_height}
+    tilesWide: #{tiles_wide}
+    tilesTall: #{tiles_tall}
 
 %style
   :sass
@@ -681,7 +693,7 @@
         nav.left, nav.right, nav.bottom
           background-color: $light_highlight
 
-      &#filename
+      &.filename
         font-family: "Josefin Sans Std Light", Arial, serif
         font-size: 1.5em
         font-weight: bold
@@ -745,7 +757,7 @@
 
             margin-bottom: 10px
 
-          button#save, button.new
+          button.save, button.new
             margin-top: auto
             margin-bottom: auto
             position: absolute
@@ -821,7 +833,7 @@
         color: $pixie_primary
         width: 100%
 
-      #saved_selections
+      .saved_selections
         .selection
           padding: 1px
 
@@ -880,15 +892,11 @@
 
       .screen
         .layers
-          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
-
           background-image: url('/images/tile_grid_#{tile_width}.png')
           border-bottom: 1px solid #414141
           border-right: 1px solid #414141
 
         .layer
-          +bounds(#{tiles_wide * tile_width}px, #{tiles_tall * tile_height}px)
-
           left: 0
           position: absolute
           top: 0
