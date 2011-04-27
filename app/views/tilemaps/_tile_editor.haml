@@ -52,27 +52,6 @@
           y: localY
         }
 
-      spriteSave = (event, data) ->
-        notify "Saving..."
-
-        $('.pixie').remove()
-        tileEditor.show()
-
-        successCallback = (data) ->
-          notify "Saved!"
-
-          img = $ "<img/>",
-            alt: data.sprite.title
-            src: data.sprite.src
-            title: data.sprite.title
-
-          tileEditor.find('.component .tiles').append img
-
-        if data
-          postData = $.extend({format: 'json'}, data)
-
-          $.post '/sprites', postData, successCallback
-
       addScreenLayer = () ->
         $("<div />",
           class: "layer"
@@ -417,21 +396,20 @@
         x: (event) ->
           nextTile("secondary")
         p: ->
-          imgSource = tileEditor.find('.tiles img.primary').attr('src')
+          selectedTile = tileEditor.find('.tiles img.primary')
+          imgSource = selectedTile.attr('src')
 
-          unless $('.pixie').length
-            pixelEditor = createPixelEditor
-              width: 32
-              height: 32
-              image: imgSource.replace('http://images.pixie.strd6.com', '/s3')
+          pixelEditor = createPixelEditor
+            width: selectedTile.get(0).width
+            height: selectedTile.get(0).height
+            tileEditor: tileEditor
+            url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
-            pixelEditor.bind('save', spriteSave)
+          pixelEditor.bind 'save', (event, data) ->
+            img = $ "<img/>",
+              src: data
 
-            $('#fullscreen').append(pixelEditor)
-            tileEditor.hide()
-
-            doSave: () ->
-              pixelEditor.trigger('doSave')
+            tileEditor.find('.component .tiles').append img
 
         backspace: selectionDelete
         del: selectionDelete

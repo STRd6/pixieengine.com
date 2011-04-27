@@ -2,26 +2,24 @@
   window.createPixelEditor = (options) ->
     width = options.width
     height = options.height
-    image = options.image
-    title = options.title
-    _canvas = null
+    url = options.url
+    tileEditor = options.tileEditor
 
     pixelEditor = $('<div />').pixie
       width: width
       height: height
       frames: 1
       initializer: (canvas) ->
-        _canvas = canvas
-
-        if image
-          canvas.fromDataURL(image)
+        if url
+          canvas.fromDataURL(url)
 
         canvas.addAction
-          name: "Save"
+          name: "Save Tile"
           icon: "/images/icons/database_save.png"
           perform: (canvas) ->
-            pixelEditor.trigger('doSave')
-
+            pixelEditor.trigger 'save', canvas.toDataURL()
+            pixelEditor.remove()
+            tileEditor.show()
           undoable: false
 
         canvas.addAction
@@ -29,14 +27,11 @@
           icon: "/images/icons/arrow_left.png"
           perform: (canvas) ->
             pixelEditor.remove()
-            $('.tile_editor').show()
+            tileEditor.show()
           undoable: false
 
-    pixelEditor.bind 'doSave', ->
-      pixelEditor.trigger 'save',
-        'sprite[title]': title
-        'sprite[width]': width
-        'sprite[height]': height
-        'sprite[file_base64_encoded]': _canvas.toBase64()
+    tileEditor.hide().after(pixelEditor)
+
+    window.currentComponent = pixelEditor
 
     return pixelEditor
