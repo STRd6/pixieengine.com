@@ -41,7 +41,7 @@
       %h3 Saved Selections
       .saved_selections
 
-  .tools.component
+  %nav.tools.component
     %h3 Tools
     .tool.primary.secondary{ :"data-tool" => "stamp"}
     .tool{ :"data-tool" => "eraser"}
@@ -675,21 +675,21 @@
       position: relative
 
       &>nav
+        +border-radius
+        +box-sizing(border-box)
+
         background-color: $dark_highlight
+        min-height: 142px
+        padding: 10px
 
         .light &
           background-color: $light_highlight
 
-      &>nav.left
-        +border-radius
+        &.left, &.right
+          width: $sidebar_width
 
-        width: $sidebar_width
-
-      nav.left, nav.right, nav.bottom, .tools
-        +box-sizing(border-box)
-
-        min-height: 142px
-        padding: 10px
+          .component:first-child
+            padding-top: 0
 
       table.properties
         background-color: transparent
@@ -716,15 +716,6 @@
         letter-spacing: 0.1em
         margin-bottom: 0.5em
 
-      nav.right
-        +border-radius
-
-        width: $sidebar_width
-
-      nav.left, nav.right
-        .component:first-child
-          padding-top: 0
-
       nav.left
         .component
           position: relative
@@ -747,7 +738,6 @@
 
       nav.bottom
         +border-radius
-        +box-sizing(border-box)
 
         height: $bottom_bar_height
         padding-left: $sidebar_width
@@ -806,7 +796,6 @@
 
       .component
         +box-sizing(border-box)
-        color: $pixie_primary
         width: 100%
 
       .saved_selections
