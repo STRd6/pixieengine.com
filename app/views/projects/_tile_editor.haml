@@ -5,17 +5,26 @@
   window.createTileEditor = (options) ->
     panel = options.panel
 
-    panel.empty()
+    panel.find('form').hide()
+    panel.find('.tile_editor').remove()
 
-    #TODO Get real data
-    data = null
+    try
+      data = JSON.parse(panel.find("[name=contents]").val())
+    catch e
+    
 
     tileEditor = $('<div />').appendTo(panel).tileEditor
       data: data
+      save: ->
+        tileEditor.trigger 'doSave'
 
     tileEditor.bind 'doSave', ->
+      dataString = JSON.stringify(tileEditor.mapData())
+
+      panel.find("[name=contents]").val(dataString)
+
       tileEditor.trigger 'save',
-        contents: tileEditor.contents()
+        contents: dataString
         path: options.path
 
     return tileEditor

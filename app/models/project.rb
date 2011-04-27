@@ -240,7 +240,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if type == "text"
+      if type == "text" || type == "tilemap"
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
