@@ -38,6 +38,7 @@ class Project < ActiveRecord::Base
 
   DEFAULT_CONFIG = {
     :directories => {
+      :data => "data",
       :images => "images",
       :sounds => "sounds",
       :source => "src",
