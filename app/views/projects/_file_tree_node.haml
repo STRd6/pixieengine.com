@@ -17,7 +17,7 @@
 
     - if ext == "documentation"
       %span.file{ 'data-id' => "#documentation", :class => ext }= file_info[:name]
-      #documentation.tab_data{'data-path' => path}
+      #documentation.tab_data(data-path=path data-type="documentation")
         %iframe.no_border{:src => "/production/projects/#{project.id}/docs/index.html", :width => "100%", :height => "100%"}
     - else
       %span.file{ 'data-id' => "##{data_id}", :class => ext }= file_info[:name]
