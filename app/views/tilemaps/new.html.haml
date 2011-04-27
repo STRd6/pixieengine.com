@@ -9,7 +9,7 @@
 
 :coffeescript
   $ ->
-    $(".tile_editor").tileEditor
+    $("<div />").appendTo("body").tileEditor
       tileWidth: #{tile_width}
       tileHeight: #{tile_height}
       tilesWide: #{tiles_wide}

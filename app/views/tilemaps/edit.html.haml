@@ -3,5 +3,5 @@
 
 :coffeescript
   $ ->
-    $(".tile_editor").tileEditor
+    $("<div />").appendTo('body').tileEditor
       data: JSON.parse(#{@tilemap.string_data})
