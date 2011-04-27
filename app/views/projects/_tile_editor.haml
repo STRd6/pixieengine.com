@@ -1,0 +1,21 @@
+= stylesheet_link_tag 'tile_editor'
+= render :partial => "tilemaps/templates"
+
+:coffeescript
+  window.createTileEditor = (options) ->
+    panel = options.panel
+
+    panel.empty()
+
+    #TODO Get real data
+    data = null
+
+    tileEditor = $('<div />').appendTo(panel).tileEditor
+      data: data
+
+    tileEditor.bind 'doSave', ->
+      tileEditor.trigger 'save',
+        contents: tileEditor.contents()
+        path: options.path
+
+    return tileEditor

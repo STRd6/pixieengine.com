@@ -65,6 +65,7 @@
 = render :partial => "console"
 = render :partial => "tag_version_modal"
 = render :partial => "property_editor"
+= render :partial => "tile_editor"
 = render :partial => "errors"
 
 - page_hotkeys = [["Save game to github", ["ctrl s", "⌘ s"]], ["Edit object properties", "right click"], ["Increment numeric values. Flip booleans", "↑"], ["Decrement numeric values. Flip booleans", "↓"], ["Increment numeric values by 10", "shift ↑"], ["Decrement numeric values by 10", "shift ↓"], ["Enter developer mode", "esc"]]
@@ -468,6 +469,18 @@
       doSave: () ->
         pixelEditor.trigger('doSave')
 
+    else if type == "tilemap"
+      tileEditor = createTileEditor
+        panel: panel
+        path: path
+
+      tileEditor.bind('save', save)
+
+      cssClass: type
+      updateSaved: () -> #TODO
+      doSave: () ->
+        tileEditor.trigger('doSave')
+
     else if type == "sound"
       contentsField = panel.find('[name=contents]')
       soundData = contentsField.val()
@@ -487,12 +500,6 @@
       cssClass: type
       doSave: () ->
         soundEditor.trigger('doSave')
-
-    else if type == "tilemap"
-      #TODO Tilemap Editor embed
-
-      cssClass: type
-      updateSaved: () -> #TODO
 
   # Tree and Tabs setup
   $ ->

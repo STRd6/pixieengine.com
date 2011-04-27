@@ -1,0 +1,232 @@
+@import partials/base
+@import util
+
+$sidebar_width: 220px
+$bottom_bar_height: 140px
+
+.tile_editor
+  +box-sizing(border-box)
+  +user-select(none)
+
+  cursor: default
+  height: 100%
+  position: relative
+
+  &>nav
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+    min-height: 142px
+    padding: 10px
+
+    .light &
+      background-color: $light_highlight
+
+    &.left, &.right
+      width: $sidebar_width
+
+      .component:first-child
+        padding-top: 0
+
+  table.properties
+    background-color: transparent
+    border-spacing: 0
+    tr
+      td
+        width: 50%
+        input
+          width: 100%
+
+  input
+    +box-sizing(border-box)
+
+    color: #000
+    margin: 0
+    max-width: 120px
+    padding: 2px
+
+  .filename
+    font-family: "Josefin Sans Std Light", Arial, serif
+    font-size: 1.5em
+    font-weight: bold
+    height: 27px
+    letter-spacing: 0.1em
+    margin-bottom: 0.5em
+
+  nav.left
+    .component
+      position: relative
+
+      h3
+        +inline-block
+
+        margin-bottom: 10px
+
+      button.save, button.new
+        margin-top: auto
+        margin-bottom: auto
+        position: absolute
+        right: 0
+
+  &>section
+    padding-bottom: $bottom_bar_height
+    padding-left: $sidebar_width + 20
+    padding-right: $sidebar_width + 20
+
+  nav.bottom
+    +border-radius
+
+    height: $bottom_bar_height
+    padding-left: $sidebar_width
+    padding-right: $sidebar_width
+
+    .tiles
+      height: 70px
+      overflow: auto
+
+  .layer_select
+    +inline-block
+
+    width: 100%
+
+    input
+      +user-select(text)
+
+    .choice
+      .name
+        +box-sizing(border-box)
+        padding: 3px
+        width: 90px
+
+      input.name
+        padding: 2px
+
+    div.choice
+      +inline-block
+
+      cursor: pointer
+      width: 100%
+
+      &.active
+        font-weight: bold
+
+      .name
+        +inline-block
+        float: left
+
+      .show
+        display: none
+
+      &:hover
+        .show
+          +inline-block
+          +opacity(0.25)
+
+          background-image: url(/images/tools/show.png)
+          cursor: pointer
+          float: right
+          height: 16px
+          width: 16px
+
+          &.on
+            +opacity(1)
+
+  .component
+    +box-sizing(border-box)
+    width: 100%
+
+  .saved_selections
+    .selection
+      padding: 1px
+
+      &.primary, &.secondary
+        border: 1px solid
+        font-weight: bold
+        padding: 0px
+
+      &.primary
+        border-color: green
+      &.secondary
+        border-color: blue
+
+      .name
+        padding: 3px
+
+      input.name
+        padding: 2px
+
+      .preview
+        display: none
+        position: relative
+
+      &:hover
+        .preview
+          display: block
+
+  .tools
+    +bounds($sidebar_width, $bottom_bar_height)
+    +tile_tool(eraser)
+    +tile_tool(fill)
+    +tile_tool(selection)
+    +tile_tool(stamp)
+
+    bottom: 0
+    left: 0
+    position: absolute
+
+    .tool
+      +bounds(32px)
+      +inline-block
+
+      background-repeat: no-repeat
+      border: 1px solid transparent
+      cursor: pointer
+      margin: 1px
+
+      &.primary, &.secondary
+        border: 1px solid
+        padding: 0px
+
+      &.primary
+        border-color: green
+      &.secondary
+        border-color: blue
+
+  .screen
+    .layers
+      background-image: url('/images/tile_grid_32.png')
+      border-bottom: 1px solid #414141
+      border-right: 1px solid #414141
+
+    .layer
+      left: 0
+      position: absolute
+      top: 0
+
+    .cursor
+      border: 1px solid green
+      position: absolute
+
+    .selection
+      +box-sizing(border-box)
+      border: 0px solid red
+      position: absolute
+
+      &.active
+        border-width: 2px
+
+  img
+    +inline-block
+
+    margin-bottom: 2px
+    padding: 1px
+
+    &.primary, &.secondary
+      border: 1px solid
+      padding: 0px
+
+    &.primary
+      border-color: green
+    &.secondary
+      border-color: blue

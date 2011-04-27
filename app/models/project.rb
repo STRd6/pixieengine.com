@@ -282,6 +282,8 @@ class Project < ActiveRecord::Base
       "sound"
     when "wav", "mp3"
       "binary"
+    when "tilemap"
+      "tilemap"
     end
   end
 

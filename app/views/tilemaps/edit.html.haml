@@ -5,3 +5,4 @@
   $ ->
     $("<div />").appendTo('body').tileEditor
       data: JSON.parse(#{@tilemap.string_data})
+      parentId: #{@parent_id.to_json}
