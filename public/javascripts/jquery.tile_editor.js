@@ -1,11 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Wed, 27 Apr 2011 18:56:23 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 27 Apr 2011 20:34:54 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, currentLayer, currentTool, debugMode, entered, firstGID, floodFill, getNeighborPositions, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
-    templates = $("#tile_editor_templates");
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createPixelEditor, currentLayer, currentTool, debugMode, entered, firstGID, floodFill, getNeighborPositions, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: 2,
       tilesWide: 20,
@@ -14,10 +13,8 @@
       tileHeight: 32
     }, options);
     tileEditor = $(this.get(0)).addClass("tile_editor");
+    templates = $("#tile_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(tileEditor);
-    tileEditor.mousedown(function() {
-      return window.currentComponent = tileEditor;
-    });
     debugMode = false;
     firstGID = 1;
     tilesWide = options.tilesWide;
@@ -29,6 +26,44 @@
     tileTray = "nav.bottom .tiles";
     layerSelect = "nav.left .layer_select";
     positionElementIndices = [];
+    if ($.fn.pixie) {
+      createPixelEditor = function(options) {
+        var pixelEditor, url;
+        url = options.url;
+        tileEditor = options.tileEditor;
+        pixelEditor = $('<div />').pixie({
+          width: options.width,
+          height: options.height,
+          initializer: function(canvas) {
+            if (url) {
+              canvas.fromDataURL(url);
+            }
+            canvas.addAction({
+              name: "Save Tile",
+              icon: "/images/icons/database_save.png",
+              perform: function(canvas) {
+                pixelEditor.trigger('save', canvas.toDataURL());
+                pixelEditor.remove();
+                return tileEditor.show();
+              },
+              undoable: false
+            });
+            return canvas.addAction({
+              name: "Back to Tilemap",
+              icon: "/images/icons/arrow_left.png",
+              perform: function(canvas) {
+                pixelEditor.remove();
+                return tileEditor.show();
+              },
+              undoable: false
+            });
+          }
+        });
+        tileEditor.hide().after(pixelEditor);
+        window.currentComponent = pixelEditor;
+        return pixelEditor;
+      };
+    }
     tilePosition = function(element, event) {
       var localX, localY, offset;
       offset = element.offset();
@@ -375,6 +410,9 @@
       selectionStart = null;
       return modeDown = null;
     });
+    tileEditor.mousedown(function() {
+      return window.currentComponent = tileEditor;
+    });
     hotkeys = {
       a: function(event) {
         return prevTile("primary");
@@ -390,21 +428,23 @@
       },
       p: function() {
         var imgSource, pixelEditor, selectedTile;
-        selectedTile = tileEditor.find('.tiles img.primary');
-        imgSource = selectedTile.attr('src');
-        pixelEditor = createPixelEditor({
-          width: selectedTile.get(0).width,
-          height: selectedTile.get(0).height,
-          tileEditor: tileEditor,
-          url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
-        });
-        return pixelEditor.bind('save', function(event, data) {
-          var img;
-          img = $("<img/>", {
-            src: data
+        if (createPixelEditor) {
+          selectedTile = tileEditor.find('.tiles img.primary');
+          imgSource = selectedTile.attr('src');
+          pixelEditor = createPixelEditor({
+            width: selectedTile.get(0).width,
+            height: selectedTile.get(0).height,
+            tileEditor: tileEditor,
+            url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
           });
-          return tileEditor.find('.component .tiles').append(img);
-        });
+          return pixelEditor.bind('save', function(event, data) {
+            var img;
+            img = $("<img/>", {
+              src: data
+            });
+            return tileEditor.find('.component .tiles').append(img);
+          });
+        }
       },
       backspace: selectionDelete,
       del: selectionDelete,

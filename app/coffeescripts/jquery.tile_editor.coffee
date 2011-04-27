@@ -1,6 +1,4 @@
 $.fn.tileEditor = (options) ->
-  templates = $("#tile_editor_templates")
-
   options = $.extend(
     layers: 2
     tilesWide: 20
@@ -11,10 +9,8 @@ $.fn.tileEditor = (options) ->
 
   tileEditor = $(this.get(0)).addClass("tile_editor")
 
+  templates = $("#tile_editor_templates")
   templates.find(".editor.template").tmpl().appendTo(tileEditor)
-
-  tileEditor.mousedown ->
-    window.currentComponent = tileEditor
 
   debugMode = false
 
@@ -34,6 +30,41 @@ $.fn.tileEditor = (options) ->
   layerSelect = "nav.left .layer_select"
 
   positionElementIndices = []
+
+  if $.fn.pixie
+    createPixelEditor = (options) ->
+      url = options.url
+      tileEditor = options.tileEditor
+
+      pixelEditor = $('<div />').pixie
+        width: options.width
+        height: options.height
+        initializer: (canvas) ->
+          if url
+            canvas.fromDataURL(url)
+
+          canvas.addAction
+            name: "Save Tile"
+            icon: "/images/icons/database_save.png"
+            perform: (canvas) ->
+              pixelEditor.trigger 'save', canvas.toDataURL()
+              pixelEditor.remove()
+              tileEditor.show()
+            undoable: false
+
+          canvas.addAction
+            name: "Back to Tilemap"
+            icon: "/images/icons/arrow_left.png"
+            perform: (canvas) ->
+              pixelEditor.remove()
+              tileEditor.show()
+            undoable: false
+
+      tileEditor.hide().after(pixelEditor)
+
+      window.currentComponent = pixelEditor
+
+      return pixelEditor
 
   tilePosition = (element, event) ->
     offset = element.offset()
@@ -380,6 +411,9 @@ $.fn.tileEditor = (options) ->
     selectionStart = null
     modeDown = null
 
+  tileEditor.mousedown ->
+    window.currentComponent = tileEditor
+
   hotkeys =
     a: (event) ->
       prevTile("primary")
@@ -390,20 +424,21 @@ $.fn.tileEditor = (options) ->
     x: (event) ->
       nextTile("secondary")
     p: ->
-      selectedTile = tileEditor.find('.tiles img.primary')
-      imgSource = selectedTile.attr('src')
+      if createPixelEditor
+        selectedTile = tileEditor.find('.tiles img.primary')
+        imgSource = selectedTile.attr('src')
 
-      pixelEditor = createPixelEditor
-        width: selectedTile.get(0).width
-        height: selectedTile.get(0).height
-        tileEditor: tileEditor
-        url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
+        pixelEditor = createPixelEditor
+          width: selectedTile.get(0).width
+          height: selectedTile.get(0).height
+          tileEditor: tileEditor
+          url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
-      pixelEditor.bind 'save', (event, data) ->
-        img = $ "<img/>",
-          src: data
+        pixelEditor.bind 'save', (event, data) ->
+          img = $ "<img/>",
+            src: data
 
-        tileEditor.find('.component .tiles').append img
+          tileEditor.find('.component .tiles').append img
 
     backspace: selectionDelete
     del: selectionDelete
