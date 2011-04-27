@@ -9,8 +9,24 @@
 
 :coffeescript
   $ ->
-    $("<div />").appendTo("body").tileEditor
+    editor = $("<div />").appendTo("body").tileEditor
       tileWidth: #{tile_width}
       tileHeight: #{tile_height}
       tilesWide: #{tiles_wide}
       tilesTall: #{tiles_tall}
+      save: (mapData) ->
+        notify("Saving...")
+
+        postData =
+          format: 'json'
+          tilemap:
+            title: mapData.title
+            width: mapData.width
+            height: mapData.height
+            data_string: JSON.stringify(editor.mapData())
+
+        callback = (data) ->
+          id = data.tilemap.id
+          notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
+
+        $.post('/tilemaps', postData, callback, "json")
