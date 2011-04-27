@@ -29,7 +29,7 @@
           undoable: false
 
     pixelEditor.bind 'doSave', ->
-      # Update mtime
+      # Update mtime to bust browser image caching
       pixelEditor.parent().attr("data-mtime", new Date().getTime())
 
       pixelEditor.trigger 'save',
