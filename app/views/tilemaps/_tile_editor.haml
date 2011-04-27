@@ -41,8 +41,8 @@
 
       positionElementIndices = []
 
-      $.fn.tilePosition = (event) ->
-        offset = this.offset()
+      tilePosition = (element, event) ->
+        offset = element.offset()
 
         localY = (event.pageY - offset.top).snap(tileHeight).clamp(0, (tilesTall - 1) * tileHeight)
         localX = (event.pageX - offset.left).snap(tileWidth).clamp(0, (tilesWide - 1) * tileWidth)
@@ -386,7 +386,7 @@
           selectNextVisibleLayer()
 
       tileEditor.find(".screen .layers").bind "mousemove", (event) ->
-        pos = $(this).tilePosition(event)
+        pos = tilePosition($(this), event)
 
         oldPos = tileEditor.find(".screen .cursor").position()
 
@@ -399,7 +399,7 @@
 
       tileEditor.find(".screen .layers").bind "mousedown", (event) ->
         if modeDown = clickMode event
-          pos = $(this).tilePosition(event)
+          pos = tilePosition($(this), event)
 
           entered(pos.x, pos.y)
 
