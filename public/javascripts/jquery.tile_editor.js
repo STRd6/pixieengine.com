@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 27 Apr 2011 20:34:54 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 03:49:03 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -17,10 +17,10 @@
     templates.find(".editor.template").tmpl().appendTo(tileEditor);
     debugMode = false;
     firstGID = 1;
-    tilesWide = options.tilesWide;
-    tilesTall = options.tilesTall;
-    tileWidth = options.tileWidth;
-    tileHeight = options.tileHeight;
+    tilesWide = parseInt(options.tilesWide, 10);
+    tilesTall = parseInt(options.tilesTall, 10);
+    tileWidth = parseInt(options.tileWidth, 10);
+    tileHeight = parseInt(options.tileHeight, 10);
     currentLayer = 0;
     modeDown = null;
     tileTray = "nav.bottom .tiles";

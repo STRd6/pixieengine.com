@@ -368,11 +368,11 @@
 
     options ||= {}
 
-    width = options.width || 8
-    height = options.height || 8
+    width = parseInt(options.width || 8, 10)
+    height = parseInt(options.height || 8, 10)
     initializer = options.initializer
-    PIXEL_WIDTH = options.pixelWidth || options.pixelSize || 16
-    PIXEL_HEIGHT = options.pixelHeight || options.pixelSize || 16
+    PIXEL_WIDTH = parseInt(options.pixelWidth || options.pixelSize || 16, 10)
+    PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10)
 
     return this.each ->
       pixie = $(this).addClass("pixie")

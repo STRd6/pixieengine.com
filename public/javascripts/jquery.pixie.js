@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Tue, 12 Apr 2011 06:34:10 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 03:57:44 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -423,11 +423,11 @@
         });
       };
       options || (options = {});
-      width = options.width || 8;
-      height = options.height || 8;
+      width = parseInt(options.width || 8, 10);
+      height = parseInt(options.height || 8, 10);
       initializer = options.initializer;
-      PIXEL_WIDTH = options.pixelWidth || options.pixelSize || 16;
-      PIXEL_HEIGHT = options.pixelHeight || options.pixelSize || 16;
+      PIXEL_WIDTH = parseInt(options.pixelWidth || options.pixelSize || 16, 10);
+      PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10);
       return this.each(function() {
         var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLayer, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(this).addClass("pixie");

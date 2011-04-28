@@ -16,11 +16,11 @@ $.fn.tileEditor = (options) ->
 
   firstGID = 1
 
-  tilesWide = options.tilesWide
-  tilesTall = options.tilesTall
+  tilesWide = parseInt(options.tilesWide, 10)
+  tilesTall = parseInt(options.tilesTall, 10)
 
-  tileWidth = options.tileWidth
-  tileHeight = options.tileHeight
+  tileWidth = parseInt(options.tileWidth, 10)
+  tileHeight = parseInt(options.tileHeight, 10)
 
   currentLayer = 0
 
