@@ -1,0 +1,14 @@
+#load_sprite.template
+  .sprite_container
+    %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}" }
+
+#create_animation.template
+  .name ${name}
+  .animation
+    .cover.active
+    .sprites
+    .speed ${speed}
+
+#placeholder.template
+  .demo
+  %p Drag sprites here to start animating
