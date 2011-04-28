@@ -297,7 +297,10 @@
   $('#save').live 'click', save
 
   newFileModal = () ->
-    $("#new_file_modal").modal()
+    $("#new_file_modal").modal
+      onShow: (modal) ->
+        $(modal.container).css
+          height: "auto"
 
   $("#new").live 'click', newFileModal
 
@@ -459,9 +462,8 @@
 
     else if type == "image"
       pixelEditor = createPixelEditor
-        width: 32 #TODO: Real width
-        height: 32 #TODO: Real height
         dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
+        panel: panel
         path: path
 
       pixelEditor.bind('save', save)

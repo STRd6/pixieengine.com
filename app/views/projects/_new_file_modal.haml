@@ -1,20 +1,54 @@
 %form#new_file_modal.modal
   %h3 New File
 
-  %p
-    = label_tag :name
-    = text_field_tag :name, "", {:title => 'Name', :id => nil}
-
   = label_tag "Choose Type"
-  %button{ 'data-params' => {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"}.to_json } Script
-  %button{ 'data-params' => {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"}.to_json } Test
-  %button{ 'data-params' => {:type => "image", :directory => "images", :ext => "png"}.to_json } Image
-  %button{ 'data-params' => {:type => "sound", :directory => "sounds", :ext => "sfs"}.to_json } Sound
-  %button{ 'data-params' => {:type => "tilemap", :directory => "data", :ext => "tilemap"}.to_json } Tilemap
+
+  :ruby
+    choices = [
+      ["Script",
+        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
+        {}
+      ],
+      ["Test",
+        {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"},
+        {}
+      ],
+      ["Image",
+        {:type => "image", :directory => "images", :ext => "png"},
+        {:width => 32, :height => 32}
+      ],
+      ["Sound",
+        {:type => "sound", :directory => "sounds", :ext => "sfs"},
+        {}
+      ],
+      ["Tilemap",
+        {:type => "tilemap", :directory => "data", :ext => "tilemap"},
+        {:tilesWide => 15, :tilesTall => 10, :tileWidth => 32, :tileHeight => 32}
+      ],
+    ]
+
+  - choices.each do |choice, params, fields|
+    %button.choice{ 'data-params' => params.to_json, 'data-fields' => fields.to_json }= choice
+
+  .field.template
+    %label
+      ${name}
+      %input(type="text" name="options[${name}]" title="$(name)" value="${value}")
+
+  .details{:style => "display: none;"}
+    %label
+      Name
+      = text_field_tag :name, "", {:title => 'Name', :id => nil}
+
+    .fields
+
+    %button.create Create
 
 = render :partial => "file_template"
 
 :coffeescript
+  params = null
+
   window.findDirectory = (directoryPath) ->
     folderPaths = directoryPath.split("/")
 
@@ -48,6 +82,7 @@
 
     inputData.name = "\#{inputData.name}.\#{inputData.ext}"
     inputData.path = "/\#{inputData.path}/\#{inputData.name}"
+    inputData.options = JSON.stringify(inputData.options)
     data_id = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
     data = $.extend({
@@ -60,19 +95,32 @@
 
     return treeNode
 
-  $("#new_file_modal button").live 'click', (event) ->
+  $("#new_file_modal button.choice").live 'click', (event) ->
     event.preventDefault()
 
-    params = $(this).data('params')
+    $(this).takeClass("active")
 
+    $("#new_file_modal .details").show()
+
+    params = $(this).data('params')
     params.path = projectConfig.directories[params.directory]
 
-    params = $.extend $("#new_file_modal").serializeObject(), params
+    fields = $("#new_file_modal .fields").empty()
 
-    newNode = newFileNode(params)
+    for name, value of $(this).data('fields')
+      $("#new_file_modal .field.template").tmpl(
+        name: name
+        value: value
+      ).appendTo(fields)
+
+  $("#new_file_modal button.create").live 'click', (event) ->
+    event.preventDefault()
+
+    newNode = newFileNode($.extend($("#new_file_modal").serializeObject(), params))
 
     if newNode
       $.modal.close()
+
 
 %style
   :sass
