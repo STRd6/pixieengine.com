@@ -331,8 +331,7 @@
 
     displayErrors(errors)
 
-    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
-    crammedCode += libCode + ";\n" + compiledCode + ";\n" + mainCode
+    crammedCode = libCode + ";\n" + compiledCode + ";\n" + mainCode
 
   $("#build").live 'click', (event) ->
     projectCode = buildProjectCode()
@@ -340,6 +339,9 @@
     save event,
       contents: projectCode
       path: (projectConfig.name || "project") + ".js"
+
+  appConfigCode = () ->
+    CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
 
   runApp = () ->
     width = projectConfig.width
@@ -354,10 +356,12 @@
 
     $("#test_zone").append(iframe).show()
 
+    crammedCode = appConfigCode() + ";\n" + buildProjectCode()
+
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
-      runCodeInIframe(buildProjectCode(), iframe)
+      runCodeInIframe(crammedCode, iframe)
 
   $("#run").live 'click', runApp
 
@@ -380,8 +384,7 @@
 
     displayErrors(errors)
 
-    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
-    crammedCode += libCode + ";\n" + compiledCode
+    crammedCode = appConfigCode() + ";\n" + libCode + ";\n" + compiledCode
     crammedCode += ";$(function(){ \#{testCode} });"
 
     $("#unit_test_frame").remove()
