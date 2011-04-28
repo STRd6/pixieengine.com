@@ -66,6 +66,22 @@ $.fn.tileEditor = (options) ->
 
       return pixelEditor
 
+  pixelEditTile = (selectedTile) ->
+    if createPixelEditor
+      imgSource = selectedTile.attr('src')
+
+      pixelEditor = createPixelEditor
+        width: selectedTile.get(0).width
+        height: selectedTile.get(0).height
+        tileEditor: tileEditor
+        url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
+
+      pixelEditor.bind 'save', (event, data) ->
+        img = $ "<img/>",
+          src: data
+
+        tileEditor.find('.component .tiles').append img
+
   tilePosition = (element, event) ->
     offset = element.offset()
 
@@ -337,6 +353,12 @@ $.fn.tileEditor = (options) ->
     tileEditor.find(".tiles img").removeClass(mode)
     tile.addClass(mode)
 
+  propElement = null
+  showPropertiesEditor = (element) ->
+    propElement = element
+    propEditor.setProps(propElement.data("properties"))
+    propEditor.parent().show()
+
   tileEditor.bind "contextmenu", (event) ->
     unless debugMode
       event.preventDefault()
@@ -358,11 +380,8 @@ $.fn.tileEditor = (options) ->
     if event.which == 2
       $(this).remove()
 
-  propElement = null
   $(".tiles img", tileEditor).live "dblclick", (event) ->
-    propElement = $(this)
-    propEditor.setProps(propElement.data("properties"))
-    propEditor.parent().show()
+    pixelEditTile($(this))
 
   tileEditor.find(".prop_save").click (event) ->
     if propElement
@@ -424,22 +443,7 @@ $.fn.tileEditor = (options) ->
     x: (event) ->
       nextTile("secondary")
     p: ->
-      if createPixelEditor
-        selectedTile = tileEditor.find('.tiles img.primary')
-        imgSource = selectedTile.attr('src')
-
-        pixelEditor = createPixelEditor
-          width: selectedTile.get(0).width
-          height: selectedTile.get(0).height
-          tileEditor: tileEditor
-          url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
-
-        pixelEditor.bind 'save', (event, data) ->
-          img = $ "<img/>",
-            src: data
-
-          tileEditor.find('.component .tiles').append img
-
+      showPropertiesEditor(tileEditor.find('.tiles img.primary'))
     backspace: selectionDelete
     del: selectionDelete
     esc: clearSelection
