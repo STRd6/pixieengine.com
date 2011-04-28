@@ -19,7 +19,14 @@
 
     %nav.bottom
       .component.tile_select
-        %h3 Tiles
+        %h3
+          Tiles
+          %button.new_tile
+            = icon_image "image_add"
+            New
+          %button.delete_tile
+            = icon_image "image_delete"
+            Delete
         .tiles
           - sprites = Collection.find(params[:tileset_id] || 355).sprites
           - sprites.each do |sprite|
