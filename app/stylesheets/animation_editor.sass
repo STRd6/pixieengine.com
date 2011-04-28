@@ -1,6 +1,8 @@
 $sprite_container_bounds: 72px
 
 #fullscreen
+  +user-select
+
   color: $dark_text
 
   &.light
@@ -66,13 +68,18 @@ $sprite_container_bounds: 72px
     padding-right: 175px
 
     .user_sprites
+      +glass
+
       +border-radius
       +bounds(100%)
       +box-sizing(border-box)
 
-      border: 1px solid $pixie_primary
+      background-color: $dark_highlight
       overflow: auto
       padding: 20px
+
+      .light &
+        background-color = $light_highlight
 
     .sprite_container
       +box-shadow($dark_box_shadow, 3px, 3px, 15px)
@@ -86,6 +93,9 @@ $sprite_container_bounds: 72px
       &:hover
         background-color: $hover
 
+      .light &
+        +box-shadow($light_box_shadow, 3px, 3px, 15px)
+
   nav.bottom
     +box-sizing(border-box)
 
@@ -96,6 +106,7 @@ $sprite_container_bounds: 72px
 
     background-color: $dark_highlight
     border: 2px solid transparent
+    height: 80px
     overflow-y: hidden
     padding: 20px
     white-space: nowrap
@@ -111,11 +122,17 @@ $sprite_container_bounds: 72px
       background-color: #ccc
       border: 4px dotted #aaa
 
+      .light &
+        +box-shadow($light_box_shadow, 3px, 3px, 15px)
+
     .sprite_container
       +box-shadow($dark_box_shadow, 2px, 2px, 15px)
 
       border: 4px solid transparent
       margin-right: 20px
+
+      .light &
+        +box-shadow($light_box_shadow, 3px, 3px, 15px)
 
       &:hover, &:highlight
         background-color: $hover
