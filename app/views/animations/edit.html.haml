@@ -1,5 +1,7 @@
-= render :partial => 'animation_editor', :locals => {:data => @animation.string_data}
+= render :partial => 'animation_editor'
+= render :partial => 'templates'
 
 :coffeescript
   $ ->
-    window.loadData(JSON.parse(#{@animation.string_data.to_json}))
+    $(".animation_editor").animationEditor
+      data: JSON.parse(#{@animation.string_data.to_json})

@@ -1,5 +1,6 @@
 = render :partial => 'animation_editor'
+= render :partial => 'templates'
 
 :coffeescript
   $ ->
-    window.loadData()
+    $(".animation_editor").animationEditor()
