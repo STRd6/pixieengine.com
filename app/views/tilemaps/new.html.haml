@@ -1,5 +1,4 @@
 = render :partial => "tile_editor"
-= render :partial => "templates"
 
 - tile_width = params[:tile_width].blank? ? 32 : params[:tile_width].to_i
 - tile_height = params[:tile_height].blank? ? 32 : params[:tile_height].to_i
@@ -9,8 +8,24 @@
 
 :coffeescript
   $ ->
-    $(".tile_editor").tileEditor
+    editor = $("<div />").appendTo("body").tileEditor
       tileWidth: #{tile_width}
       tileHeight: #{tile_height}
       tilesWide: #{tiles_wide}
       tilesTall: #{tiles_tall}
+      save: (mapData) ->
+        notify("Saving...")
+
+        postData =
+          format: 'json'
+          tilemap:
+            title: mapData.title
+            width: mapData.width
+            height: mapData.height
+            data_string: JSON.stringify(editor.mapData())
+
+        callback = (data) ->
+          id = data.tilemap.id
+          notify("Saved as <a href='/tilemaps/"+id+"'>Tilemap "+id+"</a>!")
+
+        $.post('/tilemaps', postData, callback, "json")

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 04 Mar 2011 22:31:33 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 03:39:04 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.serialize_object.coffee
  */
 
@@ -8,20 +8,28 @@
     arrayData = this.serializeArray();
     objectData = {};
     $.each(arrayData, function() {
-      var value;
+      var name, object, paths, value;
+      name = this.name;
       if (this.value != null) {
         value = this.value;
       } else {
         value = '';
       }
-      if (objectData[this.name] != null) {
-        if (!objectData[this.name].push) {
-          objectData[this.name] = [objectData[this.name]];
+      paths = name.split("[").map(function(e, i) {
+        if (i === 0) {
+          return e;
+        } else {
+          return e.substr(0, e.length - 1);
         }
-        return objectData[this.name].push(value);
-      } else {
-        return objectData[this.name] = value;
-      }
+      });
+      object = objectData;
+      return paths.each(function(key, i) {
+        if (key === paths.last()) {
+          return object[key] = value;
+        } else {
+          return object = (object[key] || (object[key] = {}));
+        }
+      });
     });
     return objectData;
   };

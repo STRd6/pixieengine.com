@@ -1,9 +1,58 @@
-#layer_select.template
-  .choice
-    .name ${name}
-    .show.on
+#tile_editor_templates.template
 
-#saved_selection.template
-  .selection
-    .name ${text}
-    .preview
+  .layer_select.template
+    .choice
+      .name ${name}
+      .show.on
+
+  .saved_selection.template
+    .selection
+      .name ${text}
+      .preview
+
+  .editor.template
+    %section
+      .screen
+        .layers
+          .cursor
+          .selection
+
+    %nav.bottom
+      .component.tile_select
+        %h3 Tiles
+        .tiles
+          - sprites = Collection.find(params[:tileset_id] || 355).sprites
+          - sprites.each do |sprite|
+            - active = if sprite == sprites.first
+              - "primary"
+            - elsif sprite == sprites.second
+              - "secondary"
+
+            = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
+
+    %nav.left
+      .component
+        %h3.filename Tilemap
+        %button.save Save
+
+      .component
+        %h3 Layer
+        %button.new New Layer
+        .layer_select
+
+      .component{ :style => "display: none"}
+        %h3 Properties
+        %table.prop_editor
+        %button.prop_save Save Properties
+
+    %nav.right
+      .component
+        %h3 Saved Selections
+        .saved_selections
+
+    %nav.tools.component
+      %h3 Tools
+      .tool.primary.secondary{ :"data-tool" => "stamp"}
+      .tool{ :"data-tool" => "eraser"}
+      .tool{ :"data-tool" => "fill"}
+      .tool{ :"data-tool" => "selection"}

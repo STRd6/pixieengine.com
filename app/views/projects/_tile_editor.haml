@@ -1,0 +1,31 @@
+= stylesheet_link_tag 'tile_editor'
+= render :partial => "tilemaps/templates"
+
+:coffeescript
+  window.createTileEditor = (options) ->
+    panel = options.panel
+
+    panel.find('form').hide()
+    panel.find('.tile_editor').remove()
+
+    try
+      data = JSON.parse(panel.find("[name=contents]").val())
+    catch e
+
+    editorOptions = $.extend panel.data("options"),
+      data: data
+      save: ->
+        tileEditor.trigger 'doSave'
+
+    tileEditor = $('<div />').appendTo(panel).tileEditor(editorOptions)
+
+    tileEditor.bind 'doSave', ->
+      dataString = JSON.stringify(tileEditor.mapData())
+
+      panel.find("[name=contents]").val(dataString)
+
+      tileEditor.trigger 'save',
+        contents: dataString
+        path: options.path
+
+    return tileEditor

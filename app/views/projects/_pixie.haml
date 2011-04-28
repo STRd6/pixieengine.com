@@ -1,16 +1,12 @@
 :coffeescript
   window.createPixelEditor = (options) ->
-    width = options.width
-    height = options.height
     dataUrl = options.dataUrl
-    title = options.title
     path = options.path
+    panel = options.panel
     tab = null
     _canvas = null
 
-    pixelEditor = $('<div />').pixie
-      width: width
-      height: height
+    editorOptions = $.extend panel.data("options"),
       frames: 1
       initializer: (canvas) ->
         _canvas = canvas
@@ -28,8 +24,10 @@
 
           undoable: false
 
+    pixelEditor = $('<div />').pixie(editorOptions)
+
     pixelEditor.bind 'doSave', ->
-      # Update mtime
+      # Update mtime to bust browser image caching
       pixelEditor.parent().attr("data-mtime", new Date().getTime())
 
       pixelEditor.trigger 'save',

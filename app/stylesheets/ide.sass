@@ -49,11 +49,6 @@ ul#libraries
     background-image: url(/images/play.png)
     cursor: pointer
 
-button.save
-  +border-right-radius(0)
-
-  margin-right: 0
-
 .nav_left_container
   +box-sizing(border-box)
 
@@ -172,6 +167,8 @@ ul.filetree
         margin: 0
       &.documentation
         background-image: url(/images/icons/book_open.png)
+      &.tilemap
+        background-image: url(/images/icons/world.png)
       &.new_script
         background-image: url(/images/icons/cup_add.png)
       &.add_library
@@ -207,9 +204,6 @@ ul.filetree
   form
     height: 100%
 
-  button.save, button.new_save
-    display: none
-
   li
     .ui-icon-close
       float: right
@@ -242,8 +236,10 @@ ul.filetree
           background-image: url(/images/icons/sound.png)
         &.sprite
           background-image: url(/images/icons/image.png)
+        &.tilemap
+          background-image: url(/images/icons/world.png)
         &.documentation
-          background-image: url(/images/icons/book.png)
+          background-image: url(/images/icons/book_open.png)
 
     a
       font-weight: normal

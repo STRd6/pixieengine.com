@@ -65,6 +65,7 @@
 = render :partial => "console"
 = render :partial => "tag_version_modal"
 = render :partial => "property_editor"
+= render :partial => "tile_editor"
 = render :partial => "errors"
 
 - page_hotkeys = [["Save game to github", ["ctrl s", "⌘ s"]], ["Edit object properties", "right click"], ["Increment numeric values. Flip booleans", "↑"], ["Decrement numeric values. Flip booleans", "↓"], ["Increment numeric values by 10", "shift ↑"], ["Decrement numeric values by 10", "shift ↓"], ["Enter developer mode", "esc"]]
@@ -250,8 +251,6 @@
   # Commands
   window.save = (event, data) ->
     requireLogin ->
-      notify "Saving..."
-
       activeTab = $("#tabs ul li.ui-state-active")
       message = $(".actions .status .message").val()
 
@@ -264,6 +263,8 @@
         activeTab.removeClass("unsaved")
 
       if data
+        notify "Saving..."
+
         postData = $.extend(
           format: 'json'
           message: message
@@ -272,27 +273,34 @@
         $.post "/projects/\#{projectId}/save_file", postData, successCallback
 
       else
-        form = $(currentPanel).find('form')
+        saveMethod = activeTab.find('a').data('doSave')
 
-        if form.length
-          form.ajaxSubmit
-            type: 'POST'
-            data:
-              message: message
-            dataType: "json"
-            success: successCallback
-
-          # Hot swap: inject code
-          if projectConfig.hotSwap
-            hotSwap()
+        if saveMethod
+          saveMethod()
         else
-          # Check for special save method
-          activeTab.find('a').data('doSave')?()
+          notify "Saving..."
+
+          form = $(currentPanel).find('form')
+
+          if form.length
+            form.ajaxSubmit
+              type: 'POST'
+              data:
+                message: message
+              dataType: "json"
+              success: successCallback
+
+            # Hot swap: inject code
+            if projectConfig.hotSwap
+              hotSwap()
 
   $('#save').live 'click', save
 
   newFileModal = () ->
-    $("#new_file_modal").modal()
+    $("#new_file_modal").modal
+      onShow: (modal) ->
+        $(modal.container).css
+          height: "auto"
 
   $("#new").live 'click', newFileModal
 
@@ -323,8 +331,7 @@
 
     displayErrors(errors)
 
-    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
-    crammedCode += libCode + ";\n" + compiledCode + ";\n" + mainCode
+    crammedCode = libCode + ";\n" + compiledCode + ";\n" + mainCode
 
   $("#build").live 'click', (event) ->
     projectCode = buildProjectCode()
@@ -332,6 +339,9 @@
     save event,
       contents: projectCode
       path: (projectConfig.name || "project") + ".js"
+
+  appConfigCode = () ->
+    CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
 
   runApp = () ->
     width = projectConfig.width
@@ -346,10 +356,12 @@
 
     $("#test_zone").append(iframe).show()
 
+    crammedCode = appConfigCode() + ";\n" + buildProjectCode()
+
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
     else
-      runCodeInIframe(buildProjectCode(), iframe)
+      runCodeInIframe(crammedCode, iframe)
 
   $("#run").live 'click', runApp
 
@@ -372,8 +384,7 @@
 
     displayErrors(errors)
 
-    crammedCode = CoffeeScript.compile "App = {}", noWrap: true
-    crammedCode += libCode + ";\n" + compiledCode
+    crammedCode = appConfigCode() + ";\n" + libCode + ";\n" + compiledCode
     crammedCode += ";$(function(){ \#{testCode} });"
 
     $("#unit_test_frame").remove()
@@ -454,9 +465,8 @@
 
     else if type == "image"
       pixelEditor = createPixelEditor
-        width: 32 #TODO: Real width
-        height: 32 #TODO: Real height
         dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
+        panel: panel
         path: path
 
       pixelEditor.bind('save', save)
@@ -467,6 +477,18 @@
       updateSaved: () -> #TODO
       doSave: () ->
         pixelEditor.trigger('doSave')
+
+    else if type == "tilemap"
+      tileEditor = createTileEditor
+        panel: panel
+        path: path
+
+      tileEditor.bind('save', save)
+
+      cssClass: type
+      updateSaved: () -> #TODO
+      doSave: () ->
+        tileEditor.trigger('doSave')
 
     else if type == "sound"
       contentsField = panel.find('[name=contents]')
@@ -487,12 +509,8 @@
       cssClass: type
       doSave: () ->
         soundEditor.trigger('doSave')
-
-    else if type == "tilemap"
-      #TODO Tilemap Editor embed
-
+    else if type == "documentation"
       cssClass: type
-      updateSaved: () -> #TODO
 
   # Tree and Tabs setup
   $ ->

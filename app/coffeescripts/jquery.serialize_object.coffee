@@ -3,17 +3,26 @@ jQuery.fn.serializeObject = () ->
   objectData = {}
 
   $.each arrayData, () ->
+    name = this.name
+
     if this.value?
       value = this.value
     else
       value = ''
 
-    if objectData[this.name]?
-      unless objectData[this.name].push
-        objectData[this.name] = [objectData[this.name]]
+    # Hack for nested objects
+    paths = name.split("[").map (e, i) ->
+      if i == 0
+        e
+      else
+        e.substr(0, e.length - 1)
 
-      objectData[this.name].push value
-    else
-      objectData[this.name] = value
+    object = objectData
+
+    paths.each (key, i) ->
+      if key == paths.last()
+        object[key] = value
+      else
+        object = (object[key] ||= {})
 
   return objectData

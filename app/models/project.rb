@@ -38,6 +38,7 @@ class Project < ActiveRecord::Base
 
   DEFAULT_CONFIG = {
     :directories => {
+      :data => "data",
       :images => "images",
       :sounds => "sounds",
       :source => "src",
@@ -240,7 +241,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if type == "text"
+      if type == "text" || type == "tilemap"
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -282,6 +283,8 @@ class Project < ActiveRecord::Base
       "sound"
     when "wav", "mp3"
       "binary"
+    when "tilemap"
+      "tilemap"
     end
   end
 
