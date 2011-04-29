@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 06:49:13 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 16:04:46 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -263,13 +263,9 @@
       if ($(selected_sprite).length) {
         image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3');
         image_circles = find_hit_circles(selected_sprite);
-        Sprite.loadImage(image_src, image_circles);
+        loadImage(image_src, image_circles);
         animationEditor.hide();
-        return $('.hitcircle_editor').hitcircleEditor({
-          width: image_src.width,
-          height: image_src.height,
-          sprite: image_src
-        });
+        return $('.hitcircle_editor').show();
       }
     });
     $(document).bind("keydown", 'left', function(event) {

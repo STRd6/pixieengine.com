@@ -252,13 +252,10 @@ $.fn.animationEditor = (options) ->
 
       image_circles = find_hit_circles(selected_sprite)
 
-      Sprite.loadImage(image_src, image_circles)
+      loadImage(image_src, image_circles)
 
       animationEditor.hide()
-      $('.hitcircle_editor').hitcircleEditor
-        width: image_src.width
-        height: image_src.height
-        sprite: image_src
+      $('.hitcircle_editor').show()
 
   $(document).bind "keydown", 'left', (event) ->
     if window.currentComponent == animationEditor

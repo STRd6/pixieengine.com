@@ -1,262 +1,249 @@
+- canvas_width = 640
+- canvas_height = 480
+
 .hitcircle_editor
   %nav.top
     .actions
   %section
     .frames
-      %canvas.editor_canvas
-      %button.export Save
-      %button.back Back to animation
+      %canvas#editor_canvas{:width => canvas_width, :height => canvas_height}
+      %button#export Save
+      %button#back Back to animation
 
 :coffeescript
-  $.fn.hitcircleEditor = (options) ->
-    options = $.extend(
-      sprite: null
-      width: 640
-      height: 480
-    , options)
+  transform = Matrix.translation(#{canvas_width} / 2, #{canvas_height} / 2)
+  animation = null
+  animationJSON = null
+  currentFrame = 0
+  active = {}
+  window.editorActive = false
 
-    return this.each ->
-      hitcircleEditor = $(this).addClass("hitcircle_editor")
-      hitcircleEditor.find('.editor_canvas').css
-        width: options.width
-        height: options.height
+  frames = null
 
-      hitcircleEditor.mousedown ->
-        window.currentComponent = hitcircleEditor
+  showCircles = true
+  activeColor = "rgba(255, 0, 255, 0.5)"
+  circleColor = "rgba(255, 0, 0, 0.5)"
 
-      transform = Matrix.translation(options.width / 2, options.height / 2)
-      animation = null
-      currentFrame = 0
-      active = {}
-      window.editorActive = false
+  $('#editor_canvas').powerCanvas
+    init: (canvas) ->
+      character =
+        getCircles: ->
+          transform = this.getTransform()
 
-      frames = null
+          if frames && frames[currentFrame]
+            return $.map frames[currentFrame].circles, (circle) ->
+              point = transform.transformPoint(circle)
+              return {
+                x: point.x
+                y: point.y
+                radius: circle.radius
+                circle: circle
+              }
+          else
+            return []
 
-      showCircles = true
-      activeColor = "rgba(255, 0, 255, 0.5)"
-      circleColor = "rgba(255, 0, 0, 0.5)"
+        getTransform: -> transform
 
-      hitcircleEditor.find('.editor_canvas').powerCanvas
-        init: (canvas) ->
-          character =
-            getCircles: ->
-              transform = this.getTransform()
+        draw: (canvas) ->
+          if animation
+            animation.frame(currentFrame)
 
-              if frames && frames[currentFrame]
-                return $.map frames[currentFrame].circles, (circle) ->
-                  point = transform.transformPoint(circle)
-                  return {
-                    x: point.x
-                    y: point.y
-                    radius: circle.radius
-                    circle: circle
-                  }
-              else
-                return []
+            canvas.withTransform this.getTransform(), ->
+              animation.draw(canvas, -animation.width / 2, -animation.height / 2)
 
-            getTransform: -> transform
+          if showCircles
+            $.each this.getCircles(), (i, circle) ->
+              color = (if circle.circle == active["circles"] then activeColor else circleColor)
+              canvas.fillCircle(circle.x, circle.y, circle.radius, color)
 
-            draw: (canvas) ->
-              if animation
-                animation.frame(currentFrame)
+      setInterval ->
+        if window.editorActive
+          canvas.fill('#CCC')
+          character.draw(canvas)
+      , 33
 
-                canvas.withTransform this.getTransform(), ->
-                  animation.draw(canvas, -animation.width / 2, -animation.height / 2)
+      canvas.mousedown (e) ->
+        point =
+          x: event.offsetX
+          y: event.offsetY
 
-              if showCircles
-                $.each this.getCircles(), (i, circle) ->
-                  color = (if circle.circle == active["circles"] then activeColor else circleColor)
-                  canvas.fillCircle(circle.x, circle.y, circle.radius, color)
+        activeType = "circles"
+        activeComponent = undefined
+        set = false
 
-          setInterval ->
-            if window.editorActive
-              canvas.fill('#CCC')
-              character.draw(canvas)
-          , 33
+        if showCircles
+          $.each character.getCircles(), (i, circle) ->
+            return if set
 
-          canvas.mousedown (e) ->
-            point =
-              x: event.offsetX
-              y: event.offsetY
+            dx = point.x - circle.x
+            dy = point.y - circle.y
+            dist = circle.radius
 
-            activeType = "circles"
-            activeComponent = undefined
-            set = false
+            if dx * dx + dy * dy < dist * dist
+              activeType = "circles"
+              activeComponent = circle.circle
+              set = true
 
-            if showCircles
-              $.each character.getCircles(), (i, circle) ->
-                return if set
+        $.each active, (key, value) ->
+          active[key] = undefined
 
-                dx = point.x - circle.x
-                dy = point.y - circle.y
-                dist = circle.radius
+        active[activeType] = activeComponent
 
-                if dx * dx + dy * dy < dist * dist
-                  activeType = "circles"
-                  activeComponent = circle.circle
-                  set = true
+  generateComponentMethods = (component, creator) ->
+    getter = -> frames[currentFrame][component]
 
-            $.each active, (key, value) ->
-              active[key] = undefined
+    return {
+      add: (param) ->
+        active[component] = creator()
+        if component == "circles"
+          getter().push(active[component])
+        else
+          frames[currentFrame][component][param] = active[component]
 
-            active[activeType] = activeComponent
+      grow: (delta) ->
+        c = active[component]
+        c.radius = (delta + c.radius).clamp(1, 1000) if c
 
-      generateComponentMethods = (component, creator) ->
-        getter = -> frames[currentFrame][component]
+      next: ->
+        index = getter().indexOf(active[component])
+        index = (index + 1) % getter().length
+        active[component] = getter()[index]
 
-        return {
-          add: (param) ->
-            active[component] = creator()
-            if component == "circles"
-              getter().push(active[component])
-            else
-              frames[currentFrame][component][param] = active[component]
+      prev: ->
+        index = getter().indexOf(active[component])
+        index = Math.mod(index - 1, getter().length)
+        active[component] = getter()[index]
 
-          grow: (delta) ->
-            c = active[component]
-            c.radius = (delta + c.radius).clamp(1, 1000) if c
+      remove: -> getter().remove(active[component])
+    }
 
-          next: ->
-            index = getter().indexOf(active[component])
-            index = (index + 1) % getter().length
-            active[component] = getter()[index]
+  Circles = generateComponentMethods "circles", ->
+    x: 0
+    y: 0
+    radius: 50
 
-          prev: ->
-            index = getter().indexOf(active[component])
-            index = Math.mod(index - 1, getter().length)
-            active[component] = getter()[index]
+  move = (x, y) ->
+    $.each active, (name, component) ->
+      if component
+        component.x += x
+        component.y += y
 
-          remove: -> getter().remove(active[component])
-        }
+  keyEvents =
+    "+": -> Circles.grow(1)
+    "-": -> Circles.grow(-1)
+    "up": -> move(0, -1)
+    "down": -> move(0, 1)
+    "left": -> move(-1, 0)
+    "right": -> move(1, 0)
+    "shift+left": -> move(-10, 0)
+    "shift+right": -> move(10, 0)
+    "shift+up": -> move(0, -10)
+    "shift+down": -> move(0, 10)
+    "shift++": -> Circles.grow(10)
+    "shift+-": -> Circles.grow(-10)
+    "shift+tab": -> Circles.prev()
+    "tab": -> Circles.next()
+    "d del backspace": -> Circles.remove()
+    "shift": -> $.noop
 
-      Circles = generateComponentMethods "circles", ->
-        x: 0
-        y: 0
-        radius: 50
+  $.each keyEvents, (key, fn) ->
+    $(document).bind 'keydown', key, (event) ->
+      fn()
+      event.preventDefault()
 
-      move = (x, y) ->
-        $.each active, (name, component) ->
-          if component
-            component.x += x
-            component.y += y
+  Button = (text, callback) ->
+    $("<a class='button' />").text(text).mousedown (event) ->
+      event.preventDefault()
 
-      keyEvents =
-        "+": -> Circles.grow(1)
-        "-": -> Circles.grow(-1)
-        "up": -> move(0, -1)
-        "down": -> move(0, 1)
-        "left": -> move(-1, 0)
-        "right": -> move(1, 0)
-        "shift+left": -> move(-10, 0)
-        "shift+right": -> move(10, 0)
-        "shift+up": -> move(0, -10)
-        "shift+down": -> move(0, 10)
-        "shift++": -> Circles.grow(10)
-        "shift+-": -> Circles.grow(-10)
-        "shift+tab": -> Circles.prev()
-        "tab": -> Circles.next()
-        "d del backspace": -> Circles.remove()
-        "shift": -> $.noop
+      callback()
 
-      $.each keyEvents, (key, fn) ->
-        $(document).bind 'keydown', key, (event) ->
-          fn()
-          event.preventDefault()
+  size_group = $("<div class='button_group'></div>")
+  increase = Button("Increase", -> Circles.grow(1))
+  decrease = Button("Decrease", -> Circles.grow(-1))
+  increase_plus = Button("Increase+", -> Circles.grow(5))
+  decrease_plus = Button("Decrease+", -> Circles.grow(-5))
 
-      Button = (text, callback) ->
-        $("<a class='button' />").text(text).mousedown (event) ->
-          event.preventDefault()
+  add_group = $("<div class='button_group'></div>")
+  add_circle = Button("Add Circle", -> Circles.add())
+  remove_circle = Button("Remove Circle", -> Circles.remove())
 
-          callback()
+  toggle_show = Button("Show / Hide", -> showCircles = !showCircles)
 
-      size_group = $("<div class='button_group'></div>")
-      increase = Button("Increase", -> Circles.grow(1))
-      decrease = Button("Decrease", -> Circles.grow(-1))
-      increase_plus = Button("Increase+", -> Circles.grow(5))
-      decrease_plus = Button("Decrease+", -> Circles.grow(-5))
+  $('#back').mousedown ->
+    window.editorActive = false
 
-      add_group = $("<div class='button_group'></div>")
-      add_circle = Button("Add Circle", -> Circles.add())
-      remove_circle = Button("Remove Circle", -> Circles.remove())
+    $('.hitcircle_editor').hide()
+    $('.animation_editor').show()
 
-      toggle_show = Button("Show / Hide", -> showCircles = !showCircles)
+  $(size_group).append(increase, decrease, increase_plus, decrease_plus)
+  $(add_group).append(add_circle, remove_circle)
+  $('.actions').append(size_group, add_group, toggle_show)
 
-      $('.back').mousedown ->
-        window.editorActive = false
+  LoaderProxy = ->
+    draw: $.noop
+    frame: $.noop
+    update: $.noop
+    width: null
+    height: null
 
-        $('.hitcircle_editor').remove()
-        $('.animation_editor').show()
-        window.currentComponent = animationEditor
+  Sprite = (image, sourceX, sourceY, width, height) ->
+    sourceX ||= 0
+    sourceY ||= 0
+    width ||= image.width
+    height ||= image.height
 
-      $(size_group).append(increase, decrease, increase_plus, decrease_plus)
-      $(add_group).append(add_circle, remove_circle)
-      $('.actions').append(size_group, add_group, toggle_show)
+    return {
+      update: $.noop
 
-      LoaderProxy = ->
-        draw: $.noop
-        frame: $.noop
-        update: $.noop
-        width: null
-        height: null
+      draw: (canvas, x, y, sx, sy, swidth, sheight) ->
+        canvas.drawImage(image,
+          sx || sourceX,
+          sy || sourceY,
+          swidth || width,
+          sheight || height,
+          x,
+          y,
+          swidth || width,
+          sheight || height
+        )
 
-      Sprite = (image, sourceX, sourceY, width, height) ->
-        sourceX ||= 0
-        sourceY ||= 0
-        width ||= image.width
-        height ||= image.height
+      frame: (newFrame) ->
+        return this unless newFrame == undefined
 
-        return {
-          update: $.noop
+        return 0
 
-          draw: (canvas, x, y, sx, sy, swidth, sheight) ->
-            canvas.drawImage(image,
-              sx || sourceX,
-              sy || sourceY,
-              swidth || width,
-              sheight || height,
-              x,
-              y,
-              swidth || width,
-              sheight || height
-            )
+      width: width
+      height: height
+    }
 
-          frame: (newFrame) ->
-            return this unless newFrame == undefined
+  Sprite.load = (url, loadedCallback) ->
+    img = new Image()
+    proxy = LoaderProxy()
 
-            return 0
+    img.onload = ->
+      tile = Sprite(this)
 
-          width: width
-          height: height
-        }
+      $.extend(proxy, tile)
 
-      Sprite.load = (url, loadedCallback) ->
-        img = new Image()
-        proxy = LoaderProxy()
+      if loadedCallback
+        loadedCallback(proxy)
 
-        img.onload = ->
-          tile = Sprite(this)
+    img.src = url
 
-          $.extend(proxy, tile)
+    return proxy
 
-          if loadedCallback
-            loadedCallback(proxy)
+  window.loadImage = (url, hitCircles) ->
+    Sprite.load url, (sprite) ->
+      animation = sprite
+      currentFrame = animation.frame()
+      frames = [circles: hitCircles || []]
 
-        img.src = url
+  $("#export").click ->
+    window.editorActive = false
 
-        return proxy
+    selected_sprite_src = $('.frame_sprites .sprite_container.selected img').attr('src')
 
-      loadImage = (url, hitCircles) ->
-        Sprite.load url, (sprite) ->
-          animation = sprite
-          currentFrame = animation.frame()
-          frames = [circles: hitCircles || []]
+    $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(frames[0]))
 
-      hitcircleEditor.find(".export").click ->
-        window.editorActive = false
-
-        selected_sprite_src = animationEditor.find('.frame_sprites .sprite_container.selected img').attr('src')
-
-        animationEditor.find('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(frames[0]))
-
-        hitcirclEditor.hide()
-        animationEditor.show()
+    $('.hitcircle_editor').hide()
+    $('.animation_editor').show()
