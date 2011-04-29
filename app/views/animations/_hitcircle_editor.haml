@@ -11,6 +11,8 @@
       %button#back Back to animation
 
 :coffeescript
+  hitcircleEditor = $('.hitcircle_editor')
+
   transform = Matrix.translation(#{canvas_width} / 2, #{canvas_height} / 2)
   animation = null
   animationJSON = null
@@ -172,7 +174,7 @@
   $('#back').mousedown ->
     window.editorActive = false
 
-    $('.hitcircle_editor').hide()
+    hitcircleEditor.hide()
     $('.animation_editor').show()
 
   $(size_group).append(increase, decrease, increase_plus, decrease_plus)
@@ -245,5 +247,5 @@
 
     $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(frames[0]))
 
-    $('.hitcircle_editor').hide()
+    hitcircleEditor.hide()
     $('.animation_editor').show()
