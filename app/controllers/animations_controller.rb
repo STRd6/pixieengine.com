@@ -6,9 +6,6 @@ class AnimationsController < ApplicationController
   before_filter :filter_results, :only => [:index]
 
   def new
-    @user_sprites = current_user.sprites
-
-    respond_with(@animation)
   end
 
   def create
