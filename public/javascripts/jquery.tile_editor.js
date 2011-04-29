@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 23:04:29 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 23:59:39 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, entered, firstGID, floodFill, getNeighborPositions, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, entered, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: 2,
       tilesWide: 20,
@@ -26,6 +26,10 @@
     tileTray = "nav.bottom .tiles";
     layerSelect = "nav.left .layer_select";
     positionElementIndices = [];
+    grid = GridGen({
+      width: tileWidth,
+      height: tileHeight
+    });
     if ($.fn.pixie) {
       createPixelEditor = function(options) {
         var pixelEditor, url;
@@ -628,6 +632,7 @@
       height: tileHeight
     });
     tileEditor.find(".screen .layers").css({
+      backgroundImage: grid.backgroundImage(),
       width: tilesWide * tileWidth,
       height: tilesTall * tileHeight
     });

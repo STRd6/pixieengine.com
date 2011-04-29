@@ -31,6 +31,10 @@ $.fn.tileEditor = (options) ->
 
   positionElementIndices = []
 
+  grid = GridGen
+    width: tileWidth
+    height: tileHeight
+
   if $.fn.pixie
     createPixelEditor = (options) ->
       url = options.url
@@ -628,6 +632,7 @@ $.fn.tileEditor = (options) ->
     height: tileHeight
 
   tileEditor.find(".screen .layers").css
+    backgroundImage: grid.backgroundImage()
     width: tilesWide * tileWidth
     height: tilesTall * tileHeight
 
