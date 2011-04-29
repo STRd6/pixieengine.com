@@ -31,7 +31,7 @@ $sprite_container_bounds: 72px
 
   .duplicate
     background-image: url(/images/duplicate_layer.png)
-    bottom: 18px
+    bottom: 30px
 
 .hitcircle_editor
   display: none
@@ -118,7 +118,7 @@ $sprite_container_bounds: 72px
 
     .demo
       +border-radius
-      +bounds($sprite_container_bounds)
+      +bounds(96px)
       +box-shadow($dark_box_shadow, 2px, 2px, 15px)
 
       background-color: #ccc
@@ -128,6 +128,7 @@ $sprite_container_bounds: 72px
         +box-shadow($light_box_shadow, 3px, 3px, 15px)
 
     .sprite_container
+      +bounds(96px)
       +box-shadow($dark_box_shadow, 2px, 2px, 15px)
 
       border: 4px solid transparent
@@ -153,8 +154,8 @@ $sprite_container_bounds: 72px
 
     p
       position: absolute
-      bottom: ($sprite_container_bounds / 2) + 15
-      left: ($sprite_container_bounds) + 35px
+      bottom: (96 / 2) + 15px
+      left: (96) + 35px
       margin: 0
 
   nav.right
@@ -193,7 +194,7 @@ $sprite_container_bounds: 72px
 
       .animation
         +border-radius
-        +bounds($sprite_container_bounds)
+        +bounds(96px)
 
         background-color: #fff
         margin-left: auto
@@ -202,7 +203,7 @@ $sprite_container_bounds: 72px
 
       .cover
         +border-radius
-        +bounds($sprite_container_bounds)
+        +bounds(96px)
         +box-sizing(border-box)
         +contents-centered
 
