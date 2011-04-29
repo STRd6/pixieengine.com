@@ -25,6 +25,10 @@
         {:type => "tilemap", :directory => "data", :ext => "tilemap"},
         {:tilesWide => 15, :tilesTall => 10, :tileWidth => 32, :tileHeight => 32}
       ],
+      ["Animation",
+        {:type => "animation", :directory => "data", :ext => "animation"},
+        {}
+      ]
     ]
 
   - choices.each do |choice, params, fields|
@@ -120,11 +124,3 @@
 
     if newNode
       $.modal.close()
-
-
-%style
-  :sass
-    #new_file_modal
-      h3
-        display: inline-block
-        margin-right: 1em
