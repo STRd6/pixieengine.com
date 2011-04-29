@@ -342,7 +342,10 @@
       path: (projectConfig.name || "project") + ".js"
 
   appConfigCode = () ->
-    CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
+    globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
+    conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
+
+    [globals, conf].join("\n")
 
   runApp = () ->
     width = projectConfig.width

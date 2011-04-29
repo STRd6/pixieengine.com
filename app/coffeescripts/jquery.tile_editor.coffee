@@ -31,6 +31,10 @@ $.fn.tileEditor = (options) ->
 
   positionElementIndices = []
 
+  grid = GridGen
+    width: tileWidth
+    height: tileHeight
+
   if $.fn.pixie
     createPixelEditor = (options) ->
       url = options.url
@@ -81,6 +85,23 @@ $.fn.tileEditor = (options) ->
           src: data
 
         tileEditor.find('.component .tiles').append img
+
+  createNewTile = ->
+    if createPixelEditor
+      pixelEditor = createPixelEditor
+        width: tileWidth
+        height: tileHeight
+        tileEditor: tileEditor
+
+      pixelEditor.bind 'save', (event, data) ->
+        img = $ "<img/>",
+          src: data
+
+        tileEditor.find('.component .tiles').append img
+
+  deleteTile = (tile) ->
+    #TODO Maybe remove instances of tile in map
+    tile.remove()
 
   tilePosition = (element, event) ->
     offset = element.offset()
@@ -383,6 +404,12 @@ $.fn.tileEditor = (options) ->
   $(".tiles img", tileEditor).live "dblclick", (event) ->
     pixelEditTile($(this))
 
+  tileEditor.find("button.new_tile").click () ->
+    createNewTile()
+
+  tileEditor.find("button.delete_tile").click () ->
+    deleteTile(tileEditor.find('.tiles img.primary'))
+
   tileEditor.find(".prop_save").click (event) ->
     if propElement
       propElement.data("properties", propEditor.getProps())
@@ -601,10 +628,11 @@ $.fn.tileEditor = (options) ->
       addNewLayer()
 
   tileEditor.find(".screen .cursor").css
-    width: tileWidth
-    height: tileHeight
+    width: tileWidth - 1
+    height: tileHeight - 1
 
   tileEditor.find(".screen .layers").css
+    backgroundImage: grid.backgroundImage()
     width: tilesWide * tileWidth
     height: tilesTall * tileHeight
 
