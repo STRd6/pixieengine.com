@@ -245,7 +245,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if type == "text" || type == "tilemap"
+      if type == "text" || type == "tilemap" || type == "animation"
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -289,6 +289,8 @@ class Project < ActiveRecord::Base
       "binary"
     when "tilemap"
       "tilemap"
+    when "animation"
+      "animation"
     end
   end
 
