@@ -14,12 +14,11 @@
   hitcircleEditor = $('.hitcircle_editor')
 
   transform = Matrix.translation(#{canvas_width} / 2, #{canvas_height} / 2)
-  animation = null
-  currentFrame = 0
+  sprite_img = null
   active = {}
   window.editorActive = false
 
-  frames = null
+  bodies = null
 
   showCircles = true
   activeColor = "rgba(255, 0, 255, 0.5)"
@@ -31,8 +30,8 @@
         getCircles: ->
           transform = this.getTransform()
 
-          if frames && frames[currentFrame]
-            return $.map frames[currentFrame].circles, (circle) ->
+          if bodies && bodies.circles
+            return $.map bodies.circles, (circle) ->
               point = transform.transformPoint(circle)
               return {
                 x: point.x
@@ -46,11 +45,9 @@
         getTransform: -> transform
 
         draw: (canvas) ->
-          if animation
-            animation.frame(currentFrame)
-
+          if sprite_img
             canvas.withTransform this.getTransform(), ->
-              animation.draw(canvas, -animation.width / 2, -animation.height / 2)
+              sprite_img.draw(canvas, -sprite_img.width / 2, -sprite_img.height / 2)
 
           if showCircles
             $.each this.getCircles(), (i, circle) ->
@@ -91,15 +88,17 @@
         active[activeType] = activeComponent
 
   generateComponentMethods = (component, creator) ->
-    getter = -> frames[currentFrame][component]
+    getter = -> bodies[component]
 
     return {
       add: (param) ->
         active[component] = creator()
         if component == "circles"
+          debugger
+
           getter().push(active[component])
         else
-          frames[currentFrame][component][param] = active[component]
+          bodies[component][param] = active[component]
 
       grow: (delta) ->
         c = active[component]
@@ -182,7 +181,6 @@
 
   LoaderProxy = ->
     draw: $.noop
-    frame: $.noop
     update: $.noop
     width: null
     height: null
@@ -208,11 +206,6 @@
           sheight || height
         )
 
-      frame: (newFrame) ->
-        return this unless newFrame == undefined
-
-        return 0
-
       width: width
       height: height
     }
@@ -235,16 +228,15 @@
 
   window.loadImage = (url, hitCircles) ->
     Sprite.load url, (sprite) ->
-      animation = sprite
-      currentFrame = animation.frame()
-      frames = [circles: hitCircles || []]
+      sprite_img = sprite
+      bodies = {circles: hitCircles || []}
 
   hitcircleEditor.find(".export").click ->
     window.editorActive = false
 
     selected_sprite_src = $('.frame_sprites .sprite_container.selected img').attr('src')
 
-    $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(frames[0]))
+    $('.frame_sprites .sprite_container').find('img[src="' + selected_sprite_src + '"]').attr('data-hit_circles', JSON.stringify(bodies))
 
     hitcircleEditor.hide()
     $('.animation_editor').show()

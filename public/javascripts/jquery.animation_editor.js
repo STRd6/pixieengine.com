@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 16:04:46 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 16:45:58 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
