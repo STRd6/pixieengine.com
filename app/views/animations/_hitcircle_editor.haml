@@ -6,9 +6,9 @@
     .actions
   %section
     .frames
-      %canvas#editor_canvas{:width => canvas_width, :height => canvas_height}
-      %button#export Save
-      %button#back Back to animation
+      %canvas.editor_canvas{:width => canvas_width, :height => canvas_height}
+      %button.export Save
+      %button.back Back to animation
 
 :coffeescript
   hitcircleEditor = $('.hitcircle_editor')
@@ -26,7 +26,7 @@
   activeColor = "rgba(255, 0, 255, 0.5)"
   circleColor = "rgba(255, 0, 0, 0.5)"
 
-  $('#editor_canvas').powerCanvas
+  hitcircleEditor.find('.editor_canvas').powerCanvas
     init: (canvas) ->
       character =
         getCircles: ->
@@ -171,7 +171,7 @@
 
   toggle_show = Button("Show / Hide", -> showCircles = !showCircles)
 
-  $('#back').mousedown ->
+  hitcircleEditor.find('.back').mousedown ->
     window.editorActive = false
 
     hitcircleEditor.hide()
@@ -240,7 +240,7 @@
       currentFrame = animation.frame()
       frames = [circles: hitCircles || []]
 
-  $("#export").click ->
+  hitcircleEditor.find(".export").click ->
     window.editorActive = false
 
     selected_sprite_src = $('.frame_sprites .sprite_container.selected img').attr('src')
