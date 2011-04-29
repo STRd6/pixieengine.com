@@ -3,16 +3,25 @@ window.GridGen = (options) ->
     color: "#414141"
     height: 32
     width: 32
+    guide: 5
   , options
 
-  canvasWidth = options.width
-  canvasHeight = options.height
+  {width, height, guide, color} = options
+
+  canvasWidth = width * guide
+  canvasHeight = height * guide
   canvas = $("<canvas width='#{canvasWidth}' height='#{canvasHeight}'></canvas>").get(0)
   context = canvas.getContext("2d")
 
-  context.fillStyle = options.color
-  context.fillRect(0, 0, 1, canvasHeight)
-  context.fillRect(0, 0, canvasWidth, 1)
+  context.fillStyle = color
+
+  guide.times (i) ->
+    context.fillRect(i * width, 0, 1, canvasHeight)
+    context.fillRect(0, i * height, canvasWidth, 1)
+
+  # Draw the strong line
+  context.fillRect(0, 0, 2, canvasHeight)
+  context.fillRect(0, 0, canvasWidth, 2)
 
   backgroundImage: ->
     "url(#{this.toDataURL()})"
