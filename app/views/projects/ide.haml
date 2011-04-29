@@ -56,6 +56,7 @@
     %h3.ui-widget-header Test #{project.title}
     %iframe#unit_test_frame
 
+= render :partial => "animation_editor"
 = render :partial => "context_menu"
 = render :partial => "tips"
 = render :partial => "pixie"
@@ -477,6 +478,18 @@
       updateSaved: () -> #TODO
       doSave: () ->
         pixelEditor.trigger('doSave')
+
+    else if type == "animation"
+      animationEditor = createAnimationEditor
+        panel: panel
+        path: path
+
+      animationEditor.bind('save', save)
+
+      cssClass: type
+      updateSaved: -> #TODO
+      doSave: ->
+        animationEditor.trigger('doSave')
 
     else if type == "tilemap"
       tileEditor = createTileEditor
