@@ -628,8 +628,8 @@ $.fn.tileEditor = (options) ->
       addNewLayer()
 
   tileEditor.find(".screen .cursor").css
-    width: tileWidth
-    height: tileHeight
+    width: tileWidth - 1
+    height: tileHeight - 1
 
   tileEditor.find(".screen .layers").css
     backgroundImage: grid.backgroundImage()

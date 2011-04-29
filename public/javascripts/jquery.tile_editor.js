@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 23:59:39 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 00:08:37 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -628,8 +628,8 @@
       });
     }
     tileEditor.find(".screen .cursor").css({
-      width: tileWidth,
-      height: tileHeight
+      width: tileWidth - 1,
+      height: tileHeight - 1
     });
     tileEditor.find(".screen .layers").css({
       backgroundImage: grid.backgroundImage(),
