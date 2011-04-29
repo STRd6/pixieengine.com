@@ -60,6 +60,10 @@ class Project < ActiveRecord::Base
     title
   end
 
+  def base_url
+    "/production/projects/#{id}"
+  end
+
   def demo_path
     File.join base_path, DEMO_ID.to_s
   end
