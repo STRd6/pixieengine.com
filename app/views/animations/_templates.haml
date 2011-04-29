@@ -14,15 +14,15 @@
     .demo
     %p Drag sprites here to start animating
 
-  .editor_template
+  .editor.template
     %section
       .user_sprites
-        - if @user_sprites.empty?
+        - if current_user.sprites.empty?
           %p
             You have not created any sprites yet. Make some in the
             = link_to "Pixel Editor", new_sprite_path
         - else
-          = render :partial => 'animations/animation_sprite', :collection => @user_sprites
+          = render :partial => 'animations/animation_sprite', :collection => current_user.sprites
 
     %nav.bottom
       .frame_sprites

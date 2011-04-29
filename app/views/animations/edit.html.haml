@@ -1,7 +1,6 @@
 = render :partial => 'animation_editor'
-= render :partial => 'templates'
 
 :coffeescript
   $ ->
-    $(".animation_editor").animationEditor
+    editor = $("<div />").appendTo('body').animationEditor
       data: JSON.parse(#{@animation.string_data.to_json})

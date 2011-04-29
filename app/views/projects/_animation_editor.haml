@@ -1,5 +1,4 @@
 = stylesheet_link_tag 'animation_editor'
-= render :partial => "animations/animation_editor"
 = render :partial => "animations/templates"
 
 :coffeescript
@@ -21,7 +20,7 @@
     animationEditor = $('<div />').appendTo(panel).animationEditor(editorOptions)
 
     animationEditor.bind 'doSave', ->
-      dataString = JSON.stringify(animationEditor.mapData())
+      dataString = JSON.stringify(animationEditor.animationData())
 
       panel.find("[name=contents]").val(dataString)
 
