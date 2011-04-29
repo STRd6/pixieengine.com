@@ -1,17 +1,18 @@
 - canvas_width = 640
 - canvas_height = 480
 
-.hitcircle_editor
-  %nav.top
-    .actions
-  %section
-    .frames
-      %canvas.editor_canvas{:width => canvas_width, :height => canvas_height}
-      %button.export Save
-      %button.back Back to animation
+#hitcircle_editor_templates.template
+  .editor.template
+    %nav.top
+      .actions
+    %section
+      .frames
+        %canvas.editor_canvas{:width => canvas_width, :height => canvas_height}
+        %button.export Save
+        %button.back Back to animation
 
 :coffeescript
-  hitcircleEditor = $('.hitcircle_editor')
+  hitcircleEditor = $('.editor')
 
   transform = Matrix.translation(#{canvas_width} / 2, #{canvas_height} / 2)
   sprite_img = null
@@ -94,8 +95,6 @@
       add: (param) ->
         active[component] = creator()
         if component == "circles"
-          debugger
-
           getter().push(active[component])
         else
           bodies[component][param] = active[component]

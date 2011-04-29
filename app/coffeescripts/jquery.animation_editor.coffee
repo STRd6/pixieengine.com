@@ -255,7 +255,7 @@ $.fn.animationEditor = (options) ->
       loadImage(image_src, image_circles)
 
       animationEditor.hide()
-      $('.hitcircle_editor').show()
+      $('#hitcircle_editor_templates').find('.editor').show().appendTo('body')
 
   $(document).bind "keydown", 'left', (event) ->
     if window.currentComponent == animationEditor

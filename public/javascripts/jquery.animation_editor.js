@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 16:45:58 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 23:36:35 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -265,7 +265,7 @@
         image_circles = find_hit_circles(selected_sprite);
         loadImage(image_src, image_circles);
         animationEditor.hide();
-        return $('.hitcircle_editor').show();
+        return $('#hitcircle_editor_templates').find('.editor').show().appendTo('body');
       }
     });
     $(document).bind("keydown", 'left', function(event) {
