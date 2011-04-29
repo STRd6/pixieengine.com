@@ -3,29 +3,32 @@ $.fn.animationEditor = (options) ->
     speed: 110
   , options)
 
-  return this.each ->
-    animationEditor = $(this.get(0)).addClass("animation_editor")
+  animationEditor = $(this.get(0)).addClass("animation_editor")
 
-    animationEditor.find('input.speed').val(options.speed)
+  templates = $("#animation_editor_templates")
 
-    animationEditor.mousedown ->
-      window.currentComponent = animationEditor
+  templates.find(".editor.template").tmpl().appendTo(animationEditor)
 
-    animation_id = null
-    preview_dirty = false
-    clear_frame_sprites = -> frame_sprites().remove()
+  animationEditor.find('input.speed').val(options.speed)
 
-    frame_sprites = -> frame_sprites_container().children()
+  animationEditor.mousedown ->
+    window.currentComponent = animationEditor
 
-    frame_sprites_container = -> animationEditor.find('.frame_sprites')
+  animation_id = null
+  preview_dirty = false
+  clear_frame_sprites = -> frame_sprites().remove()
 
-    frame_selected_sprite = -> animationEditor.find('.frame_sprites .sprite_container.selected')
+  frame_sprites = -> frame_sprites_container().children()
 
-    active_animation = -> animationEditor.find('.animations .animation .active')
+  frame_sprites_container = -> animationEditor.find('.frame_sprites')
 
-    active_animation_sprites = -> active_animation().parent().find('.sprites')
+  frame_selected_sprite = -> animationEditor.find('.frame_sprites .sprite_container.selected')
 
-    clear_preview = -> animationEditor.find('.preview_box img').remove()
+  active_animation = -> animationEditor.find('.animations .animation .active')
+
+  active_animation_sprites = -> active_animation().parent().find('.sprites')
+
+  clear_preview = -> animationEditor.find('.preview_box img').remove()
 
   if $.fn.pixie
     createPixelEditor = (options) ->
@@ -62,204 +65,203 @@ $.fn.animationEditor = (options) ->
 
       return pixelEditor
 
-    save = (event, data) ->
-      notify "Saving..."
+  pixelEditFrame = (selectedFrame) ->
+    if createPixelEditor
+      imgSource = selectedFrame.attr('src')
 
-      $('.pixie').remove()
-      animationEditor.show()
+      pixelEditor = createPixelEditor
+        width: selectedFrame.get(0).width
+        height: selectedFrame.get(0).height
+        animationEditor: animationEditor
+        url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
-      successCallback = (data) ->
-        notify "Saved!"
+      pixelEditor.bind 'save', save
 
-        new_sprite = $('#load_sprite').tmpl
-          alt: data.sprite.title
-          id: data.sprite.id
-          title: data.sprite.title
-          url: data.sprite.src
+  save = (event, data) ->
+    notify "Saving..."
 
-        sprite_copy = new_sprite.clone()
+    $('.pixie').remove()
+    animationEditor.show()
 
-        sprite_copy.appendTo('.user_sprites')
+    successCallback = (data) ->
+      notify "Saved!"
 
-        animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(sprite_copy).remove()
-        animationEditor.find('.animations .animation .cover.active img').before(new_sprite.find('img')).remove()
+      new_sprite = templates.find('.load_sprite').tmpl
+        alt: data.sprite.title
+        id: data.sprite.id
+        title: data.sprite.title
+        url: data.sprite.src
 
-      if data
-        postData = $.extend({format: 'json'}, data)
+      sprite_copy = new_sprite.clone()
 
-        $.post '/sprites', postData, successCallback
+      sprite_copy.appendTo(animationEditor.find('.user_sprites'))
 
-    update_active_animation = ->
-      active_animation_sprites().parent().find('.sprites').children().remove()
-      frame_sprites().clone().appendTo(active_animation_sprites())
+      animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(sprite_copy).remove()
+      animationEditor.find('.animations .animation .cover.active img').before(new_sprite.find('img')).remove()
 
-      active_animation().parent().find('.speed').text($('input.speed').val())
+    if data
+      postData = $.extend({format: 'json'}, data)
 
-    animationEditor.find(".frame_sprites").dropImageReader (file, event) ->
-      if event.target.readyState == FileReader.DONE
-        sprite_container = $("<div class='sprite_container'></div>")
+      $.post '/sprites', postData, successCallback
 
-        img = $ "<img/>",
-          alt: file.name
-          src: event.target.result
-          title: file.name
+  update_active_animation = ->
+    active_animation_sprites().parent().find('.sprites').children().remove()
+    frame_sprites().clone().appendTo(active_animation_sprites())
 
-        img.attr('data-hit_circles', JSON.stringify({ circles: [] }))
+    active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val())
 
-        sprite_container.append(img)
+  animationEditor.find(".frame_sprites").dropImageReader (file, event) ->
+    if event.target.readyState == FileReader.DONE
+      sprite_container = $("<div class='sprite_container'></div>")
 
-        animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
-        $(this).append sprite_container
+      img = $ "<img/>",
+        alt: file.name
+        src: event.target.result
+        title: file.name
 
-    animationEditor.find('.animation').live 'mousedown', ->
-      update_active_animation()
+      img.attr('data-hit_circles', JSON.stringify({ circles: [] }))
 
-      animationEditor.find('.speed').val($(this).find('.speed').text())
-      stop_animation()
-      clear_frame_sprites()
+      sprite_container.append(img)
 
-      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
+      animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
+      $(this).append sprite_container
 
-      active_animation().removeClass('active')
-      $(this).find('.cover').addClass('active')
+  animationEditor.find('.animation').live 'mousedown', ->
+    update_active_animation()
 
-    animationEditor.find('.new_animation').mousedown ->
-      update_active_animation()
-      stop_animation()
+    animationEditor.find('.speed').val($(this).find('.speed').text())
+    stop_animation()
+    clear_frame_sprites()
 
-      active_animation().removeClass('active')
+    $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
 
-      clear_frame_sprites()
+    active_animation().removeClass('active')
+    $(this).find('.cover').addClass('active')
 
-      $('#placeholder').tmpl().appendTo('.frame_sprites')
+  animationEditor.find('.new_animation').mousedown ->
+    update_active_animation()
+    stop_animation()
 
-      $('#create_animation').tmpl(
-        name: "Animation " + ($('.animations .animation').length + 1)
-      ).insertAfter($('.animations .animation').last())
+    active_animation().removeClass('active')
 
-    animationEditor.find('.frame_sprites').sortable
-      axis: "x"
-      out: ->
-        $(this).removeClass('highlight')
-      over: ->
-        $(this).addClass('highlight')
-        animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
-      receive: (event, ui) ->
-        $(this).removeClass('highlight')
-        active_animation().children().remove()
-        active_animation().append(ui.item.find('img').clone())
+    clear_frame_sprites()
 
-    $(window).resize ->
+    templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
+
+    templates.find('.create_animation').tmpl(
+      name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
+    ).insertAfter(animationEditor.find('.animations .animation').last())
+
+  animationEditor.find('.frame_sprites').sortable
+    axis: "x"
+    out: ->
+      $(this).removeClass('highlight')
+    over: ->
+      $(this).addClass('highlight')
+      animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
+    receive: (event, ui) ->
+      $(this).removeClass('highlight')
+      active_animation().children().remove()
+      active_animation().append(ui.item.find('img').clone())
+
+  $(window).resize ->
+    if window.currentComponent == animationEditor
       animationEditor.find('.frame_sprites').sortable('refresh')
 
-    animationEditor.find('.user_sprites .sprite_container').draggable
-      addClasses: false
-      connectToSortable: '.frame_sprites'
-      containment: 'window'
-      helper: 'clone'
-      opacity: 0.7
-      refreshPositions: true
-      zIndex: 200
+  animationEditor.find('.user_sprites .sprite_container').draggable
+    addClasses: false
+    connectToSortable: '.frame_sprites'
+    containment: 'window'
+    helper: 'clone'
+    opacity: 0.7
+    refreshPositions: true
+    zIndex: 200
 
-    animationEditor.find('.animation_editor img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
-      event.preventDefault()
+  animationEditor.find('.animation_editor img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
+    event.preventDefault()
 
-    play_next = ->
-      preview_sprites = animationEditor.find('.preview_box img')
-      active = animationEditor.find('.preview_box img.active').removeClass('active')
+  play_next = ->
+    preview_sprites = animationEditor.find('.preview_box img')
+    active = animationEditor.find('.preview_box img.active').removeClass('active')
 
-      active_index = active.index()
-      length = preview_sprites.length
+    active_index = active.index()
+    length = preview_sprites.length
 
-      preview_sprites.eq((active_index + 1) % length).addClass('active')
+    preview_sprites.eq((active_index + 1) % length).addClass('active')
 
-    play_animation = ->
-      clearInterval(animation_id)
+  play_animation = ->
+    clearInterval(animation_id)
 
-      if (animationEditor.find('.preview_box img').length != animationEditor.find('.frame_sprites img').length) || preview_dirty
-        preview_dirty = false
-        clear_preview()
-        preview_sprites = animationEditor.find('.frame_sprites img').attr('style', '').clone()
-        animationEditor.find('.preview_box .sprites').append(preview_sprites)
-
-        preview_sprites.first().addClass('active')
-
-      animation_id = setInterval(play_next, animationEditor.find('input.speed').val())
-
-    pause_animation = ->
-      clearInterval(animation_id)
-
-    stop_animation = ->
-      clearInterval(animation_id)
-
+    if (animationEditor.find('.preview_box img').length != animationEditor.find('.frame_sprites img').length) || preview_dirty
+      preview_dirty = false
       clear_preview()
+      preview_sprites = animationEditor.find('.frame_sprites img').attr('style', '').clone()
+      animationEditor.find('.preview_box .sprites').append(preview_sprites)
 
-      animationEditor.find('.play').removeClass("pause")
+      preview_sprites.first().addClass('active')
 
-    animationEditor.find('.play').mousedown ->
-      if $(this).hasClass("pause") then pause_animation() else play_animation()
+    animation_id = setInterval(play_next, animationEditor.find('input.speed').val())
 
-      $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
+  pause_animation = ->
+    clearInterval(animation_id)
 
-    animationEditor.find('.stop').mousedown ->
-      stop_animation()
+  stop_animation = ->
+    clearInterval(animation_id)
 
-    animationEditor.find('.frame_sprites .sprite_container').live
-      click: -> $(this).addClass('selected')
-      dblclick: (event) ->
-        target = $(event.target)
+    clear_preview()
 
-        if !(target.is('.duplicate') || target.is('.x'))
-          $(this).addClass('pixel_editor')
-          unless animationEditor.find('.pixie').length
-            pixelEditor = createPixelEditor
-              width: 32
-              height: 32
-              image: $(this).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+    animationEditor.find('.play').removeClass("pause")
 
-            pixelEditor.bind('save', save)
+  animationEditor.find('.play').mousedown ->
+    if $(this).hasClass("pause") then pause_animation() else play_animation()
 
-            $('#fullscreen').append(pixelEditor)
-            animationEditor.hide()
+    $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
 
-            doSave: () ->
-              pixelEditor.trigger('doSave')
+  animationEditor.find('.stop').mousedown ->
+    stop_animation()
 
-      mouseenter: ->
-        $('<div class="x" />').appendTo $(this)
-        $('<div class="duplicate" />').appendTo $(this)
-      mouseleave: ->
-        $(this).find('.x, .duplicate').remove()
+  animationEditor.find('.frame_sprites .sprite_container').live
+    click: -> $(this).addClass('selected')
+    dblclick: (event) ->
+      pixelEditFrame($(this).find('img'))
 
-    animationEditor.mousedown ->
-      frame_selected_sprite().removeClass('selected')
+    mouseenter: ->
+      $('<div class="x" />').appendTo $(this)
+      $('<div class="duplicate" />').appendTo $(this)
+    mouseleave: ->
+      $(this).find('.x, .duplicate').remove()
 
-    $(document).bind "keydown", 'h', (event) ->
+  animationEditor.mousedown ->
+    frame_selected_sprite().removeClass('selected')
+
+  $(document).bind "keydown", 'h', (event) ->
+    if window.currentComponent == animationEditor
       window.editorActive = true
       event.preventDefault()
 
-      find_hit_circles = (sprite_el) ->
-        if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').attr('data-hit_circles').length
-          return JSON.parse($(sprite_el).find('img').attr('data-hit_circles')).circles
+    find_hit_circles = (sprite_el) ->
+      if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').attr('data-hit_circles').length
+        return JSON.parse($(sprite_el).find('img').attr('data-hit_circles')).circles
 
-        return null
+      return null
 
-      selected_sprite = frame_selected_sprite()
+    selected_sprite = frame_selected_sprite()
 
-      if $(selected_sprite).length
-        image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
+    if $(selected_sprite).length
+      image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
 
-        image_circles = find_hit_circles(selected_sprite)
+      image_circles = find_hit_circles(selected_sprite)
 
-        Sprite.loadImage(image_src, image_circles)
+      Sprite.loadImage(image_src, image_circles)
 
-        animationEditor.hide()
-        $('.hitcircle_editor').hitcircleEditor
-          width: image_src.width
-          height: image_src.height
-          sprite: image_src
+      animationEditor.hide()
+      $('.hitcircle_editor').hitcircleEditor
+        width: image_src.width
+        height: image_src.height
+        sprite: image_src
 
-    $(document).bind "keydown", 'left', (event) ->
+  $(document).bind "keydown", 'left', (event) ->
+    if window.currentComponent == animationEditor
       preview_dirty = true
       event.preventDefault()
 
@@ -269,7 +271,8 @@ $.fn.animationEditor = (options) ->
       if selected_sprite.prev().length
         selected_sprite.prev().before(selected_sprite)
 
-    $(document).bind "keydown", 'right', (event) ->
+  $(document).bind "keydown", 'right', (event) ->
+    if window.currentComponent == animationEditor
       preview_dirty = true
       event.preventDefault()
 
@@ -279,132 +282,119 @@ $.fn.animationEditor = (options) ->
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
 
-    animationEditor.find('.animations .name, .filename').liveEdit()
+  animationEditor.find('.animations .name, .filename').liveEdit()
 
-    animationEditor.find('.x').live 'mousedown', ->
-      parent = $(this).parent()
+  animationEditor.find('.x').live 'mousedown', ->
+    parent = $(this).parent()
 
-      if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
-        parent.next().append('<div class= "x" />')
-        parent.next().append('<div class= "duplicate" />')
+    if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
+      parent.next().append('<div class= "x" />')
+      parent.next().append('<div class= "duplicate" />')
 
-      parent.fadeOut 150, ->
-        parent.remove()
+    parent.fadeOut 150, ->
+      parent.remove()
 
-        $('#placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
+      templates.find('.placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
 
-    animationEditor.find('.duplicate').live 'mousedown', ->
-      parent = $(this).parent()
-      newEl = parent.clone()
+  animationEditor.find('.duplicate').live 'mousedown', ->
+    parent = $(this).parent()
+    newEl = parent.clone()
 
-      newEl.find('.x, .duplicate').remove()
+    newEl.find('.x, .duplicate').remove()
 
-      newEl.insertAfter(parent)
+    newEl.insertAfter(parent)
 
-    animationEditor.find(".save").click ->
-      notify("Saving...")
+  animationEditor.find("button.save").click ->
+    options.save?(saveData())
 
-      postData =
-        format: 'json'
-        animation:
-          name: $(this).parent().find('.filename').text()
-          states: saveData().length
-          data_string: JSON.stringify(saveData())
+  loadData = (data) ->
+    if data && data.animations.length
+      $(data.animations).each (i, animation) ->
 
-      $.post('/animations', postData, (data) ->
-        id = data.animation.id
-        name = postData.animation.name
+        animation_el = templates.find('.create_animation').tmpl(
+          name: animation.name
+          speed: animation.speed
+        ).insertBefore('nav.right .new_animation')
 
-        display_name = (if (!name || name == "Title") then "Animation " + id else name)
+        $.each animation.frames, (i, frame) ->
+          active_animation().removeClass('active')
 
-        notify("Saved as <a href='/animations'>" + display_name + "</a>!")
+          templates.find('.load_sprite').tmpl(
+            url: data.tileset[frame].src
+            alt: data.tileset[frame].title
+            title: data.tileset[frame].title
+            id: data.tileset[frame].id
+            circles: JSON.stringify({ circles: data.tileset[frame].circles })
+          ).appendTo(animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
 
-      , "json")
+        last_sprite_img = animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
 
-    loadData = (data) ->
-      if data && data.animations.length
-        $(data.animations).each (i, animation) ->
+        animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
 
-          animation_el = $('#create_animation').tmpl(
-            name: animation.name
-            speed: animation.speed
-          ).insertBefore('nav.right .new_animation')
+      animationEditor.find('.speed').val(active_animation().find('.speed').text())
+      stop_animation()
+      clear_frame_sprites()
 
-          $.each animation.frames, (i, frame) ->
-            active_animation().removeClass('active')
+      active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
 
-            $('#load_sprite').tmpl(
-              url: data.tileset[frame].src
-              alt: data.tileset[frame].title
-              title: data.tileset[frame].title
-              id: data.tileset[frame].id
-              circles: JSON.stringify({ circles: data.tileset[frame].circles })
-            ).appendTo(animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
+      animationEditor.find('.animations .animation').first().mousedown()
+    else
+      templates.find('.create_animation').tmpl(
+        name: "Animation 1"
+        speed: animationEditor.find('.speed').val()
+      ).insertBefore(animationEditor.find('.new_animation'))
 
-          last_sprite_img = animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
+      templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
 
-          animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
+  saveData = ->
+    update_active_animation()
 
-        animationEditor.find('.speed').val(active_animation().find('.speed').text())
-        stop_animation()
-        clear_frame_sprites()
+    frames = []
+    ids = []
+    tiles = []
 
-        active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
+    animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
+      circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
 
-        animationEditor.find('.animations .animation').first().mousedown()
-      else
-        $('#create_animation').tmpl(
-          name: "Animation 1"
-          speed: $('.speed').val()
-        ).insertBefore($('.new_animation'))
+      tile =
+        id: $(img).data('id')
+        src: $(img).attr('src')
+        title: $(img).attr('title') || $(img).attr('alt')
+        circles: circles
 
-        $('#placeholder').tmpl().appendTo('.frame_sprites')
+      if $.inArray(tile.id, ids) == -1
+        ids.push tile.id
+        tiles.push(tile)
 
-    saveData = ->
-      update_active_animation()
+    animation_data = animationEditor.find('.animations .animation').map(->
+
+      frame_data = $(this).find('.sprites img').each (i, img) ->
+        tile_id = $(this).data('id')
+
+        frames.push(ids.indexOf(tile_id))
+
+      if frames.length
+
+        animation = {
+          name: $(this).prev().text()
+          speed: $(this).find('.speed').text()
+          frames: frames
+        }
 
       frames = []
-      ids = []
-      tiles = []
 
-      animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
-        circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
+      return animation
 
-        tile =
-          id: $(img).data('id')
-          src: $(img).attr('src')
-          title: $(img).attr('title') || $(img).attr('alt')
-          circles: circles
+    ).get()
 
-        if $.inArray(tile.id, ids) == -1
-          ids.push tile.id
-          tiles.push(tile)
+    return {
+      version: "1.3"
+      name: animationEditor.find('nav.right .filename').text()
+      tileset: tiles
+      animations: animation_data
+    }
 
-      animation_data = animationEditor.find('.animations .animation').map(->
+  loadData(options.data)
 
-        frame_data = $(this).find('.sprites img').each (i, img) ->
-          tile_id = $(this).data('id')
-
-          frames.push(ids.indexOf(tile_id))
-
-        if frames.length
-
-          animation = {
-            name: $(this).prev().text()
-            speed: $(this).find('.speed').text()
-            frames: frames
-          }
-
-        frames = []
-
-        return animation
-
-      ).get()
-
-      return {
-        version: "1.3"
-        tileset: tiles
-        animations: animation_data
-      }
-
-    loadData(options.data)
+  $.extend animationEditor,
+    animationData: saveData
