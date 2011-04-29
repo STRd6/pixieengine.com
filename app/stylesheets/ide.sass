@@ -152,6 +152,8 @@ ul.filetree
 
     &.file
       white-space: nowrap
+      &.animation
+        background-image: url(/images/icons/film.png)
       &.coffeescript, &.coffee
         background-image: url(/images/icons/cup.png)
       &.javascript, &.js
@@ -175,7 +177,7 @@ ul.filetree
         background-image: url(/images/icons/book_add.png)
 
 #tabs
-  +bounds(100%, 100%)
+  +bounds(100%)
   +box-sizing(border-box)
 
   .ui-tabs-nav
@@ -228,6 +230,8 @@ ul.filetree
         float: left
         margin: 0.5em 0 0 0.2em
 
+        &.animation
+          background-image: url(/images/icons/film.png)
         &.coffeescript
           background-image: url(/images/icons/cup.png)
         &.javascript
@@ -371,3 +375,8 @@ ul#libraries
     button
       margin-top: 0.5em
       margin-bottom: 0
+
+  #new_file_modal
+    h3
+      display: inline-block
+      margin-right: 1em
