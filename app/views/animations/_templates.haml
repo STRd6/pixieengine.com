@@ -17,7 +17,7 @@
   .editor.template
     %section
       .user_sprites
-        - if current_user.sprites.empty?
+        - if !current_user || current_user.sprites.empty?
           %p
             You have not created any sprites yet. Make some in the
             = link_to "Pixel Editor", new_sprite_path
