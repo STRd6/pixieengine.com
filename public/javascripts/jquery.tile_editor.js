@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 00:08:37 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Apr 2011 05:01:53 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -122,14 +122,14 @@
         "class": "layer",
         width: tilesWide * tileWidth,
         height: tilesTall * tileHeight
-      }).appendTo("section .layers");
-      tileEditor.find(".screen").find(".cursor, .selection").appendTo("section .layers");
+      }).appendTo(tileEditor.find("section .layers"));
+      tileEditor.find(".screen").find(".cursor, .selection").appendTo(tileEditor.find("section .layers"));
       return positionElementIndices.push({});
     };
     addNewLayer = function() {
       templates.find(".layer_select.template").tmpl({
         name: "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
-      }).appendTo(layerSelect).find('.name').mousedown();
+      }).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown();
       return addScreenLayer();
     };
     selectNextVisibleLayer = function() {
@@ -254,7 +254,7 @@
       row = void 0;
       savedSelection = templates.find(".saved_selection.template").tmpl({
         text: "Selection" + (++savedSelectionCount)
-      }).appendTo(".saved_selections");
+      }).appendTo(tileEditor.find(".saved_selections"));
       preview = savedSelection.find(".preview");
       selectionData = [];
       selectionEach(function(x, y) {
@@ -597,7 +597,7 @@
           "data-guid": tile.guid,
           "data-pixie_id": tile.pixieId,
           src: tile.src
-        }).appendTo(tileTray);
+        }).appendTo(tileEditor.find(tileTray));
         if (tile.properties) {
           return tileLookup[index].data("properties", tile.properties);
         }
@@ -609,7 +609,7 @@
         addScreenLayer();
         templates.find(".layer_select.template").tmpl({
           name: layer.name
-        }).appendTo(layerSelect);
+        }).appendTo(tileEditor.find(layerSelect));
         return layer.tiles.each(function(row, y) {
           return row.each(function(tile, x) {
             if (tile >= 0) {

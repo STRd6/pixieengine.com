@@ -119,16 +119,16 @@ $.fn.tileEditor = (options) ->
       class: "layer"
       width: tilesWide * tileWidth
       height: tilesTall * tileHeight
-    ).appendTo("section .layers")
+    ).appendTo(tileEditor.find("section .layers"))
 
-    tileEditor.find(".screen").find(".cursor, .selection").appendTo("section .layers")
+    tileEditor.find(".screen").find(".cursor, .selection").appendTo(tileEditor.find("section .layers"))
 
     positionElementIndices.push {}
 
   addNewLayer = () ->
     templates.find(".layer_select.template").tmpl(
       name: "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
-    ).appendTo(layerSelect).find('.name').mousedown()
+    ).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
 
     addScreenLayer()
 
@@ -260,7 +260,7 @@ $.fn.tileEditor = (options) ->
 
     savedSelection = templates.find(".saved_selection.template").tmpl(
       text: "Selection" + (++savedSelectionCount)
-    ).appendTo(".saved_selections")
+    ).appendTo(tileEditor.find(".saved_selections"))
 
     preview = savedSelection.find(".preview")
 
@@ -597,7 +597,7 @@ $.fn.tileEditor = (options) ->
         "data-guid": tile.guid
         "data-pixie_id": tile.pixieId
         src: tile.src
-      ).appendTo(tileTray)
+      ).appendTo(tileEditor.find(tileTray))
 
       if tile.properties
         tileLookup[index].data("properties", tile.properties)
@@ -612,7 +612,7 @@ $.fn.tileEditor = (options) ->
 
       templates.find(".layer_select.template").tmpl(
         name: layer.name
-      ).appendTo(layerSelect)
+      ).appendTo(tileEditor.find(layerSelect))
 
       layer.tiles.each (row, y) ->
         row.each (tile, x) ->
