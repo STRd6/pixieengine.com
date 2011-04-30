@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Apr 2011 23:36:35 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Apr 2011 00:36:30 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationEditor, animation_id, clear_frame_sprites, clear_preview, createPixelEditor, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
@@ -38,6 +38,22 @@
     clear_preview = function() {
       return animationEditor.find('.preview_box img').remove();
     };
+    if ($.fn.hitcircleEditor) {
+      createHitcircleEditor = function(options) {
+        var hitcircleEditor;
+        animationEditor = options.animationEditor;
+        hitcircleEditor = $('<div />').hitcircleEditor({
+          width: 640,
+          height: 480,
+          animationEditor: options.animationEditor,
+          sprite: options.sprite,
+          hitcircles: options.hitcircles
+        });
+        animationEditor.hide().after(hitcircleEditor);
+        window.currentComponent = hitcircleEditor;
+        return hitcircleEditor;
+      };
+    }
     if ($.fn.pixie) {
       createPixelEditor = function(options) {
         var pixelEditor, url;
@@ -87,6 +103,19 @@
           url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
         });
         return pixelEditor.bind('save', save);
+      }
+    };
+    editFrameCircles = function(sprite, hitcircles) {
+      var hitcircleEditor, imgSource;
+      if (createHitcircleEditor) {
+        imgSource = sprite.find('img').attr('src');
+        return hitcircleEditor = createHitcircleEditor({
+          width: 640,
+          height: 480,
+          animationEditor: animationEditor,
+          sprite: imgSource,
+          hitcircles: hitcircles
+        });
       }
     };
     save = function(event, data) {
@@ -263,9 +292,7 @@
       if ($(selected_sprite).length) {
         image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3');
         image_circles = find_hit_circles(selected_sprite);
-        loadImage(image_src, image_circles);
-        animationEditor.hide();
-        return $('#hitcircle_editor_templates').find('.editor').show().appendTo('body');
+        return editFrameCircles(selected_sprite, image_circles);
       }
     });
     $(document).bind("keydown", 'left', function(event) {

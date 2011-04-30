@@ -30,6 +30,23 @@ $.fn.animationEditor = (options) ->
 
   clear_preview = -> animationEditor.find('.preview_box img').remove()
 
+  if $.fn.hitcircleEditor
+    createHitcircleEditor = (options) ->
+      animationEditor = options.animationEditor
+
+      hitcircleEditor = $('<div />').hitcircleEditor
+        width: 640
+        height: 480
+        animationEditor: options.animationEditor
+        sprite: options.sprite
+        hitcircles: options.hitcircles
+
+      animationEditor.hide().after(hitcircleEditor)
+
+      window.currentComponent = hitcircleEditor
+
+      return hitcircleEditor
+
   if $.fn.pixie
     createPixelEditor = (options) ->
       url = options.url
@@ -76,6 +93,17 @@ $.fn.animationEditor = (options) ->
         url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
 
       pixelEditor.bind 'save', save
+
+  editFrameCircles = (sprite, hitcircles) ->
+    if createHitcircleEditor
+      imgSource = sprite.find('img').attr('src')
+
+      hitcircleEditor = createHitcircleEditor
+        width: 640
+        height: 480
+        animationEditor: animationEditor
+        sprite: imgSource
+        hitcircles: hitcircles
 
   save = (event, data) ->
     notify "Saving..."
@@ -252,10 +280,7 @@ $.fn.animationEditor = (options) ->
 
       image_circles = find_hit_circles(selected_sprite)
 
-      loadImage(image_src, image_circles)
-
-      animationEditor.hide()
-      $('#hitcircle_editor_templates').find('.editor').show().appendTo('body')
+      editFrameCircles(selected_sprite, image_circles)
 
   $(document).bind "keydown", 'left', (event) ->
     if window.currentComponent == animationEditor

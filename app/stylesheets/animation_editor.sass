@@ -34,15 +34,12 @@ $sprite_container_bounds: 72px
     bottom: 30px
 
 .hitcircle_editor
-  display: none
-
-  .frames
-    +bounds(640px, 480px)
-
+  nav.top
     left: 0
-    margin: auto
-    position: absolute
-    right: 0
+    position: relative
+
+  canvas
+    display: block
 
 .animation_editor
   +box-sizing(border-box)
