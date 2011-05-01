@@ -18,6 +18,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :download
       get :fullscreen
       get :ide
+      get :widget
 
       post :add_to_arcade
       post :feature

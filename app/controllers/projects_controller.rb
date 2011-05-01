@@ -69,6 +69,13 @@ class ProjectsController < ApplicationController
     @has_reg_popup = true
   end
 
+  def widget
+    respond_to do |format|
+      format.html { render :layout => "widget" }
+      format.js { render :layout => nil }
+    end
+  end
+
   def download
     project.zip_for_export
     send_file project.zip_path, :type=>"application/zip"
