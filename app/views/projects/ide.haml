@@ -471,6 +471,8 @@
         path: path
 
       pixelEditor.bind('save', save)
+      pixelEditor.bind 'dirty', ->
+        tab.parent().addClass("unsaved")
 
       panel.empty().append(pixelEditor)
 
@@ -496,7 +498,9 @@
         panel: panel
         path: path
 
-      tileEditor.bind('save', save)
+      tileEditor.bind 'save', save
+      tileEditor.bind 'dirty', ->
+        tab.parent().addClass("unsaved")
 
       cssClass: type
       updateSaved: () -> #TODO

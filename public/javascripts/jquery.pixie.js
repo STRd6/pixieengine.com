@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 28 Apr 2011 03:57:44 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 05:13:47 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -251,7 +251,8 @@
           var w;
           w = window.open();
           return w.document.location = canvas.toDataURL();
-        }
+        },
+        undoable: false
       }
     };
     colorNeighbors = function(color) {
@@ -514,6 +515,7 @@
         lastPixel = void 0;
         layer = Layer();
         guideLayer = Layer().bind("mousedown", function(e) {
+          pixie.trigger('dirty');
           undoStack.next();
           active = true;
           if (e.button === 0) {
@@ -560,6 +562,7 @@
             undoable = action.undoable;
             doIt = function() {
               if (undoable !== false) {
+                pixie.trigger('dirty');
                 undoStack.next();
               }
               return action.perform(canvas);
@@ -747,6 +750,7 @@
             var data;
             data = undoStack.popRedo();
             if (data) {
+              pixie.trigger("dirty");
               return $.each(data, function() {
                 return this.pixel.color(this.newColor, true, "replace");
               });
@@ -849,6 +853,7 @@
             var data;
             data = undoStack.popUndo();
             if (data) {
+              pixie.trigger("dirty");
               return $.each(data, function() {
                 return this.pixel.color(this.oldColor, true, "replace");
               });

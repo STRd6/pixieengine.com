@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 05:23:16 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
+/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 04:41:53 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, entered, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, entered, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: 2,
       tilesWide: 20,
@@ -16,6 +16,7 @@
     templates = $("#tile_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(tileEditor);
     debugMode = false;
+    dirty = false;
     firstGID = 1;
     tilesWide = parseInt(options.tilesWide, 10);
     tilesTall = parseInt(options.tilesTall, 10);
@@ -159,6 +160,10 @@
       if (!inBounds(x, y)) {
         return;
       }
+      if (!dirty) {
+        dirty = true;
+        tileEditor.trigger("dirty");
+      }
       posString = x + "x" + y;
       tile = tile.clone().removeClass("primary secondary").css({
         position: "absolute",
@@ -172,6 +177,10 @@
     };
     removeTile = function(x, y) {
       var posString;
+      if (!dirty) {
+        dirty = true;
+        tileEditor.trigger("dirty");
+      }
       tileAt(x, y).remove();
       posString = x + "x" + y;
       return positionElementIndices[currentLayer][posString] = void 0;
@@ -636,6 +645,10 @@
       width: tilesWide * tileWidth,
       height: tilesTall * tileHeight
     });
+    tileEditor.bind("clean", function() {
+      return dirty = false;
+    });
+    dirty = false;
     return $.extend(tileEditor, {
       mapData: saveData
     });
