@@ -13,6 +13,7 @@ $.fn.tileEditor = (options) ->
   templates.find(".editor.template").tmpl().appendTo(tileEditor)
 
   debugMode = false
+  dirty = false
 
   firstGID = 1
 
@@ -158,6 +159,10 @@ $.fn.tileEditor = (options) ->
   replaceTile = (x, y, tile) ->
     return unless inBounds(x, y)
 
+    if !dirty
+      dirty = true
+      tileEditor.trigger "dirty"
+
     posString = x + "x" + y
 
     tile = tile.clone().removeClass("primary secondary").css(
@@ -175,6 +180,10 @@ $.fn.tileEditor = (options) ->
     positionElementIndices[currentLayer][posString] = tile.get()
 
   removeTile = (x, y) ->
+    if !dirty
+      dirty = true
+      tileEditor.trigger "dirty"
+
     tileAt(x, y).remove()
 
     posString = x + "x" + y
@@ -635,6 +644,11 @@ $.fn.tileEditor = (options) ->
     backgroundImage: grid.backgroundImage()
     width: tilesWide * tileWidth
     height: tilesTall * tileHeight
+
+  tileEditor.bind "clean", ->
+    dirty = false
+
+  dirty = false
 
   $.extend tileEditor,
     mapData: saveData

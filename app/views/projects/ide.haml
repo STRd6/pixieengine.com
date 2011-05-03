@@ -499,7 +499,9 @@
         panel: panel
         path: path
 
-      tileEditor.bind('save', save)
+      tileEditor.bind 'save', save
+      tileEditor.bind 'dirty', ->
+        tab.parent().addClass("unsaved")
 
       cssClass: type
       updateSaved: () -> #TODO
