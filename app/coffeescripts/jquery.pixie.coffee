@@ -531,11 +531,14 @@
             titleText += " (#{action.hotkeys}) "
 
             $.each action.hotkeys, (i, hotkey) ->
-              $(document).bind 'keydown', hotkey, (e) ->
-                doIt()
-                e.preventDefault()
+              #TODO Add action hokey json data
 
-                false
+              $(document).bind 'keydown', hotkey, (e) ->
+                if currentComponent == pixie
+                  e.preventDefault()
+                  doIt()
+
+                  return false
 
           if action.menu != false
             iconImg = $ "<img />",
@@ -577,8 +580,13 @@
 
             $.each tool.hotkeys, (i, hotkey) ->
               $(document).bind 'keydown', hotkey, (e) ->
-                setMe()
-                e.preventDefault()
+                #TODO Generate tool hotkeys json data
+
+                if currentComponent == pixie
+                  e.preventDefault()
+                  setMe()
+
+                  return false
 
           img = $ "<img />",
             src: tool.icon
@@ -820,6 +828,11 @@
       $(navRight).append(colorbar, preview, opacitySlider)
       content.append(actionbar, viewport, navLeft, navRight)
       pixie.append(content)
+
+      pixie.bind 'mouseenter', ->
+        window.currentComponent = pixie
+
+      window.currentComponent = pixie
 
       if initializer
         initializer(canvas)

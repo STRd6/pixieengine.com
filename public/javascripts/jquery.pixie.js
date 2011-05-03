@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 05:13:47 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 18:31:31 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -571,9 +571,11 @@
               titleText += " (" + action.hotkeys + ") ";
               $.each(action.hotkeys, function(i, hotkey) {
                 return $(document).bind('keydown', hotkey, function(e) {
-                  doIt();
-                  e.preventDefault();
-                  return false;
+                  if (currentComponent === pixie) {
+                    e.preventDefault();
+                    doIt();
+                    return false;
+                  }
                 });
               });
             }
@@ -615,8 +617,11 @@
               alt += " (" + tool.hotkeys + ")";
               $.each(tool.hotkeys, function(i, hotkey) {
                 return $(document).bind('keydown', hotkey, function(e) {
-                  setMe();
-                  return e.preventDefault();
+                  if (currentComponent === pixie) {
+                    e.preventDefault();
+                    setMe();
+                    return false;
+                  }
                 });
               });
             }
@@ -885,6 +890,10 @@
         $(navRight).append(colorbar, preview, opacitySlider);
         content.append(actionbar, viewport, navLeft, navRight);
         pixie.append(content);
+        pixie.bind('mouseenter', function() {
+          return window.currentComponent = pixie;
+        });
+        window.currentComponent = pixie;
         if (initializer) {
           initializer(canvas);
         }
