@@ -34,8 +34,9 @@
         contents_base64: _canvas.toBase64()
         path: path
 
-    return pixelEditor
+    window.currentComponent = pixelEditor
 
+    return pixelEditor
 
   window.createPropertyPixelEditor = (options) ->
     width = options.width
@@ -72,6 +73,8 @@
         width: 800
         maxHeight: 600
         maxWidth: 800
+
+    window.currentComponent = pixelEditor
 
     return pixelEditor
 

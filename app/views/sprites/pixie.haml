@@ -34,10 +34,6 @@
 
   = button_to_function "New Canvas", "newCanvas()"
 
-- page_hotkeys = [["Pencil", ["p", 1]], ["Brush", ["b", 2]], ["Eye Dropper", ["i", 3]], ["Eraser", ["e", 4]], ["Fill", ["f", 5]]]
-
-= render :partial => "shared/hotkeys", :locals => { :page_hotkeys => page_hotkeys, :section_title => "Pixel Editor" }
-
 :javascript
   function newCanvas() {
     var newWidth = $('#resize_width').val();
@@ -105,7 +101,7 @@
       }, "script");
     }
 
-    $('#pixie').pixie({
+    pixie = $('#pixie').pixie({
       width: #{width},
       height: #{height},
       pixelSize: #{facebook?} ? 8 : 16,
@@ -190,5 +186,7 @@
         };
       }
     });
+
+    window.currentComponent = pixie
 
   })(jQuery);
