@@ -226,6 +226,7 @@
       perform: (canvas) ->
         w = window.open()
         w.document.location = canvas.toDataURL()
+      undoable: false
 
   colorNeighbors = (color) ->
     this.color(color)
@@ -470,6 +471,8 @@
       layer = Layer()
       guideLayer = Layer()
         .bind("mousedown", (e) ->
+          #TODO These triggers aren't perfect like the `dirty` method that queries.
+          pixie.trigger('dirty')
           undoStack.next()
           active = true
           if e.button == 0 then mode = "P" else mode = "S"
@@ -518,7 +521,10 @@
           undoable = action.undoable
 
           doIt = ->
-            undoStack.next() if undoable != false
+            if undoable != false
+              pixie.trigger('dirty')
+              undoStack.next()
+
             action.perform(canvas)
 
           if action.hotkeys
@@ -690,6 +696,8 @@
           data = undoStack.popRedo()
 
           if data
+            pixie.trigger("dirty")
+
             $.each data, ->
               this.pixel.color(this.newColor, true, "replace")
 
@@ -780,6 +788,8 @@
           data = undoStack.popUndo()
 
           if data
+            pixie.trigger("dirty")
+
             $.each data, ->
               this.pixel.color(this.oldColor, true, "replace")
 

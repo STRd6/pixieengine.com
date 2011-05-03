@@ -474,6 +474,8 @@
         path: path
 
       pixelEditor.bind('save', save)
+      pixelEditor.bind 'dirty', ->
+        tab.parent().addClass("unsaved")
 
       panel.empty().append(pixelEditor)
 
