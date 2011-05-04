@@ -589,7 +589,9 @@
     $("#file_src_main_coffee").prev().click()
 
     $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
-      fade: false
+      delayIn: 500
+      delayOut: 500
+      fade: 50
       gravity: 'n'
 
     jug = new Juggernaut
