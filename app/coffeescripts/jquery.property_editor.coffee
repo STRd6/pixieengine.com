@@ -7,7 +7,7 @@
     element.getProps = () ->
       props = {}
 
-      element.find("tr").each () ->
+      element.find("tr:not(.child_property)").each () ->
         inputs = $(this).find("input")
 
         if key = inputs.eq(0).val()
@@ -20,6 +20,8 @@
 
           return # This is necessary because the implicit return in the try catch got weird
 
+      populateParentObjects()
+
       props
 
     element.setProps = (properties) ->
@@ -31,6 +33,41 @@
       addRow('', '')
 
       element
+
+    populateParentObjects = () ->
+      element.find('tr > tr.child_property').parent().each (i, group) ->
+        props = {}
+
+        $(group).find('tr.child_property').each (i, row) ->
+          inputs = $(row).find('input')
+
+          key = inputs.eq(0).val().substring(inputs.eq(0).val().search(/\./) + 1)
+          value = inputs.eq(1).val()
+
+          if !isNaN(value)
+            value = parseFloat(value)
+
+          try
+            props[key] = JSON.parse(value)
+          catch e
+            props[key] = value
+
+          return
+
+        $(group).find('> td input').eq(1).val(JSON.stringify(props))
+
+    generateChildElements = (childData, parentName) ->
+      results = []
+
+      for key, value of childData
+        row = $ "<tr class='child_property'>"
+
+        key_cell = $ "<td><input type='text' placeholder='key', value=#{parentName}.#{key}></td>"
+        value_cell = $ "<td><input type='text' placeholder='value', value=#{value}></td>"
+
+        results.push(row.append(key_cell, value_cell))
+
+      return results
 
     addRow = (key, value) ->
       row = $ "<tr>"
@@ -45,6 +82,9 @@
 
       cell = $("<td>").appendTo(row)
 
+      if Object::toString.call(value) == '[object Object]'
+        obj = JSON.parse(JSON.stringify(value))
+
       value = JSON.stringify(value) unless typeof value == "string"
 
       $("<input>",
@@ -53,11 +93,15 @@
         value: value
       ).appendTo cell
 
+      if obj
+        generateChildElements(obj, key).each (childRow) ->
+          childRow.appendTo row
+
       row.appendTo element
 
-    $('input', this.selector).live 'keydown', (event) ->
-      if event.type == "keydown"
-        return unless (event.which == 38 || event.which == 40)
+    $('tr:not(.child_property) > td input', this.selector).live 'keydown', (event) ->
+      return unless event.type == "keydown"
+      return unless (event.which == 38 || event.which == 40)
 
       event.preventDefault()
 
