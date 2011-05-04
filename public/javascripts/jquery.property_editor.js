@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 04 May 2011 22:26:21 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 04 May 2011 22:28:01 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -97,7 +97,7 @@
         }
         return row.appendTo(element);
       };
-      $('tr:not(.child_property) > td input', this.selector).live('keydown', function(event) {
+      $('input', this.selector).live('keydown', function(event) {
         var $this, changeAmount, num;
         if (event.type !== "keydown") {
           return;

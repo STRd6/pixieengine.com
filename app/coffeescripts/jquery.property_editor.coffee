@@ -99,7 +99,7 @@
 
       row.appendTo element
 
-    $('tr:not(.child_property) > td input', this.selector).live 'keydown', (event) ->
+    $('input', this.selector).live 'keydown', (event) ->
       return unless event.type == "keydown"
       return unless (event.which == 38 || event.which == 40)
 
