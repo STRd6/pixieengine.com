@@ -109,37 +109,48 @@
 
       changeAmount = if event.which == 38 then 1 else -1
 
-      if $this.val().length
-        if event.shiftKey
-          changeAmount *= 10
-
-          if !isNaN($this.val())
-            $this.val(parseInt($this.val()) + changeAmount)
+      flipBoolean = (bool) ->
+        if bool == "true"
+          "false"
+        else if bool == "false"
+          "true"
         else
-          if $this.val() == "true"
-            $this.val("false")
-          else if $this.val() == "false"
-            $this.val("true")
-          else if !isNaN($this.val())
-            if parseFloat($this.val()).abs() < 1
-              num = parseFloat($this.val())
-              $this.val((num + (0.1 * changeAmount)).toFixed(1))
-            else if parseInt($this.val()) == 1
-              num = parseInt($this.val())
-              if event.which == 38
-                $this.val(num + 1)
-              else
-                $this.val((num - 0.1).toFixed(1))
-            else if parseInt($this.val()) == -1
-              num = parseInt($this.val())
-              if event.which == 38
-                $this.val(num + 0.1).toFixed(1)
-              else
-                $this.val(num - 1)
-            else
-              $this.val(parseInt($this.val()) + changeAmount)
+          false
+
+      changeNumber = (value, direction) ->
+        if parseFloat(value).abs() < 1
+          num = parseFloat(value)
+          return (num + (0.1 * changeAmount)).toFixed(1)
+        else if parseInt(value) == 1
+          num = parseInt(value)
+          if event.which == 38
+            return num + changeAmount
+          else
+            return (num - 0.1).toFixed(1)
+        else if parseInt(value) == -1
+          num = parseInt(value)
+          if event.which == 38
+            return (num + 0.1).toFixed(1)
+          else
+            return num + changeAmount
+        else
+          return parseInt(value) + changeAmount
+
+      value = $this.val()
+
+      if value.length
+        result = null
+
+        changeAmount *= 10 if (event.shiftKey && Number.isNumber value)
 
         element.trigger("change", element.getProps())
+
+        if flipBoolean value
+          result = flipBoolean value
+        else if Number.isNumber value
+          result = changeNumber(value, changeAmount)
+
+        $this.val(result)
 
     $('input', this.selector).live 'blur', (event) ->
       element.trigger("change", element.getProps())
