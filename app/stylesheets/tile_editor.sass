@@ -36,7 +36,26 @@ $bottom_bar_height: 140px
       td
         width: 50%
         input
-          width: 100%
+          width: 96%
+
+  .prop_editor
+    input
+      border: 1px solid #aaa
+      margin-right: -2px
+      padding: 2px
+
+    tr
+      display: block
+
+      &.child_property
+        margin-left: 10px
+
+        td:first-child input
+          width: 86px
+
+        input[placeholder="value"]
+          margin-left: -5px
+          width: 102%
 
   input
     +box-sizing(border-box)
