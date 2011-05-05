@@ -226,6 +226,13 @@ Number.prototype.d = function(sides) {
   return sum;
 };
 
+Number.isNumber = function (num) {
+  return !isNaN(num);
+}
+
+Number.isFloat = function(num) {
+  return !isNaN(num) && ("" + num).search(/\./) >= 0
+};
 
 /**
 * Creates and returns a copy of the array. The copy contains
