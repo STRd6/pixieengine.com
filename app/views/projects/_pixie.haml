@@ -3,7 +3,6 @@
     dataUrl = options.dataUrl
     path = options.path
     panel = options.panel
-    tab = null
     _canvas = null
 
     editorOptions = $.extend panel.data("options"),
@@ -11,6 +10,8 @@
       initializer: (canvas) ->
         _canvas = canvas
 
+        if contentsVal = panel.find("[name=contents]").val()
+          canvas.fromDataURL(contentsVal)
         if dataUrl
           canvas.fromDataURL(dataUrl)
 
@@ -18,9 +19,31 @@
           name: "Save"
           icon: "/images/icons/database_save.png"
           perform: (canvas) ->
-            tab = $("#tabs ul li").eq($("#tabs").tabs('option', 'selected'))
-
             pixelEditor.trigger('doSave')
+
+          undoable: false
+
+        canvas.addAction
+          name: "Save As"
+          icon: "/images/icons/database_save.png"
+          perform: (canvas) ->
+            title = prompt("Title")
+
+            base64Contents = _canvas.toBase64()
+
+            if title
+              filePath = projectConfig.directories["images"]
+
+              newFileNode
+                name: title
+                type: "image"
+                ext: "png"
+                path: filePath
+                contents: "data:image/png;base64," + base64Contents
+
+              pixelEditor.trigger 'save',
+                contents_base64: base64Contents
+                path: filePath + "/" + title + ".png"
 
           undoable: false
 
