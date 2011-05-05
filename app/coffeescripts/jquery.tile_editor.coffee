@@ -651,4 +651,11 @@ $.fn.tileEditor = (options) ->
   dirty = false
 
   $.extend tileEditor,
+    addAction: (action) ->
+      actionButton = $ "<button/>",
+        text: action.name
+        click: action.perform
+
+      tileEditor.find("nav.left .actions").append(actionButton)
+
     mapData: saveData
