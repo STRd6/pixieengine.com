@@ -19,6 +19,28 @@
 
     tileEditor = $('<div />').appendTo(panel).tileEditor(editorOptions)
 
+    tileEditor.addAction
+      name: "Save As"
+      perform: ->
+        title = prompt("Title")
+
+        if title
+          filePath = projectConfig.directories["data"]
+
+          extension = "tilemap"
+          dataString = JSON.stringify(tileEditor.mapData())
+
+          newFileNode
+            name: title
+            type: "tilemap"
+            ext: extension
+            path: filePath
+            contents: dataString
+
+          tileEditor.trigger 'save',
+            contents: dataString
+            path: filePath + "/" + title + "." + extension
+
     tileEditor.bind 'doSave', ->
       dataString = JSON.stringify(tileEditor.mapData())
 

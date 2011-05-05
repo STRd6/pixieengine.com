@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 04:41:53 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 05 May 2011 02:16:21 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -650,6 +650,14 @@
     });
     dirty = false;
     return $.extend(tileEditor, {
+      addAction: function(action) {
+        var actionButton;
+        actionButton = $("<button/>", {
+          text: action.name,
+          click: action.perform
+        });
+        return tileEditor.find("nav.left .actions").append(actionButton);
+      },
       mapData: saveData
     });
   };
