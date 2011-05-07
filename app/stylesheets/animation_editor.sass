@@ -29,9 +29,28 @@ $sprite_container_bounds: 72px
     background-image: url(/images/x.png)
     top: -12px
 
+  .animation
+    .x
+      background-image: url(/images/x.png)
+      position: absolute
+      bottom: 68px
+      left: 70px
+    .locked
+      background: url(/images/icons/lock.png) no-repeat left top
+
   .duplicate
     background-image: url(/images/duplicate_layer.png)
     bottom: 30px
+
+  .lock
+    +bounds(16px)
+    +opacity(0.5)
+
+    background-image: url(/images/icons/lock.png)
+    cursor: pointer
+    left: 2px
+    position: absolute
+    top: 3px
 
 .hitcircle_editor
   nav.top
@@ -197,6 +216,7 @@ $sprite_container_bounds: 72px
         margin-left: auto
         margin-right: auto
         margin-bottom: 4px
+        position: relative
 
       .cover
         +border-radius
