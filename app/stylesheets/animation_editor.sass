@@ -52,6 +52,15 @@ $sprite_container_bounds: 72px
     position: absolute
     top: 3px
 
+  .goto
+    position: absolute
+    right: 180px
+    top: 3px
+
+    input
+      width: 115px
+
+
 .hitcircle_editor
   nav.top
     left: 0
@@ -199,8 +208,8 @@ $sprite_container_bounds: 72px
       overflow-y: auto
       padding: 10px
 
-      .speed, .sprites
-        visibility: hidden
+      .speed, .complete, .sprites
+        display: none
 
       .name
         margin-bottom: 4px

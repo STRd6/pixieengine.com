@@ -136,6 +136,7 @@ $.fn.animationEditor = (options) ->
     active_animation_sprites().parent().find('.sprites').children().remove()
     frame_sprites().clone().appendTo(active_animation_sprites())
 
+    active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val())
     active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val())
 
   animationEditor.find(".frame_sprites").dropImageReader (file, event) ->
@@ -158,7 +159,9 @@ $.fn.animationEditor = (options) ->
     mousedown: ->
       update_active_animation()
 
+      animationEditor.find('.goto input').val($(this).find('.complete').text())
       animationEditor.find('.speed').val($(this).find('.speed').text())
+
       stop_animation()
       clear_frame_sprites()
 
@@ -216,8 +219,10 @@ $.fn.animationEditor = (options) ->
 
     animation = templates.find('.create_animation').tmpl
       name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
+      complete: "Animation " + (animationEditor.find('.animations .animation').length + 1)
 
     animation.insertBefore(animationEditor.find('.new_animation'))
+    animationEditor.find('.goto input').val("Animation " + (animationEditor.find('.animations .animation').length))
 
     animation.mousedown()
 
@@ -376,11 +381,14 @@ $.fn.animationEditor = (options) ->
         animation_el = templates.find('.create_animation').tmpl(
           name: animation.name
           speed: animation.speed
+          complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        $.each animation.frames, (i, frame) ->
-          active_animation().removeClass('active')
+        animation_el.find('.cover').addClass('locked') unless animation.interruptible
 
+        active_animation().removeClass('active')
+
+        $.each animation.frames, (i, frame) ->
           templates.find('.load_sprite').tmpl(
             url: data.tileset[frame].src
             alt: data.tileset[frame].title
@@ -394,6 +402,7 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
 
       animationEditor.find('.speed').val(active_animation().find('.speed').text())
+      active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val())
       stop_animation()
       clear_frame_sprites()
 
@@ -404,6 +413,7 @@ $.fn.animationEditor = (options) ->
       templates.find('.create_animation').tmpl(
         name: "Animation 1"
         speed: animationEditor.find('.speed').val()
+        complete: "Animation 1"
       ).insertBefore(animationEditor.find('.new_animation'))
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
@@ -438,7 +448,9 @@ $.fn.animationEditor = (options) ->
       if frames.length
 
         animation = {
+          complete: $(this).find('.complete').text()
           name: $(this).prev().text()
+          interruptible: !$(this).find('.cover').hasClass('locked')
           speed: $(this).find('.speed').text()
           frames: frames
         }
@@ -450,7 +462,7 @@ $.fn.animationEditor = (options) ->
     ).get()
 
     return {
-      version: "1.3"
+      version: "1.4"
       name: animationEditor.find('nav.right .filename').text()
       tileset: tiles
       animations: animation_data

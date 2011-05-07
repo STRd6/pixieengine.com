@@ -9,6 +9,7 @@
       .cover.active
       .sprites
       .speed ${speed}
+      .complete ${complete}
 
   .placeholder.template
     .demo
@@ -27,6 +28,9 @@
     %nav.bottom
       .frame_sprites
       .lock(title="locked animations won't be interrupted before they finish")
+      .goto
+        Next Animation
+        %input(placeholder="Animation name" value="Animation 1")
 
     %nav.right
       - if @animation

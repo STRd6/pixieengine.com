@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 03:22:11 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 18:25:40 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -147,6 +147,7 @@
     update_active_animation = function() {
       active_animation_sprites().parent().find('.sprites').children().remove();
       frame_sprites().clone().appendTo(active_animation_sprites());
+      active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val());
       return active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val());
     };
     animationEditor.find(".frame_sprites").dropImageReader(function(file, event) {
@@ -169,6 +170,7 @@
     animationEditor.find('.animation').live({
       mousedown: function() {
         update_active_animation();
+        animationEditor.find('.goto input').val($(this).find('.complete').text());
         animationEditor.find('.speed').val($(this).find('.speed').text());
         stop_animation();
         clear_frame_sprites();
@@ -228,9 +230,11 @@
       clear_frame_sprites();
       templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
       animation = templates.find('.create_animation').tmpl({
-        name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
+        name: "Animation " + (animationEditor.find('.animations .animation').length + 1),
+        complete: "Animation " + (animationEditor.find('.animations .animation').length + 1)
       });
       animation.insertBefore(animationEditor.find('.new_animation'));
+      animationEditor.find('.goto input').val("Animation " + (animationEditor.find('.animations .animation').length));
       return animation.mousedown();
     });
     animationEditor.find('.frame_sprites').sortable({
@@ -398,10 +402,14 @@
           var animation_el, last_sprite_img;
           animation_el = templates.find('.create_animation').tmpl({
             name: animation.name,
-            speed: animation.speed
+            speed: animation.speed,
+            complete: animation.complete
           }).insertBefore('nav.right .new_animation');
+          if (!animation.interruptible) {
+            animation_el.find('.cover').addClass('locked');
+          }
+          active_animation().removeClass('active');
           $.each(animation.frames, function(i, frame) {
-            active_animation().removeClass('active');
             return templates.find('.load_sprite').tmpl({
               url: data.tileset[frame].src,
               alt: data.tileset[frame].title,
@@ -416,6 +424,7 @@
           return animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone());
         });
         animationEditor.find('.speed').val(active_animation().find('.speed').text());
+        active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val());
         stop_animation();
         clear_frame_sprites();
         active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container());
@@ -423,7 +432,8 @@
       } else {
         templates.find('.create_animation').tmpl({
           name: "Animation 1",
-          speed: animationEditor.find('.speed').val()
+          speed: animationEditor.find('.speed').val(),
+          complete: "Animation 1"
         }).insertBefore(animationEditor.find('.new_animation'));
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
@@ -457,7 +467,9 @@
         });
         if (frames.length) {
           animation = {
+            complete: $(this).find('.complete').text(),
             name: $(this).prev().text(),
+            interruptible: !$(this).find('.cover').hasClass('locked'),
             speed: $(this).find('.speed').text(),
             frames: frames
           };
@@ -466,7 +478,7 @@
         return animation;
       }).get();
       return {
-        version: "1.3",
+        version: "1.4",
         name: animationEditor.find('nav.right .filename').text(),
         tileset: tiles,
         animations: animation_data
