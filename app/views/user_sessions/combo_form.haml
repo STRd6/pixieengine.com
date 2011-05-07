@@ -48,5 +48,14 @@
 
 %style
   :sass
+    @import partials/base
+    @import util
+
     #new_user_session
       width: 450px
+    #user_session_submit
+      +bounds(300px, 40px)
+
+      font-size: 170%
+      margin-bottom: 0
+      margin-top: 0
