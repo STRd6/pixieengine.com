@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 04 May 2011 23:59:07 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 21:33:54 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -28,9 +28,17 @@
         return props;
       };
       element.setProps = function(properties) {
+        var key, value;
         element.html('');
         if (properties) {
-          $.each(properties, addRow);
+          for (key in properties) {
+            value = properties[key];
+            if (key.match(/color/i)) {
+              addRow(key, value).find('td:last input').colorPicker();
+            } else {
+              addRow(key, value);
+            }
+          }
         }
         addRow('', '');
         return element;

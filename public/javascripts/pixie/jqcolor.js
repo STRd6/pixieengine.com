@@ -55,7 +55,7 @@
       // dialog
       elements.dialog = document.createElement('div');
       setStyle(elements.dialog, {
-        'zIndex' : '100',
+        'zIndex' : '1000',
         'clear' : 'both',
         'position' : 'absolute',
         'width' : HVSize[0]+SSize+3*padding+'px',

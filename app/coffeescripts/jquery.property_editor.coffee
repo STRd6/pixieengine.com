@@ -28,7 +28,11 @@
       element.html('')
 
       if properties
-        $.each properties, addRow
+        for key, value of properties
+          if key.match(/color/i)
+            addRow(key, value).find('td:last input').colorPicker()
+          else
+            addRow(key, value)
 
       addRow('', '')
 
