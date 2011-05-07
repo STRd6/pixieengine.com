@@ -21,7 +21,12 @@ $bottom_bar_height: 140px
     padding: 10px
 
     .light &
+      +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
+
       background-color: $light_highlight
+      border: 1px solid lighten($light_highlight, 5%)
+      border-bottom: none
+      border-right: none
 
     &.left, &.right
       width: $sidebar_width
