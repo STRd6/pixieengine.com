@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 30 Apr 2011 00:36:30 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 03:22:11 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -166,24 +166,72 @@
         return $(this).append(sprite_container);
       }
     });
-    animationEditor.find('.animation').live('mousedown', function() {
-      update_active_animation();
-      animationEditor.find('.speed').val($(this).find('.speed').text());
-      stop_animation();
-      clear_frame_sprites();
-      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container());
-      active_animation().removeClass('active');
-      return $(this).find('.cover').addClass('active');
+    animationEditor.find('.animation').live({
+      mousedown: function() {
+        update_active_animation();
+        animationEditor.find('.speed').val($(this).find('.speed').text());
+        stop_animation();
+        clear_frame_sprites();
+        $(this).find('.sprites').children().clone().appendTo(frame_sprites_container());
+        active_animation().removeClass('active');
+        $(this).find('.cover').addClass('active');
+        if ($(this).find('.cover').hasClass('locked')) {
+          return animationEditor.find('.lock').css('opacity', 1);
+        } else {
+          return animationEditor.find('.lock').css('opacity', 0.5);
+        }
+      },
+      mouseenter: function() {
+        if (animationEditor.find('.animations .animation').length > 1) {
+          return $(this).find('.cover').append('<div class="x" />');
+        }
+      },
+      mouseleave: function() {
+        return $(this).find('.x').remove();
+      }
+    });
+    animationEditor.find('.animation .x').live({
+      mousedown: function() {
+        var animation;
+        animation = $(this).parent().parent();
+        animation.prev().fadeOut(150, function() {
+          return animation.prev().remove();
+        });
+        return animation.fadeOut(150, function() {
+          return animation.remove();
+        });
+      }
+    });
+    animationEditor.find('.lock').tipsy({
+      delayIn: 500,
+      delayOut: 500,
+      fade: 50,
+      gravity: 'sw'
+    }).live({
+      mousedown: function() {
+        var $this, animation;
+        $this = $(this);
+        animation = active_animation();
+        animation.toggleClass('locked');
+        if (animation.hasClass('locked')) {
+          return $this.css('opacity', 1);
+        } else {
+          return $this.css('opacity', 0.5);
+        }
+      }
     });
     animationEditor.find('.new_animation').mousedown(function() {
+      var animation;
       update_active_animation();
       stop_animation();
       active_animation().removeClass('active');
       clear_frame_sprites();
       templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
-      return templates.find('.create_animation').tmpl({
+      animation = templates.find('.create_animation').tmpl({
         name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
-      }).insertAfter(animationEditor.find('.animations .animation').last());
+      });
+      animation.insertBefore(animationEditor.find('.new_animation'));
+      return animation.mousedown();
     });
     animationEditor.find('.frame_sprites').sortable({
       axis: "x",
@@ -320,7 +368,7 @@
       }
     });
     animationEditor.find('.animations .name, .filename').liveEdit();
-    animationEditor.find('.x').live('mousedown', function() {
+    animationEditor.find('.frame_sprites .x').live('mousedown', function() {
       var parent;
       parent = $(this).parent();
       if (parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length) {

@@ -154,17 +154,55 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
       $(this).append sprite_container
 
-  animationEditor.find('.animation').live 'mousedown', ->
-    update_active_animation()
+  animationEditor.find('.animation').live
+    mousedown: ->
+      update_active_animation()
 
-    animationEditor.find('.speed').val($(this).find('.speed').text())
-    stop_animation()
-    clear_frame_sprites()
+      animationEditor.find('.speed').val($(this).find('.speed').text())
+      stop_animation()
+      clear_frame_sprites()
 
-    $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
+      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
 
-    active_animation().removeClass('active')
-    $(this).find('.cover').addClass('active')
+      active_animation().removeClass('active')
+      $(this).find('.cover').addClass('active')
+
+      if $(this).find('.cover').hasClass('locked')
+        animationEditor.find('.lock').css('opacity', 1)
+      else
+        animationEditor.find('.lock').css('opacity', 0.5)
+    mouseenter: ->
+      if animationEditor.find('.animations .animation').length > 1
+        $(this).find('.cover').append('<div class="x" />')
+    mouseleave: ->
+      $(this).find('.x').remove()
+
+  animationEditor.find('.animation .x').live
+    mousedown: ->
+      animation = $(this).parent().parent()
+
+      animation.prev().fadeOut 150, ->
+        animation.prev().remove()
+
+      animation.fadeOut 150, ->
+        animation.remove()
+
+  animationEditor.find('.lock').tipsy(
+    delayIn: 500
+    delayOut: 500
+    fade: 50
+    gravity: 'sw'
+  ).live
+    mousedown: ->
+      $this = $(this)
+      animation = active_animation()
+
+      animation.toggleClass('locked')
+
+      if animation.hasClass('locked')
+        $this.css('opacity', 1)
+      else
+        $this.css('opacity', 0.5)
 
   animationEditor.find('.new_animation').mousedown ->
     update_active_animation()
@@ -176,9 +214,12 @@ $.fn.animationEditor = (options) ->
 
     templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
 
-    templates.find('.create_animation').tmpl(
+    animation = templates.find('.create_animation').tmpl
       name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
-    ).insertAfter(animationEditor.find('.animations .animation').last())
+
+    animation.insertBefore(animationEditor.find('.new_animation'))
+
+    animation.mousedown()
 
   animationEditor.find('.frame_sprites').sortable
     axis: "x"
@@ -252,7 +293,6 @@ $.fn.animationEditor = (options) ->
     click: -> $(this).addClass('selected')
     dblclick: (event) ->
       pixelEditFrame($(this).find('img'))
-
     mouseenter: ->
       $('<div class="x" />').appendTo $(this)
       $('<div class="duplicate" />').appendTo $(this)
@@ -306,7 +346,7 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.animations .name, .filename').liveEdit()
 
-  animationEditor.find('.x').live 'mousedown', ->
+  animationEditor.find('.frame_sprites .x').live 'mousedown', ->
     parent = $(this).parent()
 
     if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
