@@ -12,7 +12,7 @@
     = form.label :password
     = form.password_field :password
 
-  %button Sign Up
+  %button#sign_up Sign Up
 
 :coffeescript
   $ ->
@@ -24,7 +24,7 @@
     @import partials/base
     @import util
 
-    body form button
+    #sign_up
       +bounds(300px, 40px)
 
       font-size: 170%
