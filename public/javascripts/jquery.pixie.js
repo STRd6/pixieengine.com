@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Tue, 03 May 2011 18:31:31 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
+/* DO NOT MODIFY. This file was compiled Sun, 08 May 2011 10:23:40 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
@@ -455,8 +455,8 @@
         actionbar = $(DIV, {
           "class": 'actions'
         });
-        navRight = $("<nav class='right'></nav>");
-        navLeft = $("<nav class='left'></nav>");
+        navRight = $("<nav class='right module'></nav>");
+        navLeft = $("<nav class='left module'></nav>");
         opacityVal = $(DIV, {
           "class": "val",
           text: 100

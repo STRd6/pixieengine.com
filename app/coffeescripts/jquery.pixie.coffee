@@ -401,8 +401,8 @@
       actionbar = $ DIV,
         class: 'actions'
 
-      navRight = $("<nav class='right'></nav>")
-      navLeft = $("<nav class='left'></nav>")
+      navRight = $("<nav class='right module'></nav>")
+      navLeft = $("<nav class='left module'></nav>")
 
       opacityVal = $ DIV,
         class: "val"
