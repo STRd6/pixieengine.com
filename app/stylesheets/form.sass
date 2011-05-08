@@ -13,9 +13,17 @@ body > form
   padding: 1.5em 2em
   width: 300px
 
+  textarea
+    width: 100%
+
   input
-    margin-bottom: 1em
-    margin-right: 1em
+    margin: 0 0 1em 0
+
+    &[type=text], &[type=password]
+      width: 100%
+
+    &[type=radio]
+      margin-right: 0.5em
 
   .light &
     background-color: $light_highlight
@@ -31,17 +39,17 @@ form, #new_user, #new_user_session
     display: inline
 
     label
-      color: #CD0A0A
+      color: $error_color
 
     input
-      border: 2px solid #CD0A0A
+      border-color: $error_color
 
   .errorExplanation
     +border-radius(5px)
 
     background-color: #FEF1EC
-    border: 1px solid #CD0A0A
-    color: #CD0A0A
+    border: 1px solid $error_color
+    color: $error_color
     margin-bottom: 1.5em
     padding: 1em 1.5em
 
@@ -56,19 +64,20 @@ label, input, textarea
 label
   display: block
   font-weight: bold
-  margin-right: 1em
   padding-top: 0.5em
 
 input[disabled]
   background-color: #ccc
 
 input[type=text], input[type=password], input[type=file], textarea
+  +border-radius(2px)
+  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
   +box-sizing(border-box)
 
   padding: 5px
 
   &:focus
-    border-width: 2px
+    border-width: 1px
     border-color: $pixie_primary
 
 input[type=file]
@@ -76,8 +85,9 @@ input[type=file]
   padding: 0
 
 input[type=text], input[type=password], textarea
-  border: 2px solid $light_gray
-  width: 300px
+  border: 1px solid $light_gray
+  display: block
+  width: 100%
 
 textarea
   +bounds(300px, 150px)
