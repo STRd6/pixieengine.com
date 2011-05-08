@@ -15,15 +15,23 @@
   %label(for="user_session_login_yes")
     = form.radio_button :login, "yes"
     Yes, I have a password
-  = form.password_field :password
+  .relative
+    = form.password_field :password
 
-  = link_to image_tag('/images/icons/help.png', :alt => "Forgot your password?", :title => "Forgot your password?", :id => "forgot_password_link"), new_password_reset_path
+    = link_to image_tag('/images/icons/help.png', :alt => "Forgot your password?", :title => "Forgot your password?", :id => "forgot_password_link"), new_password_reset_path
 
   .actions
     %button#user_session_submit Log In
 
 :coffeescript
   $ ->
+    $('#forgot_password_link').tipsy
+      delayIn: 500
+      delayOut: 500
+      fade: 50
+      gravity: 'w'
+      opacity: 1
+
     loginMode = (login) ->
       if login
         $('#user_session_password').removeAttr('disabled');
@@ -54,13 +62,18 @@
     #user_session_password
       margin-right: 0
     #new_user_session
-      width: 320px
+      .relative
+        position: relative
 
-      a
-        vertical-align: middle
+        a
+          img
+            bottom: 19px
+            right: 7px
+            position: absolute
+
     #user_session_submit
       +bounds(300px, 40px)
 
       font-size: 170%
-      margin-bottom: 0
-      margin-top: 0
+      margin: 0
+
