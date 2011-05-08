@@ -2,31 +2,19 @@
   = form.error_messages
   %h2 Sign up for Pixie!
 
-  %p
-    = form.label :display_name
+  %label
+    %h3 Display Name
     = form.text_field :display_name
-  %p
-    = form.label :email
+  %label
+    %h3 Email Address
     = form.text_field :email
-  %p
-    = form.label :password
+  %label
+    %h3 Password
     = form.password_field :password
 
-  %button#sign_up Sign Up
+  %button.full Sign Up
 
 :coffeescript
   $ ->
     $('#user_submit').click ->
       _gaq.push(['_trackEvent', 'action_button', 'register'])
-
-%style
-  :sass
-    @import partials/base
-    @import util
-
-    #sign_up
-      +bounds(300px, 40px)
-
-      font-size: 170%
-      margin-left: 0
-      margin-right: 0

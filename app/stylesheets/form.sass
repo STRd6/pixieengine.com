@@ -13,14 +13,8 @@ body > form
   padding: 1.5em 2em
   width: 300px
 
-  textarea
-    width: 100%
-
   input
     margin: 0 0 1em 0
-
-    &[type=text], &[type=password]
-      width: 100%
 
     &[type=radio]
       margin-right: 0.5em
@@ -34,7 +28,14 @@ body > form
     overflow: auto
     width: 100%
 
-form, #new_user, #new_user_session
+form
+  h2, h3
+    font-weight: bold
+
+  button.full
+    +bounds(100%, 40px)
+    font-size: 170%
+
   .field_with_errors
     display: inline
 
@@ -90,4 +91,4 @@ input[type=text], input[type=password], textarea
   width: 100%
 
 textarea
-  +bounds(300px, 150px)
+  height: 150px
