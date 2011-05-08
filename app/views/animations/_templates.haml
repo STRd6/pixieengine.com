@@ -17,7 +17,7 @@
 
   .editor.template
     %section
-      .user_sprites
+      .user_sprites.module
         - if !current_user || current_user.sprites.empty?
           %p
             You have not created any sprites yet. Make some in the
@@ -26,7 +26,7 @@
           = render :partial => 'animations/animation_sprite', :collection => current_user.sprites
 
     %nav.bottom
-      .frame_sprites
+      .frame_sprites.module
       .lock(title="locked animations won't be interrupted before they finish")
       .goto
         Next Animation
@@ -39,7 +39,7 @@
       - else
         %h3.filename Title
       %button.save Save
-      .animations
+      .animations.module
         %button.new_animation New
 
     .preview_box
