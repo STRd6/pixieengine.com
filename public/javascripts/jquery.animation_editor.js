@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 08 May 2011 05:30:59 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 08 May 2011 08:04:28 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -8,7 +8,6 @@
     options = $.extend({
       speed: 110
     }, options);
-    animationCount = 1;
     animationEditor = $(this.get(0)).addClass("animation_editor");
     templates = $("#animation_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(animationEditor);
@@ -330,19 +329,13 @@
       }
     });
     animationEditor.find('.animations input').live({
-      change: function() {
-        var selected_name;
-        animationEditor.find('.goto option').remove();
-        selected_name = $(this).prev().val() === "" ? $(this).prev().text() : $(this).prev().val();
+      change: function(e) {
+        console.log(e);
+        animationEditor.find('.goto select option').remove();
         return animationEditor.find('.animations .animation').each(function(i, animation) {
           var animation_name;
           animation_name = $(animation).prev().val() === "" ? $(animation).prev().text() : $(animation).prev().val();
-          if (animation_name === selected_name) {
-            animationEditor.find('.goto select option').removeAttr('selected');
-            return animationEditor.find('.goto select').append("<option selected='selected' value='" + animation_name + "'>" + animation_name + "</option>");
-          } else {
-            return animationEditor.find('.goto select').append("<option value='" + animation_name + "'>" + animation_name + "</option>");
-          }
+          return animationEditor.find('.goto select').append("<option value='" + animation_name + "'>" + animation_name + "</option>");
         });
       }
     });
@@ -512,6 +505,7 @@
       };
     };
     loadData(options.data);
+    animationCount = animationEditor.find('.animations .animation').length;
     return $.extend(animationEditor, {
       animationData: saveData
     });

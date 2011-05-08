@@ -3,8 +3,6 @@ $.fn.animationEditor = (options) ->
     speed: 110
   , options)
 
-  animationCount = 1
-
   animationEditor = $(this.get(0)).addClass("animation_editor")
 
   templates = $("#animation_editor_templates")
@@ -312,18 +310,12 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.animations input').live
     change: ->
-      animationEditor.find('.goto option').remove()
-
-      selected_name = if $(this).prev().val() == "" then $(this).prev().text() else $(this).prev().val()
+      animationEditor.find('.goto select option').remove()
 
       animationEditor.find('.animations .animation').each (i, animation) ->
         animation_name = if $(animation).prev().val() == "" then $(animation).prev().text() else $(animation).prev().val()
 
-        if animation_name == selected_name
-          animationEditor.find('.goto select option').removeAttr('selected')
-          animationEditor.find('.goto select').append("<option selected='selected' value='#{animation_name}'>#{animation_name}</option>")
-        else
-          animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
+        animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
 
   animationEditor.find('.goto select').change ->
     selected_value = animationEditor.find('.goto options:selected').val()
@@ -499,6 +491,8 @@ $.fn.animationEditor = (options) ->
     }
 
   loadData(options.data)
+
+  animationCount = animationEditor.find('.animations .animation').length
 
   $.extend animationEditor,
     animationData: saveData
