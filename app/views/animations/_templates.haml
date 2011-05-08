@@ -30,7 +30,8 @@
       .lock(title="locked animations won't be interrupted before they finish")
       .goto
         Next Animation
-        %input(placeholder="Animation name" value="Animation 1")
+        %select
+          %option(value="Animation 1") Animation 1
 
     %nav.right
       - if @animation

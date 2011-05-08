@@ -3,6 +3,8 @@ $.fn.animationEditor = (options) ->
     speed: 110
   , options)
 
+  animationCount = 1
+
   animationEditor = $(this.get(0)).addClass("animation_editor")
 
   templates = $("#animation_editor_templates")
@@ -136,7 +138,7 @@ $.fn.animationEditor = (options) ->
     active_animation_sprites().parent().find('.sprites').children().remove()
     frame_sprites().clone().appendTo(active_animation_sprites())
 
-    active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val())
+    active_animation().parent().find('.complete').text(animationEditor.find('.goto option:selected').val())
     active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val())
 
   animationEditor.find(".frame_sprites").dropImageReader (file, event) ->
@@ -159,8 +161,8 @@ $.fn.animationEditor = (options) ->
     mousedown: ->
       update_active_animation()
 
-      animationEditor.find('.goto input').val($(this).find('.complete').text())
       animationEditor.find('.speed').val($(this).find('.speed').text())
+      animationEditor.find('.goto select').val($(this).find('.complete').text())
 
       stop_animation()
       clear_frame_sprites()
@@ -183,6 +185,7 @@ $.fn.animationEditor = (options) ->
   animationEditor.find('.animation .x').live
     mousedown: ->
       animation = $(this).parent().parent()
+      animationEditor.find(".goto option[value='#{animation.prev().text()}']").remove()
 
       animation.prev().fadeOut 150, ->
         animation.prev().remove()
@@ -217,12 +220,15 @@ $.fn.animationEditor = (options) ->
 
     templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
 
+    animation_name = ("Animation " + ++animationCount)
+
     animation = templates.find('.create_animation').tmpl
-      name: "Animation " + (animationEditor.find('.animations .animation').length + 1)
-      complete: "Animation " + (animationEditor.find('.animations .animation').length + 1)
+      name: animation_name
+      complete: animation_name
 
     animation.insertBefore(animationEditor.find('.new_animation'))
-    animationEditor.find('.goto input').val("Animation " + (animationEditor.find('.animations .animation').length))
+    animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
+    animationEditor.find('.goto select').val(animation_name)
 
     animation.mousedown()
 
@@ -304,6 +310,26 @@ $.fn.animationEditor = (options) ->
     mouseleave: ->
       $(this).find('.x, .duplicate').remove()
 
+  animationEditor.find('.animations input').live
+    change: ->
+      animationEditor.find('.goto option').remove()
+
+      selected_name = if $(this).prev().val() == "" then $(this).prev().text() else $(this).prev().val()
+
+      animationEditor.find('.animations .animation').each (i, animation) ->
+        animation_name = if $(animation).prev().val() == "" then $(animation).prev().text() else $(animation).prev().val()
+
+        if animation_name == selected_name
+          animationEditor.find('.goto select option').removeAttr('selected')
+          animationEditor.find('.goto select').append("<option selected='selected' value='#{animation_name}'>#{animation_name}</option>")
+        else
+          animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
+
+  animationEditor.find('.goto select').change ->
+    selected_value = animationEditor.find('.goto options:selected').val()
+
+    active_animation().parent().find('.complete').text(selected_value)
+
   animationEditor.mousedown ->
     frame_selected_sprite().removeClass('selected')
 
@@ -376,7 +402,11 @@ $.fn.animationEditor = (options) ->
 
   loadData = (data) ->
     if data && data.animations.length
+      animationEditor.find('.goto select').children().remove()
+
       $(data.animations).each (i, animation) ->
+
+        animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
 
         animation_el = templates.find('.create_animation').tmpl(
           name: animation.name
@@ -402,7 +432,7 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
 
       animationEditor.find('.speed').val(active_animation().find('.speed').text())
-      active_animation().parent().find('.complete').text(animationEditor.find('.goto input').val())
+      #active_animation().parent().find('.complete').text(animationEditor.find('.goto select').val())
       stop_animation()
       clear_frame_sprites()
 
@@ -418,7 +448,7 @@ $.fn.animationEditor = (options) ->
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
 
-  saveData = ->
+  window.saveData = ->
     update_active_animation()
 
     frames = []
