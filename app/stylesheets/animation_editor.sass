@@ -95,8 +95,6 @@ $sprite_container_bounds: 72px
     padding-right: 175px
 
     .user_sprites
-      +glass
-
       +border-radius
       +bounds(100%)
       +box-sizing(border-box)
@@ -192,10 +190,12 @@ $sprite_container_bounds: 72px
     h3
       margin: 0
 
-    #save
-      +inline-block
+    .save
+      +bounds(150px, 30px)
 
-      vertical-align: middle
+      font-size: 130%
+      margin-bottom: 0.5em
+      margin-top: 0
 
     .animations
       +border-radius
