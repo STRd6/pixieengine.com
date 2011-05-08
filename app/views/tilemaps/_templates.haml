@@ -17,7 +17,7 @@
           .cursor
           .selection
 
-    %nav.bottom
+    %nav.bottom.module
       .component.tile_select
         %h3
           Tiles
@@ -37,7 +37,7 @@
 
             = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
-    %nav.left
+    %nav.left.module
       .component.actions
         %button.save Save
       .component
@@ -52,7 +52,7 @@
         %table.prop_editor
         %button.prop_save Save Properties
 
-    %nav.right
+    %nav.right.module
       .component
         %h3 Saved Selections
         .saved_selections

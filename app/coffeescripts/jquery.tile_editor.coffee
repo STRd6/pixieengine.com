@@ -179,6 +179,8 @@ $.fn.tileEditor = (options) ->
 
     positionElementIndices[currentLayer][posString] = tile.get()
 
+    return tile
+
   removeTile = (x, y) ->
     if !dirty
       dirty = true
@@ -480,6 +482,10 @@ $.fn.tileEditor = (options) ->
       nextTile("secondary")
     p: ->
       showPropertiesEditor(tileEditor.find('.tiles img.primary'))
+    i: ->
+      {left, top} = tileEditor.find(".screen .cursor").position()
+      if (tile = tileAt(left, top)).length
+        showPropertiesEditor(tile)
     backspace: selectionDelete
     del: selectionDelete
     esc: clearSelection
@@ -539,32 +545,52 @@ $.fn.tileEditor = (options) ->
 
     tileEditor.find(".layer_select .choice").each (i) ->
       $this = $(this)
+      name = $this.text().trim()
+      entityLayer = name.match /entities/i
 
       screenLayer = tileEditor.find(".screen .layers .layer").eq(i)
 
-      tileLookup = {}
+      if entityLayer
+        entities = screenLayer.find("img").map ->
+          $element = $(this)
 
-      screenLayer.find("img").each () ->
-        src = this.getAttribute("src")
+          src = $element.attr("src")
+          {top, left} = $element.position()
 
-        tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src]
+          x: left
+          y: top
+          tileIndex: tileIndexLookup[src]
+          properties: $(this).data("properties")
+        .get()
 
-      tiles = []
+        layer =
+          name: name
+          entities: entities
+      else
+        tileLookup = {}
 
-      tilesTall.times (y) ->
-        row = []
-        tiles.push row
+        screenLayer.find("img").each ->
+          src = this.getAttribute("src")
+          pos = this.getAttribute("data-pos")
 
-        tilesWide.times (x) ->
-          posString = x * tileWidth + "x" + y * tileHeight
+          tileLookup[pos] = tileIndexLookup[src]
 
-          imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
+        tiles = []
 
-          row.push imgIndex
+        tilesTall.times (y) ->
+          row = []
+          tiles.push row
 
-      layer =
-        name: $this.text()
-        tiles: tiles
+          tilesWide.times (x) ->
+            posString = x * tileWidth + "x" + y * tileHeight
+
+            imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
+
+            row.push imgIndex
+
+        layer =
+          name: name
+          tiles: tiles
 
       layers.push layer
 
@@ -623,10 +649,18 @@ $.fn.tileEditor = (options) ->
         name: layer.name
       ).appendTo(tileEditor.find(layerSelect))
 
-      layer.tiles.each (row, y) ->
-        row.each (tile, x) ->
-          if tile >= 0
-            replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+      if tiles = layer.tiles
+        tiles.each (row, y) ->
+          row.each (tile, x) ->
+            if tile >= 0
+              replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+
+      if entities = layer.entities
+        for entity in entities
+          tile = replaceTile(entity.x, entity.y, tileLookup[entity.tileIndex])
+
+          if entity.properties
+            tile.data("properties", entity.properties)
 
     tileEditor.find(layerSelect).find(".name").first().trigger("mousedown")
 

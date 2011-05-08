@@ -37,12 +37,12 @@
 
   .nav_left_container
     .relative
-      %nav
+      %nav.module
         %ul.filetree
           - unless project.file_info.nil?
             - project.file_info[:files].each do |file|
               = render :partial => "file_tree_node", :locals => {:file_info => file}
-      .help
+      .help.module
         %h3 Need help?
         .button_group
           %button(class="help_tooltips")> View tooltips

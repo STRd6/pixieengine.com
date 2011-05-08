@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 05 May 2011 02:16:21 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 21:47:54 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -173,7 +173,8 @@
       targetLayer = tileEditor.find(".screen .layer").eq(currentLayer);
       removeTile(x, y);
       targetLayer.append(tile);
-      return positionElementIndices[currentLayer][posString] = tile.get();
+      positionElementIndices[currentLayer][posString] = tile.get();
+      return tile;
     };
     removeTile = function(x, y) {
       var posString;
@@ -490,6 +491,13 @@
       p: function() {
         return showPropertiesEditor(tileEditor.find('.tiles img.primary'));
       },
+      i: function() {
+        var left, tile, top, _ref;
+        _ref = tileEditor.find(".screen .cursor").position(), left = _ref.left, top = _ref.top;
+        if ((tile = tileAt(left, top)).length) {
+          return showPropertiesEditor(tile);
+        }
+      },
       backspace: selectionDelete,
       del: selectionDelete,
       esc: clearSelection,
@@ -549,31 +557,53 @@
       }).get();
       layers = [];
       tileEditor.find(".layer_select .choice").each(function(i) {
-        var $this, layer, screenLayer, tileLookup, tiles;
+        var $this, entities, entityLayer, layer, name, screenLayer, tileLookup, tiles;
         $this = $(this);
+        name = $this.text().trim();
+        entityLayer = name.match(/entities/i);
         screenLayer = tileEditor.find(".screen .layers .layer").eq(i);
-        tileLookup = {};
-        screenLayer.find("img").each(function() {
-          var src;
-          src = this.getAttribute("src");
-          return tileLookup[this.getAttribute("data-pos")] = tileIndexLookup[src];
-        });
-        tiles = [];
-        tilesTall.times(function(y) {
-          var row;
-          row = [];
-          tiles.push(row);
-          return tilesWide.times(function(x) {
-            var imgIndex, posString;
-            posString = x * tileWidth + "x" + y * tileHeight;
-            imgIndex = tileLookup[posString] != null ? tileLookup[posString] : -1;
-            return row.push(imgIndex);
+        if (entityLayer) {
+          entities = screenLayer.find("img").map(function() {
+            var $element, left, src, top, _ref;
+            $element = $(this);
+            src = $element.attr("src");
+            _ref = $element.position(), top = _ref.top, left = _ref.left;
+            return {
+              x: left,
+              y: top,
+              tileIndex: tileIndexLookup[src],
+              properties: $(this).data("properties")
+            };
+          }).get();
+          layer = {
+            name: name,
+            entities: entities
+          };
+        } else {
+          tileLookup = {};
+          screenLayer.find("img").each(function() {
+            var pos, src;
+            src = this.getAttribute("src");
+            pos = this.getAttribute("data-pos");
+            return tileLookup[pos] = tileIndexLookup[src];
           });
-        });
-        layer = {
-          name: $this.text(),
-          tiles: tiles
-        };
+          tiles = [];
+          tilesTall.times(function(y) {
+            var row;
+            row = [];
+            tiles.push(row);
+            return tilesWide.times(function(x) {
+              var imgIndex, posString;
+              posString = x * tileWidth + "x" + y * tileHeight;
+              imgIndex = tileLookup[posString] != null ? tileLookup[posString] : -1;
+              return row.push(imgIndex);
+            });
+          });
+          layer = {
+            name: name,
+            tiles: tiles
+          };
+        }
         return layers.push(layer);
       });
       return {
@@ -614,18 +644,30 @@
       tileEditor.find("section .layers .layer").remove();
       tileEditor.find(layerSelect).html('');
       data.layers.each(function(layer, i) {
+        var entities, entity, tile, tiles, _i, _len, _results;
         currentLayer = i;
         addScreenLayer();
         templates.find(".layer_select.template").tmpl({
           name: layer.name
         }).appendTo(tileEditor.find(layerSelect));
-        return layer.tiles.each(function(row, y) {
-          return row.each(function(tile, x) {
-            if (tile >= 0) {
-              return replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile]);
-            }
+        if (tiles = layer.tiles) {
+          tiles.each(function(row, y) {
+            return row.each(function(tile, x) {
+              if (tile >= 0) {
+                return replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile]);
+              }
+            });
           });
-        });
+        }
+        if (entities = layer.entities) {
+          _results = [];
+          for (_i = 0, _len = entities.length; _i < _len; _i++) {
+            entity = entities[_i];
+            tile = replaceTile(entity.x, entity.y, tileLookup[entity.tileIndex]);
+            _results.push(entity.properties ? tile.data("properties", entity.properties) : void 0);
+          }
+          return _results;
+        }
       });
       return tileEditor.find(layerSelect).find(".name").first().trigger("mousedown");
     };
