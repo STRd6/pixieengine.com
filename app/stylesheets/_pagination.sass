@@ -2,26 +2,27 @@
   +clearfix
   margin-bottom: 1em
 
+  .previous_page, .next_page
+    font-weight: bold
+
   a, span, em
     +border-radius(3px)
     background-color: white
     display: block
     float: left
-    margin-right: 1px
+    font-weight: normal
+    margin-right: 3px
     padding: .2em .5em
 
   span.disabled
     color: $light_gray
-    border: 1px solid $light_gray
 
   em
     background: $pixie_primary
-    border: 1px solid $pixie_primary
     color: white
     font-weight: bold
 
   a
-    border: 1px solid $light_gray
     &:hover, &:focus
       background-color: $hover
       text-decoration: none
