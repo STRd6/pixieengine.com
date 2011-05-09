@@ -31,6 +31,8 @@
         for key, value of properties
           if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker()
+          else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
+            addRow(key, value).find('td:last input').vectorPicker()
           else
             addRow(key, value)
 
