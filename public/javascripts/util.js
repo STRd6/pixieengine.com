@@ -459,6 +459,10 @@ String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.substring(1).toLowerCase();
 }
 
+Object.isObject = function (object) {
+  return Object.prototype.toString.call(object) == '[object Object]';
+}
+
 Object.isArray = function (object) {
   return Object.prototype.toString.call(object) == '[object Array]';
 }
