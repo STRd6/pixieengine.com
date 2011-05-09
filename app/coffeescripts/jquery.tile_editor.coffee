@@ -7,7 +7,7 @@ $.fn.tileEditor = (options) ->
     tileHeight: 32
   , options)
 
-  tileEditor = $(this.get(0)).addClass("tile_editor")
+  tileEditor = $(this.get(0)).addClass("editor tile_editor")
 
   templates = $("#tile_editor_templates")
   templates.find(".editor.template").tmpl().appendTo(tileEditor)
@@ -27,8 +27,8 @@ $.fn.tileEditor = (options) ->
 
   modeDown = null
 
-  tileTray = "nav.bottom .tiles"
-  layerSelect = "nav.left .layer_select"
+  tileTray = ".module .tiles"
+  layerSelect = ".module .layer_select"
 
   positionElementIndices = []
 
@@ -519,7 +519,7 @@ $.fn.tileEditor = (options) ->
   saveData = () ->
     tileIndexLookup = {}
 
-    tileset = tileEditor.find("nav.bottom .tiles img").map((i) ->
+    tileset = tileEditor.find(".module .tiles img").map((i) ->
       $this = $(this)
       src = $this.attr("src")
 
@@ -690,6 +690,6 @@ $.fn.tileEditor = (options) ->
         text: action.name
         click: action.perform
 
-      tileEditor.find("nav.left .actions").append(actionButton)
+      tileEditor.find(".actions").append(actionButton)
 
     mapData: saveData
