@@ -376,7 +376,7 @@
     PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10)
 
     return this.each ->
-      pixie = $(this).addClass("pixie")
+      pixie = $(this).addClass("editor pixie")
 
       content = $ DIV,
         class: 'content'

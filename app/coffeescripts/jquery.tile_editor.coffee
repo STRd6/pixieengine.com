@@ -7,7 +7,7 @@ $.fn.tileEditor = (options) ->
     tileHeight: 32
   , options)
 
-  tileEditor = $(this.get(0)).addClass("tile_editor")
+  tileEditor = $(this.get(0)).addClass("editor tile_editor")
 
   templates = $("#tile_editor_templates")
   templates.find(".editor.template").tmpl().appendTo(tileEditor)

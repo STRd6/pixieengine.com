@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 07 May 2011 21:47:54 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 00:15:42 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -12,7 +12,7 @@
       tileWidth: 32,
       tileHeight: 32
     }, options);
-    tileEditor = $(this.get(0)).addClass("tile_editor");
+    tileEditor = $(this.get(0)).addClass("editor tile_editor");
     templates = $("#tile_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(tileEditor);
     debugMode = false;
