@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 00:15:42 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 05:12:38 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -24,8 +24,8 @@
     tileHeight = parseInt(options.tileHeight, 10);
     currentLayer = 0;
     modeDown = null;
-    tileTray = "nav.bottom .tiles";
-    layerSelect = "nav.left .layer_select";
+    tileTray = ".module .tiles";
+    layerSelect = ".module .layer_select";
     positionElementIndices = [];
     grid = GridGen({
       width: tileWidth,
@@ -698,7 +698,7 @@
           text: action.name,
           click: action.perform
         });
-        return tileEditor.find("nav.left .actions").append(actionButton);
+        return tileEditor.find(".actions").append(actionButton);
       },
       mapData: saveData
     });

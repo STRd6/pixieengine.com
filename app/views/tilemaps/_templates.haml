@@ -18,10 +18,25 @@
             .cursor
             .selection
 
-      %nav.bottom.module
+      .actions.top
+        %button.save Save
+
+      .module.right
+        .component
+          %h3 Layers
+          %button.new New Layer
+          .layer_select
+        .component{ :style => "display: none"}
+          %h3 Properties
+          %table.prop_editor
+          %button.prop_save Save Properties
+        .component
+          %h3 Saved Selections
+          .saved_selections
         .component.tile_select
           %h3
             Tiles
+          .tile_actions
             %button.new_tile
               = icon_image "image_add"
               New
@@ -38,28 +53,7 @@
 
               = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
-      %nav.left.module
-        .component.actions
-          %button.save Save
-        .component
-          %h3.filename Tilemap
-        .component
-          %h3 Layer
-          %button.new New Layer
-          .layer_select
-
-        .component{ :style => "display: none"}
-          %h3 Properties
-          %table.prop_editor
-          %button.prop_save Save Properties
-
-      %nav.right.module
-        .component
-          %h3 Saved Selections
-          .saved_selections
-
-      %nav.tools.component
-        %h3 Tools
+      .tools.module.left
         .tool.primary.secondary{ :"data-tool" => "stamp"}
         .tool{ :"data-tool" => "eraser"}
         .tool{ :"data-tool" => "fill"}

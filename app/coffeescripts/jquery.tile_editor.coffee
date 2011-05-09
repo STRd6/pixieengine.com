@@ -27,8 +27,8 @@ $.fn.tileEditor = (options) ->
 
   modeDown = null
 
-  tileTray = "nav.bottom .tiles"
-  layerSelect = "nav.left .layer_select"
+  tileTray = ".module .tiles"
+  layerSelect = ".module .layer_select"
 
   positionElementIndices = []
 
@@ -690,6 +690,6 @@ $.fn.tileEditor = (options) ->
         text: action.name
         click: action.perform
 
-      tileEditor.find("nav.left .actions").append(actionButton)
+      tileEditor.find(".actions").append(actionButton)
 
     mapData: saveData
