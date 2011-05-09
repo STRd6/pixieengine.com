@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 05:12:38 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 05:28:38 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -536,7 +536,7 @@
     saveData = function() {
       var layers, tileIndexLookup, tileset;
       tileIndexLookup = {};
-      tileset = tileEditor.find("nav.bottom .tiles img").map(function(i) {
+      tileset = tileEditor.find(".module .tiles img").map(function(i) {
         var $this, mapTileData, mapTileId, pixieId, props, src;
         $this = $(this);
         src = $this.attr("src");

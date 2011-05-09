@@ -519,7 +519,7 @@ $.fn.tileEditor = (options) ->
   saveData = () ->
     tileIndexLookup = {}
 
-    tileset = tileEditor.find("nav.bottom .tiles img").map((i) ->
+    tileset = tileEditor.find(".module .tiles img").map((i) ->
       $this = $(this)
       src = $this.attr("src")
 
