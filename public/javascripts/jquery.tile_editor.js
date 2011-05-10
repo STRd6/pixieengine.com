@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 10 May 2011 01:28:44 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 10 May 2011 04:54:05 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -519,7 +519,7 @@
       });
     });
     tileEditor.find(tileTray).sortable();
-    tileEditor.find(".component.tile_select").dropImageReader(function(file, event) {
+    tileEditor.dropImageReader(function(file, event) {
       var img;
       if (event.target.readyState === FileReader.DONE) {
         img = $("<img/>", {

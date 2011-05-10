@@ -511,7 +511,7 @@ $.fn.tileEditor = (options) ->
 
   tileEditor.find(tileTray).sortable()
 
-  tileEditor.find(".component.tile_select").dropImageReader (file, event) ->
+  tileEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       img = $ "<img/>",
         alt: file.name
