@@ -1836,6 +1836,9 @@ Math.TAU = 2 * Math.PI;;
 Object.isArray = function(object) {
   return Object.prototype.toString.call(object) === '[object Array]';
 };;
+Object.isObject = function(object) {
+  return Object.prototype.toString.call(object) === '[object Object]';
+};
 var __hasProp = Object.prototype.hasOwnProperty, __slice = Array.prototype.slice;
 (function($) {
   return ($.fn.powerCanvas = function(options) {

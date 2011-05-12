@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 11 May 2011 22:55:32 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 08:03:11 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -65,16 +65,23 @@
         return row.appendTo(element);
       };
       $('input', this.selector).live('keydown', function(event) {
-        var $this, changeAmount, changeNumber, changeObject, flipBoolean, obj, result, value;
+        var $this, changeAmount, changeNumber, changeObject, flipBoolean, nextValue, obj, result, value;
         if (event.type !== "keydown") {
           return;
         }
-        if (!(event.which === 37 || event.which === 38 || event.which === 39 || event.which === 40)) {
+        if (!(event.which === 13 || event.which === 37 || event.which === 38 || event.which === 39 || event.which === 40)) {
+          return;
+        }
+        if (event.which === 13) {
+          nextValue($(this));
           return;
         }
         event.preventDefault();
         $this = $(this);
         changeAmount = event.which === 38 ? 1 : -1;
+        nextValue = function(input) {
+          return $(input).parent().parent().next().find('td:last input').select();
+        };
         flipBoolean = function(bool) {
           if (bool === "true") {
             return "false";

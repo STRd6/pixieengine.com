@@ -63,13 +63,20 @@
 
     $('input', this.selector).live 'keydown', (event) ->
       return unless event.type == "keydown"
-      return unless (event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
+      return unless (event.which == 13 || event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
+
+      if event.which == 13
+        nextValue($(this))
+        return
 
       event.preventDefault()
 
       $this = $(this)
 
       changeAmount = if event.which == 38 then 1 else -1
+
+      nextValue = (input) ->
+        $(input).parent().parent().next().find('td:last input').select()
 
       flipBoolean = (bool) ->
         if bool == "true"
