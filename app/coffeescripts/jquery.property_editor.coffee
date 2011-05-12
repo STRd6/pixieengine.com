@@ -20,8 +20,6 @@
 
           return # This is necessary because the implicit return in the try catch got weird
 
-      populateParentObjects()
-
       props
 
     element.setProps = (properties) ->
@@ -40,41 +38,6 @@
 
       element
 
-    populateParentObjects = () ->
-      element.find('tr > tr.child_property').parent().each (i, group) ->
-        props = {}
-
-        $(group).find('tr.child_property').each (i, row) ->
-          inputs = $(row).find('input')
-
-          key = inputs.eq(0).val().substring(inputs.eq(0).val().search(/\./) + 1)
-          value = inputs.eq(1).val()
-
-          if !isNaN(value)
-            value = parseFloat(value)
-
-          try
-            props[key] = JSON.parse(value)
-          catch e
-            props[key] = value
-
-          return
-
-        $(group).find('> td input').eq(1).val(JSON.stringify(props))
-
-    generateChildElements = (childData, parentName) ->
-      results = []
-
-      for key, value of childData
-        row = $ "<tr class='child_property'>"
-
-        key_cell = $ "<td><input type='text' placeholder='key', value=#{parentName}.#{key}></td>"
-        value_cell = $ "<td><input type='text' placeholder='value', value=#{value}></td>"
-
-        results.push(row.append(key_cell, value_cell))
-
-      return results
-
     addRow = (key, value) ->
       row = $ "<tr>"
 
@@ -88,9 +51,6 @@
 
       cell = $("<td>").appendTo(row)
 
-      if Object::toString.call(value) == '[object Object]'
-        obj = JSON.parse(JSON.stringify(value))
-
       value = JSON.stringify(value) unless typeof value == "string"
 
       $("<input>",
@@ -99,15 +59,11 @@
         value: value
       ).appendTo cell
 
-      if obj
-        generateChildElements(obj, key).each (childRow) ->
-          childRow.appendTo row
-
       row.appendTo element
 
     $('input', this.selector).live 'keydown', (event) ->
       return unless event.type == "keydown"
-      return unless (event.which == 38 || event.which == 40)
+      return unless (event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
 
       event.preventDefault()
 
@@ -142,6 +98,15 @@
         else
           return parseInt(value) + changeAmount
 
+      changeObject = (obj, key) ->
+        switch key
+          when 37 then obj.x--
+          when 38 then obj.y--
+          when 39 then obj.x++
+          when 40 then obj.y++
+
+        return JSON.stringify(obj)
+
       value = $this.val()
 
       if value.length
@@ -151,10 +116,17 @@
 
         element.trigger("change", element.getProps())
 
+        try
+          obj = JSON.parse(value)
+        catch e
+          obj = null
+
         if flipBoolean value
           result = flipBoolean value
         else if Number.isNumber value
           result = changeNumber(value, changeAmount)
+        else if obj && obj.hasOwnProperty('x') && obj.hasOwnProperty('y')
+          result = changeObject(obj, event.which)
 
         $this.val(result)
 

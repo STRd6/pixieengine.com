@@ -1,11 +1,11 @@
-/* DO NOT MODIFY. This file was compiled Mon, 09 May 2011 17:27:07 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 11 May 2011 22:55:32 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
     return $.fn.propertyEditor = function(properties) {
-      var addRow, element, generateChildElements, populateParentObjects;
+      var addRow, element;
       element = this.eq(0);
       element.addClass("properties");
       element.getProps = function() {
@@ -24,7 +24,6 @@
             return;
           }
         });
-        populateParentObjects();
         return props;
       };
       element.setProps = function(properties) {
@@ -45,42 +44,8 @@
         addRow('', '');
         return element;
       };
-      populateParentObjects = function() {
-        return element.find('tr > tr.child_property').parent().each(function(i, group) {
-          var props;
-          props = {};
-          $(group).find('tr.child_property').each(function(i, row) {
-            var inputs, key, value;
-            inputs = $(row).find('input');
-            key = inputs.eq(0).val().substring(inputs.eq(0).val().search(/\./) + 1);
-            value = inputs.eq(1).val();
-            if (!isNaN(value)) {
-              value = parseFloat(value);
-            }
-            try {
-              props[key] = JSON.parse(value);
-            } catch (e) {
-              props[key] = value;
-            }
-            return;
-          });
-          return $(group).find('> td input').eq(1).val(JSON.stringify(props));
-        });
-      };
-      generateChildElements = function(childData, parentName) {
-        var key, key_cell, results, row, value, value_cell;
-        results = [];
-        for (key in childData) {
-          value = childData[key];
-          row = $("<tr class='child_property'>");
-          key_cell = $("<td><input type='text' placeholder='key', value=" + parentName + "." + key + "></td>");
-          value_cell = $("<td><input type='text' placeholder='value', value=" + value + "></td>");
-          results.push(row.append(key_cell, value_cell));
-        }
-        return results;
-      };
       addRow = function(key, value) {
-        var cell, obj, row;
+        var cell, row;
         row = $("<tr>");
         cell = $("<td>").appendTo(row);
         $("<input>", {
@@ -89,9 +54,6 @@
           value: key
         }).appendTo(cell);
         cell = $("<td>").appendTo(row);
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-          obj = JSON.parse(JSON.stringify(value));
-        }
         if (typeof value !== "string") {
           value = JSON.stringify(value);
         }
@@ -100,19 +62,14 @@
           placeholder: "value",
           value: value
         }).appendTo(cell);
-        if (obj) {
-          generateChildElements(obj, key).each(function(childRow) {
-            return childRow.appendTo(row);
-          });
-        }
         return row.appendTo(element);
       };
       $('input', this.selector).live('keydown', function(event) {
-        var $this, changeAmount, changeNumber, flipBoolean, result, value;
+        var $this, changeAmount, changeNumber, changeObject, flipBoolean, obj, result, value;
         if (event.type !== "keydown") {
           return;
         }
-        if (!(event.which === 38 || event.which === 40)) {
+        if (!(event.which === 37 || event.which === 38 || event.which === 39 || event.which === 40)) {
           return;
         }
         event.preventDefault();
@@ -150,6 +107,22 @@
             return parseInt(value) + changeAmount;
           }
         };
+        changeObject = function(obj, key) {
+          switch (key) {
+            case 37:
+              obj.x--;
+              break;
+            case 38:
+              obj.y--;
+              break;
+            case 39:
+              obj.x++;
+              break;
+            case 40:
+              obj.y++;
+          }
+          return JSON.stringify(obj);
+        };
         value = $this.val();
         if (value.length) {
           result = null;
@@ -157,10 +130,17 @@
             changeAmount *= 10;
           }
           element.trigger("change", element.getProps());
+          try {
+            obj = JSON.parse(value);
+          } catch (e) {
+            obj = null;
+          }
           if (flipBoolean(value)) {
             result = flipBoolean(value);
           } else if (Number.isNumber(value)) {
             result = changeNumber(value, changeAmount);
+          } else if (obj && obj.hasOwnProperty('x') && obj.hasOwnProperty('y')) {
+            result = changeObject(obj, event.which);
           }
           return $this.val(result);
         }
