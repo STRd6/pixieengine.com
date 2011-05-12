@@ -367,6 +367,21 @@ ul#libraries
       margin-left: -1px
       margin-right: -1px
 
+  .vector_picker
+    +bounds(126px)
+
+    background: url(/images/unit_circle.png) no-repeat white
+    border: 2px solid #ccc
+    position: absolute
+    z-index: 1000
+
+    .unit_circle
+      +bounds(126px)
+
+      background: url(/images/jscolor/circle.gif) no-repeat
+      cursor: crosshair
+      position: absolute
+
   #console_window
     textarea
       display: block
