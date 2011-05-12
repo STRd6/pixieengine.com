@@ -1820,6 +1820,12 @@ Number.prototype.d = function(sides) {
   });
   return sum;
 };
+Number.isNumber = function (num) {
+  return !isNaN(num);
+};
+Number.isFloat = function(num) {
+  return !isNaN(num) && ("" + num).search(/\./) >= 0
+};
 /***
 The mathematical circle constant of 1 turn.
 
