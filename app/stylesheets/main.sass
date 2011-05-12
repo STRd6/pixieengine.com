@@ -84,8 +84,13 @@ div.no-star
 #tooltip
   +border-radius(5px)
   +box-shadow
-  background-color: black
-  color: white
+  +text-shadow(black, 1px, 1px)
+
+  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(#222222))
+  background-color: #444
+  border-left: 1px solid #595959
+  border-top: 1px solid #595959
+  color: #eee
   display: none
   min-width: 150px
   max-width: 200px
@@ -93,12 +98,16 @@ div.no-star
   position: absolute
   z-index: 10
 
+  .next_tip, .close_tip
+    margin-right: 0
+    width: 80px
+
   .icon
     background-image: url(images/info.png)
     height: 48px
-    left: -20px
+    left: -12px
     position: absolute
-    top: -10px
+    top: -12px
     width: 48px
 
   .content
