@@ -1,3 +1,4 @@
+/* TODO: Clean up and remove a bunch of this
 #fullscreen
   +box-sizing(border-box)
 
@@ -78,8 +79,6 @@
     +bounds(100%)
     +box-sizing(border-box)
 
-    overflow-y: auto
-
     .screen
       +bounds(100%)
       +box-sizing(border-box)
@@ -88,7 +87,48 @@
       overflow: auto
       position: relative
 
+
+/* This is the real base editor style
+.editor
+  +bounds(100%, 100%)
+  +box-sizing(border-box)
+
+  padding: 6px
+  padding-top: 8px
+
+  .content
+    +bounds(100%, 100%)
+
+    position: relative
+
+  .module
+    position: absolute
+
+    &.bottom
+      bottom: 0
+    &.left
+      left: 0
+      top: 0
+    &.right
+      right: 0
+      top: 0
+    &.top
+      top: 0
+
+  button
+    font-size: 13px
+
+  .screen, .viewport
+    +contents_centered
+
+    background-color: #CCC
+
 .module
+  +border-radius
+  +box-sizing(border-box)
+
+  background-color: $dark_highlight
+
   .light &
     +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
 

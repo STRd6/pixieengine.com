@@ -7,7 +7,7 @@ $.fn.tileEditor = (options) ->
     tileHeight: 32
   , options)
 
-  tileEditor = $(this.get(0)).addClass("tile_editor")
+  tileEditor = $(this.get(0)).addClass("editor tile_editor")
 
   templates = $("#tile_editor_templates")
   templates.find(".editor.template").tmpl().appendTo(tileEditor)
@@ -27,8 +27,8 @@ $.fn.tileEditor = (options) ->
 
   modeDown = null
 
-  tileTray = "nav.bottom .tiles"
-  layerSelect = "nav.left .layer_select"
+  tileTray = ".module .tiles"
+  layerSelect = ".module .layer_select"
 
   positionElementIndices = []
 
@@ -205,29 +205,42 @@ $.fn.tileEditor = (options) ->
     ].select (neighborPos) ->
       inBounds(neighborPos[0], neighborPos[1])
 
-  floodFill = (x, y, tile) ->
-    inSelection = isInSelection(x, y)
-    targetSrc = tileAt(x, y).attr("src")
-    paintSrc = tile.attr("src")
+  filledToken = 0
+  floodFill = (x, y, mode) ->
+    # Handle single tile or selections
+    if (tile = tileEditor.find(".tiles").find("." + mode)).length
+      sourceTiles = [[tile]]
+    else if selection = tileEditor.find(".saved_selections").find("." + mode).data("selectionData")
+      sourceTiles = selection
 
-    return if targetSrc == paintSrc
+    filledToken += 1
+    inSelection = isInSelection(x, y)
+    targetTile = tileAt(x, y)
+    #TODO: Use tile gids instead of src
+    targetSrc = targetTile.attr("src")
+
+    tile = sourceTiles[0][0]
 
     queue = []
 
-    replaceTile(x, y, tile)
+    replaceTile(x, y, tile).data("fill", filledToken)
     queue.push([x, y])
 
-    while queue.length
-      position = queue.pop()
-
-      neighbors = getNeighborPositions(position);
+    while position = queue.pop()
+      neighbors = getNeighborPositions(position)
 
       neighbors.each (neighbor, index) ->
         if inSelection == isInSelection(neighbor[0], neighbor[1])
-          if neighbor && tileAt(neighbor[0], neighbor[1]).attr("src") == targetSrc
-            replaceTile(neighbor[0], neighbor[1], tile)
-            queue.push(neighbor)
+          tile = sourceTiles.wrap( (neighbor[1] - y) / tileHeight).wrap( (neighbor[0] - x) / tileWidth)
 
+          if neighbor
+            targetTile = tileAt(neighbor[0], neighbor[1])
+
+            if targetTile.attr("src") == targetSrc && targetTile.data("fill") != filledToken
+              replaceTile(neighbor[0], neighbor[1], tile).data("fill", filledToken)
+              queue.push(neighbor)
+
+    return # Just to keep coffeescript from constructing and returning a giant array
 
   selectionCache = null
   isInSelection = (x, y) ->
@@ -284,7 +297,7 @@ $.fn.tileEditor = (options) ->
         selectionData.push row
 
       tile = tileAt(x, y).clone()
-      row.push tile.attr("src")
+      row.push tile
 
       tile.css(
         position: "absolute"
@@ -300,8 +313,6 @@ $.fn.tileEditor = (options) ->
     savedSelection.data("selectionData", selectionData)
 
     selectTile(savedSelection, "primary")
-
-    selectTool("stamp", "primary")
 
   selectionCopy = () ->
     harvestSelection()
@@ -348,12 +359,12 @@ $.fn.tileEditor = (options) ->
       replaceTile(x, y, tile)
     else if selection = tileEditor.find(".saved_selections").find("." + mode).data("selectionData")
       selection.each (row, tileY) ->
-        row.each (src, tileX) ->
-          if src
+        row.each (tile, tileX) ->
+          if tile
             targetX = x + tileX * tileWidth
             targetY = y + tileY * tileHeight
 
-            replaceTile(targetX, targetY, tileEditor.find(".tiles img[src="+src+"]").eq(0))
+            replaceTile(targetX, targetY, tile)
 
   currentTool = (mode) ->
     tileEditor.find(".tools .tool." + mode).data("tool")
@@ -366,7 +377,7 @@ $.fn.tileEditor = (options) ->
         when "eraser"
           removeTile(x, y)
         when "fill"
-          floodFill(x, y, tileEditor.find(".tiles").find("." + mode))
+          floodFill(x, y, mode)
         when "selection"
           select(x, y)
 
@@ -500,7 +511,7 @@ $.fn.tileEditor = (options) ->
 
   tileEditor.find(tileTray).sortable()
 
-  tileEditor.find(".component.tile_select").dropImageReader (file, event) ->
+  tileEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       img = $ "<img/>",
         alt: file.name
@@ -519,7 +530,7 @@ $.fn.tileEditor = (options) ->
   saveData = () ->
     tileIndexLookup = {}
 
-    tileset = tileEditor.find("nav.bottom .tiles img").map((i) ->
+    tileset = tileEditor.find(".module .tiles img").map((i) ->
       $this = $(this)
       src = $this.attr("src")
 
@@ -690,6 +701,6 @@ $.fn.tileEditor = (options) ->
         text: action.name
         click: action.perform
 
-      tileEditor.find("nav.left .actions").append(actionButton)
+      tileEditor.find(".actions").append(actionButton)
 
     mapData: saveData

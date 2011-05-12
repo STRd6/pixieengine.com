@@ -1,33 +1,47 @@
 @import partials/base
 @import util
 
-$sidebar_width: 220px
-$bottom_bar_height: 140px
+$left_sidebar_width: 60px
+$right_sidebar_width: 220px
+$top_bar_height: 21px
+$bottom_bar_height: 0px
+$module_margin: 12px
 
 .tile_editor
-  +box-sizing(border-box)
   +user-select(none)
 
   cursor: default
-  height: 100%
   position: relative
 
-  &>nav
-    +border-radius
-    +box-sizing(border-box)
+  .content
+    &>section
+      padding-bottom: $bottom_bar_height
+      padding-left: $left_sidebar_width + $module_margin
+      padding-right: $right_sidebar_width + $module_margin
+      padding-top: $top_bar_height + $module_margin
 
-    background-color: $dark_highlight
-    min-height: 142px
-    padding: 10px
+    &>.module
+      padding: 10px
 
-    .light &
-      background-color: $light_highlight
+      &.left, &.right
+        height: 100%
 
-    &.left, &.right
-      width: $sidebar_width
+        .component:first-child
+          padding-top: 0
 
-      .component:first-child
-        padding-top: 0
+      &.left
+        width: $left_sidebar_width
+
+      &.right
+        width: $right_sidebar_width
+
+    .actions.top
+      left: $left_sidebar_width + $module_margin
+      position: absolute
+      top: 0
+
+      button
+        margin: 1px
 
   table.properties
     background-color: transparent
@@ -72,7 +86,7 @@ $bottom_bar_height: 140px
     letter-spacing: 0.1em
     margin-bottom: 0.5em
 
-  nav.left
+  .module.left
     .component
       position: relative
 
@@ -87,20 +101,10 @@ $bottom_bar_height: 140px
         position: absolute
         right: 0
 
-  &>section
-    padding-bottom: $bottom_bar_height
-    padding-left: $sidebar_width + 20
-    padding-right: $sidebar_width + 20
-
-  nav.bottom
-    +border-radius
-
+  .module.bottom
     height: $bottom_bar_height
-    padding-left: $sidebar_width
-    padding-right: $sidebar_width
-
-    button
-      font-size: 12px
+    padding-left: $left_sidebar_width
+    padding-right: $right_sidebar_width
 
     .tiles
       height: 70px
@@ -186,15 +190,11 @@ $bottom_bar_height: 140px
           display: block
 
   .tools
-    +bounds($sidebar_width, $bottom_bar_height)
+    +bounds($left_sidebar_width, auto)
     +tile_tool(eraser)
     +tile_tool(fill)
     +tile_tool(selection)
     +tile_tool(stamp)
-
-    bottom: 0
-    left: 0
-    position: absolute
 
     .tool
       +bounds(32px)
