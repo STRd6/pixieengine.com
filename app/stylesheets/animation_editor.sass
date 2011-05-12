@@ -52,6 +52,18 @@ $sprite_container_bounds: 72px
     position: absolute
     top: 3px
 
+  .hflip
+    +bounds(16px)
+
+    background-image: url(/images/left_right.png)
+    bottom: 0
+    position: absolute
+
+  .vflip
+    +bounds(16px)
+
+    background-image: url(/images/up_down.png)
+
   .goto
     position: absolute
     right: 180px
@@ -75,6 +87,16 @@ $sprite_container_bounds: 72px
 
   height: 100%
   position: relative
+
+  .flipped_horizontal
+    -webkit-transform: scaleX(-1)
+
+    cursor: pointer
+
+  .flipped_vertical
+    -webkit-transform: scaleY(-1)
+
+    cursor: pointer
 
   .sprite_container
     +border-radius
