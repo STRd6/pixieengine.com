@@ -65,18 +65,14 @@
       return unless event.type == "keydown"
       return unless (event.which == 13 || event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
 
-      if event.which == 13
-        nextValue($(this))
-        return
-
       event.preventDefault()
 
       $this = $(this)
 
-      changeAmount = if event.which == 38 then 1 else -1
+      if event.which == 13
+        $(this).parent().parent().next().find('td:last input').select()
 
-      nextValue = (input) ->
-        $(input).parent().parent().next().find('td:last input').select()
+      changeAmount = if event.which == 38 then 1 else -1
 
       flipBoolean = (bool) ->
         if bool == "true"
