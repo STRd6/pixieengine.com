@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 08 May 2011 08:04:28 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 11 May 2011 16:45:30 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -321,16 +321,19 @@
         return pixelEditFrame($(this).find('img'));
       },
       mouseenter: function() {
-        $('<div class="x" />').appendTo($(this));
-        return $('<div class="duplicate" />').appendTo($(this));
+        var duplicate, hflip, vflip, x;
+        x = $('<div class="x" />');
+        duplicate = $('<div class="duplicate" />');
+        hflip = $('<div class="hflip" />');
+        vflip = $('<div class="vflip" />');
+        return $(this).append(x, duplicate, vflip, hflip);
       },
       mouseleave: function() {
-        return $(this).find('.x, .duplicate').remove();
+        return $(this).find('.x, .duplicate, .hflip, .vflip').remove();
       }
     });
     animationEditor.find('.animations input').live({
-      change: function(e) {
-        console.log(e);
+      change: function() {
         animationEditor.find('.goto select option').remove();
         return animationEditor.find('.animations .animation').each(function(i, animation) {
           var animation_name;
@@ -372,7 +375,7 @@
         preview_dirty = true;
         event.preventDefault();
         selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate').remove();
+        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
         if (selected_sprite.prev().length) {
           return selected_sprite.prev().before(selected_sprite);
         }
@@ -384,7 +387,7 @@
         preview_dirty = true;
         event.preventDefault();
         selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate').remove();
+        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
         if (selected_sprite.next().length) {
           return selected_sprite.next().after(selected_sprite);
         }
@@ -409,8 +412,14 @@
       var newEl, parent;
       parent = $(this).parent();
       newEl = parent.clone();
-      newEl.find('.x, .duplicate').remove();
+      newEl.find('.x, .duplicate, .hflip, .vflip').remove();
       return newEl.insertAfter(parent);
+    });
+    animationEditor.find('.hflip').live('mousedown', function() {
+      return $(this).parent().find('img').toggleClass('flipped_horizontal');
+    });
+    animationEditor.find('.vflip').live('mousedown', function() {
+      return $(this).parent().find('img').toggleClass('flipped_vertical');
     });
     animationEditor.find("button.save").click(function() {
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
@@ -426,7 +435,7 @@
             speed: animation.speed,
             complete: animation.complete
           }).insertBefore('nav.right .new_animation');
-          if (!animation.interruptible) {
+          if (animation.interruptible !== false) {
             animation_el.find('.cover').addClass('locked');
           }
           active_animation().removeClass('active');

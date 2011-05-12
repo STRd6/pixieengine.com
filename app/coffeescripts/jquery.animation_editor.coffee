@@ -303,10 +303,14 @@ $.fn.animationEditor = (options) ->
     dblclick: (event) ->
       pixelEditFrame($(this).find('img'))
     mouseenter: ->
-      $('<div class="x" />').appendTo $(this)
-      $('<div class="duplicate" />').appendTo $(this)
+      x = $('<div class="x" />')
+      duplicate = $('<div class="duplicate" />')
+      hflip = $('<div class="hflip" />')
+      vflip = $('<div class="vflip" />')
+
+      $(this).append(x, duplicate, vflip, hflip)
     mouseleave: ->
-      $(this).find('.x, .duplicate').remove()
+      $(this).find('.x, .duplicate, .hflip, .vflip').remove()
 
   animationEditor.find('.animations input').live
     change: ->
@@ -351,7 +355,7 @@ $.fn.animationEditor = (options) ->
       event.preventDefault()
 
       selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
 
       if selected_sprite.prev().length
         selected_sprite.prev().before(selected_sprite)
@@ -362,7 +366,7 @@ $.fn.animationEditor = (options) ->
       event.preventDefault()
 
       selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
 
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
@@ -385,9 +389,15 @@ $.fn.animationEditor = (options) ->
     parent = $(this).parent()
     newEl = parent.clone()
 
-    newEl.find('.x, .duplicate').remove()
+    newEl.find('.x, .duplicate, .hflip, .vflip').remove()
 
     newEl.insertAfter(parent)
+
+  animationEditor.find('.hflip').live 'mousedown', ->
+    $(this).parent().find('img').toggleClass('flipped_horizontal')
+
+  animationEditor.find('.vflip').live 'mousedown', ->
+    $(this).parent().find('img').toggleClass('flipped_vertical')
 
   animationEditor.find("button.save").click ->
     options.save?(saveData())
@@ -406,7 +416,7 @@ $.fn.animationEditor = (options) ->
           complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        animation_el.find('.cover').addClass('locked') unless animation.interruptible
+        animation_el.find('.cover').addClass('locked') unless animation.interruptible == false
 
         active_animation().removeClass('active')
 
