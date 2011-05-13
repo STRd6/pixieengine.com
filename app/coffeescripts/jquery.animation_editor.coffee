@@ -371,8 +371,6 @@ $.fn.animationEditor = (options) ->
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
 
-  animationEditor.find('.animations .name, .filename').liveEdit()
-
   animationEditor.find('.frame_sprites .x').live 'mousedown', ->
     parent = $(this).parent()
 
@@ -418,7 +416,8 @@ $.fn.animationEditor = (options) ->
           complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        if animation.interruptible && !animation.interruptible == false
+        debugger
+        if animation.hasOwnProperty('interruptible') && animation.interruptible == false
           animation_el.find('.cover').addClass('locked')
 
         active_animation().removeClass('active')
@@ -453,7 +452,7 @@ $.fn.animationEditor = (options) ->
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
 
-  window.saveData = ->
+  saveData = ->
     update_active_animation()
 
     frames = []
@@ -498,7 +497,7 @@ $.fn.animationEditor = (options) ->
 
     return {
       version: "1.4"
-      name: animationEditor.find('nav.right .filename').text()
+      name: "Animation"
       tileset: tiles
       animations: animation_data
     }

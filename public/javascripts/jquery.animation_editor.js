@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 05:12:10 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 05:41:21 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
@@ -393,7 +393,6 @@
         }
       }
     });
-    animationEditor.find('.animations .name, .filename').liveEdit();
     animationEditor.find('.frame_sprites .x').live('mousedown', function() {
       var parent;
       parent = $(this).parent();
@@ -439,7 +438,8 @@
             speed: animation.speed,
             complete: animation.complete
           }).insertBefore('nav.right .new_animation');
-          if (animation.interruptible && !animation.interruptible === false) {
+          debugger;
+          if (animation.hasOwnProperty('interruptible') && animation.interruptible === false) {
             animation_el.find('.cover').addClass('locked');
           }
           active_animation().removeClass('active');
@@ -471,7 +471,7 @@
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
     };
-    window.saveData = function() {
+    saveData = function() {
       var animation_data, frames, ids, tiles;
       update_active_animation();
       frames = [];
@@ -512,7 +512,7 @@
       }).get();
       return {
         version: "1.4",
-        name: animationEditor.find('nav.right .filename').text(),
+        name: "Animation",
         tileset: tiles,
         animations: animation_data
       };
