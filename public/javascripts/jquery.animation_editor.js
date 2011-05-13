@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 11 May 2011 16:45:30 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 23:59:54 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -185,7 +185,7 @@
       },
       mouseenter: function() {
         if (animationEditor.find('.animations .animation').length > 1) {
-          return $(this).find('.cover').append('<div class="x" />');
+          return $(this).find('.cover').append('<div class="x" title="close" alt="close" />');
         }
       },
       mouseleave: function() {
@@ -322,10 +322,10 @@
       },
       mouseenter: function() {
         var duplicate, hflip, vflip, x;
-        x = $('<div class="x" />');
-        duplicate = $('<div class="duplicate" />');
-        hflip = $('<div class="hflip" />');
-        vflip = $('<div class="vflip" />');
+        x = $('<div class="x" title="close" alt="close" />');
+        duplicate = $('<div class="duplicate" title="copy this frame" alt="copy this frame" />');
+        hflip = $('<div class="hflip" title="flip horizontally" alt="flip horizontally" />');
+        vflip = $('<div class="vflip" title="flip vertically" alt="flip vertically" />');
         return $(this).append(x, duplicate, vflip, hflip);
       },
       mouseleave: function() {

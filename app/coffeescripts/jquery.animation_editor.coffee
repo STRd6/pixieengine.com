@@ -176,7 +176,7 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.lock').css('opacity', 0.5)
     mouseenter: ->
       if animationEditor.find('.animations .animation').length > 1
-        $(this).find('.cover').append('<div class="x" />')
+        $(this).find('.cover').append('<div class="x" title="close" alt="close" />')
     mouseleave: ->
       $(this).find('.x').remove()
 
@@ -303,10 +303,10 @@ $.fn.animationEditor = (options) ->
     dblclick: (event) ->
       pixelEditFrame($(this).find('img'))
     mouseenter: ->
-      x = $('<div class="x" />')
-      duplicate = $('<div class="duplicate" />')
-      hflip = $('<div class="hflip" />')
-      vflip = $('<div class="vflip" />')
+      x = $('<div class="x" title="close" alt="close" />')
+      duplicate = $('<div class="duplicate" title="copy this frame" alt="copy this frame" />')
+      hflip = $('<div class="hflip" title="flip horizontally" alt="flip horizontally" />')
+      vflip = $('<div class="vflip" title="flip vertically" alt="flip vertically" />')
 
       $(this).append(x, duplicate, vflip, hflip)
     mouseleave: ->
