@@ -92,13 +92,13 @@ $sprite_container_bounds: 72px
   position: relative
 
   .flipped_horizontal
-    -webkit-transform: scaleX(-1)
+    +flip(x)
 
   .flipped_vertical
-    -webkit-transform: scaleY(-1)
+    +flip(y)
 
   .flipped_horizontal.flipped_vertical
-    -webkit-transform: scaleX(-1) scaleY(-1)
+    +flip(both)
 
   .sprite_container
     +border-radius
