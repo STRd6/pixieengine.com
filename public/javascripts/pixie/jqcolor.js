@@ -26,7 +26,7 @@
 
     // spectrum's width and height
     var HVSize = [ 180, 101 ]; // normal
-    switch(options.HVSive) {
+    switch(options.HVSize) {
       case 'small':
         HVSize = [ 120, 69 ];
         break;

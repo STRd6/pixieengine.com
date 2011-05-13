@@ -52,6 +52,21 @@ $sprite_container_bounds: 72px
     position: absolute
     top: 3px
 
+  .hflip, .vflip
+    +bounds(16px)
+
+    cursor: pointer
+
+  .hflip
+    background-image: url(/images/left_right.png)
+    bottom: 0
+    position: absolute
+
+  .vflip
+    +bounds(16px)
+
+    background-image: url(/images/up_down.png)
+
   .goto
     position: absolute
     right: 180px
@@ -75,6 +90,15 @@ $sprite_container_bounds: 72px
 
   height: 100%
   position: relative
+
+  .flipped_horizontal
+    -webkit-transform: scaleX(-1)
+
+  .flipped_vertical
+    -webkit-transform: scaleY(-1)
+
+  .flipped_horizontal.flipped_vertical
+    -webkit-transform: scaleX(-1) scaleY(-1)
 
   .sprite_container
     +border-radius
@@ -131,7 +155,7 @@ $sprite_container_bounds: 72px
 
     background-color: $dark_highlight
     border: 2px solid transparent
-    height: 105px
+    min-height: 150px
     overflow-y: hidden
     padding: 20px
     white-space: nowrap
@@ -184,7 +208,7 @@ $sprite_container_bounds: 72px
   nav.right
     +bounds(150px, 100%)
 
-    padding-bottom: 63px + 175px
+    padding-bottom: 212px
     text-align: center
 
     h3

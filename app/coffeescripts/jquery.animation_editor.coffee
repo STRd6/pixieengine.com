@@ -176,7 +176,7 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.lock').css('opacity', 0.5)
     mouseenter: ->
       if animationEditor.find('.animations .animation').length > 1
-        $(this).find('.cover').append('<div class="x" />')
+        $(this).find('.cover').append('<div class="x" title="close" alt="close" />')
     mouseleave: ->
       $(this).find('.x').remove()
 
@@ -303,10 +303,14 @@ $.fn.animationEditor = (options) ->
     dblclick: (event) ->
       pixelEditFrame($(this).find('img'))
     mouseenter: ->
-      $('<div class="x" />').appendTo $(this)
-      $('<div class="duplicate" />').appendTo $(this)
+      x = $('<div class="x" title="close" alt="close" />')
+      duplicate = $('<div class="duplicate" title="copy this frame" alt="copy this frame" />')
+      hflip = $('<div class="hflip" title="flip horizontally" alt="flip horizontally" />')
+      vflip = $('<div class="vflip" title="flip vertically" alt="flip vertically" />')
+
+      $(this).append(x, duplicate, vflip, hflip)
     mouseleave: ->
-      $(this).find('.x, .duplicate').remove()
+      $(this).find('.x, .duplicate, .hflip, .vflip').remove()
 
   animationEditor.find('.animations input').live
     change: ->
@@ -351,7 +355,7 @@ $.fn.animationEditor = (options) ->
       event.preventDefault()
 
       selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
 
       if selected_sprite.prev().length
         selected_sprite.prev().before(selected_sprite)
@@ -362,12 +366,10 @@ $.fn.animationEditor = (options) ->
       event.preventDefault()
 
       selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate').remove()
+      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
 
       if selected_sprite.next().length
         selected_sprite.next().after(selected_sprite)
-
-  animationEditor.find('.animations .name, .filename').liveEdit()
 
   animationEditor.find('.frame_sprites .x').live 'mousedown', ->
     parent = $(this).parent()
@@ -385,9 +387,15 @@ $.fn.animationEditor = (options) ->
     parent = $(this).parent()
     newEl = parent.clone()
 
-    newEl.find('.x, .duplicate').remove()
+    newEl.find('.x, .duplicate, .hflip, .vflip').remove()
 
     newEl.insertAfter(parent)
+
+  animationEditor.find('.hflip').live 'mousedown', ->
+    $(this).parent().find('img').toggleClass('flipped_horizontal')
+
+  animationEditor.find('.vflip').live 'mousedown', ->
+    $(this).parent().find('img').toggleClass('flipped_vertical')
 
   animationEditor.find("button.save").click ->
     options.save?(saveData())
@@ -397,8 +405,10 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.goto select').children().remove()
 
       $(data.animations).each (i, animation) ->
-
-        animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
+        if animation.complete
+          animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
+        else
+          animationEditor.find('.goto').remove()
 
         animation_el = templates.find('.create_animation').tmpl(
           name: animation.name
@@ -406,7 +416,9 @@ $.fn.animationEditor = (options) ->
           complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        animation_el.find('.cover').addClass('locked') unless animation.interruptible
+        debugger
+        if animation.hasOwnProperty('interruptible') && animation.interruptible == false
+          animation_el.find('.cover').addClass('locked')
 
         active_animation().removeClass('active')
 
@@ -440,7 +452,7 @@ $.fn.animationEditor = (options) ->
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
 
-  window.saveData = ->
+  saveData = ->
     update_active_animation()
 
     frames = []
@@ -485,7 +497,7 @@ $.fn.animationEditor = (options) ->
 
     return {
       version: "1.4"
-      name: animationEditor.find('nav.right .filename').text()
+      name: "Animation"
       tileset: tiles
       animations: animation_data
     }

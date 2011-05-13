@@ -44,7 +44,7 @@
     = sprite_tag_link(sprite, dimension)
 
   - form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
-    = text_field_tag :tag
+    = text_field_tag :tag, nil, :placeholder => "Tag name"
     = submit_tag "Add"
 
 = display_comments sprite
@@ -181,3 +181,6 @@
 
       textarea
         height: 75px
+
+    #tag
+      width: 200px

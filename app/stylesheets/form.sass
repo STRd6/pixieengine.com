@@ -78,9 +78,11 @@ label
 input[disabled]
   background-color: #ccc
 
+input[type=text], input[type=password], textarea
+  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
+
 input[type=text], input[type=password], input[type=file], textarea
   +border-radius(2px)
-  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
   +box-sizing(border-box)
 
   padding: 5px
