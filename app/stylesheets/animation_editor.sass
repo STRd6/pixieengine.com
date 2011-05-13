@@ -94,12 +94,11 @@ $sprite_container_bounds: 72px
   .flipped_horizontal
     -webkit-transform: scaleX(-1)
 
-    cursor: pointer
-
   .flipped_vertical
     -webkit-transform: scaleY(-1)
 
-    cursor: pointer
+  .flipped_horizontal.flipped_vertical
+    -webkit-transform: scaleX(-1) scaleY(-1)
 
   .sprite_container
     +border-radius
