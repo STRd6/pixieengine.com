@@ -5,6 +5,10 @@
 
   :ruby
     choices = [
+      ["Entity",
+        {:type => "entity", :directory => "entities", :ext => "entity"},
+        {}
+      ],
       ["Script",
         {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
         {}
@@ -120,7 +124,9 @@
   $("#new_file_modal button.create").live 'click', (event) ->
     event.preventDefault()
 
-    newNode = newFileNode($.extend($("#new_file_modal").serializeObject(), params))
+    formData = $("#new_file_modal").serializeObject()
+
+    newNode = newFileNode($.extend(formData, params))
 
     if newNode
       $.modal.close()

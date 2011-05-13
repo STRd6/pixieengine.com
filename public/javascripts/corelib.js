@@ -422,7 +422,8 @@ Array.prototype.zip = function() {
     output.unshift(element);
     return output;
   });
-};;
+};
+
 var __slice = Array.prototype.slice;
 var Core;
 var __slice = Array.prototype.slice;
