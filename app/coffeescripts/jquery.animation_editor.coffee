@@ -407,7 +407,6 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.goto select').children().remove()
 
       $(data.animations).each (i, animation) ->
-
         animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
 
         animation_el = templates.find('.create_animation').tmpl(
@@ -416,7 +415,8 @@ $.fn.animationEditor = (options) ->
           complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        animation_el.find('.cover').addClass('locked') unless animation.interruptible == false
+        if animation.interruptible && !animation.interruptible == false
+          animation_el.find('.cover').addClass('locked')
 
         active_animation().removeClass('active')
 

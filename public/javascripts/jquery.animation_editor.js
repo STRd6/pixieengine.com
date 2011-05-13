@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 23:59:54 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 03:06:05 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -435,7 +435,7 @@
             speed: animation.speed,
             complete: animation.complete
           }).insertBefore('nav.right .new_animation');
-          if (animation.interruptible !== false) {
+          if (animation.interruptible && !animation.interruptible === false) {
             animation_el.find('.cover').addClass('locked');
           }
           active_animation().removeClass('active');
