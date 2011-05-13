@@ -1,0 +1,53 @@
+:coffeescript
+  window.createEntityEditor = (options) ->
+    panel = options.panel
+
+    panel.find('form').hide()
+    panel.find('.prop_editor').remove()
+
+    try
+      data = JSON.parse(panel.find("[name=contents]").val())
+    catch e
+
+    editorOptions = $.extend panel.data("options"),
+      data: data
+
+    entityEditor = $('<div class="prop_editor"/>').appendTo(panel).propertyEditor(data)
+
+    ###
+    entityEditor.addAction
+      name: "Save As"
+      perform: ->
+        title = prompt("Title")
+
+        if title
+          filePath = projectConfig.directories["entities"]
+
+          extension = "entity"
+          dataString = JSON.stringify(entityEditor.getProps())
+
+          newFileNode
+            name: title
+            type: "entity"
+            ext: extension
+            path: filePath
+            contents: dataString
+
+          entityEditor.trigger 'save',
+            contents: dataString
+            path: filePath + "/" + title + "." + extension
+    ###
+
+    entityEditor.bind 'doSave', ->
+      dataString = JSON.stringify(entityEditor.getProps())
+
+      panel.find("[name=contents]").val(dataString)
+
+      entityEditor.trigger 'save',
+        contents: dataString
+        path: options.path
+
+      #TODO: This may not be the exact time it is saved
+      entityEditor.trigger('clean')
+
+    return entityEditor

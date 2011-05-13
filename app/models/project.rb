@@ -39,15 +39,15 @@ class Project < ActiveRecord::Base
   DEFAULT_CONFIG = {
     :directories => {
       :data => "data",
+      :entities => "entities",
       :images => "images",
       :sounds => "sounds",
       :source => "src",
       :test => "test",
       :lib => "lib",
-      :compiled => "compiled",
     },
-    :width => 640,
-    :height => 480,
+    :width => 480,
+    :height => 320,
     :main => "main.coffee",
     :wrapMain => true,
     :hotSwap => true,
@@ -245,7 +245,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if type == "text" || type == "tilemap" || type == "animation"
+      if ["text", "tilemap", "animation", "entity"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -289,6 +289,8 @@ class Project < ActiveRecord::Base
       "binary"
     when "tilemap"
       "tilemap"
+    when "entity"
+      "entity"
     when "animation"
       "animation"
     end
