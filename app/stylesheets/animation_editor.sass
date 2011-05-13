@@ -52,9 +52,12 @@ $sprite_container_bounds: 72px
     position: absolute
     top: 3px
 
-  .hflip
+  .hflip, .vflip
     +bounds(16px)
 
+    cursor: pointer
+
+  .hflip
     background-image: url(/images/left_right.png)
     bottom: 0
     position: absolute
@@ -153,7 +156,7 @@ $sprite_container_bounds: 72px
 
     background-color: $dark_highlight
     border: 2px solid transparent
-    height: 105px
+    min-height: 150px
     overflow-y: hidden
     padding: 20px
     white-space: nowrap
