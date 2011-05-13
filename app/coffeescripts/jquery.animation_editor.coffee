@@ -407,7 +407,10 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.goto select').children().remove()
 
       $(data.animations).each (i, animation) ->
-        animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
+        if animation.complete
+          animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
+        else
+          animationEditor.find('.goto').remove()
 
         animation_el = templates.find('.create_animation').tmpl(
           name: animation.name

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 03:06:05 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 05:12:10 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -429,7 +429,11 @@
         animationEditor.find('.goto select').children().remove();
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img;
-          animationEditor.find('.goto select').append("<option value='" + animation.complete + "'>" + animation.complete + "</option>");
+          if (animation.complete) {
+            animationEditor.find('.goto select').append("<option value='" + animation.complete + "'>" + animation.complete + "</option>");
+          } else {
+            animationEditor.find('.goto').remove();
+          }
           animation_el = templates.find('.create_animation').tmpl({
             name: animation.name,
             speed: animation.speed,
