@@ -1,5 +1,7 @@
 %nav.top.actions
   = button_link "New Project", "application_add", new_project_path
+  - if owner_or_admin?
+    = button_link "Delete", "application_delete", project_path(project), :method => "delete"
 
   - if demo? || has_access?
     %button#save Save
