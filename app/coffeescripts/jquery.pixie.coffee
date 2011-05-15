@@ -249,6 +249,7 @@
         this.color(color)
     mirror_pencil:
       cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
+      hotkeys: ['m']
       mousedown: (e, color) ->
         mirrorCoordinate = canvas.width - this.x - 1
         this.color(color)

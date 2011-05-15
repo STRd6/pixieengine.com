@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 06:44:43 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 06:48:40 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -280,6 +280,7 @@
       },
       mirror_pencil: {
         cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default",
+        hotkeys: ['m'],
         mousedown: function(e, color) {
           var mirrorCoordinate;
           mirrorCoordinate = canvas.width - this.x - 1;
