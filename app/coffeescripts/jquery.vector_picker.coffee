@@ -3,35 +3,35 @@
     input = this.eq(0)
 
     SIZE = 126
-    BORDER_WIDTH = 2
     RADIUS = 5
 
-    choosingVector = false
+    mouseHeld = false
 
     setVector = (x, y) ->
       [xTranslate, yTranslate] = [x, y].map (value) ->
         ((value - SIZE / 2) / 5).round()
 
-      $(input).val(JSON.stringify({ x: xTranslate, y: yTranslate }))
+      input.val(JSON.stringify({ x: xTranslate, y: yTranslate }))
       $('.unit_circle').css
         backgroundPosition: "#{x - RADIUS}px #{y - RADIUS}px"
 
     showDialog = ->
-      dialog = $('<div class="vector_picker" />')
+      dialog = $ '<div />',
+        class: "vector_picker"
 
       $('<div class="unit_circle" />').bind(
         mousedown: (e) ->
           setVector(e.offsetX, e.offsetY)
-          choosingVector = false
-          $(input).select()
-        mouseenter: ->
-          choosingVector = true
+          mouseHeld = true
         mousemove: (e) ->
-          setVector(e.offsetX, e.offsetY)
-          choosingVector = false
+          if mouseHeld
+            setVector(e.offsetX, e.offsetY)
+        mouseup: ->
+          $(input).focus()
+          mouseHeld = false
       ).appendTo(dialog)
 
-      offset = $(input).offset()
+      offset = input.offset()
       height = input.get(0).offsetHeight
 
       dialog.css
@@ -40,9 +40,9 @@
 
       $('body').append(dialog)
 
-    $(input).bind
-      blur: (e) ->
-        $('.vector_picker').remove() unless choosingVector
+    input.bind
+      blur: ->
+        $('.vector_picker').remove() unless mouseHeld
       focus: ->
         showDialog() unless $('.vector_picker').length
 

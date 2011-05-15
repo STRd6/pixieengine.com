@@ -1,22 +1,21 @@
-/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 23:46:39 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.vector_picker.coffee
+/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 20:42:18 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.vector_picker.coffee
  */
 
 (function() {
   (function($) {
     return $.fn.vectorPicker = function() {
-      var BORDER_WIDTH, RADIUS, SIZE, choosingVector, input, setVector, showDialog;
+      var RADIUS, SIZE, input, mouseHeld, setVector, showDialog;
       input = this.eq(0);
       SIZE = 126;
-      BORDER_WIDTH = 2;
       RADIUS = 5;
-      choosingVector = false;
+      mouseHeld = false;
       setVector = function(x, y) {
         var xTranslate, yTranslate, _ref;
         _ref = [x, y].map(function(value) {
           return ((value - SIZE / 2) / 5).round();
         }), xTranslate = _ref[0], yTranslate = _ref[1];
-        $(input).val(JSON.stringify({
+        input.val(JSON.stringify({
           x: xTranslate,
           y: yTranslate
         }));
@@ -26,22 +25,25 @@
       };
       showDialog = function() {
         var dialog, height, offset;
-        dialog = $('<div class="vector_picker" />');
+        dialog = $('<div />', {
+          "class": "vector_picker"
+        });
         $('<div class="unit_circle" />').bind({
           mousedown: function(e) {
             setVector(e.offsetX, e.offsetY);
-            choosingVector = false;
-            return $(input).select();
-          },
-          mouseenter: function() {
-            return choosingVector = true;
+            return mouseHeld = true;
           },
           mousemove: function(e) {
-            setVector(e.offsetX, e.offsetY);
-            return choosingVector = false;
+            if (mouseHeld) {
+              return setVector(e.offsetX, e.offsetY);
+            }
+          },
+          mouseup: function() {
+            $(input).focus();
+            return mouseHeld = false;
           }
         }).appendTo(dialog);
-        offset = $(input).offset();
+        offset = input.offset();
         height = input.get(0).offsetHeight;
         dialog.css({
           left: offset.left,
@@ -49,9 +51,9 @@
         });
         return $('body').append(dialog);
       };
-      return $(input).bind({
-        blur: function(e) {
-          if (!choosingVector) {
+      return input.bind({
+        blur: function() {
+          if (!mouseHeld) {
             return $('.vector_picker').remove();
           }
         },
