@@ -26,7 +26,13 @@
       element.html('')
 
       if properties
+        propertiesArray = []
         for key, value of properties
+          propertiesArray.push [key, value]
+
+        propertiesArray.sort().each (pair) ->
+          [key, value] = pair
+
           if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker()
           else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 19:46:03 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 21:33:21 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -27,19 +27,24 @@
         return props;
       };
       element.setProps = function(properties) {
-        var key, value;
+        var key, propertiesArray, value;
         element.html('');
         if (properties) {
+          propertiesArray = [];
           for (key in properties) {
             value = properties[key];
-            if (key.match(/color/i)) {
-              addRow(key, value).find('td:last input').colorPicker();
-            } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
-              addRow(key, value).find('td:last input').vectorPicker();
-            } else {
-              addRow(key, value);
-            }
+            propertiesArray.push([key, value]);
           }
+          propertiesArray.sort().each(function(pair) {
+            key = pair[0], value = pair[1];
+            if (key.match(/color/i)) {
+              return addRow(key, value).find('td:last input').colorPicker();
+            } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
+              return addRow(key, value).find('td:last input').vectorPicker();
+            } else {
+              return addRow(key, value);
+            }
+          });
         }
         addRow('', '');
         return element;
