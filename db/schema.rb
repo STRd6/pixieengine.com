@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110423232550) do
+ActiveRecord::Schema.define(:version => 20110514181540) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -126,6 +126,29 @@ ActiveRecord::Schema.define(:version => 20110423232550) do
     t.datetime "image_updated_at"
     t.integer  "comments_count",     :default => 0,              :null => false
     t.integer  "views_count",        :default => 0,              :null => false
+  end
+
+  create_table "archived_projects", :id => false, :force => true do |t|
+    t.integer  "id"
+    t.integer  "user_id"
+    t.string   "remote_origin"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "url"
+    t.boolean  "demo"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+    t.integer  "parent_id"
+    t.integer  "comments_count"
+    t.integer  "views_count"
+    t.boolean  "tutorial"
+    t.boolean  "featured"
+    t.boolean  "arcade"
+    t.datetime "deleted_at"
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|

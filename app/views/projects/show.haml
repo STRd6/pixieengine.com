@@ -35,6 +35,8 @@
       = button_link "IDE", "application_edit", ide_project_path(project)
       - if has_access?
         = button_link "Edit Info", "pencil", edit_project_path(project)
+      - if owner_or_admin?
+        = button_link "Delete", "application_delete", project_path(project), :method => "delete", :confirm => "Are you sure you want to delete this project?"
       - if admin?
         - featured = project.featured? ? "active" : ""
         = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"

@@ -4,6 +4,7 @@ class ProjectsController < ApplicationController
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade]
   before_filter :require_user, :except => PUBLIC_ACTIONS
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade]
+  before_filter :require_owner_or_admin, :only => :destroy
   before_filter :require_admin, :only => [:feature, :add_to_arcade]
 
   before_filter :filter_results, :only => [:index]
@@ -27,6 +28,23 @@ class ProjectsController < ApplicationController
   end
 
   def index
+  end
+
+  def destroy
+    project_owner = project.user
+    project.destroy
+
+    respond_to do |format|
+      format.html do
+        flash[:notice] = "Project has been archived"
+        redirect_to project_owner
+      end
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
   end
 
   def debug
