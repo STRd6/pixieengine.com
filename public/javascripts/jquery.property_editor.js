@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 19:39:03 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Sun, 15 May 2011 19:46:03 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -64,90 +64,6 @@
         }).appendTo(cell);
         return row.appendTo(element);
       };
-      $('input', this.selector).live('keydown', function(event) {
-        var $this, changeAmount, changeNumber, changeObject, flipBoolean, obj, result, value;
-        if (event.type !== "keydown") {
-          return;
-        }
-        if (!(event.which === 13 || event.which === 37 || event.which === 38 || event.which === 39 || event.which === 40)) {
-          return;
-        }
-        event.preventDefault();
-        $this = $(this);
-        if (event.which === 13) {
-          $(this).parent().parent().next().find('td:last input').select();
-        }
-        changeAmount = event.which === 38 ? 1 : -1;
-        flipBoolean = function(bool) {
-          if (bool === "true") {
-            return "false";
-          } else if (bool === "false") {
-            return "true";
-          } else {
-            return false;
-          }
-        };
-        changeNumber = function(value, direction) {
-          var num;
-          if (parseFloat(value).abs() < 1) {
-            num = parseFloat(value);
-            return (num + (0.1 * changeAmount)).toFixed(1);
-          } else if (parseInt(value) === 1) {
-            num = parseInt(value);
-            if (event.which === 38) {
-              return num + changeAmount;
-            } else {
-              return (num - 0.1).toFixed(1);
-            }
-          } else if (parseInt(value) === -1) {
-            num = parseInt(value);
-            if (event.which === 38) {
-              return (num + 0.1).toFixed(1);
-            } else {
-              return num + changeAmount;
-            }
-          } else {
-            return parseInt(value) + changeAmount;
-          }
-        };
-        changeObject = function(obj, key) {
-          switch (key) {
-            case 37:
-              obj.x--;
-              break;
-            case 38:
-              obj.y--;
-              break;
-            case 39:
-              obj.x++;
-              break;
-            case 40:
-              obj.y++;
-          }
-          return JSON.stringify(obj);
-        };
-        value = $this.val();
-        if (value.length) {
-          result = null;
-          if (event.shiftKey && Number.isNumber(value)) {
-            changeAmount *= 10;
-          }
-          element.trigger("change", element.getProps());
-          try {
-            obj = JSON.parse(value);
-          } catch (e) {
-            obj = null;
-          }
-          if (flipBoolean(value)) {
-            result = flipBoolean(value);
-          } else if (Number.isNumber(value)) {
-            result = changeNumber(value, changeAmount);
-          } else if (obj && obj.hasOwnProperty('x') && obj.hasOwnProperty('y')) {
-            result = changeObject(obj, event.which);
-          }
-          return $this.val(result);
-        }
-      });
       $('input', this.selector).live('blur', function(event) {
         var $this, input;
         element.trigger("change", element.getProps());
