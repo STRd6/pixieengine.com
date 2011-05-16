@@ -5,52 +5,104 @@
 (function() {
   (function($) {
     return $.fn.propertyEditor = function(properties) {
-      var addRow, element;
+      var addBlurEvents, addNestedRow, addRow, element, object, rowCheck;
+      object = properties;
       element = this.eq(0);
       element.addClass("properties");
       element.getProps = function() {
-        var props;
-        props = {};
-        element.find("tr:not(.child_property)").each(function() {
-          var inputs, key, value;
-          inputs = $(this).find("input");
-          if (key = inputs.eq(0).val()) {
-            value = inputs.eq(1).val();
-            try {
-              props[key] = JSON.parse(value);
-            } catch (e) {
-              props[key] = value;
-            }
-            return;
-          }
-        });
-        return props;
+        return object;
       };
       element.setProps = function(properties) {
-        var key, value;
+        var key, propertiesArray, value;
+        object = properties;
         element.html('');
         if (properties) {
+          propertiesArray = [];
           for (key in properties) {
             value = properties[key];
+            propertiesArray.push([key, value]);
+          }
+          propertiesArray.sort().each(function(pair) {
+            key = pair[0], value = pair[1];
             if (key.match(/color/i)) {
               addRow(key, value).find('td:last input').colorPicker({
                 leadingHash: true
               });
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
-              addRow(key, value).find('td:last input').vectorPicker();
+              return addRow(key, value).find('td:last input').vectorPicker();
+            } else if (Object.isObject(value)) {
+              return addNestedRow(key, value);
             } else {
-              addRow(key, value);
+              return addRow(key, value);
             }
-          }
+          });
         }
         addRow('', '');
         return element;
       };
+      rowCheck = function() {
+        var input;
+        if ((input = element.find("tr").last().find("input").first()).length) {
+          if (input.val()) {
+            return addRow('', '');
+          }
+        } else {
+          return addRow('', '');
+        }
+      };
+      addBlurEvents = function(keyInput, valueInput) {
+        keyInput.blur(function() {
+          var currentName, previousName;
+          currentName = keyInput.val();
+          previousName = keyInput.data("previousName");
+          if (currentName.blank()) {
+            return;
+          }
+          if (currentName !== previousName) {
+            keyInput.data("previousName", currentName);
+            delete object[previousName];
+            object[currentName] = valueInput.val();
+            try {
+              element.trigger("change", object);
+            } catch (error) {
+              if (typeof console != "undefined" && console !== null) {
+                if (typeof console.error === "function") {
+                  console.error(error);
+                }
+              }
+            }
+            return rowCheck();
+          }
+        });
+        return valueInput.blur(function() {
+          var currentValue, previousValue;
+          currentValue = valueInput.val().parse();
+          previousValue = valueInput.data("previousValue");
+          if (currentValue !== previousValue) {
+            valueInput.data("previousValue", currentValue);
+            object[keyInput.val()] = currentValue;
+            try {
+              element.trigger("change", object);
+            } catch (error) {
+              if (typeof console != "undefined" && console !== null) {
+                if (typeof console.error === "function") {
+                  console.error(error);
+                }
+              }
+            }
+            return rowCheck();
+          }
+        });
+      };
       addRow = function(key, value) {
-        var cell, row;
+        var cell, keyInput, row, valueInput;
         row = $("<tr>");
         cell = $("<td>").appendTo(row);
-        $("<input>", {
+        keyInput = $("<input>", {
+          "class": "key",
+          data: {
+            previousName: key
+          },
           type: "text",
           placeholder: "key",
           value: key
@@ -59,109 +111,30 @@
         if (typeof value !== "string") {
           value = JSON.stringify(value);
         }
-        $("<input>", {
+        valueInput = $("<input>", {
+          "class": "value",
+          data: {
+            previousValue: value
+          },
           type: "text",
           placeholder: "value",
           value: value
         }).appendTo(cell);
+        addBlurEvents(keyInput, valueInput);
         return row.appendTo(element);
       };
-      $('input', this.selector).live('keydown', function(event) {
-        var $this, changeAmount, changeNumber, changeObject, flipBoolean, obj, result, value;
-        if (event.type !== "keydown") {
-          return;
-        }
-        if (!(event.which === 13 || event.which === 37 || event.which === 38 || event.which === 39 || event.which === 40)) {
-          return;
-        }
-        event.preventDefault();
-        $this = $(this);
-        if (event.which === 13) {
-          $(this).parent().parent().next().find('td:last input').select();
-        }
-        changeAmount = event.which === 38 ? 1 : -1;
-        flipBoolean = function(bool) {
-          if (bool === "true") {
-            return "false";
-          } else if (bool === "false") {
-            return "true";
-          } else {
-            return false;
-          }
-        };
-        changeNumber = function(value, direction) {
-          var num;
-          if (parseFloat(value).abs() < 1) {
-            num = parseFloat(value);
-            return (num + (0.1 * changeAmount)).toFixed(1);
-          } else if (parseInt(value) === 1) {
-            num = parseInt(value);
-            if (event.which === 38) {
-              return num + changeAmount;
-            } else {
-              return (num - 0.1).toFixed(1);
-            }
-          } else if (parseInt(value) === -1) {
-            num = parseInt(value);
-            if (event.which === 38) {
-              return (num + 0.1).toFixed(1);
-            } else {
-              return num + changeAmount;
-            }
-          } else {
-            return parseInt(value) + changeAmount;
-          }
-        };
-        changeObject = function(obj, key) {
-          switch (key) {
-            case 37:
-              obj.x--;
-              break;
-            case 38:
-              obj.y--;
-              break;
-            case 39:
-              obj.x++;
-              break;
-            case 40:
-              obj.y++;
-          }
-          return JSON.stringify(obj);
-        };
-        value = $this.val();
-        if (value.length) {
-          result = null;
-          if (event.shiftKey && Number.isNumber(value)) {
-            changeAmount *= 10;
-          }
-          element.trigger("change", element.getProps());
-          try {
-            obj = JSON.parse(value);
-          } catch (e) {
-            obj = null;
-          }
-          if (flipBoolean(value)) {
-            result = flipBoolean(value);
-          } else if (Number.isNumber(value)) {
-            result = changeNumber(value, changeAmount);
-          } else if (obj && obj.hasOwnProperty('x') && obj.hasOwnProperty('y')) {
-            result = changeObject(obj, event.which);
-          }
-          return $this.val(result);
-        }
-      });
-      $('input', this.selector).live('blur', function(event) {
-        var $this, input;
-        element.trigger("change", element.getProps());
-        $this = $(this);
-        if ((input = element.find("tr").last().find("input").first()).length) {
-          if (input.val()) {
-            return addRow('', '');
-          }
-        } else {
-          return addRow('', '');
-        }
-      });
+      addNestedRow = function(key, value) {
+        var cell, nestedEditor, row;
+        row = $("<tr>");
+        cell = $("<td colspan='2'>").appendTo(row);
+        $("<label>", {
+          text: key
+        }).appendTo(cell);
+        nestedEditor = $("<table>", {
+          "class": "nested"
+        }).appendTo(cell).propertyEditor(value);
+        return row.appendTo(element);
+      };
       return element.setProps(properties);
     };
   })(jQuery);

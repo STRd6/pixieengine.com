@@ -1,37 +1,32 @@
 (($) ->
   $.fn.propertyEditor = (properties) ->
-    element = this.eq(0)
+    object = properties
 
+    element = this.eq(0)
     element.addClass("properties")
 
     element.getProps = () ->
-      props = {}
-
-      element.find("tr:not(.child_property)").each () ->
-        inputs = $(this).find("input")
-
-        if key = inputs.eq(0).val()
-          value = inputs.eq(1).val()
-
-          try
-            props[key] = JSON.parse(value)
-          catch e
-            props[key] = value
-
-          return # This is necessary because the implicit return in the try catch got weird
-
-      props
+      object
 
     element.setProps = (properties) ->
+      object = properties
       element.html('')
 
       if properties
+        propertiesArray = []
         for key, value of properties
+          propertiesArray.push [key, value]
+
+        propertiesArray.sort().each (pair) ->
+          [key, value] = pair
+
           if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker
               leadingHash: true
           else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
             addRow(key, value).find('td:last input').vectorPicker()
+          else if Object.isObject(value)
+            addNestedRow(key, value)
           else
             addRow(key, value)
 
@@ -39,111 +34,96 @@
 
       element
 
+    rowCheck = ->
+      # If last row has data
+      if (input = element.find("tr").last().find("input").first()).length
+        if input.val()
+          addRow('', '')
+      else # Or no rows
+        addRow('', '')
+
+    addBlurEvents = (keyInput, valueInput) ->
+      keyInput.blur ->
+        currentName = keyInput.val()
+        previousName = keyInput.data("previousName")
+
+        return if currentName.blank()
+
+        if currentName != previousName
+          keyInput.data("previousName", currentName)
+          delete object[previousName]
+          object[currentName] = valueInput.val()
+
+          try
+            element.trigger("change", object)
+          catch error
+            console?.error? error
+
+          rowCheck()
+
+      valueInput.blur ->
+        currentValue = valueInput.val().parse()
+        previousValue = valueInput.data("previousValue")
+
+        if currentValue != previousValue
+          valueInput.data("previousValue", currentValue)
+          object[keyInput.val()] = currentValue
+
+          try
+            element.trigger("change", object)
+          catch error
+            console?.error? error
+
+          rowCheck()
+
     addRow = (key, value) ->
       row = $ "<tr>"
 
       cell = $("<td>").appendTo(row)
 
-      $("<input>",
+      keyInput = $("<input>",
+        class: "key"
+        data:
+          previousName: key
         type: "text"
         placeholder: "key"
         value: key
-      ).appendTo cell
+      ).appendTo(cell)
 
       cell = $("<td>").appendTo(row)
 
       value = JSON.stringify(value) unless typeof value == "string"
 
-      $("<input>",
+      valueInput = $("<input>",
+        class: "value"
+        data:
+          previousValue: value
         type: "text"
         placeholder: "value"
         value: value
-      ).appendTo cell
+      ).appendTo(cell)
 
-      row.appendTo element
+      addBlurEvents(keyInput, valueInput)
 
-    $('input', this.selector).live 'keydown', (event) ->
-      return unless event.type == "keydown"
-      return unless (event.which == 13 || event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
+      return row.appendTo(element)
 
-      event.preventDefault()
+    addNestedRow = (key, value) ->
+      row = $("<tr>")
+      cell = $("<td colspan='2'>").appendTo(row)
 
-      $this = $(this)
+      #TODO: Editable key
 
-      if event.which == 13
-        $(this).parent().parent().next().find('td:last input').select()
+      $("<label>",
+        text: key
+      ).appendTo(cell)
 
-      changeAmount = if event.which == 38 then 1 else -1
+      nestedEditor = $("<table>",
+        class: "nested"
+      ).appendTo(cell).propertyEditor(value)
 
-      flipBoolean = (bool) ->
-        if bool == "true"
-          "false"
-        else if bool == "false"
-          "true"
-        else
-          false
+      #TODO Cascade change events
 
-      changeNumber = (value, direction) ->
-        if parseFloat(value).abs() < 1
-          num = parseFloat(value)
-          return (num + (0.1 * changeAmount)).toFixed(1)
-        else if parseInt(value) == 1
-          num = parseInt(value)
-          if event.which == 38
-            return num + changeAmount
-          else
-            return (num - 0.1).toFixed(1)
-        else if parseInt(value) == -1
-          num = parseInt(value)
-          if event.which == 38
-            return (num + 0.1).toFixed(1)
-          else
-            return num + changeAmount
-        else
-          return parseInt(value) + changeAmount
-
-      changeObject = (obj, key) ->
-        switch key
-          when 37 then obj.x--
-          when 38 then obj.y--
-          when 39 then obj.x++
-          when 40 then obj.y++
-
-        return JSON.stringify(obj)
-
-      value = $this.val()
-
-      if value.length
-        result = null
-
-        changeAmount *= 10 if (event.shiftKey && Number.isNumber value)
-
-        element.trigger("change", element.getProps())
-
-        try
-          obj = JSON.parse(value)
-        catch e
-          obj = null
-
-        if flipBoolean value
-          result = flipBoolean value
-        else if Number.isNumber value
-          result = changeNumber(value, changeAmount)
-        else if obj && obj.hasOwnProperty('x') && obj.hasOwnProperty('y')
-          result = changeObject(obj, event.which)
-
-        $this.val(result)
-
-    $('input', this.selector).live 'blur', (event) ->
-      element.trigger("change", element.getProps())
-
-      $this = $(this)
-
-      if (input = element.find("tr").last().find("input").first()).length
-        if input.val()
-          addRow('', '')
-      else
-        addRow('', '')
+      return row.appendTo(element)
 
     element.setProps(properties)
 
