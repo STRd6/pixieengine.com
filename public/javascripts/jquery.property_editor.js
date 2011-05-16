@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 02:51:46 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 19:00:05 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
@@ -25,7 +25,9 @@
           propertiesArray.sort().each(function(pair) {
             key = pair[0], value = pair[1];
             if (key.match(/color/i)) {
-              return addRow(key, value).find('td:last input').colorPicker();
+              addRow(key, value).find('td:last input').colorPicker({
+                leadingHash: true
+              });
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
               return addRow(key, value).find('td:last input').vectorPicker();
             } else if (Object.isObject(value)) {
