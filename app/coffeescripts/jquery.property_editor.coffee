@@ -53,7 +53,10 @@
           delete object[previousName]
           object[currentName] = valueInput.val()
 
-          element.trigger("change", object)
+          try
+            element.trigger("change", object)
+          catch error
+            console?.error? error
 
           rowCheck()
 
@@ -65,7 +68,10 @@
           valueInput.data("previousValue", currentValue)
           object[keyInput.val()] = currentValue
 
-          element.trigger("change", object)
+          try
+            element.trigger("change", object)
+          catch error
+            console?.error? error
 
           rowCheck()
 

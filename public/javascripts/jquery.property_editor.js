@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 02:33:40 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 02:51:46 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -60,7 +60,15 @@
             keyInput.data("previousName", currentName);
             delete object[previousName];
             object[currentName] = valueInput.val();
-            element.trigger("change", object);
+            try {
+              element.trigger("change", object);
+            } catch (error) {
+              if (typeof console != "undefined" && console !== null) {
+                if (typeof console.error === "function") {
+                  console.error(error);
+                }
+              }
+            }
             return rowCheck();
           }
         });
@@ -71,7 +79,15 @@
           if (currentValue !== previousValue) {
             valueInput.data("previousValue", currentValue);
             object[keyInput.val()] = currentValue;
-            element.trigger("change", object);
+            try {
+              element.trigger("change", object);
+            } catch (error) {
+              if (typeof console != "undefined" && console !== null) {
+                if (typeof console.error === "function") {
+                  console.error(error);
+                }
+              }
+            }
             return rowCheck();
           }
         });
