@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 10 May 2011 04:54:05 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 22:13:23 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
@@ -6,7 +6,7 @@
   $.fn.tileEditor = function(options) {
     var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
-      layers: 2,
+      layers: ["Background", "Entities"],
       tilesWide: 20,
       tilesTall: 15,
       tileWidth: 32,
@@ -127,9 +127,10 @@
       tileEditor.find(".screen").find(".cursor, .selection").appendTo(tileEditor.find("section .layers"));
       return positionElementIndices.push({});
     };
-    addNewLayer = function() {
+    addNewLayer = function(layerName) {
+      layerName || (layerName = "Layer " + (tileEditor.find(".layer_select .choice").length + 1));
       templates.find(".layer_select.template").tmpl({
-        name: "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
+        name: layerName
       }).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown();
       return addScreenLayer();
     };
@@ -675,14 +676,20 @@
           return _results;
         }
       });
-      return tileEditor.find(layerSelect).find(".name").first().trigger("mousedown");
+      return tileEditor.find(layerSelect).find(".name").last().trigger("mousedown");
     };
     if (options.data) {
       loadData(options.data);
     } else {
-      options.layers.times(function() {
-        return addNewLayer();
-      });
+      if (options.layers.each) {
+        options.layers.each(function(layerName) {
+          return addNewLayer(layerName);
+        });
+      } else if (options.layers.times) {
+        options.layers.times(function() {
+          return addNewLayer();
+        });
+      }
     }
     tileEditor.find(".screen .cursor").css({
       width: tileWidth - 1,

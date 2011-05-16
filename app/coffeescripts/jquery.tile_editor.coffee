@@ -1,6 +1,9 @@
 $.fn.tileEditor = (options) ->
   options = $.extend(
-    layers: 2
+    layers: [
+      "Background"
+      "Entities"
+    ]
     tilesWide: 20
     tilesTall: 15
     tileWidth: 32
@@ -126,9 +129,10 @@ $.fn.tileEditor = (options) ->
 
     positionElementIndices.push {}
 
-  addNewLayer = () ->
+  addNewLayer = (layerName) ->
+    layerName ||= "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
     templates.find(".layer_select.template").tmpl(
-      name: "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
+      name: layerName
     ).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
 
     addScreenLayer()
@@ -673,13 +677,17 @@ $.fn.tileEditor = (options) ->
           if entity.properties
             tile.data("properties", entity.properties)
 
-    tileEditor.find(layerSelect).find(".name").first().trigger("mousedown")
+    tileEditor.find(layerSelect).find(".name").last().trigger("mousedown")
 
   if options.data
     loadData options.data
   else
-    options.layers.times ->
-      addNewLayer()
+    if options.layers.each
+      options.layers.each (layerName) ->
+        addNewLayer(layerName)
+    else if options.layers.times
+      options.layers.times ->
+        addNewLayer()
 
   tileEditor.find(".screen .cursor").css
     width: tileWidth - 1
