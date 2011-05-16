@@ -251,10 +251,12 @@
       cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
       hotkeys: ['m']
       mousedown: (e, color) ->
+        canvas = this.canvas
         mirrorCoordinate = canvas.width - this.x - 1
         this.color(color)
         this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
       mouseenter: (e, color) ->
+        canvas = this.canvas
         mirrorCoordinate = canvas.width - this.x - 1
         this.color(color)
         this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
