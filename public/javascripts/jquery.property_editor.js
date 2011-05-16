@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 12 May 2011 19:39:03 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 19:00:05 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -33,7 +33,9 @@
           for (key in properties) {
             value = properties[key];
             if (key.match(/color/i)) {
-              addRow(key, value).find('td:last input').colorPicker();
+              addRow(key, value).find('td:last input').colorPicker({
+                leadingHash: true
+              });
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
               addRow(key, value).find('td:last input').vectorPicker();
             } else {
