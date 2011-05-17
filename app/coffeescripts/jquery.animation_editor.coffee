@@ -63,7 +63,10 @@ $.fn.animationEditor = (options) ->
             name: "Save Frame"
             icon: "/images/icons/database_save.png"
             perform: (canvas) ->
-              pixelEditor.trigger 'save', canvas.toDataURL()
+              pixelEditor.trigger 'save',
+                'sprite[width]': canvas.width
+                'sprite[height]': canvas.height
+                'sprite[file_base64_encoded]': canvas.toBase64()
               pixelEditor.remove()
               animationEditor.show()
             undoable: false
@@ -83,6 +86,8 @@ $.fn.animationEditor = (options) ->
       return pixelEditor
 
   pixelEditFrame = (selectedFrame) ->
+    $(selectedFrame).parent().addClass('pixel_editor')
+
     if createPixelEditor
       imgSource = selectedFrame.attr('src')
 
@@ -108,29 +113,26 @@ $.fn.animationEditor = (options) ->
   save = (event, data) ->
     notify "Saving..."
 
-    $('.pixie').remove()
-    animationEditor.show()
-
     successCallback = (data) ->
       notify "Saved!"
 
       new_sprite = templates.find('.load_sprite').tmpl
-        alt: data.sprite.title
+        alt: data.sprite.title || "Sprite #{data.sprite.id}"
         id: data.sprite.id
-        title: data.sprite.title
+        title: data.sprite.title || "Sprite #{data.sprite.id}"
         url: data.sprite.src
 
-      sprite_copy = new_sprite.clone()
-
-      sprite_copy.appendTo(animationEditor.find('.user_sprites'))
-
-      animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(sprite_copy).remove()
+      new_sprite.clone().appendTo(animationEditor.find('.user_sprites'))
+      animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(new_sprite.clone()).remove()
       animationEditor.find('.animations .animation .cover.active img').before(new_sprite.find('img')).remove()
 
     if data
       postData = $.extend({format: 'json'}, data)
 
       $.post '/sprites', postData, successCallback
+
+    $('.pixie').remove()
+    animationEditor.show()
 
   update_active_animation = ->
     active_animation_sprites().parent().find('.sprites').children().remove()
@@ -416,7 +418,6 @@ $.fn.animationEditor = (options) ->
           complete: animation.complete
         ).insertBefore('nav.right .new_animation')
 
-        debugger
         if animation.hasOwnProperty('interruptible') && animation.interruptible == false
           animation_el.find('.cover').addClass('locked')
 

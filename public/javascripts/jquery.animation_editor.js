@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 13 May 2011 05:41:21 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 17 May 2011 08:08:18 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -70,7 +70,11 @@
               name: "Save Frame",
               icon: "/images/icons/database_save.png",
               perform: function(canvas) {
-                pixelEditor.trigger('save', canvas.toDataURL());
+                pixelEditor.trigger('save', {
+                  'sprite[width]': canvas.width,
+                  'sprite[height]': canvas.height,
+                  'sprite[file_base64_encoded]': canvas.toBase64()
+                });
                 pixelEditor.remove();
                 return animationEditor.show();
               },
@@ -94,6 +98,7 @@
     }
     pixelEditFrame = function(selectedFrame) {
       var imgSource, pixelEditor;
+      $(selectedFrame).parent().addClass('pixel_editor');
       if (createPixelEditor) {
         imgSource = selectedFrame.attr('src');
         pixelEditor = createPixelEditor({
@@ -121,28 +126,27 @@
     save = function(event, data) {
       var postData, successCallback;
       notify("Saving...");
-      $('.pixie').remove();
-      animationEditor.show();
       successCallback = function(data) {
-        var new_sprite, sprite_copy;
+        var new_sprite;
         notify("Saved!");
         new_sprite = templates.find('.load_sprite').tmpl({
-          alt: data.sprite.title,
+          alt: data.sprite.title || ("Sprite " + data.sprite.id),
           id: data.sprite.id,
-          title: data.sprite.title,
+          title: data.sprite.title || ("Sprite " + data.sprite.id),
           url: data.sprite.src
         });
-        sprite_copy = new_sprite.clone();
-        sprite_copy.appendTo(animationEditor.find('.user_sprites'));
-        animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(sprite_copy).remove();
+        new_sprite.clone().appendTo(animationEditor.find('.user_sprites'));
+        animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(new_sprite.clone()).remove();
         return animationEditor.find('.animations .animation .cover.active img').before(new_sprite.find('img')).remove();
       };
       if (data) {
         postData = $.extend({
           format: 'json'
         }, data);
-        return $.post('/sprites', postData, successCallback);
+        $.post('/sprites', postData, successCallback);
       }
+      $('.pixie').remove();
+      return animationEditor.show();
     };
     update_active_animation = function() {
       active_animation_sprites().parent().find('.sprites').children().remove();
@@ -438,7 +442,6 @@
             speed: animation.speed,
             complete: animation.complete
           }).insertBefore('nav.right .new_animation');
-          debugger;
           if (animation.hasOwnProperty('interruptible') && animation.interruptible === false) {
             animation_el.find('.cover').addClass('locked');
           }
