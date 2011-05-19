@@ -14,6 +14,10 @@
       %h3 Favorite Color
       .favorite_color{:style => "background: ##{user.favorite_color}"}
 
+  - if current_user?
+    .actions
+      = button_link "New Project", "application_add", new_project_path
+
   - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
     .messages
       %h3
