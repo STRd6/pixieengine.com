@@ -1,4 +1,5 @@
 .bundle
+.redcar
 .rvmrc
 .DS_Store
 config/authlogic.yml
