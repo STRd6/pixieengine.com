@@ -1,12 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 22:13:23 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 20 May 2011 05:23:22 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, loadEntity, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeEntity, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: ["Background", "Entities"],
+      loadEntity: $.noop,
+      removeEntity: $.noop,
       tilesWide: 20,
       tilesTall: 15,
       tileWidth: 32,
@@ -18,6 +20,7 @@
     debugMode = false;
     dirty = false;
     firstGID = 1;
+    loadEntity = options.loadEntity, removeEntity = options.removeEntity;
     tilesWide = parseInt(options.tilesWide, 10);
     tilesTall = parseInt(options.tilesTall, 10);
     tileWidth = parseInt(options.tileWidth, 10);
@@ -106,7 +109,10 @@
       }
     };
     deleteTile = function(tile) {
-      return tile.remove();
+      var uuid;
+      uuid = tile.remove().data('uuid');
+      removeEntity(uuid);
+      return tileEditor.find(".screen img[data-uuid=" + uuid + "]").remove();
     };
     tilePosition = function(element, event) {
       var localX, localY, offset;
@@ -200,7 +206,7 @@
     };
     filledToken = 0;
     floodFill = function(x, y, mode) {
-      var inSelection, neighbors, position, queue, selection, sourceTiles, targetSrc, targetTile, tile;
+      var inSelection, neighbors, position, queue, selection, sourceTiles, targetTile, targetUuid, tile;
       if ((tile = tileEditor.find(".tiles").find("." + mode)).length) {
         sourceTiles = [[tile]];
       } else if (selection = tileEditor.find(".saved_selections").find("." + mode).data("selectionData")) {
@@ -209,7 +215,7 @@
       filledToken += 1;
       inSelection = isInSelection(x, y);
       targetTile = tileAt(x, y);
-      targetSrc = targetTile.attr("src");
+      targetUuid = targetTile.data("uuid");
       tile = sourceTiles[0][0];
       queue = [];
       replaceTile(x, y, tile).data("fill", filledToken);
@@ -217,11 +223,13 @@
       while (position = queue.pop()) {
         neighbors = getNeighborPositions(position);
         neighbors.each(function(neighbor, index) {
+          var currentUuid;
           if (inSelection === isInSelection(neighbor[0], neighbor[1])) {
             tile = sourceTiles.wrap((neighbor[1] - y) / tileHeight).wrap((neighbor[0] - x) / tileWidth);
             if (neighbor) {
               targetTile = tileAt(neighbor[0], neighbor[1]);
-              if (targetTile.attr("src") === targetSrc && targetTile.data("fill") !== filledToken) {
+              currentUuid = targetTile.data("uuid");
+              if (currentUuid === targetUuid && targetTile.data("fill") !== filledToken) {
                 replaceTile(neighbor[0], neighbor[1], tile).data("fill", filledToken);
                 return queue.push(neighbor);
               }
@@ -521,47 +529,50 @@
     });
     tileEditor.find(tileTray).sortable();
     tileEditor.dropImageReader(function(file, event) {
-      var img;
+      var entity, img, name, src, uuid;
       if (event.target.readyState === FileReader.DONE) {
+        uuid = Math.uuid(32, 16);
+        src = event.target.result;
+        name = file.name.replace(/\.[^\.]*$/, '');
         img = $("<img/>", {
-          alt: file.name,
-          src: event.target.result,
-          title: file.name
+          alt: name,
+          src: src,
+          title: name,
+          "data-uuid": uuid
+        });
+        entity = {
+          name: name
+        };
+        loadEntity(uuid, {
+          src: src,
+          entity: entity
         });
         return $(this).find(".tiles").append(img);
       }
     });
     $('.filename, .layer_select .name, .saved_selections .name', tileEditor).liveEdit();
-    propEditor = $(".prop_editor", tileEditor).propertyEditor({
-      test: true,
-      foo: "bar",
-      noice: 13
-    });
+    propEditor = $(".prop_editor", tileEditor).propertyEditor();
     tileEditor.find("button.save").click(function() {
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     saveData = function() {
-      var layers, tileIndexLookup, tileset;
-      tileIndexLookup = {};
-      tileset = tileEditor.find(".module .tiles img").map(function(i) {
-        var $this, mapTileData, mapTileId, pixieId, props, src;
+      var entityCache, layers;
+      entityCache = {};
+      tileEditor.find(".module .tiles img").each(function() {
+        var $this, mapTileData, props, src, uuid;
         $this = $(this);
+        uuid = $this.data("uuid");
         src = $this.attr("src");
-        tileIndexLookup[src] = i;
         mapTileData = {
+          entity: {},
           src: src
         };
-        if (mapTileId = $this.data('guid')) {
-          mapTileData.guid(mapTileId);
-        }
-        if (pixieId = $this.data("pixie_id")) {
-          mapTileData.pixieId = mapTileSpriteId;
-        }
+        loadEntity(uuid, mapTileData);
         if (props = $this.data("properties")) {
           mapTileData.properties = props;
         }
-        return mapTileData;
-      }).get();
+        return entityCache[uuid] = mapTileData;
+      });
       layers = [];
       tileEditor.find(".layer_select .choice").each(function(i) {
         var $this, entities, entityLayer, layer, name, screenLayer, tileLookup, tiles;
@@ -571,14 +582,14 @@
         screenLayer = tileEditor.find(".screen .layers .layer").eq(i);
         if (entityLayer) {
           entities = screenLayer.find("img").map(function() {
-            var $element, left, src, top, _ref;
+            var $element, left, top, uuid, _ref;
             $element = $(this);
-            src = $element.attr("src");
+            uuid = $element.data("uuid");
             _ref = $element.position(), top = _ref.top, left = _ref.left;
             return {
               x: left,
               y: top,
-              tileIndex: tileIndexLookup[src],
+              uuid: uuid,
               properties: $(this).data("properties")
             };
           }).get();
@@ -589,10 +600,10 @@
         } else {
           tileLookup = {};
           screenLayer.find("img").each(function() {
-            var pos, src;
-            src = this.getAttribute("src");
+            var pos, uuid;
+            uuid = this.getAttribute("data-uuid");
             pos = this.getAttribute("data-pos");
-            return tileLookup[pos] = tileIndexLookup[src];
+            return tileLookup[pos] = uuid;
           });
           tiles = [];
           tilesTall.times(function(y) {
@@ -600,10 +611,9 @@
             row = [];
             tiles.push(row);
             return tilesWide.times(function(x) {
-              var imgIndex, posString;
+              var posString;
               posString = x * tileWidth + "x" + y * tileHeight;
-              imgIndex = tileLookup[posString] != null ? tileLookup[posString] : -1;
-              return row.push(imgIndex);
+              return row.push(tileLookup[posString]);
             });
           });
           layer = {
@@ -615,39 +625,40 @@
       });
       return {
         title: tileEditor.find(".filename").text(),
-        version: "1.0",
         orientation: "orthogonal",
         width: tilesWide,
         height: tilesTall,
         tileWidth: tileWidth,
         tileHeight: tileHeight,
-        tileset: tileset,
+        entityCache: entityCache,
         layers: layers
       };
     };
     loadData = function(data) {
-      var tileLookup;
+      var active, existingEntity, index, tileData, tileLookup, uuid, _ref;
       tilesWide = data.width;
       tilesTall = data.height;
       tileWidth = data.tileWidth;
       tileHeight = data.tileHeight;
-      tileEditor.find('.screen .layers').css('background-image', 'url(/images/tile_grid_' + tileWidth + '.png)');
       positionElementIndices = [];
       tileLookup = {};
       tileEditor.find(tileTray).html('');
-      data.tileset.each(function(tile, index) {
-        var active;
+      index = 0;
+      _ref = data.entityCache;
+      for (uuid in _ref) {
+        tileData = _ref[uuid];
+        existingEntity = loadEntity(uuid, tileData);
         active = index === 0 ? "primary" : index === 1 ? "secondary" : void 0;
-        tileLookup[index] = $("<img />", {
+        tileLookup[uuid] = $("<img />", {
           "class": active,
-          "data-guid": tile.guid,
-          "data-pixie_id": tile.pixieId,
-          src: tile.src
+          "data-uuid": uuid,
+          src: tileData.src
         }).appendTo(tileEditor.find(tileTray));
-        if (tile.properties) {
-          return tileLookup[index].data("properties", tile.properties);
+        if (tileData.properties) {
+          tileLookup[uuid].data("properties", tileData.properties);
         }
-      });
+        index += 1;
+      }
       tileEditor.find("section .layers .layer").remove();
       tileEditor.find(layerSelect).html('');
       data.layers.each(function(layer, i) {
@@ -659,9 +670,9 @@
         }).appendTo(tileEditor.find(layerSelect));
         if (tiles = layer.tiles) {
           tiles.each(function(row, y) {
-            return row.each(function(tile, x) {
-              if (tile >= 0) {
-                return replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile]);
+            return row.each(function(uuid, x) {
+              if (uuid) {
+                return replaceTile(x * tileWidth, y * tileHeight, tileLookup[uuid]);
               }
             });
           });
@@ -670,7 +681,7 @@
           _results = [];
           for (_i = 0, _len = entities.length; _i < _len; _i++) {
             entity = entities[_i];
-            tile = replaceTile(entity.x, entity.y, tileLookup[entity.tileIndex]);
+            tile = replaceTile(entity.x, entity.y, tileLookup[entity.uuid]);
             _results.push(entity.properties ? tile.data("properties", entity.properties) : void 0);
           }
           return _results;

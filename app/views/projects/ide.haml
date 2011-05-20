@@ -189,21 +189,24 @@
     console.log message
 
   window.openFile = (docSelector) ->
-    if $(docSelector).data("type") == "binary"
+    tabData = $(docSelector)
+
+    if tabData.data("type") == "binary"
       alert "Can't edit binary data... maybe there is a source file that can be edited?"
       return
-    if $(docSelector).data("size") > 100000
+    if tabData.data("size") > 100000
       alert "This file is too large for our editor!"
       return
 
     if $('#tabs ul li a[href="' + docSelector + '"]').length
       $('#tabs ul li a[href="' + docSelector + '"]').click()
     else
-      path = $(docSelector).data("path")
-      if match = path.match /\/([^\/]*)$/
-        name = match[1]
-      else
-        name = path
+      unless name = tabData.data("name")
+        path = tabData.data("path")
+        if match = path.match /\/([^\/]*)$/
+          name = match[1]
+        else
+          name = path
 
       $("#tabs").tabs 'add', docSelector, name, 0
 
@@ -257,7 +260,7 @@
       message = $(".actions .status .message").val()
 
       successCallback = (data) ->
-        notify "Saved!"
+        notify "Saved!" unless noNotify
 
         # Check for update saved method
         activeTab.find('a').data('updateSaved')?()
@@ -265,7 +268,9 @@
         activeTab.removeClass("unsaved")
 
       if data
-        notify "Saving..."
+        noNotify = data.noNotify
+
+        notify "Saving..." unless noNotify
 
         postData = $.extend(
           format: 'json'
@@ -560,6 +565,21 @@
     finally
       # Merge in default configs
       window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
+    window.entities = {}
+    # Populate entities
+    $('ul.filetree [data-type=entity]').each ->
+      $this = $(this)
+      fileNode = $this.prev()
+
+      uuid = fileNode.text().replace(/\.[^\.]*$/, '')
+      entityData = $this.find("[name=contents]").text().parse()
+
+      if name = entityData.name
+        fileNode.text(name)
+        $this.data('name', name)
+
+      window.entities[uuid] = entityData
 
     $('ul.filetree').treeview()
 

@@ -35,7 +35,7 @@
           .saved_selections
         .component.tile_select
           %h3
-            Tiles
+            Entities
           .tile_actions
             %button.new_tile
               = icon_image "image_add"
@@ -44,14 +44,6 @@
               = icon_image "image_delete"
               Delete
           .tiles
-            - sprites = Collection.find(params[:tileset_id] || 355).sprites
-            - sprites.each do |sprite|
-              - active = if sprite == sprites.first
-                - "primary"
-              - elsif sprite == sprites.second
-                - "secondary"
-
-              = image_tag(sprite.image.url, :alt => sprite.display_name, :class => active)
 
       .tools.module.left
         .tool.primary.secondary{ :"data-tool" => "stamp"}

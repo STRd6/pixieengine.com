@@ -4,6 +4,8 @@ $.fn.tileEditor = (options) ->
       "Background"
       "Entities"
     ]
+    loadEntity: $.noop
+    removeEntity: $.noop
     tilesWide: 20
     tilesTall: 15
     tileWidth: 32
@@ -19,6 +21,8 @@ $.fn.tileEditor = (options) ->
   dirty = false
 
   firstGID = 1
+
+  {loadEntity, removeEntity} = options
 
   tilesWide = parseInt(options.tilesWide, 10)
   tilesTall = parseInt(options.tilesTall, 10)
@@ -104,8 +108,12 @@ $.fn.tileEditor = (options) ->
         tileEditor.find('.component .tiles').append img
 
   deleteTile = (tile) ->
-    #TODO Maybe remove instances of tile in map
-    tile.remove()
+    uuid = tile.remove().data('uuid')
+
+    removeEntity(uuid)
+
+    #TODO: Update the tile cache
+    tileEditor.find(".screen img[data-uuid=#{uuid}]").remove()
 
   tilePosition = (element, event) ->
     offset = element.offset()
@@ -220,8 +228,7 @@ $.fn.tileEditor = (options) ->
     filledToken += 1
     inSelection = isInSelection(x, y)
     targetTile = tileAt(x, y)
-    #TODO: Use tile gids instead of src
-    targetSrc = targetTile.attr("src")
+    targetUuid = targetTile.data("uuid")
 
     tile = sourceTiles[0][0]
 
@@ -239,8 +246,9 @@ $.fn.tileEditor = (options) ->
 
           if neighbor
             targetTile = tileAt(neighbor[0], neighbor[1])
+            currentUuid = targetTile.data("uuid")
 
-            if targetTile.attr("src") == targetSrc && targetTile.data("fill") != filledToken
+            if currentUuid == targetUuid && targetTile.data("fill") != filledToken
               replaceTile(neighbor[0], neighbor[1], tile).data("fill", filledToken)
               queue.push(neighbor)
 
@@ -428,6 +436,7 @@ $.fn.tileEditor = (options) ->
       $(this).remove()
 
   $(".tiles img", tileEditor).live "dblclick", (event) ->
+    #TODO Edit entity data
     pixelEditTile($(this))
 
   tileEditor.find("button.new_tile").click () ->
@@ -517,44 +526,51 @@ $.fn.tileEditor = (options) ->
 
   tileEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
+      uuid = Math.uuid(32, 16)
+      src = event.target.result
+      name = file.name.replace(/\.[^\.]*$/, '')
+
       img = $ "<img/>",
-        alt: file.name
-        src: event.target.result
-        title: file.name
+        alt: name
+        src: src
+        title: name
+        "data-uuid": uuid
+
+      entity =
+        name: name
+
+      # Notify IDE of entity
+      loadEntity(uuid, {src: src, entity: entity})
 
       $(this).find(".tiles").append img
 
   $('.filename, .layer_select .name, .saved_selections .name', tileEditor).liveEdit()
 
-  propEditor = $(".prop_editor", tileEditor).propertyEditor({test: true, foo: "bar", noice: 13})
+  propEditor = $(".prop_editor", tileEditor).propertyEditor()
 
   tileEditor.find("button.save").click ->
     options.save?(saveData())
 
   saveData = () ->
-    tileIndexLookup = {}
+    entityCache = {}
 
-    tileset = tileEditor.find(".module .tiles img").map((i) ->
+    tileEditor.find(".module .tiles img").each ->
       $this = $(this)
+      uuid = $this.data("uuid")
       src = $this.attr("src")
 
-      tileIndexLookup[src] = i
-
       mapTileData = {
+        entity: {}
         src: src
       }
 
-      if mapTileId = $this.data('guid')
-        mapTileData.guid mapTileId
+      loadEntity(uuid, mapTileData)
 
-      if pixieId = $this.data("pixie_id")
-        mapTileData.pixieId = mapTileSpriteId
-
+      # Level specific property overrides
       if props = $this.data("properties")
         mapTileData.properties = props
 
-      return mapTileData
-    ).get()
+      entityCache[uuid] = mapTileData
 
     layers = []
 
@@ -569,13 +585,13 @@ $.fn.tileEditor = (options) ->
         entities = screenLayer.find("img").map ->
           $element = $(this)
 
-          src = $element.attr("src")
+          uuid = $element.data("uuid")
           {top, left} = $element.position()
 
           x: left
           y: top
-          tileIndex: tileIndexLookup[src]
-          properties: $(this).data("properties")
+          uuid: uuid
+          properties: $(this).data("properties") # Instance specific properties
         .get()
 
         layer =
@@ -585,10 +601,10 @@ $.fn.tileEditor = (options) ->
         tileLookup = {}
 
         screenLayer.find("img").each ->
-          src = this.getAttribute("src")
+          uuid = this.getAttribute("data-uuid")
           pos = this.getAttribute("data-pos")
 
-          tileLookup[pos] = tileIndexLookup[src]
+          tileLookup[pos] = uuid
 
         tiles = []
 
@@ -599,9 +615,7 @@ $.fn.tileEditor = (options) ->
           tilesWide.times (x) ->
             posString = x * tileWidth + "x" + y * tileHeight
 
-            imgIndex = if tileLookup[posString]? then tileLookup[posString] else -1
-
-            row.push imgIndex
+            row.push tileLookup[posString]
 
         layer =
           name: name
@@ -611,14 +625,14 @@ $.fn.tileEditor = (options) ->
 
     return {
       title: tileEditor.find(".filename").text()
-      version: "1.0"
       orientation: "orthogonal"
+
       width: tilesWide
       height: tilesTall
       tileWidth: tileWidth
       tileHeight: tileHeight
 
-      tileset: tileset
+      entityCache: entityCache
 
       layers: layers
     }
@@ -629,28 +643,34 @@ $.fn.tileEditor = (options) ->
     tileWidth = data.tileWidth
     tileHeight = data.tileHeight
 
-    tileEditor.find('.screen .layers').css('background-image', 'url(/images/tile_grid_' + tileWidth + '.png)')
-
     positionElementIndices = []
 
     tileLookup = {}
 
     tileEditor.find(tileTray).html('')
-    data.tileset.each (tile, index) ->
+
+    index = 0
+    for uuid, tileData of data.entityCache
+      # Import entities
+      existingEntity = loadEntity(uuid, tileData)
+
       active = if index == 0
         "primary"
       else if index == 1
         "secondary"
 
-      tileLookup[index] = $("<img />",
+      tileLookup[uuid] = $("<img />",
         class: active
-        "data-guid": tile.guid
-        "data-pixie_id": tile.pixieId
-        src: tile.src
+        "data-uuid": uuid
+        src: tileData.src
       ).appendTo(tileEditor.find(tileTray))
 
-      if tile.properties
-        tileLookup[index].data("properties", tile.properties)
+      if tileData.properties
+        tileLookup[uuid].data("properties", tileData.properties)
+
+      index += 1
+
+    #TODO: Get all existing entities from IDE
 
     tileEditor.find("section .layers .layer").remove()
 
@@ -666,13 +686,13 @@ $.fn.tileEditor = (options) ->
 
       if tiles = layer.tiles
         tiles.each (row, y) ->
-          row.each (tile, x) ->
-            if tile >= 0
-              replaceTile(x * tileWidth, y * tileHeight, tileLookup[tile])
+          row.each (uuid, x) ->
+            if uuid
+              replaceTile(x * tileWidth, y * tileHeight, tileLookup[uuid])
 
       if entities = layer.entities
         for entity in entities
-          tile = replaceTile(entity.x, entity.y, tileLookup[entity.tileIndex])
+          tile = replaceTile(entity.x, entity.y, tileLookup[entity.uuid])
 
           if entity.properties
             tile.data("properties", entity.properties)

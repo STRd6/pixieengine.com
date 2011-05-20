@@ -5,10 +5,6 @@
 
   :ruby
     choices = [
-      ["Entity",
-        {:type => "entity", :directory => "entities", :ext => "entity"},
-        {}
-      ],
       ["Script",
         {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
         {}
@@ -91,15 +87,23 @@
     inputData.name = "\#{inputData.name}.\#{inputData.ext}"
     inputData.path = "/\#{inputData.path}/\#{inputData.name}"
     inputData.options = JSON.stringify(inputData.options)
-    data_id = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
+    dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
     data = $.extend({
-      data_id: data_id
+      dataId: dataId
+      displayName: inputData.name
     }, inputData)
 
     treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
 
-    treeNode.find(".file").click()
+    unless inputData.noAutoOpen
+      treeNode.find(".file").click()
+
+    if inputData.forceSave
+      window.save null,
+        contents: inputData.contents
+        path: inputData.path
+        noNotify: true
 
     return treeNode
 
