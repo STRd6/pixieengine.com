@@ -1,11 +1,12 @@
-/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 19:00:05 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
+/* DO NOT MODIFY. This file was compiled Thu, 19 May 2011 23:06:54 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
     return $.fn.propertyEditor = function(properties) {
       var addBlurEvents, addNestedRow, addRow, element, object, rowCheck;
+      properties || (properties = {});
       object = properties;
       element = this.eq(0);
       element.addClass("properties");
@@ -25,7 +26,7 @@
           propertiesArray.sort().each(function(pair) {
             key = pair[0], value = pair[1];
             if (key.match(/color/i)) {
-              addRow(key, value).find('td:last input').colorPicker({
+              return addRow(key, value).find('td:last input').colorPicker({
                 leadingHash: true
               });
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {

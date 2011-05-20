@@ -1,5 +1,6 @@
 (($) ->
   $.fn.propertyEditor = (properties) ->
+    properties ||= {}
     object = properties
 
     element = this.eq(0)
