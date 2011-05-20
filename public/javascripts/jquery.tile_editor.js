@@ -1,12 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Fri, 20 May 2011 05:23:22 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 20 May 2011 20:46:10 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, loadEntity, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeEntity, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, eachEntity, editEntity, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, loadEntity, loadExternalEntities, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeEntity, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tileLookup, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: ["Background", "Entities"],
+      eachEntity: $.noop,
+      editEntity: $.noop,
       loadEntity: $.noop,
       removeEntity: $.noop,
       tilesWide: 20,
@@ -20,7 +22,7 @@
     debugMode = false;
     dirty = false;
     firstGID = 1;
-    loadEntity = options.loadEntity, removeEntity = options.removeEntity;
+    eachEntity = options.eachEntity, editEntity = options.editEntity, loadEntity = options.loadEntity, removeEntity = options.removeEntity;
     tilesWide = parseInt(options.tilesWide, 10);
     tilesTall = parseInt(options.tilesTall, 10);
     tileWidth = parseInt(options.tileWidth, 10);
@@ -429,7 +431,7 @@
       }
     });
     $(".tiles img", tileEditor).live("dblclick", function(event) {
-      return pixelEditTile($(this));
+      return editEntity($(this).data('uuid'));
     });
     tileEditor.find("button.new_tile").click(function() {
       return createNewTile();
@@ -541,7 +543,8 @@
           "data-uuid": uuid
         });
         entity = {
-          name: name
+          name: name,
+          tileSrc: src
         };
         loadEntity(uuid, {
           src: src,
@@ -559,12 +562,15 @@
       var entityCache, layers;
       entityCache = {};
       tileEditor.find(".module .tiles img").each(function() {
-        var $this, mapTileData, props, src, uuid;
+        var $this, entity, mapTileData, props, src, uuid;
         $this = $(this);
         uuid = $this.data("uuid");
         src = $this.attr("src");
+        entity = {
+          tileSrc: src
+        };
         mapTileData = {
-          entity: {},
+          entity: entity,
           src: src
         };
         loadEntity(uuid, mapTileData);
@@ -634,31 +640,11 @@
         layers: layers
       };
     };
-    loadData = function(data) {
-      var active, existingEntity, index, tileData, tileLookup, uuid, _ref;
+    loadData = function(data, tileLookup) {
+      tileWidth = data.tileWidth, tileHeight = data.tileHeight;
       tilesWide = data.width;
       tilesTall = data.height;
-      tileWidth = data.tileWidth;
-      tileHeight = data.tileHeight;
       positionElementIndices = [];
-      tileLookup = {};
-      tileEditor.find(tileTray).html('');
-      index = 0;
-      _ref = data.entityCache;
-      for (uuid in _ref) {
-        tileData = _ref[uuid];
-        existingEntity = loadEntity(uuid, tileData);
-        active = index === 0 ? "primary" : index === 1 ? "secondary" : void 0;
-        tileLookup[uuid] = $("<img />", {
-          "class": active,
-          "data-uuid": uuid,
-          src: tileData.src
-        }).appendTo(tileEditor.find(tileTray));
-        if (tileData.properties) {
-          tileLookup[uuid].data("properties", tileData.properties);
-        }
-        index += 1;
-      }
       tileEditor.find("section .layers .layer").remove();
       tileEditor.find(layerSelect).html('');
       data.layers.each(function(layer, i) {
@@ -689,8 +675,36 @@
       });
       return tileEditor.find(layerSelect).find(".name").last().trigger("mousedown");
     };
+    loadExternalEntities = function(data) {
+      var entityCache, index, tileData, tileLookup, uuid;
+      if (entityCache = data != null ? data.entityCache : void 0) {
+        for (uuid in entityCache) {
+          tileData = entityCache[uuid];
+          loadEntity(uuid, tileData);
+        }
+      }
+      tileEditor.find(tileTray).html('');
+      tileLookup = {};
+      index = 0;
+      eachEntity(function(uuid, entity) {
+        var active, src;
+        active = index === 0 ? "primary" : index === 1 ? "secondary" : void 0;
+        src = entity.tileSrc;
+        tileLookup[uuid] = $("<img />", {
+          "class": active,
+          "data-uuid": uuid,
+          src: src
+        }).appendTo(tileEditor.find(tileTray));
+        if (typeof cachedEntity != "undefined" && cachedEntity !== null ? cachedEntity.properties : void 0) {
+          tileLookup[uuid].data("properties", cachedEntity.properties);
+        }
+        return index += 1;
+      });
+      return tileLookup;
+    };
+    tileLookup = loadExternalEntities(options.data);
     if (options.data) {
-      loadData(options.data);
+      loadData(options.data, tileLookup);
     } else {
       if (options.layers.each) {
         options.layers.each(function(layerName) {

@@ -352,7 +352,9 @@
     globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
     conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
 
-    [globals, conf].join("\n")
+    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", noWrap: true
+
+    [globals, conf, entitiesCode].join("\n")
 
   runApp = () ->
     width = projectConfig.width
@@ -577,7 +579,7 @@
 
       if name = entityData.name
         fileNode.text(name)
-        $this.data('name', name)
+        $this.attr('data-name', name)
 
       window.entities[uuid] = entityData
 
