@@ -9,6 +9,9 @@
     element.getProps = () ->
       object
 
+    isCodeField = (key, value) ->
+      ["create", "step", "update", "destroy"].include(key)
+
     element.setProps = (properties) ->
       properties ||= {}
       object = properties
@@ -26,6 +29,8 @@
           if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker
               leadingHash: true
+          else if isCodeField(key, value)
+            addRow(key, value, valueInputType: "textarea")
           else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
             addRow(key, value).find('td:last input').vectorPicker()
           else if Object.isObject(value)
@@ -81,10 +86,8 @@
 
           rowCheck()
 
-    addRow = (key, value) ->
+    addRow = (key, value, options={}) ->
       row = $ "<tr>"
-
-      cell = $("<td>").appendTo(row)
 
       keyInput = $("<input>",
         class: "key"
@@ -93,20 +96,20 @@
         type: "text"
         placeholder: "key"
         value: key
-      ).appendTo(cell)
-
-      cell = $("<td>").appendTo(row)
+      ).appendTo($("<td>").appendTo(row))
 
       value = JSON.stringify(value) unless typeof value == "string"
 
-      valueInput = $("<input>",
+      valueInputType = options.valueInputType || "input"
+
+      valueInput = $("<#{valueInputType}>",
         class: "value"
         data:
           previousValue: value
         type: "text"
         placeholder: "value"
         value: value
-      ).appendTo(cell)
+      ).appendTo($("<td>").appendTo(row))
 
       addBlurEvents(keyInput, valueInput)
 

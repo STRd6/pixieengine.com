@@ -1,9 +1,16 @@
+#entity_editor_template.template
+  .editor.entity_editor.module
+    %table
+
+    .actions
+      %button.save Save
+
 :coffeescript
   window.createEntityEditor = (options) ->
     {panel, uuid} = options
 
     panel.find('form').hide()
-    panel.find('.prop_editor').remove()
+    panel.find('.editor').remove()
 
     try
       data = JSON.parse(panel.find("[name=contents]").val())
@@ -12,7 +19,11 @@
     editorOptions = $.extend panel.data("options"),
       data: data
 
-    entityEditor = $('<table />').appendTo(panel).propertyEditor(data)
+    entityEditor = $("#entity_editor_template").tmpl().appendTo(panel)
+
+    propertyEditor = entityEditor.find('table').propertyEditor(data)
+    entityEditor.find('button.save').click ->
+      entityEditor.trigger('doSave')
 
     ###
     entityEditor.addAction
@@ -39,7 +50,7 @@
     ###
 
     entityEditor.bind 'doSave', ->
-      entityData = entityEditor.getProps()
+      entityData = propertyEditor.getProps()
       # Propagate changes back to IDE
       window.entities[uuid] = entityData
 
@@ -52,6 +63,6 @@
         path: options.path
 
       #TODO: This may not be the exact time it is saved
-      entityEditor.trigger('clean')
+      propertyEditor.trigger('clean')
 
     return entityEditor

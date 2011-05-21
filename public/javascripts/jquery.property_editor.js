@@ -1,17 +1,20 @@
-/* DO NOT MODIFY. This file was compiled Sat, 21 May 2011 00:57:49 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 21 May 2011 03:30:41 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
     return $.fn.propertyEditor = function(properties) {
-      var addBlurEvents, addNestedRow, addRow, element, object, rowCheck;
+      var addBlurEvents, addNestedRow, addRow, element, isCodeField, object, rowCheck;
       properties || (properties = {});
       object = properties;
       element = this.eq(0);
       element.addClass("properties");
       element.getProps = function() {
         return object;
+      };
+      isCodeField = function(key, value) {
+        return ["create", "step", "update", "destroy"].include(key);
       };
       element.setProps = function(properties) {
         var key, propertiesArray, value;
@@ -29,6 +32,10 @@
             if (key.match(/color/i)) {
               return addRow(key, value).find('td:last input').colorPicker({
                 leadingHash: true
+              });
+            } else if (isCodeField(key, value)) {
+              return addRow(key, value, {
+                valueInputType: "textarea"
               });
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
               return addRow(key, value).find('td:last input').vectorPicker();
@@ -98,10 +105,12 @@
           }
         });
       };
-      addRow = function(key, value) {
-        var cell, keyInput, row, valueInput;
+      addRow = function(key, value, options) {
+        var keyInput, row, valueInput, valueInputType;
+        if (options == null) {
+          options = {};
+        }
         row = $("<tr>");
-        cell = $("<td>").appendTo(row);
         keyInput = $("<input>", {
           "class": "key",
           data: {
@@ -110,12 +119,12 @@
           type: "text",
           placeholder: "key",
           value: key
-        }).appendTo(cell);
-        cell = $("<td>").appendTo(row);
+        }).appendTo($("<td>").appendTo(row));
         if (typeof value !== "string") {
           value = JSON.stringify(value);
         }
-        valueInput = $("<input>", {
+        valueInputType = options.valueInputType || "input";
+        valueInput = $("<" + valueInputType + ">", {
           "class": "value",
           data: {
             previousValue: value
@@ -123,7 +132,7 @@
           type: "text",
           placeholder: "value",
           value: value
-        }).appendTo(cell);
+        }).appendTo($("<td>").appendTo(row));
         addBlurEvents(keyInput, valueInput);
         return row.appendTo(element);
       };
