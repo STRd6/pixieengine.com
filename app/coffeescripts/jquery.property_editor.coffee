@@ -10,7 +10,9 @@
       object
 
     element.setProps = (properties) ->
+      properties ||= {}
       object = properties
+
       element.html('')
 
       if properties
@@ -28,6 +30,8 @@
             addRow(key, value).find('td:last input').vectorPicker()
           else if Object.isObject(value)
             addNestedRow(key, value)
+          else if value?.match?(/^data:image\//)
+            addRow(key, value).find('td:last input').modalPixelEditor(properties)
           else
             addRow(key, value)
 

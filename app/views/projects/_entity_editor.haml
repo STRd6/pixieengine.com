@@ -1,6 +1,6 @@
 :coffeescript
   window.createEntityEditor = (options) ->
-    panel = options.panel
+    {panel, uuid} = options
 
     panel.find('form').hide()
     panel.find('.prop_editor').remove()
@@ -12,7 +12,7 @@
     editorOptions = $.extend panel.data("options"),
       data: data
 
-    entityEditor = $('<div class="prop_editor"/>').appendTo(panel).propertyEditor(data)
+    entityEditor = $('<table />').appendTo(panel).propertyEditor(data)
 
     ###
     entityEditor.addAction
@@ -39,7 +39,11 @@
     ###
 
     entityEditor.bind 'doSave', ->
-      dataString = JSON.stringify(entityEditor.getProps())
+      entityData = entityEditor.getProps()
+      # Propagate changes back to IDE
+      window.entities[uuid] = entityData
+
+      dataString = JSON.stringify(entityData)
 
       panel.find("[name=contents]").val(dataString)
 

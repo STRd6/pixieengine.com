@@ -61,48 +61,51 @@
 
     return pixelEditor
 
-  window.createPropertyPixelEditor = (options) ->
-    width = options.width
-    height = options.height
-    dataUrl = options.spriteName
-    target = options.target
-    _canvas = null
+  $.fn.modalPixelEditor = (options) ->
+    input = this
 
-    pixelEditor = $('<div />').pixie
-      width: width
-      height: height
+    return if input.data('modalPixelEditor')
+
+    previewImage = $ "<img />"
+      src: input.val()
+
+    input.after(previewImage).hide().data('modalPixelEditor', true)
+
+    options = $.extend {}, options,
       initializer: (canvas) ->
         _canvas = canvas
 
-        if dataUrl
+        if dataUrl = input.val()
           canvas.fromDataURL(dataUrl)
 
         canvas.addAction
           name: "Store"
           icon: "/images/icons/database_save.png"
           perform: (canvas) ->
-            pixelEditor.trigger('doSave')
+            imageData = canvas.toDataURL()
+
+            input.val(imageData).trigger('blur')
+            previewImage.attr("src", imageData)
+
+            $.modal.close()
+
+            #TODO select props editor
+            window.currentComponent = null
 
           undoable: false
 
-    pixelEditor.bind 'doSave', ->
-      options.target.val(_canvas.toDataURL()).trigger('blur')
+    showEditor = ->
+      pixelEditor = $('<div />').pixie(options)
 
-      $.modal.close()
+      pixelEditor.modal
+        containerCss:
+          height: 600
+          width: 800
+          maxHeight: 600
+          maxWidth: 800
 
-    pixelEditor.modal
-      containerCss:
-        height: 600
-        width: 800
-        maxHeight: 600
-        maxWidth: 800
+      window.currentComponent = pixelEditor
 
-    window.currentComponent = pixelEditor
+    input.parent().click(showEditor)
 
-    return pixelEditor
-
-  $("td").live "dblclick", () ->
-    if $(this).prev().children("input").val() == "spriteName"
-      createPropertyPixelEditor $.extend(propertyEditor.getProps(),
-        target: $(this).children("input")
-      )
+    return this

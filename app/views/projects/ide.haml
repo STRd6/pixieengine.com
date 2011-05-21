@@ -480,6 +480,7 @@
       entityEditor = createEntityEditor
         panel: panel
         path: path
+        uuid: panel.attr('data-uuid')
 
       entityEditor.bind 'save', save
       entityEditor.bind 'change', ->
@@ -580,6 +581,7 @@
       if name = entityData.name
         fileNode.text(name)
         $this.attr('data-name', name)
+        $this.attr('data-uuid', uuid)
 
       window.entities[uuid] = entityData
 

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 19 May 2011 23:06:54 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 21 May 2011 00:57:49 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -15,6 +15,7 @@
       };
       element.setProps = function(properties) {
         var key, propertiesArray, value;
+        properties || (properties = {});
         object = properties;
         element.html('');
         if (properties) {
@@ -33,6 +34,8 @@
               return addRow(key, value).find('td:last input').vectorPicker();
             } else if (Object.isObject(value)) {
               return addNestedRow(key, value);
+            } else if (value != null ? typeof value.match === "function" ? value.match(/^data:image\//) : void 0 : void 0) {
+              return addRow(key, value).find('td:last input').modalPixelEditor(properties);
             } else {
               return addRow(key, value);
             }
