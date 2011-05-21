@@ -19,12 +19,9 @@
           fn uuid, entity
 
       editEntity: (uuid) ->
-        console.log "edit \#{uuid}"
         $("ul.filetree [title=\#{uuid}.entity] span").click()
 
       loadEntity: (uuid, tileData) ->
-        console.log "loading entity \#{uuid}"
-
         if window.entities[uuid]
           # We have this one, use our version instead of the map's
           entity = tileData.entity = window.entities[uuid]
@@ -53,7 +50,7 @@
         return entity
 
       removeEntity: (uuid) ->
-        console.log "removing entity \#{uuid}"
+        console.log "TODO remove entity \#{uuid}"
       save: ->
         tileEditor.trigger 'doSave'
 
