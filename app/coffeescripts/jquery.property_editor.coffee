@@ -1,4 +1,25 @@
 (($) ->
+  createCodeMirrorEditor = (textArea) ->
+    code = textArea.val()
+    lang = "coffeescript"
+
+    editor = new CodeMirror.fromTextArea textArea.get(0),
+      autoMatchParens: true
+      content: code
+      lineNumbers: true
+      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+      path: "/javascripts/codemirror/"
+      stylesheet: ["/stylesheets/codemirror/main.css"]
+      tabMode: "shift"
+      textWrapping: false
+
+    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+
+    # Listen for keypresses and update contents.
+    $(editor.win.document).keyup ->
+      textArea.val(editor.getCode())
+      textArea.trigger('blur')
+
   $.fn.propertyEditor = (properties) ->
     properties ||= {}
     object = properties
@@ -30,7 +51,7 @@
             addRow(key, value).find('td:last input').colorPicker
               leadingHash: true
           else if isCodeField(key, value)
-            addRow(key, value, valueInputType: "textarea")
+            createCodeMirrorEditor(addRow(key, value, valueInputType: "textarea").find('td:last textarea'))
           else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
             addRow(key, value).find('td:last input').vectorPicker()
           else if Object.isObject(value)

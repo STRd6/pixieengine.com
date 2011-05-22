@@ -1,9 +1,30 @@
-/* DO NOT MODIFY. This file was compiled Sat, 21 May 2011 03:30:41 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 22 May 2011 17:28:39 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
+    var createCodeMirrorEditor;
+    createCodeMirrorEditor = function(textArea) {
+      var code, editor, lang;
+      code = textArea.val();
+      lang = "coffeescript";
+      editor = new CodeMirror.fromTextArea(textArea.get(0), {
+        autoMatchParens: true,
+        content: code,
+        lineNumbers: true,
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"],
+        path: "/javascripts/codemirror/",
+        stylesheet: ["/stylesheets/codemirror/main.css"],
+        tabMode: "shift",
+        textWrapping: false
+      });
+      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'));
+      return $(editor.win.document).keyup(function() {
+        textArea.val(editor.getCode());
+        return textArea.trigger('blur');
+      });
+    };
     return $.fn.propertyEditor = function(properties) {
       var addBlurEvents, addNestedRow, addRow, element, isCodeField, object, rowCheck;
       properties || (properties = {});
@@ -34,9 +55,9 @@
                 leadingHash: true
               });
             } else if (isCodeField(key, value)) {
-              return addRow(key, value, {
+              return createCodeMirrorEditor(addRow(key, value, {
                 valueInputType: "textarea"
-              });
+              }).find('td:last textarea'));
             } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
               return addRow(key, value).find('td:last input').vectorPicker();
             } else if (Object.isObject(value)) {
