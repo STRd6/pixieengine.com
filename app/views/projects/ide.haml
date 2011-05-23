@@ -142,7 +142,7 @@
       src
     else if ext == "coffee"
       try
-        compiledCode = CoffeeScript.compile src, noWrap: true
+        compiledCode = CoffeeScript.compile src, bare: true
       catch error
         if $element
           errors.push
@@ -350,9 +350,9 @@
 
   appConfigCode = () ->
     globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
-    conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", noWrap: true
+    conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
 
-    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", noWrap: true
+    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
     [globals, conf, entitiesCode].join("\n")
 

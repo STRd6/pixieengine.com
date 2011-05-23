@@ -408,7 +408,7 @@
         (source) ->
           compiled_js = ''
           try
-            compiled_js = CoffeeScript.compile source, noWrap: true
+            compiled_js = CoffeeScript.compile source, bare: true
             $(code_id).val compiled_js
             $('#error').hide()
           catch error
