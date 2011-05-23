@@ -1,13 +1,72 @@
--# %iframe#player(type="text/html" width="1" height="1" frameborder="0")
+%style
+  :sass
+    @import util
+
+    #playlist
+      +inline-block
+      min-height: 300px
+      padding: 1em
+      vertical-align: top
+      width: 240px
+
+    #search_results
+      +inline-block
+      padding: 1em
+      vertical-align: top
+      width: 240px
+
+    .song
+      cursor: pointer
+      overflow: auto
+      width: 100%
+
+      &:hover
+        background-color: $hover
+
+      .duration
+        float: right
+        overflow: hidden
+        text-align: right
+        width: 30px
+
+      .title
+        +ellipsis
+        float: left
+        width: 185px
+
 #player
 
-%label#now_playing Now Playing:
-%label#next_up Next Up:
-%input#song_input(placeholder="Enter artist/song")
-%button#play Play
-%button#next Next
+.controls
+  %label#now_playing Now Playing:
+  %input#song_input(placeholder="Enter artist/song")
+  %button#search Search
+  %button#next Next
+
+#playlist.module
+  %h2 Playlist
+  %ul.songs
+#search_results.module
+  %h2 Search Results
+  %ul.songs
+
+#song_template.template
+  %li.song(data-id="${id}" title="${title}")
+    .title ${title}
+    .duration ${durationFormat(duration)}
 
 :coffeescript
+  window.player = null
+
+  window.durationFormat = (time) ->
+    minutes = (time / 60).floor()
+    seconds = (time % 60)
+    seconds = "0" + seconds if seconds < 10
+
+    minutes + ":" + seconds
+
+  $("#search_results .song").live "click", ->
+    $(this).appendTo("#playlist .songs")
+
   loadPlayerAPI = (callback) ->
     # Load player api asynchronously.
     tag = document.createElement('script')
@@ -23,7 +82,7 @@
   loadPlayerAPI ->
     getSongs("Lady Gaga")
 
-    $("#play").click ->
+    $("#search").click ->
       getSongs($("#song_input").val())
       $("#song_input").val('')
 
@@ -33,9 +92,6 @@
     $("#song_input").bind "keydown", "return", ->
       getSongs($("#song_input").val())
       $("#song_input").val('')
-
-  entries = []
-  currentIndex = -1
 
   getSongs = (terms) ->
     url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
@@ -48,27 +104,32 @@
 
       entries = processSearchResults(result.feed.entry)
 
-      nextSong()
+      $("#song_template").tmpl(entries).appendTo($("#search_results .songs").empty())
+
+      if !player || player.state == -1
+        nextSong()
 
   processSearchResults = (results) ->
     results.map (result) ->
-      id: result.id.$t.split('/').last()
-      title: result.title.$t
+      unless result.yt$noembed
+        duration: result.media$group.yt$duration.seconds
+        id: result.id.$t.split('/').last()
+        title: result.title.$t
+    .compact()
 
   nextSong = () ->
-    currentIndex += 1
-    entry = entries[currentIndex]
+    song = $("#playlist .songs .song").first()
 
-    id = entry.id
-    createPlayer(id)
+    song = $("#search_results .songs .song").first() unless song.length
 
-    title = entry.title
-    $("#now_playing").text("Now Playing: \#{title}")
+    if song.length
+      id = song.data("id")
+      title = song.attr("title")
 
-    if nextTitle = entries[currentIndex + 1]?.title
-      $("#next_up").text("Next Up: \#{nextTitle}")
-    else
-      $("#next_up").text("Next Up: ...")
+      createPlayer(id)
+      $("#now_playing").text("Now Playing: \#{title}")
+
+      song.remove()
 
   createPlayer = (id) ->
     srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
@@ -86,6 +147,7 @@
       events:
         onReady: (event) ->
           event.target.playVideo()
+
         onStateChange: (event) ->
           if event.data == YT.PlayerState.ENDED
             nextSong()
