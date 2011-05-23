@@ -1,5 +1,11 @@
 ;
 var __slice = Array.prototype.slice;
+Array.prototype.compact = function() {
+  return this.select(function(element) {
+    return element != null;
+  });
+};
+
 /***
 Creates and returns a copy of the array. The copy contains
 the same objects.
