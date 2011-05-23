@@ -25,9 +25,14 @@
 
     $("#play").click ->
       getSongs($("#song_input").val())
+      $("#song_input").val('')
 
     $("#next").click ->
       nextSong()
+
+    $("#song_input").bind "keydown", "return", ->
+      getSongs($("#song_input").val())
+      $("#song_input").val('')
 
   entries = []
   currentIndex = -1
@@ -41,21 +46,26 @@
     }, (result) ->
       console.log result
 
-      entries = result.feed.entry
+      entries = processSearchResults(result.feed.entry)
 
       nextSong()
+
+  processSearchResults = (results) ->
+    results.map (result) ->
+      id: result.id.$t.split('/').last()
+      title: result.title.$t
 
   nextSong = () ->
     currentIndex += 1
     entry = entries[currentIndex]
 
-    id = entry.id.$t.split('/').last()
+    id = entry.id
     createPlayer(id)
 
-    title = entry.title.$t
+    title = entry.title
     $("#now_playing").text("Now Playing: \#{title}")
 
-    if nextTitle = entries[currentIndex + 1]?.title.$t
+    if nextTitle = entries[currentIndex + 1]?.title
       $("#next_up").text("Next Up: \#{nextTitle}")
     else
       $("#next_up").text("Next Up: ...")
