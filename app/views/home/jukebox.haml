@@ -5,6 +5,7 @@
 %label#next_up Next Up:
 %input#song_input(placeholder="Enter artist/song")
 %button#play Play
+%button#next Next
 
 :coffeescript
   loadPlayerAPI = (callback) ->
@@ -24,6 +25,9 @@
 
     $("#play").click ->
       getSongs($("#song_input").val())
+
+    $("#next").click ->
+      nextSong()
 
   entries = []
   currentIndex = -1
@@ -66,6 +70,8 @@
     window.player = new YT.Player 'player',
       width: 1
       height: 1
+      playerVars:
+        controls: 0
       videoId: id
       events:
         onReady: (event) ->
