@@ -1,0 +1,70 @@
+%iframe#player(type="text/html" width="1" height="1" frameborder="0")
+
+%label#now_playing Now Playing:
+-# %label#next_up Next Up:
+%input#song_input(placeholder="Enter artist/song")
+%button#play Play
+
+:coffeescript
+  $("#play").click ->
+    getSongs($("#song_input").val())
+
+  url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
+
+  entries = []
+  currentIndex = 0
+
+  window.onYouTubePlayerReady = () ->
+    debugger
+
+  getSongs = (terms) ->
+    $.getJSON url, {
+      enablejsapi: 1
+      q: terms
+    }, (result) ->
+      console.log result
+
+      currentIndex = 0
+
+      entries = result.feed.entry
+      entry = entries[currentIndex]
+
+      id = entry.id.$t.split('/').last()
+      createPlayer(id)
+
+      title = entry.title.$t
+      $("#now_playing").text("Now Playing: \#{title}")
+
+      if nextTitle = entries[currentIndex + 1]?.title.$t
+        $("#next_up").text("Next Up: \#{nextTitle}")
+      else
+        $("#next_up").text("Next Up: ...")
+
+      #TODO Detect song end and play new
+
+  createPlayer = (id) ->
+    srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
+    $("#player").attr("src", srcUrl)
+    
+
+  createPlayerSwfObject = (id) ->
+    params =
+      allowScriptAccess: "always"
+
+    debugger
+
+    atts =
+      id: id
+
+    embedUrl = "http://www.youtube.com/v/\#{id}?enablejsapi=1&playerapiid=\#{id}&autoplay=1"
+
+    callback = (arg) ->
+      debugger
+
+    width = 1
+    height = 1
+
+    swfobject.embedSWF embedUrl,
+      "#player", width, height, "8", null, null, params, atts, callback
+
+  getSongs("Lady Gaga")
