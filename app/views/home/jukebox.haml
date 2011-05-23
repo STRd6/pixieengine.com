@@ -1,4 +1,5 @@
-%iframe#player(type="text/html" width="1" height="1" frameborder="0")
+-# %iframe#player(type="text/html" width="1" height="1" frameborder="0")
+#player
 
 %label#now_playing Now Playing:
 %label#next_up Next Up:
@@ -24,46 +25,51 @@
     $("#play").click ->
       getSongs($("#song_input").val())
 
-  url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
-
   entries = []
-  currentIndex = 0
+  currentIndex = -1
 
   getSongs = (terms) ->
+    url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
+
     $.getJSON url, {
       enablejsapi: 1
       q: terms
     }, (result) ->
       console.log result
 
-      currentIndex = 0
-
       entries = result.feed.entry
-      entry = entries[currentIndex]
 
-      id = entry.id.$t.split('/').last()
-      createPlayerViaAPI(id)
+      nextSong()
 
-      title = entry.title.$t
-      $("#now_playing").text("Now Playing: \#{title}")
+  nextSong = () ->
+    currentIndex += 1
+    entry = entries[currentIndex]
 
-      if nextTitle = entries[currentIndex + 1]?.title.$t
-        $("#next_up").text("Next Up: \#{nextTitle}")
-      else
-        $("#next_up").text("Next Up: ...")
+    id = entry.id.$t.split('/').last()
+    createPlayer(id)
 
-      #TODO Detect song end and play new
+    title = entry.title.$t
+    $("#now_playing").text("Now Playing: \#{title}")
+
+    if nextTitle = entries[currentIndex + 1]?.title.$t
+      $("#next_up").text("Next Up: \#{nextTitle}")
+    else
+      $("#next_up").text("Next Up: ...")
 
   createPlayer = (id) ->
     srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
     $("#player").attr("src", srcUrl)
 
-  createPlayerViaAPI = (id) ->
-    srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1&enablejsapi=1&origin=pixieengine.com"
-    $("#player").attr("src", srcUrl)
+  createPlayer = (id) ->
+    $("#player").empty()
 
     window.player = new YT.Player 'player',
+      width: 1
+      height: 1
+      videoId: id
       events:
-        onReady: (evt) ->
-          debugger
-          evt.target.playVideo()
+        onReady: (event) ->
+          event.target.playVideo()
+        onStateChange: (event) ->
+          if event.data == YT.PlayerState.ENDED
+            nextSong()
