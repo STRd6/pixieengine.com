@@ -38,9 +38,10 @@
 
 .controls
   %label#now_playing Now Playing:
-  %input#song_input(placeholder="Enter artist/song")
+  %input#song_input(placeholder="song, artist, or genre")
   %button#search Search
   %button#next Next
+  %button#stop Stop
 
 #playlist.module
   %h2 Playlist
@@ -89,6 +90,9 @@
     $("#next").click ->
       nextSong()
 
+    $("#stop").click ->
+      stopSong()
+
     $("#song_input").bind "keydown", "return", ->
       getSongs($("#song_input").val())
       $("#song_input").val('')
@@ -130,6 +134,9 @@
       $("#now_playing").text("Now Playing: \#{title}")
 
       song.remove()
+
+  stopSong = ->
+    player?.stopVideo()
 
   createPlayer = (id) ->
     srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
