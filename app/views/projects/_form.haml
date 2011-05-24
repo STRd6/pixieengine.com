@@ -2,38 +2,30 @@
 
 - form_for project, :html => {:multipart => true} do |form|
   = form.error_messages
-  %h2= @title
+  %h1= @title
 
-  %p
-    = form.label :title
+  %label
+    %h3 Title
     = form.text_field :title
 
-  %p
-    = form.label :description
+  %label
+    %h3 Description
     = form.text_area :description
 
-  %p
-    = form.label :image, "Screenshot"
+  %label
+    %h3 Screenshot
     = form.file_field :image
 
-  %div.advanced_toggle
+  %label.advanced_toggle
     = link_to_function "Advanced Options", "$(this).parent().next().toggle()"
 
-  .advanced_options
-    %p
-      = form.label :remote_origin
+  .advanced_options(style="display:none;")
+    %label
+      %h3 Remote Origin
       = form.text_field :remote_origin
 
-    %p
-      = form.label :import_zip, "Import .zip"
+    %label
+      %h3 Import .zip
       = form.file_field :import_zip
 
-  = form.submit
-
-%style
-  :sass
-    .advanced_toggle
-      margin-bottom: 1em
-
-    .advanced_options
-      display: none
+  %button.full= project.new_record? ? "Create Project" : "Update Project"

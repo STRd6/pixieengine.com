@@ -19,6 +19,10 @@ module ApplicationHelper
     "#{image_tag "icons/#{icon}.png", :alt => text}".html_safe
   end
 
+  def hint_icon(text)
+    "#{image_tag "icons/help.png", :alt => text, :class => :tipsy, :title => text}".html_safe
+  end
+
   def session_key_name
     Rails.application.config.session_options[:key]
   end

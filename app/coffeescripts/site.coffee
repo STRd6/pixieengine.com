@@ -18,6 +18,14 @@ window.showTooltip = (element, html) ->
 window.hideTooltip = ->
   $("#tooltip").stop().fadeOut()
 
+$ ->
+  $('.tipsy').tipsy
+    delayIn: 200
+    delayOut: 500
+    fade: 50
+    gravity: 'w'
+    opacity: 1
+
 # Local Storage
 getVal = (key) ->
   if localStorage

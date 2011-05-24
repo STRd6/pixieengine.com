@@ -2,10 +2,6 @@
 @import util
 
 body > form
-  button
-    height: 30px
-
-body > form
   +border-radius
 
   background-color: $dark_highlight
@@ -13,28 +9,20 @@ body > form
   padding: 1.5em 2em
   width: 340px
 
-  input
-    margin: 0 0 1em 0
-
-    &[type=radio]
-      margin-right: 0.5em
-
-  .light &
-    background-color: $light_highlight
-
-  .actions
-    +box-sizing(border-box)
-
-    overflow: auto
-    width: 100%
-
 form
-  h2, h3
-    font-weight: bold
+  a.hint
+    img
+      bottom: 0
+      margin: auto
+      position: absolute
+      right: 7px
+      top: 0
 
   button.full
     +bounds(100%, 40px)
+    display: block
     font-size: 170%
+    margin: 0
 
   .field_with_errors
     display: inline
@@ -65,21 +53,22 @@ label, input, textarea
 label
   display: block
   font-weight: bold
-  padding-top: 0.5em
+  margin: 15px 0
 
   h1, h2, h3, h4, h5, h6
+    margin: 0
+
+  h4, h5, h6
     font-family: $normal_font
-    letter-spacing: 0
+    font-weight: bold
 
   &.inline
+    margin: 0
     h1, h2, h3, h4, h5, h6, input
       display: inline
 
 input[disabled]
   background-color: #ccc
-
-input[type=text], input[type=password], textarea
-  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
 
 input[type=text], input[type=password], input[type=file], textarea
   +border-radius(2px)
@@ -91,6 +80,16 @@ input[type=text], input[type=password], input[type=file], textarea
     border-width: 1px
     border-color: $pixie_primary
 
+input[type=text], input[type=password], textarea
+  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
+
+  border: 1px solid $light_gray
+  display: block
+  width: 100%
+
+input[type=radio]
+  margin-right: 0.5em
+
 input[type=file]
   color: $dark_text
   margin-top: 0.5em
@@ -98,11 +97,6 @@ input[type=file]
 
   .light &
     color: $light_text
-
-input[type=text], input[type=password], textarea
-  border: 1px solid $light_gray
-  display: block
-  width: 100%
 
 textarea
   height: 150px
