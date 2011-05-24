@@ -106,11 +106,7 @@ class ProjectsController < ApplicationController
   def update
     project.update_attributes(params[:project])
 
-    respond_with(project) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
+    respond_with(project)
   end
 
   def create
@@ -119,11 +115,7 @@ class ProjectsController < ApplicationController
 
     @project.save
 
-    respond_with(@project) do |format|
-      format.html do
-        render :layout => "fullscreen"
-      end
-    end
+    respond_with(@project)
   end
 
   def fork

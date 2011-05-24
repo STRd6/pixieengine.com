@@ -1,4 +1,3 @@
-/* Main css file for Pixie.
 /* Copyright STRd6 2011
 
 @import partials/base
@@ -9,11 +8,13 @@ html
 
 body
   background-color: white
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif
+  font-family: $normal_font
   font-size: 12px
   line-height: 1.5
-  margin: 0
-  padding: 0
+
+/* It's strange this doesn't work exactly right when put in body
+#fullscreen
+  +scrollbars
 
 h1, h2, h3, h4, h5, h6
   font-family: $header_font
@@ -28,9 +29,6 @@ h2
 h3
   font-size: 1.5em
 
-p, label
-  font-family: Verdana, sans-serif
-
 a
   color: $pixie_primary
   font-weight: bold
@@ -38,9 +36,6 @@ a
   &:hover
     color: $link_hover
     text-decoration: underline
-
-.border
-  border: 1px solid #BBB
 
 .left
   float: left
@@ -126,9 +121,6 @@ div.no-star
 
 .unsupported
   display: none
-
-#fullscreen
-  +scrollbars
 
 .clickable
   cursor: pointer

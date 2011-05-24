@@ -11,17 +11,7 @@
     = javascript_include_tag "jquery.treeview.js"
     = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
-    #flashes
-      - flash.each do |key, msg|
-        %div{ :class => key }
-          = msg
-          .close
-
-    =link_to image_tag('/images/pixie.png', :alt => "About", :title => "About Pixie", :id => "logo"), root_path
-    #bulb
-
-    - if @title
-      %h1= @title
+    = render :partial => "/shared/header"
 
     = yield
 

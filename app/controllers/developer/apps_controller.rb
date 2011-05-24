@@ -1,6 +1,5 @@
 class Developer::AppsController < DeveloperController
   resource_controller
-  layout "fullscreen"
   actions :all, :except => [:destroy]
 
   before_filter :require_user, :only => [:fork_post, :new, :create]

@@ -3,13 +3,7 @@
   = render :partial => "shared/head"
 
   %body#fullscreen
-    #flashes
-      - flash.each do |key, msg|
-        %div{ :class => key }
-          = msg
-          .close
-    =link_to image_tag('/images/pixie.png', :alt => "About", :title => "About Pixie", :id => "logo"), root_path
-    #bulb
+    = render :partial => "shared/header"
 
     = yield
 

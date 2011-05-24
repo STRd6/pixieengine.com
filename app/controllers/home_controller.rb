@@ -1,6 +1,5 @@
 class HomeController < ApplicationController
   before_filter :hide_feedback
-  layout "fullscreen"
 
   def sitemap
     @sprite_pages_count = Sprite.count / Sprite.per_page

@@ -1,6 +1,5 @@
 class AnimationsController < ApplicationController
   respond_to :html, :json
-  layout "fullscreen"
 
   before_filter :require_user, :except => [:index]
   before_filter :filter_results, :only => [:index]

@@ -1,6 +1,5 @@
 class UsersController < ResourceController::Base
   actions :all, :except => :destroy
-  layout "fullscreen"
 
   before_filter :require_user, :only => [:install_plugin]
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]

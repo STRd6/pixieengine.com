@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 24 May 2011 15:01:17 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 24 May 2011 16:15:54 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -25,15 +25,6 @@
   window.hideTooltip = function() {
     return $("#tooltip").stop().fadeOut();
   };
-  $(function() {
-    return $('.tipsy').tipsy({
-      delayIn: 200,
-      delayOut: 500,
-      fade: 50,
-      gravity: 'w',
-      opacity: 1
-    });
-  });
   getVal = function(key) {
     if (localStorage) {
       try {
@@ -63,8 +54,15 @@
       $('#bulb').toggleClass('on', active);
       setLightTheme(active);
     }
-    return $("#flashes .notice").each(function() {
+    $("#flashes .notice").each(function() {
       return notify($(this).html());
+    });
+    return $('.tipsy').tipsy({
+      delayIn: 200,
+      delayOut: 500,
+      fade: 50,
+      gravity: 'w',
+      opacity: 1
     });
   });
 }).call(this);
