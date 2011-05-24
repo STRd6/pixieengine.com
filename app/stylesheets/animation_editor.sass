@@ -105,7 +105,6 @@ $sprite_container_bounds: 72px
     input
       width: 115px
 
-
 .hitcircle_editor
   nav.top
     left: 0
@@ -161,7 +160,7 @@ $sprite_container_bounds: 72px
         background-color = $light_highlight
 
     .sprite_container
-      +box-shadow($dark_box_shadow, 3px, 3px, 15px)
+      +pop-shadow
       +contents-centered
 
       cursor: move
@@ -173,7 +172,7 @@ $sprite_container_bounds: 72px
         background-color: $hover
 
       .light &
-        +box-shadow($light_box_shadow, 3px, 3px, 15px)
+        +pop-shadow
 
   nav.bottom
     +box-sizing(border-box)
@@ -219,6 +218,10 @@ $sprite_container_bounds: 72px
 
       &.selected
         border: 4px solid $pixie_primary
+
+      .tags
+        position: absolute
+        top: -30px
 
       img
         cursor: move
@@ -293,12 +296,18 @@ $sprite_container_bounds: 72px
   .preview_box
     +border-radius
     +bounds(150px)
+    +box-shadow(#333, 1px, 1px, 3px)
     +inline-block
 
+    border-top: 1px solid #eee
+    border-left: 1px solid #eee
     position: absolute
     bottom: 0
     right: 0
     z-index: 101
+
+    .light &
+      +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
 
     .animation_speed
       position: absolute

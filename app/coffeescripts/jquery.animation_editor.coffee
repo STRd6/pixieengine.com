@@ -247,6 +247,7 @@ $.fn.animationEditor = (options) ->
   $(window).resize ->
     if window.currentComponent == animationEditor
       animationEditor.find('.frame_sprites').sortable('refresh')
+      frame_selected_sprite().removeClass('selected')
 
   animationEditor.find('.user_sprites .sprite_container').draggable
     addClasses: false
@@ -301,7 +302,17 @@ $.fn.animationEditor = (options) ->
     stop_animation()
 
   animationEditor.find('.frame_sprites .sprite_container').live
-    click: -> $(this).addClass('selected')
+    click: ->
+      $this = $(this)
+
+      $this.addClass('selected')
+      unless $this.find('.tags').hasClass('tag_container')
+        $this.find('.tags').tagbox()
+
+      if $this.find('.tags').hasClass('tag_container')
+        $this.find('.tags').show()
+        $this.find('.tag_container input').focus()
+
     dblclick: (event) ->
       pixelEditFrame($(this).find('img'))
     mouseenter: ->
@@ -313,6 +324,10 @@ $.fn.animationEditor = (options) ->
       $(this).append(x, duplicate, vflip, hflip)
     mouseleave: ->
       $(this).find('.x, .duplicate, .hflip, .vflip').remove()
+
+  animationEditor.find('.frame_sprites .sprite_container .tags').live
+    blur: ->
+      $(this).hide()
 
   animationEditor.find('.animations input').live
     change: ->
@@ -330,6 +345,7 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.mousedown ->
     frame_selected_sprite().removeClass('selected')
+    frame_selected_sprite().find('.tags').hide()
 
   $(document).bind "keydown", 'h', (event) ->
     if window.currentComponent == animationEditor
@@ -351,28 +367,6 @@ $.fn.animationEditor = (options) ->
 
       editFrameCircles(selected_sprite, image_circles)
 
-  $(document).bind "keydown", 'left', (event) ->
-    if window.currentComponent == animationEditor
-      preview_dirty = true
-      event.preventDefault()
-
-      selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
-
-      if selected_sprite.prev().length
-        selected_sprite.prev().before(selected_sprite)
-
-  $(document).bind "keydown", 'right', (event) ->
-    if window.currentComponent == animationEditor
-      preview_dirty = true
-      event.preventDefault()
-
-      selected_sprite = frame_selected_sprite()
-      selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove()
-
-      if selected_sprite.next().length
-        selected_sprite.next().after(selected_sprite)
-
   animationEditor.find('.frame_sprites .x').live 'mousedown', ->
     parent = $(this).parent()
 
@@ -390,8 +384,10 @@ $.fn.animationEditor = (options) ->
     newEl = parent.clone()
 
     newEl.find('.x, .duplicate, .hflip, .vflip').remove()
-
     newEl.insertAfter(parent)
+
+    newEl.find('.tags').remove()
+    newEl.find('img').before('<div class="tags" />')
 
   animationEditor.find('.hflip').live 'mousedown', ->
     $(this).parent().find('img').toggleClass('flipped_horizontal')
@@ -481,7 +477,6 @@ $.fn.animationEditor = (options) ->
         frames.push(ids.indexOf(tile_id))
 
       if frames.length
-
         animation = {
           complete: $(this).find('.complete').text()
           name: $(this).prev().text()

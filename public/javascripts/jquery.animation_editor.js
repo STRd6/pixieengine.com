@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 17 May 2011 08:08:18 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 24 May 2011 21:57:15 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -261,7 +261,8 @@
     });
     $(window).resize(function() {
       if (window.currentComponent === animationEditor) {
-        return animationEditor.find('.frame_sprites').sortable('refresh');
+        animationEditor.find('.frame_sprites').sortable('refresh');
+        return frame_selected_sprite().removeClass('selected');
       }
     });
     animationEditor.find('.user_sprites .sprite_container').draggable({
@@ -319,7 +320,16 @@
     });
     animationEditor.find('.frame_sprites .sprite_container').live({
       click: function() {
-        return $(this).addClass('selected');
+        var $this;
+        $this = $(this);
+        $this.addClass('selected');
+        if (!$this.find('.tags').hasClass('tag_container')) {
+          $this.find('.tags').tagbox();
+        }
+        if ($this.find('.tags').hasClass('tag_container')) {
+          $this.find('.tags').show();
+          return $this.find('.tag_container input').focus();
+        }
       },
       dblclick: function(event) {
         return pixelEditFrame($(this).find('img'));
@@ -334,6 +344,11 @@
       },
       mouseleave: function() {
         return $(this).find('.x, .duplicate, .hflip, .vflip').remove();
+      }
+    });
+    animationEditor.find('.frame_sprites .sprite_container .tags').live({
+      blur: function() {
+        return $(this).hide();
       }
     });
     animationEditor.find('.animations input').live({
@@ -352,7 +367,8 @@
       return active_animation().parent().find('.complete').text(selected_value);
     });
     animationEditor.mousedown(function() {
-      return frame_selected_sprite().removeClass('selected');
+      frame_selected_sprite().removeClass('selected');
+      return frame_selected_sprite().find('.tags').hide();
     });
     $(document).bind("keydown", 'h', function(event) {
       var find_hit_circles, image_circles, image_src, selected_sprite;
@@ -371,30 +387,6 @@
         image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3');
         image_circles = find_hit_circles(selected_sprite);
         return editFrameCircles(selected_sprite, image_circles);
-      }
-    });
-    $(document).bind("keydown", 'left', function(event) {
-      var selected_sprite;
-      if (window.currentComponent === animationEditor) {
-        preview_dirty = true;
-        event.preventDefault();
-        selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
-        if (selected_sprite.prev().length) {
-          return selected_sprite.prev().before(selected_sprite);
-        }
-      }
-    });
-    $(document).bind("keydown", 'right', function(event) {
-      var selected_sprite;
-      if (window.currentComponent === animationEditor) {
-        preview_dirty = true;
-        event.preventDefault();
-        selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
-        if (selected_sprite.next().length) {
-          return selected_sprite.next().after(selected_sprite);
-        }
       }
     });
     animationEditor.find('.frame_sprites .x').live('mousedown', function() {
@@ -416,7 +408,9 @@
       parent = $(this).parent();
       newEl = parent.clone();
       newEl.find('.x, .duplicate, .hflip, .vflip').remove();
-      return newEl.insertAfter(parent);
+      newEl.insertAfter(parent);
+      newEl.find('.tags').remove();
+      return newEl.find('img').before('<div class="tags" />');
     });
     animationEditor.find('.hflip').live('mousedown', function() {
       return $(this).parent().find('img').toggleClass('flipped_horizontal');
