@@ -17,37 +17,6 @@ nav.top.actions .status
     color: #000
     padding-left: 5px
 
-ul#libraries
-  color: #000
-  padding-top: 7px
-  padding-bottom: 7px
-
-.import_sprite, .import_sound
-  +border-radius
-  +bounds(72px)
-  +contents-centered
-
-  background-color: white
-  display: inline-block
-  margin-right: 10px
-  margin-bottom: 3px
-
-  &.selected
-    background-color: $pixie_primary
-
-  img
-    +max-bounds(64px)
-
-.import_sound
-  color: #000
-  font-size: 10px
-  text-align: center
-
-  .control
-    +bounds(25px, 29px)
-
-    background-image: url(/images/play.png)
-    cursor: pointer
 
 .nav_left_container
   +box-sizing(border-box)
@@ -284,9 +253,6 @@ ul.filetree
   background-color: #EEE
   border: 1px solid black
 
-.container
-  padding-left: 0
-
 .actions
   display: inline-block
   text-align: center
@@ -296,35 +262,6 @@ ul.filetree
 
     .message
       width: 200px
-
-#logo
-  height: 70px
-  position: relative
-
-ul#libraries
-  background-color: #FFF
-  border: 1px solid #666
-  margin-top: -1px
-  position: absolute
-  width: 200px
-  z-index: 10
-
-  li
-    padding-left: 5px
-    &:hover
-      background-color: #666
-      color: #FFF
-
-    label
-      font-weight: normal
-
-    input[type="checkbox"]
-      display: inline-block
-      color: #666
-      margin: 0
-      padding: 0
-      position: relative
-      vertical-align: top
 
 #import_drop_zone
   background: transparent url(/images/import.png) no-repeat center top
