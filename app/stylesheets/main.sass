@@ -1,7 +1,8 @@
 /* Copyright STRd6 2011
 
-@import partials/base
-@import util
+@import main/form
+@import main/header
+@import main/list
 
 html
   height: 100%
@@ -15,19 +16,6 @@ body
 /* It's strange this doesn't work exactly right when put in body
 #fullscreen
   +scrollbars
-
-h1, h2, h3, h4, h5, h6
-  font-family: $header_font
-  font-weight: 600
-  letter-spacing: .1em
-  margin: 0 0 .5em 0
-
-h1
-  font-size: 2.5em
-h2
-  font-size: 2em
-h3
-  font-size: 1.5em
 
 a
   color: $pixie_primary
@@ -68,51 +56,6 @@ div.no-star
 .no_border
   border: none
 
-#feedback
-  position: fixed
-  left: -15px
-  top: 50%
-
-  a
-    background-image: url(/images/feedback.png)
-    display: block
-    height: 102px
-    width: 50px
-
-#tooltip
-  +border-radius
-  +box-shadow
-  +linear-gradient(color-stops(#444, #222))
-  +text-shadow(black, 1px, 1px)
-
-  background-color: #444
-  border-left: 1px solid #595959
-  border-top: 1px solid #595959
-  color: $dark_text
-  display: none
-  min-width: 150px
-  max-width: 200px
-  padding: 1em
-  position: absolute
-  z-index: 10
-
-  .next_tip, .close_tip
-    margin-right: 0
-    width: 80px
-
-  .icon
-    background-image: url(images/info.png)
-    height: 48px
-    left: -12px
-    position: absolute
-    top: -12px
-    width: 48px
-
-  .content
-    color: $dark_text
-    margin-left: 24px
-    position: relative
-
 .noselect
   +user-select(none)
 
@@ -132,14 +75,3 @@ nav.top
 
 .inline
   display: inline
-
-ol.numbered
-  list-style: decimal outside
-  margin-left: 1em
-
-ul
-  &.square
-    list-style: square inside
-
-  &.disc
-    list-style: disc inside

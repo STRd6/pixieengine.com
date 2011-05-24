@@ -1,0 +1,82 @@
+/* Element specific styles that apply throughout the site
+#feedback
+  position: fixed
+  left: -15px
+  top: 50%
+
+  a
+    background-image: url(/images/feedback.png)
+    display: block
+    height: 102px
+    width: 50px
+
+#tooltip
+  +border-radius
+  +box-shadow
+  +linear-gradient(color-stops(#444, #222))
+  +text-shadow(black, 1px, 1px)
+
+  background-color: #444
+  border-left: 1px solid #595959
+  border-top: 1px solid #595959
+  color: $dark_text
+  display: none
+  min-width: 150px
+  max-width: 200px
+  padding: 1em
+  position: absolute
+  z-index: 10
+
+  .next_tip, .close_tip
+    margin-right: 0
+    width: 80px
+
+  .icon
+    background-image: url(images/info.png)
+    height: 48px
+    left: -12px
+    position: absolute
+    top: -12px
+    width: 48px
+
+  .content
+    color: $dark_text
+    margin-left: 24px
+    position: relative
+
+#login_link
+  position: absolute
+  top: 13px
+  right: 40px
+
+#logo
+  +bounds(68px, 34px)
+
+  background-image: url(/images/pixie.png)
+  margin-left: 4px
+  margin-top: 4px
+  position: absolute
+  top: 0
+  left: 0
+
+#bulb
+  +bounds(32px)
+
+  background-image: url(/images/lightbulb_off.png)
+  position: absolute
+  top: 5px
+  right: 5px
+
+  &.on
+    background-image: url(/images/lightbulb.png)
+
+#content
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  border: none
+  margin: 0
+  padding: 0
+
+  .subnav
+    display: none

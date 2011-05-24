@@ -1,10 +1,18 @@
-@import partials/base
-@import util
+/* Styles for ol, ul, li, etc.
+
+ol.numbered
+  list-style: decimal outside
+  margin-left: 1em
 
 ul
   list-style: none
-  margin: 0
-  padding: 0
+
+  &.square
+    list-style: square inside
+
+  &.disc
+    list-style: disc inside
+
   &.actions
     margin-bottom: 1em
     & > li

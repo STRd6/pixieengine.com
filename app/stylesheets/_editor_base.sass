@@ -1,3 +1,5 @@
+/* Styles common to all editors and editor components (pixel, animation, etc.)
+
 /* TODO: Clean up and remove a bunch of this
 #fullscreen
   +box-sizing(border-box)
@@ -11,43 +13,6 @@
 
     > form
       background-color: $light_highlight
-
-  #login_link
-    position: absolute
-    top: 13px
-    right: 40px
-
-  #logo
-    +bounds(68px, 34px)
-
-    background-image: url(/images/pixie.png)
-    margin-left: 4px
-    margin-top: 4px
-    position: absolute
-    top: 0
-    left: 0
-
-  #bulb
-    +bounds(32px)
-
-    background-image: url(/images/lightbulb_off.png)
-    position: absolute
-    top: 5px
-    right: 5px
-
-    &.on
-      background-image: url(/images/lightbulb.png)
-
-  #content
-    +bounds(100%)
-    +box-sizing(border-box)
-
-    border: none
-    margin: 0
-    padding: 0
-
-    .subnav
-      display: none
 
   .container
     height: 100%
