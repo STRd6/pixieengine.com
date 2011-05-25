@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 17 May 2011 08:08:18 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 25 May 2011 18:10:36 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -178,14 +178,18 @@
         animationEditor.find('.goto select').val($(this).find('.complete').text());
         stop_animation();
         clear_frame_sprites();
-        $(this).find('.sprites').children().clone().appendTo(frame_sprites_container());
+        $(this).find('.sprite_container').each(function(i, sprite_container) {
+          $(sprite_container).find('.tags').removeClass('tag_container').children().remove();
+          return $(sprite_container).clone().appendTo(frame_sprites_container());
+        });
         active_animation().removeClass('active');
         $(this).find('.cover').addClass('active');
         if ($(this).find('.cover').hasClass('locked')) {
-          return animationEditor.find('.lock').css('opacity', 1);
+          animationEditor.find('.lock').css('opacity', 1);
         } else {
-          return animationEditor.find('.lock').css('opacity', 0.5);
+          animationEditor.find('.lock').css('opacity', 0.5);
         }
+        return animationEditor.find();
       },
       mouseenter: function() {
         if (animationEditor.find('.animations .animation').length > 1) {
@@ -261,7 +265,8 @@
     });
     $(window).resize(function() {
       if (window.currentComponent === animationEditor) {
-        return animationEditor.find('.frame_sprites').sortable('refresh');
+        animationEditor.find('.frame_sprites').sortable('refresh');
+        return frame_selected_sprite().removeClass('selected');
       }
     });
     animationEditor.find('.user_sprites .sprite_container').draggable({
@@ -319,7 +324,20 @@
     });
     animationEditor.find('.frame_sprites .sprite_container').live({
       click: function() {
-        return $(this).addClass('selected');
+        var $this, _ref, _ref2;
+        $this = $(this);
+        $this.addClass('selected');
+        if (!$this.find('.tags').hasClass('tag_container')) {
+          $this.find('.tags').tagbox({
+            placeholder: "New event trigger",
+            presets: ((_ref = $this.find('.tags')) != null ? (_ref2 = _ref.attr('data-tags')) != null ? _ref2.split(',') : void 0 : void 0) || []
+          });
+        }
+        if ($this.find('.tags').hasClass('tag_container')) {
+          animationEditor.find('.frame_sprites .tags').hide();
+          $this.find('.tags').show();
+          return $this.find('.tag_container input').focus();
+        }
       },
       dblclick: function(event) {
         return pixelEditFrame($(this).find('img'));
@@ -334,6 +352,11 @@
       },
       mouseleave: function() {
         return $(this).find('.x, .duplicate, .hflip, .vflip').remove();
+      }
+    });
+    animationEditor.find('.frame_sprites .sprite_container .tags').live({
+      blur: function() {
+        return $(this).hide();
       }
     });
     animationEditor.find('.animations input').live({
@@ -352,7 +375,8 @@
       return active_animation().parent().find('.complete').text(selected_value);
     });
     animationEditor.mousedown(function() {
-      return frame_selected_sprite().removeClass('selected');
+      frame_selected_sprite().removeClass('selected');
+      return frame_selected_sprite().find('.tags').hide();
     });
     $(document).bind("keydown", 'h', function(event) {
       var find_hit_circles, image_circles, image_src, selected_sprite;
@@ -371,30 +395,6 @@
         image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3');
         image_circles = find_hit_circles(selected_sprite);
         return editFrameCircles(selected_sprite, image_circles);
-      }
-    });
-    $(document).bind("keydown", 'left', function(event) {
-      var selected_sprite;
-      if (window.currentComponent === animationEditor) {
-        preview_dirty = true;
-        event.preventDefault();
-        selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
-        if (selected_sprite.prev().length) {
-          return selected_sprite.prev().before(selected_sprite);
-        }
-      }
-    });
-    $(document).bind("keydown", 'right', function(event) {
-      var selected_sprite;
-      if (window.currentComponent === animationEditor) {
-        preview_dirty = true;
-        event.preventDefault();
-        selected_sprite = frame_selected_sprite();
-        selected_sprite.find('.x, .duplicate, .hflip, .vflip').remove();
-        if (selected_sprite.next().length) {
-          return selected_sprite.next().after(selected_sprite);
-        }
       }
     });
     animationEditor.find('.frame_sprites .x').live('mousedown', function() {
@@ -416,7 +416,9 @@
       parent = $(this).parent();
       newEl = parent.clone();
       newEl.find('.x, .duplicate, .hflip, .vflip').remove();
-      return newEl.insertAfter(parent);
+      newEl.insertAfter(parent);
+      newEl.find('.tags').remove();
+      return newEl.find('img').before('<div class="tags" />');
     });
     animationEditor.find('.hflip').live('mousedown', function() {
       return $(this).parent().find('img').toggleClass('flipped_horizontal');
@@ -428,10 +430,10 @@
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     loadData = function(data) {
-      if (data && data.animations.length) {
+      if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
         $(data.animations).each(function(i, animation) {
-          var animation_el, last_sprite_img;
+          var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
             animationEditor.find('.goto select').append("<option value='" + animation.complete + "'>" + animation.complete + "</option>");
           } else {
@@ -447,7 +449,8 @@
           }
           active_animation().removeClass('active');
           $.each(animation.frames, function(i, frame) {
-            return templates.find('.load_sprite').tmpl({
+            var sprite_container, _ref;
+            sprite_container = templates.find('.load_sprite').tmpl({
               url: data.tileset[frame].src,
               alt: data.tileset[frame].title,
               title: data.tileset[frame].title,
@@ -455,10 +458,20 @@
               circles: JSON.stringify({
                 circles: data.tileset[frame].circles
               })
-            }).appendTo(animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites'));
+            }).appendTo(animationEditor.find('.animations .name').filter(function() {
+              return $(this).text() === animation.name;
+            }).next().find('.sprites'));
+            sprite_container.find('.tags').tagbox({
+              placeholder: "New event trigger",
+              presets: ((_ref = animation.triggers) != null ? _ref[i] : void 0) || []
+            });
+            return sprite_container.find('.tags').hide();
           });
-          last_sprite_img = animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img');
-          return animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone());
+          matching_animation = animationEditor.find('.animations .name').filter(function() {
+            return $(this).text() === animation.name;
+          }).next();
+          last_sprite_img = matching_animation.find('.sprites .sprite_container:last img');
+          return matching_animation.find('.cover').append(last_sprite_img.clone());
         });
         animationEditor.find('.speed').val(active_animation().find('.speed').text());
         stop_animation();
@@ -495,10 +508,14 @@
         }
       });
       animation_data = animationEditor.find('.animations .animation').map(function() {
-        var animation, frame_data;
+        var animation, frame_data, triggers;
+        triggers = {};
         frame_data = $(this).find('.sprites img').each(function(i, img) {
           var tile_id;
           tile_id = $(this).data('id');
+          if ($(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length) {
+            triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',');
+          }
           return frames.push(ids.indexOf(tile_id));
         });
         if (frames.length) {
@@ -507,6 +524,7 @@
             name: $(this).prev().text(),
             interruptible: !$(this).find('.cover').hasClass('locked'),
             speed: $(this).find('.speed').text(),
+            triggers: triggers,
             frames: frames
           };
         }
