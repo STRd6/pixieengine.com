@@ -241,6 +241,8 @@ class ProjectsController < ApplicationController
     ]
 
     filters.push ["My Projects", :own] if current_user
+
+    filters
   end
   helper_method :gallery_filters
 
