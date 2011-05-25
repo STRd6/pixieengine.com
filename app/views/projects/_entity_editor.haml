@@ -1,11 +1,48 @@
-#entity_editor_template.template
-  .editor.entity_editor.module
-    %table
+%style
+  :sass
+    @import util
 
-    .actions
-      %button.save Save
+    .content
+      +boxed_content(21px, 0, 0, 333px)
+
+#entity_editor_template.template
+  .editor.entity_editor
+    .content
+      .module.left
+        %h2 Properties
+        %table
+
+      %section
+        .events
+          - %w[create destroy step].each do |event|
+            %h3= link_to event.titleize, '#'
+            .event
+              %textarea(name=event)
+
+      .actions.top
+        %button.save Save
 
 :coffeescript
+  createCodeMirrorEditor = (textArea) ->
+    code = textArea.val()
+    lang = "coffeescript"
+
+    editor = new CodeMirror.fromTextArea textArea.get(0),
+      autoMatchParens: true
+      content: code
+      height: "100%"
+      lineNumbers: true
+      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+      path: "/javascripts/codemirror/"
+      stylesheet: ["/stylesheets/codemirror/main.css"]
+      tabMode: "shift"
+      textWrapping: false
+
+    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+
+    #TODO Listen for keypresses and update contents.
+    $(editor.win.document).keyup ->
+
   window.createEntityEditor = (options) ->
     {panel, uuid} = options
 
@@ -20,6 +57,13 @@
       data: data
 
     entityEditor = $("#entity_editor_template").tmpl().appendTo(panel)
+
+    entityEditor.find(".events").accordion
+      collapsible: true
+
+    entityEditor.find(".events .event textarea").each ->
+      #TODO Populate with correct data
+      createCodeMirrorEditor($(this))
 
     propertyEditor = entityEditor.find('table').propertyEditor(data)
     entityEditor.find('button.save').click ->
