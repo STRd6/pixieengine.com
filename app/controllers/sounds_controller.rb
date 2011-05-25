@@ -40,6 +40,18 @@ class SoundsController < ApplicationController
     ["own", "none", "for_user"]
   end
 
+  def gallery_filters
+    if current_user
+      [
+        ["My Sounds", :own],
+        ["All", :none],
+      ]
+    else
+      []
+    end
+  end
+  helper_method :gallery_filters
+
   def per_page
     24
   end

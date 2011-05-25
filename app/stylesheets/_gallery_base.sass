@@ -61,3 +61,28 @@
 
         .light &
           color: $light_text
+
+  .sound
+    .title_container
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
+    .sound_preview
+      +border-radius
+      +bounds(100%, 110px)
+      +contents-centered
+
+      margin: auto
+
+      #play
+        &:hover
+          background: url(/images/play.png) no-repeat center center
+          cursor: pointer
+
+      img
+        border: none

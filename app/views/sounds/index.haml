@@ -1,16 +1,6 @@
 - @title = "Sound Gallery"
 
-.filters
-  = button_link "Create Sound Effect", "sound_add", new_sound_path
-  - if current_user
-    = filter_link "My Sounds", :own
-    = filter_link "All", :none
-
-%section
-  .gallery
-    = will_paginate sounds
-    = render :partial => sounds
-    = will_paginate sounds
+= display_gallery sounds, gallery_filters
 
 #preview_sound
   %audio
@@ -20,43 +10,3 @@
     src = $(this).data('wav_src') || $(this).data('mp3_src')
 
     $('#preview_sound audio').attr('src', src).get(0).play()
-
-%style
-  :sass
-    @import util
-    @import partials/base
-
-    .title_container
-      white-space: nowrap
-
-    h2
-      display: inline-block
-
-    .author
-      color: #888
-
-    .sound_preview
-      +border-radius
-      +bounds(200px, 110px)
-      +contents-centered
-
-      color: #000
-      display: inline-block
-      font-size: 10px
-      left: 0
-      right: 0
-      margin: auto
-      position: absolute
-      text-align: center
-
-      #play
-        +bounds(200px, 110px)
-
-        &:hover
-          background: url(/images/play.png) no-repeat center center
-          cursor: pointer
-
-      img
-        border: none
-
-        max-width: 200px
