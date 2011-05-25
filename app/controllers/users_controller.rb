@@ -151,4 +151,12 @@ class UsersController < ResourceController::Base
   def filters
     ["featured", "none"]
   end
+
+  def gallery_filters
+    [
+      ["Featured", :featured],
+      ["All", :none],
+    ]
+  end
+  helper_method :gallery_filters
 end

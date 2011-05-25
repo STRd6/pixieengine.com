@@ -51,10 +51,6 @@ class ProjectsController < ApplicationController
     render :layout => "widget"
   end
 
-  def arcade
-    @projects = Project.arcade
-  end
-
   def add_to_arcade
     project.update_attribute(:arcade, true)
 
@@ -234,8 +230,19 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["featured", "own", "none", "for_user"]
+    ["featured", "own", "none", "for_user", "arcade"]
   end
+
+  def gallery_filters
+    filters = [
+      ["Arcade", :arcade],
+      ["Featured", :featured],
+      ["All", :none]
+    ]
+
+    filters.push ["My Projects", :own] if current_user
+  end
+  helper_method :gallery_filters
 
   def demo?
     params[:id] == "demo"

@@ -1,0 +1,13 @@
+.gallery
+  %nav
+    .filters
+      - filters.each do |text, filter|
+        = filter_link text, filter
+
+    = will_paginate collection
+
+  .items
+    = render :partial => collection
+
+  %nav
+    = will_paginate collection

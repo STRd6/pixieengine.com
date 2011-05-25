@@ -1,24 +1,6 @@
-.filters
-  = filter_link "Featured", :featured
-  = filter_link "All", :none
-
-%section
-  .gallery
-    = will_paginate users
-    = render :partial => users
-    = will_paginate users
-
 %style
   :sass
-    @import util
-    @import partials/base
+    #fullscreen
+      height: auto
 
-    .gallery .user .thumb
-      img
-        +box-shadow(none)
-
-        .light &
-          +box-shadow(none)
-
-      a img
-        +border-radius(0)
+= display_gallery(users, gallery_filters)

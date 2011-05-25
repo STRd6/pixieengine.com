@@ -27,6 +27,10 @@ module ApplicationHelper
     Rails.application.config.session_options[:key]
   end
 
+  def display_gallery(collection, filters)
+    render :partial => "shared/gallery", :locals => {:collection => collection, :filters => filters}
+  end
+
   private
   def oauth_button(name, options = {})
     "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>".html_safe

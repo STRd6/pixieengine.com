@@ -1,36 +1,37 @@
-.filters
-  position: absolute
-  top: 0
-  left: 120px
-
-  a:not(:first-child)
-    margin-left: 0
-    margin-right: 0
-
-  .pagination
-    display: inline-block
-    margin-left: 0.5em
-
 .gallery
   margin: auto
-  padding: 2em
   width: 1000px
 
-  .pagination
-    margin-left: 0.5em
+  nav
+    +clearfix
+
+    margin-bottom: 0.5em
+
+    .filters
+      +inline-block
+
+      float: right
+      a
+        margin: 0
+
+    .pagination
+      +inline-block
+
+      float: left
 
   .project, .sound, .user, .animation
-    +bounds(295px, 160px)
+    +bounds(245px, 172px)
     +module
     +inline-block
 
-    background-color: $cookie_cutter_dark
-    margin-bottom: 1em
-    margin-left: 0.5em
+    margin-bottom: 0.5em
     margin-right: 0.5em
     overflow: hidden
     padding: 1em
     position: relative
+
+    &:nth-child(4n)
+      margin-right: 0
 
     .gloss
       +gloss
@@ -44,12 +45,13 @@
       margin-bottom: 1em
       margin-right: 1em
 
-      img
-        +border-radius(17px)
-        +box-shadow(#000F1A, 0, 4px, 6px)
+      &.fancy
+        img
+          +border-radius(17px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
 
-        .light &
-          +box-shadow(#8c8c8c, 0, 4px, 6px)
+          .light &
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
 
     .title
       a

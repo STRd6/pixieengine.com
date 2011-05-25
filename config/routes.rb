@@ -13,7 +13,6 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   resources :projects do
     member do
-      get :arcade
       get :debug
       get :download
       get :fullscreen
