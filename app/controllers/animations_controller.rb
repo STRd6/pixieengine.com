@@ -44,6 +44,19 @@ class AnimationsController < ApplicationController
     ["own", "none", "for_user"]
   end
 
+  def gallery_filters
+    filters = [
+      ["All", :none]
+    ]
+
+    if current_user
+      filters.push ["My Animations", :own]
+    end
+
+    filters
+  end
+  helper_method :gallery_filters
+
   def per_page
     24
   end
