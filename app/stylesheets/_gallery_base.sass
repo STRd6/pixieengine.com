@@ -12,24 +12,16 @@
     margin-left: 0.5em
 
 .gallery
-  +glass
-  +user-select(none)
-
-  background-color: $dark_highlight
   margin: auto
   padding: 2em
   width: 1000px
-
-  .light &
-    background-color = $light_highlight
 
   .pagination
     margin-left: 0.5em
 
   .project, .sound, .user, .animation
-    +border-radius
     +bounds(295px, 160px)
-    +box-shadow(#000F1A, 2px, 2px, 4px, 0, inset)
+    +module
     +inline-block
 
     background-color: $cookie_cutter_dark
@@ -39,11 +31,6 @@
     overflow: hidden
     padding: 1em
     position: relative
-
-    .light &
-      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
-
-      background-color: $cookie_cutter_light
 
     .gloss
       +gloss
