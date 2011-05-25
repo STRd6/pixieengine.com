@@ -167,7 +167,9 @@ $.fn.animationEditor = (options) ->
       stop_animation()
       clear_frame_sprites()
 
-      $(this).find('.sprites').children().clone().appendTo(frame_sprites_container())
+      $(this).find('.sprite_container').each (i, sprite_container) ->
+        $(sprite_container).find('.tags').removeClass('tag_container').children().remove()
+        $(sprite_container).clone().appendTo(frame_sprites_container())
 
       active_animation().removeClass('active')
       $(this).find('.cover').addClass('active')
@@ -176,6 +178,8 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.lock').css('opacity', 1)
       else
         animationEditor.find('.lock').css('opacity', 0.5)
+
+      animationEditor.find()
     mouseenter: ->
       if animationEditor.find('.animations .animation').length > 1
         $(this).find('.cover').append('<div class="x" title="close" alt="close" />')
@@ -307,9 +311,12 @@ $.fn.animationEditor = (options) ->
 
       $this.addClass('selected')
       unless $this.find('.tags').hasClass('tag_container')
-        $this.find('.tags').tagbox()
+        $this.find('.tags').tagbox
+          placeholder: "New event trigger"
+          presets: $this.find('.tags')?.attr('data-tags')?.split(',') || []
 
       if $this.find('.tags').hasClass('tag_container')
+        animationEditor.find('.frame_sprites .tags').hide()
         $this.find('.tags').show()
         $this.find('.tag_container input').focus()
 
@@ -399,7 +406,7 @@ $.fn.animationEditor = (options) ->
     options.save?(saveData())
 
   loadData = (data) ->
-    if data && data.animations.length
+    if data?.animations.length
       animationEditor.find('.goto select').children().remove()
 
       $(data.animations).each (i, animation) ->
@@ -420,20 +427,31 @@ $.fn.animationEditor = (options) ->
         active_animation().removeClass('active')
 
         $.each animation.frames, (i, frame) ->
-          templates.find('.load_sprite').tmpl(
+          sprite_container = templates.find('.load_sprite').tmpl(
             url: data.tileset[frame].src
             alt: data.tileset[frame].title
             title: data.tileset[frame].title
             id: data.tileset[frame].id
             circles: JSON.stringify({ circles: data.tileset[frame].circles })
-          ).appendTo(animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites'))
+          ).appendTo(animationEditor.find('.animations .name').filter( ->
+            $(this).text() == animation.name
+          ).next().find('.sprites'))
 
-        last_sprite_img = animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.sprites').children().last().find('img')
+          sprite_container.find('.tags').tagbox
+            placeholder: "New event trigger"
+            presets: animation.triggers?[i] || []
 
-        animationEditor.find('.animations .name:contains("' + animation.name + '")').next().find('.cover').append(last_sprite_img.clone())
+          sprite_container.find('.tags').hide()
+
+        matching_animation = animationEditor.find('.animations .name').filter( ->
+          $(this).text() == animation.name
+        ).next()
+
+        last_sprite_img = matching_animation.find('.sprites .sprite_container:last img')
+
+        matching_animation.find('.cover').append(last_sprite_img.clone())
 
       animationEditor.find('.speed').val(active_animation().find('.speed').text())
-      #active_animation().parent().find('.complete').text(animationEditor.find('.goto select').val())
       stop_animation()
       clear_frame_sprites()
 
@@ -470,9 +488,13 @@ $.fn.animationEditor = (options) ->
         tiles.push(tile)
 
     animation_data = animationEditor.find('.animations .animation').map(->
+      triggers = {}
 
       frame_data = $(this).find('.sprites img').each (i, img) ->
         tile_id = $(this).data('id')
+
+        if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
+          triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
 
         frames.push(ids.indexOf(tile_id))
 
@@ -482,6 +504,7 @@ $.fn.animationEditor = (options) ->
           name: $(this).prev().text()
           interruptible: !$(this).find('.cover').hasClass('locked')
           speed: $(this).find('.speed').text()
+          triggers: triggers
           frames: frames
         }
 
