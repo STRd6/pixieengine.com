@@ -4,7 +4,7 @@
  http://www.superbly.ch
 ###
 (($) ->
-  $.fn.tagbox = ->
+  $.fn.tagbox = (options) ->
     inserted = []
 
     tagField = this.addClass('tag_container')
@@ -16,29 +16,34 @@
     tagList.append(inputContainer)
     inputContainer.append(tagInput)
 
+    updateTags = ->
+      tagInput.focus()
+      tagField.attr('data-tags', inserted.join(','))
+
     addItem = (value) ->
       unless inserted.include(value)
         inserted.push(value)
         tagInput.parent().before("<li class='tag_item'><span>#{value}</span><a> x</a></li>")
         tagInput.val("")
 
-        $(tagList.children('.tag_item:last a')).click (e) ->
+        $(tagList.find('.tag_item:last a')).click (e) ->
           value = $(this).prev().text()
           removeItem(value)
 
-        tagInput.focus()
-        tagField.attr('data-tags', inserted.join(','))
+        updateTags()
 
     removeItem = (value) ->
       if inserted.include(value)
         inserted.remove(value)
-        tagList.find(".tag_item span:contains(#{value})").parent().remove()
+        tagList.find('.tag_item span').filter( ->
+          $(this).text() == value
+        ).parent().remove()
 
-      tagInput.focus()
-      tagField.attr('data-tags', inserted.join(','))
+        updateTags()
 
-    removeLastItem = ->
-      removeItem(inserted.last())
+    if options?.presets?.length
+      options.presets.each (item) ->
+        addItem(item)
 
     keys =
       enter: 13
@@ -46,14 +51,15 @@
       backspace: 8
 
     tagInput.keydown (e) ->
-      if (e.which == keys.enter || e.which == keys.tab)
-        value = tagInput.val() || ""
+      value = $(this).val() || ""
+      key = e.which
 
+      if (key == keys.enter || key == keys.tab)
         addItem(value.trim()) unless value.blank()
 
-        e.preventDefault() if e.which == keys.enter
-      else if e.which == keys.backspace
-        removeLastItem() if tagInput.val().blank()
+        e.preventDefault() if key == keys.enter
+      else if key == keys.backspace
+        removeItem(inserted.last()) if value.blank()
 
     $('.tag_container').click (e) ->
       tagInput.focus()

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 24 May 2011 21:18:55 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 25 May 2011 05:25:35 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.tagbox.coffee
  */
 
@@ -8,8 +8,8 @@
    adapted from superbly tagfield v0.1
    http://www.superbly.ch
   */  (function($) {
-    $.fn.tagbox = function() {
-      var addItem, inputContainer, inserted, keys, removeItem, removeLastItem, tagField, tagInput, tagList;
+    $.fn.tagbox = function(options) {
+      var addItem, inputContainer, inserted, keys, removeItem, tagField, tagInput, tagList, updateTags, _ref;
       inserted = [];
       tagField = this.addClass('tag_container');
       tagList = $("<ul class='tag_list' />");
@@ -18,48 +18,55 @@
       tagField.append(tagList);
       tagList.append(inputContainer);
       inputContainer.append(tagInput);
+      updateTags = function() {
+        tagInput.focus();
+        return tagField.attr('data-tags', inserted.join(','));
+      };
       addItem = function(value) {
         if (!inserted.include(value)) {
           inserted.push(value);
           tagInput.parent().before("<li class='tag_item'><span>" + value + "</span><a> x</a></li>");
           tagInput.val("");
-          $(tagList.children('.tag_item:last a')).click(function(e) {
+          $(tagList.find('.tag_item:last a')).click(function(e) {
             value = $(this).prev().text();
             return removeItem(value);
           });
-          tagInput.focus();
-          return tagField.attr('data-tags', inserted.join(','));
+          return updateTags();
         }
       };
       removeItem = function(value) {
         if (inserted.include(value)) {
           inserted.remove(value);
-          tagList.find(".tag_item span:contains(" + value + ")").parent().remove();
+          tagList.find('.tag_item span').filter(function() {
+            return $(this).text() === value;
+          }).parent().remove();
+          return updateTags();
         }
-        tagInput.focus();
-        return tagField.attr('data-tags', inserted.join(','));
       };
-      removeLastItem = function() {
-        return removeItem(inserted.last());
-      };
+      if (options != null ? (_ref = options.presets) != null ? _ref.length : void 0 : void 0) {
+        options.presets.each(function(item) {
+          return addItem(item);
+        });
+      }
       keys = {
         enter: 13,
         tab: 9,
         backspace: 8
       };
       tagInput.keydown(function(e) {
-        var value;
-        if (e.which === keys.enter || e.which === keys.tab) {
-          value = tagInput.val() || "";
+        var key, value;
+        value = $(this).val() || "";
+        key = e.which;
+        if (key === keys.enter || key === keys.tab) {
           if (!value.blank()) {
             addItem(value.trim());
           }
-          if (e.which === keys.enter) {
+          if (key === keys.enter) {
             return e.preventDefault();
           }
-        } else if (e.which === keys.backspace) {
-          if (tagInput.val().blank()) {
-            return removeLastItem();
+        } else if (key === keys.backspace) {
+          if (value.blank()) {
+            return removeItem(inserted.last());
           }
         }
       });
