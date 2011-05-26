@@ -1,24 +1,8 @@
 (($) ->
-  createCodeMirrorEditor = (textArea) ->
-    code = textArea.val()
-    lang = "coffeescript"
+  events = ["create", "step", "update", "destroy"]
 
-    editor = new CodeMirror.fromTextArea textArea.get(0),
-      autoMatchParens: true
-      content: code
-      lineNumbers: true
-      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-      path: "/javascripts/codemirror/"
-      stylesheet: ["/stylesheets/codemirror/main.css"]
-      tabMode: "shift"
-      textWrapping: false
-
-    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
-
-    # Listen for keypresses and update contents.
-    $(editor.win.document).keyup ->
-      textArea.val(editor.getCode())
-      textArea.trigger('blur')
+  hiddenFields = events.eachWithObject [], (event, array) ->
+    array.push event, event + "Coffee"
 
   $.fn.propertyEditor = (properties) ->
     properties ||= {}
@@ -29,9 +13,6 @@
 
     element.getProps = () ->
       object
-
-    isCodeField = (key, value) ->
-      ["create", "step", "update", "destroy"].include(key)
 
     element.setProps = (properties) ->
       properties ||= {}
@@ -47,11 +28,11 @@
         propertiesArray.sort().each (pair) ->
           [key, value] = pair
 
-          if key.match(/color/i)
+          if hiddenFields.include(key)
+            # Skip
+          else if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker
               leadingHash: true
-          else if isCodeField(key, value)
-            createCodeMirrorEditor(addRow(key, value, valueInputType: "textarea").find('td:last textarea'))
           else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
             addRow(key, value).find('td:last input').vectorPicker()
           else if Object.isObject(value)
@@ -78,11 +59,12 @@
         currentName = keyInput.val()
         previousName = keyInput.data("previousName")
 
-        return if currentName.blank()
-
         if currentName != previousName
           keyInput.data("previousName", currentName)
           delete object[previousName]
+
+          return if currentName.blank()
+
           object[currentName] = valueInput.val()
 
           try
@@ -97,8 +79,10 @@
         previousValue = valueInput.data("previousValue")
 
         if currentValue != previousValue
+          return unless key = keyInput.val()
+
           valueInput.data("previousValue", currentValue)
-          object[keyInput.val()] = currentValue
+          object[key] = currentValue
 
           try
             element.trigger("change", object)

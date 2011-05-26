@@ -146,7 +146,7 @@ used as `this` when calling the iterator function.
 */
 Array.prototype.eachWithObject = function(object, iterator, context) {
   this.each(function(element, i, self) {
-    return iterator.call(context, object, element, i, self);
+    return iterator.call(context, element, object, i, self);
   });
   return object;
 };
@@ -1970,7 +1970,7 @@ String.prototype.parse = function() {
   try {
     return JSON.parse(this);
   } catch (e) {
-    return this;
+    return this.toString();
   }
 };
 /***

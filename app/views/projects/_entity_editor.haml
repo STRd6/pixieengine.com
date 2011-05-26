@@ -40,8 +40,8 @@
 
     $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
 
-    #TODO Listen for keypresses and update contents.
     $(editor.win.document).keyup ->
+      textArea.val(editor.getCode())
 
   window.createEntityEditor = (options) ->
     {panel, uuid} = options
@@ -62,8 +62,12 @@
       collapsible: true
 
     entityEditor.find(".events .event textarea").each ->
-      #TODO Populate with correct data
-      createCodeMirrorEditor($(this))
+      input = $(this)
+      name = input.attr("name")
+
+      input.val(data[name + "Coffee"])
+
+      createCodeMirrorEditor(input)
 
     propertyEditor = entityEditor.find('table').propertyEditor(data)
     entityEditor.find('button.save').click ->
@@ -95,6 +99,18 @@
 
     entityEditor.bind 'doSave', ->
       entityData = propertyEditor.getProps()
+
+      entityEditor.find(".events .event textarea").each ->
+        input = $(this)
+        name = input.attr("name")
+
+        if name
+          source = input.val()
+
+          # Merge in events data
+          entityData[name + "Coffee"] = source
+          entityData[name] = window.compileCode source, "coffee"
+
       # Propagate changes back to IDE
       window.entities[uuid] = entityData
 
