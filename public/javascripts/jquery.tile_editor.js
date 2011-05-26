@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Fri, 20 May 2011 20:46:10 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 26 May 2011 22:45:45 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.tile_editor.coffee
  */
 
 (function() {
   $.fn.tileEditor = function(options) {
-    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, currentLayer, currentTool, debugMode, deleteTile, dirty, eachEntity, editEntity, entered, filledToken, firstGID, floodFill, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, loadEntity, loadExternalEntities, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeEntity, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tileLookup, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
+    var addNewLayer, addScreenLayer, clearSelection, clickMode, createNewTile, createPixelEditor, createdTileCount, currentLayer, currentTool, debugMode, deleteTile, dirty, eachEntity, editEntity, entered, filledToken, firstGID, floodFill, generateUuid, getNeighborPositions, grid, harvestSelection, hotkeys, inBounds, isInSelection, layerSelect, loadData, loadEntity, loadExternalEntities, modeDown, nextTile, pixelEditTile, positionElementIndices, prevTile, propEditor, propElement, removeEntity, removeTile, replaceTile, saveData, savedSelectionCount, select, selectNextVisibleLayer, selectTile, selectTool, selectionCache, selectionCopy, selectionCut, selectionDelete, selectionEach, selectionStart, showPropertiesEditor, stamp, templates, tileAt, tileEditor, tileHeight, tileLookup, tilePosition, tileTray, tileWidth, tilesTall, tilesWide;
     options = $.extend({
       layers: ["Background", "Entities"],
       eachEntity: $.noop,
@@ -93,6 +93,10 @@
         });
       }
     };
+    generateUuid = function() {
+      return Math.uuid(32, 16);
+    };
+    createdTileCount = 0;
     createNewTile = function() {
       var pixelEditor;
       if (createPixelEditor) {
@@ -102,9 +106,23 @@
           tileEditor: tileEditor
         });
         return pixelEditor.bind('save', function(event, data) {
-          var img;
+          var entity, img, name, src, uuid;
+          uuid = generateUuid();
+          name = "New Tile " + (createdTileCount += 1);
+          src = data;
           img = $("<img/>", {
-            src: data
+            alt: name,
+            "data-uuid": uuid,
+            src: src,
+            title: name
+          });
+          entity = {
+            name: name,
+            tileSrc: src
+          };
+          loadEntity(uuid, {
+            src: src,
+            entity: entity
           });
           return tileEditor.find('.component .tiles').append(img);
         });
@@ -533,7 +551,7 @@
     tileEditor.dropImageReader(function(file, event) {
       var entity, img, name, src, uuid;
       if (event.target.readyState === FileReader.DONE) {
-        uuid = Math.uuid(32, 16);
+        uuid = generateUuid();
         src = event.target.result;
         name = file.name.replace(/\.[^\.]*$/, '');
         img = $("<img/>", {

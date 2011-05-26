@@ -96,6 +96,10 @@ $.fn.tileEditor = (options) ->
 
         tileEditor.find('.component .tiles').append img
 
+  generateUuid = ->
+    Math.uuid(32, 16)
+
+  createdTileCount = 0
   createNewTile = ->
     if createPixelEditor
       pixelEditor = createPixelEditor
@@ -104,8 +108,22 @@ $.fn.tileEditor = (options) ->
         tileEditor: tileEditor
 
       pixelEditor.bind 'save', (event, data) ->
+        uuid = generateUuid()
+        name = "New Tile #{createdTileCount += 1}"
+        src = data
+
         img = $ "<img/>",
-          src: data
+          alt: name
+          "data-uuid": uuid
+          src: src
+          title: name
+
+        entity =
+          name: name
+          tileSrc: src
+
+        # Notify IDE of entity
+        loadEntity(uuid, {src: src, entity: entity})
 
         tileEditor.find('.component .tiles').append img
 
@@ -527,7 +545,7 @@ $.fn.tileEditor = (options) ->
 
   tileEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
-      uuid = Math.uuid(32, 16)
+      uuid = generateUuid()
       src = event.target.result
       name = file.name.replace(/\.[^\.]*$/, '')
 
