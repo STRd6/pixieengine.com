@@ -13,6 +13,7 @@
         %table
 
       %section
+        %h2 Events
         .events
           - %w[create destroy step].each do |event|
             %h3= link_to event.titleize, '#'
