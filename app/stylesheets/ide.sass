@@ -158,6 +158,61 @@ ul.filetree
     width: 100%
     z-index: 1
 
+    li
+      .ui-icon-close
+        float: right
+        margin: 0.5em 0.2em 0 0
+        cursor: pointer
+
+      &.ui-state-default
+        cursor: pointer
+
+        a
+          cursor: pointer
+
+        &.ui-state-active
+          cursor: default
+
+          a
+            cursor: default
+
+      .ui-icon
+
+        &.lang
+          float: left
+          margin: 0.5em 0 0 0.2em
+
+          &.animation
+            background-image: url(/images/icons/film.png)
+          &.coffeescript
+            background-image: url(/images/icons/cup.png)
+          &.javascript
+            background-image: url(/images/icons/script.png)
+          &.sound
+            background-image: url(/images/icons/sound.png)
+          &.sprite
+            background-image: url(/images/icons/image.png)
+          &.tilemap
+            background-image: url(/images/icons/world.png)
+          &.documentation
+            background-image: url(/images/icons/book_open.png)
+          &.entity
+            background-image: url(/images/icons/sport_shuttlecock.png)
+
+      a
+        +box-sizing(border-box)
+        +ellipsis
+
+        font-weight: normal
+        padding: 0.5em 0.6em
+        width: 100px
+
+      &.unsaved
+        a
+          font-weight: bold
+          &:after
+            content: "*"
+
   &.ui-tabs
     .ui-tabs-hide
       display: none
@@ -171,57 +226,6 @@ ul.filetree
 
   form
     height: 100%
-
-  li
-    .ui-icon-close
-      float: right
-      margin: 0.5em 0.2em 0 0
-      cursor: pointer
-
-    &.ui-state-default
-      cursor: pointer
-
-      a
-        cursor: pointer
-
-      &.ui-state-active
-        cursor: default
-
-        a
-          cursor: default
-
-    .ui-icon
-
-      &.lang
-        float: left
-        margin: 0.5em 0 0 0.2em
-
-        &.animation
-          background-image: url(/images/icons/film.png)
-        &.coffeescript
-          background-image: url(/images/icons/cup.png)
-        &.javascript
-          background-image: url(/images/icons/script.png)
-        &.sound
-          background-image: url(/images/icons/sound.png)
-        &.sprite
-          background-image: url(/images/icons/image.png)
-        &.tilemap
-          background-image: url(/images/icons/world.png)
-        &.documentation
-          background-image: url(/images/icons/book_open.png)
-        &.entity
-          background-image: url(/images/icons/sport_shuttlecock.png)
-
-    a
-      font-weight: normal
-      padding: 0.5em 0.6em
-
-    &.unsaved
-      a
-        font-weight: bold
-        &:after
-          content: "*"
 
 #titleModal, #libraries
   display: none

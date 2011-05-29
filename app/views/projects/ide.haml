@@ -208,7 +208,7 @@
         else
           name = path
 
-      $("#tabs").tabs 'add', docSelector, name, 0
+      $("#tabs").tabs 'add', docSelector, name.withoutExtension(), 0
 
   window.onbeforeunload = ->
     if $("li.unsaved").length

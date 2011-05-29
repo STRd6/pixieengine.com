@@ -1982,3 +1982,7 @@ String.prototype.titleize = function() {
     return word.capitalize();
   }).join(' ');
 };
+
+String.prototype.withoutExtension = function() {
+  return this.replace(/\.[^\.]*$/, '');
+};

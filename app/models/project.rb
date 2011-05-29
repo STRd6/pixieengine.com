@@ -245,6 +245,7 @@ class Project < ActiveRecord::Base
       end
     elsif File.file? file_path
       ext = (File.extname(filename)[1..-1] || "").downcase
+      name = filename.sub(/\.[^\.]*$/, '')
       lang = lang_for(ext)
       type = type_for(ext)
 
@@ -257,7 +258,7 @@ class Project < ActiveRecord::Base
       end
 
       {
-        :name => filename,
+        :name => name,
         :contents => contents,
         :ext => ext,
         :lang => lang,
