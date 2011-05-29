@@ -152,6 +152,8 @@ PixieStrd6Com::Application.routes.draw do |map|
 
   match 'jukebox' => "home#jukebox"
 
+  match 'begin' => "projects#ide", :id => "demo"
+
   match 'facebook' => "sprites#new", :as => :facebook
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
