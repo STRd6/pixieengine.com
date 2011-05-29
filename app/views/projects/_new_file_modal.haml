@@ -84,8 +84,7 @@
         newDir
       ).children('ul')
 
-    inputData.name = "\#{inputData.name}.\#{inputData.ext}"
-    inputData.path = "/\#{inputData.path}/\#{inputData.name}"
+    inputData.path = "/\#{inputData.path}/\#{inputData.name}.\#{inputData.ext}"
     inputData.options = JSON.stringify(inputData.options)
     dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
