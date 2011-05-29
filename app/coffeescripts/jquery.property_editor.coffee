@@ -33,8 +33,6 @@
           else if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker
               leadingHash: true
-          else if Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')
-            addRow(key, value).find('td:last input').vectorPicker()
           else if Object.isObject(value)
             addNestedRow(key, value)
           else if value?.match?(/^data:image\//)

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 26 May 2011 00:56:27 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 29 May 2011 18:22:25 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -37,8 +37,6 @@
               return addRow(key, value).find('td:last input').colorPicker({
                 leadingHash: true
               });
-            } else if (Object.isObject(value) && value.hasOwnProperty('x') && value.hasOwnProperty('y')) {
-              return addRow(key, value).find('td:last input').vectorPicker();
             } else if (Object.isObject(value)) {
               return addNestedRow(key, value);
             } else if (value != null ? typeof value.match === "function" ? value.match(/^data:image\//) : void 0 : void 0) {
