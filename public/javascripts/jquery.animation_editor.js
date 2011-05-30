@@ -1,13 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 16:27:58 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 16:58:16 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
+    window.animationCount = 0;
     animationEditor = $(this.get(0)).addClass("animation_editor");
     templates = $("#animation_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(animationEditor);
@@ -431,7 +432,7 @@
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     loadData = function(data) {
-      if (data != null ? data.animations.length : void 0) {
+      debugger;      if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img, matching_animation;
@@ -478,6 +479,7 @@
         stop_animation();
         clear_frame_sprites();
         active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container());
+        window.animationCount = animationEditor.find('.animations .animation').length;
         return animationEditor.find('.animations .animation').first().mousedown();
       } else {
         templates.find('.create_animation').tmpl({
@@ -485,6 +487,7 @@
           speed: animationEditor.find('.speed').val(),
           complete: "Animation 1"
         }).insertBefore(animationEditor.find('.new_animation'));
+        window.animationCount = animationEditor.find('.animations .animation').length;
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
     };
@@ -540,7 +543,6 @@
       };
     };
     loadData(options.data);
-    animationCount = animationEditor.find('.animations .animation').length;
     return $.extend(animationEditor, {
       animationData: saveData
     });

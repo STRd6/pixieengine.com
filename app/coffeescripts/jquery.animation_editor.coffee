@@ -3,6 +3,8 @@ $.fn.animationEditor = (options) ->
     speed: 110
   , options)
 
+  window.animationCount = 0
+
   animationEditor = $(this.get(0)).addClass("animation_editor")
 
   templates = $("#animation_editor_templates")
@@ -408,6 +410,8 @@ $.fn.animationEditor = (options) ->
     options.save?(saveData())
 
   loadData = (data) ->
+    debugger
+
     if data?.animations.length
       animationEditor.find('.goto select').children().remove()
 
@@ -459,6 +463,8 @@ $.fn.animationEditor = (options) ->
 
       active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
 
+      window.animationCount = animationEditor.find('.animations .animation').length
+
       animationEditor.find('.animations .animation').first().mousedown()
     else
       templates.find('.create_animation').tmpl(
@@ -466,6 +472,8 @@ $.fn.animationEditor = (options) ->
         speed: animationEditor.find('.speed').val()
         complete: "Animation 1"
       ).insertBefore(animationEditor.find('.new_animation'))
+
+      window.animationCount = animationEditor.find('.animations .animation').length
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
 
@@ -524,8 +532,6 @@ $.fn.animationEditor = (options) ->
     }
 
   loadData(options.data)
-
-  animationCount = animationEditor.find('.animations .animation').length
 
   $.extend animationEditor,
     animationData: saveData
