@@ -328,6 +328,8 @@
 
     libCode = compileDirectory(projectConfig.directories.lib)
 
+    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
+
     if projectConfig.main
       mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
 
@@ -339,7 +341,7 @@
 
     displayErrors(errors)
 
-    crammedCode = libCode + ";\n" + compiledCode + ";\n" + mainCode
+    crammedCode = [appConfigCode(), libCode, compiledCode, entitiesCode, mainCode].join(";\n")
 
   $("#build").live 'click', (event) ->
     projectCode = buildProjectCode()
@@ -349,12 +351,13 @@
       path: (projectConfig.name || "project") + ".js"
 
   appConfigCode = () ->
-    globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
-    conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
+    if projectConfig.library
+      ""
+    else
+      globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
+      conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
 
-    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
-
-    [globals, conf, entitiesCode].join("\n")
+      [globals, conf].join("\n")
 
   runApp = () ->
     width = projectConfig.width
@@ -369,7 +372,7 @@
 
     $("#test_zone").append(iframe).show()
 
-    crammedCode = appConfigCode() + ";\n" + buildProjectCode()
+    crammedCode = buildProjectCode()
 
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")

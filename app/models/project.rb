@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
     },
     :width => 480,
     :height => 320,
+    :library => false,
     :main => "main",
     :wrapMain => true,
     :hotSwap => true,
