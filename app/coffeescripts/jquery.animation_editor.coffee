@@ -182,8 +182,6 @@ $.fn.animationEditor = (options) ->
         animationEditor.find('.lock').css('opacity', 1)
       else
         animationEditor.find('.lock').css('opacity', 0.5)
-
-      animationEditor.find()
     mouseenter: ->
       if animationEditor.find('.animations .animation').length > 1
         $(this).find('.cover').append('<div class="x" title="close" alt="close" />')
@@ -410,8 +408,6 @@ $.fn.animationEditor = (options) ->
     options.save?(saveData())
 
   loadData = (data) ->
-    debugger
-
     if data?.animations.length
       animationEditor.find('.goto select').children().remove()
 

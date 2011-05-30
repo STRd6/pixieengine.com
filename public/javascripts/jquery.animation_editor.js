@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 16:58:16 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 18:04:21 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -175,7 +175,7 @@
     animationEditor.find('.animations .name').liveEdit();
     animationEditor.find('.animation').live({
       mousedown: function() {
-        update_active_animation();
+        debugger;        update_active_animation();
         animationEditor.find('.speed').val($(this).find('.speed').text());
         animationEditor.find('.goto select').val($(this).find('.complete').text());
         stop_animation();
@@ -187,11 +187,10 @@
         active_animation().removeClass('active');
         $(this).find('.cover').addClass('active');
         if ($(this).find('.cover').hasClass('locked')) {
-          animationEditor.find('.lock').css('opacity', 1);
+          return animationEditor.find('.lock').css('opacity', 1);
         } else {
-          animationEditor.find('.lock').css('opacity', 0.5);
+          return animationEditor.find('.lock').css('opacity', 0.5);
         }
-        return animationEditor.find();
       },
       mouseenter: function() {
         if (animationEditor.find('.animations .animation').length > 1) {
@@ -432,7 +431,7 @@
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     loadData = function(data) {
-      debugger;      if (data != null ? data.animations.length : void 0) {
+      if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img, matching_animation;
