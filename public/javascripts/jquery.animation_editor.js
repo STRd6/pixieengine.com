@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 25 May 2011 18:10:36 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 16:27:58 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -171,6 +171,7 @@
         return $(this).append(sprite_container);
       }
     });
+    animationEditor.find('.animations .name').liveEdit();
     animationEditor.find('.animation').live({
       mousedown: function() {
         update_active_animation();

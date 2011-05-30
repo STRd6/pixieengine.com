@@ -157,6 +157,8 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
       $(this).append sprite_container
 
+  animationEditor.find('.animations .name').liveEdit()
+
   animationEditor.find('.animation').live
     mousedown: ->
       update_active_animation()
