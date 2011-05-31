@@ -28,10 +28,11 @@ set :default_environment, {
 
 ssh_options[:port] = 2112
 
-role :app, "67.207.139.110"
-role :web, "67.207.139.110"
-role :db,  "67.207.139.110", :primary => true
+app_ip = "67.207.139.110"
 
+role :app, app_ip
+role :web, app_ip
+role :db,  app_ip, :primary => true
 
 after :deploy do
   run "chmod -R g+w #{release_path}/tmp"
