@@ -19,7 +19,7 @@
           fn uuid, entity
 
       editEntity: (uuid) ->
-        $("ul.filetree [title=\#{uuid}.entity] span").click()
+        $("ul.filetree [title=\#{uuid}] span").click()
 
       loadEntity: (uuid, tileData) ->
         if window.entities[uuid]
