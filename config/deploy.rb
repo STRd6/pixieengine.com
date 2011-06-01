@@ -14,13 +14,6 @@ set :deploy_via, :remote_cache
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
 
-set :default_environment, {
-  'PATH' => "/home/daniel/.rvm/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global/bin:/home/daniel/.rvm/rubies/ree-1.8.7-2010.02/bin:$PATH",
-  'RUBY_VERSION' => 'ruby 1.8.7',
-  'GEM_HOME' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02',
-  'GEM_PATH' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global'
-}
-
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
 # via the :deploy_to variable:
@@ -28,7 +21,7 @@ set :default_environment, {
 
 ssh_options[:port] = 2112
 
-app_ip = "67.207.139.110"
+app_ip = "173.255.220.219"
 
 role :app, app_ip
 role :web, app_ip
@@ -46,7 +39,7 @@ after "deploy:symlink", "deploy:update_crontab"
 namespace :deploy do
   desc "Update the crontab file"
   task :update_crontab, :roles => :db do
-    run "cd #{release_path} && whenever --update-crontab #{application}"
+    run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
   end
 end
 
@@ -73,7 +66,7 @@ end
 namespace :delayed_job do
   desc "Restart the delayed_job process"
   task :restart, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=#{rails_env} script/delayed_job restart"
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
   end
 end
 after "deploy:symlink", "delayed_job:restart"
