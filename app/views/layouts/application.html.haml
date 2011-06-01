@@ -2,7 +2,7 @@
 %html
   = render :partial => "shared/head"
 
-  %body#fullscreen
+  %body#fullscreen(class=@theme)
     = render :partial => "shared/header"
 
     = yield
@@ -17,9 +17,6 @@
     #tooltip
       .icon
       .content
-
-    #login_link
-      = render :partial => "/shared/login"
 
     - if Rails.env.development?
       = javascript_include_tag "coffee-script"

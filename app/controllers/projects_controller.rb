@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade]
+  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade, :landing1]
   before_filter :require_user, :except => PUBLIC_ACTIONS
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade]
   before_filter :require_owner_or_admin, :only => :destroy
@@ -96,7 +96,8 @@ class ProjectsController < ApplicationController
   end
 
   def info
-    render :layout => "plain"
+    @hide_dock = true
+    @theme = :light
   end
 
   def update

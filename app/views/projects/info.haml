@@ -1,229 +1,229 @@
-- @title = "PixieEngine - Create Games"
-
 %style
   :sass
-    @import partials/base
     @import util
 
     body#fullscreen
       height: auto
+      padding: 0
 
-    #get_started
-      +bounds(100%, 75px)
-      +box-sizing(border-box)
+    #header
+      display: none
 
-      margin: 0
-      margin-bottom: 1em
+    .heading_wrap , .footer_wrap
+      +bounds(100%, auto)
 
-      a
-        color: $pixie_primary
-        font-size: 250%
+      background-color: $dark_highlight
+      color: $dark_text
 
-        &:hover
-          text-decoration: none
-    p
-      margin: 1em 0
+    .heading_wrap
+      +box-shadow(#333, 0, 0, 10px, 1px)
 
-    .column
-      +inline-block
-      font-size: 14px
-      width: 430px
-
-    .column_group
-      overflow: auto
-      width: 100%
-
-    .logo
+    .heading
       margin: auto
-      width: 110px
+      overflow: auto
+      padding: 2em 0 1em
+      width: 960px
 
-    .blurb
-      padding-left: 7em
-      padding-right: 7em
-      font-size: 14px
+      .logo
+        +inline-block
+        float: left
 
-    .thumb
-      margin-left: 0
-      margin-right: 0
+      .login
+        padding-top: 10px
+        float: right
 
-      img
-        +border-radius
-        +bounds(96px)
+      .blurb
+        +inline-block
 
-    .engine
-      +bounds(100px)
+        margin-left: 7em
+        margin-top: 3px
 
-      display: inline-block
-      margin-left: 63px
-      margin-right: 0.5em
-      position: relative
+    .footer
+      margin: auto
+      padding: 1em 0
+      width: 960px
 
-      a
-        +border-radius
-        +bounds(100px)
-
-        background-color: #000
-        display: inline-block
-
-        img
-          position: absolute
-          bottom: 0
-          left: 0
-          right: 0
-          top: 0
-          margin: auto
-
-    .tutorial
-      img
-        +border-radius
-        +bounds(50px)
-
-        margin-left: 15px
-        margin-right: 15px
-
-    .block
-      +border-radius
-      +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
-
-      background-color: $light_background
-      margin-bottom: 1em
-      padding: 1em
-
-    .centered_form
-      +border-radius
-      +box-sizing(border-box)
-      +glass
-
-      padding: 2em 3em
+    .content
       margin: auto
       width: 960px
 
-      h2
-        margin-left: 17px
-        text-align: center
+      p
+        font-size: 1.2em
+        margin: 1em 0
 
-      input[type="text"]
-        color: #000
+      q, .source
+        font-style: italic
+        letter-spacing: 0.1em
+
+      .source
+        +opacity(0.75)
+
+      .feature
+        overflow: auto
+        margin: 2em 0 2em
+        width: 100%
+
+        .info
+          +inline-block
+          float: left
+          width: 315px
+
+        .video
+          +box-shadow($light_box_shadow, 0px, 10px, 10px, -10px)
+
+          background-color: white
+          border: 1px solid #AAA
+          float: right
+          padding: 6px 6px 3px
+
+      button.full
+        +bounds(100%, 40px)
+        display: block
+        font-size: 170%
         margin: 0
-        max-width: 600px
-        padding: 5px
-        width: 324px
 
-    .light
-      .centered_form
-        background-color: $light_highlight
+      .testimonial
+        margin-bottom: 2em
+        padding: 2em
 
-    .links
-      li
-        display: inline
+      .details
+        margin-bottom: 2em
+        overflow: auto
+        width: 100%
 
-        &:not(:first-of-type):before
-          content: " | "
+        .detail
+          +inline-block
 
-    /* Spacing hacks
-    .features
-      h2
-        margin-bottom: 19px
+          margin-right: 15px
 
-.centered_form
-  .blurb
+          vertical-align: top
+          width: 225px
+
+          &:nth-child(4n)
+            margin-right: 0
+
+      .featured_projects
+        margin: 2em 0
+        padding: 2em
+
+    .project
+      +bounds(430px, 172px)
+      +box-sizing(border-box)
+      +inline-block
+
+      margin-bottom: 2em
+      margin-right: 2em
+      overflow: hidden
+      padding: 1em
+      position: relative
+
+      &:nth-child(2n)
+        margin-right: 0
+
+      .gloss
+        +gloss
+
+        display: inline-block
+        position: absolute
+        left: 1em
+
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+        &.fancy
+          img
+            +border-radius(17px)
+            +box-shadow(#000F1A, 0, 4px, 6px)
+
+            .light &
+              +box-shadow(#8c8c8c, 0, 4px, 6px)
+
+      .title
+        a
+          color: $dark_text
+          font-size: 20px
+          font-weight: 600
+          text-decoration: none
+          white-space: nowrap
+
+          .light &
+            color: $light_text
+
+
+.heading_wrap
+  .heading
+
+    .login
+      = render :partial => "shared/login"
+
     .logo
       = image_tag('/images/logo_large.png')
+
+    %h2.blurb
+      The online game development toolkit.
+
+.content
+  .feature
+    .info
+      %h1
+        Achive your dreams
+
+      %p
+        Pixie enables you to quickly and easily create your own games online.
+        There is nothing to install and no obligations. Pixie delivers a
+        collection of simple and beautiful tools that help you to create games
+        without hassles. It is so simple that anyone can get started within
+        minutes.
+
+      %p
+        With Pixie there is no limit to what you can do. See for yourself with
+        one of our demo applications.
+
+      %button.full.clickable
+        Get Started
+        = link_to "", ide_project_path("demo"), :style => "display: none;"
+
+    .video
+      <iframe width="560" height="345" src="http://www.youtube.com/embed/uIQqUAkEZ4g" frameborder="0" allowfullscreen></iframe>
+
+  .testimonial.module
     %p
-      Pixie enables rapid game development by decreasing the amount of time from a thought entering your brain to the time you see it on screen. Avoid waiting for your game to recompile. With live coding and hot swapping, the second you think of a new feature, it is in your game.
-
+      %q
+        Pixie is the most wonderful web-based IDE I've ever seen!
+      %span.source
+        &mdash; Paul Hubans, Game Development Expert
     %p
-      Pixie is a full game design stack, tightly integrating a wide range of tools such as animations, tilemaps, and pixel art with your game code.
+      %i 
 
-  .column_group
-    .column.left
-      %button#get_started.clickable=link_to "Get Started!", ide_project_path("demo")
+  .details
+    .detail
+      %h2 Freedom
+      %p
+        Import and export your files and projects at any time.
 
-      .block
-        %ol.numbered
-          %li
-            Click the big button to get up and running with your first project
-          %li
-            Get to work on your game. If you don't know where to start, take a look at some tutorials
-            %div
-              - Project.tutorial.limit(4).each do |tutorial|
-                %span.tutorial= link_to image_tag(tutorial.image.url(:thumb), :alt => tutorial.display_name, :title => tutorial.display_name), ide_project_path(tutorial)
+    .detail
+      %h2 Creativity
+      %p
+        Built-in pixel, SFX, animation, and level editors.
 
-          %li
-            That is it! On Pixie your games are already published on the internet as soon as they are finished. Tell all your friends about them and become the next
-            =link_to "Notch", "http://minecraft.net"
+    .detail
+      %h2 Fame
+      %p
+        Your published games are playable on all modern desktop and mobile devices.
 
-    .column.right
-      .features.block
-        %h2 Features
-        %ul.disc
-          %li Entirely web based. Nothing to install!
-          %li Live code and art editing
-          %li Robust, well-tested game libraries to take the pain out of scripting
-          %li
-            Fully integrated 
-            = link_to "tilemap", new_tilemap_path(:tileset_id=>355)
-            ,
-            = link_to "animation", new_animation_path
-            , and
-            = link_to "pixel editors", new_sprite_path
-          %li
-            = link_to "Box2D integration", ide_project_path(69)
-            \. You don't need to roll your own physics
-          %li Games are live on the internet as soon as you finish coding them
-          %li 
-            = link_to "Github integration", github_integration_projects_path
-            to seamlessly handle versioning
-          %li Wide audience. Playable by anyone with a modern web browser
+    .detail
+      %h2 Fortune
+      %p
+        Deploy to online marketplaces with ease.
 
-  .column_group
-    .column.left
-      .block
-        %h2 Current Favorites
-        - Project.featured.limit(4).each do |favorite|
-          %span.thumb= link_to image_tag(favorite.image.url(:thumb), :alt => favorite.display_name, :title => favorite.display_name), fullscreen_project_path(favorite)
+  .featured_projects.module
+    %h2 Amazing Games Created with Pixie
+    .games
+      - Project.featured.limit(4).each do |project|
+        = render :partial => project
 
-      .block
-        %h2 Pixie Dust Make You Sneeze?
-        %p Although we prefer the web based approach, there are some awesome Flash game engines out there.
-        .engine= link_to image_tag("http://flashpunk.net/images/logo.gif", :alt => "FlashPunk", :title => "FlashPunk"), "http://flashpunk.net/"
-        .engine= link_to image_tag("http://flixel.org/gfx/flixel.gif", :alt => "Flixel", :title => "Flixel"), "http://flixel.org/"
-
-    .column.right
-      #twitter_div.block
-        %h2.sidebar-title Developer Updates
-        <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-        :javascript
-          new TWTR.Widget({
-            version: 2,
-            type: 'profile',
-            rpp: 5,
-            interval: 60000,
-            height: 310,
-            width: "100%",
-            theme: {
-              shell: {
-                background: 'transparent',
-                color: '#000000'
-              },
-              tweets: {
-                background: 'transparent',
-                color: '#000000',
-                links: '#000000'
-              }
-            },
-            features: {
-              scrollbar: true,
-              loop: false,
-              live: true,
-              hashtags: true,
-              timestamp: true,
-              avatars: false,
-              behavior: 'all'
-            }
-          }).render().setUser('PixiePlatform').start();
-
-  %center
-    %ul.links
-      %li= link_to "Blog", "http://blog.pixieengine.com"
-      %li= link_to "Forums", "http://forums.pixieengine.com"
+.footer_wrap
+  .footer
+    &copy; 2011 STRd6

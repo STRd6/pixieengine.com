@@ -1,6 +1,11 @@
-#flashes
-  - flash.each do |key, msg|
-    %div{ :class => key }= msg
+#header
+  #flashes
+    - flash.each do |key, msg|
+      %div{ :class => key }= msg
 
-=link_to image_tag('/images/pixie.png', :alt => "About", :title => "About Pixie", :id => "logo"), root_path
-#bulb
+  = link_to image_tag('/images/pixie.png', :alt => "Home", :title => "Home", :id => "logo"), root_path
+
+  #bulb
+
+  #login_link
+    = render :partial => "/shared/login"

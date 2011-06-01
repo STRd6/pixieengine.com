@@ -43,7 +43,7 @@ $ ->
 
     setLightTheme $(this).hasClass('on')
 
-  if active = getVal('light')
+  if active = (getVal('light') || $("body").is(".light"))
     $('#bulb').toggleClass('on', active)
     setLightTheme active
 
