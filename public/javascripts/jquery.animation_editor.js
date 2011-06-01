@@ -1,14 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Mon, 30 May 2011 18:04:21 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 01 Jun 2011 19:34:34 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
-    window.animationCount = 0;
+    animationCount = 0;
     animationEditor = $(this.get(0)).addClass("animation_editor");
     templates = $("#animation_editor_templates");
     templates.find(".editor.template").tmpl().appendTo(animationEditor);
@@ -175,7 +175,7 @@
     animationEditor.find('.animations .name').liveEdit();
     animationEditor.find('.animation').live({
       mousedown: function() {
-        debugger;        update_active_animation();
+        update_active_animation();
         animationEditor.find('.speed').val($(this).find('.speed').text());
         animationEditor.find('.goto select').val($(this).find('.complete').text());
         stop_animation();
@@ -478,7 +478,7 @@
         stop_animation();
         clear_frame_sprites();
         active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container());
-        window.animationCount = animationEditor.find('.animations .animation').length;
+        animationCount = animationEditor.find('.animations .animation').length;
         return animationEditor.find('.animations .animation').first().mousedown();
       } else {
         templates.find('.create_animation').tmpl({
@@ -486,7 +486,7 @@
           speed: animationEditor.find('.speed').val(),
           complete: "Animation 1"
         }).insertBefore(animationEditor.find('.new_animation'));
-        window.animationCount = animationEditor.find('.animations .animation').length;
+        animationCount = animationEditor.find('.animations .animation').length;
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
     };
