@@ -4,6 +4,9 @@
   hiddenFields = events.eachWithObject [], (event, array) ->
     array.push event, event + "Coffee"
 
+  shouldHide = (key, value) ->
+    hiddenFields.include(key) || $.isFunction(value)
+
   $.fn.propertyEditor = (properties) ->
     properties ||= {}
     object = properties
@@ -28,7 +31,7 @@
         propertiesArray.sort().each (pair) ->
           [key, value] = pair
 
-          if hiddenFields.include(key)
+          if shouldHide(key, value)
             # Skip
           else if key.match(/color/i)
             addRow(key, value).find('td:last input').colorPicker

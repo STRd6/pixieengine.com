@@ -1,14 +1,17 @@
-/* DO NOT MODIFY. This file was compiled Sun, 29 May 2011 18:22:25 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 02 Jun 2011 22:26:32 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
-    var events, hiddenFields;
+    var events, hiddenFields, shouldHide;
     events = ["create", "step", "update", "destroy"];
     hiddenFields = events.eachWithObject([], function(event, array) {
       return array.push(event, event + "Coffee");
     });
+    shouldHide = function(key, value) {
+      return hiddenFields.include(key) || $.isFunction(value);
+    };
     return $.fn.propertyEditor = function(properties) {
       var addBlurEvents, addNestedRow, addRow, element, object, rowCheck;
       properties || (properties = {});
@@ -31,7 +34,7 @@
           }
           propertiesArray.sort().each(function(pair) {
             key = pair[0], value = pair[1];
-            if (hiddenFields.include(key)) {
+            if (shouldHide(key, value)) {
               ;
             } else if (key.match(/color/i)) {
               return addRow(key, value).find('td:last input').colorPicker({
