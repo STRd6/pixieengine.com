@@ -43,6 +43,19 @@
       padding: 1em 0
       width: 960px
 
+    .thumb
+      float: left
+      margin-bottom: 1em
+      margin-right: 2em
+
+      &.fancy
+        img
+          +border-radius(17px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
+
+          .light &
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
+
     .content
       margin: auto
       width: 960px
@@ -59,8 +72,9 @@
         +opacity(0.75)
 
       .feature
+        margin: 2em 0 1em
         overflow: auto
-        margin: 2em 0 2em
+        padding-bottom: 1em
         width: 100%
 
         .info
@@ -194,8 +208,6 @@
         Pixie is the most wonderful web-based IDE I've ever seen!
       %span.source
         &mdash; Paul Hubans, Game Development Expert
-    %p
-      %i 
 
   .details
     .detail
@@ -217,6 +229,60 @@
       %h2 Fortune
       %p
         Deploy to online marketplaces with ease.
+
+  .testimonial.module
+    .thumb.fancy
+      = image_tag "daniel_128.jpg"
+
+    %h2 A message from the creator of Pixie
+
+    %p
+      Hi! I'm Daniel X. Moore, the creator of Pixie. Pixie was born out of a
+      frustration with existing game creation tools, tools that had too much to install, didn't run
+      on Linux, Mac and Windows, and couldn't export to the web.
+    %p
+      I want a simple and
+      powerful toolkit that I can use to create games instantly, and have them be
+      available for all to experience just as fast as I can create them.
+    %p
+      Pixie is still a work in progress, but that's why I need your help. Try out the
+      game creation tools and let me know what you think. The Pixie team and I are
+      working hard to make Pixie the best game development platform in the world. It
+      is our dream and I hope you can share it with us.
+    %p
+      I'm glad you stopped by, please
+      = link_to "let me know if you have any questions or comments", "/survey", :target => "_blank"
+      regarding anything at all.
+      I'll try to get back to you as soon as I can.
+    %p
+      Have fun, and I hope you enjoy Pixie!
+    %p.source &mdash; Daniel X. Moore
+
+  .details
+    .detail
+      %h2 Simple
+      %p
+        Only the tools and features you need. No arduous installation or setup
+        process.
+
+    .detail
+      %h2 Intuitive
+      %p
+        Seamlessly transition from running the game to editing it. Edit sprites,
+        sounds, animations, and objects with ease.
+
+    .detail
+      %h2 Powerful
+      %p
+        A robust set of core game libraries gives you all the functionality you 
+        need to get started fast. The built-in scripting language enables you to
+        accomplish anything.
+
+    .detail
+      %h2 Free
+      %p
+        The free plan allows you to create and maintain a single project. Pixie
+        Premium is free for 30 days if you need more.
 
   .featured_projects.module
     %h2 Amazing Games Created with Pixie
