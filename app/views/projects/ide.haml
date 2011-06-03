@@ -159,7 +159,6 @@
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('app').to_json})
     sandbox.write(#{stylesheet_link_tag('screen').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
 
@@ -173,7 +172,6 @@
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('app').to_json})
     sandbox.write(#{stylesheet_link_tag('screen').to_json})
     sandbox.write(#{stylesheet_link_tag('qunit').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
