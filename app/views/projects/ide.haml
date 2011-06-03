@@ -168,6 +168,8 @@
 
     sandbox.close()
 
+    contentWindow.focus()
+
   window.testCodeInIframe = (code, iframe) ->
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
