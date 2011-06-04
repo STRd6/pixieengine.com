@@ -13,5 +13,9 @@
   $ ->
     window.propertyEditor = $("#prop_editor").propertyEditor()
     window.propertyEditor.bind "change", (event, newProperties) ->
+      unless newProperties
+        console?.warn?("Property editor didn't send any updated properties!")
+        return
+
       if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
         runningGameFrame.eval "updateObjectProperties(\#{JSON.stringify(newProperties)})"

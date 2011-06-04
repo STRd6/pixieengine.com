@@ -69,7 +69,7 @@
           object[currentName] = valueInput.val()
 
           try
-            element.trigger("change", object)
+            element.trigger("change", [object])
           catch error
             console?.error? error
 
@@ -86,7 +86,7 @@
           object[key] = currentValue
 
           try
-            element.trigger("change", object)
+            element.trigger("change", [object])
           catch error
             console?.error? error
 

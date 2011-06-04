@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 02 Jun 2011 22:26:32 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 04 Jun 2011 21:16:51 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
@@ -75,7 +75,7 @@
             }
             object[currentName] = valueInput.val();
             try {
-              element.trigger("change", object);
+              element.trigger("change", [object]);
             } catch (error) {
               if (typeof console != "undefined" && console !== null) {
                 if (typeof console.error === "function") {
@@ -97,7 +97,7 @@
             valueInput.data("previousValue", currentValue);
             object[key] = currentValue;
             try {
-              element.trigger("change", object);
+              element.trigger("change", [object]);
             } catch (error) {
               if (typeof console != "undefined" && console !== null) {
                 if (typeof console.error === "function") {
