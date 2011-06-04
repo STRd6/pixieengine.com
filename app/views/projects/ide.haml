@@ -400,8 +400,8 @@
 
     displayErrors(errors)
 
-    crammedCode = appConfigCode() + ";\n" + libCode + ";\n" + compiledCode
-    crammedCode += ";$(function(){ \#{testCode} });"
+    crammedCode = [appConfigCode(), libCode, compiledCode].join(";\n")
+    crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
 
     $("#unit_test_frame").remove()
 
