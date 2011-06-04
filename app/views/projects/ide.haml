@@ -328,7 +328,12 @@
 
     libCode = compileDirectory(projectConfig.directories.lib)
 
-    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
+    if projectConfig.library
+      #TODO Clean up all these special library cases into a singe solid
+      # app config / entities bootstrapper
+      entitiesCode = ''
+    else
+      entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
     if projectConfig.main
       mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
