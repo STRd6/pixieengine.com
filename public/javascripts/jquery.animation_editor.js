@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 06:22:54 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 06:55:22 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
@@ -490,12 +490,13 @@
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
     };
-    saveData = function() {
-      var animation_data, frames, srcs, tiles;
+    window.saveData = function() {
+      var animation_data, frames, srcs, tiles, transform;
       update_active_animation();
       frames = [];
       srcs = [];
       tiles = [];
+      transform = null;
       animationEditor.find('.animations .animation').find('.sprites img').each(function(i, img) {
         var circles, tile;
         circles = $(img).data('hit_circles') ? $(img).data('hit_circles').circles : [];
@@ -507,7 +508,14 @@
         };
         if ($.inArray(tile.src, srcs) === -1) {
           srcs.push(tile.src);
-          return tiles.push(tile);
+          tiles.push(tile);
+        }
+        if ($(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')) {
+          return transform = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)';
+        } else if ($(img).hasClass('flipped_vertical')) {
+          return transform = 'Matrix.VERTICAL_FLIP';
+        } else if ($(img).hasClass('flipped_horizontal')) {
+          return transform = 'Matrix.HORIZONTAL_FLIP';
         }
       });
       animation_data = animationEditor.find('.animations .animation').map(function() {
@@ -527,10 +535,12 @@
             name: $(this).prev().text(),
             interruptible: !$(this).find('.cover').hasClass('locked'),
             speed: $(this).find('.speed').text(),
+            transform: transform,
             triggers: triggers,
             frames: frames
           };
         }
+        transform = null;
         frames = [];
         return animation;
       }).get();

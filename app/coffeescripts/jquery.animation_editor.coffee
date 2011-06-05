@@ -479,6 +479,7 @@ $.fn.animationEditor = (options) ->
     frames = []
     srcs = []
     tiles = []
+    transform = null
 
     animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
       circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
@@ -492,6 +493,13 @@ $.fn.animationEditor = (options) ->
       if $.inArray(tile.src, srcs) == -1
         srcs.push tile.src
         tiles.push(tile)
+
+      if $(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')
+        transform = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)'
+      else if $(img).hasClass('flipped_vertical')
+        transform = 'Matrix.VERTICAL_FLIP'
+      else if $(img).hasClass('flipped_horizontal')
+        transform = 'Matrix.HORIZONTAL_FLIP'
 
     animation_data = animationEditor.find('.animations .animation').map(->
       triggers = {}
@@ -510,10 +518,12 @@ $.fn.animationEditor = (options) ->
           name: $(this).prev().text()
           interruptible: !$(this).find('.cover').hasClass('locked')
           speed: $(this).find('.speed').text()
+          transform: transform
           triggers: triggers
           frames: frames
         }
 
+      transform = null
       frames = []
 
       return animation
