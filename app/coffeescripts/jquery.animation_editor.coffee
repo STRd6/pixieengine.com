@@ -413,7 +413,7 @@ $.fn.animationEditor = (options) ->
 
       $(data.animations).each (i, animation) ->
         if animation.complete
-          animationEditor.find('.goto select').append("<option value='#{animation.complete}'>#{animation.complete}</option>")
+          animationEditor.find('.goto select').append("<option value='#{animation.name}'>#{animation.name}</option>")
         else
           animationEditor.find('.goto').remove()
 
@@ -477,7 +477,7 @@ $.fn.animationEditor = (options) ->
     update_active_animation()
 
     frames = []
-    ids = []
+    srcs = []
     tiles = []
 
     animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
@@ -489,20 +489,20 @@ $.fn.animationEditor = (options) ->
         title: $(img).attr('title') || $(img).attr('alt')
         circles: circles
 
-      if $.inArray(tile.id, ids) == -1
-        ids.push tile.id
+      if $.inArray(tile.src, srcs) == -1
+        srcs.push tile.src
         tiles.push(tile)
 
     animation_data = animationEditor.find('.animations .animation').map(->
       triggers = {}
 
       frame_data = $(this).find('.sprites img').each (i, img) ->
-        tile_id = $(this).data('id')
+        tile_src = $(this).attr('src')
 
         if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
           triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
 
-        frames.push(ids.indexOf(tile_id))
+        frames.push(srcs.indexOf(tile_src))
 
       if frames.length
         animation = {

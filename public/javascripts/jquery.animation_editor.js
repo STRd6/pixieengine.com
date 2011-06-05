@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 01 Jun 2011 19:34:34 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 06:22:54 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -436,7 +436,7 @@
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
-            animationEditor.find('.goto select').append("<option value='" + animation.complete + "'>" + animation.complete + "</option>");
+            animationEditor.find('.goto select').append("<option value='" + animation.name + "'>" + animation.name + "</option>");
           } else {
             animationEditor.find('.goto').remove();
           }
@@ -491,10 +491,10 @@
       }
     };
     saveData = function() {
-      var animation_data, frames, ids, tiles;
+      var animation_data, frames, srcs, tiles;
       update_active_animation();
       frames = [];
-      ids = [];
+      srcs = [];
       tiles = [];
       animationEditor.find('.animations .animation').find('.sprites img').each(function(i, img) {
         var circles, tile;
@@ -505,8 +505,8 @@
           title: $(img).attr('title') || $(img).attr('alt'),
           circles: circles
         };
-        if ($.inArray(tile.id, ids) === -1) {
-          ids.push(tile.id);
+        if ($.inArray(tile.src, srcs) === -1) {
+          srcs.push(tile.src);
           return tiles.push(tile);
         }
       });
@@ -514,12 +514,12 @@
         var animation, frame_data, triggers;
         triggers = {};
         frame_data = $(this).find('.sprites img').each(function(i, img) {
-          var tile_id;
-          tile_id = $(this).data('id');
+          var tile_src;
+          tile_src = $(this).attr('src');
           if ($(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length) {
             triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',');
           }
-          return frames.push(ids.indexOf(tile_id));
+          return frames.push(srcs.indexOf(tile_src));
         });
         if (frames.length) {
           animation = {
