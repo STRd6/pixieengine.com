@@ -19,6 +19,10 @@
       %span.file{ 'data-id' => "#documentation", :class => ext }= file_info[:name]
       #documentation.tab_data(data-path=path data-type="documentation")
         %iframe.no_border{:src => "/production/projects/#{project.id}/docs/index.html", :width => "100%", :height => "100%"}
+    - elsif ext == "tutorial"
+      %span.file{ 'data-id' => "#tutorial", :class => ext }= file_info[:name]
+      #tutorial.tab_data(data-path=path data-type="tutorial")
+        %iframe.no_border{:src => file_info[:contents], :width => "100%", :height => "100%"}
     - else
       %span.file{ 'data-id' => "##{data_id}", :class => ext }= file_info[:name]
       .tab_data{:id => data_id, 'data-ext' => ext, 'data-path' => path, 'data-lang' => lang, 'data-type' => type, 'data-mtime' => mtime, 'data-size' => size}
