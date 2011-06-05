@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 06:55:22 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 07:38:56 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -496,7 +496,7 @@
       frames = [];
       srcs = [];
       tiles = [];
-      transform = null;
+      transform = [];
       animationEditor.find('.animations .animation').find('.sprites img').each(function(i, img) {
         var circles, tile;
         circles = $(img).data('hit_circles') ? $(img).data('hit_circles').circles : [];
@@ -508,14 +508,7 @@
         };
         if ($.inArray(tile.src, srcs) === -1) {
           srcs.push(tile.src);
-          tiles.push(tile);
-        }
-        if ($(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')) {
-          return transform = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)';
-        } else if ($(img).hasClass('flipped_vertical')) {
-          return transform = 'Matrix.VERTICAL_FLIP';
-        } else if ($(img).hasClass('flipped_horizontal')) {
-          return transform = 'Matrix.HORIZONTAL_FLIP';
+          return tiles.push(tile);
         }
       });
       animation_data = animationEditor.find('.animations .animation').map(function() {
@@ -526,6 +519,15 @@
           tile_src = $(this).attr('src');
           if ($(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length) {
             triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',');
+          }
+          if ($(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')) {
+            transform[i] = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)';
+          } else if ($(img).hasClass('flipped_vertical')) {
+            transform[i] = 'Matrix.VERTICAL_FLIP';
+          } else if ($(img).hasClass('flipped_horizontal')) {
+            transform[i] = 'Matrix.HORIZONTAL_FLIP';
+          } else {
+            transform[i] = void 0;
           }
           return frames.push(srcs.indexOf(tile_src));
         });
@@ -540,7 +542,7 @@
             frames: frames
           };
         }
-        transform = null;
+        transform = [];
         frames = [];
         return animation;
       }).get();

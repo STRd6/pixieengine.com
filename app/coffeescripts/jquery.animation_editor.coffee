@@ -479,7 +479,7 @@ $.fn.animationEditor = (options) ->
     frames = []
     srcs = []
     tiles = []
-    transform = null
+    transform = []
 
     animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
       circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
@@ -494,13 +494,6 @@ $.fn.animationEditor = (options) ->
         srcs.push tile.src
         tiles.push(tile)
 
-      if $(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')
-        transform = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)'
-      else if $(img).hasClass('flipped_vertical')
-        transform = 'Matrix.VERTICAL_FLIP'
-      else if $(img).hasClass('flipped_horizontal')
-        transform = 'Matrix.HORIZONTAL_FLIP'
-
     animation_data = animationEditor.find('.animations .animation').map(->
       triggers = {}
 
@@ -509,6 +502,15 @@ $.fn.animationEditor = (options) ->
 
         if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
           triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
+
+        if $(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')
+          transform[i] = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)'
+        else if $(img).hasClass('flipped_vertical')
+          transform[i] = 'Matrix.VERTICAL_FLIP'
+        else if $(img).hasClass('flipped_horizontal')
+          transform[i] = 'Matrix.HORIZONTAL_FLIP'
+        else
+          transform[i] = undefined
 
         frames.push(srcs.indexOf(tile_src))
 
@@ -523,7 +525,7 @@ $.fn.animationEditor = (options) ->
           frames: frames
         }
 
-      transform = null
+      transform = []
       frames = []
 
       return animation
