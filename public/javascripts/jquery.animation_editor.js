@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 20:31:05 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 21:03:52 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -415,6 +415,10 @@
       if (parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length) {
         parent.next().append('<div class= "x" />');
         parent.next().append('<div class= "duplicate" />');
+      }
+      if (parent.get(0) === $('.frame_sprites .sprite_container:last').get(0)) {
+        active_animation().children().remove();
+        active_animation().append($('.frame_sprites .sprite_container:last').prev().find('img').clone());
       }
       return parent.fadeOut(150, function() {
         parent.remove();

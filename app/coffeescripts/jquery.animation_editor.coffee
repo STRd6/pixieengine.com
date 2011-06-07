@@ -391,6 +391,10 @@ $.fn.animationEditor = (options) ->
       parent.next().append('<div class= "x" />')
       parent.next().append('<div class= "duplicate" />')
 
+    if parent.get(0) == $('.frame_sprites .sprite_container:last').get(0)
+      active_animation().children().remove()
+      active_animation().append($('.frame_sprites .sprite_container:last').prev().find('img').clone())
+
     parent.fadeOut 150, ->
       parent.remove()
 
