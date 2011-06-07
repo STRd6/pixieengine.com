@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 05 Jun 2011 07:38:56 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 06 Jun 2011 22:44:59 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -181,8 +181,15 @@
         stop_animation();
         clear_frame_sprites();
         $(this).find('.sprite_container').each(function(i, sprite_container) {
+          var _ref, _ref2;
           $(sprite_container).find('.tags').removeClass('tag_container').children().remove();
-          return $(sprite_container).clone().appendTo(frame_sprites_container());
+          $(sprite_container).clone().appendTo(frame_sprites_container());
+          if (((_ref = $(sprite_container).find('img')) != null ? _ref.attr('data-hflip') : void 0) === 'true') {
+            $(".frame_sprites .sprite_container img[src=" + ($(sprite_container).find('img').attr('src')) + "]").addClass('flipped_horizontal');
+          }
+          if (((_ref2 = $(sprite_container).find('img')) != null ? _ref2.attr('data-vflip') : void 0) === 'true') {
+            return $(".frame_sprites .sprite_container img[src=" + ($(sprite_container).find('img').attr('src')) + "]").addClass('flipped_vertical');
+          }
         });
         active_animation().removeClass('active');
         $(this).find('.cover').addClass('active');
@@ -450,21 +457,24 @@
           }
           active_animation().removeClass('active');
           $.each(animation.frames, function(i, frame) {
-            var sprite_container, _ref;
+            var sprite, sprite_container, _ref, _ref2, _ref3;
+            sprite = data.tileset[frame];
             sprite_container = templates.find('.load_sprite').tmpl({
-              url: data.tileset[frame].src,
-              alt: data.tileset[frame].title,
-              title: data.tileset[frame].title,
-              id: data.tileset[frame].id,
+              url: sprite.src,
+              alt: sprite.title,
+              title: sprite.title,
+              hflip: ((_ref = animation.transform) != null ? _ref[i].hflip : void 0) || false,
+              vflip: ((_ref2 = animation.transform) != null ? _ref2[i].vflip : void 0) || false,
+              id: sprite.id,
               circles: JSON.stringify({
-                circles: data.tileset[frame].circles
+                circles: sprite.circles
               })
             }).appendTo(animationEditor.find('.animations .name').filter(function() {
               return $(this).text() === animation.name;
             }).next().find('.sprites'));
             sprite_container.find('.tags').tagbox({
               placeholder: "New event trigger",
-              presets: ((_ref = animation.triggers) != null ? _ref[i] : void 0) || []
+              presets: ((_ref3 = animation.triggers) != null ? _ref3[i] : void 0) || []
             });
             return sprite_container.find('.tags').hide();
           });
@@ -491,12 +501,11 @@
       }
     };
     window.saveData = function() {
-      var animation_data, frames, srcs, tiles, transform;
+      var animation_data, frames, srcs, tiles;
       update_active_animation();
       frames = [];
       srcs = [];
       tiles = [];
-      transform = [];
       animationEditor.find('.animations .animation').find('.sprites img').each(function(i, img) {
         var circles, tile;
         circles = $(img).data('hit_circles') ? $(img).data('hit_circles').circles : [];
@@ -512,23 +521,27 @@
         }
       });
       animation_data = animationEditor.find('.animations .animation').map(function() {
-        var animation, frame_data, triggers;
+        var animation, frame_data, transform, triggers;
         triggers = {};
+        transform = [];
         frame_data = $(this).find('.sprites img').each(function(i, img) {
-          var tile_src;
+          var hflip, tile_src, vflip;
           tile_src = $(this).attr('src');
+          hflip = false;
+          vflip = false;
           if ($(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length) {
             triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',');
           }
-          if ($(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')) {
-            transform[i] = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)';
-          } else if ($(img).hasClass('flipped_vertical')) {
-            transform[i] = 'Matrix.VERTICAL_FLIP';
-          } else if ($(img).hasClass('flipped_horizontal')) {
-            transform[i] = 'Matrix.HORIZONTAL_FLIP';
-          } else {
-            transform[i] = void 0;
+          if ($(img).hasClass('flipped_vertical')) {
+            vflip = true;
           }
+          if ($(img).hasClass('flipped_horizontal')) {
+            hflip = true;
+          }
+          transform.push({
+            hflip: hflip,
+            vflip: vflip
+          });
           return frames.push(srcs.indexOf(tile_src));
         });
         if (frames.length) {
@@ -542,8 +555,8 @@
             frames: frames
           };
         }
-        transform = [];
         frames = [];
+        transform = [];
         return animation;
       }).get();
       return {
