@@ -1,14 +1,16 @@
-/* All the headers h1 through h6... who uses h6 anyway?
+header
+  .bulb
+    +bounds(32px)
 
-h1, h2, h3, h4, h5, h6
-  font-family: $header_font
-  font-weight: 600
-  letter-spacing: .1em
-  margin: 0 0 .5em 0
+    background-image: url(/images/lightbulb_off.png)
+    position: absolute
+    top: 5px
+    right: 5px
 
-h1
-  font-size: 2.5em
-h2
-  font-size: 2em
-h3
-  font-size: 1.5em
+    &.on
+      background-image: url(/images/lightbulb.png)
+
+  .login_link
+    position: absolute
+    top: 13px
+    right: 40px

@@ -35,16 +35,16 @@ $ ->
   setLightTheme = (active) ->
     $('#fullscreen').toggleClass('light', active)
     $('iframe').contents().find('html').toggleClass("light", active)
+    $('.bulb').toggleClass("on", active)
 
     setVal('light', active)
 
-  $('#bulb').click ->
+  $('.bulb').click ->
     $(this).toggleClass('on')
 
     setLightTheme $(this).hasClass('on')
 
   if active = (getVal('light') || $("body").is(".light"))
-    $('#bulb').toggleClass('on', active)
     setLightTheme active
 
   # Display Flash Notice

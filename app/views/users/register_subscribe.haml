@@ -1,0 +1,12 @@
+= form_for user, :html => {:class => "module"} do |form|
+  = form.error_messages
+  %h2 Subscribe to Pixie!
+
+  %label
+    %h3 Email Address
+    = form.text_field :email
+  %label
+    %h3 Password
+    = form.password_field :password
+
+  %button.full(type="submit" name="subscribe") Subscribe
