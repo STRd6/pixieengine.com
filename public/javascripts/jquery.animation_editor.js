@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 19:38:28 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 20:31:05 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -213,7 +213,7 @@
     });
     animationEditor.find('.animation .x').live({
       mousedown: function() {
-        debugger;        var animation, index;
+        var animation, index;
         animation = $(this).parent().parent();
         index = animationEditor.find('.animations .animation').index(animation);
         animationEditor.find(".goto option").eq(index).remove();
@@ -442,16 +442,16 @@
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     loadData = function(data) {
+      var hasComplete;
       if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
+        hasComplete = false;
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
-            animationEditor.find('.goto select').children().remove();
-            animationEditor.find('.goto select').append("<option value='" + animation.name + "'>" + animation.name + "</option>");
-          } else {
-            animationEditor.find('.goto').remove();
+            hasComplete = true;
           }
+          animationEditor.find('.goto select').append("<option value='" + animation.name + "'>" + animation.name + "</option>");
           animation_el = templates.find('.create_animation').tmpl({
             name: animation.name,
             speed: animation.speed,
@@ -489,6 +489,9 @@
           last_sprite_img = matching_animation.find('.sprites .sprite_container:last img');
           return matching_animation.find('.cover').append(last_sprite_img.clone());
         });
+        if (!hasComplete) {
+          animationEditor.find('.goto').remove();
+        }
         animationEditor.find('.speed').val(active_animation().find('.speed').text());
         stop_animation();
         clear_frame_sprites();

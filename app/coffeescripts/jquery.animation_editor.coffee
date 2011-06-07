@@ -419,12 +419,13 @@ $.fn.animationEditor = (options) ->
     if data?.animations.length
       animationEditor.find('.goto select').children().remove()
 
+      hasComplete = false
+
       $(data.animations).each (i, animation) ->
         if animation.complete
-          animationEditor.find('.goto select').children().remove()
-          animationEditor.find('.goto select').append("<option value='#{animation.name}'>#{animation.name}</option>")
-        else
-          animationEditor.find('.goto').remove()
+          hasComplete = true
+
+        animationEditor.find('.goto select').append("<option value='#{animation.name}'>#{animation.name}</option>")
 
         animation_el = templates.find('.create_animation').tmpl(
           name: animation.name
@@ -465,6 +466,9 @@ $.fn.animationEditor = (options) ->
         last_sprite_img = matching_animation.find('.sprites .sprite_container:last img')
 
         matching_animation.find('.cover').append(last_sprite_img.clone())
+
+      unless hasComplete
+        animationEditor.find('.goto').remove()
 
       animationEditor.find('.speed').val(active_animation().find('.speed').text())
       stop_animation()
