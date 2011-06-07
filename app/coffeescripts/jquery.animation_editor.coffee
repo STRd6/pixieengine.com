@@ -162,7 +162,9 @@ $.fn.animationEditor = (options) ->
   animationEditor.find('.animations .name').liveEdit()
 
   animationEditor.find('.animation').live
-    mousedown: ->
+    mousedown: (e) ->
+      return if $(e.target).is('.x')
+
       update_active_animation()
 
       animationEditor.find('.speed').val($(this).find('.speed').text())
@@ -196,7 +198,8 @@ $.fn.animationEditor = (options) ->
   animationEditor.find('.animation .x').live
     mousedown: ->
       animation = $(this).parent().parent()
-      animationEditor.find(".goto option[value='#{animation.prev().text()}']").remove()
+      index = animationEditor.find('.animations .animation').index(animation)
+      animationEditor.find(".goto option").eq(index).remove()
 
       animation.prev().fadeOut 150, ->
         animation.prev().remove()
@@ -418,6 +421,7 @@ $.fn.animationEditor = (options) ->
 
       $(data.animations).each (i, animation) ->
         if animation.complete
+          animationEditor.find('.goto select').children().remove()
           animationEditor.find('.goto select').append("<option value='#{animation.name}'>#{animation.name}</option>")
         else
           animationEditor.find('.goto').remove()
@@ -481,6 +485,7 @@ $.fn.animationEditor = (options) ->
       animationCount = animationEditor.find('.animations .animation').length
 
       templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
+      animationEditor.find('.goto select').append("<option value='Animation 1'>Animation 1</option>")
 
   saveData = ->
     update_active_animation()

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 16:09:09 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 19:38:28 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -174,7 +174,10 @@
     });
     animationEditor.find('.animations .name').liveEdit();
     animationEditor.find('.animation').live({
-      mousedown: function() {
+      mousedown: function(e) {
+        if ($(e.target).is('.x')) {
+          return;
+        }
         update_active_animation();
         animationEditor.find('.speed').val($(this).find('.speed').text());
         animationEditor.find('.goto select').val($(this).find('.complete').text());
@@ -210,9 +213,10 @@
     });
     animationEditor.find('.animation .x').live({
       mousedown: function() {
-        var animation;
+        debugger;        var animation, index;
         animation = $(this).parent().parent();
-        animationEditor.find(".goto option[value='" + (animation.prev().text()) + "']").remove();
+        index = animationEditor.find('.animations .animation').index(animation);
+        animationEditor.find(".goto option").eq(index).remove();
         animation.prev().fadeOut(150, function() {
           return animation.prev().remove();
         });
@@ -443,6 +447,7 @@
         $(data.animations).each(function(i, animation) {
           var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
+            animationEditor.find('.goto select').children().remove();
             animationEditor.find('.goto select').append("<option value='" + animation.name + "'>" + animation.name + "</option>");
           } else {
             animationEditor.find('.goto').remove();
@@ -497,7 +502,8 @@
           complete: "Animation 1"
         }).insertBefore(animationEditor.find('.new_animation'));
         animationCount = animationEditor.find('.animations .animation').length;
-        return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
+        templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
+        return animationEditor.find('.goto select').append("<option value='Animation 1'>Animation 1</option>");
       }
     };
     saveData = function() {
