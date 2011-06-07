@@ -175,6 +175,11 @@ $.fn.animationEditor = (options) ->
         $(sprite_container).find('.tags').removeClass('tag_container').children().remove()
         $(sprite_container).clone().appendTo(frame_sprites_container())
 
+        if $(sprite_container).find('img')?.attr('data-hflip') == 'true'
+          $(".frame_sprites .sprite_container img[src=#{$(sprite_container).find('img').attr('src')}]").addClass('flipped_horizontal')
+        if $(sprite_container).find('img')?.attr('data-vflip') == 'true'
+          $(".frame_sprites .sprite_container img[src=#{$(sprite_container).find('img').attr('src')}]").addClass('flipped_vertical')
+
       active_animation().removeClass('active')
       $(this).find('.cover').addClass('active')
 
@@ -429,12 +434,16 @@ $.fn.animationEditor = (options) ->
         active_animation().removeClass('active')
 
         $.each animation.frames, (i, frame) ->
+          sprite = data.tileset[frame]
+
           sprite_container = templates.find('.load_sprite').tmpl(
-            url: data.tileset[frame].src
-            alt: data.tileset[frame].title
-            title: data.tileset[frame].title
-            id: data.tileset[frame].id
-            circles: JSON.stringify({ circles: data.tileset[frame].circles })
+            url: sprite.src
+            alt: sprite.title
+            title: sprite.title
+            hflip: animation.transform?[i].hflip || false
+            vflip: animation.transform?[i].vflip || false
+            id: sprite.id
+            circles: JSON.stringify({ circles: sprite.circles })
           ).appendTo(animationEditor.find('.animations .name').filter( ->
             $(this).text() == animation.name
           ).next().find('.sprites'))
@@ -479,7 +488,6 @@ $.fn.animationEditor = (options) ->
     frames = []
     srcs = []
     tiles = []
-    transform = []
 
     animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
       circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
@@ -497,20 +505,25 @@ $.fn.animationEditor = (options) ->
     animation_data = animationEditor.find('.animations .animation').map(->
       triggers = {}
 
+      transform = []
+
       frame_data = $(this).find('.sprites img').each (i, img) ->
         tile_src = $(this).attr('src')
+        hflip = false
+        vflip = false
 
         if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
           triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
 
-        if $(img).hasClass('flipped_vertical') && $(img).hasClass('flipped_horizontal')
-          transform[i] = 'Matrix.HORIZONTAL_FLIP.concat(Matrix.VERTICAL_FLIP)'
-        else if $(img).hasClass('flipped_vertical')
-          transform[i] = 'Matrix.VERTICAL_FLIP'
-        else if $(img).hasClass('flipped_horizontal')
-          transform[i] = 'Matrix.HORIZONTAL_FLIP'
-        else
-          transform[i] = undefined
+        if $(img).hasClass('flipped_vertical')
+          vflip = true
+        if $(img).hasClass('flipped_horizontal')
+          hflip = true
+
+        transform.push({
+          hflip: hflip
+          vflip: vflip
+        })
 
         frames.push(srcs.indexOf(tile_src))
 
@@ -525,8 +538,8 @@ $.fn.animationEditor = (options) ->
           frames: frames
         }
 
-      transform = []
       frames = []
+      transform = []
 
       return animation
 
