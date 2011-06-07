@@ -4,37 +4,43 @@ body#fullscreen
   height: auto
   padding: 0
 
-header
-  display: none
-
-.heading_wrap , .footer_wrap
+header, .footer_wrap
   +bounds(100%, auto)
 
   background-color: $dark_highlight
   color: $dark_text
 
-.heading_wrap
+header
   +box-shadow(#333, 0, 0, 10px, 1px)
 
-.heading
-  margin: auto
-  overflow: auto
-  padding: 2em 0 1em
-  width: 960px
+  .content
+    margin: auto
+    overflow: auto
+    padding: 2em 0 1em
+    position: relative
+    width: 960px
 
-  .logo
-    +inline-block
-    float: left
+    .logo
+      +bounds(110px, 55px)
+      +inline-block
 
-  .login
-    padding-top: 10px
-    float: right
+      background-image: url(/images/logo_large.png)
+      float: left
+      position: static
 
-  .blurb
-    +inline-block
+    .login_link
+      padding-top: 10px
+      position: static
+      float: right
 
-    margin-left: 7em
-    margin-top: 3px
+    .blurb
+      +inline-block
+
+      margin-left: 7em
+      margin-top: 3px
+
+    .bulb
+      display: none
 
 .footer
   margin: auto

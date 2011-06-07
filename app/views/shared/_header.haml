@@ -3,9 +3,12 @@
     - flash.each do |key, msg|
       %div{ :class => key }= msg
 
-  = link_to image_tag('/images/pixie.png', :alt => "Home", :title => "Home", :id => "logo"), root_path
+  .content
+    = link_to '', root_path, :class => "logo"
 
-  - unless @hide_bulb
+    %h2.blurb
+      The online game development toolkit.
+
     .bulb
 
-  = render :partial => "/shared/login"
+    = render :partial => "/shared/login"
