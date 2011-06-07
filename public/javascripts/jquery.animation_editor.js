@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Mon, 06 Jun 2011 22:44:59 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 16:09:09 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, stop_animation, templates, update_active_animation;
+    var active_animation, active_animation_sprites, animationCount, animationEditor, animation_id, clear_frame_sprites, clear_preview, createHitcircleEditor, createPixelEditor, editFrameCircles, frame_selected_sprite, frame_sprites, frame_sprites_container, loadData, pause_animation, pixelEditFrame, play_animation, play_next, preview_dirty, save, saveData, stop_animation, templates, update_active_animation;
     options = $.extend({
       speed: 110
     }, options);
@@ -500,7 +500,7 @@
         return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
       }
     };
-    window.saveData = function() {
+    saveData = function() {
       var animation_data, frames, srcs, tiles;
       update_active_animation();
       frames = [];
