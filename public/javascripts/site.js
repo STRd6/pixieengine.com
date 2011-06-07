@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 01 Jun 2011 19:28:17 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 00:16:06 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -44,14 +44,14 @@
     setLightTheme = function(active) {
       $('#fullscreen').toggleClass('light', active);
       $('iframe').contents().find('html').toggleClass("light", active);
+      $('.bulb').toggleClass("on", active);
       return setVal('light', active);
     };
-    $('#bulb').click(function() {
+    $('.bulb').click(function() {
       $(this).toggleClass('on');
       return setLightTheme($(this).hasClass('on'));
     });
     if (active = getVal('light') || $("body").is(".light")) {
-      $('#bulb').toggleClass('on', active);
       setLightTheme(active);
     }
     $("#flashes .notice").each(function() {

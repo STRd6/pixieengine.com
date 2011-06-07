@@ -25,7 +25,12 @@ class UsersController < ResourceController::Base
     render :nothing => true
   end
 
+  def register_subscribe
+    @object = User.new
+  end
+
   def create
+    subscribe = false
     @object = User.new(params[:user])
 
     @object.referrer_id = session[:referrer_id]
@@ -43,14 +48,25 @@ class UsersController < ResourceController::Base
         respond_to do |format|
           format.html do
             @registered = true
-            redirect_to user, :notice => REGISTERED_FLASH
+            if subscribe
+              redirect_to subscribe_path
+            else
+              redirect_to user, :notice => REGISTERED_FLASH
+            end
           end
           format.json { render :json => {:status => "ok"} }
         end
 
       else
         respond_to do |format|
-          format.html { render :action => :new }
+          format.html do
+            if subscribe
+              render :action => :register_subscribe
+            else
+              render :action => :new
+            end
+
+          end
           format.json do
             render :json => {
               :status => "error",

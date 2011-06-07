@@ -465,7 +465,7 @@
         tabMode: "shift"
         textWrapping: false
 
-      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
 
       bindKeys(editor.win.document, ctrlKeys)
 
@@ -562,7 +562,7 @@
       cssClass: type
       doSave: () ->
         soundEditor.trigger('doSave')
-    else if type == "documentation"
+    else if type == "documentation" || type == "tutorial"
       cssClass: type
 
   # Tree and Tabs setup

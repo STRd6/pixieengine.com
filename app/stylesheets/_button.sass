@@ -4,6 +4,8 @@ $blueprint-button-active-font-color = "#f5fcff"
 $blueprint-button-hover-background-color = "#EBF7FF"
 $blueprint-button-hover-font-color = "#1084ce"
 
+$complementary_orange = complement($pixie_primary)
+
 button, a.button
   +button-button
   +button-colors
@@ -11,6 +13,15 @@ button, a.button
   +button-active-colors
   +border-radius(4px)
   +linear-gradient(color-stops(#fefeff, #f5fcff 33%, #90cff8))
+
+  &.complement
+    +button-colors(white, $complementary_orange, darken($complementary_orange, 20%))
+    +button-hover-colors(white, $complementary_orange, darken($complementary_orange, 5%))
+    +linear-gradient(color-stops(lighten($complementary_orange, 15%), darken($complementary_orange, 5%)))
+    +text-shadow(darken($complementary_orange, 40%), 0, 0, 2px)
+
+    &:active, &.active
+      +linear-gradient(color-stops(darken($complementary_orange, 10%), $complementary_orange 33%, lighten($complementary_orange, 15%)))
 
   &:active, &.active
     +linear-gradient(color-stops(#0c639b, #70c2f6 33%, #90cff8))
@@ -34,23 +45,3 @@ button, a.button
   +inline-block
 
   margin-right: 0.5em
-
-#content #pixie .pixie .actions
-  a.button
-    color: $pixie_primary
-    padding: 4px 3px 3px
-
-  .pillbox-left
-    +border-right-radius(0)
-
-    margin: 0 1px 0 0
-
-  .pillbox-middle
-    +border-radius(0)
-
-    margin: 0 1px 0 0
-
-  .pillbox-right
-    +border-left-radius(0)
-
-    margin: 0

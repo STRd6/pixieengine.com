@@ -250,7 +250,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if ["text", "tilemap", "animation", "entity"].include? type
+      if ["text", "tilemap", "animation", "entity", "tutorial"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -298,6 +298,8 @@ class Project < ActiveRecord::Base
       "entity"
     when "animation"
       "animation"
+    when "tutorial"
+      "tutorial"
     end
   end
 

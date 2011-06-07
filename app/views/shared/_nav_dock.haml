@@ -23,7 +23,7 @@
           = link_to_unless_current image_tag("dock/people.png"), users_path, :title => "People"
         %li#chat
           %span Chat
-          = link_to image_tag("dock/chat.png"), "#", :title => "Chat"
+          = link_to image_tag("dock/chat.png"), '#', :title => "Chat"
       %div#unread.pulse
         %p
 
@@ -95,22 +95,6 @@
 
       +pulse
 
-      #fullscreen
-        position: relative
-
-        &.light
-          #hide_dock
-            background: url(/images/hide_dock_light.png) no-repeat
-
-            &.show_dock
-              background: url(/images/show_dock_light.png) no-repeat
-
-          .cap
-            background: url(/images/dock_background_left_light.png) bottom left no-repeat
-
-          ul.osx-dock
-            background: url(/images/dock_background_left_light.png) no-repeat right bottom
-
       #unread
         +border-radius(10px)
         +bounds(16px)
@@ -149,6 +133,12 @@
         &.show_dock
           background: url(/images/show_dock.png) no-repeat
 
+        .light &
+          background: url(/images/hide_dock_light.png) no-repeat
+
+          &.show_dock
+            background: url(/images/show_dock_light.png) no-repeat
+
       #dockContainer
         +bounds(508px, 70px)
         bottom: 0
@@ -170,6 +160,9 @@
 
           background: url(/images/dock_background_left.png) bottom left no-repeat
 
+          .light &
+            background: url(/images/dock_background_left_light.png) bottom left no-repeat
+
           &.left
             bottom: 0
             left: 0
@@ -177,6 +170,9 @@
 
         ul
           list-style: none outside
+
+          .light &.osx-dock
+            background: url(/images/dock_background_left_light.png) no-repeat right bottom
 
           &.osx-dock
             background: url(/images/dock_background_left.png) no-repeat right bottom

@@ -432,7 +432,7 @@
         tabMode: "shift"
         textWrapping: false
 
-      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
 
       $(editor.win.document).bind('keydown', 'ctrl+f meta+f', (e) ->
         e.preventDefault()

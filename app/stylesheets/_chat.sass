@@ -1,12 +1,6 @@
 @import partials/base
 @import util
 
-#fullscreen
-  &.light
-    #chatZone
-      background-color: transparentize($light_highlight, 0.05)
-      color: #000
-
 .left_content
   border-right: 1px dashed #aaa
   display: inline-block
@@ -27,6 +21,10 @@
   left: 0
   top: 150px
   z-index: 200
+
+  .light &
+    background-color: transparentize($light_highlight, 0.05)
+    color: #000
 
   h3
     +user-select(none)

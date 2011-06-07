@@ -3,6 +3,8 @@ PixieStrd6Com::Application.routes.draw do |map|
   get "subscriptions/thanks"
   post "subscriptions/changed"
 
+  get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
+
   namespace :abingo do
     match "dashboard" => 'dashboard#index'
   end

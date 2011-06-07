@@ -1,47 +1,7 @@
 %style
   :sass
     @import util
-
-    body#fullscreen
-      height: auto
-      padding: 0
-
-    #header
-      display: none
-
-    .heading_wrap , .footer_wrap
-      +bounds(100%, auto)
-
-      background-color: $dark_highlight
-      color: $dark_text
-
-    .heading_wrap
-      +box-shadow(#333, 0, 0, 10px, 1px)
-
-    .heading
-      margin: auto
-      overflow: auto
-      padding: 2em 0 1em
-      width: 960px
-
-      .logo
-        +inline-block
-        float: left
-
-      .login
-        padding-top: 10px
-        float: right
-
-      .blurb
-        +inline-block
-
-        margin-left: 7em
-        margin-top: 3px
-
-    .footer
-      margin: auto
-      padding: 1em 0
-      width: 960px
+    @import branded
 
     .thumb
       float: left
@@ -62,7 +22,6 @@
 
       p
         font-size: 1.2em
-        margin: 1em 0
 
       q, .source
         font-style: italic
@@ -91,10 +50,11 @@
           padding: 6px 6px 3px
 
       button.full
-        +bounds(100%, 40px)
+        +bounds(100%, 50px)
         display: block
         font-size: 170%
         margin: 0
+        margin-top: 28px
 
       .testimonial
         margin-bottom: 2em
@@ -115,6 +75,11 @@
 
           &:nth-child(4n)
             margin-right: 0
+
+          button.full
+            font-size: 160%
+            height: 40px
+            margin: 0
 
       .featured_projects
         margin: 2em 0
@@ -195,8 +160,8 @@
         With Pixie there is no limit to what you can do. See for yourself with
         one of our demo applications.
 
-      %button.full.clickable
-        Get Started
+      %button.full.clickable.complement
+        Try Now for Free
         = link_to "", ide_project_path("demo"), :style => "display: none;"
 
     .video
@@ -211,14 +176,15 @@
 
   .details
     .detail
+      %h2 Creativity
+      %p
+        There is no limit to what you can creat with Pixie.
+        Create pixel art, sound effects, game levels, maps and more!
+
+    .detail
       %h2 Freedom
       %p
         Import and export your files and projects at any time.
-
-    .detail
-      %h2 Creativity
-      %p
-        Built-in pixel, SFX, animation, and level editors.
 
     .detail
       %h2 Fame
@@ -283,6 +249,10 @@
       %p
         The free plan allows you to create and maintain a single project. Pixie
         Premium is free for 30 days if you need more.
+
+      %button.full.clickable.complement
+        30 Day Free Trial
+        = link_to "", register_subscribe_path, :style => "display: none;"
 
   .featured_projects.module
     %h2 Amazing Games Created with Pixie

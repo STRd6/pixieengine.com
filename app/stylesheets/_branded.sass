@@ -1,0 +1,43 @@
+/* This is a temporary place for things common to branding/landing page explorations
+
+body#fullscreen
+  height: auto
+  padding: 0
+
+header
+  display: none
+
+.heading_wrap , .footer_wrap
+  +bounds(100%, auto)
+
+  background-color: $dark_highlight
+  color: $dark_text
+
+.heading_wrap
+  +box-shadow(#333, 0, 0, 10px, 1px)
+
+.heading
+  margin: auto
+  overflow: auto
+  padding: 2em 0 1em
+  width: 960px
+
+  .logo
+    +inline-block
+    float: left
+
+  .login
+    padding-top: 10px
+    float: right
+
+  .blurb
+    +inline-block
+
+    margin-left: 7em
+    margin-top: 3px
+
+.footer
+  margin: auto
+  padding: 1em 0
+  width: 960px
+
