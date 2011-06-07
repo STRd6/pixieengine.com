@@ -27,10 +27,12 @@ class UsersController < ResourceController::Base
 
   def register_subscribe
     @object = User.new
+
+    @hide_dock = true
   end
 
   def create
-    subscribe = false
+    subscribe = params[:subscribe]
     @object = User.new(params[:user])
 
     @object.referrer_id = session[:referrer_id]
@@ -49,7 +51,7 @@ class UsersController < ResourceController::Base
           format.html do
             @registered = true
             if subscribe
-              redirect_to subscribe_path
+              redirect_to user.subscribe_url
             else
               redirect_to user, :notice => REGISTERED_FLASH
             end

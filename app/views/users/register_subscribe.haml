@@ -1,3 +1,15 @@
+%style
+  :sass
+    @import util
+    @import branded
+
+    footer
+      position: fixed
+      bottom: 0
+
+    body > form
+      margin-top: 8em
+
 = form_for user, :html => {:class => "module"} do |form|
   = form.error_messages
   %h2 Subscribe to Pixie!

@@ -192,6 +192,10 @@ class User < ActiveRecord::Base
     ]
   end
 
+  def subscribe_url
+    "https://spreedly.com/pixie/subscribers/#{id}/subscribe/10491/#{display_name}?email=#{email}"
+  end
+
   def refresh_from_spreedly
     subscriber = Subscriber.find(self.id)
 
