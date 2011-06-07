@@ -425,7 +425,7 @@ $.fn.animationEditor = (options) ->
 
       hasComplete = false
 
-      $(data.animations).each (i, animation) ->
+      $(data.animations).each (index, animation) ->
         if animation.complete
           hasComplete = true
 
@@ -453,9 +453,7 @@ $.fn.animationEditor = (options) ->
             vflip: animation.transform?[i].vflip || false
             id: sprite.id
             circles: JSON.stringify({ circles: sprite.circles })
-          ).appendTo(animationEditor.find('.animations .name').filter( ->
-            $(this).text() == animation.name
-          ).next().find('.sprites'))
+          ).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'))
 
           sprite_container.find('.tags').tagbox
             placeholder: "New event trigger"
@@ -463,9 +461,7 @@ $.fn.animationEditor = (options) ->
 
           sprite_container.find('.tags').hide()
 
-        matching_animation = animationEditor.find('.animations .name').filter( ->
-          $(this).text() == animation.name
-        ).next()
+        matching_animation = animationEditor.find('.animations .animation').eq(index)
 
         last_sprite_img = matching_animation.find('.sprites .sprite_container:last img')
 

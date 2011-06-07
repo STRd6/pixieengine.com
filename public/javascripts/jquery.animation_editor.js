@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 21:03:52 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 21:17:49 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -450,7 +450,7 @@
       if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
         hasComplete = false;
-        $(data.animations).each(function(i, animation) {
+        $(data.animations).each(function(index, animation) {
           var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
             hasComplete = true;
@@ -478,18 +478,14 @@
               circles: JSON.stringify({
                 circles: sprite.circles
               })
-            }).appendTo(animationEditor.find('.animations .name').filter(function() {
-              return $(this).text() === animation.name;
-            }).next().find('.sprites'));
+            }).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'));
             sprite_container.find('.tags').tagbox({
               placeholder: "New event trigger",
               presets: ((_ref3 = animation.triggers) != null ? _ref3[i] : void 0) || []
             });
             return sprite_container.find('.tags').hide();
           });
-          matching_animation = animationEditor.find('.animations .name').filter(function() {
-            return $(this).text() === animation.name;
-          }).next();
+          matching_animation = animationEditor.find('.animations .animation').eq(index);
           last_sprite_img = matching_animation.find('.sprites .sprite_container:last img');
           return matching_animation.find('.cover').append(last_sprite_img.clone());
         });
