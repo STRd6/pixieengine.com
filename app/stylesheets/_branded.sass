@@ -4,7 +4,7 @@ body#fullscreen
   height: auto
   padding: 0
 
-header, .footer_wrap
+header, footer
   +bounds(100%, auto)
 
   background-color: $dark_highlight
@@ -26,6 +26,7 @@ header
 
       background-image: url(/images/logo_large.png)
       float: left
+      margin: 0
       position: static
 
     .login_link
@@ -42,8 +43,9 @@ header
     .bulb
       display: none
 
-.footer
-  margin: auto
-  padding: 1em 0
-  width: 960px
-
+footer
+  .content
+    display: block
+    margin: auto
+    padding: 1em 0
+    width: 960px
