@@ -1,4 +1,4 @@
-.content
+.gallery.module
   .profile
     = render :partial => "tasks", :user => user
 
@@ -54,16 +54,8 @@
     #fullscreen
       height: auto
 
-    .content
-      +glass
-
-      background-color: $dark_highlight
-      margin: auto
+    body > .module
       padding: 2em
-      width: 1000px
-
-      .light &
-        background-color: $light_highlight
 
     .sprites
       padding-top: 2em
@@ -132,52 +124,3 @@
         margin: 0 1em 1em 0
 
 
-    .projects
-      h3
-        a
-          font-size: 0.75em
-
-    .project
-      +border-radius
-      +bounds(295px, 160px)
-      +box-shadow(#000F1A, 2px, 2px, 4px, 0, inset)
-      +inline-block
-
-      background-color: $cookie_cutter_dark
-      margin: 0 0.5em 1em 0.5em
-      overflow: hidden
-      padding: 1em
-      position: relative
-
-      .light &
-        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
-
-        background-color: $cookie_cutter_light
-
-      .gloss
-        +gloss
-
-        display: inline-block
-        position: absolute
-        left: 1em
-
-      .thumb
-        float: left
-        margin-bottom: 1em
-        margin-right: 1em
-
-        img
-          +border-radius(17px)
-          +box-shadow(#000F1A, 0, 4px, 6px)
-
-          .light &
-            +box-shadow(#8c8c8c, 0, 4px, 6px)
-
-      .title
-        a
-          color: $dark_text
-          text-decoration: none
-          white-space: nowrap
-
-          .light &
-            color: $light_text
