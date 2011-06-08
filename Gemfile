@@ -26,6 +26,7 @@ gem "delayed_job", "2.1.4", :git => "git://github.com/collectiveidea/delayed_job
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'haml'
 gem 'hpricot'
+gem 'html5-boilerplate'
 gem 'jrails'
 gem 'json'
 gem 'juggernaut', :git => "git://github.com/maccman/juggernaut.git"
