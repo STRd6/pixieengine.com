@@ -96,6 +96,7 @@ class ProjectsController < ApplicationController
   end
 
   def info
+    @title = "PixieEngine - Create Games"
     @hide_dock = true
     @theme = :light
   end

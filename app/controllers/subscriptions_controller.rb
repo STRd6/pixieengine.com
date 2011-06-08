@@ -3,6 +3,7 @@ class SubscriptionsController < ApplicationController
   before_filter :require_user, :only => [:subscribe]
 
   def subscribe
+    @title = "Subscribe - PixieEngine Game Creation Toolset"
   end
 
   def changed

@@ -81,6 +81,7 @@ class UsersController < ResourceController::Base
   end
 
   def show
+    @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
   end
 
   def add_to_collection
