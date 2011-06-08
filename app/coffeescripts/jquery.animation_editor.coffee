@@ -450,8 +450,8 @@ $.fn.animationEditor = (options) ->
             url: sprite.src
             alt: sprite.title
             title: sprite.title
-            hflip: animation.transform?[i].hflip || false
-            vflip: animation.transform?[i].vflip || false
+            hflip: animation.transform?[i]?.hflip || false
+            vflip: animation.transform?[i]?.vflip || false
             id: sprite.id
             circles: JSON.stringify({ circles: sprite.circles })
           ).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'))
