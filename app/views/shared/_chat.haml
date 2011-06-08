@@ -10,8 +10,9 @@
     = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
     %button#send.button Send
 
-  %ul#active_users
-    = render :partial => 'shared/active_users'
+  .users_wrapper
+    %ul#active_users
+      = render :partial => 'shared/active_users'
 
 - #TODO: Use separate url for dev juggernaut script
 

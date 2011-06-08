@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 08 Jun 2011 00:02:03 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 08 Jun 2011 18:52:55 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -468,14 +468,14 @@
           }
           active_animation().removeClass('active');
           $.each(animation.frames, function(i, frame) {
-            var sprite, sprite_container, _ref, _ref2, _ref3;
+            var sprite, sprite_container, _ref, _ref2, _ref3, _ref4, _ref5;
             sprite = data.tileset[frame];
             sprite_container = templates.find('.load_sprite').tmpl({
               url: sprite.src,
               alt: sprite.title,
               title: sprite.title,
-              hflip: ((_ref = animation.transform) != null ? _ref[i].hflip : void 0) || false,
-              vflip: ((_ref2 = animation.transform) != null ? _ref2[i].vflip : void 0) || false,
+              hflip: ((_ref = animation.transform) != null ? (_ref2 = _ref[i]) != null ? _ref2.hflip : void 0 : void 0) || false,
+              vflip: ((_ref3 = animation.transform) != null ? (_ref4 = _ref3[i]) != null ? _ref4.vflip : void 0 : void 0) || false,
               id: sprite.id,
               circles: JSON.stringify({
                 circles: sprite.circles
@@ -483,7 +483,7 @@
             }).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'));
             sprite_container.find('.tags').tagbox({
               placeholder: "New event trigger",
-              presets: ((_ref3 = animation.triggers) != null ? _ref3[i] : void 0) || []
+              presets: ((_ref5 = animation.triggers) != null ? _ref5[i] : void 0) || []
             });
             return sprite_container.find('.tags').hide();
           });
