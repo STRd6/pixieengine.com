@@ -10,9 +10,6 @@
   = render :partial => "/shared/hotkeys"
   = render :partial => "/shared/tooltip"
 
-  - if Rails.env.development?
-    = javascript_include_tag "coffee-script"
-
   = render :partial => "/shared/analytics"
 
   - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)

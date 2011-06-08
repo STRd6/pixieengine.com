@@ -26,8 +26,6 @@
       .icon
       .content
 
-    = javascript_include_tag "coffee-script"
-
     = render :partial => "/shared/analytics"
 
     - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
