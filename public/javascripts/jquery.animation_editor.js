@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 21:17:49 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 08 Jun 2011 00:02:03 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -151,7 +151,7 @@
     };
     update_active_animation = function() {
       active_animation_sprites().parent().find('.sprites').children().remove();
-      frame_sprites().clone().appendTo(active_animation_sprites());
+      animationEditor.find('.frame_sprites .sprite_container').clone().appendTo(active_animation_sprites());
       active_animation().parent().find('.complete').text(animationEditor.find('.goto option:selected').val());
       return active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val());
     };
@@ -188,12 +188,15 @@
           $(sprite_container).find('.tags').removeClass('tag_container').children().remove();
           $(sprite_container).clone().appendTo(frame_sprites_container());
           if (((_ref = $(sprite_container).find('img')) != null ? _ref.attr('data-hflip') : void 0) === 'true') {
-            $(".frame_sprites .sprite_container img[src=" + ($(sprite_container).find('img').attr('src')) + "]").addClass('flipped_horizontal');
+            $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_horizontal');
           }
           if (((_ref2 = $(sprite_container).find('img')) != null ? _ref2.attr('data-vflip') : void 0) === 'true') {
-            return $(".frame_sprites .sprite_container img[src=" + ($(sprite_container).find('img').attr('src')) + "]").addClass('flipped_vertical');
+            return $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_vertical');
           }
         });
+        if (!($(this).find('.sprites') && $(this).find('.sprites').children().length)) {
+          templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
+        }
         active_animation().removeClass('active');
         $(this).find('.cover').addClass('active');
         if ($(this).find('.cover').hasClass('locked')) {
@@ -249,7 +252,6 @@
       stop_animation();
       active_animation().removeClass('active');
       clear_frame_sprites();
-      templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
       animation_name = "Animation " + ++animationCount;
       animation = templates.find('.create_animation').tmpl({
         name: animation_name,

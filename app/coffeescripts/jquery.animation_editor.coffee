@@ -138,7 +138,7 @@ $.fn.animationEditor = (options) ->
 
   update_active_animation = ->
     active_animation_sprites().parent().find('.sprites').children().remove()
-    frame_sprites().clone().appendTo(active_animation_sprites())
+    animationEditor.find('.frame_sprites .sprite_container').clone().appendTo(active_animation_sprites())
 
     active_animation().parent().find('.complete').text(animationEditor.find('.goto option:selected').val())
     active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val())
@@ -178,9 +178,12 @@ $.fn.animationEditor = (options) ->
         $(sprite_container).clone().appendTo(frame_sprites_container())
 
         if $(sprite_container).find('img')?.attr('data-hflip') == 'true'
-          $(".frame_sprites .sprite_container img[src=#{$(sprite_container).find('img').attr('src')}]").addClass('flipped_horizontal')
+          $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_horizontal')
         if $(sprite_container).find('img')?.attr('data-vflip') == 'true'
-          $(".frame_sprites .sprite_container img[src=#{$(sprite_container).find('img').attr('src')}]").addClass('flipped_vertical')
+          $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_vertical')
+
+      unless $(this).find('.sprites') && $(this).find('.sprites').children().length
+        templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
 
       active_animation().removeClass('active')
       $(this).find('.cover').addClass('active')
@@ -231,8 +234,6 @@ $.fn.animationEditor = (options) ->
     active_animation().removeClass('active')
 
     clear_frame_sprites()
-
-    templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
 
     animation_name = ("Animation " + ++animationCount)
 
@@ -467,8 +468,7 @@ $.fn.animationEditor = (options) ->
 
         matching_animation.find('.cover').append(last_sprite_img.clone())
 
-      unless hasComplete
-        animationEditor.find('.goto').remove()
+      animationEditor.find('.goto').remove() unless hasComplete
 
       animationEditor.find('.speed').val(active_animation().find('.speed').text())
       stop_animation()
@@ -524,10 +524,8 @@ $.fn.animationEditor = (options) ->
         if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
           triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
 
-        if $(img).hasClass('flipped_vertical')
-          vflip = true
-        if $(img).hasClass('flipped_horizontal')
-          hflip = true
+        vflip = true if $(img).hasClass('flipped_vertical')
+        hflip = true if $(img).hasClass('flipped_horizontal')
 
         transform.push({
           hflip: hflip
