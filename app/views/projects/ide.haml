@@ -569,7 +569,7 @@
   $ ->
     DEFAULT_CONFIG = #{default_project_config.to_json}
     try
-      window.projectConfig = JSON.parse($("[data-path=pixie.json]").find("[name=contents]").val())
+      window.projectConfig = JSON.parse($("[data-path='pixie.json']").find("[name=contents]").val())
     catch e
       console.warn?(e)
       window.projectConfig = {}
