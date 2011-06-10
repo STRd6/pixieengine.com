@@ -40,6 +40,7 @@ class Project < ActiveRecord::Base
 
   DEFAULT_CONFIG = {
     :directories => {
+      :animations => "animations",
       :data => "data",
       :entities => "entities",
       :images => "images",
