@@ -33,6 +33,9 @@
 
   falseFn = -> return false
 
+  primaryButton = (event) ->
+    !event.button? || event.button == 0
+
   ColorPicker = ->
     $('<input/>',
       class: 'color'
@@ -471,49 +474,65 @@
       $(document).bind 'keyup', ->
         canvas.preview()
 
-      $(navRight).bind 'mousedown', (e) ->
+      $(navRight).bind 'mousedown touchstart', (e) ->
         target = $(e.target)
         color = Color(target.css('backgroundColor'))
 
-        canvas.color(color, e.button != 0) if target.is('.swatch')
+        canvas.color(color, !primaryButton(e)) if target.is('.swatch')
 
       pixels = []
 
       lastPixel = undefined
 
+      handleEvent = (event, element) ->
+        opacity = opacityVal.text() / 100
+
+        offset = element.offset()
+
+        local =
+          y: event.pageY - offset.top
+          x: event.pageX - offset.left
+
+        row = Math.floor(local.y / PIXEL_HEIGHT)
+        col = Math.floor(local.x / PIXEL_WIDTH)
+
+        pixel = canvas.getPixel(col, row)
+        eventType = undefined
+
+        if (event.type == "mousedown") || (event.type == "touchstart")
+          eventType = "mousedown"
+        else if pixel && pixel != lastPixel && (event.type == "mousemove" || event.type == "touchmove")
+          eventType = "mouseenter"
+
+        if pixel && active && currentTool && currentTool[eventType]
+          c = canvas.color().toString()
+
+          currentTool[eventType].call(pixel, event, Color(c, opacity), pixel)
+
+        lastPixel = pixel
+
       layer = Layer()
       guideLayer = Layer()
-        .bind("mousedown", (e) ->
+        .bind("mousedown touchstart", (e) ->
           #TODO These triggers aren't perfect like the `dirty` method that queries.
           pixie.trigger('dirty')
           undoStack.next()
           active = true
-          if e.button == 0 then mode = "P" else mode = "S"
+          if primaryButton(e)
+            mode = "P"
+          else
+            mode = "S"
 
           e.preventDefault()
         )
         .bind("mousedown mousemove", (event) ->
-          opacity = opacityVal.text() / 100
-          offset = $(this).offset()
-
-          localY = event.pageY - offset.top
-          localX = event.pageX - offset.left
-
-          row = Math.floor(localY / PIXEL_HEIGHT)
-          col = Math.floor(localX / PIXEL_WIDTH)
-
-          pixel = canvas.getPixel(col, row)
-          eventType = undefined
-
-          if event.type == "mousedown"
-            eventType = event.type
-          else if pixel && pixel != lastPixel && event.type == "mousemove"
-            eventType = "mouseenter"
-
-          if pixel && active && currentTool && currentTool[eventType]
-            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel)
-
-          lastPixel = pixel
+          handleEvent event, $(this)
+        )
+        .bind("touchstart touchmove", (e) ->
+          # NOTE: global event object
+          Array::each.call event.touches, (touch) =>
+            touch.type = e.type
+            handleEvent touch, $(this)
         )
 
       layers = [layer, guideLayer]
@@ -563,7 +582,7 @@
               text: name.capitalize()
             )
             .prepend(iconImg)
-            .mousedown (e) ->
+            .bind "mousedown touchstart", (e) ->
               doIt() unless $(this).attr('disabled')
 
               _gaq.push(['_trackEvent', 'action_button', action.name])
@@ -608,17 +627,24 @@
 
           toolDiv = $("<div class='tool'></div>")
             .append(img)
-            .mousedown (e) ->
+            .bind("mousedown touchstart", (e) ->
               setMe()
               return false
+            )
 
           toolbar.append(toolDiv)
 
         color: (color, alternate) ->
           if (arguments.length == 0 || color == false)
-            return (if mode == "S" then Color(secondaryColorPicker.css('backgroundColor')) else Color(primaryColorPicker.css('backgroundColor')))
+            if mode == "S"
+              return Color(secondaryColorPicker.css('backgroundColor'))
+            else
+              return Color(primaryColorPicker.css('backgroundColor'))
           else if color == true
-            return (if mode == "S" then Color(primaryColorPicker.css('backgroundColor')) else Color(secondaryColorPicker.css('backgroundColor')))
+            if mode == "S"
+              Color(primaryColorPicker.css('backgroundColor'))
+            else
+              Color(secondaryColorPicker.css('backgroundColor'))
 
           if (mode == "S") ^ alternate
             secondaryColorPicker.val(color.toHex().substr(1))
@@ -844,6 +870,9 @@
 
       pixie.bind 'mouseenter', ->
         window.currentComponent = pixie
+
+      pixie.bind 'touchstart touchmove touchend', ->
+        event.preventDefault()
 
       window.currentComponent = pixie
 

@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Tue, 12 Apr 2011 06:05:38 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/color.coffee
+/* DO NOT MODIFY. This file was compiled Fri, 10 Jun 2011 05:11:00 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/color.coffee
  */
 
 (function() {
@@ -48,7 +48,7 @@
         a = arguments[1];
         if (Object.prototype.toString.call(c) === '[object Array]') {
           parsedColor = [parseInt(c[0]), parseInt(c[1]), parseInt(c[2]), parseFloat(a)];
-        } else if (Object.prototype.toString.call(c) !== '[object Array]') {
+        } else {
           parsedColor = lookup[normalizeKey(c)] || parseHex(c) || parseRGB(c);
           parsedColor[3] = a;
         }
@@ -62,7 +62,7 @@
       if (!parsedColor) {
         throw "" + (args.join(',')) + " is an unknown color";
       }
-      alpha = parsedColor[3];
+      alpha = parsedColor[3] || 0;
       channels = [parsedColor[0], parsedColor[1], parsedColor[2], alpha != null ? parseFloat(alpha) : 0.0];
       self = {
         channels: function() {
