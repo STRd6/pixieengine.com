@@ -1087,36 +1087,6 @@ $(function() {
   window["Point"] = Point;
   return (window["Matrix"] = Matrix);
 })();;
-window.Mouse = (function() {
-  var Mouse, buttons, set_button;
-  Mouse = {
-    left: false,
-    right: false,
-    middle: false,
-    location: Point(0, 0)
-  };
-  buttons = [null, "left", "middle", "right"];
-  set_button = function(index, state) {
-    var button_name;
-    button_name = buttons[index];
-    return button_name ? (Mouse[button_name] = state) : null;
-  };
-  $(document).mousedown(function(event) {
-    return set_button(event.which, true);
-  });
-  $(document).mouseup(function(event) {
-    return set_button(event.which, false);
-  });
-  $(document).mousemove(function(event) {
-    var x, y;
-    x = event.pageX;
-    y = event.pageY;
-    Mouse.location = Point(x, y);
-    Mouse.x = x;
-    return (Mouse.y = y);
-  });
-  return Mouse;
-})();;
 /***
 Returns the absolute value of this number.
 
