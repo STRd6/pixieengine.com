@@ -60,6 +60,7 @@ class Project < ActiveRecord::Base
   BRANCH_NAME = "pixie"
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
   DEMO_ID = 34
+  ASTEROIDS_DEMO_ID = 123
 
   def display_name
     title

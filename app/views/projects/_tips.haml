@@ -1,48 +1,54 @@
 #tips{:style => "display: none;"}
-  .tip{ 'data-element_selector' => "nav.left"}
-    .text
-      This is the code editor where you can edit your applications in the CoffeeScript language.
-  .tip{ 'data-element_selector' => "ul.filetree"}
-    .text
-      The files needed to create your game are here.
-  .tip{ 'data-element_selector' => "#run"}
-    .text
-      Click "Run" button to play through your game!
-  .tip{ 'data-element_selector' => "#test_frame"}
-    .text
-      See the results, then make changes to your code as you wish.
-  .tip{ 'data-element_selector' => ".file.documentation"}
-    .text
-      You can read up on the provided classes in the documentation book.
-  .tip{ 'data-element_selector' => "#export"}
-    .text
-      Pixie is an open platform. Click "Export" to download the last saved version of your project.
-  .tip{ 'data-element_selector' => "#import"}
-    .text
-      Click "Import" to add your own images, javascript, and coffeescript files.
-  .tip{ 'data-element_selector' => "#import_drop_zone"}
-    .text
-      Drag files from your desktop to the file importer to make them available in your game.
-  .tip{ 'data-element_selector' => "#test"}
-    .text
-      Click the "Test" button to run unit-tests. These can come in handy if you're
-      working with heavily algorithmic stuff or library code.
-  .tip{ 'data-element_selector' => "#save"}
-    .text
-      Click "Save" to save changes to a file.
-  .tip{ 'data-element_selector' => ".actions .status"}
-    .text
-      All your changes are backed by version control. Your current status is
-      saved as a commit message.
-  .tip{ 'data-element_selector' => "#tag"}
-    .text
-      You can even "Tag" a specific version to keep track of milestones in your
-      program's destiny.
-  .tip{ 'data-element_selector' => "ul.filetree"}
-    .text
-      That's it for the tips. The IDE is a work in progress, so ask or leave
-      = link_to "feedback", "/survey", :target => "_blank"
-      if you have any questions!
+
+  - if project.id == Project::ASTEROIDS_DEMO_ID
+    .tip{ 'data-element_selector' => "nav.left" }
+      .text
+        Asteroids is a hellza cool game
+  - else
+    .tip{ 'data-element_selector' => "nav.left"}
+      .text
+        This is the code editor where you can edit your applications in the CoffeeScript language.
+    .tip{ 'data-element_selector' => "ul.filetree"}
+      .text
+        The files needed to create your game are here.
+    .tip{ 'data-element_selector' => "#run"}
+      .text
+        Click "Run" button to play through your game!
+    .tip{ 'data-element_selector' => "#test_frame"}
+      .text
+        See the results, then make changes to your code as you wish.
+    .tip{ 'data-element_selector' => ".file.documentation"}
+      .text
+        You can read up on the provided classes in the documentation book.
+    .tip{ 'data-element_selector' => "#export"}
+      .text
+        Pixie is an open platform. Click "Export" to download the last saved version of your project.
+    .tip{ 'data-element_selector' => "#import"}
+      .text
+        Click "Import" to add your own images, javascript, and coffeescript files.
+    .tip{ 'data-element_selector' => "#import_drop_zone"}
+      .text
+        Drag files from your desktop to the file importer to make them available in your game.
+    .tip{ 'data-element_selector' => "#test"}
+      .text
+        Click the "Test" button to run unit-tests. These can come in handy if you're
+        working with heavily algorithmic stuff or library code.
+    .tip{ 'data-element_selector' => "#save"}
+      .text
+        Click "Save" to save changes to a file.
+    .tip{ 'data-element_selector' => ".actions .status"}
+      .text
+        All your changes are backed by version control. Your current status is
+        saved as a commit message.
+    .tip{ 'data-element_selector' => "#tag"}
+      .text
+        You can even "Tag" a specific version to keep track of milestones in your
+        program's destiny.
+    .tip{ 'data-element_selector' => "ul.filetree"}
+      .text
+        That's it for the tips. The IDE is a work in progress, so ask or leave
+        = link_to "feedback", "/survey", :target => "_blank"
+        if you have any questions!
   .next
     %button.next_tip.right Next
   .close
