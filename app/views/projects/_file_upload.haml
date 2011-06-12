@@ -37,13 +37,22 @@
               path = projectConfig.directories.source
               type = "text"
               lang = "coffeescript"
+            else if ext == "tilemap"
+              ;#TODO
+            else if ext == "tutorial"
+              path = ""
+              type = "text"
+            else if ext == "json"
+              path = ""
+              type = "text"
+              lang = "json"
 
           else if file.type.match(/image.*/)
             path = projectConfig.directories.images
             type = "image"
             ext = "png"
 
-          if path
+          if path?
             contentsBase64 = extractBase64Data(event.target.result)
             window.save event,
               contents_base64: contentsBase64
