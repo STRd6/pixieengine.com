@@ -194,7 +194,7 @@
     if tabData.data("type") == "binary"
       alert "Can't edit binary data... maybe there is a source file that can be edited?"
       return
-    if tabData.data("size") > 100000
+    if tabData.data("size") > #{Project::MAX_EDITOR_FILE_SIZE}
       alert "This file is too large for our editor!"
       return
 

@@ -61,6 +61,7 @@ class Project < ActiveRecord::Base
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
   DEMO_ID = 34
   ASTEROIDS_DEMO_ID = 123
+  MAX_EDITOR_FILE_SIZE = 100_000
 
   def display_name
     title
