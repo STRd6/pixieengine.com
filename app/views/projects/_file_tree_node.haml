@@ -23,6 +23,8 @@
       %span.file{ 'data-id' => "#tutorial", :class => ext }= file_info[:name]
       #tutorial.tab_data(data-path=path data-type="tutorial")
         %iframe.no_border{:src => file_info[:contents], :width => "100%", :height => "100%"}
+    - elsif type == "binary"
+      -# don't write checks the editor can't cash...
     - else
       %span.file{ 'data-id' => "##{data_id}", :class => ext }= file_info[:name]
       .tab_data{:id => data_id, 'data-ext' => ext, 'data-path' => path, 'data-lang' => lang, 'data-type' => type, 'data-mtime' => mtime, 'data-size' => size}
