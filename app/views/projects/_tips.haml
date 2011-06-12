@@ -1,9 +1,33 @@
 #tips{:style => "display: none;"}
 
   - if project.id == Project::ASTEROIDS_DEMO_ID
-    .tip{ 'data-element_selector' => "nav.left" }
+    .tip{ 'data-element_selector' => ".filetree > li[title='src']" }
       .text
-        Asteroids is a hellza cool game
+        Check out the
+        %b wrappable
+        module. Modules make it easy to define behaviors concisely.
+    .tip{ 'data-element_selector' => ".filetree > li[title='src']" }
+      .text
+        Define a base class if you notice repeated behavior across many classes
+    .tip{ 'data-element_selector' => ".filetree > li[title='sounds']" }
+      .text
+        We use sfxr to make our sounds effects. Click on
+        %b pew
+        to tweak the way the shot sounds.
+    .tip{ 'data-element_selector' => ".filetree > li[title='animations']" }
+      .text
+        Open up the
+        %b ship
+        animation, then the
+        %b explode
+        action. Click on the last frame and you will see that it has the tag 'explode' to fire that event when the frame is reached.
+    .tip{ 'data-element_selector' => ".filetree > li[title='images']" }
+      .text
+        The sprite assets in your game are stored here in images. Click
+        %b New -> Image
+        to make your own or
+        %b Import
+        to drag one from your computer.
   - else
     .tip{ 'data-element_selector' => "nav.left"}
       .text

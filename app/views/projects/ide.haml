@@ -639,6 +639,8 @@
 
     # Hack to pre-load main file
     $("#file_src_main_coffee").prev().click()
+    if $("#tutorial").length
+      $("#tutorial").prev().click()
 
     $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
       delayIn: 500
