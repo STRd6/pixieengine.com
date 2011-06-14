@@ -106,6 +106,7 @@ GEM
       addressable (~> 2.2.2)
       multipart-post (~> 1.0.1)
       rack (< 2, >= 1.1.0)
+    gratr (0.4.3)
     haml (3.0.25)
     highline (1.6.1)
     hpricot (0.8.3)
@@ -213,6 +214,7 @@ DEPENDENCIES
   delayed_job (= 2.1.4)!
   exception_notification!
   factory_girl
+  gratr
   haml
   hpricot
   html5-boilerplate
