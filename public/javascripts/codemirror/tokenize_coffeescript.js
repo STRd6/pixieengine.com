@@ -321,18 +321,6 @@ var tokenizeRuby = (function() {
 			  }
 			}
 
-			if (ch == '?') {
-			  var peek = source.peek();
-			  if (peek == '\\') {
-				source.next();
-				source.nextWhile(matcher(/[A-Za-z\\-]/));
-				return {content:source.get(), style:ASCIICODE};
-			  } else {
-				source.next();
-				return {content:source.get(), style:ASCIICODE};
-			  }
-			}
-
 			if (ch == '<') {
 			  if (source.peek() == '<') {
 				source.next();

@@ -55,6 +55,12 @@
       else # Or no rows
         addRow('', '')
 
+    fireChangedEvent = ->
+      try
+        element.trigger("change", [object])
+      catch error
+        console?.error? error
+
     addBlurEvents = (keyInput, valueInput) ->
       keyInput.blur ->
         currentName = keyInput.val()
@@ -68,10 +74,7 @@
 
           object[currentName] = valueInput.val()
 
-          try
-            element.trigger("change", [object])
-          catch error
-            console?.error? error
+          fireChangedEvent()
 
           rowCheck()
 
@@ -85,10 +88,7 @@
           valueInput.data("previousValue", currentValue)
           object[key] = currentValue
 
-          try
-            element.trigger("change", [object])
-          catch error
-            console?.error? error
+          fireChangedEvent()
 
           rowCheck()
 
@@ -125,8 +125,6 @@
       row = $("<tr>")
       cell = $("<td colspan='2'>").appendTo(row)
 
-      #TODO: Editable key
-
       $("<label>",
         text: key
       ).appendTo(cell)
@@ -135,7 +133,10 @@
         class: "nested"
       ).appendTo(cell).propertyEditor(value)
 
-      #TODO Cascade change events
+      # Prevent event bubbling and retrigger with parent object
+      nestedEditor.bind "change", (event, changedNestedObject) ->
+        event.stopPropagation()
+        fireChangedEvent()
 
       return row.appendTo(element)
 
