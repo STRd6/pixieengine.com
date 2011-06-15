@@ -389,17 +389,16 @@ class Project < ActiveRecord::Base
       end
     end
 
-    #TODO app.css
+    FileUtils.cp Rails.root.join("public", "stylesheets", "screen.css"), webstore_asset_path
 
     File.open(main_html_path, 'wb') do |file|
-      #TODO Real layout
       file.write <<-eof
         <html>
         <head>
-          <link href="/webstore/app.css" media="screen" rel="stylesheet" type="text/css">
+          <link href="/webstore/screen.css" media="screen" rel="stylesheet" type="text/css">
           <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
         </head>
-        <body>
+        <body class="contents_centered">
           <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>
           <script>BASE_URL = "../";</script>
           <script src="/#{config[:name]}.js"></script>
