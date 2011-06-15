@@ -22,13 +22,14 @@ namespace :report do
       INNER JOIN visits as v
         ON x.session_id = v.session_id
         AND v.created_at >= x.created_at
-      WHERE v.controller != 'chats'
+      WHERE v.controller IN ('projects', 'users', 'subscriptions')
+        AND v.action IN ('info', 'ide', 'create', 'subscribe', 'register_subscribe', 'thanks')
       GROUP BY v.session_id, v.controller, v.action, v.created_at
-      ORDER BY v.created_at
+      ORDER BY v.session_id, v.created_at
       eos
     )
 
-    landing_page_visits.each_with_index do |visit, i|
+    landing_page_visits.each do |visit|
       dg.add_vertex!(visit_path(visit)) unless dg.vertex?(visit_path(visit))
 
       if prev_visit
@@ -45,13 +46,6 @@ namespace :report do
         else
           dg.add_edge!(first_point, second_point, :label => 1)
         end
-      else
-        #first visitor
-
-        first_point = visit_path(visit)
-        second_point = visit_path(landing_page_visits[i + 1])
-
-        dg.add_edge!(first_point, second_point, :label => 1)
       end
 
       prev_visit = visit
