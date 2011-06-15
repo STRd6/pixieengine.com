@@ -359,10 +359,9 @@
     if projectConfig.library
       ""
     else
-      globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
       conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
 
-      [globals, conf].join("\n")
+      [conf].join("\n")
 
   runApp = () ->
     width = projectConfig.width
@@ -377,7 +376,8 @@
 
     $("#test_zone").append(iframe).show()
 
-    crammedCode = buildProjectCode()
+    environmentVariables = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};\n"
+    crammedCode = [environmentVariables, buildProjectCode()].join(";\n")
 
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
