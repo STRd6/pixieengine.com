@@ -3,8 +3,9 @@ namespace :report do
     require 'gratr/import'
     require 'gratr/dot'
 
-    def visit_path(visit)
-      visit.controller + "/" + visit.action
+    def increment_label(edge)
+      label = edge.label[:label]
+      edge.label[:label] = label + 1
     end
 
     dg = Digraph.new
@@ -18,7 +19,7 @@ namespace :report do
         WHERE controller = 'projects'
           AND action = 'info'
           AND user_id IS NULL
-          AND created_at > '06/01/2011'
+          AND created_at > '06/10/2011'
         ) AS x
       INNER JOIN visits as v
         ON x.session_id = v.session_id
@@ -30,26 +31,60 @@ namespace :report do
       eos
     )
 
+    landing_page_visits = landing_page_visits.map do |visit|
+      { :session_id => visit["session_id"], :path => visit["controller"] + '/' + visit["action"] }
+    end
+
+    landing_page_visits.uniq!
+
+    session_ids = landing_page_visits.map do |visit|
+      visit[:session_id]
+    end
+
     landing_page_visits.each do |visit|
-      dg.add_vertex!(visit_path(visit)) unless dg.vertex?(visit_path(visit))
-
       if prev_visit
-        first_point = visit_path(visit)
-        second_point = visit_path(prev_visit)
-
-        if dg.edge?(first_point, second_point)
-          dg.edges.each do |edge|
-            if edge.eql?(GRATR::Arc.new(first_point, second_point))
-              label = edge.label[:label]
-              edge.label[:label] = label + 1
+        current_path = visit[:path]
+        prev_path = prev_visit[:path]
+        if prev_visit[:session_id] == visit[:session_id]
+          if dg.edge?(prev_path, current_path)
+            dg.edges.each do |edge|
+              if edge.eql?(GRATR::Arc.new(prev_path, current_path))
+                increment_label(edge)
+              end
             end
+          else
+            dg.add_edge!(prev_path, current_path, :label => 1)
           end
         else
-          dg.add_edge!(first_point, second_point, :label => 1)
+          dg.add_edge!("Start", visit[:path], :label => session_ids.uniq.count)
+
+          if dg.edge?(prev_path, 'End')
+            dg.edges.each do |edge|
+              if edge.eql?(GRATR::Arc.new(prev_path, 'End'))
+                increment_label(edge)
+              end
+            end
+          else
+            dg.add_edge!(prev_path, 'End', :label => 1)
+          end
         end
       end
 
       prev_visit = visit
+    end
+
+    # hack to fix off by one error
+    last_index = landing_page_visits.count - 1
+    last_path = landing_page_visits[last_index][:path]
+
+    if dg.edge?(last_path, 'End')
+      dg.edges.each do |edge|
+        if edge.eql?(GRATR::Arc.new(last_path, 'End'))
+          increment_label(edge)
+        end
+      end
+    else
+      dg.add_edge!(last_path, 'End', :label => 1)
     end
 
     dg.write_to_graphic_file('png','visualize')
