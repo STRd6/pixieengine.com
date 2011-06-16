@@ -22,7 +22,7 @@
   color: $dark_text
   display: none
   min-width: 150px
-  max-width: 200px
+  max-width: 250px
   padding: 1em
   position: absolute
   z-index: 10
@@ -43,6 +43,28 @@
     color: $dark_text
     margin-left: 24px
     position: relative
+
+  .next
+    +bounds(22px, 25px)
+
+    background-image: url(/images/next.png)
+    bottom: 0
+    cursor: pointer
+    display: inline-block
+    margin: auto
+    position: absolute
+    right: -22px
+    top: 0
+
+  .close_tip.x
+    +bounds(24px, 29px)
+
+    background-image: url(/images/x.png)
+    cursor: pointer
+    display: inline-block
+    right: -22px
+    position: absolute
+    top: -22px
 
 #logo
   +bounds(68px, 34px)
