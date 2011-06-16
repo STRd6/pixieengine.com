@@ -91,6 +91,12 @@ class ProjectsController < ApplicationController
   end
 
   def download
+    if params[:chrome]
+      if current_user.paying
+        project.prepare_for_web_store
+      end
+    end
+
     project.zip_for_export
     send_file project.zip_path, :type=>"application/zip"
   end

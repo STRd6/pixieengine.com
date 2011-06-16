@@ -10,8 +10,8 @@
     sandbox.write(#{stylesheet_link_tag('screen.css').to_json});
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
 
-    sandbox.write("<script>BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};App = #{config.to_json.gsub('"', '\\"')};\n<\/script>");
-    // TODO Write out entities data
+    sandbox.write("<script>BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};<\/script>");
+
     sandbox.write("<canvas width='#{config[:width]}' height='#{config[:height]}'></canvas>");
     sandbox.write('<script src=#{rewrite_asset_path("/production/projects/#{project.id}/#{config[:name]}.js").to_json}><\/script>');
 

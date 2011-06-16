@@ -26,6 +26,14 @@ class UsersController < ResourceController::Base
   end
 
   def register_subscribe
+    if current_user
+      if current_user.paying
+        redirect_to_back_or_default current_user
+      else
+        redirect_to current_user.subscribe_url
+      end
+    end
+
     @object = User.new
 
     @hide_dock = true
