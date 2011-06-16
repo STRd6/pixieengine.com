@@ -17,6 +17,7 @@ namespace :report do
         FROM visits
         WHERE controller = 'projects'
           AND action = 'info'
+          AND user_id IS NULL
           AND created_at > '06/01/2011'
         ) AS x
       INNER JOIN visits as v
