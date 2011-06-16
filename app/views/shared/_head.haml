@@ -26,3 +26,4 @@
 
   :javascript
     var loggedIn = #{!!current_user};
+    var subscriber = #{(current_user && current_user.paying).to_json};

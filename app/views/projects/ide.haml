@@ -64,6 +64,7 @@
 = render :partial => "tips"
 = render :partial => "pixie"
 = render :partial => "sfxr"
+= render :partial => "export_modal"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
 = render :partial => "console"
@@ -86,12 +87,6 @@
 
 :coffeescript
   window.projectId = #{project_id.to_json}
-
-  $("#export").click ->
-    requireLogin ->
-      notify("Exporting .zip ...")
-
-      window.location = #{download_project_path(project).to_json}
 
   $("#fork").click ->
     requireLogin ->

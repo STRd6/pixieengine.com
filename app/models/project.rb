@@ -411,6 +411,21 @@ class Project < ActiveRecord::Base
   end
 
   def write_manifest_json
+    current_manifest = if File.exist? manifest_path
+      HashWithIndifferentAccess.new(JSON.parse(File.read(manifest_path)))
+    else
+      {}
+    end
+
+    current_version = if config[:version]
+      config[:version]
+    elsif previous_version = current_manifest[:version]
+      version_pieces = previous_version.split(".")
+      (version_pieces[0...-1] + [version_pieces.last.to_i + 1]).join(".")
+    else
+      "0.0.1"
+    end
+
     manifest_json = {
       :name => title,
       :description => description,
@@ -419,16 +434,12 @@ class Project < ActiveRecord::Base
           :local_path => "webstore/main.html"
         }
       },
-      :version => "0.0.1", #TODO Smart versions
+      :version => current_version,
       :icons => {
         "128" => "webstore/images/icon_128.png",
         "96" => "webstore/images/icon_96.png",
       }
     }
-
-    if File.exist? manifest_path
-      #TODO Merge existing
-    end
 
     File.open(manifest_path, 'wb') do |file|
       file.write(JSON.pretty_generate(manifest_json))
