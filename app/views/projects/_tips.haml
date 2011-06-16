@@ -59,7 +59,7 @@
     .tip{ 'data-element_selector' => "nav.left"}
       .text
         This is the code editor where you can edit your applications in the CoffeeScript language.
-    .tip{ 'data-element_selector' => "ul.filetree"}
+    .tip{ 'data-element_selector' => "ul.filetree", 'data-code' => "$('.filetree').effect('highlight', {}, 5000)" }
       .text
         The files needed to create your game are here.
     .tip{ 'data-element_selector' => "#run"}
@@ -68,16 +68,16 @@
     .tip{ 'data-element_selector' => "#test_frame"}
       .text
         See the results, then make changes to your code as you wish.
-    .tip{ 'data-element_selector' => ".file.documentation"}
+    .tip{ 'data-element_selector' => ".file.documentation", 'data-code' => "$('#documentation').prev().click()"}
       .text
-        You can read up on the provided classes in the documentation book.
+        Here you can read up on the provided classes.
     .tip{ 'data-element_selector' => "#export"}
       .text
         Pixie is an open platform. Click "Export" to download the last saved version of your project.
-    .tip{ 'data-element_selector' => "#import"}
+    .tip{ 'data-element_selector' => "#import" }
       .text
         Click "Import" to add your own images, javascript, and coffeescript files.
-    .tip{ 'data-element_selector' => "#import_drop_zone"}
+    .tip{ 'data-element_selector' => "#import_drop_zone", 'data-code' => '$("#import").mousedown();' }
       .text
         Drag files from your desktop to the file importer to make them available in your game.
     .tip{ 'data-element_selector' => "#test"}
