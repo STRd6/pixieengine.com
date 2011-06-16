@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
   }
   BRANCH_NAME = "pixie"
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
-  DEMO_ID = 34
+  DEMO_ID = 176
   ASTEROIDS_DEMO_ID = 123
   MAX_EDITOR_FILE_SIZE = 100_000
 
