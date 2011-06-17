@@ -19,7 +19,7 @@ namespace :report do
         WHERE controller = 'projects'
           AND action = 'info'
           AND user_id IS NULL
-          AND created_at > '06/10/2011'
+          AND created_at > '06/01/2011'
         ) AS x
       INNER JOIN visits as v
         ON x.session_id = v.session_id
@@ -41,6 +41,8 @@ namespace :report do
       visit[:session_id]
     end
 
+    vertex_counts = {}
+
     landing_page_visits.each do |visit|
       if prev_visit
         current_path = visit[:path]
@@ -55,17 +57,22 @@ namespace :report do
           else
             dg.add_edge!(prev_path, current_path, :label => 1)
           end
+          vertex_counts[current_path] = (vertex_counts[current_path] || 0) + 1
         else
           dg.add_edge!("Start", visit[:path], :label => session_ids.uniq.count)
+          vertex_counts["Start"] = session_ids.uniq.count
+          vertex_counts[visit[:path]] = session_ids.uniq.count
 
           if dg.edge?(prev_path, 'End')
             dg.edges.each do |edge|
               if edge.eql?(GRATR::Arc.new(prev_path, 'End'))
                 increment_label(edge)
+                vertex_counts['End'] = (vertex_counts['End'] || 0) + 1
               end
             end
           else
             dg.add_edge!(prev_path, 'End', :label => 1)
+            vertex_counts['End'] = (vertex_counts['End'] || 0) + 1
           end
         end
       end
@@ -81,12 +88,20 @@ namespace :report do
       dg.edges.each do |edge|
         if edge.eql?(GRATR::Arc.new(last_path, 'End'))
           increment_label(edge)
+          vertex_counts['End'] = (vertex_counts['End'] || 0) + 1
         end
       end
     else
       dg.add_edge!(last_path, 'End', :label => 1)
+      vertex_counts['End'] = (vertex_counts['End'] || 0) + 1
     end
 
-    dg.write_to_graphic_file('png','visualize')
+    #calculate percentages
+    dg.edges.each do |edge|
+      label = edge.label[:label]
+      edge.label[:label] = "#{label} (#{((label / vertex_counts[edge[0]].to_f) * 100).round}%)"
+    end
+
+    dg.write_to_graphic_file
   end
 end
