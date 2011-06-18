@@ -32,18 +32,17 @@
 #content
   #error
 
-  .nav_left_container
+  .sidebar_container
     .relative
-      %nav.module
+      .sidebar
         %ul.filetree
           - unless project.file_info.nil?
             - project.file_info[:files].each do |file|
               = render :partial => "file_tree_node", :locals => {:file_info => file}
-      .help.module
-        %h3 Need help?
-        .button_group
-          %button(class="help_tooltips")> View tooltips
-          %button(class="help_hotkeys")> Show hotkeys
+      .bottom.actionable
+        .featured_action
+          %h3 Package App for Chrome Web Store
+          = image_tag "chrome_webstore.png"
 
   %section
     #tabs.module
@@ -86,6 +85,14 @@
 - project_id = params[:id]
 
 :coffeescript
+  $("#content .sidebar_container .bottom").click ->
+    requireSubscription ->
+      notify("Exporting Chrome Web Store Package ...")
+
+      window.location = #{download_project_path(project, :chrome => 1).to_json}
+
+      $.modal.close()
+
   window.projectId = #{project_id.to_json}
 
   $("#fork").click ->
