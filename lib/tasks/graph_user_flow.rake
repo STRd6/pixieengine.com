@@ -109,78 +109,21 @@ namespace :report do
     require 'ruport'
     include Ruport::Data
 
-    # created = User.find_by_sql <<-eos
-    #   SELECT to_char(created_at, 'FMmonth') AS month, date_part('month', created_at) AS month_number, id
-    #   FROM users
-    #   GROUP BY to_char(created_at, 'FMmonth'), date_part('month', created_at), id
-    #   ORDER BY month
-    # eos
+    created = User.find_by_sql <<-eos
+      SELECT to_char(created_at, 'FMmonth') AS month, date_part('month', created_at) AS month_number, id
+      FROM users
+      GROUP BY to_char(created_at, 'FMmonth'), date_part('month', created_at), id
+      ORDER BY month
+    eos
 
-    #
-    # last_request_by_month = User.find_by_sql <<-eos
-    #   SELECT to_char(last_request_at, 'FMmonth') AS month, date_part('month', last_request_at) AS month_number, id
-    #   FROM users
-    #   WHERE date_part('year', last_request_at) = 2011
-    #   GROUP BY to_char(last_request_at, 'FMmonth'), date_part('month', last_request_at), id
-    #   ORDER BY month
-    # eos
 
-    #testing data
-    created = [
-      { 'month' => 'january', 'month_number' => 1, 'id' => '1' },
-      { 'month' => 'january', 'month_number' => 1, 'id' => '2' },
-      { 'month' => 'january', 'month_number' => 1, 'id' => '3' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '4' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '5' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '6' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '7' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '8' },
-      { 'month' => 'february', 'month_number' => 2, 'id' => '9' },
-      { 'month' => 'march', 'month_number' => 3, 'id' => '10' },
-      { 'month' => 'march', 'month_number' => 3, 'id' => '11' },
-      { 'month' => 'march', 'month_number' => 3, 'id' => '12' },
-      { 'month' => 'march', 'month_number' => 3, 'id' => '13' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '14' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '15' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '16' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '17' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '18' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '19' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '20' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '21' },
-      { 'month' => 'july', 'month_number' => 7, 'id' => '22' },
-      { 'month' => 'july', 'month_number' => 7, 'id' => '23' },
-      { 'month' => 'july', 'month_number' => 7, 'id' => '24' },
-      { 'month' => 'july', 'month_number' => 8, 'id' => '25' }
-    ]
-
-    last_request_by_month = [
-      { 'month' => 'february', 'month_number' => 1, 'id' => '1' },
-      { 'month' => 'march', 'month_number' => 3, 'id' => '3' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '9' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '8' },
-      { 'month' => 'april', 'month_number' => 4, 'id' => '7' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '2' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '10' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '11' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '12' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '13' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '14' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '6' },
-      { 'month' => 'may', 'month_number' => 5, 'id' => '19' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '4' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '5' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '2' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '15' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '16' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '17' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '20' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '21' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '22' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '23' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '24' },
-      { 'month' => 'june', 'month_number' => 6, 'id' => '25' }
-    ]
+    last_request_by_month = User.find_by_sql <<-eos
+      SELECT to_char(last_request_at, 'FMmonth') AS month, date_part('month', last_request_at) AS month_number, id
+      FROM users
+      WHERE date_part('year', last_request_at) = 2011
+      GROUP BY to_char(last_request_at, 'FMmonth'), date_part('month', last_request_at), id
+      ORDER BY month
+    eos
 
     start_date = Date.new 2011, 1, 1
     end_date = Date.new 2011, 12, 31
@@ -233,35 +176,20 @@ namespace :report do
       end
     end
 
+    table = Table.new
+    table.add_columns(%w[months_since 1 2 3 4 5 6 7 8 9 10 11 12], :default => '0')
+
     months.each do |month|
       output[month].each_with_index do |entry, i|
         unless entry.nil?
-          output[month][i] = ((output[month][i] / created_per_month[month]['total'].to_f) * 100).round
+          output[month][i] = ((output[month][i] / created_per_month[month]['total'].to_f) * 100).round.to_s + "%"
         end
       end
 
       output[month].compact!
+      table << [month] + output[month]
     end
 
-    # table = Table(%w[1 2 3 4 5 6 7 8 9 10 11 12])
-    # p table.to_text
-
-    p created_per_month['january']['total']
-    p output['january']
-
-    p created_per_month['february']['total']
-    p output['february']
-
-    p created_per_month['march']['total']
-    p output['march']
-
-    p created_per_month['april']['total']
-    p output['april']
-
-    p created_per_month['may']['total']
-    p output['may']
-
-    p created_per_month['june']['total']
-    p output['june']
+    table.to_html(:file => 'report.html')
   end
 end
