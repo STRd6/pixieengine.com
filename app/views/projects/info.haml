@@ -246,3 +246,7 @@
     .games
       - Project.featured.limit(4).each do |project|
         = render :partial => project
+
+/[if IE]
+  :coffeescript
+    $(".feature a").attr("href", #{register_subscribe_path.to_json})
