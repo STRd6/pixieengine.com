@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   has_attached_file :image, S3_OPTS.merge(
     :path => "projects/:id/:style.:extension",
     :styles => {
+      :tiny => ["16x16#", :png],
       :thumb => ["96x96#", :png],
     }
   )
@@ -378,13 +379,17 @@ class Project < ActiveRecord::Base
     FileUtils.mkdir_p images_dir
 
     if image.exists?
+      File.open(icon_path + "16.png", 'wb') do |file|
+        file.write(open(image.url(:tiny)) {|f| f.read})
+      end
+
       File.open(icon_path + "96.png", 'wb') do |file|
         file.write(open(image.url(:thumb)) {|f| f.read})
       end
 
       `mogrify -background transparent -gravity center -extent 128x128 -write #{icon_path}128.png #{icon_path}96.png`
     else
-      %w[128 96].each do |size|
+      %w[128 96 16].each do |size|
         FileUtils.cp Rails.root.join("public", "images", "webstore_#{size}.png"), icon_path + "#{size}.png"
       end
     end
@@ -431,13 +436,14 @@ class Project < ActiveRecord::Base
       :description => description,
       :app => {
         :launch => {
-          :local_path => "webstore/main.html"
+          :local_path => "webstore/main.html",
         }
       },
       :version => current_version,
       :icons => {
         "128" => "webstore/images/icon_128.png",
         "96" => "webstore/images/icon_96.png",
+        "16" => "webstore/images/icon_16.png",
       }
     }
 
