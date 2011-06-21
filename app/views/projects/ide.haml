@@ -1,8 +1,4 @@
 %nav.top.actions
-  = button_link "New Project", "application_add", new_project_path
-  - if owner_or_admin?
-    = button_link "Delete", "application_delete", project_path(project), :method => "delete", :confirm => "Are you sure you want to delete this project?"
-
   - if demo? || has_access?
     %button#save Save
     .button_group
@@ -15,14 +11,12 @@
   .button_group
     %button#run> Run
     %button#test> Test
-    %button#console> Console
   - if demo? || has_access?
     .button_group
       %button#build(title="Compile src files into single JS file")> Build
       %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
-      %button#tag(title="Tag a stable build")> Tag
 
   .status
     %label.inline
