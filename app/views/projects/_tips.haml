@@ -27,34 +27,35 @@
         %b Import
         to drag one from your computer.
   - elsif project.id == Project::DEMO_ID
+    .tip{ 'data-element_selector' => "nav.left"}
+      .text
+        Welcome to
+        = link_to "condor's", User.find(4)
+        three part platforming demo. Part one is going to cover keyboard input.
     .tip{ 'data-element_selector' => "[data-path='src/main.coffee'] iframe", 'data-code' => "$('[data-path=\"src/main.coffee\"] iframe').contents().find('span').effect('highlight', {}, 5000)" }
       .text
-        Initializing the engine with a canvas to draw on is the first step you need to follow to start making a game.
+        Click on the run button. You'll see a red square moving slowly to the right.
     .tip{ 'data-element_selector' => "[data-path='src/main.coffee'] iframe", 'data-code' => "$('[data-path=\"src/main.coffee\"] iframe').contents().find('span').effect('highlight', {}, 5000)" }
       .text
-        Add the key/value pair
+        That was fun but white is a really boring background color. Add the key/value pair
         %b backgroundColor: Color.random()
-        above canvas. Add a call to
-        %b engine.start()
-        below window.engine and click "Run"
-    .tip{ 'data-element_selector' => "[data-path='src/main.coffee'] iframe" }
-      .text
-        Background colors are cool but let's make something dance. Before
-        %b engine.start()
-        add
-        %b engine.add(class: "Square").
-        By including
-        %b Movable
-        and having velocity Point(2, 0) it inches to the right.
+        above
+        %b canvas: $("canvas").powerCanvas()
+        to spice things up and then run the game again.
     .tip{ 'data-element_selector' => "[data-path='src/square.coffee'] iframe", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
       .text
-        Okay, we're going to make you the boss now. Add the following to the bottom of
+        Okay, we're going to make you the boss now. Add the following above
+        %b self
+        at the bottom of
         %b src/square:
         %pre
           = preserve "self.bind 'step', ->\nif keydown.left\nI.velocity = Point(-2, 0)"
     .tip{ 'data-element_selector' => "[data-path='src/square.coffee'] iframe" }
       .text
         Try to make him move to the right and stop too.
+    .tip{ 'data-element_selector' => "[data-path='src/square.coffee'] iframe" }
+      .text
+        Stay tuned for lesson two: Jumping.
   - else
     .tip{ 'data-element_selector' => "nav.left"}
       .text
