@@ -89,10 +89,10 @@
     .tip{ 'data-element_selector' => "ul.filetree", 'data-code' => "$('.filetree').effect('highlight', {}, 5000)" }
       .text
         The files needed to create your game are here.
-    .tip{ 'data-element_selector' => "#run"}
+    .tip{ 'data-element_selector' => "#run" }
       .text
         Click "Run" button to play through your game!
-    .tip{ 'data-element_selector' => "#test_frame"}
+    .tip{ 'data-element_selector' => "#test_frame", 'data-code' => '$("#run").click();' }
       .text
         See the results, then make changes to your code as you wish.
     .tip{ 'data-element_selector' => ".file.documentation", 'data-code' => "$('#documentation').prev().click()"}
