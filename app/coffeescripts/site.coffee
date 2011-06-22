@@ -21,7 +21,7 @@ window.showTooltip = (element, html) ->
 
   tooltipHeight = $('#tooltip').height()
 
-  position.left += element.width() + 15
+  position.left += element.width() + 30
   position.top -= tooltipHeight / 2
 
   $("#tooltip").stop().offset(position).fadeIn()

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 17:25:50 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 17:39:12 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -26,7 +26,7 @@
     }
     $("#tooltip").find(".content").html(html);
     tooltipHeight = $('#tooltip').height();
-    position.left += element.width() + 15;
+    position.left += element.width() + 30;
     position.top -= tooltipHeight / 2;
     return $("#tooltip").stop().offset(position).fadeIn();
   };
