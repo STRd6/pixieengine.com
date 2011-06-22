@@ -44,18 +44,44 @@
         to spice things up and then run the game again.
     .tip{ 'data-code' => "$('#file_src_square_coffee').prev().click()" }
       .text
-        Okay, we're going to make you the boss now. Add the following above
-        %b self
-        at the bottom of
+        Okay, we're going to make you the boss now. Add the following below
+        %b I.y += I.velocity.y
+        near the bottom of
         %b src/square:
         %pre
-          = preserve "self.bind 'step', ->\nif keydown.left\nI.velocity = Point(-2, 0)"
+          = preserve "if keydown.left\nI.velocity = Point(-2, 0)"
     .tip
       .text
         Try to make him move to the right and stop too.
     .tip
       .text
-        Stay tuned for lesson two: Jumping.
+        When you are done here check out lesson two:
+        =link_to "Jumping", ide_project_path(Project.find(Project::JUMP_DEMO_ID))
+  - elsif project.id == Project::JUMP_DEMO_ID
+    .tip
+      .text
+        Hello fellow jumping enthusiasts. Today we're going to give your little guy hops like Jordan.
+    .tip{ 'data-code' => "$('#file_src_square_coffee').prev().click()" }
+      .text
+        At the top of
+        %b src/square
+        we now have some constants: GRAVITY, SPEED, JUMP_POWER, and FLOAT_FACTOR. Take a minute to play around with those values. See if you can find the 'Space Jam' setting.
+    .tip
+      .text
+        This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look at the contents of
+        %b self.bind.
+    .tip
+      .text
+        We're reducing the effect of gravity when jumping, applying it normally when falling, and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
+    .tip
+      .text
+        Each step we also set jumping to false if you aren't holding the jump key.
+    .tip
+      .text
+        Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.
+    .tip
+      .text
+        In the eagerly anticipated lesson three we are going to give him a gun and make him 'pew pew pew'.
   - else
     .tip{ 'data-element_selector' => "nav.left"}
       .text
