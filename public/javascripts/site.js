@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 17:39:12 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 22:12:17 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -33,6 +33,14 @@
   window.hideTooltip = function() {
     return $("#tooltip").stop().fadeOut();
   };
+  $("#tooltip").live({
+    mouseenter: function() {
+      return $(this).css('opacity', 1);
+    },
+    mouseleave: function() {
+      return $(this).css('opacity', 0.4);
+    }
+  });
   getVal = function(key) {
     if (localStorage) {
       try {

@@ -29,6 +29,10 @@ window.showTooltip = (element, html) ->
 window.hideTooltip = ->
   $("#tooltip").stop().fadeOut()
 
+$("#tooltip").live
+  mouseenter: -> $(this).css('opacity', 1)
+  mouseleave: -> $(this).css('opacity', 0.4)
+
 # Local Storage
 getVal = (key) ->
   if localStorage
