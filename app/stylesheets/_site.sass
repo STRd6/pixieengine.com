@@ -32,16 +32,17 @@
     width: 80px
 
   .icon
-    background-image: url(images/info.png)
-    height: 48px
+    +bounds(25px)
+
+    background-image: url(/images/tip_pointer.png)
+    bottom: 0
     left: -12px
+    margin: auto
     position: absolute
-    top: -12px
-    width: 48px
+    top: 0
 
   .content
     color: $dark_text
-    margin-left: 24px
     position: relative
 
   .next

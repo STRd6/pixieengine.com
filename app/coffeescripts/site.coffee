@@ -12,8 +12,19 @@ $(".clickable").live 'click', ->
 window.showTooltip = (element, html) ->
   position = element.offset() || {top: 50, left: 50}
 
-  position.left += element.width() + 42
-  $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html)
+  if !element.offset()
+    $("#tooltip .icon").hide()
+  else
+    $("#tooltip .icon").show()
+
+  $("#tooltip").find(".content").html(html)
+
+  tooltipHeight = $('#tooltip').height()
+
+  position.left += element.width() + 15
+  position.top -= tooltipHeight / 2
+
+  $("#tooltip").stop().offset(position).fadeIn()
 
 window.hideTooltip = ->
   $("#tooltip").stop().fadeOut()

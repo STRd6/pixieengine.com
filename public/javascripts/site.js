@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Tue, 07 Jun 2011 00:16:06 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
+/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 17:25:50 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
@@ -14,13 +14,21 @@
     return document.location = $(this).find("a").eq(0).attr("href");
   });
   window.showTooltip = function(element, html) {
-    var position;
+    var position, tooltipHeight;
     position = element.offset() || {
       top: 50,
       left: 50
     };
-    position.left += element.width() + 42;
-    return $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html);
+    if (!element.offset()) {
+      $("#tooltip .icon").hide();
+    } else {
+      $("#tooltip .icon").show();
+    }
+    $("#tooltip").find(".content").html(html);
+    tooltipHeight = $('#tooltip').height();
+    position.left += element.width() + 15;
+    position.top -= tooltipHeight / 2;
+    return $("#tooltip").stop().offset(position).fadeIn();
   };
   window.hideTooltip = function() {
     return $("#tooltip").stop().fadeOut();
