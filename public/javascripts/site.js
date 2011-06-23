@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 22 Jun 2011 22:12:17 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 23 Jun 2011 00:14:49 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 

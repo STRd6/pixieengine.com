@@ -59,22 +59,22 @@
     .tip
       .text
         Hello fellow jumping enthusiasts. Today we're going to give your little guy hops like Jordan.
-    .tip{ 'data-code' => "$('#file_src_square_coffee').prev().click()" }
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
       .text
         At the top of
         %b src/square
         we now have some constants: GRAVITY, SPEED, JUMP_POWER, and FLOAT_FACTOR. Take a minute to play around with those values. See if you can find the 'Space Jam' setting.
-    .tip
+    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look at the contents of
         %b self.bind.
-    .tip
+    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         We're reducing the effect of gravity when jumping, applying it normally when falling, and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
-    .tip
+    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Each step we also set jumping to false if you aren't holding the jump key.
-    .tip
+    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.
     .tip
@@ -123,12 +123,13 @@
         if you have any questions!
   .next
     .next_tip.next(title="next" alt="next")
+    .next_arrow
   .close
     .close_tip.x(title="close" alt="close")
 
 :coffeescript
   $ ->
-    $("#tooltip .next_tip").live "click", ->
+    $("#tooltip .next_tip, #tooltip .next_arrow").live "click", ->
       nextTip()
 
     $("#tooltip .close_tip").live "click", ->
@@ -159,6 +160,7 @@
 
         if moreTips
           tipMessage += $("#tips .next").html()
+          tipMessage += $("#tips .next_arrow").html()
 
         showTooltip(targetElement, tipMessage)
       else

@@ -21,8 +21,9 @@
   border-top: 1px solid #595959
   color: $dark_text
   display: none
-  min-width: 150px
-  max-width: 250px
+  min-height: 50px
+  min-width: 100px
+  max-width: 225px
   padding: 1em
   position: absolute
   z-index: 10
@@ -43,19 +44,34 @@
 
   .content
     color: $dark_text
+    min-height: 50px
+    min-width: 100px
     position: relative
 
   .next
-    +bounds(22px, 25px)
+    +bounds(40px, 50px)
 
-    background-image: url(/images/next.png)
-    bottom: 0
+    background-image: url(/images/next_bg.png)
+    bottom: -35px
     cursor: pointer
     display: inline-block
-    margin: auto
     position: absolute
-    right: -22px
-    top: 0
+    right: -30px
+
+  .next_arrow
+    +bounds(40px, 50px)
+
+    -webkit-transition: -webkit-transform 0.5s ease-in-out
+
+    background-image: url(/images/next_arrow.png)
+    bottom: -35px
+    cursor: pointer
+    display: inline-block
+    position: absolute
+    right: -30px
+
+    &:hover
+      -webkit-transform: translateX(5%)
 
   .close_tip.x
     +bounds(24px, 29px)
