@@ -47,7 +47,7 @@
       .text
         Okay, we're going to make you the boss now. Replace the highlighted line with
         %pre
-          = preserve "if keydown.left\nI.velocity = Point(-2, 0)"
+          = preserve "if keydown.left\n&nbsp&nbspI.velocity = Point(-2, 0)"
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Try to make him move to the right and stop too.
@@ -58,7 +58,7 @@
   - elsif project.id == Project::JUMP_DEMO_ID
     .tip
       .text
-        Hello fellow jumping enthusiasts. Today we're going to give your little guy hops like Jordan.
+        Hello fellow jumping enthusiasts. Today we're going to give our little guy hops like Jordan.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
       .text
         At the top of
@@ -73,13 +73,44 @@
         We're reducing the effect of gravity when jumping, applying it normally when falling, and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
-        Each step we also set jumping to false if you aren't holding the jump key.
+        Each step we also set jumping to false if the jump key isn't held.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.
     .tip
       .text
-        In the eagerly anticipated lesson three we are going to give him a gun and make him 'pew pew pew'.
+        In the eagerly anticipated lesson three:
+        =link_to "Pew", ide_project_path(Project.find(Project::SHOOT_DEMO_ID))
+  - elsif project.id == Project::SHOOT_DEMO_ID
+    .tip
+      .text
+        At the NRA's request I've written this demo to show off how to make our square shoot.
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_bullet_coffee').prev().click()" }
+      .text
+        Here is our bullet behavior. The most important thing is that in
+        %b self.bind
+        we check to make sure the bullet doesn't go through the floor.
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
+      .text
+        Take a look at the changes we made to this square.
+    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'facing = Point(1, 0)' }).effect('highlight', {}, Infinity);" }
+      .text
+        Look at the highlighted line. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.
+    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'if justPressed.x' }).effect('highlight', {}, Infinity);" }
+      .text
+        Pressing the shoot key tells the engine that it should add an instance of our bullet class at the position of the square, firing in the direction it is facing, with the speed defined by BULLET_SPEED.
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_enemy_coffee').prev().click()" }
+      .text
+        Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy.
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee').prev().click()" }
+      .text
+        Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly.
+    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'for enemy in enemies' }).effect('highlight', {}, Infinity);" }
+      .text
+        We iterate through all the enemies and bullets (if they exist), and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.
+    .tip
+      .text
+        That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa.
   - else
     .tip{ 'data-element_selector' => "nav.left"}
       .text
@@ -129,7 +160,7 @@
 
 :coffeescript
   $ ->
-    $("#tooltip .next_tip, #tooltip .next_arrow").live "click", ->
+    $("#tooltip .next_tip, #tooltip .next_arrow, #help").live "click", ->
       nextTip()
 
     $("#tooltip .close_tip").live "click", ->
