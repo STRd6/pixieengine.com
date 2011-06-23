@@ -42,9 +42,11 @@
         = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
         - arcade = project.arcade? ? "active"  : ""
         = button_link "Arcade", "sport_shuttlecock", add_to_arcade_project_path(project), :class => "button #{arcade}", :id => "arcade"
+        - tutorial = project.tutorial? ? "active" : ""
+        = button_link "Tutorial", "book", add_to_tutorial_project_path(project), :class => "button #{tutorial}", :id => "tutorial"
 
 :coffeescript
-  $("#feature, #arcade").click (event) ->
+  $("#feature, #arcade, #tutorial").click (event) ->
     event.preventDefault()
 
     if $(this).is(".active")

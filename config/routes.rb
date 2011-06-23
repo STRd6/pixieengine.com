@@ -22,6 +22,7 @@ PixieStrd6Com::Application.routes.draw do
       get :widget
 
       post :add_to_arcade
+      post :add_to_tutorial
       post :feature
       post :fork
       post :generate_docs

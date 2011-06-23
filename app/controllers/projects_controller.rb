@@ -3,9 +3,9 @@ class ProjectsController < ApplicationController
 
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade, :landing1]
   before_filter :require_user, :except => PUBLIC_ACTIONS
-  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade]
+  before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade, :add_to_tutorial]
   before_filter :require_owner_or_admin, :only => :destroy
-  before_filter :require_admin, :only => [:feature, :add_to_arcade]
+  before_filter :require_admin, :only => [:feature, :add_to_arcade, :add_to_tutorial]
 
   before_filter :filter_results, :only => [:index]
 
@@ -53,6 +53,18 @@ class ProjectsController < ApplicationController
 
   def add_to_arcade
     project.update_attribute(:arcade, true)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
+  def add_to_tutorial
+    project.update_attribute(:tutorial, true)
 
     respond_to do |format|
       format.json do
@@ -238,13 +250,14 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["featured", "own", "none", "for_user", "arcade"]
+    ["featured", "own", "none", "for_user", "tutorial", "arcade"]
   end
 
   def gallery_filters
     filters = [
       ["Arcade", :arcade],
       ["Featured", :featured],
+      ["Tutorials", :tutorial],
       ["All", :none]
     ]
 
