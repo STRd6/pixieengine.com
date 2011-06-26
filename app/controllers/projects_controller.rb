@@ -272,6 +272,11 @@ class ProjectsController < ApplicationController
   end
   helper_method :demo?
 
+  def tutorial?
+    project.tutorial?
+  end
+  helper_method :tutorial?
+
   private
   def object
     @project ||= if demo?
