@@ -20,7 +20,7 @@
     extractBase64Data = (dataUrl) ->
       dataUrl.substring(dataUrl.indexOf(',') + 1)
 
-    $("#import_drop_zone").dropImageReader
+    $("body").dropImageReader
       matchType: /.*/
       callback: (file, event) ->
         if event.target.readyState == FileReader.DONE
@@ -66,4 +66,5 @@
               ext: ext
               lang: lang
               path: path
+              noAutoOpen: true
               contents: contents
