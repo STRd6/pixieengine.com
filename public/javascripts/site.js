@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 23 Jun 2011 00:14:49 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 27 Jun 2011 20:13:13 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -28,6 +28,12 @@
     tooltipHeight = $('#tooltip').height();
     position.left += element.width() + 30;
     position.top -= tooltipHeight / 2;
+    if (position.top < 5) {
+      position.top = 5;
+      $("#tooltip .icon").css('top', -tooltipHeight + 7);
+    } else {
+      $("#tooltip .icon").css('top', 0);
+    }
     return $("#tooltip").stop().offset(position).fadeIn();
   };
   window.hideTooltip = function() {

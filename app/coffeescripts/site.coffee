@@ -24,6 +24,12 @@ window.showTooltip = (element, html) ->
   position.left += element.width() + 30
   position.top -= tooltipHeight / 2
 
+  if position.top < 5
+    position.top = 5
+    $("#tooltip .icon").css('top', -tooltipHeight + 7)
+  else
+    $("#tooltip .icon").css('top', 0)
+
   $("#tooltip").stop().offset(position).fadeIn()
 
 window.hideTooltip = ->
