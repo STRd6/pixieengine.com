@@ -3,9 +3,6 @@
     @import util
     @import branded
 
-    #fullscreen
-      height: auto
-
     #show_projects, #show_sprites
       float: right
       font-size: 120%
@@ -17,7 +14,7 @@
       padding: 1em
       width: 300px
 
-    .featured_sprites
+    .featured_sprites, .featured_projects
       margin: 2em 0
       padding: 1em 2em
 
@@ -41,10 +38,6 @@
 
         display: block
 
-    .featured_projects
-      margin: 2em 0
-      padding: 1em 2em
-
     .project
       +bounds(430px, 172px)
       +box-sizing(border-box)
@@ -58,6 +51,9 @@
 
       &:nth-child(2n)
         margin-right: 0
+
+      &:hover
+        background-color: $hover
 
       .gloss
         +gloss
@@ -95,7 +91,7 @@
       width: 960px
 
     .module
-      h2
+      > h2
         display: inline-block
 
       button
@@ -150,12 +146,18 @@
 
   - if user.projects.size > 0
     .featured_projects.module
-      %h2 Your Projects
+      %h2
+        ="Your" if current_user?
+        Projects
       - if current_user?
         %button.clickable.complement
           New Project
           = link_to "", new_project_path, :style => "display: none;"
-      %a#show_projects Show all
+        %button.clickable.complement
+          Tutorials
+          = link_to "", projects_path(:filter => "tutorial"), :style => "display: none;"
+      - if user.projects.size > 6
+        %a#show_projects Show all
       .games
         - user.projects.order("updated_at, id DESC").each_with_index do |project, i|
           - if i > 5
@@ -166,12 +168,15 @@
 
   - if user.sprites.size > 0
     .featured_sprites.module
-      %h2 Your Sprites
+      %h2
+        ="Your" if current_user?
+        Sprites
       - if current_user?
         %button.clickable.complement
           New Sprite
           = link_to "", new_sprite_path, :style => "display: none;"
-      %a#show_sprites Show all
+      - if user.sprites.size > 32
+        %a#show_sprites Show all
       .sprites
         - user.sprites.each_with_index do |index_sprite, i|
           - if i > 31
@@ -201,5 +206,3 @@
       else
         $('.sprites .hide').hide()
         $this.text('Show all')
-
-
