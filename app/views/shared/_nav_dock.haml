@@ -10,14 +10,8 @@
           %span Sprite Gallery
           = link_to_unless_current image_tag("dock/sprites.png"), sprites_path, :title => "Sprite Gallery"
         %li
-          %span Animation Editor
-          = link_to_unless_current image_tag("dock/animations.png"), animations_path, :title => "Animations"
-        %li
           %span Projects
           = link_to_unless_current image_tag("dock/ide.png"), projects_path, :title => "Projects"
-        %li
-          %span Sound Gallery
-          = link_to_unless_current image_tag("dock/sounds.png"), sounds_path, :title => "Sound Gallery"
         %li
           %span Users
           = link_to_unless_current image_tag("dock/people.png"), users_path, :title => "People"
@@ -140,7 +134,7 @@
             background: url(/images/show_dock_light.png) no-repeat
 
       #dockContainer
-        +bounds(508px, 70px)
+        +bounds(400px, 70px)
         bottom: 0
         left: 0
         right: 0
