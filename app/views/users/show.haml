@@ -1,107 +1,120 @@
-.gallery.module
-  .profile
-    = render :partial => "tasks", :user => user
-
-    %h2
-      = user.display_name
-      - if current_user?
-        = link_to "Edit profile", [:edit, user]
-    .info
-      = image_tag user.avatar.url(:large), :class => :avatar
-      %p= user.profile
-
-    %label
-      %h3 Favorite Color
-      .favorite_color{:style => "background: ##{user.favorite_color}"}
-
-  - if current_user?
-    .actions
-      = button_link "New Project", "application_add", new_project_path
-
-  - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
-    .messages
-      %h3
-        Messages
-
-      = render :partial => messages
-
-  - if user.projects.size > 0
-    .projects
-      %h3
-        Projects
-        (
-        = link_to "View All", projects_path(:filter => :for_user, :user_id => user.id)
-        )
-      = render :partial => "projects/project", :collection => user.projects.limit(6)
-
-  - if user.sprites.size > 0
-    .sprites
-      %h3
-        Sprites
-        (
-        = link_to "View All", :action => :sprites
-        |
-        = link_to " View Collections", { :action => :collections }
-        )
-      - user.sprites.limit(20).each do |sprite|
-        .sprite
-          %span.title= link_to(sprite.display_name, sprite)
-          = image_link sprite
-
 %style
   :sass
     @import util
+    @import branded
+
     #fullscreen
       height: auto
 
-    body > .module
-      padding: 2em
-
-    .sprites
-      padding-top: 2em
-
-      .sprite
-        overflow: hidden
-        white-space: nowrap
-
-      h3
-        a
-          font-size: 0.75em
-          letter-spacing: 0
+    #show_projects, #show_sprites
+      float: right
+      font-size: 120%
+      margin-right: 0.7em
+      margin-top: 0.7em
 
     .tasks
-      +border-radius
-      +box-shadow(#000F1A, 2px, 2px, 4px, 0, inset)
-
-      background-color: $cookie_cutter_dark
       float: right
-      margin: 1em
-      margin-right: 0.5em
+      padding: 1em
+      width: 300px
+
+    .featured_sprites
+      margin: 2em 0
+      padding: 1em 2em
+
+    .sprite_container
+      +border-radius
+      +bounds(48px)
+      +pop-shadow
+
+      background-color: white
+      cursor: pointer
+      display: inline-block
+      margin-right: 6px
+      margin-bottom: 3px
+
+      &:hover
+        background-color: $hover
+
+      a
+        +bounds(100%)
+        +contents-centered
+
+        display: block
+
+    .featured_projects
+      margin: 2em 0
+      padding: 1em 2em
+
+    .project
+      +bounds(430px, 172px)
+      +box-sizing(border-box)
+      +inline-block
+
+      margin-bottom: 0
+      margin-right: 2em
       overflow: hidden
       padding: 1em
-      width: 295px
+      position: relative
 
-      .light &
-        +box-shadow(#8c8c8c, 1px, 1px, 4px, 0, inset)
+      &:nth-child(2n)
+        margin-right: 0
 
-        background-color: $cookie_cutter_light
+      .gloss
+        +gloss
 
-      .task
-        font-size: 1.1em
-        margin-bottom: 0.5em
-        position: relative
-        img
-          vertical-align: top
-        .value
-          left: 160px
-          position: absolute
-          top: 0
+        display: inline-block
+        position: absolute
+        left: 1em
 
-    .favorite_color
-      +inline-block
-      border: 1px solid !light_gray
-      height: 50px
-      width: 50px
+      .thumb
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
+
+        &.fancy
+          img
+            +border-radius(17px)
+            +box-shadow(#000F1A, 0, 4px, 6px)
+
+            .light &
+              +box-shadow(#8c8c8c, 0, 4px, 6px)
+
+      .title
+        a
+          color: $dark_text
+          font-size: 20px
+          font-weight: 600
+          text-decoration: none
+          white-space: nowrap
+
+          .light &
+            color: $light_text
+
+    .content
+      margin: auto
+      width: 960px
+
+    .module
+      h2
+        display: inline-block
+
+      button
+        +bounds(110px, 35px)
+
+        font-size: 115%
+        margin-left: 1em
+        margin-top: 0
+
+    .task
+      font-size: 1.1em
+      margin-bottom: 0.5em
+      position: relative
+      img
+        vertical-align: top
+      .value
+        left: 200px
+        position: absolute
+        top: 0
 
     .profile
       min-height: 284px
@@ -122,5 +135,71 @@
       .avatar
         float: left
         margin: 0 1em 1em 0
+
+.content.feature
+  .profile
+    = render :partial => "tasks", :user => user
+
+    %h2
+      = user.display_name
+      - if current_user?
+        = link_to "Edit profile", [:edit, user]
+    .info
+      = image_tag user.avatar.url(:large), :class => :avatar
+      %p= user.profile
+
+  - if user.projects.size > 0
+    .featured_projects.module
+      %h2 Your Projects
+      - if current_user?
+        %button.clickable.complement
+          New Project
+          = link_to "", new_project_path, :style => "display: none;"
+      %a#show_projects Show all
+      .games
+        - user.projects.order("updated_at, id DESC").each_with_index do |project, i|
+          - if i > 5
+            .hide{ :style => "display: none;" }
+              = render :partial => project
+          - else
+            = render :partial => project
+
+  - if user.sprites.size > 0
+    .featured_sprites.module
+      %h2 Your Sprites
+      - if current_user?
+        %button.clickable.complement
+          New Sprite
+          = link_to "", new_sprite_path, :style => "display: none;"
+      %a#show_sprites Show all
+      .sprites
+        - user.sprites.each_with_index do |index_sprite, i|
+          - if i > 31
+            .hide{ :style => "display: none;" }
+              = render :partial => "sprites/index_sprite", :locals => { :index_sprite => index_sprite }
+          - else
+            = render :partial => "sprites/index_sprite", :locals => { :index_sprite => index_sprite }
+
+:coffeescript
+  $ ->
+    $('#show_projects').click ->
+      $this = $(this)
+
+      if $this.text() == "Show all"
+        $('.games .hide').show()
+        $this.text('Hide')
+      else
+        $('.games .hide').hide()
+        $this.text('Show all')
+
+    $('#show_sprites').click ->
+      $this = $(this)
+
+      if $this.text() == "Show all"
+        $('.sprites .hide').show()
+        $this.text('Hide')
+      else
+        $('.sprites .hide').hide()
+        $this.text('Show all')
 
 

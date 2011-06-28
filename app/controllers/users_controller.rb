@@ -90,6 +90,7 @@ class UsersController < ResourceController::Base
 
   def show
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
+    @hide_dock = true
   end
 
   def add_to_collection
