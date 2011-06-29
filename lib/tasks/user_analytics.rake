@@ -1,6 +1,7 @@
 namespace :report do
   task :send => [:user_flow, :user_retention] do
     Notifier.analytics(User.find(4)).deliver
+    Notifier.analytics(User.find(1)).deliver
 
     graph_png = File.join(Rails.root, 'graph.png')
     graph_dot = File.join(Rails.root, 'graph.dot')
