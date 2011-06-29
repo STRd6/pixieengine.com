@@ -1,4 +1,4 @@
-require 'lib/waveform'
+require './lib/waveform.rb'
 
 class Sound < ActiveRecord::Base
   include Commentable
