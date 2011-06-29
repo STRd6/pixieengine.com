@@ -1,4 +1,16 @@
 namespace :report do
+  task :send => [:user_flow, :user_retention] do
+    Notifier.analytics(User.find(4)).deliver
+
+    graph_png = File.join(Rails.root, 'graph.png')
+    graph_dot = File.join(Rails.root, 'graph.dot')
+    report_html = File.join(Rails.root, 'report.html')
+
+    File.delete(graph_png) if File.exist?(graph_png)
+    File.delete(graph_dot) if File.exist?(graph_dot)
+    File.delete(report_html) if File.exist?(report_html)
+  end
+
   task :user_flow => :environment do
     require 'gratr/import'
     require 'gratr/dot'
@@ -11,7 +23,9 @@ namespace :report do
     dg = Digraph.new
     prev_visit = nil
 
-    landing_page_visits = Visit.find_by_sql(<<-eos
+    week_start = (Date.today.beginning_of_week - 1).to_s
+
+    landing_page_visits = Visit.find_by_sql <<-eos
       SELECT v.session_id, v.controller, v.action, v.created_at
       FROM (
         SELECT session_id, created_at
@@ -19,7 +33,7 @@ namespace :report do
         WHERE controller = 'projects'
           AND action = 'info'
           AND user_id IS NULL
-          AND created_at > '06/01/2011'
+          AND created_at >= '#{week_start}'
         ) AS x
       INNER JOIN visits as v
         ON x.session_id = v.session_id
@@ -29,7 +43,6 @@ namespace :report do
       GROUP BY v.session_id, v.controller, v.action, v.created_at
       ORDER BY v.session_id, v.created_at
       eos
-    )
 
     landing_page_visits = landing_page_visits.map do |visit|
       { :session_id => visit["session_id"], :path => visit["controller"] + '/' + visit["action"] }
