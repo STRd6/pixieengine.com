@@ -43,7 +43,7 @@
   - sprite.dimension_list.each do |dimension|
     = sprite_tag_link(sprite, dimension)
 
-  - form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
+  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
     = text_field_tag :tag, nil, :placeholder => "Tag name"
     = submit_tag "Add"
 

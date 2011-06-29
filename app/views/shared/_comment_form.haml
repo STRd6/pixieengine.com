@@ -1,4 +1,4 @@
-- form_for Comment.new(:commentable => commentable) do |form|
+= form_for Comment.new(:commentable => commentable) do |form|
   %h3 Comments
   = form.hidden_field :commentable_type
   = form.hidden_field :commentable_id
