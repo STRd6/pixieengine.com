@@ -1,4 +1,4 @@
-class WaveformRenderer
+class Waveform
   WIDTH  = 200
   HEIGHT = 100
   GRAPH_BACKGROUND_COLOR = "none"

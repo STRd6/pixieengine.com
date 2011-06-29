@@ -1,5 +1,3 @@
-require './lib/waveform.rb'
-
 class Sound < ActiveRecord::Base
   include Commentable
 
@@ -51,7 +49,7 @@ class Sound < ActiveRecord::Base
   end
 
   def generate_waveform
-    wf = WaveformRenderer.new(wav.url(nil, false))
+    wf = Waveform.new(wav.url(nil, false))
     temp = wf.render_waveform
 
     io = StringIO.new(temp.to_blob do |image|
