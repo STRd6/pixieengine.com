@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
 
   def self.send_newsletter_email
     User.all(:conditions => {:subscribed => true}).each do |user|
-      Notifier.newsletter(user).deliver  unless user.email.blank?
+      Notifier.newsletter(user).deliver unless user.email.blank?
     end
   end
 
