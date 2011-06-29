@@ -24,13 +24,13 @@ gem 'barista', '~> 1.0'
 gem "compass", ">= 0.10.2"
 gem "delayed_job", "2.1.4", :git => "git://github.com/collectiveidea/delayed_job.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
-gem 'gratr'
+gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
 gem 'html5-boilerplate'
 gem 'jrails'
 gem 'json'
-gem 'juggernaut', :git => "git://github.com/maccman/juggernaut.git"
+gem 'juggernaut'
 gem 'mail'
 gem 'mocha'
 gem 'narray'
@@ -42,7 +42,6 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruby-openid"
 gem "sanitize"
-gem "SystemTimer"
 gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
 gem "vestal_versions", :git => "git://github.com/adamcooper/vestal_versions"
