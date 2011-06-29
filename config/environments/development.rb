@@ -17,6 +17,19 @@ PixieStrd6Com::Application.configure do
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
+  # uncomment the next section to debug active mailer emails in development
+  #config.action_mailer.raise_delivery_errors = true
+  #config.action_mailer.delivery_method = :smtp
+  #config.action_mailer.smtp_settings = {
+  #   :address => "smtp.gmail.com",
+  #   :port => 587,
+  #   :domain => "pixieengine.com",
+  #   :user_name => "user_name",
+  #   :password => "super_secret_doesn't_belong_in_github",
+  #   :authentication => "plain",
+  #   :enable_starttls_auto => true
+  # }
+
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
