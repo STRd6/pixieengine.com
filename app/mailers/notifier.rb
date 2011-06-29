@@ -42,8 +42,11 @@ class Notifier < ActionMailer::Base
   def analytics(user)
     @user = user
 
-    attachments['graph.png'] = File.read File.join(Rails.root, 'graph.png')
-    attachments['report.html'] = File.read File.join(Rails.root, 'report.html')
+    graph_png = File.join(Rails.root, 'graph.png')
+    report_html = File.join(Rails.root, 'report.html')
+
+    attachments['graph.png'] = File.read graph_png if File.exist?(graph_png)
+    attachments['report.html'] = File.read report_html if File.exist?(report_html)
 
     mail :subject => "Weekly Analytics", :to => user.email
   end
