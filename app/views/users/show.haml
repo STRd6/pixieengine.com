@@ -9,12 +9,15 @@
       margin-right: 0.7em
       margin-top: 0.7em
 
+    .description
+      text-align: justify
+
     .tasks
       float: right
       padding: 1em
       width: 300px
 
-    .featured_sprites, .featured_projects
+    .featured_sprites, .featured_projects, .comments
       margin: 2em 0
       padding: 1em 2em
 
@@ -28,6 +31,9 @@
       display: inline-block
       margin-right: 6px
       margin-bottom: 3px
+
+      &.extras
+        display: none
 
       &:hover
         background-color: $hover
@@ -48,6 +54,9 @@
       overflow: hidden
       padding: 1em
       position: relative
+
+      &.extras
+        display: none
 
       &:nth-child(2n)
         margin-right: 0
@@ -160,11 +169,7 @@
         %a#show_projects Show all
       .games
         - user.projects.order("updated_at, id DESC").each_with_index do |project, i|
-          - if i > 5
-            .hide{ :style => "display: none;" }
-              = render :partial => project
-          - else
-            = render :partial => project
+          = render :partial => "users/project", :locals => { :project => project, :i => i }
 
   - if user.sprites.size > 0
     .featured_sprites.module
@@ -178,12 +183,15 @@
       - if user.sprites.size > 32
         %a#show_sprites Show all
       .sprites
-        - user.sprites.each_with_index do |index_sprite, i|
-          - if i > 31
-            .hide{ :style => "display: none;" }
-              = render :partial => "sprites/index_sprite", :locals => { :index_sprite => index_sprite }
-          - else
-            = render :partial => "sprites/index_sprite", :locals => { :index_sprite => index_sprite }
+        - user.sprites.each_with_index do |sprite, i|
+          = render :partial => "index_sprites", :locals => { :sprite => sprite, :i => i }
+  .comments.module
+    - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
+      .messages
+        %h3
+          Messages
+
+        = render :partial => messages
 
 :coffeescript
   $ ->
@@ -191,18 +199,18 @@
       $this = $(this)
 
       if $this.text() == "Show all"
-        $('.games .hide').show()
+        $('.project.extras').css('display', 'inline-block')
         $this.text('Hide')
       else
-        $('.games .hide').hide()
+        $('.project.extras').hide()
         $this.text('Show all')
 
     $('#show_sprites').click ->
       $this = $(this)
 
       if $this.text() == "Show all"
-        $('.sprites .hide').show()
+        $('.sprite_container.extras').css('display', 'inline-block')
         $this.text('Hide')
       else
-        $('.sprites .hide').hide()
+        $('.sprite_container.extras').hide()
         $this.text('Show all')
