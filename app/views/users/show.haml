@@ -3,6 +3,13 @@
     @import util
     @import branded
 
+    body#fullscreen
+      height: 100%
+
+    footer
+      bottom: 0
+      position: absolute
+
     #show_projects, #show_sprites
       float: right
       font-size: 120%
@@ -172,6 +179,11 @@
       .games
         - user.projects.order("updated_at, id DESC").each_with_index do |project, i|
           = render :partial => "users/project", :locals => { :project => project, :i => i }
+  - else
+    - if current_user?
+      %button.clickable.complement
+        New Project
+        = link_to "", new_project_path, :style => "display: none;"
 
   - if user.sprites.size > 0
     .featured_sprites.module
@@ -187,13 +199,19 @@
       .sprites
         - user.sprites.each_with_index do |sprite, i|
           = render :partial => "index_sprites", :locals => { :sprite => sprite, :i => i }
-  .comments.module
-    - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
+  - else
+    - if current_user?
+      %button.clickable.complement
+        New Sprite
+        = link_to "", new_sprite_path, :style => "display: none;"
+
+  - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
+    .comments.module
       .messages
         %h3
           Messages
 
-        = render :partial => messages
+          = render :partial => messages
 
 :coffeescript
   $ ->
