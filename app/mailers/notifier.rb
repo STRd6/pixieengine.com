@@ -38,4 +38,13 @@ class Notifier < ActionMailer::Base
     @user = user
     mail :to => user.email
   end
+
+  def analytics(user)
+    @user = user
+
+    attachments['graph.png'] = File.read File.join(Rails.root, 'graph.png')
+    attachments['report.html'] = File.read File.join(Rails.root, 'report.html')
+
+    mail :subject => "Weekly Analytics", :to => user.email
+  end
 end
