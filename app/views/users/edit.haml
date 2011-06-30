@@ -1,28 +1,31 @@
+= stylesheet_link_tag "branded"
+
 = javascript_include_tag 'pixie/jqcolor'
 
-- form_for user, :html => { :multipart => true } do |form|
-  = form.error_messages
+.content
+  - form_for user, :html => { :class => "module", :multipart => true } do |form|
+    = form.error_messages
 
-  %h2 Edit Profile
+    %h2 Edit Profile
 
-  %label
-    %h3 Display Name
-    = form.text_field :display_name
+    %label
+      %h3 Display Name
+      = form.text_field :display_name
 
-  %label
-    %h3 Favorite Color
-    = form.text_field :favorite_color
+    %label
+      %h3 Favorite Color
+      = form.text_field :favorite_color
 
-  %label
-    %h3 Profile
-    = form.text_area :profile
+    %label
+      %h3 Profile
+      = form.text_area :profile
 
-  %label
-    %h3 Avatar
-    = form.file_field :avatar
+    %label
+      %h3 Avatar
+      = form.file_field :avatar
 
-  %button.full Update Information
+    %button.full Update Information
 
-:coffeescript
-  $ ->
-    $("#user_favorite_color").colorPicker()
+  :coffeescript
+    $ ->
+      $("#user_favorite_color").colorPicker()
