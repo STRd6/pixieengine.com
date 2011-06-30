@@ -14,9 +14,10 @@
     %ul#active_users
       = render :partial => 'shared/active_users'
 
-- #TODO: Use separate url for dev juggernaut script
-
-= javascript_include_tag "http://pixie.strd6.com:8080/application.js"
+- if Rails.env.development?
+  = javascript_include_tag "http://localhost:8080/application.js"
+- else
+  = javascript_include_tag "http://pixie.strd6.com:8080/application.js"
 
 :coffeescript
   jug = new Juggernaut
