@@ -1,4 +1,5 @@
 source 'http://rubygems.org'
+source 'http://gems.github.com'
 
 gem 'rails', '3.0.5'
 
@@ -31,6 +32,7 @@ gem 'html5-boilerplate'
 gem 'jrails'
 gem 'json'
 gem 'juggernaut'
+gem 'maccman-juggernaut'
 gem 'mail'
 gem 'mocha'
 gem 'narray'
