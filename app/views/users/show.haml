@@ -204,10 +204,10 @@
   - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
     .comments.module
       .messages
-        %h3
+        %h2
           Messages
 
-          = render :partial => messages
+        = render :partial => messages
 
 :coffeescript
   $ ->
