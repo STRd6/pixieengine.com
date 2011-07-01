@@ -1,0 +1,5 @@
+- Chat.recent.reverse.each do |chat|
+  %li
+    %span.name= (chat.user ? chat.user.display_name : "Anonymous") + ":"
+    %span.time= chat.created_at.strftime("%I:%M%p") + " "
+    %span.message= chat.text.html_safe
