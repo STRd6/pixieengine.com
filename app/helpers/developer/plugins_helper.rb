@@ -1,2 +1,0 @@
-module Developer::PluginsHelper
-end

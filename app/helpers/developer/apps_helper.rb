@@ -1,2 +1,0 @@
-module Developer::AppsHelper
-end
