@@ -3,12 +3,11 @@
     @import util
     @import branded
 
-    body#fullscreen
-      height: 100%
-
-    footer
-      bottom: 0
-      position: absolute
+    .favorite_color
+      +inline-block
+      border: 1px solid !light_gray
+      height: 50px
+      width: 50px
 
     #show_projects, #show_sprites
       float: right
@@ -52,7 +51,8 @@
         display: block
 
     .project
-      +bounds(430px, 172px)
+      +border-radius
+      +bounds(440px, 172px)
       +box-sizing(border-box)
       +inline-block
 
@@ -101,10 +101,6 @@
 
           .light &
             color: $light_text
-
-    .content
-      margin: auto
-      width: 960px
 
     .module
       > h2
@@ -162,6 +158,12 @@
       = image_tag user.avatar.url(:large), :class => :avatar
       %p= user.profile
 
+    .clear
+
+    %label.inline
+      %h3 Favorite Color
+      .favorite_color{:style => "background: ##{user.favorite_color}"}
+
   - if user.projects.size > 0
     .featured_projects.module
       %h2
@@ -208,10 +210,10 @@
   - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
     .comments.module
       .messages
-        %h3
+        %h2
           Messages
 
-          = render :partial => messages
+        = render :partial => messages
 
 :coffeescript
   $ ->

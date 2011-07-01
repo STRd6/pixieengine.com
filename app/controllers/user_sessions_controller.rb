@@ -1,6 +1,5 @@
 class UserSessionsController < ApplicationController
   def new
-    render "combo_form"
   end
 
   def create

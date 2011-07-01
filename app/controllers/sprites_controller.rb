@@ -1,64 +1,63 @@
-class SpritesController < ResourceController::Base
+class SpritesController < ApplicationController
   respond_to :html, :json
-  actions :all
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
   before_filter :require_user, :only => [:add_tag, :remove_tag]
 
-  create.before do
-    @sprite.user = current_user
-  end
+  def create
+    @sprite = Sprite.create params[:sprite].merge(:user => current_user)
 
-  create.flash nil
+    respond_to do |format|
+      format.html do
+        if sprite.user
+          redirect_to sprite
+        else
+          session[:saved_sprites] ||= {}
+          session[:saved_sprites][sprite.id] = sprite.broadcast
 
-  create.wants.html do
-    unless sprite.user
-      session[:saved_sprites] ||= {}
-      session[:saved_sprites][sprite.id] = sprite.broadcast
-
-      redirect_to login_path
-    end
-  end
-
-  create.wants.js do
-    if sprite.user
-      render :update do |page|
-        link = link_to "Sprite #{@sprite.id}", @sprite
-
-        Event.create(:user => current_user, :name => "save_sprite")
-        page.call "notify", "Saved as #{link}"
+          redirect_to login_path
+        end
       end
-    else
-      session[:saved_sprites] ||= {}
-      session[:saved_sprites][sprite.id] = sprite.broadcast
+      format.js do
+        if sprite.user
+          render :update do |page|
+            link = link_to "Sprite #{@sprite.id}", @sprite
 
-      render :update do |page|
-        page.redirect_to login_path
+            Event.create(:user => current_user, :name => "save_sprite")
+            page.call "notify", "Saved as #{link}"
+          end
+        else
+          session[:saved_sprites] ||= {}
+          session[:saved_sprites][sprite.id] = sprite.broadcast
+
+          render :update do |page|
+            page.redirect_to login_path
+          end
+        end
+      end
+      format.json do
+        if sprite.user
+          render :json => {
+            :sprite => {
+              :id => @sprite.id,
+              :title => @sprite.title,
+              :app_sprite_id => @sprite.app_sprite_id,
+              :src => @sprite.image.url
+            }
+          }
+        else
+          session[:saved_sprites] ||= {}
+          session[:saved_sprites][sprite.id] = sprite.broadcast
+
+          render :json => {
+            :redirect => login_path
+          }
+        end
       end
     end
   end
 
-  create.wants.json do
-    if sprite.user
-      render :json => {
-        :sprite => {
-          :id => @sprite.id,
-          :title => @sprite.title,
-          :app_sprite_id => @sprite.app_sprite_id,
-          :src => @sprite.image.url
-        }
-      }
-    else
-      session[:saved_sprites] ||= {}
-      session[:saved_sprites][sprite.id] = sprite.broadcast
-
-      render :json => {
-        :redirect => login_path
-      }
-    end
-  end
-
-  new_action.wants.html do
+  def new
     unless params[:width].to_i <= 0
       @width = [params[:width].to_i, Sprite::MAX_LENGTH].min
     end
@@ -67,13 +66,13 @@ class SpritesController < ResourceController::Base
       @height = [params[:height].to_i, Sprite::MAX_LENGTH].min
     end
 
+    @sprite = Sprite.new
+
     render :action => :pixie
   end
 
   def index
-    @sprites = sprites
-
-    respond_with(@sprites) do |format|
+    respond_with(sprites) do |format|
       format.json { render :json }
     end
   end
@@ -179,7 +178,11 @@ class SpritesController < ResourceController::Base
 
   helper_method :sprite
   def sprite
-    return object
+    return @sprite ||= Sprite.find(params[:id])
+  end
+
+  def object
+    sprite
   end
 
   helper_method :installed_tools

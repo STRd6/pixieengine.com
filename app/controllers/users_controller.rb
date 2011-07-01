@@ -1,12 +1,13 @@
-class UsersController < ResourceController::Base
-  actions :all, :except => :destroy
+class UsersController < ApplicationController
+  respond_to :html, :json
 
   before_filter :require_user, :only => [:install_plugin]
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
+  before_filter :prep_display_name, :only => :new
 
   REGISTERED_FLASH = "Account registered!"
 
-  new_action.before do
+  def prep_display_name
     email = session.delete(:email) || ''
 
     object.email ||= email
@@ -90,7 +91,16 @@ class UsersController < ResourceController::Base
 
   def show
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
-    @hide_dock = true
+  end
+
+  def edit
+    
+  end
+
+  def update
+    user.update_attributes params[:user]
+
+    respond_with user
   end
 
   def add_to_collection

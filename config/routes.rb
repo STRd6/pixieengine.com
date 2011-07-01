@@ -10,7 +10,7 @@ PixieStrd6Com::Application.routes.draw do
   end
 
   namespace :admin do
-    resources :comments, :feedbacks, :sprites, :users, :reports
+    resources :reports
   end
 
   resources :projects do
@@ -36,69 +36,6 @@ PixieStrd6Com::Application.routes.draw do
       get :github_integration
       post :hook
       get :info
-    end
-  end
-
-  namespace :developer do
-    resources :apps do
-      member do
-        post :add_library
-        post :add_user
-        post :remove_library
-        post :create_app_sprite
-        post :import_app_sprites
-        post :publish
-        post :create_app_sound
-        post :import_app_sounds
-        post :set_app_data
-        post :fork_post
-
-        get :docs
-        get :edit_code
-        get :fork
-        get :fullscreen
-        get :load
-        get :run
-        get :mobile
-        get :widget
-        get :lib, :defaults => { :format => 'js' }
-        get :ide
-        get :permissions
-        get :tile_editor
-      end
-    end
-
-    resources :plugins do
-      member do
-        get :load
-      end
-    end
-
-    resources :scripts do
-      member do
-        post :add_user
-
-        get :load
-        get :permissions
-        get :run
-        get :test
-      end
-    end
-
-    resources :libraries do
-      member do
-        post :add_script
-        post :remove_script
-        post :download
-
-        get :test
-      end
-    end
-  end
-
-  resources :feedbacks do
-    collection do
-      get :thanks
     end
   end
 
