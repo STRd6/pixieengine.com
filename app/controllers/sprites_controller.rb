@@ -1,6 +1,5 @@
-class SpritesController < ResourceController::Base
+class SpritesController < ApplicationController
   respond_to :html, :json
-  actions :all
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
   before_filter :require_user, :only => [:add_tag, :remove_tag]
@@ -180,6 +179,10 @@ class SpritesController < ResourceController::Base
   helper_method :sprite
   def sprite
     return @sprite ||= Sprite.find(params[:id])
+  end
+
+  def object
+    sprite
   end
 
   helper_method :installed_tools
