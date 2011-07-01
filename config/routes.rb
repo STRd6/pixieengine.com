@@ -150,6 +150,13 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
+  resources :chats do
+    collection do
+      get :active_users
+      get :recent
+    end
+  end
+
   resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
@@ -178,9 +185,6 @@ PixieStrd6Com::Application.routes.draw do
   match "logout" => "user_sessions#destroy", :as => :logout
   match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
   match "sign_up" => "users#new", :as => :signup
-
-  match "chat" => "chats#publish"
-  match "active_users" => "chats#active_users"
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'

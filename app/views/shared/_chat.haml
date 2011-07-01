@@ -2,75 +2,59 @@
   .left_content
     %h3 Pixie Chat
     %ul#chats
-      - Chat.recent.reverse.each do |chat|
-        %li
-          %span.name= display_name(chat) + ":"
-          %span.time= time(chat) + " "
-          %span.message= chat.text.html_safe
+      = render :partial => 'shared/recent_chats'
     = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
     %button#send.button Send
 
   .users_wrapper
+    .header Online Now
     %ul#active_users
       = render :partial => 'shared/active_users'
 
-- if Rails.env.development?
-  = javascript_include_tag "http://localhost:8080/application.js"
-- else
-  = javascript_include_tag "http://pixie.strd6.com:8080/application.js"
-
 :coffeescript
-  jug = new Juggernaut
-  jug.subscribe "/chats", (data) ->
-    li = $("<li />")
-
-    name = $ '<span />',
-      class: "name"
-      text: data.name + ":"
-
-    time = $ '<span />',
-      class: "time"
-      text: " \#{data.time} "
-
-    message = $ '<span />',
-      class: "message"
-      html: data.message
-
-    li.append(name, time, message)
-
-    $('#chats').append(li).scrollTo
-      left: '0%'
-      top: '100%'
-
-    if $('#chatZone').css('display') == 'none'
-      $('#unread').show()
-
-    $('#unread p').text("!")
-
   scrollToBottomLeft = (el) ->
     el.scrollTo
       left: '0%'
       top: '100%'
 
   $ ->
-    $('#chatZone').draggable
-      handle: 'h3'
-      stop: ->
-        localStorage.chatTop = $('#chatZone').offset().top
-        localStorage.chatLeft = $('#chatZone').offset().left
-
     setTimeout ->
       scrollToBottomLeft $('#chats')
     , 3000
 
     window.setInterval ->
-      $.get('/active_users', $.noop, "script")
-    , 60000
+      $.get('/chats/active_users', $.noop, "script")
+      $.get('/chats/recent', $.noop, "script")
+
+      $('#chats').scrollTo
+        left: '0%'
+        top: '100%'
+
+    , 30000
 
     send = (field) ->
       if field.val()
-        $.post '/chat',
+        $.post '/chats',
           body: field.val()
+
+        li = $("<li />")
+
+        name = $ '<span />',
+          class: "name"
+          text: "#{current_user.display_name if current_user || "Anonymous"} :"
+
+        time = $ '<span />',
+          class: "time"
+          text: " #{Time.zone.now.strftime('%I:%M%p')} "
+
+        message = $ '<span />',
+          class: "message"
+          html: field.val()
+
+        li.append(name, time, message)
+
+        $('#chats').append(li)
+        scrollToBottomLeft($('#chats'))
 
         field.val("")
 
@@ -87,12 +71,12 @@
 
         img.appendTo(wrapper)
 
-        $.post '/chat', body: wrapper.html(), ->
+        $.post '/chats', body: wrapper.html(), ->
           scrollToBottomLeft $('body')
           scrollToBottomLeft $('#chats')
 
     $('#chatZone #chat_body').keypress (e) ->
-      if(e.keyCode == 13)
+      if e.keyCode == 13
         send(textBox)
 
     $('#send').click ->
