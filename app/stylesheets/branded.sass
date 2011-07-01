@@ -1,8 +1,18 @@
 /* This is a temporary place for things common to branding/landing page explorations
 
+@import util
+
 body#fullscreen
   height: auto
+  min-height: 100%
   padding: 0
+
+  & > .content
+    padding-bottom: 5em
+
+.content
+  margin: auto
+  width: 960px
 
 header, footer
   +bounds(100%, auto)
@@ -16,11 +26,9 @@ header
   margin-bottom: 1em
 
   .content
-    margin: auto
     overflow: auto
     padding: 2em 0 1em
     position: relative
-    width: 960px
 
     .logo
       +bounds(100px, 53px)
@@ -46,8 +54,9 @@ header
       display: none
 
 footer
+  bottom: 0
+  position: absolute
+
   .content
     display: block
-    margin: auto
     padding: 1em 0
-    width: 960px

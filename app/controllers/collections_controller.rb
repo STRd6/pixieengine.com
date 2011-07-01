@@ -1,6 +1,4 @@
-class CollectionsController < ResourceController::Base
-  actions :all, :except => [:edit, :update, :destroy]
-
+class CollectionsController < ApplicationController
   before_filter :require_owner, :only => [:add, :remove]
 
   def add
@@ -27,16 +25,21 @@ class CollectionsController < ResourceController::Base
     end
   end
 
-  create.before do
-    object.user = current_user
+  def create
+    @collection = Collection.new params[:collection]
+    @collection.user = current_user
 
     if params[:sprite_id]
-      object.collection_items.build(:item => Sprite.find(params[:sprite_id]))
+      @collection.collection_items.build(:item => Sprite.find(params[:sprite_id]))
     end
-  end
 
-  create.wants.json do
-    render :json => {:status => "ok", :id => object.id, :title => object.title}
+    @collection.save
+
+    respond_to do |format|
+      format.json do
+        render :json => {:status => "ok", :id => @collection.id, :title => @collection.title}
+      end
+    end
   end
 
   private
@@ -57,6 +60,10 @@ class CollectionsController < ResourceController::Base
   helper_method :paged_collections
   def paged_collections
     collection.paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
+  end
+
+  def object
+    @collection ||= Collection.find params[:id]
   end
 
   def user

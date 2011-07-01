@@ -127,7 +127,9 @@ class Sprite < ActiveRecord::Base
   end
 
   def load_replay_data
-    File.read(replay_path)
+    if File.exists?(replay_path)
+      File.read(replay_path)
+    end
   end
 
   def broadcast_link

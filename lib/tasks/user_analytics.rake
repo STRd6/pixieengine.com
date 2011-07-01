@@ -13,7 +13,6 @@ namespace :report do
   end
 
   task :user_flow => :environment do
-    require 'gratr/import'
     require 'gratr/dot'
 
     def increment_label(edge)
@@ -21,7 +20,7 @@ namespace :report do
       edge.label[:label] = label + 1
     end
 
-    dg = Digraph.new
+    dg = GRATR::Digraph.new
     prev_visit = nil
 
     week_start = (Date.today.beginning_of_week - 1).to_s
@@ -120,7 +119,6 @@ namespace :report do
   end
 
   task :user_retention => :environment do
-    require 'ruport'
     include Ruport::Data
 
     created = User.find_by_sql <<-eos
@@ -205,5 +203,34 @@ namespace :report do
     end
 
     table.to_html(:file => 'report.html')
+  end
+
+  task :unused_paths => :environment do
+    visits = Visit.find_by_sql(<<-eos
+      SELECT session_id, controller, action
+      FROM visits
+      WHERE controller != 'chats'
+    eos
+
+    )
+
+    total = visits.count
+
+    visits = visits.map do |visit|
+      { :session_id => visit["session_id"], :path => visit["controller"] + '/' + visit["action"] }
+    end
+
+    action_counts = {}
+
+    visits.each do |visit|
+      action_counts[visit[:path]] = (action_counts[visit[:path]] || 0) + 1
+    end
+
+    action_counts = action_counts.sort_by { |k, v| v }
+
+    #calculate percentages
+    action_counts.each do |key, value|
+      p "#{key}: #{value} (#{((value / total.to_f) * 100).round}%)"
+    end
   end
 end

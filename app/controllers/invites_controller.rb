@@ -1,18 +1,15 @@
-class InvitesController < ResourceController::Base
-  actions :create, :new
-
+class InvitesController < ApplicationController
   before_filter :require_user, :only => [:new, :create]
 
-  create.before do
-    @invite.user = current_user
+  def new
+    @invite = Invite.new
   end
 
-  create.response do |wants|
-    wants.html do
-      Event.create(:user => current_user, :name => "invite_friend")
-      flash[:notice] =  "Your friend will receive the message shortly"
-      redirect_to root_path
-    end
+  def create
+    Invite.create params[:invite].merge(:user => current_user)
+
+    Event.create(:user => current_user, :name => "invite_friend")
+    redirect_to current_user, :notice => "Your friend will receive the message shortly"
   end
 
   def track

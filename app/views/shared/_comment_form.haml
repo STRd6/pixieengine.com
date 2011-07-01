@@ -1,10 +1,11 @@
 = form_for Comment.new(:commentable => commentable) do |form|
   %h3 Comments
-  = form.hidden_field :commentable_type
-  = form.hidden_field :commentable_id
-  = form.text_area :body, :placeholder => "type your comment here"
+  %label
+    = form.hidden_field :commentable_type
+    = form.hidden_field :commentable_id
+    = form.text_area :body, :placeholder => "type your comment here"
 
-  %button Post Comment
+  %button.full Post Comment
 
 #comment_template.template
   .comment
