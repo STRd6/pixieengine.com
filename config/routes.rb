@@ -96,12 +96,6 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :feedbacks do
-    collection do
-      get :thanks
-    end
-  end
-
   resources :collections do
     member do
       post :add
