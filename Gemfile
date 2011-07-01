@@ -58,7 +58,3 @@ end
 group :development do
   gem "ruport"
 end
-
-group :tools do
-  gem "rails_best_practices"
-end
