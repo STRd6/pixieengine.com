@@ -3,6 +3,12 @@
     @import util
     @import branded
 
+    .favorite_color
+      +inline-block
+      border: 1px solid !light_gray
+      height: 50px
+      width: 50px
+
     #show_projects, #show_sprites
       float: right
       font-size: 120%
@@ -153,6 +159,10 @@
       %p= user.profile
 
     .clear
+
+    %label.inline
+      %h3 Favorite Color
+      .favorite_color{:style => "background: ##{user.favorite_color}"}
 
   - if user.projects.size > 0
     .featured_projects.module
