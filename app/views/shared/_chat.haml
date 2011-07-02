@@ -30,7 +30,7 @@
         left: '0%'
         top: '100%'
 
-    , 300000
+    , 30000
 
     send = (field) ->
       if field.val()
@@ -39,13 +39,22 @@
 
         prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
         commenter = "#{ current_user ? current_user.display_name : "Anonymous" }"
+        commenter_id = #{ current_user ? current_user.id : -1 }
 
         li = $("<li />")
         hr = $("<hr />")
+        if commenter_id > 0
+          a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
 
-        name = $ '<span />',
-          class: "name"
-          text: commenter + ": "
+        if a
+          name = $ '<span />',
+            class: "name"
+
+          name.append(a)
+        else
+          name = $ '<span />',
+            class: "name"
+            text: commenter
 
         time = $ '<span />',
           class: "time"
@@ -62,11 +71,6 @@
 
         $('#chats').append(li)
         scrollToBottomLeft($('#chats'))
-
-      $('#chats li').hover ->
-        $(this).find('.time').css('display', 'inline-block')
-      , ->
-        $(this).find('.time').css('display', 'none')
 
         field.val("")
 
@@ -111,4 +115,8 @@
     $('#chatZone .header').click ->
       $('#openChat').mousedown()
 
-
+    $('#chats li').live("mouseenter", ->
+      $(this).find('.time').css('display', 'inline-block')
+    ).live("mouseleave", ->
+      $(this).find('.time').css('display', 'none')
+    )

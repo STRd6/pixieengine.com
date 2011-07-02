@@ -4,7 +4,7 @@
   %li
     - if chat.user_id != prev_commenter
       %hr
-      %span.name= (chat.user ? chat.user.display_name : "Anonymous")
+      %span.name= (chat.user ? link_to(chat.user.display_name, user_path(chat.user), :target => "_blank") : "Anonymous")
       %span.time= chat.created_at.strftime("%l:%M%P")
     %span.message= chat.text.html_safe
   - prev_commenter = chat.user_id
