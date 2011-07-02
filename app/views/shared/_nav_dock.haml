@@ -15,22 +15,17 @@
         %li
           %span Users
           = link_to_unless_current image_tag("dock/people.png"), users_path, :title => "People"
-        %li#chat
-          %span Chat
-          = link_to image_tag("dock/chat.png"), '#', :title => "Chat"
-      %div#unread.pulse
-        %p
 
   #hide_dock
 
   :coffeescript
     $ ->
-      $(document).bind 'keydown', 'c', (event) ->
-        event.preventDefault()
-        $('#chat').mousedown()
+      $(document).bind 'keydown', 'c', (e) ->
+        e.preventDefault()
+        $('#openChat').mousedown()
 
-      $(document).bind 'keydown', 'd', (event) ->
-        event.preventDefault()
+      $(document).bind 'keydown', 'd', (e) ->
+        e.preventDefault()
         $('#hide_dock').mousedown()
 
       active_app = $('<img />',
@@ -57,61 +52,9 @@
         else
           localStorage.dock = 'show'
 
-      $('#chat').mousedown ->
-        $('#chatZone').css
-          top: localStorage.chatTop + "px" || "150px"
-          left: localStorage.chatLeft + "px" || "10px"
-
-        $('#unread p').text("")
-        $('#unread').hide()
-
-        $('#chatZone').toggle()
-
-        $('#chats').scrollTo
-          left: '0%'
-          top: '100%'
-
-        if ($('#chatZone').css('display') == 'none')
-          localStorage.chat = false
-          $('#chat img.active').remove()
-        else
-          localStorage.chat = 'active'
-          $('#chat').append(active_app.clone().css('padding-top', '10px'))
-      .click (event) ->
-        event.preventDefault()
-
-      if localStorage.chat == 'active'
-        $('#chat').mousedown()
-
   %style
     :sass
       @import util
-
-      +pulse
-
-      #unread
-        +border-radius(10px)
-        +bounds(16px)
-
-        background-color: #000
-        border: 2px solid #fff
-        color: #fff
-        display: none
-        position: absolute
-        right: 30px
-        top: -8px
-
-        p
-          +bounds(16px)
-
-          font-size: 10px
-          margin-left: 6px
-          margin-top: 7px
-
-      .pulse
-        -webkit-animation-name: pulse
-        -webkit-animation-duration: 1.5s
-        -webkit-animation-iteration-count: 8
 
       #hide_dock
         +bounds(30px)
@@ -134,7 +77,7 @@
             background: url(/images/show_dock_light.png) no-repeat
 
       #dockContainer
-        +bounds(400px, 70px)
+        +bounds(320px, 70px)
         bottom: 0
         left: 0
         right: 0

@@ -1,39 +1,61 @@
 @import partials/base
 @import util
 
+$chat_background: white
+
 .left_content
-  border-right: 1px dashed #aaa
+  +bounds(360px, 273px)
+  +box-shadow(rgba(255, 255, 255, 0.07), 1px, 0, 0)
+
+  border-right: 1px solid $dark_highlight
   display: inline-block
-  width: 400px
+
+#openChat
+  +bounds(167px, 18px)
+  +user-select
+
+  background-color: $branded_blue
+  border: 1px solid #888
+  border-bottom: none
+  bottom: 0
+  color: white
+  cursor: pointer
+  font-weight: bold
+  position: fixed
+  right: 15px
+  text-align: center
 
 #chatZone
-  +bounds(560px, 310px)
-  +border-radius
-  +user-select(text)
+  +border-top-radius
+  +bounds(530px, 300px)
+  +box-sizing(border-box)
   +scrollbars
-  +glass
 
-  background-color: transparentize($dark_highlight, 0.05)
+  background-color: $dark_highlight
+  border: 1px solid rgba(0, 0, 0, 0.3)
   color: #fff
   display: none
-  padding: 10px
-  position: absolute
-  left: 0
-  top: 150px
+  padding: 0
+  position: fixed
+  bottom: 18px
+  right: 15px
   z-index: 200
 
   .light &
-    background-color: transparentize($light_highlight, 0.05)
+    background-color: $chat_background
     color: #000
 
-  h3
-    +user-select(none)
+  .header
+    +border-top-radius
 
-    cursor: move
+    background-color: $branded_blue
+    color: white
+    cursor: pointer
+    font-size: 110%
+    margin: 0
+    padding: 0.25em 0.5em
 
   #send
-    +border-radius(0)
-
     margin: 0 0 0 -2px
     font-weight: bold
     padding-left: 8px
@@ -41,51 +63,39 @@
     vertical-align: top
     height: 24px
 
-  .drag_drop_placeholder
-    position: absolute
-    top: 30%
-    left: 0
-    right: 0
-    margin: auto
-    width: 250px
-
-  p.big
-    font-size: 24px
-    font-weight: bold
-    position: absolute
-    margin: auto
-    text-align: center
-    width: 250px
-
-  p.small
-    position: absolute
-    top: 50px
-    bottom: 0
-    left: 0
-    right: 0
-    margin: auto
-    width: 125px
-
 #chats
+  +bounds(360px, 240px)
+
+  color: #333
   display: inline-block
-  font: 13px Helvetica, Arial
-  height: 240px
+  font: 12px Helvetica, Arial
   list-style: none
   overflow-y: auto
   overflow-x: hidden
-  width: 400px
   word-wrap: break-word
 
+  hr
+    border-top: 1px solid rgba(0, 0, 0, 0.10)
+
   .name
+    background-color: $chat_background
     font-weight: bold
+    position: absolute
+    top: 10px
 
   .time
+    background-color: $chat_background
+    color: rgba(0, 0, 0, 0.35)
+    display: none
     font-style: italic
     font-size: 8pt
-    color: #888
+    position: absolute
+    right: 0
+    top: 12px
 
   li
-    padding: 5px
+    padding: 5px 0 5px 5px
+    position: relative
     margin: 0
 
 .users_wrapper
@@ -99,15 +109,13 @@
 #active_users
   list-style: none
   display: inline-block
-  margin-left: 5px
+  margin-top: 0.5em
 
-  li.header
-    font-weight: bold
-    width: 137px
-    text-align: center
-    margin-bottom: 5px
+  img
+    vertical-align: middle
 
 #chat_body
-  +bounds(338px, 24px)
+  +bounds(345px, 24px)
+
   display: inline
-  margin-bottom: 5px
+  margin-left: 0.5em

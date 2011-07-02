@@ -2,7 +2,7 @@ class ChatsController < ApplicationController
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TextHelper
 
-  def publish
+  def create
     if current_user
       display_name = current_user.display_name
     else
@@ -24,25 +24,23 @@ class ChatsController < ApplicationController
 
     unless cleaned_text.blank?
       Chat.create({ :user => current_user, :text => cleaned_text })
-
-      Juggernaut.publish("/chats", {
-        :message => cleaned_text,
-        :time => Time.zone.now.strftime("%I:%M%p"),
-        :name => display_name
-      })
     end
 
     render :nothing => true
   end
 
+  def recent
+    respond_to do |format|
+      format.js do
+        render :update do |page|
+          page.replace_html 'chats', :partial => 'shared/recent_chats'
+        end
+      end
+    end
+  end
+
   def active_users
     respond_to do |format|
-      format.json do
-        render :json => {
-          :users => User.logged_in.map { |user| {:name => user.display_name } }
-        }
-      end
-
       format.js do
         render :update do |page|
           page.replace_html 'active_users', :partial => 'shared/active_users'
