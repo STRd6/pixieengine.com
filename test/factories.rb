@@ -51,8 +51,8 @@ Factory.define :plugin do |plugin|
 end
 
 Factory.define :sound do |sound|
-  sound.wav File.new("#{Rails.root.to_s}/test/test.wav")
-  sound.sfs File.new("#{Rails.root.to_s}/test/test.sfs")
+  sound.wav File.new(File.join(Rails.root, "/test/test.wav"))
+  sound.sfs File.new(File.join(Rails.root, "/test/test.sfs"))
 end
 
 Factory.define :project do |project|
