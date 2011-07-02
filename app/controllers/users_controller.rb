@@ -8,10 +8,16 @@ class UsersController < ApplicationController
   REGISTERED_FLASH = "Account registered!"
 
   def prep_display_name
+    @object = User.new
+
     email = session.delete(:email) || ''
 
     object.email ||= email
     object.display_name = email[0..((email.index('@') || 0) - 1)]
+  end
+
+  def new
+    
   end
 
   def remove_favorite
