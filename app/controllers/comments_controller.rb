@@ -8,6 +8,8 @@ class CommentsController < ApplicationController
 
     @comment.save
 
+    Notifier.comment(@comment)
+
     respond_with(@comment) do |format|
       format.html do
         redirect_to :back
