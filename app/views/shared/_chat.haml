@@ -1,13 +1,13 @@
+#openChat Chat
 #chatZone
+  %h4.header Pixie Chat
   .left_content
-    %h3 Pixie Chat
     %ul#chats
       = render :partial => 'shared/recent_chats'
     = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
     %button#send.button Send
 
   .users_wrapper
-    .header Online Now
     %ul#active_users
       = render :partial => 'shared/active_users'
 
@@ -30,31 +30,43 @@
         left: '0%'
         top: '100%'
 
-    , 30000
+    , 300000
 
     send = (field) ->
       if field.val()
         $.post '/chats',
           body: field.val()
 
+        prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
+        commenter = "#{ current_user ? current_user.display_name : "Anonymous" }"
+
         li = $("<li />")
+        hr = $("<hr />")
 
         name = $ '<span />',
           class: "name"
-          text: "#{current_user.display_name if current_user || "Anonymous"} :"
+          text: commenter + ": "
 
         time = $ '<span />',
           class: "time"
-          text: " #{Time.zone.now.strftime('%I:%M%p')} "
+          text: "#{Time.zone.now.strftime('%I:%M%p')} "
 
         message = $ '<span />',
           class: "message"
           html: field.val()
 
-        li.append(name, time, message)
+        if commenter != prev_commenter
+          li.append(hr, name, time)
+
+        li.append(message)
 
         $('#chats').append(li)
         scrollToBottomLeft($('#chats'))
+
+      $('#chats li').hover ->
+        $(this).find('.time').css('display', 'inline-block')
+      , ->
+        $(this).find('.time').css('display', 'none')
 
         field.val("")
 
@@ -79,5 +91,24 @@
       if e.keyCode == 13
         send(textBox)
 
-    $('#send').click ->
-      send(textBox)
+    $('#send').live
+      click: -> send(textBox)
+
+    $('#chats li').hover ->
+      $(this).find('.time').css('display', 'inline-block')
+    , ->
+      $(this).find('.time').css('display', 'none')
+
+    $('#openChat').mousedown ->
+      $('#chatZone').toggle()
+
+      $('#chats').scrollTo
+        left: '0%'
+        top: '100%'
+    .click (e) ->
+      e.preventDefault()
+
+    $('#chatZone .header').click ->
+      $('#openChat').mousedown()
+
+
