@@ -1,122 +1,119 @@
-#openChat Chat
-#chatZone
-  %h4.header Pixie Chat
-  .left_content
-    %ul#chats
-      = render :partial => 'shared/recent_chats'
-    = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
-    %button#send.button Send
+- unless @hide_chat
+  #openChat Chat
+  #chatZone
+    %h4.header Pixie Chat
+    .left_content
+      %ul#chats
+        = render :partial => 'shared/recent_chats'
+      = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
 
-  .users_wrapper
-    %ul#active_users
-      = render :partial => 'shared/active_users'
+    .users_wrapper
+      %ul#active_users
+        = render :partial => 'shared/active_users'
 
-:coffeescript
-  scrollToBottomLeft = (el) ->
-    el.scrollTo
-      left: '0%'
-      top: '100%'
-
-  $ ->
-    setTimeout ->
-      scrollToBottomLeft $('#chats')
-    , 3000
-
-    window.setInterval ->
-      $.get('/chats/active_users', $.noop, "script")
-      $.get('/chats/recent', $.noop, "script")
-
-      $('#chats').scrollTo
+  :coffeescript
+    scrollToBottomLeft = (el) ->
+      el.scrollTo
         left: '0%'
         top: '100%'
 
-    , 30000
+    $ ->
+      setTimeout ->
+        scrollToBottomLeft $('#chats')
+      , 3000
 
-    send = (field) ->
-      if field.val()
-        $.post '/chats',
-          body: field.val()
+      window.setInterval ->
+        $.get('/chats/active_users', $.noop, "script")
+        $.get('/chats/recent', $.noop, "script")
 
-        prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
-        commenter = "#{ current_user ? current_user.display_name : "Anonymous" }"
-        commenter_id = #{ current_user ? current_user.id : -1 }
+        $('#chats').scrollTo
+          left: '0%'
+          top: '100%'
 
-        li = $("<li />")
-        hr = $("<hr />")
-        if commenter_id > 0
-          a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
+      , 30000
 
-        if a
-          name = $ '<span />',
-            class: "name"
+      send = (field) ->
+        if field.val()
+          $.post '/chats',
+            body: field.val()
 
-          name.append(a)
-        else
-          name = $ '<span />',
-            class: "name"
-            text: commenter
+          prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
+          commenter = "#{ current_user ? current_user.display_name : "Anonymous" }"
+          commenter_id = #{ current_user ? current_user.id : -1 }
 
-        time = $ '<span />',
-          class: "time"
-          text: "#{Time.zone.now.strftime('%I:%M%p')} "
+          li = $("<li />")
+          hr = $("<hr />")
+          if commenter_id > 0
+            a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
 
-        message = $ '<span />',
-          class: "message"
-          html: field.val()
+          if a
+            name = $ '<span />',
+              class: "name"
 
-        if commenter != prev_commenter
-          li.append(hr, name, time)
+            name.append(a)
+          else
+            name = $ '<span />',
+              class: "name"
+              text: commenter
 
-        li.append(message)
+          time = $ '<span />',
+            class: "time"
+            text: "#{Time.zone.now.strftime('%I:%M%p')} "
 
-        $('#chats').append(li)
-        scrollToBottomLeft($('#chats'))
+          message = $ '<span />',
+            class: "message"
+            html: field.val()
 
-        field.val("")
+          if commenter != prev_commenter
+            li.append(hr, name, time)
 
-    textBox = $('#send').prev()
+          li.append(message)
 
-    $("#chatZone").dropImageReader (file, event) ->
+          $('#chats').append(li)
+          scrollToBottomLeft($('#chats'))
 
-      if event.target.readyState == FileReader.DONE
-        wrapper = $("<div />")
-        img = $ "<img/>",
-          alt: file.name
-          src: event.target.result
-          title: file.name
+          field.val("")
 
-        img.appendTo(wrapper)
+      textBox = $('#chat_body')
 
-        $.post '/chats', body: wrapper.html(), ->
-          scrollToBottomLeft $('body')
-          scrollToBottomLeft $('#chats')
+      $("#chatZone").dropImageReader (file, event) ->
 
-    $('#chatZone #chat_body').keypress (e) ->
-      if e.keyCode == 13
-        send(textBox)
+        if event.target.readyState == FileReader.DONE
+          wrapper = $("<div />")
+          img = $ "<img/>",
+            alt: file.name
+            src: event.target.result
+            title: file.name
 
-    $('#send').live
-      click: -> send(textBox)
+          img.appendTo(wrapper)
 
-    $('#chats li').hover ->
-      $(this).find('.time').css('display', 'inline-block')
-    , ->
-      $(this).find('.time').css('display', 'none')
+          $.post '/chats', body: wrapper.html(), ->
+            scrollToBottomLeft $('body')
+            scrollToBottomLeft $('#chats')
 
-    $('#openChat').mousedown ->
-      $('#chatZone').toggle()
+      $('#chatZone #chat_body').keypress (e) ->
+        if e.keyCode == 13
+          send(textBox)
 
-      $('#chats').scrollTo
-        left: '0%'
-        top: '100%'
-    .click (e) ->
-      e.preventDefault()
+      $('#chats li').hover ->
+        $(this).find('.time').css('display', 'inline-block')
+      , ->
+        $(this).find('.time').css('display', 'none')
 
-    $('#chatZone .header').click ->
-      $('#openChat').mousedown()
+      $('#openChat').mousedown ->
+        $('#chatZone').toggle()
 
-    $('#chats li').live("mouseenter", ->
-      $(this).find('.time').css('display', 'inline-block')
-    ).live("mouseleave", ->
-      $(this).find('.time').css('display', 'none')
-    )
+        $('#chats').scrollTo
+          left: '0%'
+          top: '100%'
+      .click (e) ->
+        e.preventDefault()
+
+      $('#chatZone .header').click ->
+        $('#openChat').mousedown()
+
+      $('#chats li').live("mouseenter", ->
+        $(this).find('.time').css('display', 'inline-block')
+      ).live("mouseleave", ->
+        $(this).find('.time').css('display', 'none')
+      )

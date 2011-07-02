@@ -1,7 +1,7 @@
 @import partials/base
 @import util
 
-$chat_background: $light_background
+$chat_background: white
 
 .left_content
   +bounds(360px, 273px)
@@ -18,7 +18,7 @@ $chat_background: $light_background
   border: 1px solid #888
   border-bottom: none
   bottom: 0
-  color: $dark_text
+  color: white
   cursor: pointer
   font-weight: bold
   position: fixed
@@ -26,6 +26,7 @@ $chat_background: $light_background
   text-align: center
 
 #chatZone
+  +border-top-radius
   +bounds(530px, 300px)
   +box-sizing(border-box)
   +scrollbars
@@ -45,8 +46,10 @@ $chat_background: $light_background
     color: #000
 
   .header
+    +border-top-radius
+
     background-color: $branded_blue
-    color: $dark_text
+    color: white
     cursor: pointer
     font-size: 110%
     margin: 0
@@ -112,7 +115,7 @@ $chat_background: $light_background
     vertical-align: middle
 
 #chat_body
-  +bounds(83%, 24px)
+  +bounds(345px, 24px)
 
   display: inline
   margin-left: 0.5em
