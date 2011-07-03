@@ -1,6 +1,4 @@
 class Notifier < ActionMailer::Base
-  default_url_options[:host] = "pixie.strd6.com"
-
   default :from => 'Pixie <notifications@strd6.com>'
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -40,8 +38,12 @@ class Notifier < ActionMailer::Base
   end
 
   def comment(comment)
-    mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
-      :to => comment.commentee.email
+    @comment = comment
+
+    if comment.commentable.user
+      mail :subject => "#{comment.commentable.user.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
+      :to => comment.commentable.user.email
+    end
   end
 
   def analytics(user)
