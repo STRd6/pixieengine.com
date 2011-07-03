@@ -178,7 +178,11 @@
               $('#chats').append(li)
 
               $("#chatZone").fadeIn()
-              $("#openChat").toggleClass('straight')
+              $("#openChat").addClass('straight')
+
+              $('#chats').scrollTo
+                left: '0%'
+                top: '100%'
 
         $.each installedTools, (i, tool) ->
           canvas.addTool(tool)
