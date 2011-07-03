@@ -81,6 +81,13 @@ class SpritesController < ApplicationController
     @sprite = Sprite.find(params[:id])
   end
 
+  def destroy
+    @sprite = Sprite.find(params[:id])
+    @sprite.destroy
+    flash[:notice] = "Sprite has been deleted."
+    respond_with(@sprite)
+  end
+
   def update
     @sprite = Sprite.find(params[:id])
 
@@ -155,9 +162,9 @@ class SpritesController < ApplicationController
 
   def collection
     @collection ||= if params[:tagged]
-      Sprite.tagged_with(params[:tagged]).paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
+      Sprite.tagged_with(params[:tagged]).order("id DESC").paginate(:page => params[:page], :per_page => per_page)
     else
-      Sprite.paginate(:page => params[:page], :per_page => per_page, :order => 'id DESC')
+      Sprite.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
     end
   end
 

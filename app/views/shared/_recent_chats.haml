@@ -1,8 +1,9 @@
 - prev_commenter = nil
+- chats = Chat.recent.reverse
 
-- Chat.recent.reverse.each do |chat|
+- chats.each do |chat|
   %li
-    - if chat.user_id != prev_commenter
+    - if (chat.user_id != prev_commenter) || chat == chats.first
       %hr
       %span.name= (chat.user ? link_to(chat.user.display_name, user_path(chat.user), :target => "_blank") : "Anonymous")
       %span.time= chat.created_at.strftime("%l:%M%P")

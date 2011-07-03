@@ -1,10 +1,7 @@
-$button_background_active: #5c9ccc
 $button_border: #b8e0fa
 $button_font: #0c639b
 $button_gradient_start: #fefeff
 $button_gradient_end: #a0d5f8
-
-$complementary_orange: complement($pixie_primary)
 
 button, a.button
   +button-button
@@ -17,6 +14,7 @@ button, a.button
   &:hover
     +linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%)))
 
+    color: $button_font
     text-decoration: none
 
   &:visited

@@ -7,16 +7,15 @@ $chat_background: white
   +bounds(360px, 273px)
   +box-shadow(rgba(255, 255, 255, 0.07), 1px, 0, 0)
 
-  border-right: 1px solid $dark_highlight
+  border-right: 1px solid rgba(0, 0, 0, 0.1)
   display: inline-block
 
 #openChat
-  +bounds(167px, 18px)
+  +border-top-radius
+  +bounds(170px, 18px)
   +user-select
 
-  background-color: $branded_blue
-  border: 1px solid #888
-  border-bottom: none
+  background-color: $complementary_orange
   bottom: 0
   color: white
   cursor: pointer
@@ -25,15 +24,18 @@ $chat_background: white
   right: 15px
   text-align: center
 
+  &.straight
+    +border-radius(0)
+
 #chatZone
   +border-top-radius
+  +border-bottom-left-radius
   +bounds(530px, 300px)
   +box-sizing(border-box)
   +scrollbars
 
-  background-color: $dark_highlight
-  border: 1px solid rgba(0, 0, 0, 0.3)
-  color: #fff
+  background-color: $chat_background
+  color: #000
   display: none
   padding: 0
   position: fixed
@@ -41,14 +43,10 @@ $chat_background: white
   right: 15px
   z-index: 200
 
-  .light &
-    background-color: $chat_background
-    color: #000
-
   .header
     +border-top-radius
 
-    background-color: $branded_blue
+    background-color: $complementary_orange
     color: white
     cursor: pointer
     font-size: 110%
@@ -75,13 +73,20 @@ $chat_background: white
   word-wrap: break-word
 
   hr
-    border-top: 1px solid rgba(0, 0, 0, 0.10)
+    border-top: 1px solid rgba(0, 0, 0, 0.1)
 
   .name
     background-color: $chat_background
     font-weight: bold
     position: absolute
     top: 10px
+
+    a
+      color: #333
+      text-decoration: none
+
+      &:hover
+        color: lighten(#333, 20%)
 
   .time
     background-color: $chat_background

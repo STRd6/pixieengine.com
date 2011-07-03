@@ -23,9 +23,6 @@ class AnimationsController < ApplicationController
     respond_with(@animation)
   end
 
-  def index
-  end
-
   def filter_results
     @animations ||= if current_user
       if filter == "own"
