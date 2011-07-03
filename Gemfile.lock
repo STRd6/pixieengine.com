@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/akitaonrails/will_paginate.git
+  revision: f76db771a8adcc782b43222cc5fe523467a871ac
+  branch: rails3.1
+  specs:
+    will_paginate (3.0.pre3)
+
+GIT
   remote: git://github.com/jdleesmiller/gratr.git
   revision: d96d658abd2466d7542b6aeb54f8c17250a4bbc2
   specs:
@@ -189,7 +196,6 @@ GEM
     whenever (0.6.8)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
-    will_paginate (2.3.15)
     xml-simple (1.1.0)
 
 PLATFORMS
@@ -230,4 +236,4 @@ DEPENDENCIES
   therubyracer
   thinking-sphinx (= 2.0.1)
   whenever
-  will_paginate
+  will_paginate!

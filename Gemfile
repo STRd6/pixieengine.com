@@ -43,7 +43,7 @@ gem "ruby-openid"
 gem "sanitize"
 gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
-gem "will_paginate"
+gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
 
 # Bundle gems for certain environments:
