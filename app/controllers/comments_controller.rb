@@ -8,8 +8,6 @@ class CommentsController < ApplicationController
 
     @comment.save
 
-    Notifier.comment(@comment)
-
     respond_with(@comment) do |format|
       format.html do
         redirect_to :back
@@ -18,7 +16,7 @@ class CommentsController < ApplicationController
         :body => @comment.body,
         :commentable_id => @comment.commentable_id,
         :name => @comment.commenter.display_name,
-        :time => Time.zone.now.strftime("%I:%M%p")
+        :time => Time.zone.now.strftime("%l:%M%P")
       }}
     end
   end
