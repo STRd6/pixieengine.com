@@ -81,6 +81,13 @@ class SpritesController < ApplicationController
     @sprite = Sprite.find(params[:id])
   end
 
+  def destroy
+    @sprite = Sprite.find(params[:id])
+    @sprite.destroy
+    flash[:notice] = "Sprite has been deleted."
+    respond_with(@sprite)
+  end
+
   def update
     @sprite = Sprite.find(params[:id])
 
