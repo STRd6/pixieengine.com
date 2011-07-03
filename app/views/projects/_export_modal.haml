@@ -1,0 +1,58 @@
+#export_modal.modal
+  %h2 Choose an Export Method
+
+  .choice.zip
+    .wrap
+      %h3 Zip File
+    = image_tag "zip.png"
+
+  .choice.chrome
+    .wrap
+      %h3 Packaged for Chrome Web Store
+    = image_tag "chrome_webstore.png"
+
+:coffeescript
+  $("#export").click ->
+    $("#export_modal").modal()
+
+  $("#export_modal .choice.zip").click ->
+    requireLogin ->
+      notify("Exporting .zip ...")
+
+      window.location = #{download_project_path(project).to_json}
+
+      $.modal.close()
+
+  $("#export_modal .choice.chrome").click ->
+    requireSubscription ->
+      notify("Exporting Chrome Web Store Package ...")
+
+      window.location = #{download_project_path(project, :chrome => 1).to_json}
+
+      $.modal.close()
+
+%style
+  :sass
+    @import util
+    #export_modal
+
+      .choice
+        +border-radius
+        +inline-block
+
+        background-color: $dark_highlight
+        cursor: pointer
+        margin: 1em
+        padding: 0.5em
+        text-align: center
+
+        width: 256px
+
+        &:hover
+          background-color: lighten($dark_highlight, 20%)
+
+        .wrap
+          height: 60px
+
+        img
+          

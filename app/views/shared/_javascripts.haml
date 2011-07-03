@@ -1,5 +1,5 @@
 
-= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
+= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"
 -# fall back to local jQuery if necessary
 :javascript
   if(!window.jQuery) {
@@ -11,6 +11,9 @@
   if(!window.jQuery.ui) {
     document.write(unescape('%3Cscript src="/javascripts/jquery.ui.min.js"%3E%3C/script%3E'));
   }
+
+/[if lt IE 9]
+  = javascript_include_tag "excanvas.compiled"
 
 = javascript_include_tag 'rails', 'corelib', 'application', 'site', :cache => "main"
 
@@ -43,3 +46,5 @@
 - javascripts.push({:cache => "jqext"})
 = javascript_include_tag *javascripts
 = javascript_include_tag 'pixie/jqcolor', 'color', 'matrix-1.2.0.min'
+
+= javascript_include_tag "coffee-script"

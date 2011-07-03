@@ -17,14 +17,14 @@ class ProjectTest < ActiveSupport::TestCase
     end
 
     should "be archiveable and restoreable" do
-      assert_difference "Sprite::Archive.count", +1 do
-        assert_difference "Sprite.count", -1 do
+      assert_difference "Project::Archive.count", +1 do
+        assert_difference "Project.count", -1 do
           @project.destroy
         end
       end
 
-      assert_difference "Sprite::Archive.count", -1 do
-        assert_difference "Sprite.count", +1 do
+      assert_difference "Project::Archive.count", -1 do
+        assert_difference "Project.count", +1 do
           Project.restore_all([ 'id = ?', @project.id ])
         end
       end

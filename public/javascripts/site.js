@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Wed, 01 Jun 2011 19:28:17 GMT from
- * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
+/* DO NOT MODIFY. This file was compiled Mon, 27 Jun 2011 20:13:13 GMT from
+ * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
@@ -14,17 +14,39 @@
     return document.location = $(this).find("a").eq(0).attr("href");
   });
   window.showTooltip = function(element, html) {
-    var position;
+    var position, tooltipHeight;
     position = element.offset() || {
       top: 50,
       left: 50
     };
-    position.left += element.width() + 42;
-    return $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html);
+    if (!element.offset()) {
+      $("#tooltip .icon").hide();
+    } else {
+      $("#tooltip .icon").show();
+    }
+    $("#tooltip").find(".content").html(html);
+    tooltipHeight = $('#tooltip').height();
+    position.left += element.width() + 30;
+    position.top -= tooltipHeight / 2;
+    if (position.top < 5) {
+      position.top = 5;
+      $("#tooltip .icon").css('top', -tooltipHeight + 7);
+    } else {
+      $("#tooltip .icon").css('top', 0);
+    }
+    return $("#tooltip").stop().offset(position).fadeIn();
   };
   window.hideTooltip = function() {
     return $("#tooltip").stop().fadeOut();
   };
+  $("#tooltip").live({
+    mouseenter: function() {
+      return $(this).css('opacity', 1);
+    },
+    mouseleave: function() {
+      return $(this).css('opacity', 0.4);
+    }
+  });
   getVal = function(key) {
     if (localStorage) {
       try {
@@ -44,14 +66,14 @@
     setLightTheme = function(active) {
       $('#fullscreen').toggleClass('light', active);
       $('iframe').contents().find('html').toggleClass("light", active);
+      $('.bulb').toggleClass("on", active);
       return setVal('light', active);
     };
-    $('#bulb').click(function() {
+    $('.bulb').click(function() {
       $(this).toggleClass('on');
       return setLightTheme($(this).hasClass('on'));
     });
     if (active = getVal('light') || $("body").is(".light")) {
-      $('#bulb').toggleClass('on', active);
       setLightTheme(active);
     }
     $("#flashes .notice").each(function() {

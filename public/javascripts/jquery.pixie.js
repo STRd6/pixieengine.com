@@ -1,10 +1,11 @@
-/* DO NOT MODIFY. This file was compiled Mon, 16 May 2011 20:10:27 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 10 Jun 2011 05:46:44 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   (function($) {
-    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, scale, tools;
+    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, primaryButton, scale, tools;
     DEBUG = false;
     DIV = "<div />";
     IMAGE_DIR = "/images/pixie/";
@@ -34,6 +35,9 @@
     palette = ["#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E", "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495", "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"];
     falseFn = function() {
       return false;
+    };
+    primaryButton = function(event) {
+      return !(event.button != null) || event.button === 0;
     };
     ColorPicker = function() {
       return $('<input/>', {
@@ -448,7 +452,7 @@
       PIXEL_WIDTH = parseInt(options.pixelWidth || options.pixelSize || 16, 10);
       PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10);
       return this.each(function() {
-        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLayer, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
+        var actionbar, active, canvas, colorPickerHolder, colorbar, content, currentTool, guideLayer, handleEvent, initialStateData, lastClean, lastPixel, layer, layers, mode, navLeft, navRight, opacitySlider, opacityVal, pixels, pixie, preview, primaryColorPicker, replaying, secondaryColorPicker, swatches, tilePreview, toolbar, undoStack, viewport;
         pixie = $(this).addClass("editor pixie");
         content = $(DIV, {
           "class": 'content'
@@ -521,46 +525,57 @@
         $(document).bind('keyup', function() {
           return canvas.preview();
         });
-        $(navRight).bind('mousedown', function(e) {
+        $(navRight).bind('mousedown touchstart', function(e) {
           var color, target;
           target = $(e.target);
           color = Color(target.css('backgroundColor'));
           if (target.is('.swatch')) {
-            return canvas.color(color, e.button !== 0);
+            return canvas.color(color, !primaryButton(e));
           }
         });
         pixels = [];
         lastPixel = void 0;
+        handleEvent = function(event, element) {
+          var c, col, eventType, local, offset, opacity, pixel, row;
+          opacity = opacityVal.text() / 100;
+          offset = element.offset();
+          local = {
+            y: event.pageY - offset.top,
+            x: event.pageX - offset.left
+          };
+          row = Math.floor(local.y / PIXEL_HEIGHT);
+          col = Math.floor(local.x / PIXEL_WIDTH);
+          pixel = canvas.getPixel(col, row);
+          eventType = void 0;
+          if ((event.type === "mousedown") || (event.type === "touchstart")) {
+            eventType = "mousedown";
+          } else if (pixel && pixel !== lastPixel && (event.type === "mousemove" || event.type === "touchmove")) {
+            eventType = "mouseenter";
+          }
+          if (pixel && active && currentTool && currentTool[eventType]) {
+            c = canvas.color().toString();
+            currentTool[eventType].call(pixel, event, Color(c, opacity), pixel);
+          }
+          return lastPixel = pixel;
+        };
         layer = Layer();
-        guideLayer = Layer().bind("mousedown", function(e) {
+        guideLayer = Layer().bind("mousedown touchstart", function(e) {
           pixie.trigger('dirty');
           undoStack.next();
           active = true;
-          if (e.button === 0) {
+          if (primaryButton(e)) {
             mode = "P";
           } else {
             mode = "S";
           }
           return e.preventDefault();
         }).bind("mousedown mousemove", function(event) {
-          var col, eventType, localX, localY, offset, opacity, pixel, row;
-          opacity = opacityVal.text() / 100;
-          offset = $(this).offset();
-          localY = event.pageY - offset.top;
-          localX = event.pageX - offset.left;
-          row = Math.floor(localY / PIXEL_HEIGHT);
-          col = Math.floor(localX / PIXEL_WIDTH);
-          pixel = canvas.getPixel(col, row);
-          eventType = void 0;
-          if (event.type === "mousedown") {
-            eventType = event.type;
-          } else if (pixel && pixel !== lastPixel && event.type === "mousemove") {
-            eventType = "mouseenter";
-          }
-          if (pixel && active && currentTool && currentTool[eventType]) {
-            currentTool[eventType].call(pixel, event, Color(canvas.color().toString(), opacity), pixel);
-          }
-          return lastPixel = pixel;
+          return handleEvent(event, $(this));
+        }).bind("touchstart touchmove", function(e) {
+          return Array.prototype.each.call(event.touches, __bind(function(touch) {
+            touch.type = e.type;
+            return handleEvent(touch, $(this));
+          }, this));
         });
         layers = [layer, guideLayer];
         height.times(function(row) {
@@ -605,7 +620,7 @@
                 "class": 'tool button',
                 title: titleText,
                 text: name.capitalize()
-              }).prepend(iconImg).mousedown(function(e) {
+              }).prepend(iconImg).bind("mousedown touchstart", function(e) {
                 if (!$(this).attr('disabled')) {
                   doIt();
                 }
@@ -648,7 +663,7 @@
               alt: alt,
               title: alt
             });
-            toolDiv = $("<div class='tool'></div>").append(img).mousedown(function(e) {
+            toolDiv = $("<div class='tool'></div>").append(img).bind("mousedown touchstart", function(e) {
               setMe();
               return false;
             });
@@ -663,9 +678,9 @@
               }
             } else if (color === true) {
               if (mode === "S") {
-                return Color(primaryColorPicker.css('backgroundColor'));
+                Color(primaryColorPicker.css('backgroundColor'));
               } else {
-                return Color(secondaryColorPicker.css('backgroundColor'));
+                Color(secondaryColorPicker.css('backgroundColor'));
               }
             }
             if ((mode === "S") ^ alternate) {
@@ -910,6 +925,9 @@
         pixie.append(content);
         pixie.bind('mouseenter', function() {
           return window.currentComponent = pixie;
+        });
+        pixie.bind('touchstart touchmove touchend', function() {
+          return event.preventDefault();
         });
         window.currentComponent = pixie;
         if (initializer) {

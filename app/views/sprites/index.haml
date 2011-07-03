@@ -18,7 +18,8 @@
     $(".sprite_gallery img").live 'dragstart', (event) ->
       $this = $(this)
       name = $this.data('name')
-      event.dataTransfer.setData('DownloadURL', "image/png:\#{name}.png:\#{$this.attr('src')}")
+      fileURL = $this.attr('src').replace("/thumb.png?", "/original.png?")
+      event.dataTransfer.setData('DownloadURL', "image/png:\#{name}.png:\#{fileURL}")
 
 %style
   :sass

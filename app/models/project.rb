@@ -6,7 +6,8 @@ class Project < ActiveRecord::Base
   has_attached_file :image, S3_OPTS.merge(
     :path => "projects/:id/:style.:extension",
     :styles => {
-      :thumb => ["96x96#", :png]
+      :tiny => ["16x16#", :png],
+      :thumb => ["96x96#", :png],
     }
   )
 
@@ -40,6 +41,7 @@ class Project < ActiveRecord::Base
 
   DEFAULT_CONFIG = {
     :directories => {
+      :animations => "animations",
       :data => "data",
       :entities => "entities",
       :images => "images",
@@ -58,14 +60,18 @@ class Project < ActiveRecord::Base
   }
   BRANCH_NAME = "pixie"
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
-  DEMO_ID = 34
+  DEMO_ID = 176
+  JUMP_DEMO_ID = 218
+  SHOOT_DEMO_ID = 227
+  ASTEROIDS_DEMO_ID = 123
+  MAX_EDITOR_FILE_SIZE = 100_000
 
   def display_name
     title
   end
 
   def base_url
-    "/production/projects/#{id}"
+    "/production/projects/#{id}/"
   end
 
   def demo_path
@@ -107,10 +113,6 @@ class Project < ActiveRecord::Base
       File.open(file_path, 'wb') do |file|
         file.write(open(url) {|f| f.read})
       end
-
-      Juggernaut.publish("/projects/#{id}/#{url}", {
-        filename => IO.read(file_path)
-      })
     end
 
     make_group_writable
@@ -250,7 +252,7 @@ class Project < ActiveRecord::Base
       lang = lang_for(ext)
       type = type_for(ext)
 
-      if ["text", "tilemap", "animation", "entity"].include? type
+      if ["text", "tilemap", "animation", "entity", "tutorial"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -298,6 +300,8 @@ class Project < ActiveRecord::Base
       "entity"
     when "animation"
       "animation"
+    when "tutorial"
+      "tutorial"
     end
   end
 
@@ -355,5 +359,94 @@ class Project < ActiveRecord::Base
       else
         {}.merge(DEFAULT_CONFIG)
       end
+  end
+
+  def manifest_path
+    File.join path, "manifest.json"
+  end
+
+  def webstore_asset_path
+    File.join path, "webstore"
+  end
+
+  def prepare_for_web_store
+    images_dir = File.join(webstore_asset_path, "images")
+    icon_path = File.join(images_dir, "icon_")
+    main_html_path = File.join(webstore_asset_path, "main.html")
+
+    FileUtils.mkdir_p images_dir
+
+    if image.exists?
+      File.open(icon_path + "16.png", 'wb') do |file|
+        file.write(open(image.url(:tiny)) {|f| f.read})
+      end
+
+      File.open(icon_path + "96.png", 'wb') do |file|
+        file.write(open(image.url(:thumb)) {|f| f.read})
+      end
+
+      `mogrify -background transparent -gravity center -extent 128x128 -write #{icon_path}128.png #{icon_path}96.png`
+    else
+      %w[128 96 16].each do |size|
+        FileUtils.cp Rails.root.join("public", "images", "webstore_#{size}.png"), icon_path + "#{size}.png"
+      end
+    end
+
+    FileUtils.cp Rails.root.join("public", "stylesheets", "screen.css"), webstore_asset_path
+
+    File.open(main_html_path, 'wb') do |file|
+      file.write <<-eof
+        <html>
+        <head>
+          <link href="/webstore/screen.css" media="screen" rel="stylesheet" type="text/css">
+          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
+        </head>
+        <body class="contents_centered">
+          <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>
+          <script>BASE_URL = "../";</script>
+          <script src="/#{config[:name]}.js"></script>
+        </body>
+        </html>
+      eof
+    end
+
+    write_manifest_json
+  end
+
+  def write_manifest_json
+    current_manifest = if File.exist? manifest_path
+      HashWithIndifferentAccess.new(JSON.parse(File.read(manifest_path)))
+    else
+      {}
+    end
+
+    current_version = if config[:version]
+      config[:version]
+    elsif previous_version = current_manifest[:version]
+      version_pieces = previous_version.split(".")
+      (version_pieces[0...-1] + [version_pieces.last.to_i + 1]).join(".")
+    else
+      "0.0.1"
+    end
+
+    manifest_json = {
+      :name => title,
+      :description => description,
+      :app => {
+        :launch => {
+          :local_path => "webstore/main.html",
+        }
+      },
+      :version => current_version,
+      :icons => {
+        "128" => "webstore/images/icon_128.png",
+        "96" => "webstore/images/icon_96.png",
+        "16" => "webstore/images/icon_16.png",
+      }
+    }
+
+    File.open(manifest_path, 'wb') do |file|
+      file.write(JSON.pretty_generate(manifest_json))
+    end
   end
 end

@@ -1,20 +1,30 @@
-- form_for @invite do |form|
+= stylesheet_link_tag "branded"
+
+%style
+  :sass
+    .centered_content
+      margin-left: auto
+      margin-right: auto
+      margin-top: 2em
+      width: 475px
+
+- form_for @invite, :html => { :class => "module", :style => "width: 475px;" } do |form|
   = form.error_messages
 
   %h2 Invite a Friend
 
-  %p
-    = form.label :to, "Friend's name"
+  %label
+    %h3 Friend's name
     = form.text_field :to
 
-  %p
-    = form.label :email, "Friend's email"
+  %label
+    %h3 Friend's email
     = form.text_field :email
 
   = form.submit "Invite friend"
 
 .centered_content
-  %p
+  %h3
     When you invite a friend they will receive an email similar to the sample
     below:
 
@@ -27,11 +37,3 @@
       _gaq.push(['_trackEvent', 'action_button', 'invite friend']);
     });
   });
-
-%style
-  :sass
-    .centered_content
-      margin-left: auto
-      margin-right: auto
-      margin-top: 2em
-      width: 475px

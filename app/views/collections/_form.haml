@@ -1,5 +1,5 @@
 %h3 New Collection
-- form_for @collection || Collection.new do |form|
+= form_for @collection || Collection.new do |form|
   = hidden_field_tag :sprite_id
   %p
     = form.label :name

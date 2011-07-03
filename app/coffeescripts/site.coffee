@@ -12,11 +12,32 @@ $(".clickable").live 'click', ->
 window.showTooltip = (element, html) ->
   position = element.offset() || {top: 50, left: 50}
 
-  position.left += element.width() + 42
-  $("#tooltip").stop().offset(position).fadeIn().find(".content").html(html)
+  if !element.offset()
+    $("#tooltip .icon").hide()
+  else
+    $("#tooltip .icon").show()
+
+  $("#tooltip").find(".content").html(html)
+
+  tooltipHeight = $('#tooltip').height()
+
+  position.left += element.width() + 30
+  position.top -= tooltipHeight / 2
+
+  if position.top < 5
+    position.top = 5
+    $("#tooltip .icon").css('top', -tooltipHeight + 7)
+  else
+    $("#tooltip .icon").css('top', 0)
+
+  $("#tooltip").stop().offset(position).fadeIn()
 
 window.hideTooltip = ->
   $("#tooltip").stop().fadeOut()
+
+$("#tooltip").live
+  mouseenter: -> $(this).css('opacity', 1)
+  mouseleave: -> $(this).css('opacity', 0.4)
 
 # Local Storage
 getVal = (key) ->
@@ -35,16 +56,16 @@ $ ->
   setLightTheme = (active) ->
     $('#fullscreen').toggleClass('light', active)
     $('iframe').contents().find('html').toggleClass("light", active)
+    $('.bulb').toggleClass("on", active)
 
     setVal('light', active)
 
-  $('#bulb').click ->
+  $('.bulb').click ->
     $(this).toggleClass('on')
 
     setLightTheme $(this).hasClass('on')
 
   if active = (getVal('light') || $("body").is(".light"))
-    $('#bulb').toggleClass('on', active)
     setLightTheme active
 
   # Display Flash Notice

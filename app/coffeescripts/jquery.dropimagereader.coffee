@@ -34,7 +34,7 @@
       $this.bind 'drop', (event) ->
         stopFn(event)
 
-        Array.prototype.forEach.call event.dataTransfer.files, (file) ->
+        Array::forEach.call event.dataTransfer.files, (file) ->
           return unless file.type.match(options.matchType)
 
           reader = new FileReader()

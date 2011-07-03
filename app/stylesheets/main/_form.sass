@@ -1,15 +1,11 @@
-@import partials/base
-@import util
-
-body > form
-  +border-radius
-
-  background-color: $dark_highlight
-  margin: auto
-  padding: 1.5em 2em
-  width: 340px
-
 form
+  // Styles for stand-alone forms
+  &.module
+    margin: auto
+    margin-top: 3em
+    padding: 1.5em 2em
+    width: 340px
+
   a.hint
     img
       bottom: 0
@@ -17,12 +13,6 @@ form
       position: absolute
       right: 7px
       top: 0
-
-  button.full
-    +bounds(100%, 40px)
-    display: block
-    font-size: 170%
-    margin: 0
 
   .field_with_errors
     display: inline

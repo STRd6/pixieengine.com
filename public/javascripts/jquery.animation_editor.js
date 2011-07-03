@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 01 Jun 2011 19:34:34 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 08 Jun 2011 18:52:55 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -151,7 +151,7 @@
     };
     update_active_animation = function() {
       active_animation_sprites().parent().find('.sprites').children().remove();
-      frame_sprites().clone().appendTo(active_animation_sprites());
+      animationEditor.find('.frame_sprites .sprite_container').clone().appendTo(active_animation_sprites());
       active_animation().parent().find('.complete').text(animationEditor.find('.goto option:selected').val());
       return active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val());
     };
@@ -174,16 +174,29 @@
     });
     animationEditor.find('.animations .name').liveEdit();
     animationEditor.find('.animation').live({
-      mousedown: function() {
+      mousedown: function(e) {
+        if ($(e.target).is('.x')) {
+          return;
+        }
         update_active_animation();
         animationEditor.find('.speed').val($(this).find('.speed').text());
         animationEditor.find('.goto select').val($(this).find('.complete').text());
         stop_animation();
         clear_frame_sprites();
         $(this).find('.sprite_container').each(function(i, sprite_container) {
+          var _ref, _ref2;
           $(sprite_container).find('.tags').removeClass('tag_container').children().remove();
-          return $(sprite_container).clone().appendTo(frame_sprites_container());
+          $(sprite_container).clone().appendTo(frame_sprites_container());
+          if (((_ref = $(sprite_container).find('img')) != null ? _ref.attr('data-hflip') : void 0) === 'true') {
+            $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_horizontal');
+          }
+          if (((_ref2 = $(sprite_container).find('img')) != null ? _ref2.attr('data-vflip') : void 0) === 'true') {
+            return $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_vertical');
+          }
         });
+        if (!($(this).find('.sprites') && $(this).find('.sprites').children().length)) {
+          templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
+        }
         active_animation().removeClass('active');
         $(this).find('.cover').addClass('active');
         if ($(this).find('.cover').hasClass('locked')) {
@@ -203,9 +216,10 @@
     });
     animationEditor.find('.animation .x').live({
       mousedown: function() {
-        var animation;
+        var animation, index;
         animation = $(this).parent().parent();
-        animationEditor.find(".goto option[value='" + (animation.prev().text()) + "']").remove();
+        index = animationEditor.find('.animations .animation').index(animation);
+        animationEditor.find(".goto option").eq(index).remove();
         animation.prev().fadeOut(150, function() {
           return animation.prev().remove();
         });
@@ -238,7 +252,6 @@
       stop_animation();
       active_animation().removeClass('active');
       clear_frame_sprites();
-      templates.find('.placeholder').tmpl().appendTo('.frame_sprites');
       animation_name = "Animation " + ++animationCount;
       animation = templates.find('.create_animation').tmpl({
         name: animation_name,
@@ -405,6 +418,10 @@
         parent.next().append('<div class= "x" />');
         parent.next().append('<div class= "duplicate" />');
       }
+      if (parent.get(0) === $('.frame_sprites .sprite_container:last').get(0)) {
+        active_animation().children().remove();
+        active_animation().append($('.frame_sprites .sprite_container:last').prev().find('img').clone());
+      }
       return parent.fadeOut(150, function() {
         parent.remove();
         if (!frame_sprites().length) {
@@ -431,15 +448,16 @@
       return typeof options.save === "function" ? options.save(saveData()) : void 0;
     });
     loadData = function(data) {
+      var hasComplete;
       if (data != null ? data.animations.length : void 0) {
         animationEditor.find('.goto select').children().remove();
-        $(data.animations).each(function(i, animation) {
+        hasComplete = false;
+        $(data.animations).each(function(index, animation) {
           var animation_el, last_sprite_img, matching_animation;
           if (animation.complete) {
-            animationEditor.find('.goto select').append("<option value='" + animation.complete + "'>" + animation.complete + "</option>");
-          } else {
-            animationEditor.find('.goto').remove();
+            hasComplete = true;
           }
+          animationEditor.find('.goto select').append("<option value='" + animation.name + "'>" + animation.name + "</option>");
           animation_el = templates.find('.create_animation').tmpl({
             name: animation.name,
             speed: animation.speed,
@@ -450,30 +468,32 @@
           }
           active_animation().removeClass('active');
           $.each(animation.frames, function(i, frame) {
-            var sprite_container, _ref;
+            var sprite, sprite_container, _ref, _ref2, _ref3, _ref4, _ref5;
+            sprite = data.tileset[frame];
             sprite_container = templates.find('.load_sprite').tmpl({
-              url: data.tileset[frame].src,
-              alt: data.tileset[frame].title,
-              title: data.tileset[frame].title,
-              id: data.tileset[frame].id,
+              url: sprite.src,
+              alt: sprite.title,
+              title: sprite.title,
+              hflip: ((_ref = animation.transform) != null ? (_ref2 = _ref[i]) != null ? _ref2.hflip : void 0 : void 0) || false,
+              vflip: ((_ref3 = animation.transform) != null ? (_ref4 = _ref3[i]) != null ? _ref4.vflip : void 0 : void 0) || false,
+              id: sprite.id,
               circles: JSON.stringify({
-                circles: data.tileset[frame].circles
+                circles: sprite.circles
               })
-            }).appendTo(animationEditor.find('.animations .name').filter(function() {
-              return $(this).text() === animation.name;
-            }).next().find('.sprites'));
+            }).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'));
             sprite_container.find('.tags').tagbox({
               placeholder: "New event trigger",
-              presets: ((_ref = animation.triggers) != null ? _ref[i] : void 0) || []
+              presets: ((_ref5 = animation.triggers) != null ? _ref5[i] : void 0) || []
             });
             return sprite_container.find('.tags').hide();
           });
-          matching_animation = animationEditor.find('.animations .name').filter(function() {
-            return $(this).text() === animation.name;
-          }).next();
+          matching_animation = animationEditor.find('.animations .animation').eq(index);
           last_sprite_img = matching_animation.find('.sprites .sprite_container:last img');
           return matching_animation.find('.cover').append(last_sprite_img.clone());
         });
+        if (!hasComplete) {
+          animationEditor.find('.goto').remove();
+        }
         animationEditor.find('.speed').val(active_animation().find('.speed').text());
         stop_animation();
         clear_frame_sprites();
@@ -487,14 +507,15 @@
           complete: "Animation 1"
         }).insertBefore(animationEditor.find('.new_animation'));
         animationCount = animationEditor.find('.animations .animation').length;
-        return templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
+        templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'));
+        return animationEditor.find('.goto select').append("<option value='Animation 1'>Animation 1</option>");
       }
     };
     saveData = function() {
-      var animation_data, frames, ids, tiles;
+      var animation_data, frames, srcs, tiles;
       update_active_animation();
       frames = [];
-      ids = [];
+      srcs = [];
       tiles = [];
       animationEditor.find('.animations .animation').find('.sprites img').each(function(i, img) {
         var circles, tile;
@@ -505,21 +526,34 @@
           title: $(img).attr('title') || $(img).attr('alt'),
           circles: circles
         };
-        if ($.inArray(tile.id, ids) === -1) {
-          ids.push(tile.id);
+        if ($.inArray(tile.src, srcs) === -1) {
+          srcs.push(tile.src);
           return tiles.push(tile);
         }
       });
       animation_data = animationEditor.find('.animations .animation').map(function() {
-        var animation, frame_data, triggers;
+        var animation, frame_data, transform, triggers;
         triggers = {};
+        transform = [];
         frame_data = $(this).find('.sprites img').each(function(i, img) {
-          var tile_id;
-          tile_id = $(this).data('id');
+          var hflip, tile_src, vflip;
+          tile_src = $(this).attr('src');
+          hflip = false;
+          vflip = false;
           if ($(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length) {
             triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',');
           }
-          return frames.push(ids.indexOf(tile_id));
+          if ($(img).hasClass('flipped_vertical')) {
+            vflip = true;
+          }
+          if ($(img).hasClass('flipped_horizontal')) {
+            hflip = true;
+          }
+          transform.push({
+            hflip: hflip,
+            vflip: vflip
+          });
+          return frames.push(srcs.indexOf(tile_src));
         });
         if (frames.length) {
           animation = {
@@ -527,11 +561,13 @@
             name: $(this).prev().text(),
             interruptible: !$(this).find('.cover').hasClass('locked'),
             speed: $(this).find('.speed').text(),
+            transform: transform,
             triggers: triggers,
             frames: frames
           };
         }
         frames = [];
+        transform = [];
         return animation;
       }).get();
       return {

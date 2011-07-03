@@ -1,6 +1,6 @@
 - progress = user.tasks.inject(0) {|total, task| task[:complete?] ? task[:value] + total : total}
 
-.tasks
+.tasks.module
   %h3 Progress meter: #{progress}% Complete!
   - user.tasks.each do |task|
     .task{:class => ("incomplete" unless task[:complete])}

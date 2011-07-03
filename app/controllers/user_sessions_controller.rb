@@ -1,6 +1,5 @@
 class UserSessionsController < ApplicationController
   def new
-    render "combo_form"
   end
 
   def create
@@ -22,7 +21,7 @@ class UserSessionsController < ApplicationController
           end
         else
           respond_to do |format|
-            format.html { render "combo_form" }
+            format.html { render "new" }
             format.json do
               render :json => {
                 :status => "error",

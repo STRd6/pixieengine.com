@@ -1,16 +1,19 @@
-/* DO NOT MODIFY. This file was compiled Sun, 29 May 2011 18:22:25 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 13 Jun 2011 18:51:36 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.property_editor.coffee
  */
 
 (function() {
   (function($) {
-    var events, hiddenFields;
+    var events, hiddenFields, shouldHide;
     events = ["create", "step", "update", "destroy"];
     hiddenFields = events.eachWithObject([], function(event, array) {
       return array.push(event, event + "Coffee");
     });
+    shouldHide = function(key, value) {
+      return hiddenFields.include(key) || $.isFunction(value);
+    };
     return $.fn.propertyEditor = function(properties) {
-      var addBlurEvents, addNestedRow, addRow, element, object, rowCheck;
+      var addBlurEvents, addNestedRow, addRow, element, fireChangedEvent, object, rowCheck;
       properties || (properties = {});
       object = properties;
       element = this.eq(0);
@@ -31,7 +34,7 @@
           }
           propertiesArray.sort().each(function(pair) {
             key = pair[0], value = pair[1];
-            if (hiddenFields.include(key)) {
+            if (shouldHide(key, value)) {
               ;
             } else if (key.match(/color/i)) {
               return addRow(key, value).find('td:last input').colorPicker({
@@ -59,6 +62,13 @@
           return addRow('', '');
         }
       };
+      fireChangedEvent = function() {
+        try {
+          return element.trigger("change", [object]);
+        } catch (error) {
+          return typeof console != "undefined" && console !== null ? typeof console.error === "function" ? console.error(error) : void 0 : void 0;
+        }
+      };
       addBlurEvents = function(keyInput, valueInput) {
         keyInput.blur(function() {
           var currentName, previousName;
@@ -71,15 +81,7 @@
               return;
             }
             object[currentName] = valueInput.val();
-            try {
-              element.trigger("change", object);
-            } catch (error) {
-              if (typeof console != "undefined" && console !== null) {
-                if (typeof console.error === "function") {
-                  console.error(error);
-                }
-              }
-            }
+            fireChangedEvent();
             return rowCheck();
           }
         });
@@ -93,15 +95,7 @@
             }
             valueInput.data("previousValue", currentValue);
             object[key] = currentValue;
-            try {
-              element.trigger("change", object);
-            } catch (error) {
-              if (typeof console != "undefined" && console !== null) {
-                if (typeof console.error === "function") {
-                  console.error(error);
-                }
-              }
-            }
+            fireChangedEvent();
             return rowCheck();
           }
         });
@@ -147,6 +141,10 @@
         nestedEditor = $("<table>", {
           "class": "nested"
         }).appendTo(cell).propertyEditor(value);
+        nestedEditor.bind("change", function(event, changedNestedObject) {
+          event.stopPropagation();
+          return fireChangedEvent();
+        });
         return row.appendTo(element);
       };
       return element.setProps(properties);

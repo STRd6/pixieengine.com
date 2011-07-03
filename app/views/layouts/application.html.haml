@@ -7,25 +7,4 @@
 
     = yield
 
-    - if @has_reg_popup
-      = render :partial => 'shared/register_modal'
-    = render :partial => "/shared/feedback"
-    = render :partial => "/shared/chat"
-    = render :partial => "/shared/nav_dock"
-    = render :partial => "shared/hotkeys"
-
-    #tooltip
-      .icon
-      .content
-
-    - if Rails.env.development?
-      = javascript_include_tag "coffee-script"
-
-    = render :partial => "/shared/analytics"
-
-    - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
-      = render :partial => "/shared/conversion"
-      :javascript
-        $(function() {
-          trackPageview("/event/registered");
-        });
+    = render :partial => "shared/footer"

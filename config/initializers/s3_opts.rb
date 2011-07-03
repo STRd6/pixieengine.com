@@ -1,6 +1,6 @@
 S3_OPTS = {
   :storage => :s3,
-  :s3_credentials => "#{RAILS_ROOT}/config/s3.yml",
+  :s3_credentials => "#{Rails.root.to_s}/config/s3.yml",
   :url => ':s3_alias_url'
 }
 

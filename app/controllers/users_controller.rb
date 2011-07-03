@@ -1,16 +1,23 @@
-class UsersController < ResourceController::Base
-  actions :all, :except => :destroy
+class UsersController < ApplicationController
+  respond_to :html, :json
 
   before_filter :require_user, :only => [:install_plugin]
   before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
+  before_filter :prep_display_name, :only => :new
 
   REGISTERED_FLASH = "Account registered!"
 
-  new_action.before do
+  def prep_display_name
+    @object = User.new
+
     email = session.delete(:email) || ''
 
     object.email ||= email
     object.display_name = email[0..((email.index('@') || 0) - 1)]
+  end
+
+  def new
+    
   end
 
   def remove_favorite
@@ -25,7 +32,22 @@ class UsersController < ResourceController::Base
     render :nothing => true
   end
 
+  def register_subscribe
+    if current_user
+      if current_user.paying
+        redirect_to_back_or_default current_user
+      else
+        redirect_to current_user.subscribe_url
+      end
+    end
+
+    @object = User.new
+
+    @hide_dock = true
+  end
+
   def create
+    subscribe = params[:subscribe]
     @object = User.new(params[:user])
 
     @object.referrer_id = session[:referrer_id]
@@ -43,14 +65,25 @@ class UsersController < ResourceController::Base
         respond_to do |format|
           format.html do
             @registered = true
-            redirect_to user, :notice => REGISTERED_FLASH
+            if subscribe
+              redirect_to user.subscribe_url
+            else
+              redirect_to user, :notice => REGISTERED_FLASH
+            end
           end
           format.json { render :json => {:status => "ok"} }
         end
 
       else
         respond_to do |format|
-          format.html { render :action => :new }
+          format.html do
+            if subscribe
+              render :action => :register_subscribe
+            else
+              render :action => :new
+            end
+
+          end
           format.json do
             render :json => {
               :status => "error",
@@ -63,6 +96,17 @@ class UsersController < ResourceController::Base
   end
 
   def show
+    @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
+  end
+
+  def edit
+    
+  end
+
+  def update
+    user.update_attributes params[:user]
+
+    respond_with user
   end
 
   def add_to_collection

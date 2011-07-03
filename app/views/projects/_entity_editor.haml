@@ -39,7 +39,7 @@
       tabMode: "shift"
       textWrapping: false
 
-    $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+    $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
 
     $(editor.win.document).keyup ->
       textArea.val(editor.getCode())
@@ -51,8 +51,10 @@
     panel.find('.editor').remove()
 
     try
-      data = JSON.parse(panel.find("[name=contents]").val())
+      data = JSON.parse(panel.find("[name=contents]").val()) || {}
     catch e
+      console?.warn? e
+      data = {}
 
     editorOptions = $.extend panel.data("options"),
       data: data

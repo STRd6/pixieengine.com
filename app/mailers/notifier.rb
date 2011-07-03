@@ -1,6 +1,4 @@
 class Notifier < ActionMailer::Base
-  default_url_options[:host] = "pixie.strd6.com"
-
   default :from => 'Pixie <notifications@strd6.com>'
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -37,5 +35,26 @@ class Notifier < ActionMailer::Base
   def forgot_password(user)
     @user = user
     mail :to => user.email
+  end
+
+  def comment(comment)
+    @comment = comment
+
+    if comment.commentee
+      mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
+      :to => comment.commentee.email
+    end
+  end
+
+  def analytics(user)
+    @user = user
+
+    graph_png = File.join(Rails.root, 'graph.png')
+    report_html = File.join(Rails.root, 'report.html')
+
+    attachments['graph.png'] = File.read graph_png if File.exist?(graph_png)
+    attachments['report.html'] = File.read report_html if File.exist?(report_html)
+
+    mail :subject => "Weekly Analytics", :to => user.email
   end
 end

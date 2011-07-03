@@ -32,14 +32,8 @@ $sprite_container_bounds: 72px
       .speed
         margin-bottom: -2px
 
-#fullscreen
-  +user-select
-
-  color: $dark_text
-
-  &.light
-    color: $light_text
-
+.animation_editor
+  .light &
     .frame_sprites, .animations
       background-color: $light_highlight
 
@@ -60,11 +54,14 @@ $sprite_container_bounds: 72px
     top: -12px
 
   .animation
-    .x
-      background-image: url(/images/x.png)
-      position: absolute
-      bottom: 68px
-      left: 70px
+    .cover
+      +contents-centered
+
+      .x
+        background-image: url(/images/x.png)
+        position: absolute
+        bottom: 82px
+        left: 78px
     .locked
       background: url(/images/icons/lock.png) no-repeat left top
 
@@ -260,7 +257,6 @@ $sprite_container_bounds: 72px
       +border-radius
       +box-sizing(border-box)
 
-      background-color: $dark_highlight
       height: 100%
       margin-bottom: 15px
       text-align: center
@@ -290,7 +286,6 @@ $sprite_container_bounds: 72px
         +border-radius
         +bounds(96px)
         +box-sizing(border-box)
-        +contents-centered
 
         &.active
           border: 3px solid $pixie_primary

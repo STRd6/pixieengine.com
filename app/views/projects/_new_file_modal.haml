@@ -5,6 +5,10 @@
 
   :ruby
     choices = [
+      ["Entity",
+        {:type => "entity", :directory => "entities", :ext => "entity"},
+        {}
+      ],
       ["Script",
         {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
         {}
@@ -26,7 +30,7 @@
         {:tilesWide => 15, :tilesTall => 10, :tileWidth => 32, :tileHeight => 32}
       ],
       ["Animation",
-        {:type => "animation", :directory => "data", :ext => "animation"},
+        {:type => "animation", :directory => "animations", :ext => "animation"},
         {}
       ]
     ]

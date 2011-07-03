@@ -2,7 +2,7 @@
   .load_sprite.template
     .sprite_container
       .tags
-      %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}" }
+      %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}", 'data-hflip' => "${hflip}", 'data-vflip' => "${vflip}" }
 
   .create_animation.template
     .name ${name}
@@ -32,7 +32,6 @@
       .goto
         Next Animation
         %select
-          %option(value="Animation 1") Animation 1
 
     %nav.right
       %button.save Save

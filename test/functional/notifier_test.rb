@@ -2,14 +2,23 @@ require 'test_helper'
 
 class NotifierTest < ActionMailer::TestCase
   setup do
-    @feedback = Feedback.create(:email_address => "testy@testy.com", :body => "Help I'm A test!")
+    @user = User.create!(:email => "test@strd6.com", :display_name => "Testman", :password => "abc123")
   end
 
-  test "received_feedback" do
-    mail = Notifier.received_feedback(@feedback)
-    assert_equal "Received feedback", mail.subject
+  test "comment" do
+    @sprite = Factory(:sprite)
+    @commenter = User.create!(:email => "test3@strd6.com", :display_name => "Commenter", :password => "abc123")
+    @commentee = User.create!(:email => "test2@strd6.com", :display_name => "Commentee", :password => "abc123")
+    @comment = Comment.create!(:commenter => @commenter, :commentee => @commentee, :body => "This is a test comment", :commentable => @sprite)
+
+    mail = Notifier.comment(@comment)
+    assert_equal "#{@commentee.display_name}, #{@commenter.display_name} has commented on your Pixie item.", mail.subject
     assert_equal ["notifications@strd6.com"], mail.from
-    assert_equal [@feedback.email_address], mail.reply_to
   end
 
+  test "analytics" do
+    mail = Notifier.analytics(@user)
+    assert_equal "Weekly Analytics", mail.subject
+    assert_equal ["notifications@strd6.com"], mail.from
+  end
 end

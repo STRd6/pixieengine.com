@@ -1,0 +1,62 @@
+/* This is a temporary place for things common to branding/landing page explorations
+
+@import util
+
+body#fullscreen
+  height: auto
+  min-height: 100%
+  padding: 0
+
+  & > .content
+    padding-bottom: 5em
+
+.content
+  margin: auto
+  width: 960px
+
+header, footer
+  +bounds(100%, auto)
+
+  background-color: $dark_highlight
+  color: $dark_text
+
+header
+  +box-shadow(#333, 0, 0, 10px, 1px)
+
+  margin-bottom: 1em
+
+  .content
+    overflow: auto
+    padding: 2em 0 1em
+    position: relative
+
+    .logo
+      +bounds(100px, 53px)
+      +inline-block
+
+      background-image: url(/images/shadow_logo.png)
+      float: left
+      margin: 0
+      position: static
+
+    .login_link
+      padding-top: 10px
+      position: static
+      float: right
+
+    .blurb
+      +inline-block
+
+      margin-left: 7em
+      margin-top: 3px
+
+    .bulb
+      display: none
+
+footer
+  bottom: 0
+  position: absolute
+
+  .content
+    display: block
+    padding: 1em 0

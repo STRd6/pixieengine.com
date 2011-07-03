@@ -37,6 +37,7 @@
 
   window.Color = (args...) ->
     color = args.first()
+
     # HAX: checking to see if we are passing in an instance of Color
     return Color(color.channels()) if color?.channels
 
@@ -57,7 +58,7 @@
       a = arguments[1]
       if Object.prototype.toString.call(c) == '[object Array]'
         parsedColor = [parseInt(c[0]), parseInt(c[1]), parseInt(c[2]), parseFloat(a)]
-      else if Object.prototype.toString.call(c) != '[object Array]'
+      else
         parsedColor = lookup[normalizeKey(c)] || parseHex(c) || parseRGB(c)
         parsedColor[3] = a
     else if arguments.length > 2
@@ -69,7 +70,7 @@
 
     throw "#{args.join(',')} is an unknown color" unless parsedColor
 
-    alpha = parsedColor[3]
+    alpha = parsedColor[3] || 0
 
     channels = [
       parsedColor[0]

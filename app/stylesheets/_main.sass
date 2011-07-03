@@ -1,17 +1,34 @@
 /* Copyright STRd6 2011
 
+@import main/footer
 @import main/form
 @import main/header
+@import main/heading
 @import main/list
 
 html
   height: 100%
+  overflow: auto
+
+::selection
+  background: #b4d5fe
+  color: inherit
+  text-shadow: none
 
 body
-  background-color: white
+  +box-sizing(border-box)
+
+  background-color: $dark_background
+  color: $dark_text
   font-family: $normal_font
   font-size: 12px
   line-height: 1.5
+  position: relative
+
+  /*TODO: Move .light to html
+  &.light
+    background-color: $light_background
+    color: $light_text
 
 /* It's strange this doesn't work exactly right when put in body
 #fullscreen
@@ -21,9 +38,19 @@ a
   color: $pixie_primary
   font-weight: bold
   text-decoration: none
+
+  &:visited
+    color: $pixie_primary
+
+  &:active
+    color: $pixie_primary
+
   &:hover
     color: $link_hover
     text-decoration: underline
+
+p
+  margin: 1em 0
 
 .left
   float: left
@@ -71,7 +98,7 @@ div.no-star
 nav.top
   position: absolute
   top: 0
-  left: 120px
+  left: 100px
 
 .inline
   display: inline

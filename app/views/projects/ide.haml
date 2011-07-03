@@ -1,8 +1,4 @@
 %nav.top.actions
-  = button_link "New Project", "application_add", new_project_path
-  - if owner_or_admin?
-    = button_link "Delete", "application_delete", project_path(project), :method => "delete", :confirm => "Are you sure you want to delete this project?"
-
   - if demo? || has_access?
     %button#save Save
     .button_group
@@ -15,15 +11,16 @@
   .button_group
     %button#run> Run
     %button#test> Test
-    %button#console> Console
   - if demo? || has_access?
     .button_group
       %button#build(title="Compile src files into single JS file")> Build
       %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
-      %button#tag(title="Tag a stable build")> Tag
 
+  %button#help>
+    = image_tag('/images/icons/help.png')
+    Help
   .status
     %label.inline
       %h4 What are you working on?
@@ -32,18 +29,17 @@
 #content
   #error
 
-  .nav_left_container
+  .sidebar_container
     .relative
-      %nav.module
+      .sidebar
         %ul.filetree
           - unless project.file_info.nil?
             - project.file_info[:files].each do |file|
               = render :partial => "file_tree_node", :locals => {:file_info => file}
-      .help.module
-        %h3 Need help?
-        .button_group
-          %button(class="help_tooltips")> View tooltips
-          %button(class="help_hotkeys")> Show hotkeys
+      .bottom.actionable
+        .featured_action
+          %h3 Package App for Chrome Web Store
+          = image_tag "chrome_webstore.png"
 
   %section
     #tabs.module
@@ -64,6 +60,7 @@
 = render :partial => "tips"
 = render :partial => "pixie"
 = render :partial => "sfxr"
+= render :partial => "export_modal"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
 = render :partial => "console"
@@ -85,13 +82,15 @@
 - project_id = params[:id]
 
 :coffeescript
+  $("#content .sidebar_container .bottom").click ->
+    requireSubscription ->
+      notify("Exporting Chrome Web Store Package ...")
+
+      window.location = #{download_project_path(project, :chrome => 1).to_json}
+
+      $.modal.close()
+
   window.projectId = #{project_id.to_json}
-
-  $("#export").click ->
-    requireLogin ->
-      notify("Exporting .zip ...")
-
-      window.location = #{download_project_path(project).to_json}
 
   $("#fork").click ->
     requireLogin ->
@@ -159,7 +158,6 @@
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('app').to_json})
     sandbox.write(#{stylesheet_link_tag('screen').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
 
@@ -169,11 +167,12 @@
 
     sandbox.close()
 
+    contentWindow.focus()
+
   window.testCodeInIframe = (code, iframe) ->
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('app').to_json})
     sandbox.write(#{stylesheet_link_tag('screen').to_json})
     sandbox.write(#{stylesheet_link_tag('qunit').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
@@ -194,7 +193,7 @@
     if tabData.data("type") == "binary"
       alert "Can't edit binary data... maybe there is a source file that can be edited?"
       return
-    if tabData.data("size") > 100000
+    if tabData.data("size") > #{Project::MAX_EDITOR_FILE_SIZE}
       alert "This file is too large for our editor!"
       return
 
@@ -328,7 +327,12 @@
 
     libCode = compileDirectory(projectConfig.directories.lib)
 
-    entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
+    if projectConfig.library
+      #TODO Clean up all these special library cases into a singe solid
+      # app config / entities bootstrapper
+      entitiesCode = ''
+    else
+      entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
     if projectConfig.main
       mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
@@ -354,10 +358,9 @@
     if projectConfig.library
       ""
     else
-      globals = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};"
       conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
 
-      [globals, conf].join("\n")
+      [conf].join("\n")
 
   runApp = () ->
     width = projectConfig.width
@@ -372,7 +375,8 @@
 
     $("#test_zone").append(iframe).show()
 
-    crammedCode = buildProjectCode()
+    environmentVariables = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};\n"
+    crammedCode = [environmentVariables, buildProjectCode()].join(";\n")
 
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
@@ -400,8 +404,8 @@
 
     displayErrors(errors)
 
-    crammedCode = appConfigCode() + ";\n" + libCode + ";\n" + compiledCode
-    crammedCode += ";$(function(){ \#{testCode} });"
+    crammedCode = [appConfigCode(), libCode, compiledCode].join(";\n")
+    crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
 
     $("#unit_test_frame").remove()
 
@@ -460,7 +464,7 @@
         tabMode: "shift"
         textWrapping: false
 
-      $(editor.win.document).find('html').toggleClass('light', $("#bulb").hasClass('on'))
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
 
       bindKeys(editor.win.document, ctrlKeys)
 
@@ -557,14 +561,14 @@
       cssClass: type
       doSave: () ->
         soundEditor.trigger('doSave')
-    else if type == "documentation"
+    else if type == "documentation" || type == "tutorial"
       cssClass: type
 
   # Tree and Tabs setup
   $ ->
     DEFAULT_CONFIG = #{default_project_config.to_json}
     try
-      window.projectConfig = JSON.parse($("[data-path=pixie.json]").find("[name=contents]").val())
+      window.projectConfig = JSON.parse($("[data-path='pixie.json']").find("[name=contents]").val())
     catch e
       console.warn?(e)
       window.projectConfig = {}
@@ -634,20 +638,11 @@
 
     # Hack to pre-load main file
     $("#file_src_main_coffee").prev().click()
+    if $("#tutorial").length
+      $("#tutorial").prev().click()
 
     $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
       delayIn: 500
       delayOut: 500
       fade: 50
       gravity: 'n'
-
-    jug = new Juggernaut
-
-    $.each projectConfig.libs || [], (lib, url) ->
-      jug.subscribe "/projects/#{project.id}/" + url, (data) ->
-        lib_element = $("[title=" + lib + "]").find('span').data('id')
-        if data[lib].length
-          $(lib_element).find('[name="contents"]').val(data[lib])
-          notify("Your libraries have finished updating!")
-        else
-          notify("The library " + lib + " either could not be found or contains no data")

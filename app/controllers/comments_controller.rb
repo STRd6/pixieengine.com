@@ -16,7 +16,7 @@ class CommentsController < ApplicationController
         :body => @comment.body,
         :commentable_id => @comment.commentable_id,
         :name => @comment.commenter.display_name,
-        :time => Time.zone.now.strftime("%I:%M%p")
+        :time => Time.zone.now.strftime("%l:%M%P")
       }}
     end
   end

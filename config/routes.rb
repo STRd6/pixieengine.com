@@ -1,15 +1,9 @@
-PixieStrd6Com::Application.routes.draw do |map|
+PixieStrd6Com::Application.routes.draw do
   get "subscribe" => "subscriptions#subscribe", :as => :subscribe
   get "subscriptions/thanks"
   post "subscriptions/changed"
 
-  namespace :abingo do
-    match "dashboard" => 'dashboard#index'
-  end
-
-  namespace :admin do
-    resources :comments, :feedbacks, :sprites, :users, :reports
-  end
+  get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
 
   resources :projects do
     member do
@@ -20,6 +14,7 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :widget
 
       post :add_to_arcade
+      post :add_to_tutorial
       post :feature
       post :fork
       post :generate_docs
@@ -33,69 +28,6 @@ PixieStrd6Com::Application.routes.draw do |map|
       get :github_integration
       post :hook
       get :info
-    end
-  end
-
-  namespace :developer do
-    resources :apps do
-      member do
-        post :add_library
-        post :add_user
-        post :remove_library
-        post :create_app_sprite
-        post :import_app_sprites
-        post :publish
-        post :create_app_sound
-        post :import_app_sounds
-        post :set_app_data
-        post :fork_post
-
-        get :docs
-        get :edit_code
-        get :fork
-        get :fullscreen
-        get :load
-        get :run
-        get :mobile
-        get :widget
-        get :lib, :defaults => { :format => 'js' }
-        get :ide
-        get :permissions
-        get :tile_editor
-      end
-    end
-
-    resources :plugins do
-      member do
-        get :load
-      end
-    end
-
-    resources :scripts do
-      member do
-        post :add_user
-
-        get :load
-        get :permissions
-        get :run
-        get :test
-      end
-    end
-
-    resources :libraries do
-      member do
-        post :add_script
-        post :remove_script
-        post :download
-
-        get :test
-      end
-    end
-  end
-
-  resources :feedbacks do
-    collection do
-      get :thanks
     end
   end
 
@@ -147,12 +79,19 @@ PixieStrd6Com::Application.routes.draw do |map|
     end
   end
 
+  resources :chats do
+    collection do
+      get :active_users
+      get :recent
+    end
+  end
+
   resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
   match 'jukebox' => "home#jukebox"
 
-  match 'begin' => "projects#ide", :id => "demo"
+  match 'begin' => "projects#info"
 
   match 'facebook' => "sprites#new", :as => :facebook
 
@@ -175,9 +114,6 @@ PixieStrd6Com::Application.routes.draw do |map|
   match "logout" => "user_sessions#destroy", :as => :logout
   match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
   match "sign_up" => "users#new", :as => :signup
-
-  match "chat" => "chats#publish"
-  match "active_users" => "chats#active_users"
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
   match 'users/:id/progress' => 'users#progress'

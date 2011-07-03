@@ -1,47 +1,20 @@
 %style
   :sass
     @import util
+    @import branded
 
-    body#fullscreen
-      height: auto
-      padding: 0
+    .thumb
+      float: left
+      margin-bottom: 1em
+      margin-right: 2em
 
-    #header
-      display: none
+      &.fancy
+        img
+          +border-radius(17px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
 
-    .heading_wrap , .footer_wrap
-      +bounds(100%, auto)
-
-      background-color: $dark_highlight
-      color: $dark_text
-
-    .heading_wrap
-      +box-shadow(#333, 0, 0, 10px, 1px)
-
-    .heading
-      margin: auto
-      overflow: auto
-      padding: 2em 0 1em
-      width: 960px
-
-      .logo
-        +inline-block
-        float: left
-
-      .login
-        padding-top: 10px
-        float: right
-
-      .blurb
-        +inline-block
-
-        margin-left: 7em
-        margin-top: 3px
-
-    .footer
-      margin: auto
-      padding: 1em 0
-      width: 960px
+          .light &
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
 
     .content
       margin: auto
@@ -49,7 +22,6 @@
 
       p
         font-size: 1.2em
-        margin: 1em 0
 
       q, .source
         font-style: italic
@@ -59,14 +31,15 @@
         +opacity(0.75)
 
       .feature
+        margin: 2em 0 1em
         overflow: auto
-        margin: 2em 0 2em
+        padding-bottom: 1em
         width: 100%
 
         .info
           +inline-block
           float: left
-          width: 315px
+          width: 320px
 
         .video
           +box-shadow($light_box_shadow, 0px, 10px, 10px, -10px)
@@ -77,14 +50,16 @@
           padding: 6px 6px 3px
 
       button.full
-        +bounds(100%, 40px)
+        +bounds(100%, 70px)
+
         display: block
-        font-size: 170%
+        font-size: 190%
         margin: 0
+        margin-top: 28px
 
       .testimonial
         margin-bottom: 2em
-        padding: 2em
+        padding: 1em 2em
 
       .details
         margin-bottom: 2em
@@ -99,19 +74,24 @@
           vertical-align: top
           width: 225px
 
-          &:nth-child(4n)
+          &.last
             margin-right: 0
+
+          button.full
+            font-size: 160%
+            height: 40px
+            margin: 0
 
       .featured_projects
         margin: 2em 0
-        padding: 2em
+        padding: 1em 2em
 
     .project
       +bounds(430px, 172px)
       +box-sizing(border-box)
       +inline-block
 
-      margin-bottom: 2em
+      margin-bottom: 0
       margin-right: 2em
       overflow: hidden
       padding: 1em
@@ -151,24 +131,11 @@
           .light &
             color: $light_text
 
-
-.heading_wrap
-  .heading
-
-    .login
-      = render :partial => "shared/login"
-
-    .logo
-      = image_tag('/images/logo_large.png')
-
-    %h2.blurb
-      The online game development toolkit.
-
 .content
   .feature
     .info
       %h1
-        Achive your dreams
+        Achieve your dreams
 
       %p
         Pixie enables you to quickly and easily create your own games online.
@@ -181,12 +148,12 @@
         With Pixie there is no limit to what you can do. See for yourself with
         one of our demo applications.
 
-      %button.full.clickable
-        Get Started
+      %button.full.clickable.complement
+        Try Now for Free
         = link_to "", ide_project_path("demo"), :style => "display: none;"
 
     .video
-      <iframe width="560" height="345" src="http://www.youtube.com/embed/uIQqUAkEZ4g" frameborder="0" allowfullscreen></iframe>
+      <iframe width="560" height="345" src="http://www.youtube.com/embed/lCbXhNg8cUU" frameborder="0" allowfullscreen></iframe>
 
   .testimonial.module
     %p
@@ -194,29 +161,86 @@
         Pixie is the most wonderful web-based IDE I've ever seen!
       %span.source
         &mdash; Paul Hubans, Game Development Expert
-    %p
-      %i 
 
   .details
+    .detail
+      %h2 Creativity
+      %p
+        There is no limit to what you can create with Pixie.
+        Create pixel art, sound effects, game levels, maps and more!
+
     .detail
       %h2 Freedom
       %p
         Import and export your files and projects at any time.
 
     .detail
-      %h2 Creativity
-      %p
-        Built-in pixel, SFX, animation, and level editors.
-
-    .detail
       %h2 Fame
       %p
         Your published games are playable on all modern desktop and mobile devices.
 
-    .detail
+    .detail.last
       %h2 Fortune
       %p
-        Deploy to online marketplaces with ease.
+        Deploy to online marketplaces with ease. Follow our walkthrough and deploy to Google Chrome Webstore in under four minutes!
+
+  .testimonial.module
+    .thumb.fancy
+      = image_tag "daniel_128.jpg"
+
+    %h2 A message from the creator of Pixie
+
+    %p
+      Hi! I'm Daniel X. Moore, the creator of Pixie. Pixie was born out of a
+      frustration with existing game creation tools, tools that had too much to install, didn't run
+      on Linux, Mac and Windows, and couldn't export to the web.
+    %p
+      I want a simple and
+      powerful toolkit that I can use to create games instantly, and have them be
+      available for all to experience just as fast as I can create them.
+    %p
+      Pixie is still a work in progress, but that's why I need your help. Try out the
+      game creation tools and let me know what you think. The Pixie team and I are
+      working hard to make Pixie the best game development platform in the world. It
+      is our dream and I hope you can share it with us.
+    %p
+      I'm glad you stopped by, please
+      = link_to "let me know if you have any questions or comments", "/survey", :target => "_blank"
+      regarding anything at all.
+      I'll try to get back to you as soon as I can.
+    %p
+      Have fun, and I hope you enjoy Pixie!
+    %p.source &mdash; Daniel X. Moore
+
+  .details
+    .detail
+      %h2 Simple
+      %p
+        Only the tools and features you need. No arduous installation or setup
+        process.
+
+    .detail
+      %h2 Intuitive
+      %p
+        Seamlessly transition from running the game to editing it. Edit sprites,
+        sounds, animations, and objects with ease.
+
+    .detail
+      %h2 Powerful
+      %p
+        A robust set of core game libraries gives you all the functionality you
+        need to get started fast. The built-in scripting language enables you to
+        accomplish anything.
+
+    .detail.last
+      %h2 Free
+      %p
+        The free plan allows you to create and maintain a single project. Pixie
+        Premium is free for 30 days if you need more.
+
+      %button.full.clickable.complement
+        30 Day Free Trial
+        = link_to "", register_subscribe_path, :style => "display: none;"
 
   .featured_projects.module
     %h2 Amazing Games Created with Pixie
@@ -224,6 +248,6 @@
       - Project.featured.limit(4).each do |project|
         = render :partial => project
 
-.footer_wrap
-  .footer
-    &copy; 2011 STRd6
+/[if IE]
+  :coffeescript
+    $(".feature a").attr("href", #{register_subscribe_path.to_json})

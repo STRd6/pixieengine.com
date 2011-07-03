@@ -12,15 +12,13 @@
   text-align: center
 
 .tipsy-inner
-  border-radius: 3px
-  -moz-border-radius: 3px
-  -webkit-border-radius: 3px
+  +border-radius(3px)
 
 .tipsy-arrow
+  +bounds(9px, 5px)
+
   position: absolute
   background: url('../images/tipsy.gif') no-repeat top left
-  width: 9px
-  height: 5px
 
 .tipsy-n .tipsy-arrow
   top: 0
@@ -52,26 +50,16 @@
   background-position: bottom left
 
 .tipsy-e .tipsy-arrow
+  +bounds(5px, 9px)
+
   top: 50%
   margin-top: -4px
   right: 0
-  width: 5px
-  height: 9px
   background-position: top right
 
 .tipsy-w .tipsy-arrow
+  +bounds(5px, 9px)
+
   top: 50%
   margin-top: -4px
   left: 0
-  width: 5px
-  height: 9px
-
-
-
-
-
-
-
-
-
-

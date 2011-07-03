@@ -13,7 +13,6 @@
 #tooltip
   +border-radius
   +box-shadow
-  +linear-gradient(color-stops(#444, #222))
   +text-shadow(black, 1px, 1px)
 
   background-color: #444
@@ -21,8 +20,9 @@
   border-top: 1px solid #595959
   color: $dark_text
   display: none
-  min-width: 150px
-  max-width: 200px
+  min-height: 50px
+  min-width: 100px
+  max-width: 225px
   padding: 1em
   position: absolute
   z-index: 10
@@ -32,22 +32,55 @@
     width: 80px
 
   .icon
-    background-image: url(images/info.png)
-    height: 48px
+    +bounds(25px)
+
+    background-image: url(/images/tip_pointer.png)
+    bottom: 0
     left: -12px
+    margin: auto
     position: absolute
-    top: -12px
-    width: 48px
+    top: 0
 
   .content
     color: $dark_text
-    margin-left: 24px
+    min-height: 50px
+    min-width: 100px
     position: relative
 
-#login_link
-  position: absolute
-  top: 13px
-  right: 40px
+  .next
+    +bounds(40px, 50px)
+
+    background-image: url(/images/next_bg.png)
+    bottom: -35px
+    cursor: pointer
+    display: inline-block
+    position: absolute
+    right: -27px
+
+  .next_arrow
+    +bounds(40px, 50px)
+
+    -webkit-transition: -webkit-transform 0.5s ease-in-out
+
+    background-image: url(/images/next_arrow.png)
+    bottom: -35px
+    cursor: pointer
+    display: inline-block
+    position: absolute
+    right: -27px
+
+    &:hover
+      -webkit-transform: translateX(5%)
+
+  .close_tip.x
+    +bounds(24px, 29px)
+
+    background-image: url(/images/x.png)
+    cursor: pointer
+    display: inline-block
+    right: -21px
+    position: absolute
+    top: -19px
 
 #logo
   +bounds(68px, 34px)
@@ -58,17 +91,6 @@
   position: absolute
   top: 0
   left: 0
-
-#bulb
-  +bounds(32px)
-
-  background-image: url(/images/lightbulb_off.png)
-  position: absolute
-  top: 5px
-  right: 5px
-
-  &.on
-    background-image: url(/images/lightbulb.png)
 
 #content
   +bounds(100%)

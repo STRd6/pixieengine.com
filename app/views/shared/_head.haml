@@ -3,25 +3,27 @@
     - if @title
       = @title
     - else
-      Pixel Editor
+      PixieEngine - Create Games
   %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
   %meta{ :name => "description", :content => (@meta_desc || "This free online pixel editor is amazingly simple. Build on the work of others and share your creations, or start fresh and create something new.") }
+  -# Always force latest IE rendering engine (even in intranet) & Chrome Frame
+  %meta{ :content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible" }
   <meta name="google-site-verification" content="0FAurYC_rgKeOIIzTKuunYVGbrc9gCI9xPClgJvN5_w" />
   <meta name="msvalidate.01" content="AA62CD2D00BD5CE103C280DD73C569C0" />
   = csrf_meta_tag
   <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:light,regular,600,bold' rel='stylesheet' type='text/css'>
   <link rel="shortcut icon" href="/favicon.png" />
 
-  = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
-  = stylesheet_link_tag 'jquery_ui.css'
-  = stylesheet_link_tag 'jquery.pnotify.css'
+  = stylesheet_link_tag 'screen', :media => 'screen, projection'
+  = stylesheet_link_tag 'jquery_ui'
+  = stylesheet_link_tag 'jquery.pnotify'
 
-  :plain
-    <!--[if lte IE 9]>
-      #{stylesheet_link_tag "unsupported.css"}
-    <![endif]-->
+  -# All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects
+  = javascript_include_tag 'modernizr-1.5.min'
 
+  -# TODO: Move this to footer and set up a filter that renders inline js at bottom
   = render :partial => "/shared/javascripts"
 
   :javascript
     var loggedIn = #{!!current_user};
+    var subscriber = #{(current_user && current_user.paying).to_json};

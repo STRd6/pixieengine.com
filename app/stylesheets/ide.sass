@@ -1,14 +1,15 @@
 @import util
 @import partials/base
 
-$nav_left: 220px
-$help_height: 75px
+$sidebar_width: 220px
+$lower_sidebar_height: 210px
 $inner_margin: 20px
 
-#fullscreen
+.ide
   padding-top: 4em
+
   #content
-    padding-left: $nav_left + $inner_margin
+    padding-left: $sidebar_width + $inner_margin
     position: relative
 
 nav.top.actions .status
@@ -17,63 +18,48 @@ nav.top.actions .status
     color: #000
     padding-left: 5px
 
+.featured_action
+  text-align: center
 
-.nav_left_container
+.sidebar_container
   +box-sizing(border-box)
 
   height: 100%
-  width: $nav_left
+  width: $sidebar_width
 
   left: 0
   position: absolute
   top: 0
 
-  nav
-    +border-radius
+  .sidebar
     +bounds(100%)
-    +box-sizing(border-box)
+    +module
 
-    background-color: $dark_highlight
     overflow-y: auto
-    padding-bottom: 1em
-    padding-top: 1em
-
-    .light &
-      background-color: $light_highlight
+    padding: 1em 0
 
   .relative
     +bounds(100%)
     +box-sizing(border-box)
 
-    padding-bottom: $help_height + $inner_margin
+    padding-bottom: $lower_sidebar_height + $inner_margin
     position: relative
 
-  .help
-    +border-radius
-    +box-sizing(border-box)
+  .bottom
+    +module
 
-    background-color: $dark_highlight
     bottom: 0
-    left: 0
-    height: $help_height
+    height: $lower_sidebar_height
     position: absolute
     padding: 1em
     width: 100%
 
-    .light &
-      background-color: $light_highlight
+    &.actionable
+      cursor: pointer
 
-    .button_group
-      display: block
-      margin: auto
-      width: 185px
+      &:hover
+        background-color: $hover
 
-      button
-        font-size: 80%
-
-    h3
-      margin: 0
-      text-align: center
 
 .treeview ul
   background-color: transparent
@@ -136,6 +122,8 @@ ul.filetree
         margin: 0
       &.documentation
         background-image: url(/images/icons/book_open.png)
+      &.tutorial
+        background-image: url(/images/icons/book_open.png)
       &.entity
         background-image: url(/images/icons/sport_shuttlecock.png)
       &.tilemap
@@ -195,6 +183,8 @@ ul.filetree
           &.tilemap
             background-image: url(/images/icons/world.png)
           &.documentation
+            background-image: url(/images/icons/book_open.png)
+          &.tutorial
             background-image: url(/images/icons/book_open.png)
           &.entity
             background-image: url(/images/icons/sport_shuttlecock.png)

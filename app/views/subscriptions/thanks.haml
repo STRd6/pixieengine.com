@@ -1,45 +1,8 @@
-.centered_content
-  %h2 Thanks for subscribing to Pixie!
+%form.module(method="get" action=new_project_path style="width: ")
+  %h2 Thanks for Subscribing!
 
   %p What are you waiting for? Start making awesome games.
 
-  %button.clickable=link_to "Make a new Project", new_project_path
+  %button.full Create a new Project
 
-%style
-  :sass
-    @import partials/base
-    @import util
-
-    #fullscreen.light .centered_content button
-      +bounds(424px, 50px)
-
-      margin-left: 38px
-
-      a
-        color: $pixie_primary
-        font-size: 200%
-
-        &:hover
-          text-decoration: none
-
-    .centered_content
-      +bounds(500px, 150px)
-      +border-radius
-
-      background-color: $dark_highlight
-      position: absolute
-      left: 0
-      right: 0
-      top: 100px
-      margin: auto
-      padding: 1em
-
-      h2
-        text-align: center
-
-    p
-      font-size: 125%
-
-    .light
-      .centered_content
-        background-color: $light_highlight
+= render :partial => "shared/subscription_conversion"

@@ -1,8 +1,3 @@
-Factory.define :app do |app|
-  app.title "TEST"
-  app.user {Factory :user}
-end
-
 Factory.define :collection do |collection|
   collection.user {Factory :user}
   collection.name "TEST"
@@ -17,25 +12,16 @@ Factory.sequence :email do |n|
   "test_#{n}@example.com"
 end
 
-Factory.define :library do |library|
-  library.title "TEST"
-  library.user { Factory(:user) }
-end
-
 Factory.define :user do |user|
   user.email { Factory.next(:email) }
-  user.password "TEST"
-end
-
-Factory.define :script do |script|
-  script.title "TEST"
-  script.script_type "test"
-  script.code "alert('test');"
+  user.password "TEST123"
 end
 
 Factory.define :sprite do |sprite|
   sprite.width 16
   sprite.height 16
+  sprite.title "CommentableSprite"
+  sprite.user {Factory :user}
 end
 
 Factory.define :link do |link|
@@ -51,8 +37,8 @@ Factory.define :plugin do |plugin|
 end
 
 Factory.define :sound do |sound|
-  sound.wav File.new("#{RAILS_ROOT}/test/test.wav")
-  sound.sfs File.new("#{RAILS_ROOT}/test/test.sfs")
+  sound.wav File.new(File.join(Rails.root, "/test/test.wav"))
+  sound.sfs File.new(File.join(Rails.root, "/test/test.sfs"))
 end
 
 Factory.define :project do |project|

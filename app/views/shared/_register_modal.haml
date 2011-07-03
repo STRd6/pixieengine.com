@@ -1,4 +1,4 @@
-#registerModal.modalElement
+#registerModal.modal
   #registration
     = render :partial => 'users/form', :locals => {:user => User.new}
   #logIn{:style => "display: none;"}
@@ -7,12 +7,27 @@
   = link_to_function "Create a new account with Pixie", "$('#registration').show(); $('#logIn').hide(); $(this).hide().next().show();", :style => "display: none;"
   = link_to_function "Log in with existing account", "$('#registration').hide(); $('#logIn').show(); $(this).hide().prev().show();"
 
+#subscriptionModal.modal
+  %h2 Only Subscribers Can Access this Feature
+  .info
+    %p Subscribe now for access to these benefits:
+    %ul
+      %li Up to 15 active projects
+      %li 1500MB of storage
+      %li Private projects
+      %li Export to Chrome Web Store
+      %li Try it free for 30 days!
+
+  %button.full Free Trial
+
+
 :javascript
   var logInCallback;
 
   function requireLogin(callback) {
     if(!loggedIn) {
       logInCallback = callback;
+      $.modal.close();
       $("#registerModal").modal({
         containerCss: {
           height: 460,
@@ -63,8 +78,13 @@
     ajaxifyForm("#new_user_session");
   });
 
-%style
-  :sass
-    #fullscreen #registerModal
-      a
-        color: #fff
+:coffeescript
+  $("#subscriptionModal button").click ->
+    window.location = #{register_subscribe_path.to_json}
+
+  window.requireSubscription = (callback) ->
+    if subscriber
+      callback()
+    else
+      $.modal.close()
+      $("#subscriptionModal").modal()

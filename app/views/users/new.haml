@@ -1,1 +1,18 @@
-= render :partial => 'form'
+= stylesheet_link_tag "branded"
+
+.content
+  = form_for user, :html => { :class => "module" } do |form|
+    = form.error_messages
+    %h2 Sign up for Pixie!
+
+    %label
+      %h3 Display Name
+      = form.text_field :display_name
+    %label
+      %h3 Email Address
+      = form.text_field :email
+    %label
+      %h3 Password
+      = form.password_field :password
+
+    %button.full Sign Up
