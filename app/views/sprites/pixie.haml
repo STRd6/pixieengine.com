@@ -34,159 +34,165 @@
 
   = button_to_function "New Canvas", "newCanvas()"
 
-:javascript
-  function newCanvas() {
-    var newWidth = $('#resize_width').val();
-    var newHeight = $('#resize_height').val();
+:coffeescript
+  newCanvas = ->
+    newWidth = $('#resize_width').val()
+    newHeight = $('#resize_height').val()
 
     window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
-  }
 
-  function setNewDimensions() {
-    $("#newCanvasModal").removeAttr("style").modal({
-      containerCss: {
-        height: 110,
+  setNewDimensions = ->
+    $("#newCanvasModal").removeAttr("style").modal
+      containerCss:
+        height: 110
         width: 180
-      },
-      onClose: function() {
-        $.modal.close();
-        $("#newCanvasModal").attr("style", "display: none");
-      }
-    });
-  }
+      ,
+      onClose: ->
+        $.modal.close()
+        $("#newCanvasModal").attr("style", "display: none")
 
-:javascript
-  (function($) {
-    installedTools = [#{installed_tools.map(&:code).join(',')}];
+:coffeescript
+  (($) ->
+    installedTools = [#{installed_tools.map(&:code).join(',')}]
 
-    function postImage() {
-      notify("Saving, please wait...");
+    postImage = ->
+      notify "Saving, please wait..."
 
-      var postData = {
-        'format': 'js',
-        'sprite[width]': #{width},
-        'sprite[height]': #{height},
-        'sprite[parent_id]': #{@parent_id.to_json},
-        'sprite[file_base64_encoded]': canvas.toBase64(),
+      postData =
+        'format': 'js'
+        'sprite[width]': #{width}
+        'sprite[height]': #{height}
+        'sprite[parent_id]': #{@parent_id.to_json}
+        'sprite[file_base64_encoded]': canvas.toBase64()
         'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
-      };
 
-      if(#{facebook?}) {
-        postData.format = "json";
-      }
+      if #{facebook?}
+        postData.format = "json"
 
-      $.post('/sprites', postData, function(data) {
-        if(#{facebook?}) {
-          FB.ui({
-            method: 'feed',
-            link: 'http://pixie.strd6.com',
-            picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/large.png",
+      $.post '/sprites', postData, (data) ->
+        if #{facebook?}
+          FB.ui
+            method: 'feed'
+            link: 'http://pixie.strd6.com'
+            picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/large.png"
             message: 'Check out my awesome pixel art!'
-          }, function(response) {
-            if (response && response.post_id) {
-              alert('Post was published.');
-            } else {
-              alert('Post was not published.');
-            }
-          });
+          , (response) ->
+            if response && response.post_id
+              alert 'Post was published.'
+            else
+              alert 'Post was not published.'
 
-          notify("Saved!");
-        } else {
-          eval(data);
-        }
+          notify "Saved!"
+        else
+          eval(data)
 
-        trackPageview("/event/save_drawing");
-        canvas.dirty(false);
-        $(".tool.button[title=Save]").removeAttr("disabled");
-      }, "script");
-    }
+        trackPageview "/event/save_drawing"
+        canvas.dirty(false)
+        $(".tool.button[title=Save]").removeAttr("disabled")
+      , "script"
 
-    pixie = $('#pixie').pixie({
-      width: #{width},
-      height: #{height},
-      pixelSize: #{facebook?} ? 8 : 16,
-      initializer: function(canvas) {
-        // HAX: Global ref of canvas
-        window.canvas = canvas;
+    pixie = $('#pixie').pixie
+      width: #{width}
+      height: #{height}
+      pixelSize: if #{facebook?} then 8 else 16
+      initializer: (canvas) ->
+        # HAX: Global ref of canvas
+        window.canvas = canvas
 
-        canvas.addAction({
-          name: "replay",
-          perform: function(canvas) {
-            canvas.replay();
-          },
+        canvas.addAction
+          name: "replay"
+          perform: (canvas) ->
+            canvas.replay()
           undoable: false
-        });
 
-        if(#{facebook?}) {
-          canvas.addAction({
-            name: "Post to FB",
-            icon: "/images/icons/user_comment.png",
-            perform: function(canvas) {
-              postImage();
-            },
+        if #{facebook?}
+          canvas.addAction
+            name: "Post to FB"
+            icon: "/images/icons/user_comment.png"
+            perform: (canvas) ->
+              postImage()
             undoable: false
-          });
-        } else {
-          canvas.addAction({
-            name: "new",
-            perform: function(canvas) {
-              setNewDimensions();
-            },
+        else
+          canvas.addAction
+            name: "new"
+            perform: (canvas) ->
+              setNewDimensions()
             undoable: false
-          });
 
-          canvas.addAction({
-            name: "save",
-            perform: function(canvas) {
-              $(".tool.button[title=Save]").attr("disabled", true);
-              window.onbeforeunload = undefined;
-              postImage();
-            },
+          canvas.addAction
+            name: "save"
+            perform: (canvas) ->
+              $(".tool.button[title=Save]").attr("disabled", true)
+              window.onbeforeunload = undefined
+              postImage()
             undoable: false
-          });
 
-          canvas.addAction({
-            name: "Post to Chat",
-            icon: "/images/icons/picture_go.png",
-            perform: function(canvas) {
-              var wrapper = $("<div />");
-              var img = $("<img />");
-              img.attr('src', canvas.toDataURL());
+          canvas.addAction
+            name: "Post to Chat"
+            icon: "/images/icons/picture_go.png"
+            perform: (canvas) ->
+              wrapper = $ "<div />"
+              img = $ "<img />"
+              img.attr('src', canvas.toDataURL())
 
-              img.appendTo(wrapper);
+              img.appendTo(wrapper)
 
-              $.post ('/chat', { body: wrapper.html() }, function() {
-                $('body').scrollTo({
-                  left: '0%',
+              $.post '/chats', { body: wrapper.html() }, ->
+                $('body').scrollTo
+                  left: '0%'
                   top: '100%'
-                });
-              });
 
-              $("#chatZone").fadeIn();
-            }
-          });
-        }
+              commenter = "#{ current_user ? current_user.display_name : 'Anonymous' }"
+              commenter_id = #{ current_user ? current_user.id : -1 }
+              prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
 
-        $.each(installedTools, function(i, tool) {
-          canvas.addTool(tool);
-        });
+              li = $ "<li />"
+              hr = $ "<hr />"
+              if commenter_id > 0
+                a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
 
-        (function(frameData) {
-          canvas.setInitialState(frameData);
-        }(#{data.to_json}));
+              if a
+                name = $ '<span />',
+                  class: "name"
 
-        if(#{!!@replay_data}) {
-          canvas.replay(#{@replay_data || "null"}, #{parent_data.to_json});
-        }
+                name.append(a)
+              else
+                name = $ '<span />',
+                  class: "name"
+                  text: commenter
 
-        window.onbeforeunload = function() {
-          if (canvas.dirty()) {
-            return "Your changes haven't yet been saved, if you leave now you will lose your work.";
-          }
-        };
-      }
-    });
+              time = $ '<span />',
+                class: "time"
+                text: "#{Time.zone.now.strftime('%I:%M%p')} "
+
+              message = $ '<span />',
+                class: "message"
+
+              message.append(img)
+
+              if commenter != prev_commenter
+                li.append(hr, name, time)
+
+              li.append(message)
+
+              $('#chats').append(li)
+
+              $("#chatZone").fadeIn()
+              $("#openChat").toggleClass('straight')
+
+        $.each installedTools, (i, tool) ->
+          canvas.addTool(tool)
+
+        ((frameData) ->
+          canvas.setInitialState(frameData)
+        )(#{data.to_json})
+
+        if #{!!@replay_data}
+          canvas.replay(#{@replay_data || "null"}, #{parent_data.to_json})
+
+        window.onbeforeunload = ->
+          if canvas.dirty()
+            "Your changes haven't yet been saved, if you leave now you will lose your work."
 
     window.currentComponent = pixie
-
-  })(jQuery);
+  )(jQuery)

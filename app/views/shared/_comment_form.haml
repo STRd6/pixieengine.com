@@ -38,6 +38,7 @@
 
         commentForm.siblings(".comments").prepend(newComment)
 
+        commentForm.find("textarea").val("")
       else
         alert("Please enter a comment first")
 
