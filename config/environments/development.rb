@@ -18,14 +18,15 @@ PixieStrd6Com::Application.configure do
   config.action_mailer.raise_delivery_errors = false
 
   # uncomment the next section to debug active mailer emails in development
-  #config.action_mailer.raise_delivery_errors = true
-  #config.action_mailer.delivery_method = :smtp
-  #config.action_mailer.smtp_settings = {
+  # config.action_mailer.default_url_options = { :host => "localhost:3000" }
+  # config.action_mailer.raise_delivery_errors = true
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
   #   :address => "smtp.gmail.com",
   #   :port => 587,
   #   :domain => "pixieengine.com",
-  #   :user_name => "user_name",
-  #   :password => "super_secret_doesn't_belong_in_github",
+  #   :user_name => "u_name",
+  #   :password => "secret",
   #   :authentication => "plain",
   #   :enable_starttls_auto => true
   # }
