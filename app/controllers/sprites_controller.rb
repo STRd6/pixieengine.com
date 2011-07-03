@@ -163,8 +163,6 @@ class SpritesController < ApplicationController
   def collection
     @collection ||= if params[:tagged]
       Sprite.tagged_with(params[:tagged]).order("id DESC").paginate(:page => params[:page], :per_page => per_page)
-    elsif params[:q]
-      Sprite.search(params[:q], :page => params[:page], :per_page => per_page)
     else
       Sprite.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
     end

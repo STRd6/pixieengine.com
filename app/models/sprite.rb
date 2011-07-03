@@ -17,16 +17,6 @@ class Sprite < ActiveRecord::Base
   belongs_to :user
   belongs_to :parent, :class_name => "Sprite"
 
-  #TODO: Why does this require a special association?
-  has_many :tags, :through => :taggings
-  define_index do
-    indexes title
-    indexes description
-
-    #TODO: Get this working without the special association
-    indexes tags(:name), :as => :tags
-  end
-
   attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data, :app_id, :app_sprite_id
 
   MAX_LENGTH = 640

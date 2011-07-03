@@ -10,16 +10,10 @@ set :scm, "git"
 set :repository, "git://github.com/STRd6/#{application}.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
+set :user, :rails
 
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
-
-set :default_environment, {
-  'PATH' => "/home/daniel/.rvm/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02/bin:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global/bin:/home/daniel/.rvm/rubies/ree-1.8.7-2010.02/bin:$PATH",
-  'RUBY_VERSION' => 'ruby 1.8.7',
-  'GEM_HOME' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02',
-  'GEM_PATH' => '/home/daniel/.rvm/gems/ree-1.8.7-2010.02:/home/daniel/.rvm/gems/ree-1.8.7-2010.02@global'
-}
 
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
@@ -28,7 +22,7 @@ set :default_environment, {
 
 ssh_options[:port] = 2112
 
-app_ip = "67.207.139.110"
+app_ip = "173.255.220.219"
 
 role :app, app_ip
 role :web, app_ip
@@ -50,13 +44,11 @@ namespace :deploy do
   end
 end
 
-after :setup do
-  run "mkdir #{shared_path}/production"
-  run "mkdir #{shared_path}/production/images"
-  run "mkdir #{shared_path}/production/replays"
-  run "mkdir #{shared_path}/db"
-  run "mkdir #{shared_path}/backups"
-  run "mkdir #{shared_path}/local"
+after "deploy:setup" do
+  run "mkdir -p #{shared_path}/production"
+  run "mkdir -p #{shared_path}/production/images"
+  run "mkdir -p #{shared_path}/production/replays"
+  run "mkdir -p #{shared_path}/local"
   run "touch #{shared_path}/log/nginx.log"
   run "touch #{shared_path}/log/nginx.error.log"
 end
@@ -70,13 +62,13 @@ after "deploy:update_code" do
   run "ln -nfs #{shared_path}/local/settings.yml #{release_path}/config/settings.yml"
 end
 
-# namespace :delayed_job do
-#   desc "Restart the delayed_job process"
-#   task :restart, :roles => :app do
-#     run "cd #{current_path}; RAILS_ENV=#{rails_env} script/delayed_job restart"
-#   end
-# end
-# after "deploy:symlink", "delayed_job:restart"
+namespace :delayed_job do
+  desc "Restart the delayed_job process"
+  task :restart, :roles => :app do
+    # run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
+  end
+end
+after "deploy:symlink", "delayed_job:restart"
 
 # Passenger start Tasks
 namespace :deploy do
