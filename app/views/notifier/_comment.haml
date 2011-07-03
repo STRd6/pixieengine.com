@@ -1,10 +1,10 @@
 :plain
-  Hello #{to},
+  Hello #{to.display_name},
 
-  #{from} thinks that your Pixie #{type}
+  #{from.display_name} thinks that your Pixie #{type}
   is really interesting so they left you a comment.
 
-  Check it out #{ link_to "here", user_path(to) }
+  Check it out #{user_url(to)}
 
   Creatively Yours,
   Pixie

@@ -1,1 +1,1 @@
-= render :partial => 'comment', :locals => {:to => @comment.commentee, :from => @comment.commenter.display_name, :type => @comment.commentable_type}
+= render :partial => 'comment', :locals => {:to => @comment.commentable.user, :from => @comment.commenter, :type => @comment.commentable_type}
