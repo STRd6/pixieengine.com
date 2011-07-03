@@ -10,6 +10,7 @@ set :scm, "git"
 set :repository, "git://github.com/STRd6/#{application}.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
+set :user, :rails
 
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
@@ -43,13 +44,11 @@ namespace :deploy do
   end
 end
 
-after :setup do
-  run "mkdir #{shared_path}/production"
-  run "mkdir #{shared_path}/production/images"
-  run "mkdir #{shared_path}/production/replays"
-  run "mkdir #{shared_path}/db"
-  run "mkdir #{shared_path}/backups"
-  run "mkdir #{shared_path}/local"
+after "deploy:setup" do
+  run "mkdir -p #{shared_path}/production"
+  run "mkdir -p #{shared_path}/production/images"
+  run "mkdir -p #{shared_path}/production/replays"
+  run "mkdir -p #{shared_path}/local"
   run "touch #{shared_path}/log/nginx.log"
   run "touch #{shared_path}/log/nginx.error.log"
 end
@@ -66,7 +65,7 @@ end
 namespace :delayed_job do
   desc "Restart the delayed_job process"
   task :restart, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
+    # run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
   end
 end
 after "deploy:symlink", "delayed_job:restart"
