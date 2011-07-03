@@ -1,5 +1,4 @@
 source 'http://rubygems.org'
-source 'http://gems.github.com'
 
 gem 'rails', '3.0.5'
 
@@ -23,7 +22,7 @@ gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
 gem 'barista', '~> 1.0'
 gem "compass", ">= 0.10.2"
-gem "delayed_job", "2.1.4", :git => "git://github.com/collectiveidea/delayed_job.git"
+gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
@@ -44,7 +43,6 @@ gem "ruby-openid"
 gem "sanitize"
 gem 'therubyracer'
 gem "thinking-sphinx", "2.0.1", :require => "thinking_sphinx"
-gem "vestal_versions", :git => "git://github.com/adamcooper/vestal_versions"
 gem "will_paginate"
 gem "whenever"
 

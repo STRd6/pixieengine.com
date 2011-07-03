@@ -5,14 +5,6 @@ PixieStrd6Com::Application.routes.draw do
 
   get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
 
-  namespace :abingo do
-    match "dashboard" => 'dashboard#index'
-  end
-
-  namespace :admin do
-    resources :reports
-  end
-
   resources :projects do
     member do
       get :debug
