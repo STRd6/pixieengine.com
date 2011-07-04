@@ -1,4 +1,6 @@
-= form_for sprite do |form|
+= stylesheet_link_tag "branded"
+
+= form_for sprite, :html => {:class => "module"} do |form|
   = form.error_messages
 
   %h2 Edit Sprite
