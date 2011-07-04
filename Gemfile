@@ -18,7 +18,6 @@ gem 'capistrano'
 
 gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
-gem "authlogic-connect"
 gem "aws-s3", :require => "aws/s3"
 gem 'barista', '~> 1.0'
 gem "compass"
@@ -32,13 +31,9 @@ gem 'jrails'
 gem 'json'
 gem 'mail'
 gem 'mocha'
-gem 'oauth'
-gem "oauth2"
 gem 'paperclip'
-gem "rack-openid", ">=0.2.1", :require => "rack/openid"
 gem "require"
 gem 'rmagick', :require => 'RMagick'
-gem "ruby-openid"
 gem "sanitize"
 gem 'therubyracer'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"

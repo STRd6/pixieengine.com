@@ -2,9 +2,7 @@
 .redcar
 .rvmrc
 .DS_Store
-config/authlogic.yml
 config/database.yml
-config/development.sphinx.conf
 config/s3.yml
 config/settings.yml
 db/*.sqlite3
