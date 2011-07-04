@@ -1,4 +1,6 @@
-- form_for @user, :url => password_reset_path, :method => :put do |f|
+= stylesheet_link_tag "branded"
+
+- form_for @user, :html => { :class => "module" }, :url => password_reset_path, :method => :put do |f|
   = f.error_messages
 
   %h1 Change My Password
@@ -8,9 +10,3 @@
     = f.password_field :password
 
   = f.submit "Update my password and log me in"
-
-%style
-  :sass
-    form
-      width: 400px
-      margin: auto
