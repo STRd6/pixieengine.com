@@ -38,12 +38,6 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :sounds do
-    member do
-      get :load
-    end
-  end
-
   resources :sprites do
     member do
       get :load
@@ -96,7 +90,6 @@ PixieStrd6Com::Application.routes.draw do
   match 'facebook' => "sprites#new", :as => :facebook
 
   match 'pixel-editor' => "sprites#new", :as => :new_sprite
-  match 'sfx-editor' => "sounds#new", :as => :new_sound
   match 'arcade' => "projects#arcade"
 
   # Catch old urls
