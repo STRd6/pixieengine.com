@@ -61,14 +61,6 @@ after "deploy:update_code" do
   run "ln -nfs #{shared_path}/local/settings.yml #{release_path}/config/settings.yml"
 end
 
-namespace :delayed_job do
-  desc "Restart the delayed_job process"
-  task :restart, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
-  end
-end
-after "deploy:symlink", "delayed_job:restart"
-
 # Passenger start Tasks
 namespace :deploy do
   task :start, :roles => :app do
