@@ -32,7 +32,6 @@ gem 'jrails'
 gem 'json'
 gem 'mail'
 gem 'mocha'
-gem 'narray'
 gem 'oauth'
 gem "oauth2"
 gem 'paperclip'
