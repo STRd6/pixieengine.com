@@ -36,8 +36,6 @@
 
 :coffeescript
   (($) ->
-    window.installedTools = []
-
     window.setNewDimensions = ->
       $("#newCanvasModal").removeAttr("style").modal
         containerCss:
@@ -53,8 +51,6 @@
       newHeight = $('#resize_height').val()
 
       window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
-
-      window.installedTools = [#{installed_tools.map(&:code).join(',')}]
 
     postImage = ->
       notify "Saving, please wait..."
@@ -184,9 +180,6 @@
               $('#chats').scrollTo
                 left: '0%'
                 top: '100%'
-
-        $.each installedTools, (i, tool) ->
-          canvas.addTool(tool)
 
         ((frameData) ->
           canvas.setInitialState(frameData)
