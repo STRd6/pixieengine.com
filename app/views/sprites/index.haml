@@ -1,3 +1,5 @@
+= stylesheet_link_tag "branded"
+
 - @title = "Sprite Gallery"
 
 - tags = Sprite.with_ids(sprites).tag_counts
@@ -26,17 +28,22 @@
     @import util
     @import partials/base
 
+    .sprite_gallery
+      margin: auto
+      margin-left: 4em
+      margin-right: 4em
+
     .tags
       padding-top: 0.5em
       position: absolute
-      top: 0
-      left: 100px
+      right: 4em
+      top: 93px
 
-      .pagination
-        color: $pixie_primary
-        margin-bottom: 5px
-        position: absolute
-        top: 0
+    .pagination
+      color: $pixie_primary
+      margin: auto
+      margin-bottom: 1em
+      margin-left: 4em
 
     .sprite_container
       +border-radius
