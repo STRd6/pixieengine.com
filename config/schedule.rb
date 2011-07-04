@@ -23,10 +23,6 @@ every 12.hours do
   rake "backup:database"
 end
 
-every 2.hours, :at => 30 do
-  rake "thinking_sphinx:index"
-end
-
 every :saturday, :at => '11pm' do
   rake "report:send"
 end
