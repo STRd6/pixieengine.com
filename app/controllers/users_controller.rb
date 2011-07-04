@@ -52,40 +52,37 @@ class UsersController < ApplicationController
 
     @object.referrer_id = session[:referrer_id]
 
-    @object.save do |result|
-      if result
-        session.delete(:referrer_id)
+    if @object.save
+      session.delete(:referrer_id)
 
-        save_sprites_to_user(user)
+      save_sprites_to_user(user)
 
-        respond_to do |format|
-          format.html do
-            @registered = true
-            if subscribe
-              redirect_to user.subscribe_url
-            else
-              redirect_to user, :notice => REGISTERED_FLASH
-            end
+      respond_to do |format|
+        format.html do
+          @registered = true
+          if subscribe
+            redirect_to user.subscribe_url
+          else
+            redirect_to user, :notice => REGISTERED_FLASH
           end
-          format.json { render :json => {:status => "ok"} }
         end
-
-      else
-        respond_to do |format|
-          format.html do
-            if subscribe
-              render :action => :register_subscribe
-            else
-              render :action => :new
-            end
-
+        format.json { render :json => {:status => "ok"} }
+      end
+    else
+      respond_to do |format|
+        format.html do
+          if subscribe
+            render :action => :register_subscribe
+          else
+            render :action => :new
           end
-          format.json do
-            render :json => {
-              :status => "error",
-              :errors => user.errors.full_messages
-            }
-          end
+
+        end
+        format.json do
+          render :json => {
+            :status => "error",
+            :errors => user.errors.full_messages
+          }
         end
       end
     end
