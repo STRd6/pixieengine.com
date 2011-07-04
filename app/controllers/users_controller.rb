@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   end
 
   def new
-    
+
   end
 
   def remove_favorite
@@ -55,10 +55,6 @@ class UsersController < ApplicationController
     @object.save do |result|
       if result
         session.delete(:referrer_id)
-
-        bingo!("registration_popup")
-        bingo!("load_pic")
-        bingo!("login_after")
 
         save_sprites_to_user(user)
 
@@ -100,7 +96,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    
+
   end
 
   def update
