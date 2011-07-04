@@ -19,6 +19,9 @@ class SoundsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def index
   end
 
