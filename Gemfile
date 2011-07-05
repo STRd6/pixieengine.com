@@ -27,9 +27,9 @@ gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
 gem 'html5-boilerplate'
-gem 'jrails'
 gem 'json'
 gem 'mail'
+gem "mocha"
 gem 'paperclip'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
@@ -43,6 +43,6 @@ gem "whenever"
 # gem 'rspec', :group => :test
 group :test do
   gem "factory_girl"
-  gem "mocha"
   gem "shoulda"
+  gem "turn", :require => false
 end
