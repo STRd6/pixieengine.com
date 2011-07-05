@@ -1,3 +1,5 @@
+- @top_nav = true
+
 %header
   #flashes
     - flash.each do |key, msg|
@@ -6,8 +8,16 @@
   .content
     = link_to '', root_path, :class => "logo"
 
-    %h2.blurb
-      The online game development toolkit
+    - if @top_nav
+      %nav.top_bar
+        %ul
+          %li= link_to 'Pixel Editor', new_sprite_path()
+          %li= link_to 'Gallery', sprites_path()
+          %li= link_to 'Projects', projects_path()
+          %li= link_to 'People', users_path()
+    - else
+      %h2.blurb
+        The online game development toolkit
 
     .bulb
 
