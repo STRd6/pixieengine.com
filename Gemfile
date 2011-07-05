@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.1.0.rc4'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -23,7 +23,6 @@ gem 'barista', '~> 1.0'
 gem "compass"
 gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
-gem 'god'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
@@ -31,10 +30,10 @@ gem 'html5-boilerplate'
 gem 'jrails'
 gem 'json'
 gem 'mail'
-gem 'mocha'
 gem 'paperclip'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
+gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
@@ -43,10 +42,7 @@ gem "whenever"
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
 group :test do
-  gem "shoulda"
   gem "factory_girl"
-end
-
-group :development do
-  gem "ruport"
+  gem "mocha"
+  gem "shoulda"
 end
