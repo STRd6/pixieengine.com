@@ -26,3 +26,9 @@
   .user_drop_down
     %ul
       %li= link_to "Log out", logout_path()
+
+:coffeescript
+  $ ->
+    $(document).bind 'keydown', 'c', (e) ->
+      e.preventDefault()
+      $('#openChat').mousedown()
