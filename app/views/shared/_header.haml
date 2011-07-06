@@ -21,3 +21,8 @@
     .bulb
 
     = render :partial => "/shared/login"
+
+- if current_user
+  .user_drop_down
+    %ul
+      %li= link_to "Log out", logout_path()

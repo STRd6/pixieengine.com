@@ -1,6 +1,46 @@
 $header_gradient_start: lighten($branded_blue, 7%)
 $header_gradient_end: $branded_blue
 
+.user_drop_down
+  +border-bottom-radius
+  +box-shadow(#333, 0, 1px, 2px)
+
+  background-color: $header_gradient_end
+  display: none
+  max-height: 350px
+  min-width: 98px
+  position: absolute
+  top: 40px
+  right: 155px
+
+  &.active
+    display: block
+
+  ul
+    font-size: 12px
+    margin: 0
+    width: 100%
+
+    li
+      +border-bottom-radius
+
+      background: $header_gradient_end
+      display: block
+      margin: 0
+      padding: 0
+      width: 100%
+
+      &:hover
+        background: rgba(255, 255, 255, 0.1)
+        color: white
+
+      a
+        color: #DCDCDC
+        display: inline-block
+        font-weight: normal
+        padding: 6px 15px
+        text-decoration: none
+
 body footer
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
 

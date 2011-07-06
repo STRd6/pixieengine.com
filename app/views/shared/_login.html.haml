@@ -10,3 +10,15 @@
       %span.login_arrow
   - else
     = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
+
+:coffeescript
+  $('.new_project img').tipsy
+    gravity: 'e'
+    opacity: 1
+
+  $('.log_out, .log_out img, .log_out span').mousedown ->
+    $('.user_drop_down').toggleClass('active')
+
+  $(document).mousedown (e) ->
+    target = $(e.target)
+    $('.user_drop_down').removeClass('active') unless target.is('.log_out') || target.is('.log_out img') || target.is('.log_out span') || target.is('.user_drop_down')
