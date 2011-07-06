@@ -1,4 +1,25 @@
-header
+$header_gradient_start: lighten($branded_blue, 7%)
+$header_gradient_end: $branded_blue
+
+body header
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
+  height: 40px
+
+  .logo
+    +bounds(72px, 40px)
+    +inline-block
+
+    background-image: url(/images/shadow_logo_small.png)
+    float: left
+    margin: 0
+    margin-top: -1px
+    position: static
+
+  .content
+    height: 100%
+    padding: 0
+
   .blurb
     display: none
 
@@ -18,31 +39,31 @@ header
     top: 13px
     right: 40px
 
-  .logo
-    +bounds(68px, 34px)
-
-    background-image: url(/images/pixie.png)
-    margin-left: 4px
-    margin-top: 4px
-    position: absolute
-    top: 0
-    left: 0
-
   nav.top_bar
+    +bounds(500px, 100%)
+
     margin: auto
-    padding-top: 1em
-    width: 600px
+
+    ul
+      +box-sizing(border-box)
+
+      height: 100%
+      padding-top: 10px
 
     li
-      display: inline-block
-      font-size: 140%
-      padding-left: 2em
-      padding-right: 2em
+      +inline-block
+
+      color: white
+      font-weight: bold
+      padding-left: 1.5em
+      padding-right: 1.5em
       text-align: center
 
-      a
-        +text-shadow(rgba(100, 100, 100, 0.4), 1px, 1px, 0)
-
-        color: #eee
-        font-weight: 500
+      & > a
+        color: #DCDCDC
+        font-size: 13px
+        font-weight: normal
         text-decoration: none
+
+        &:hover
+          color: white
