@@ -1,5 +1,6 @@
 class UserSessionsController < ApplicationController
   def new
+    @top_nav = true
   end
 
   def create

@@ -3,6 +3,22 @@
     @import util
     @import branded
 
+    body header
+      height: 90px
+
+      .logo
+        +bounds(100px, 53px)
+        +inline-block
+
+        background-image: url(/images/shadow_logo.png)
+        float: left
+        margin: 0
+        margin-top: 15px
+        position: static
+
+      .login_link a[title="Log in"]
+        margin-top: 39px
+
     .thumb
       float: left
       margin-bottom: 1em
