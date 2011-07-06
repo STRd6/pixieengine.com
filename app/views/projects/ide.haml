@@ -13,7 +13,7 @@
     %button#test> Test
   - if demo? || has_access?
     .button_group
-      %button#build(title="Compile src files into single JS file")> Build
+      %button#build(title="Build and publish the current version of the project")> Build
       %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
@@ -353,6 +353,7 @@
     save event,
       contents: projectCode
       path: (projectConfig.name || "project") + ".js"
+      touch: true
 
   appConfigCode = () ->
     if projectConfig.library
@@ -375,7 +376,7 @@
 
     $("#test_zone").append(iframe).show()
 
-    environmentVariables = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};\n"
+    environmentVariables = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
     crammedCode = [environmentVariables, buildProjectCode()].join(";\n")
 
     if runPath = projectConfig.runPath
