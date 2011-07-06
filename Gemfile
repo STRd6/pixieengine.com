@@ -23,7 +23,6 @@ gem 'barista', '~> 1.0'
 gem "compass"
 gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
-gem 'god'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
