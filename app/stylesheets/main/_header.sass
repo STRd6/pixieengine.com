@@ -1,4 +1,69 @@
-header
+$header_gradient_start: lighten($branded_blue, 7%)
+$header_gradient_end: $branded_blue
+
+.user_drop_down
+  +border-bottom-radius
+  +box-shadow(#333, 0, 1px, 2px)
+
+  background-color: $header_gradient_end
+  display: none
+  max-height: 350px
+  min-width: 98px
+  position: absolute
+  top: 40px
+  right: 155px
+
+  &.active
+    display: block
+
+  ul
+    font-size: 12px
+    margin: 0
+    width: 100%
+
+    li
+      +border-bottom-radius
+
+      background: $header_gradient_end
+      display: block
+      margin: 0
+      padding: 0
+      width: 100%
+
+      &:hover
+        background: rgba(255, 255, 255, 0.1)
+        color: white
+
+      a
+        color: #DCDCDC
+        display: inline-block
+        font-weight: normal
+        padding: 6px 15px
+        text-decoration: none
+
+body footer
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
+body header
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
+  height: 40px
+
+  .logo
+    +bounds(76px, 40px)
+    +inline-block
+
+    background-image: url(/images/shadow_logo_small.png)
+    float: left
+    margin: 0
+    margin-top: -2px
+    margin-right: 50px
+    position: static
+
+  .content
+    height: 100%
+    padding: 0
+
   .blurb
     display: none
 
@@ -14,16 +79,88 @@ header
       background-image: url(/images/lightbulb.png)
 
   .login_link
-    position: absolute
-    top: 13px
-    right: 40px
+    +bounds(150px, 40px)
 
-  .logo
-    +bounds(68px, 34px)
+    display: inline-block
+    float: right
 
-    background-image: url(/images/pixie.png)
-    margin-left: 4px
-    margin-top: 4px
-    position: absolute
-    top: 0
-    left: 0
+    a[title='Log in']
+      display: inline-block
+      float: right
+      margin-top: 11px
+
+    span.vertical_rule
+      border-left: 1px solid rgba(0, 0, 0, 0.3)
+      border-right: 1px solid rgba(255, 255, 255, 0.08)
+      height: 28px
+      display: inline-block
+      margin: 6px 3px 1px 3px
+
+    a.new_project
+      +bounds(16px)
+      +box-sizing(border-box)
+
+      display: inline-block
+      margin-top: 14px
+      vertical-align: top
+
+    img.user_info
+      margin-top: 11px
+      vertical-align: bottom
+
+    .user_name
+      margin-right: 2px
+
+    .log_out
+      color: #DCDCDC
+      height: 40px
+
+      display: inline-block
+      padding: 0 1em
+      vertical-align: top
+
+      &:hover
+        background-color: rgba(255, 255, 255, 0.1)
+        color: white
+        cursor: pointer
+
+    .login_arrow
+      +bounds(7px, 4px)
+      +inline-block
+
+      background: url('/images/login_arrow.png')
+
+  nav.top_bar
+    +inline-block
+
+    height: 100%
+
+    span.active
+      +box-sizing(border-box)
+      +inline-block
+
+      background-color: rgba(0, 0, 0, 0.25)
+      color: white
+      font-weight: bold
+      height: 100%
+      padding-left: 10px
+      padding-right: 10px
+      padding-top: 10px
+      text-align: center
+
+    a
+      +box-sizing(border-box)
+      +inline-block
+
+      color: #DCDCDC
+      font-size: 13px
+      font-weight: normal
+      height: 100%
+      padding-left: 10px
+      padding-right: 10px
+      padding-top: 10px
+      text-align: center
+      text-decoration: none
+
+      &:hover
+        color: white

@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
     :path => "avatars/:id/:style.:extension",
     :styles => {
       :large => ["256x256>", :png],
-      :thumb => ["32x32>", :png]
+      :thumb => ["32x32>", :png],
+      :tiny => ["20x20#", :png]
     }
   )
 

@@ -1,7 +1,27 @@
 .login_link
   - if current_user
-    Logged in as #{link_to current_user, current_user }
-    (#{link_to "Log out", logout_path, { :title => "Log out" }})
+    = link_to image_tag('/images/icons/layout_add.png', :alt => "New Project", :title => "New Project"), new_project_path(),  :class => 'new_project'
+    %span.vertical_rule
+    %span.log_out
+      = image_tag(current_user.avatar.url(:tiny), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info')
+      %span.user_name
+        = current_user.display_name
 
+      %span.login_arrow
   - else
     = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
+
+:coffeescript
+  $('.new_project img').tipsy
+    gravity: 'e'
+    opacity: 1
+
+  $('.log_out').mousedown (e) ->
+    $('.user_drop_down').toggleClass('active')
+    e.stopPropagation()
+
+  $(document).mousedown (e) ->
+    target = e.target
+    drop_down = $('.user_drop_down').get(0)
+
+    $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
