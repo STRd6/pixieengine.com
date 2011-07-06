@@ -5,15 +5,14 @@
 - tags = Sprite.with_ids(sprites).tag_counts
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-.tags
-  - tags.each do |tag|
-    = tag_link tag
-
-%section
+.content
   = will_paginate sprites
   .sprite_gallery
     .sprites
       = render :partial => "index_sprite", :collection => sprites
+  .tags
+    - tags.each do |tag|
+      = tag_link tag
 
 :coffeescript
   $ ->
@@ -28,22 +27,11 @@
     @import util
     @import partials/base
 
-    .sprite_gallery
-      margin: auto
-      margin-left: 4em
-      margin-right: 4em
-
     .tags
       padding-top: 0.5em
-      position: absolute
-      right: 4em
-      top: 93px
 
     .pagination
-      color: $pixie_primary
-      margin: auto
-      margin-bottom: 1em
-      margin-left: 4em
+      margin: 1em 0
 
     .sprite_container
       +border-radius

@@ -2,6 +2,7 @@
 @import util
 
 $chat_background: white
+$chat_header_background: $pixie_primary
 
 .left_content
   +bounds(360px, 273px)
@@ -15,7 +16,7 @@ $chat_background: white
   +bounds(170px, 18px)
   +user-select
 
-  background-color: $complementary_orange
+  background-color: $chat_header_background
   bottom: 0
   color: white
   cursor: pointer
@@ -46,10 +47,11 @@ $chat_background: white
   .header
     +border-top-radius
 
-    background-color: $complementary_orange
+    background-color: $chat_header_background
     color: white
     cursor: pointer
     font-size: 110%
+    font-weight: bold
     margin: 0
     padding: 0.25em 0.5em
 

@@ -19,6 +19,8 @@
 
 # Learn more: http://github.com/javan/whenever
 
+job_type :rake, "cd :path && RAILS_ENV=:environment bundle exec rake :task :output"
+
 every 12.hours do
   rake "backup:database"
 end
