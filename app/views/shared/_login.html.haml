@@ -1,9 +1,12 @@
 .login_link
   - if current_user
-    = link_to image_tag('/images/icons/layout_add.png', :alt => "New Project", :title => "New Project", :class => 'new_project'), new_project_path()
+    = link_to image_tag('/images/icons/layout_add.png', :alt => "New Project", :title => "New Project"), new_project_path(),  :class => 'new_project'
     %span.vertical_rule
-    = link_to image_tag(current_user.avatar.url(:tiny), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info'), current_user
-    %span.user_name= current_user.display_name
+    %span.log_out
+      = image_tag(current_user.avatar.url(:tiny), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info')
+      %span.user_name
+        = current_user.display_name
 
+      %span.login_arrow
   - else
     = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
