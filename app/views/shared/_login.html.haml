@@ -1,5 +1,7 @@
 .login_link
   - if current_user
+    = link_to image_tag('/images/icons/layout_add.png', :alt => "New Project", :title => "New Project"), new_project_path()
+    %span.vertical_rule
     Logged in as #{link_to current_user, current_user }
     (#{link_to "Log out", logout_path, { :title => "Log out" }})
 

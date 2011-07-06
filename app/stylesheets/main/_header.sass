@@ -1,19 +1,23 @@
 $header_gradient_start: lighten($branded_blue, 7%)
 $header_gradient_end: $branded_blue
 
+body footer
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
 body header
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
 
   height: 40px
 
   .logo
-    +bounds(72px, 40px)
+    +bounds(76px, 40px)
     +inline-block
 
     background-image: url(/images/shadow_logo_small.png)
     float: left
     margin: 0
-    margin-top: -1px
+    margin-top: -2px
+    margin-right: 50px
     position: static
 
   .content
@@ -36,34 +40,46 @@ body header
 
   .login_link
     position: absolute
-    top: 13px
-    right: 40px
+    top: 0
+    right: 0
+
+    span.vertical_rule
+      border-left: 1px solid rgba(0, 0, 0, 0.3)
+      border-right: 1px solid rgba(255, 255, 255, 0.08)
+      height: 26px
+      display: inline-block
+      margin: 6px 3px 1px 3px
 
   nav.top_bar
-    +bounds(500px, 100%)
+    height: 100%
 
-    margin: auto
-
-    ul
+    span.active
       +box-sizing(border-box)
 
-      height: 100%
-      padding-top: 10px
-
-    li
-      +inline-block
-
+      background-color: rgba(0, 0, 0, 0.25)
       color: white
       font-weight: bold
-      padding-left: 1.5em
-      padding-right: 1.5em
+      float: left
+      height: 100%
+      padding-left: 10px
+      padding-right: 10px
+      padding-top: 10px
       text-align: center
 
-      & > a
-        color: #DCDCDC
-        font-size: 13px
-        font-weight: normal
-        text-decoration: none
+    a
+      +box-sizing(border-box)
+      +inline-block
 
-        &:hover
-          color: white
+      color: #DCDCDC
+      float: left
+      font-size: 13px
+      font-weight: normal
+      height: 100%
+      padding-left: 10px
+      padding-right: 10px
+      padding-top: 10px
+      text-align: center
+      text-decoration: none
+
+      &:hover
+        color: white
