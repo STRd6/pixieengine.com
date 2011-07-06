@@ -39,27 +39,44 @@ body header
       background-image: url(/images/lightbulb.png)
 
   .login_link
-    position: absolute
-    top: 0
-    right: 0
+    height: 40px
+
+    a img.new_project
+      position: absolute
+      top: 0
+      bottom: 0
+      margin: auto
+      left: -20px
+
+    a img.user_info
+      position: absolute
+      top: 0
+      bottom: 0
+      margin: auto
+      left: 12px
 
     span.vertical_rule
       border-left: 1px solid rgba(0, 0, 0, 0.3)
       border-right: 1px solid rgba(255, 255, 255, 0.08)
-      height: 26px
+      height: 28px
       display: inline-block
       margin: 6px 3px 1px 3px
+
+    span.user_name
+      position: absolute
+      top: 13px
+      right: -70px
 
   nav.top_bar
     height: 100%
 
     span.active
       +box-sizing(border-box)
+      +inline-block
 
       background-color: rgba(0, 0, 0, 0.25)
       color: white
       font-weight: bold
-      float: left
       height: 100%
       padding-left: 10px
       padding-right: 10px
@@ -71,7 +88,6 @@ body header
       +inline-block
 
       color: #DCDCDC
-      float: left
       font-size: 13px
       font-weight: normal
       height: 100%
