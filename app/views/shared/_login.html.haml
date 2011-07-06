@@ -16,9 +16,12 @@
     gravity: 'e'
     opacity: 1
 
-  $('.log_out, .log_out img, .log_out span').mousedown ->
+  $('.log_out').mousedown (e) ->
     $('.user_drop_down').toggleClass('active')
+    e.stopPropagation()
 
   $(document).mousedown (e) ->
-    target = $(e.target)
-    $('.user_drop_down').removeClass('active') unless target.is('.log_out') || target.is('.log_out img') || target.is('.log_out span') || target.is('.user_drop_down')
+    target = e.target
+    drop_down = $('.user_drop_down').get(0)
+
+    $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
