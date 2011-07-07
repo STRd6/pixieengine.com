@@ -2,6 +2,8 @@ class ChatsController < ApplicationController
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TextHelper
 
+  respond_to :html, :json
+
   def create
     if current_user
       display_name = current_user.display_name
@@ -31,20 +33,34 @@ class ChatsController < ApplicationController
 
   def recent
     respond_to do |format|
-      format.js do
-        render :update do |page|
-          page.replace_html 'chats', :partial => 'shared/recent_chats'
+      format.json do
+        chats = Chat.recent.reverse.map do |chat|
+          {
+            :id => chat.user ? chat.user.id : 0,
+            :name => chat.user_name,
+            :time => chat.time,
+            :message => chat.text.html_safe
+          }
         end
+
+        render :json => { :chats => chats }
       end
     end
   end
 
   def active_users
     respond_to do |format|
-      format.js do
-        render :update do |page|
-          page.replace_html 'active_users', :partial => 'shared/active_users'
+      format.json do
+        users = User.logged_in.map do |user|
+          {
+            :avatar => user.avatar.url(:thumb),
+            :color => (user.favorite_color && user.favorite_color != "FFFFFF") ? user.favorite_color : "000",
+            :name => user.display_name,
+            :id => user.id
+          }
         end
+
+        render :json => { :users => users }
       end
     end
   end

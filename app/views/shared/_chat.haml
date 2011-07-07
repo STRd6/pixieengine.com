@@ -1,80 +1,90 @@
+= render :partial => "/shared/chat_templates"
+
 - unless @hide_chat
   #openChat Chat
   #chatZone
     %h4.header Pixie Chat
     .left_content
       %ul#chats
-        = render :partial => 'shared/recent_chats'
       = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
 
     .users_wrapper
       %ul#active_users
-        = render :partial => 'shared/active_users'
 
   :coffeescript
-    scrollToBottomLeft = (el) ->
-      el.scrollTo
-        left: '0%'
-        top: '100%'
-
     $ ->
-      setTimeout ->
-        scrollToBottomLeft $('#chats')
-      , 3000
+      templates = $("#chat_templates")
+
+      scrollChat = ->
+        setTimeout ->
+          $('#chats').scrollTo
+            left: '0%'
+            top: '100%'
+        , 1000
+
+      refreshData = ->
+        $.get '/chats/active_users', (data) ->
+          $('#active_users li').remove()
+
+          for user in data.users
+            userData = templates.find('.active_user').tmpl(user)
+
+            $('#active_users').append(userData)
+
+        $.get '/chats/recent', (data) ->
+          $('#chats li').remove()
+
+          prevChat = null
+
+          for chat in data.chats
+            chatData = templates.find('.recent_chat').tmpl(chat)
+
+            if chat.name == prevChat
+              $(chatData).find('hr').remove()
+              $(chatData).find('.name').remove()
+              $(chatData).find('.time').remove()
+            else
+              if chat.id > 0
+                $(chatData).find('.name').text("").append('<a href="/people/' + chat.id + '">' + chat.name + '</a>')
+
+
+            $('#chats').append(chatData)
+            prevChat = chat.name
+
+      refreshData()
 
       window.setInterval ->
-        $.get('/chats/active_users', $.noop, "script")
-        $.get('/chats/recent', $.noop, "script")
-
-        $('#chats').scrollTo
-          left: '0%'
-          top: '100%'
+        refreshData()
+        scrollChat()
 
       , 30000
 
       send = (field) ->
         if field.val()
-          $.post '/chats',
-            body: field.val()
+          $.post '/chats', { body: field.val() }
 
-          prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
-          commenter = "#{ current_user ? current_user.display_name : "Anonymous" }"
-          commenter_id = #{ current_user ? current_user.id : -1 }
+          prevChat = $('#chats li span.name:last').text()
+          name = "#{ current_user ? current_user.display_name : 'Anonymous' }"
+          id = #{ current_user ? current_user.id : 0 }
 
-          li = $("<li />")
-          hr = $("<hr />")
-          if commenter_id > 0
-            a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
+          chatData = templates.find('.recent_chat').tmpl
+            name: name
+            time: "#{Time.zone.now.strftime("%l:%M%P")}"
+            message: field.val()
 
-          if a
-            name = $ '<span />',
-              class: "name"
-
-            name.append(a)
+          if name == prevChat
+            $(chatData).find('hr').remove()
+            $(chatData).find('.name').remove()
+            $(chatData).find('.time').remove()
           else
-            name = $ '<span />',
-              class: "name"
-              text: commenter
+            if id > 0
+              $(chatData).find('.name').text("").append('<a href="/people/' + id + '">' + name + '</a>')
 
-          time = $ '<span />',
-            class: "time"
-            text: "#{Time.zone.now.strftime('%I:%M%p')} "
+          $('#chats').append(chatData)
 
-          message = $ '<span />',
-            class: "message"
-            html: field.val()
-
-          if commenter != prev_commenter
-            li.append(hr, name, time)
-
-          li.append(message)
-
-          $('#chats').append(li)
-          scrollToBottomLeft($('#chats'))
+          scrollChat()
 
           field.val("")
-
-      textBox = $('#chat_body')
 
       $("#chatZone").dropImageReader (file, event) ->
 
@@ -87,28 +97,19 @@
 
           img.appendTo(wrapper)
 
-          $.post '/chats', body: wrapper.html(), ->
-            scrollToBottomLeft $('body')
-            scrollToBottomLeft $('#chats')
+          $.post '/chats', { body: wrapper.html() }, ->
+            scrollChat()
 
       $('#chatZone #chat_body').keypress (e) ->
-        if e.keyCode == 13
-          send(textBox)
+        textBox = $('#chat_body')
 
-      $('#chats li').hover ->
-        $(this).find('.time').css('display', 'inline-block')
-      , ->
-        $(this).find('.time').css('display', 'none')
+        send(textBox) if e.keyCode == 13
 
       $('#openChat').mousedown ->
         $('#chatZone').toggle()
         $('#openChat').toggleClass('straight')
 
-        $('#chats').scrollTo
-          left: '0%'
-          top: '100%'
-      .click (e) ->
-        e.preventDefault()
+        scrollChat()
 
       $('#chatZone .header').click ->
         $('#openChat').mousedown()
