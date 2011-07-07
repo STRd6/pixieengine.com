@@ -3,7 +3,7 @@
 = javascript_include_tag 'pixie/jqcolor'
 
 .content
-  - form_for user, :html => { :class => "module", :multipart => true } do |form|
+  = form_for user, :html => { :class => "module", :multipart => true } do |form|
     = form.error_messages
 
     %h2 Edit Profile

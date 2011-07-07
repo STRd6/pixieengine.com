@@ -1,7 +1,7 @@
 = stylesheet_link_tag "branded"
 
 .content
-  - form_for @user_session || UserSession.new, :html => { :class => 'module' }, :url => authenticate_path do |form|
+  = form_for @user_session || UserSession.new, :html => { :class => 'module' }, :url => authenticate_path do |form|
     = form.error_messages
     %h1 Log in or register
 
