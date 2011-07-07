@@ -56,15 +56,12 @@
       notify "Saving, please wait..."
 
       postData =
-        'format': 'js'
+        'format': 'json'
         'sprite[width]': #{width}
         'sprite[height]': #{height}
         'sprite[parent_id]': #{@parent_id.to_json}
         'sprite[file_base64_encoded]': canvas.toBase64()
         'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
-
-      if #{facebook?}
-        postData.format = "json"
 
       $.post '/sprites', postData, (data) ->
         if #{facebook?}
@@ -81,12 +78,15 @@
 
           notify "Saved!"
         else
-          eval(data)
+          if data.redirect
+            window.location = data.redirect
+          else
+            notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
 
         trackPageview "/event/save_drawing"
         canvas.dirty(false)
         $(".tool.button[title=Save]").removeAttr("disabled")
-      , "script"
+      , "json"
 
     pixie = $('#pixie').pixie
       width: #{width}

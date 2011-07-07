@@ -18,25 +18,10 @@ class SpritesController < ApplicationController
           redirect_to login_path
         end
       end
-      format.js do
-        if sprite.user
-          render :update do |page|
-            link = link_to "Sprite #{@sprite.id}", @sprite
-
-            Event.create(:user => current_user, :name => "save_sprite")
-            page.call "notify", "Saved as #{link}"
-          end
-        else
-          session[:saved_sprites] ||= {}
-          session[:saved_sprites][sprite.id] = sprite.broadcast
-
-          render :update do |page|
-            page.redirect_to login_path
-          end
-        end
-      end
       format.json do
         if sprite.user
+          Event.create(:user => current_user, :name => "save_sprite")
+
           render :json => {
             :sprite => {
               :id => @sprite.id,
@@ -49,9 +34,7 @@ class SpritesController < ApplicationController
           session[:saved_sprites] ||= {}
           session[:saved_sprites][sprite.id] = sprite.broadcast
 
-          render :json => {
-            :redirect => login_path
-          }
+          render :json => { :redirect => login_path }
         end
       end
     end
