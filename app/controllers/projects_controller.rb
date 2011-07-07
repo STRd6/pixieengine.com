@@ -220,6 +220,8 @@ class ProjectsController < ApplicationController
 
     project.save_file(params[:path], contents, message)
 
+    project.touch if params[:touch]
+
     respond_to do |format|
       format.json do
         render :json => {
