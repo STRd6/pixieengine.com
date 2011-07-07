@@ -27,6 +27,7 @@ gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
 gem 'html5-boilerplate'
+gem 'jquery-rails'
 gem 'json'
 gem 'mail'
 gem "mocha"
