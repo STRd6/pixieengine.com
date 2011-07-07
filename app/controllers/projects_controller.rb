@@ -96,8 +96,6 @@ class ProjectsController < ApplicationController
   end
 
   def fullscreen
-    @top_nav = true
-
     @has_reg_popup = true
   end
 

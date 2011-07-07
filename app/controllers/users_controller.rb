@@ -53,6 +53,8 @@ class UsersController < ApplicationController
   end
 
   def create
+    @top_nav = true
+
     subscribe = params[:subscribe]
     @object = User.new(params[:user])
 

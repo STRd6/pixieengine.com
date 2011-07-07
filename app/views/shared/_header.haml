@@ -20,13 +20,28 @@
       .bulb
 
       = render :partial => "/shared/login"
-
-  - if current_user
-    .user_drop_down
-      %ul
-        %li= link_to "Log out", logout_path()
 - else
-  %header(style="display:none;")
+  %header.hide
+    #flashes
+      - flash.each do |key, msg|
+        %div{ :class => key }= msg
+
+    .content
+      = link_to '', root_path, :class => "logo"
+
+      - if @top_nav
+        %nav.top_bar
+          = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>" }
+          = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>" }
+          = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>" }
+          = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>" }
+      - else
+        %h2.blurb
+          The online game development toolkit
+
+      .bulb
+
+      = render :partial => "/shared/login"
 
 :coffeescript
   $ ->

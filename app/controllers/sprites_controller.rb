@@ -83,6 +83,10 @@ class SpritesController < ApplicationController
     @top_nav = true
   end
 
+  def edit
+    @top_nav = true
+  end
+
   def destroy
     @sprite = Sprite.find(params[:id])
     @sprite.destroy

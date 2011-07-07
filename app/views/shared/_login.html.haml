@@ -8,6 +8,10 @@
         = current_user.display_name
 
       %span.login_arrow
+
+    .user_drop_down
+      %ul
+        %li= link_to "Log out", logout_path()
   - else
     = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
 
