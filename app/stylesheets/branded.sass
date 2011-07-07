@@ -12,7 +12,7 @@ body#fullscreen
 
 .content
   margin: auto
-  width: 960px
+  width: 1000px
 
 header, footer
   +bounds(100%, auto)
@@ -21,34 +21,20 @@ header, footer
   color: $dark_text
 
 header
-  +box-shadow(#333, 0, 0, 10px, 1px)
+  +box-shadow(#333, 0, 0, 7px, 1px)
 
   margin-bottom: 1em
 
   .content
     overflow: auto
-    padding: 2em 0 1em
+    padding: 0.5em 0
     position: relative
-
-    .logo
-      +bounds(100px, 53px)
-      +inline-block
-
-      background-image: url(/images/shadow_logo.png)
-      float: left
-      margin: 0
-      position: static
-
-    .login_link
-      padding-top: 10px
-      position: static
-      float: right
 
     .blurb
       +inline-block
 
       margin-left: 7em
-      margin-top: 3px
+      margin-top: 28px
 
     .bulb
       display: none

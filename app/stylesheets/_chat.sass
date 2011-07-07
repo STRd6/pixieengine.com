@@ -14,6 +14,7 @@ $chat_header_background: $pixie_primary
 #openChat
   +border-top-radius
   +bounds(170px, 18px)
+  +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
   +user-select
 
   background-color: $chat_header_background
@@ -24,6 +25,7 @@ $chat_header_background: $pixie_primary
   position: fixed
   right: 15px
   text-align: center
+  z-index: 201
 
   &.straight
     +border-radius(0)
@@ -32,6 +34,7 @@ $chat_header_background: $pixie_primary
   +border-top-radius
   +border-bottom-left-radius
   +bounds(530px, 300px)
+  +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
   +box-sizing(border-box)
   +scrollbars
 

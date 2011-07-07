@@ -72,13 +72,19 @@ class SpritesController < ApplicationController
   end
 
   def index
+    @top_nav = true
+
     respond_with(sprites) do |format|
       format.json { render :json }
     end
   end
 
   def show
-    @sprite = Sprite.find(params[:id])
+    @top_nav = true
+  end
+
+  def edit
+    @top_nav = true
   end
 
   def destroy

@@ -16,6 +16,8 @@ class ProjectsController < ApplicationController
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
+    @top_nav = true
+
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
       redirect_to subscribe_path
@@ -25,9 +27,11 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    @top_nav = true
   end
 
   def index
+    @top_nav = true
   end
 
   def destroy
@@ -96,6 +100,8 @@ class ProjectsController < ApplicationController
   end
 
   def widget
+    @top_nav = true
+
     respond_to do |format|
       format.html { render :layout => "widget" }
       format.js { render :layout => nil }
@@ -155,6 +161,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @top_nav = true
   end
 
   def ide
@@ -212,6 +219,8 @@ class ProjectsController < ApplicationController
     message = params[:message].presence
 
     project.save_file(params[:path], contents, message)
+
+    project.touch if params[:touch]
 
     respond_to do |format|
       format.json do

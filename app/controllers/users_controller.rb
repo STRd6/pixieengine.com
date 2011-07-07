@@ -17,7 +17,11 @@ class UsersController < ApplicationController
   end
 
   def new
+    @top_nav = true
+  end
 
+  def index
+    @top_nav = true
   end
 
   def remove_favorite
@@ -33,6 +37,8 @@ class UsersController < ApplicationController
   end
 
   def register_subscribe
+    @top_nav = true
+
     if current_user
       if current_user.paying
         redirect_to_back_or_default current_user
@@ -47,6 +53,8 @@ class UsersController < ApplicationController
   end
 
   def create
+    @top_nav = true
+
     subscribe = params[:subscribe]
     @object = User.new(params[:user])
 
@@ -89,11 +97,12 @@ class UsersController < ApplicationController
   end
 
   def show
+    @top_nav = true
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
   end
 
   def edit
-
+    @top_nav = true
   end
 
   def update
