@@ -157,7 +157,8 @@
         = link_to "Edit profile", [:edit, user]
     .info
       = image_tag user.avatar.url(:large), :class => :avatar
-      %p= user.profile.html_safe
+      - if user.profile
+        %p= user.profile.html_safe
 
     .clear
 
