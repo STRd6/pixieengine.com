@@ -41,7 +41,7 @@ class UsersController < ApplicationController
 
     if current_user
       if current_user.paying
-        redirect_to_back_or_default current_user
+        redirect_back_or_default current_user
       else
         redirect_to current_user.subscribe_url
       end
