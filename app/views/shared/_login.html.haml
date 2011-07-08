@@ -1,12 +1,9 @@
 .login_link
   - if current_user
-    = link_to image_tag('/images/icons/layout_add.png', :alt => "New Project", :title => "New Project"), new_project_path(),  :class => 'new_project'
+    = link_to image_tag('/images/icons/application_add.png', :alt => "New Project", :title => "New Project"), new_project_path(),  :class => 'new_project'
     %span.vertical_rule
     %span.log_out
-      - if current_user.avatar == "/avatars/original/missing.png"
-        = image_tag('/avatars/tiny/missing.png', :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info')
-      - else
-        = image_tag(current_user.avatar.url(:tiny), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info')
+      = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
       %span.user_name
         = current_user.display_name
 

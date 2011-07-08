@@ -5,12 +5,6 @@ class ChatsController < ApplicationController
   respond_to :html, :json
 
   def create
-    if current_user
-      display_name = current_user.display_name
-    else
-      display_name = "Anonymous"
-    end
-
     text = auto_link(params[:body])
 
     cleaned_text = Sanitize.clean(text, :elements => ['a', 'img'],
