@@ -44,6 +44,8 @@ class User < ActiveRecord::Base
     Notifier.welcome_email(self).deliver unless email.blank?
   end
 
+  before_validation :sanitize_profile
+
   def to_s
     display_name
   end
@@ -217,6 +219,19 @@ class User < ActiveRecord::Base
       END
     "
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
+  end
+
+  def sanitize_profile
+    self.profile = Sanitize.clean(self.profile, :elements => ['a', 'img'],
+      :attributes => {
+        'a' => ['href', 'title'],
+        'img' => ['src']
+      },
+      :protocols => {
+        'a' => {'href' => ['http', 'https', 'mailto']},
+        'img' => {'src' => ['http', 'data']}
+      }
+    )
   end
 
   private
