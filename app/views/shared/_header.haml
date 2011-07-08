@@ -9,10 +9,10 @@
 
     - if @top_nav
       %nav.top_bar
-        = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>" }
-        = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>" }
-        = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>" }
-        = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>" }
+        = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+        = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+        = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+        = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
     - else
       %h2.blurb
         The online game development toolkit
