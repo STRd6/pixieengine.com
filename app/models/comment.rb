@@ -14,6 +14,6 @@ class Comment < ActiveRecord::Base
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
   def notify_commentee
-    Notifier.comment(self).deliver
+    Notifier.comment(self).deliver if commentee
   end
 end

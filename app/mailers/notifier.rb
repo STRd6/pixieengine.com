@@ -40,10 +40,8 @@ class Notifier < ActionMailer::Base
   def comment(comment)
     @comment = comment
 
-    if comment.commentee
-      mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
+    mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
       :to => comment.commentee.email
-    end
   end
 
   def analytics(user)
