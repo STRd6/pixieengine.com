@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc4'
+gem 'rails', '3.0.5'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -31,7 +31,6 @@ gem 'json'
 gem 'mail'
 gem "mocha"
 gem 'paperclip'
-gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"
