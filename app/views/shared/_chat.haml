@@ -45,7 +45,7 @@
               $(chatData).find('.time').remove()
             else
               if chat.id > 0
-                $(chatData).find('.name').text("").append('<a href="/people/' + chat.id + '">' + chat.name + '</a>')
+                $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + chat.id + '">' + chat.name + '</a>')
 
 
             $('#chats').append(chatData)
@@ -78,7 +78,7 @@
             $(chatData).find('.time').remove()
           else
             if id > 0
-              $(chatData).find('.name').text("").append('<a href="/people/' + id + '">' + name + '</a>')
+              $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + id + '">' + name + '</a>')
 
           $('#chats').append(chatData)
 
