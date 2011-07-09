@@ -13,6 +13,8 @@ class SpritesControllerTest < ActionController::TestCase
 
   should "be able to view a sprite" do
     get :show, :id => @sprite.id
+
+    assert_response :success
   end
 
   context "a logged in user" do
