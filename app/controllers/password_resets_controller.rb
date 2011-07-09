@@ -30,7 +30,7 @@ class PasswordResetsController < ApplicationController
   end
 
   def edit
-    
+    @top_nav = true
   end
 
   private

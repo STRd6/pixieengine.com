@@ -1,12 +1,12 @@
 = stylesheet_link_tag "branded"
 
-= form_for @user, :html => { :class => "module" }, :url => password_reset_path, :method => :put do |f|
-  = f.error_messages
+= form_for @user, :html => { :class => "module" }, :url => password_reset_path, :method => :put do |form|
+  = form.error_messages
 
-  %h1 Change My Password
+  %h1 Change Password
 
-  %p
-    = f.label :password, "New Password"
-    = f.password_field :password
+  %label
+    %h3 New Password
+    = form.password_field :password
 
-  = f.submit "Update my password and log me in"
+  %button.full Update my Password
