@@ -55,10 +55,6 @@ PixieStrd6Com::Application.routes.draw do
 
   resources :people, :controller => :users, :as => :users do
     member do
-      get :collections
-      get :favorites
-      get :sprites
-
       post :add_to_collection
       post :set_avatar
     end
@@ -109,7 +105,6 @@ PixieStrd6Com::Application.routes.draw do
   match "sign_up" => "users#new", :as => :signup
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
-  match 'users/:id/progress' => 'users#progress'
 
   root :to => "projects#info"
 
