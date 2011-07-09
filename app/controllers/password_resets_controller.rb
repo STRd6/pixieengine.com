@@ -25,6 +25,10 @@ class PasswordResetsController < ApplicationController
     end
   end
 
+  def new
+    @top_nav = true
+  end
+
   def edit
     
   end
