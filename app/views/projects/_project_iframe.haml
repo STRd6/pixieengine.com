@@ -13,7 +13,7 @@
     sandbox.write("<script>BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};MTIME=#{project.updated_at.to_i};<\/script>");
 
     sandbox.write("<canvas width='#{config[:width]}' height='#{config[:height]}'></canvas>");
-    sandbox.write('<script src=#{rewrite_asset_path("/production/projects/#{project.id}/#{config[:name]}.js").to_json}><\/script>');
+    sandbox.write('<script src=#{"/production/projects/#{project.id}/#{config[:name]}.js?#{project.updated_at.to_i}".to_json}><\/script>');
 
     sandbox.close();
 

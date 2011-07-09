@@ -1,12 +1,12 @@
 #chat_templates.template
-  .recent_chat.template
+  %script.recent_chat.template(type="text/x-jQuery-tmpl")
     %li
       %hr
       %span.name ${name}
       %span.time ${time}
       %span.message {{html message}}
 
-  .active_user.template
+  %script.active_user.template(type="text/x-jQuery-tmpl")
     %li
       %img(src="${avatar}")
       %a(href='/people/${id}' target="_blank" style="color: #${color};") ${name}
