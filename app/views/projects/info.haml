@@ -3,11 +3,25 @@
     @import util
     @import branded
 
-    body header.hide
-      display: block
-
-    body header
+    header
       height: 90px
+      position: relative
+
+      nav.top_bar
+        display: none
+
+      .bulb
+        display: none
+
+      .blurb
+        +inline-block
+
+        margin-left: 7em
+        margin-top: 28px
+
+      .content
+        height: 100%
+        padding: 0.5em 0
 
       .logo
         +bounds(100px, 53px)

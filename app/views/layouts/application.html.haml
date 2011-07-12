@@ -2,7 +2,8 @@
 %html
   = render :partial => "shared/head"
 
-  %body#fullscreen(class=@theme)
+  - body_id = @fullscreen ? "fullscreen" : nil
+  %body(class=@theme id=body_id)
     = render :partial => "shared/header"
 
     = yield

@@ -1,11 +1,8 @@
 class UserSessionsController < ApplicationController
   def new
-    @top_nav = true
   end
 
   def create
-    @top_nav = true
-
     if params[:user_session][:login] == "yes"
       # Default to remember me
       @user_session = UserSession.new((params[:user_session] || {}).merge(:remember_me => true))

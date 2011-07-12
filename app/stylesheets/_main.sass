@@ -7,8 +7,14 @@
 @import main/list
 
 html
+  background-color: $dark_background
+  color: $dark_text
   height: 100%
   overflow: auto
+
+  &.light
+    background-color: $light_background
+    color: $light_text
 
 ::selection
   background: #b4d5fe
@@ -18,17 +24,13 @@ html
 body
   +box-sizing(border-box)
 
-  background-color: $dark_background
-  color: $dark_text
   font-family: $normal_font
   font-size: 12px
   line-height: 1.5
-  position: relative
 
-  /*TODO: Move .light to html
-  &.light
-    background-color: $light_background
-    color: $light_text
+  min-height: 100%
+  padding-bottom: 4em
+  position: relative
 
 /* It's strange this doesn't work exactly right when put in body
 #fullscreen

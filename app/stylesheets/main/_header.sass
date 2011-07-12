@@ -41,16 +41,15 @@ $header_gradient_end: darken($branded_blue, 3%)
         padding: 6px 15px
         text-decoration: none
 
-header.hide
-  display: none
-
-body footer
+footer
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
 
-body header
+header
+  +box-shadow(#333, 0, 0, 7px, 1px)
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
 
   height: 40px
+  margin-bottom: 1em
 
   .logo
     +bounds(61px, 32px)
@@ -65,7 +64,7 @@ body header
     position: static
 
   .content
-    height: 100%
+    height: 40px
     overflow: visible
     padding: 0
 
@@ -86,6 +85,8 @@ body header
   .login_link
     display: inline-block
     float: right
+    position: relative
+    z-index: 20
 
     a[title='Log in']
       display: inline-block

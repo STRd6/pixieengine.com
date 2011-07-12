@@ -54,7 +54,7 @@ setVal = (key, value) ->
 $ ->
   # THEME
   setLightTheme = (active) ->
-    $('#fullscreen').toggleClass('light', active)
+    $('html').toggleClass('light', active)
     $('iframe').contents().find('html').toggleClass("light", active)
     $('.bulb').toggleClass("on", active)
 

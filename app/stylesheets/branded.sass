@@ -2,14 +2,6 @@
 
 @import util
 
-body#fullscreen
-  height: auto
-  min-height: 100%
-  padding: 0
-
-  & > .content
-    padding-bottom: 5em
-
 .content
   margin: auto
   width: 1000px
@@ -19,25 +11,6 @@ header, footer
 
   background-color: $dark_highlight
   color: $dark_text
-
-header
-  +box-shadow(#333, 0, 0, 7px, 1px)
-
-  margin-bottom: 1em
-
-  .content
-    overflow: auto
-    padding: 0.5em 0
-    position: relative
-
-    .blurb
-      +inline-block
-
-      margin-left: 7em
-      margin-top: 28px
-
-    .bulb
-      display: none
 
 footer
   bottom: 0

@@ -1,5 +1,4 @@
-- header_class = @top_nav ? "" : "hide"
-%header(class=header_class)
+%header
   #flashes
     - flash.each do |key, msg|
       %div{ :class => key }= msg
@@ -7,15 +6,14 @@
   .content
     = link_to '', root_path, :class => "logo"
 
-    - if @top_nav
-      %nav.top_bar
-        = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-        = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-        = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-        = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-    - else
-      %h2.blurb
-        The online game development toolkit
+    %nav.top_bar
+      = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+      = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+      = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+      = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+
+    %h2.blurb
+      The online game development toolkit
 
     .bulb
 

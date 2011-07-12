@@ -1,5 +1,5 @@
-/* DO NOT MODIFY. This file was compiled Mon, 27 Jun 2011 20:13:13 GMT from
- * /Users/matt/pixie.strd6.com/app/coffeescripts/site.coffee
+/* DO NOT MODIFY. This file was compiled Tue, 12 Jul 2011 18:08:21 GMT from
+ * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
@@ -52,7 +52,7 @@
       try {
         return JSON.parse(localStorage[key]);
       } catch (error) {
-        return void 0;
+        return;
       }
     }
   };
@@ -64,7 +64,7 @@
   $(function() {
     var active, setLightTheme;
     setLightTheme = function(active) {
-      $('#fullscreen').toggleClass('light', active);
+      $('html').toggleClass('light', active);
       $('iframe').contents().find('html').toggleClass("light", active);
       $('.bulb').toggleClass("on", active);
       return setVal('light', active);

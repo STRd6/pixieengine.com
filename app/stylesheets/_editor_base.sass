@@ -3,7 +3,16 @@
 /* TODO: Clean up and remove a bunch of this
 #fullscreen
   height: 100%
-  padding: $editor_page_padding
+  padding: 3em
+  padding-top: 4em
+
+  header
+    padding: 0 4em
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+
 
   nav.bottom
     position: absolute
@@ -43,6 +52,9 @@
 
   padding: 6px
   padding-top: 8px
+
+  #fullscreen > &
+    padding: 0
 
   .content
     +bounds(100%, 100%)
