@@ -177,9 +177,11 @@
               $("#chatZone").fadeIn()
               $("#openChat").addClass('straight')
 
-              $('#chats').scrollTo
-                left: '0%'
-                top: '100%'
+              setTimeout ->
+                $('#chats').scrollTo
+                  left: '0%'
+                  top: '100%'
+              , 100
 
         ((frameData) ->
           canvas.setInitialState(frameData)

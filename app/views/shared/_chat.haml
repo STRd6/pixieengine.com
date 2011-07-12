@@ -20,7 +20,7 @@
           $('#chats').scrollTo
             left: '0%'
             top: '100%'
-        , 1000
+        , 100
 
       refreshData = ->
         $.get '/chats/active_users', (data) ->
@@ -51,12 +51,12 @@
             $('#chats').append(chatData)
             prevChat = chat.name
 
+          scrollChat()
+
       refreshData()
 
       window.setInterval ->
         refreshData()
-        scrollChat()
-
       , 30000
 
       send = (field) ->
