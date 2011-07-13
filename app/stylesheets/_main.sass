@@ -4,6 +4,7 @@
 @import main/form
 @import main/header
 @import main/heading
+@import main/link
 @import main/list
 
 html
@@ -15,11 +16,6 @@ html
   &.light
     background-color: $light_background
     color: $light_text
-
-::selection
-  background: #b4d5fe
-  color: inherit
-  text-shadow: none
 
 body
   +box-sizing(border-box)
@@ -36,20 +32,10 @@ body
 #fullscreen
   +scrollbars
 
-a
-  color: $pixie_primary
-  font-weight: bold
-  text-decoration: none
-
-  &:visited
-    color: $pixie_primary
-
-  &:active
-    color: $pixie_primary
-
-  &:hover
-    color: $link_hover
-    text-decoration: underline
+::selection
+  background: #b4d5fe
+  color: inherit
+  text-shadow: none
 
 p
   margin: 1em 0

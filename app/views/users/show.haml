@@ -12,7 +12,6 @@
     #show_projects, #show_sprites
       float: right
       font-size: 120%
-      margin-right: 0.7em
       margin-top: 0.7em
 
     .description
@@ -52,19 +51,25 @@
 
     .project
       +border-radius
-      +bounds(440px, 172px)
+      +bounds(462px, 172px)
       +box-sizing(border-box)
       +inline-block
 
-      border: 1px solid rgba(255, 255, 255, 0.4)
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+      border-left: 1px solid rgba(255, 255, 255, 0.3)
+      border-right: 1px solid rgba(0, 0, 0, 0.1)
+      border-top: 1px solid rgba(255, 255, 255, 0.3)
       margin-bottom: 1em
       margin-right: 2em
       overflow: hidden
       padding: 1em
       position: relative
 
-      &.extras
+      &:nth-child(n + 7)
         display: none
+
+      .show_all &:nth-child(n + 7)
+        display: inline-block
 
       &:nth-child(2n)
         margin-right: 0
@@ -180,9 +185,9 @@
           = link_to "", projects_path(:filter => "tutorial"), :style => "display: none;"
       - if user.projects.size > 6
         %a#show_projects Show all
-      .games
-        - user.projects.order("updated_at, id DESC").each_with_index do |project, i|
-          = render :partial => "users/project", :locals => { :project => project, :i => i }
+      .projects
+        - user.projects.order("updated_at DESC").each do |project|
+          = render :partial => "users/project", :locals => { :project => project }
   - else
     - if current_user?
       %button.clickable.complement
@@ -223,11 +228,11 @@
       $this = $(this)
 
       if $this.text() == "Show all"
-        $('.project.extras').css('display', 'inline-block')
-        $this.text('Hide')
+        $('.projects').addClass("show_all")
+        $this.text("Hide")
       else
-        $('.project.extras').hide()
-        $this.text('Show all')
+        $('.projects').removeClass("show_all")
+        $this.text("Show all")
 
     $('#show_sprites').click ->
       $this = $(this)
