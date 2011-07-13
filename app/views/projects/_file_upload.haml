@@ -30,6 +30,11 @@
             ext = "js"
             lang = "javascript"
 
+          else if file.type.match "audio"
+            ext = file.name.match(/\.([^\.]*)$/, '')?[1]
+            path = projectConfig.directories.sounds
+            type = "binary"
+
           else if file.type == ""
             ext = file.name.match(/\.([^\.]*)$/, '')?[1]
 
@@ -58,7 +63,7 @@
               contents_base64: contentsBase64
               path: "/" + path + "/" + file.name
 
-            contents = Base64.decode(contentsBase64) unless type == "image"
+            contents = Base64.decode(contentsBase64) if type == "text"
 
             newFileNode
               name: file.name.replace(/\.[^\.]*$/, '')
