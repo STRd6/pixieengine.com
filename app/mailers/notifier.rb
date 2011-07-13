@@ -1,5 +1,5 @@
 class Notifier < ActionMailer::Base
-  default :from => 'Pixie <notifications@strd6.com>'
+  default :from => 'Pixie <notifications@pixieengine.com>'
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
