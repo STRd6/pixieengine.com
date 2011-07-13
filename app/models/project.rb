@@ -392,7 +392,7 @@ class Project < ActiveRecord::Base
       end
     end
 
-    FileUtils.cp Rails.root.join("public", "stylesheets", "screen.css"), webstore_asset_path
+    FileUtils.cp Rails.root.join("public", "stylesheets", "project.css"), webstore_asset_path
 
     File.open(main_html_path, 'wb') do |file|
       file.write <<-eof

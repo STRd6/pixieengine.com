@@ -158,7 +158,7 @@
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{stylesheet_link_tag('project').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
 
     sandbox.write("<canvas width='\#{projectConfig.width}' height='\#{projectConfig.height}'></canvas>")
@@ -173,7 +173,7 @@
     contentWindow = iframe.get(0).contentWindow
     sandbox = contentWindow.document
     sandbox.open()
-    sandbox.write(#{stylesheet_link_tag('screen').to_json})
+    sandbox.write(#{stylesheet_link_tag('project').to_json})
     sandbox.write(#{stylesheet_link_tag('qunit').to_json})
     sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
     sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
