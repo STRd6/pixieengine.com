@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 12 Jul 2011 18:08:21 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 13 Jul 2011 18:01:28 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -10,8 +10,10 @@
       pnotify_delay: delay
     });
   };
-  $(".clickable").live('click', function() {
-    return document.location = $(this).find("a").eq(0).attr("href");
+  $(".clickable").live('click', function(event) {
+    if (!$(event.target).is("a")) {
+      return document.location = $(this).find("a").eq(0).attr("href");
+    }
   });
   window.showTooltip = function(element, html) {
     var position, tooltipHeight;

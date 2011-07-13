@@ -5,8 +5,9 @@ window.notify = (message, delay) ->
     pnotify_delay: delay
 
 # Clickable
-$(".clickable").live 'click', ->
-  document.location = $(this).find("a").eq(0).attr("href")
+$(".clickable").live 'click', (event) ->
+  unless $(event.target).is("a")
+    document.location = $(this).find("a").eq(0).attr("href")
 
 # Tooltips
 window.showTooltip = (element, html) ->
