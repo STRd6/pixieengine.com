@@ -133,3 +133,7 @@
 
     if newNode
       $.modal.close()
+
+  $("#new_file_modal input").live 'keydown', (event) ->
+    if event.which == 13
+      $("#new_file_modal button.create").click()
