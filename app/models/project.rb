@@ -166,7 +166,6 @@ class Project < ActiveRecord::Base
 
     make_group_writable
   end
-  handle_asynchronously :clone_repo
 
   def git_pull
     git_util "pull"

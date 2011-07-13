@@ -132,7 +132,7 @@ class ProjectsController < ApplicationController
 
     @project.save
 
-    respond_with(@project)
+    respond_with([:ide, @project])
   end
 
   def fork
