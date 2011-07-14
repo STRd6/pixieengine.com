@@ -354,13 +354,16 @@
       path: (projectConfig.name || "project") + ".js"
       touch: true
 
-  appConfigCode = () ->
+  appConfigCode = ->
     if projectConfig.library
       ""
     else
       conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
 
       [conf].join("\n")
+
+  environmentVariables = ->
+    "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
 
   runApp = () ->
     width = projectConfig.width
@@ -375,8 +378,7 @@
 
     $("#test_zone").append(iframe).show()
 
-    environmentVariables = "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
-    crammedCode = [environmentVariables, buildProjectCode()].join(";\n")
+    crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
 
     if runPath = projectConfig.runPath
       iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
@@ -404,7 +406,7 @@
 
     displayErrors(errors)
 
-    crammedCode = [appConfigCode(), libCode, compiledCode].join(";\n")
+    crammedCode = [environmentVariables(), appConfigCode(), libCode, compiledCode].join(";\n")
     crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
 
     $("#unit_test_frame").remove()
