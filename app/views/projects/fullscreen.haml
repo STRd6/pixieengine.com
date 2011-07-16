@@ -34,6 +34,16 @@
 
     $action_bar_height: 28px
 
+    .bulb
+      z-index: 25
+
+    // Hide dealies when lights are out
+    #feedback, footer, ul.actions_bar, header
+      display: none
+
+      .light &
+        display: block
+
     ul.actions_bar
       +linear-gradient(color-stops(#7F7F7F, #666))
       +bounds(100%, $action_bar_height)

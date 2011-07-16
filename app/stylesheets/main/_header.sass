@@ -71,17 +71,6 @@ header
   .blurb
     display: none
 
-  .bulb
-    +bounds(32px)
-
-    background-image: url(/images/lightbulb_off.png)
-    position: absolute
-    top: 5px
-    right: 5px
-
-    &.on
-      background-image: url(/images/lightbulb.png)
-
   .login_link
     display: inline-block
     float: right
@@ -171,3 +160,14 @@ header
 
       &:hover
         color: white
+
+.bulb
+  +bounds(32px)
+
+  background-image: url(/images/lightbulb_off.png)
+  position: absolute
+  top: 5px
+  right: 5px
+
+  &.on
+    background-image: url(/images/lightbulb.png)
