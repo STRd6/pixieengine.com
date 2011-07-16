@@ -98,8 +98,8 @@ class Project < ActiveRecord::Base
   end
 
   def make_group_writable
-    system 'chmod', "g+w", '-R', path
-    system "sudo", "-u", "gitbot", 'chmod', "g+w", '-R', path
+    system "sudo", "-u", "gitbot", "chown", "rails:users", "-R", path
+    system "chmod", "g+w", "-R", path
   end
 
   def update_libs
