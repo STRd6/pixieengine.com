@@ -54,7 +54,7 @@ class ProjectsControllerTest < ActionController::TestCase
       assert_difference('Project.count') do
         post :create, :project => { :title => 'Test project', :description => "Description of the project.", :user => @user }
       end
-      assert_redirected_to project_path(assigns(:project))
+      assert_redirected_to [:ide, assigns(:project)]
     end
 
     should "be able to edit own project" do
