@@ -122,6 +122,16 @@ class Sprite < ActiveRecord::Base
     end
   end
 
+  def replay_data_valid?
+    begin
+      JSON.parse(replay_data || File.read(replay_path))
+
+      return true
+    rescue
+      return false
+    end
+  end
+
   def broadcast_link
     if user
       link = create_link
@@ -293,7 +303,7 @@ class Sprite < ActiveRecord::Base
   end
 
   def save_replay_data
-    if replay_data
+    if replay_data && replay_data_valid?
       File.open(replay_path, 'wb') do |f|
         f << replay_data
       end
@@ -364,5 +374,13 @@ class Sprite < ActiveRecord::Base
     match_data = /^#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})/.match(color)[1..3].map(&:hex)
 
     "rgba(#{match_data.join(',')},#{int_opacity})"
+  end
+
+  def self.clean_replays
+    Sprite.find_each do |sprite|
+      if File.exists?(sprite.replay_path)
+        File.delete(sprite.replay_path) unless sprite.replay_data_valid?
+      end
+    end
   end
 end
