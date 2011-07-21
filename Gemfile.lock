@@ -196,7 +196,6 @@ DEPENDENCIES
   paperclip
   pg
   rails (= 3.0.9)
-  rake (= 0.8.7)
   require
   rmagick
   ruport
