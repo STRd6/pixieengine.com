@@ -14,7 +14,7 @@ gem 'pg'
 gem 'capistrano'
 
 # To use debugger
-# gem 'ruby-debug'
+gem 'ruby-debug19'
 
 gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
