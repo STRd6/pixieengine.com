@@ -103,7 +103,6 @@ GEM
       compass (>= 0.11.1)
     i18n (0.5.0)
     json (1.5.3)
-    libv8 (3.3.10.2)
     mail (2.2.19)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -160,8 +159,7 @@ GEM
       nokogiri (< 1.6, >= 1.4.4)
     sass (3.1.4)
     shoulda (2.11.3)
-    therubyracer (0.9.2)
-      libv8 (~> 3.3.10)
+    therubyracer (0.8.0)
     thor (0.14.6)
     transaction-simple (1.4.0)
       hoe (>= 1.1.7)
@@ -204,7 +202,7 @@ DEPENDENCIES
   ruport
   sanitize
   shoulda
-  therubyracer
+  therubyracer (= 0.8.0)
   turn
   whenever
   will_paginate!
