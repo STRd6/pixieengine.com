@@ -19,7 +19,7 @@ gem 'capistrano'
 gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "aws-s3", :require => "aws/s3"
-gem 'barista', '1.0.0'
+gem 'barista'
 gem "compass"
 gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
