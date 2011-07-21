@@ -1,6 +1,8 @@
 class Sprite < ActiveRecord::Base
   include Commentable
 
+  MAX_REPLAY_SIZE = 1000 * 50 # 50kb
+
   has_attached_file :image, S3_OPTS.merge(
     :path => "sprites/:id/:style.:extension",
     :styles => {
@@ -117,7 +119,7 @@ class Sprite < ActiveRecord::Base
   end
 
   def load_replay_data
-    if File.exists?(replay_path)
+    if File.exists?(replay_path) && File.size(replay_path) < MAX_REPLAY_SIZE
       File.read(replay_path)
     end
   end
