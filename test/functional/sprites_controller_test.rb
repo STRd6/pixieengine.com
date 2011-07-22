@@ -34,11 +34,22 @@ class SpritesControllerTest < ActionController::TestCase
   end
 
   should "have correct routes" do
-    assert_routing({ :path => "sprites", :method => :post }, { :controller => "sprites", :action => "create" })
-    assert_routing({ :path => "sprites/new", :method => :get }, { :controller => "sprites", :action => "new" })
+    assert_routing({ :path => "/sprites", :method => :post }, { :controller => "sprites", :action => "create" })
+    assert_routing({ :path => "/sprites/new", :method => :get }, { :controller => "sprites", :action => "new" })
+    assert_routing({ :path => "/sprites", :method => :get }, { :controller => "sprites", :action => "index" })
+    assert_routing({ :path => "/sprites/1", :method => :get }, { :controller => "sprites", :action => "show", :id => "1" })
+    assert_routing({ :path => "/sprites/1/edit", :method => :get }, { :controller => "sprites", :action => "edit", :id => "1" })
+    assert_routing({ :path => "/sprites/1", :method => :put }, { :controller => "sprites", :action => "update", :id => "1" })
+    assert_routing({ :path => "/sprites/1", :method => :delete }, { :controller => "sprites", :action => "destroy", :id => "1" })
+
     assert_recognizes({ :controller => "sprites", :action => "new" }, '/pixel-editor')
 
-    assert_routing({ :path => "sprites", :method => :get }, { :controller => "sprites", :action => "index" })
-    assert_routing({ :path => "/sprites/1", :method => :get }, { :controller => "sprites", :action => "show", :id => "1" })
+    assert_routing({ :path => "/sprites/1/load", :method => :get }, { :controller => "sprites", :action => "load", :id => "1" })
+    assert_routing({ :path => "/sprites/1/add_tag", :method => :post }, { :controller => "sprites", :action => "add_tag", :id => "1" })
+    assert_routing({ :path => "/sprites/1/remove_tag", :method => :post }, { :controller => "sprites", :action => "remove_tag", :id => "1" })
+
+    assert_routing({ :path => "/sprites/load_url", :method => :get }, { :controller => "sprites", :action => "load_url" })
+    assert_routing({ :path => "/sprites/upload", :method => :get }, { :controller => "sprites", :action => "upload" })
+    assert_routing({ :path => "/sprites/import", :method => :post }, { :controller => "sprites", :action => "import" })
   end
 end

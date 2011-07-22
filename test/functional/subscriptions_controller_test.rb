@@ -20,4 +20,10 @@ class SubscriptionsControllerTest < ActionController::TestCase
       assert_response :success
     end
   end
+
+  should "have correct routes" do
+    assert_routing({ :path => "/subscribe", :method => :get }, { :controller => "subscriptions", :action => "subscribe" })
+    assert_routing({ :path => "/subscriptions/thanks", :method => :get }, { :controller => "subscriptions", :action => "thanks" })
+    assert_routing({ :path => "/subscriptions/changed", :method => :post }, { :controller => "subscriptions", :action => "changed" })
+  end
 end
