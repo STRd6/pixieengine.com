@@ -79,8 +79,6 @@ PixieStrd6Com::Application.routes.draw do
   resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
-  match 'jukebox' => "home#jukebox"
-
   match 'begin' => "projects#info"
 
   match 'facebook' => "sprites#new", :as => :facebook
@@ -96,6 +94,7 @@ PixieStrd6Com::Application.routes.draw do
   match 'i/:token' => "invites#track", :as => :invite_token
 
   match 'about' => "home#about", :as => :about
+  match 'jukebox' => "home#jukebox"
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey
 

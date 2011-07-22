@@ -13,4 +13,7 @@ class HomeController < ApplicationController
 
   def jukebox
   end
+
+  def about
+  end
 end

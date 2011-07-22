@@ -46,3 +46,10 @@ Factory.define :project do |project|
   project.title "TESTING"
   project.description "this is a test project"
 end
+
+Factory.define :comment do |comment|
+  comment.commenter Factory :user
+  comment.commentee Factory :user
+  comment.body "This is a test comment"
+  comment.commentable Factory :sprite
+end
