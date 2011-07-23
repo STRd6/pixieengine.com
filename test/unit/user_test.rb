@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
+  should_allow_mass_assignment_of :avatar, :display_name, :email, :password, :profile, :favorite_color
+  should_not_allow_mass_assignment_of :crypted_password, :password_salt
+
   setup do
     @user = Factory :user
   end
