@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
-  should_validate_presence_of :title
+  should validate_presence_of :title
 
   context "project with remote origin" do
     setup do
