@@ -45,6 +45,12 @@ class Sprite < ActiveRecord::Base
     width = first_image.columns
     height = first_image.rows
 
+    if width * height > 16384
+      return {
+        :frame_data => nil
+      }
+    end
+
     image_list.each do |image_data|
       frame_data << image_data.get_pixels(0, 0, width, height).map do |pixel|
         Sprite.hex_color_to_rgba(pixel.to_color(Magick::AllCompliance, false, 8, true), pixel.opacity)
