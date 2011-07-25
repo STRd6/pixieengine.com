@@ -5,7 +5,7 @@ include FileUtils
 
 cd ARGV.shift
 
-command = ['sudo', 'HOME=/home/gitbot', '-u', 'gitbot', 'git'].concat(ARGV)
+command = ['git'].concat(ARGV)
 
 puts command.join " "
 
