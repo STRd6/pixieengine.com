@@ -2,7 +2,7 @@ xml.instruct!
 
 xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
   xml.url do
-    xml.loc         "http://pixie.strd6.com/"
+    xml.loc         root_url
     xml.lastmod     w3c_date(Time.now)
     xml.changefreq  "always"
   end
