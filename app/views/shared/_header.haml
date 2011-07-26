@@ -7,10 +7,16 @@
     = link_to '', root_path, :class => "logo"
 
     %nav.top_bar
-      = link_to_unless_current('Pixel Editor', new_sprite_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-      = link_to_unless_current('Gallery', sprites_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-      = link_to_unless_current('Projects', projects_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
-      = link_to_unless_current('People', users_path()) { |link| "<span class='active'>#{link}</span>".html_safe }
+      :ruby
+        nav_links = [
+          ['Pixel Editor', new_sprite_path],
+          ['Gallery', sprites_path],
+          ['Projects', projects_path],
+          ['People', users_path],
+        ]
+      - nav_links.each do |text, url|
+        = link_to_unless_current(text, url) do |link|
+          %span.active #{link}
 
     %h2.blurb
       The online game development toolkit
