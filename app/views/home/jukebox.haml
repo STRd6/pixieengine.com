@@ -50,7 +50,7 @@
   %h2 Search Results
   %ul.songs
 
-#song_template.template
+%script#song_template.template(type="text/x-jQuery-tmpl")
   %li.song(data-id="${id}" title="${title}")
     .title ${title}
     .duration ${durationFormat(duration)}

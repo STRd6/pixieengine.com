@@ -1,16 +1,16 @@
 #tile_editor_templates.template
 
-  .layer_select.template
+  %script.layer_select.template(type="text/x-jQuery-tmpl")
     .choice
       .name ${name}
       .show.on
 
-  .saved_selection.template
+  %script.saved_selection.template(type="text/x-jQuery-tmpl")
     .selection
       .name ${text}
       .preview
 
-  .editor.template
+  %script.editor.template(type="text/x-jQuery-tmpl")
     .content
       %section
         .screen

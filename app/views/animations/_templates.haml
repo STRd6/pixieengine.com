@@ -1,10 +1,10 @@
 #animation_editor_templates.template
-  .load_sprite.template
+  %script.load_sprite.template(type="text/x-jQuery-tmpl")
     .sprite_container
       .tags
       %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}", 'data-hflip' => "${hflip}", 'data-vflip' => "${vflip}" }
 
-  .create_animation.template
+  %script.create_animation.template(type="text/x-jQuery-tmpl")
     .name ${name}
     .animation
       .cover.active
@@ -12,11 +12,11 @@
       .speed ${speed}
       .complete ${complete}
 
-  .placeholder.template
+  %script.placeholder.template(type="text/x-jQuery-tmpl")
     .demo
     %p Drag sprites here to start animating
 
-  .editor.template
+  %script.editor.template(type="text/x-jQuery-tmpl")
     %section
       .user_sprites.module
         - if !current_user || current_user.sprites.empty?
