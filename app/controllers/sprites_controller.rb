@@ -61,6 +61,9 @@ class SpritesController < ApplicationController
   end
 
   def show
+    respond_with(sprite) do |format|
+      format.json { render :json }
+    end
   end
 
   def edit
