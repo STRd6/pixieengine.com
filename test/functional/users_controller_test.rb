@@ -1,11 +1,11 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  setup do
-    @user = Factory :user
-  end
-
   context "a logged out user" do
+    setup do
+      @user = Factory :user
+    end
+
     should "not be able to edit another's profile" do
       get :edit, :id => @user.id
 
@@ -31,7 +31,7 @@ class UsersControllerTest < ActionController::TestCase
     end
 
     should "should create a new User" do
-      assert_difference('User.count') do
+      assert_difference 'User.count', +1 do
         post :create, :user => { :display_name => 'TestUser', :email => "test@fake.com", :password => "abc123" }
       end
 
