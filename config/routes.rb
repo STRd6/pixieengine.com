@@ -47,7 +47,6 @@ PixieStrd6Com::Application.routes.draw do
     end
 
     collection do
-      get :load_url
       get :upload
       post :import
     end

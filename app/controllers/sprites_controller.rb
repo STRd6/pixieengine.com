@@ -104,20 +104,6 @@ class SpritesController < ApplicationController
     render :action => :pixie
   end
 
-  def load_url
-    if params[:url].blank?
-      # Render form
-    else
-      sprite = Sprite.data_from_path(params[:url])
-
-      @width = sprite[:width]
-      @height = sprite[:height]
-      @data = sprite[:frame_data]
-
-      render :action => :pixie
-    end
-  end
-
   def import
     @sprite = Sprite.new
 
