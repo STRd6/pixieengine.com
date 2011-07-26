@@ -31,6 +31,7 @@ gem 'json'
 gem 'mail'
 gem "mocha"
 gem 'paperclip'
+gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"
