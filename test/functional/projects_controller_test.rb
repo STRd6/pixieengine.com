@@ -72,17 +72,4 @@ class ProjectsControllerTest < ActionController::TestCase
       assert_select '#fork'
     end
   end
-
-  should "have correct routes" do
-    assert_routing({ :path => "/projects", :method => :post }, { :controller => "projects", :action => "create" })
-    assert_routing({ :path => "/projects/new", :method => :get }, { :controller => "projects", :action => "new" })
-    assert_routing({ :path => "/projects", :method => :get }, { :controller => "projects", :action => "index" })
-    assert_routing({ :path => "/projects/1", :method => :get }, { :controller => "projects", :action => "show", :id => "1" })
-    assert_routing({ :path => "/projects/1/edit", :method => :get }, { :controller => "projects", :action => "edit", :id => "1" })
-    assert_routing({ :path => "/projects/1", :method => :put }, { :controller => "projects", :action => "update", :id => "1" })
-    assert_routing({ :path => "/projects/1", :method => :delete }, { :controller => "projects", :action => "destroy", :id => "1" })
-
-    assert_recognizes({ :controller => "projects", :action => "info" }, '/begin')
-    assert_recognizes({ :controller => "projects", :action => "arcade" }, '/arcade')
-  end
 end
