@@ -4,20 +4,16 @@
 
 #forum
   position: relative
+
   .secondary-nav
     position: absolute
     right: 0
     top: 0
+
   .description
     font-style: oblique
 
   menu
-
-    a
-      padding: .5em
-      display: inline-block
-      text-decoration: none
-      margin: 0
 
 #topic, #forum
   h2
@@ -33,43 +29,44 @@
   .post
     min-height: 75px
     clear: both
-    position: relative
+
     .user
-      float: left
-      font-size: .75em
+      vertical-align: baseline
       width: 140px
-      display: inline-block
-      padding: .5em 1em
-      .username
-        font-weight: bold
+
       .icon
-        background: transparent url(http://placekitten.com/50/50) no-repeat
-        width: 50px
-        height: 50px
-        display: inline-block
+        width: 64px
+        height: 64px
+
       .member-for
         width: 80px
         display: inline-block
+
+    time
+      font-size: .7em
+      line-height: 18px
+
     .contents
-      margin-left: 160px
-      min-height: 100px
-      border-left: 1px solid black
-      padding: .1em 1em
-      time
-        padding: 5px
-        margin-bottom: 1em
-        font-size: .7em
-        line-height: 18px
+      padding: 0.5em 1em
+      position: relative
+
+      vertical-align: baseline
+
       .text
-        margin-right: 100px
+
+        p
+          margin-top: 0
+
       &:hover .actions
         display: block
+
       .actions
         display: none
         position: absolute
         right: 10px
         bottom: 0
         list-style-type: none
+
         li
           a
             text-align: center
@@ -78,26 +75,38 @@
             margin-bottom: .25em
 
 table.subdued
+  background-color: #FFF
+  border: 1px solid #CCC
+  border-collapse: collapse
   width: 100%
 
   td, th
     border-bottom: 1px solid #CCC
     padding: .5em 0
+
+    &:first-child
+      padding-left: 0.5em
+
   thead
+    background-color: #EEE
+
     th
       font-weight: normal
       text-align: left
+
   tbody
     .subject
     .started-by
       font-size: .7em
+
     .latest-post
-      font-size: .7em
-      width: 80px
+      width: 200px
 
     .posts-count, .views-count
-      font-size: .8em
       width: 80px
+
+    tr:nth-child(even)
+      background-color: #F8F8FF
 
 .pages
   .page

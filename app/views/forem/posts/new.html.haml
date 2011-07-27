@@ -1,0 +1,8 @@
+= render :partial => 'forem/forums/head', :locals => { :forum => @topic.forum }
+
+= form_for [@topic, @post], :html => {:class => :module, :style => "width: 600px; margin: 0"} do |form|
+  %h2= t("forem.post.new")
+
+  = render :partial => "form", :locals => { :f => form }
+
+  %button.full= t("forem.post.buttons.reply")

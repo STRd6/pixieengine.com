@@ -1,0 +1,7 @@
+#topic{ :class => ( @topic.locked? ? 'locked' : 'unlocked' ) }
+  = render :partial => 'forem/topics/head', :locals => { :topic => @topic }
+
+  = paginate @posts
+  %table#posts.subdued
+    %tbody
+      = render :partial => "forem/posts/post", :collection => @posts
