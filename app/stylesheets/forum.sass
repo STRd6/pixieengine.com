@@ -1,0 +1,118 @@
+#forums
+  .title
+    font-size: 175%
+
+#forum
+  position: relative
+  .secondary-nav
+    position: absolute
+    right: 0
+    top: 0
+  .description
+    font-style: oblique
+  menu
+    padding-left: 0
+    a
+      padding: .5em
+      display: inline-block
+      text-decoration: none
+      margin: 0
+
+#topic, #forum
+  h2
+    padding: .5em
+    position: relative
+
+    a.reply
+      margin-right: 1em
+      font-weight: normal
+      position: absolute
+      right: 0
+      padding: .5em
+      font-size: .5em
+
+#posts
+  .post
+    min-height: 75px
+    clear: both
+    position: relative
+    .user
+      float: left
+      font-size: .75em
+      width: 140px
+      display: inline-block
+      padding: .5em 1em
+      .username
+        font-weight: bold
+      .icon
+        background: transparent url(http://placekitten.com/50/50) no-repeat
+        width: 50px
+        height: 50px
+        display: inline-block
+      .member-for
+        width: 80px
+        display: inline-block
+    .contents
+      margin-left: 160px
+      min-height: 100px
+      border-left: 1px solid black
+      padding: .1em 1em
+      time
+        padding: 5px
+        margin-bottom: 1em
+        font-size: .7em
+        line-height: 18px
+      .text
+        margin-right: 100px
+      &:hover .actions
+        display: block
+      .actions
+        display: none
+        position: absolute
+        right: 10px
+        bottom: 0
+        list-style-type: none
+        li
+          a
+            text-align: center
+            display: block
+            padding: .25em
+            margin-bottom: .25em
+
+table.subdued
+  width: 100%
+
+  td, th
+    padding: .5em
+  thead
+    th
+      font-weight: normal
+      text-align: left
+  tbody
+    .subject
+    .started-by
+      font-size: .7em
+    .latest-post
+      font-size: .7em
+      width: 80px
+
+    .posts-count, .views-count
+      font-size: .8em
+      width: 80px
+
+.pages
+  .page
+    display: inline-block
+    padding: .25em
+
+.lock.icon
+  width: 24px
+  height: 24px
+  background: transparent url(/assets/forem/lock_icon.png) 0 0
+  display: inline-block
+
+.pin.icon
+  width: 9px
+  height: 15px
+  background: transparent url(/assets/forem/pin_icon.png) 0 0
+  display: inline-block
