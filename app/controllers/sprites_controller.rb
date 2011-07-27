@@ -15,7 +15,7 @@ class SpritesController < ApplicationController
           session[:saved_sprites] ||= {}
           session[:saved_sprites][sprite.id] = sprite.broadcast
 
-          redirect_to login_path
+          redirect_to sign_in_path
         end
       end
       format.json do
@@ -34,7 +34,7 @@ class SpritesController < ApplicationController
           session[:saved_sprites] ||= {}
           session[:saved_sprites][sprite.id] = sprite.broadcast
 
-          render :json => { :redirect => login_path }
+          render :json => { :redirect => sign_in_path }
         end
       end
     end
