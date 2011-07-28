@@ -1,5 +1,8 @@
 @import "util"
 
+body#fullscreen > .content
+  height: 0
+
 .animation_editor
   .content
     & >
@@ -69,4 +72,14 @@
           border-right: none
 
       .bottom
+        +border-radius(0)
+        +box-shadow(none)
         height: 200px
+
+  .animation
+    +border-radius(4px)
+    +bounds(75px)
+
+    background-color: #AAA
+    border: 1px solid #666
+    margin: auto
