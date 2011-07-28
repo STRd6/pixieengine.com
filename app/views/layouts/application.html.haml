@@ -6,6 +6,7 @@
   %body(class=@theme id=body_id)
     = render :partial => "shared/header"
 
-    = yield
+    .content
+      = yield
 
     = render :partial => "shared/footer"

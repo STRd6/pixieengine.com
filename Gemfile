@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.9'
+gem 'rails', '3.1.0.rc5'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -23,6 +23,7 @@ gem 'barista'
 gem "compass"
 gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
+gem 'forem', :git => "git://github.com/radar/forem.git"
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
@@ -31,6 +32,7 @@ gem 'json'
 gem 'mail'
 gem "mocha"
 gem 'paperclip'
+gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"

@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
-  should validate_presence_of :title
-
   context "project with remote origin" do
     setup do
       @project = Factory :project, :remote_origin => "git@github.com:STRd6/cardprinter.git"

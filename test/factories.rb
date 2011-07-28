@@ -48,8 +48,8 @@ Factory.define :project do |project|
 end
 
 Factory.define :comment do |comment|
-  comment.commenter Factory :user
-  comment.commentee Factory :user
+  comment.commenter {Factory :user}
+  comment.commentee {Factory :user}
   comment.body "This is a test comment"
-  comment.commentable Factory :sprite
+  comment.commentable {Factory :sprite}
 end

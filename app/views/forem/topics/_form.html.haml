@@ -1,0 +1,11 @@
+= form_for [@forum, @topic], :html => {:class => :module, :style => "width: 600px; margin: 0"} do |form|
+  %h2= t("forem.topic.new")
+
+  %label
+    %h3 Subject
+    = form.text_field :subject
+
+  = form.fields_for :posts do |post|
+    = render :partial => "forem/posts/form", :locals => { :f => post }
+
+  %button.full Create Topic

@@ -5,14 +5,13 @@
 - tags = Sprite.with_ids(sprites).tag_counts
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-.content
-  = will_paginate sprites
-  .sprite_gallery
-    .sprites
-      = render :partial => "index_sprite", :collection => sprites
-  .tags
-    - tags.each do |tag|
-      = tag_link tag
+= will_paginate sprites
+.sprite_gallery
+  .sprites
+    = render :partial => "index_sprite", :collection => sprites
+.tags
+  - tags.each do |tag|
+    = tag_link tag
 
 :coffeescript
   $ ->
