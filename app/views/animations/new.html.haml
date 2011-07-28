@@ -2,19 +2,5 @@
 
 :coffeescript
   $ ->
-    editor = $("<div />").appendTo("body").animationEditor
-      save: (animationData) ->
-        notify("Saving...")
-
-        postData =
-          format: 'json'
-          animation:
-            name: animationData.name
-            states: animationData.animations.length
-            data_string: JSON.stringify(editor.animationData())
-
-        callback = (data) ->
-          id = data.animation.id
-          notify("Saved as <a href='/animations/"+id+"'>Animation "+id+"</a>!")
-
-        $.post('/animations', postData, callback, "json")
+    $('body').attr('id', 'fullscreen')
+    editor = $("<div />").appendTo("body").animationEditor()

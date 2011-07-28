@@ -1,49 +1,28 @@
 #animation_editor_templates.template
-  %script.load_sprite.template(type="text/x-jQuery-tmpl")
-    .sprite_container
-      .tags
-      %img{ :src => "${url}", :alt => "${alt}", :title => "${title}", 'data-id' => "${id}", 'data-hit_circles' => "${circles}", 'data-hflip' => "${hflip}", 'data-vflip' => "${vflip}" }
-
-  %script.create_animation.template(type="text/x-jQuery-tmpl")
-    .name ${name}
-    .animation
-      .cover.active
-      .sprites
-      .speed ${speed}
-      .complete ${complete}
-
-  %script.placeholder.template(type="text/x-jQuery-tmpl")
-    .demo
-    %p Drag sprites here to start animating
-
   %script.editor.template(type="text/x-jQuery-tmpl")
-    %section
-      .user_sprites.module
-        - if !current_user || current_user.sprites.empty?
-          %p
-            You have not created any sprites yet. Make some in the
-            = link_to "Pixel Editor", new_sprite_path
-        - else
-          = render :partial => 'animations/animation_sprite', :collection => current_user.sprites
+    .content
+      %section
+        .relative
+          %h3 Preview
+          .player
+          .controls
+            .play
+            .stop
+            %input(type="range" min="1" max="30" value="0" class="scrubber")
+            %span.fps
+              fps
+              %input(type="number" min="0" max="60" value="30")
 
-    %nav.bottom
-      .frame_sprites.module
-      .lock(title="locked animations won't be interrupted before they finish")
-      .goto
-        Next Animation
-        %select
+      %nav.left
+        .background_color
+          .sprites Sprites
+          .sequences Sequences
 
-    %nav.right
-      %button.save Save
-      .animations.module
-        %button.new_animation New
+      %nav.right
+        .background_color
+          %h3 Animations
+          .animations
 
-    .preview_box
-      %div.animation_speed
-        Speed
-        %input.speed
-        ms
-      .sprite_container
-        .sprites
-        .play
-        .stop
+      %nav.module.bottom
+        %h3 Frames
+        .frame_sprites
