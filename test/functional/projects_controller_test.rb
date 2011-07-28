@@ -46,7 +46,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
     should "should create a new Project" do
       assert_difference('Project.count') do
-        post :create, :project => { :title => 'Test project', :description => "Description of the project.", :user => @user }
+        post :create, :project => { :title => 'Test project', :description => "Description of the project." }
       end
       assert_redirected_to [:ide, assigns(:project)]
     end
