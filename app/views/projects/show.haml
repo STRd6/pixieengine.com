@@ -2,50 +2,42 @@
 
 %style
   :sass
-    #fullscreen
-      height: auto
+    .project
+      img
+        margin: 0 1em 1em 0
+        float: left
 
-    .content
-      margin: auto
-      width: 1000px
+      .image_and_text
+        overflow: auto
+        width: 100%
 
-      .project
-        img
-          margin: 0 1em 1em 0
-          float: left
+.project
+  %h2= project.title
 
-        .image_and_text
-          overflow: auto
-          width: 100%
+  .image_and_text
+    = image_tag project.image.url(:thumb)
 
-.content
-  .project
-    %h2= project.title
+    %p= project.description
 
-    .image_and_text
-      = image_tag project.image.url(:thumb)
+  %p= project.remote_origin
 
-      %p= project.description
+  .creator
+    Created by
+    = link_to project.user.display_name, project.user
 
-    %p= project.remote_origin
-
-    .creator
-      Created by
-      = link_to project.user.display_name, project.user
-
-    .actions
-      = button_link "IDE", "application_edit", ide_project_path(project)
-      - if has_access?
-        = button_link "Edit Info", "pencil", edit_project_path(project)
-      - if owner_or_admin?
-        = button_link "Delete", "application_delete", project_path(project), :method => "delete", :confirm => "Are you sure you want to delete this project?"
-      - if admin?
-        - featured = project.featured? ? "active" : ""
-        = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
-        - arcade = project.arcade? ? "active"  : ""
-        = button_link "Arcade", "sport_shuttlecock", add_to_arcade_project_path(project), :class => "button #{arcade}", :id => "arcade"
-        - tutorial = project.tutorial? ? "active" : ""
-        = button_link "Tutorial", "book", add_to_tutorial_project_path(project), :class => "button #{tutorial}", :id => "tutorial"
+  .actions
+    = button_link "IDE", "application_edit", ide_project_path(project)
+    - if has_access?
+      = button_link "Edit Info", "pencil", edit_project_path(project)
+    - if owner_or_admin?
+      = button_link "Delete", "application_delete", project_path(project), :method => "delete", :confirm => "Are you sure you want to delete this project?"
+    - if admin?
+      - featured = project.featured? ? "active" : ""
+      = button_link "Feature", "star", feature_project_path(project), :class => "button #{featured}", :id => "feature"
+      - arcade = project.arcade? ? "active"  : ""
+      = button_link "Arcade", "sport_shuttlecock", add_to_arcade_project_path(project), :class => "button #{arcade}", :id => "arcade"
+      - tutorial = project.tutorial? ? "active" : ""
+      = button_link "Tutorial", "book", add_to_tutorial_project_path(project), :class => "button #{tutorial}", :id => "tutorial"
 
 :coffeescript
   $("#feature, #arcade, #tutorial").click (event) ->

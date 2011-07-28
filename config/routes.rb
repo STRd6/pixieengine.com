@@ -1,4 +1,6 @@
 PixieStrd6Com::Application.routes.draw do
+  mount Forem::Engine, :at => "community"
+
   get "subscribe" => "subscriptions#subscribe", :as => :subscribe
   get "subscriptions/thanks"
   post "subscriptions/changed"
@@ -47,7 +49,6 @@ PixieStrd6Com::Application.routes.draw do
     end
 
     collection do
-      get :load_url
       get :upload
       post :import
     end
@@ -98,8 +99,8 @@ PixieStrd6Com::Application.routes.draw do
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey
 
-  match "login" => "user_sessions#new", :as => :login
-  match "logout" => "user_sessions#destroy", :as => :logout
+  match "login" => "user_sessions#new", :as => :sign_in
+  match "logout" => "user_sessions#destroy", :as => :sign_out
   match 'authenticate' => 'user_sessions#create', :as => :authenticate, :via => :post
   match "sign_up" => "users#new", :as => :signup
 

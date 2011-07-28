@@ -1,0 +1,15 @@
+- user = post.user
+
+%tr.post
+  %a{ :name => "post-#{post.id}" }
+  %td.user
+    .username= link_to user.display_name, main_app.users_path(user)
+    .icon= image_tag user.avatar.url(:large), :alt => user, :title => user, :size => "64x64"
+
+  %td.contents
+    .text
+      = forem_markdown(post.text)
+
+    %time{ :datetime => post.created_at.to_s(:db) }
+      = time_ago_in_words(post.created_at)
+      ago

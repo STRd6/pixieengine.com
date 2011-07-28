@@ -1,6 +1,6 @@
 .login_link
   - if current_user
-    = link_to image_tag('/images/icons/application_add.png', :alt => "New Project", :title => "New Project"), new_project_path(),  :class => 'new_project'
+    = link_to image_tag('/images/icons/application_add.png', :alt => "New Project", :title => "New Project"), main_app.new_project_path,  :class => 'new_project'
     %span.vertical_rule
     %span.log_out
       = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
@@ -11,9 +11,10 @@
 
     .user_drop_down
       %ul
-        %li= link_to "Log out", logout_path()
+        %li= link_to "My Profile", main_app.user_path(current_user)
+        %li= link_to "Log out", main_app.sign_out_path
   - else
-    = link_to "Log in or sign up",  login_path,  { :title => "Log in" }
+    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in" }
 
 :coffeescript
   $('.new_project img').tipsy

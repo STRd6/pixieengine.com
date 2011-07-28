@@ -15,7 +15,7 @@ class SpritesController < ApplicationController
           session[:saved_sprites] ||= {}
           session[:saved_sprites][sprite.id] = sprite.broadcast
 
-          redirect_to login_path
+          redirect_to sign_in_path
         end
       end
       format.json do
@@ -34,7 +34,7 @@ class SpritesController < ApplicationController
           session[:saved_sprites] ||= {}
           session[:saved_sprites][sprite.id] = sprite.broadcast
 
-          render :json => { :redirect => login_path }
+          render :json => { :redirect => sign_in_path }
         end
       end
     end
@@ -102,20 +102,6 @@ class SpritesController < ApplicationController
     @replay_data = sprite.load_replay_data if sprite.replayable?
 
     render :action => :pixie
-  end
-
-  def load_url
-    if params[:url].blank?
-      # Render form
-    else
-      sprite = Sprite.data_from_path(params[:url])
-
-      @width = sprite[:width]
-      @height = sprite[:height]
-      @data = sprite[:frame_data]
-
-      render :action => :pixie
-    end
   end
 
   def import
