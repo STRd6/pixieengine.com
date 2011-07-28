@@ -158,9 +158,12 @@ class ProjectsController < ApplicationController
   end
 
   def ide
-    @has_reg_popup = true
-
-    render :layout => "ide"
+    respond_with(project) do |format|
+      format.html do
+        @has_reg_popup = true
+        render :layout => "ide"
+      end
+    end
   end
 
   def tag_version
