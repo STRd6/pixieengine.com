@@ -52,6 +52,7 @@ after "deploy:setup" do
   run "mkdir -p #{shared_path}/production/images"
   run "mkdir -p #{shared_path}/production/replays"
   run "mkdir -p #{shared_path}/local"
+  run "mkdir -p #{shared_path}/sockets"
   run "touch #{shared_path}/log/nginx.log"
   run "touch #{shared_path}/log/nginx.error.log"
 end
