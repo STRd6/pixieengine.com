@@ -3,8 +3,9 @@ $.fn.animationEditor = ->
   animations = []
 
   Controls = ->
-    playing = false
     paused = false
+
+    intervalId = null
 
     scrubberEl = $('.scrubber')
 
@@ -20,12 +21,27 @@ $.fn.animationEditor = ->
       max: fpsEl.get(0).max
       val: fpsEl.val()
 
+    updateFrame = ->
+      scrubber.val = (scrubber.val + 1) % scrubber.max
+      self.update()
+
     self =
+      fps: (val) ->
+        if val?
+          fps.val = val
+          return self
+        else
+          return fps.val
+
       play: ->
-        scrubber.val = (scrubber.val + 1) % scrubber.max
+        console.log fps.val
+        intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
 
       stop: ->
         scrubber.val = 0
+        self.update()
+        clearInterval(intervalId)
+        intervalId = null
 
       update: ->
         scrubberEl.val(scrubber.val)
@@ -41,16 +57,7 @@ $.fn.animationEditor = ->
     animationNumber += 1
 
     self =
-      addFrame: (image) ->
-        tileset.push(image)
-
-      advanceFrame: ->
-        currentFrameIndex = (currentFrameIndex + 1) % tileset.length
-
       name: name
-
-      removeFrame: (image) ->
-        tileset.remove(image)
 
     return self
 
@@ -59,9 +66,10 @@ $.fn.animationEditor = ->
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
   templates = $("#animation_editor_templates")
+  editorTemplate = templates.find('.editor.template')
   animationTemplate = templates.find('.animation')
 
-  templates.find(".editor.template").tmpl().appendTo(animationEditor)
+  editorTemplate.tmpl().appendTo(animationEditor)
 
   controls = Controls()
 
@@ -74,5 +82,11 @@ $.fn.animationEditor = ->
 
   updateUI()
 
-  controls.play()
-  controls.update()
+  $('.play').mousedown -> controls.play()
+  $('.stop').mousedown -> controls.stop()
+
+  $('.fps input').change ->
+    newValue = $(this).val()
+
+    controls.stop()
+    controls.fps(newValue)

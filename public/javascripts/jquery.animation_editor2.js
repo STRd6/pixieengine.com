@@ -1,16 +1,16 @@
-/* DO NOT MODIFY. This file was compiled Thu, 28 Jul 2011 23:52:37 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Jul 2011 00:31:47 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function() {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, editorTemplate, templates, updateUI;
     animationNumber = 1;
     animations = [];
     Controls = function() {
-      var fps, fpsEl, paused, playing, scrubber, scrubberEl, self;
-      playing = false;
+      var fps, fpsEl, intervalId, paused, scrubber, scrubberEl, self, updateFrame;
       paused = false;
+      intervalId = null;
       scrubberEl = $('.scrubber');
       scrubber = {
         min: scrubberEl.get(0).min,
@@ -23,12 +23,30 @@
         max: fpsEl.get(0).max,
         val: fpsEl.val()
       };
+      updateFrame = function() {
+        scrubber.val = (scrubber.val + 1) % scrubber.max;
+        return self.update();
+      };
       self = {
+        fps: function(val) {
+          if (val != null) {
+            fps.val = val;
+            return self;
+          } else {
+            return fps.val;
+          }
+        },
         play: function() {
-          return scrubber.val = (scrubber.val + 1) % scrubber.max;
+          console.log(fps.val);
+          if (!intervalId) {
+            return intervalId = setInterval(updateFrame, 1000 / fps.val);
+          }
         },
         stop: function() {
-          return scrubber.val = 0;
+          scrubber.val = 0;
+          self.update();
+          clearInterval(intervalId);
+          return intervalId = null;
         },
         update: function() {
           return scrubberEl.val(scrubber.val);
@@ -44,24 +62,16 @@
       name || (name = "Animation " + animationNumber);
       animationNumber += 1;
       self = {
-        addFrame: function(image) {
-          return tileset.push(image);
-        },
-        advanceFrame: function() {
-          return currentFrameIndex = (currentFrameIndex + 1) % tileset.length;
-        },
-        name: name,
-        removeFrame: function(image) {
-          return tileset.remove(image);
-        }
+        name: name
       };
       return self;
     };
     animations.push(Animation());
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
+    editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
-    templates.find(".editor.template").tmpl().appendTo(animationEditor);
+    editorTemplate.tmpl().appendTo(animationEditor);
     controls = Controls();
     updateUI = function() {
       var animation, _i, _len, _results;
@@ -75,7 +85,17 @@
       return _results;
     };
     updateUI();
-    controls.play();
-    return controls.update();
+    $('.play').mousedown(function() {
+      return controls.play();
+    });
+    $('.stop').mousedown(function() {
+      return controls.stop();
+    });
+    return $('.fps input').change(function() {
+      var newValue;
+      newValue = $(this).val();
+      controls.stop();
+      return controls.fps(newValue);
+    });
   };
 }).call(this);
