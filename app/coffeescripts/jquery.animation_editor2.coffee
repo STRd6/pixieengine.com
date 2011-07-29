@@ -1,6 +1,5 @@
 $.fn.animationEditor = ->
   animationNumber = 1
-  animations = []
 
   Controls = ->
     paused = false
@@ -29,12 +28,12 @@ $.fn.animationEditor = ->
       fps: (val) ->
         if val?
           fps.val = val
+          scrubber.max = val
           return self
         else
           return fps.val
 
       play: ->
-        console.log fps.val
         intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
 
       stop: ->
@@ -45,12 +44,14 @@ $.fn.animationEditor = ->
 
       update: ->
         scrubberEl.val(scrubber.val)
+        scrubberEl.get(0).max = scrubber.max
 
     return self
 
   Animation = (name) ->
     tileset = []
     sequences = []
+    frames = []
     currentFrameIndex = 0
 
     name ||= "Animation #{animationNumber}"
@@ -61,8 +62,6 @@ $.fn.animationEditor = ->
 
     return self
 
-  animations.push(Animation())
-
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
   templates = $("#animation_editor_templates")
@@ -72,6 +71,8 @@ $.fn.animationEditor = ->
   editorTemplate.tmpl().appendTo(animationEditor)
 
   controls = Controls()
+
+  animations = [Animation()]
 
   updateUI = ->
     for animation in animations

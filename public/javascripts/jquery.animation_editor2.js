@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Jul 2011 00:31:47 GMT from
+/* DO NOT MODIFY. This file was compiled Fri, 29 Jul 2011 00:50:21 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -6,7 +6,6 @@
   $.fn.animationEditor = function() {
     var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, editorTemplate, templates, updateUI;
     animationNumber = 1;
-    animations = [];
     Controls = function() {
       var fps, fpsEl, intervalId, paused, scrubber, scrubberEl, self, updateFrame;
       paused = false;
@@ -31,13 +30,13 @@
         fps: function(val) {
           if (val != null) {
             fps.val = val;
+            scrubber.max = val;
             return self;
           } else {
             return fps.val;
           }
         },
         play: function() {
-          console.log(fps.val);
           if (!intervalId) {
             return intervalId = setInterval(updateFrame, 1000 / fps.val);
           }
@@ -49,15 +48,17 @@
           return intervalId = null;
         },
         update: function() {
-          return scrubberEl.val(scrubber.val);
+          scrubberEl.val(scrubber.val);
+          return scrubberEl.get(0).max = scrubber.max;
         }
       };
       return self;
     };
     Animation = function(name) {
-      var currentFrameIndex, self, sequences, tileset;
+      var currentFrameIndex, frames, self, sequences, tileset;
       tileset = [];
       sequences = [];
+      frames = [];
       currentFrameIndex = 0;
       name || (name = "Animation " + animationNumber);
       animationNumber += 1;
@@ -66,13 +67,13 @@
       };
       return self;
     };
-    animations.push(Animation());
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     editorTemplate.tmpl().appendTo(animationEditor);
     controls = Controls();
+    animations = [Animation()];
     updateUI = function() {
       var animation, _i, _len, _results;
       _results = [];
