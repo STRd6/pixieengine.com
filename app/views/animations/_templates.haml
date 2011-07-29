@@ -15,8 +15,10 @@
 
       %nav.left
         .background_color
-          .sprites Sprites
-          .sequences Sequences
+          %p Sprites
+          .sprites
+          %p Sequences
+          .sequences
 
       %nav.right
         .background_color
@@ -29,3 +31,7 @@
 
   %script.animation.template(type="text/x-jQuery-tmpl")
     .animation ${name}
+
+  %script.sprite.template(type="text/x-jQuery-tmpl")
+    .sprite_container
+      %img.sprite(src="${src}")

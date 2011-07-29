@@ -4,6 +4,9 @@ body#fullscreen > .content
   height: 0
 
 .animation_editor
+  p
+    margin: 0.25em 0
+
   .content
     & >
       section
@@ -37,12 +40,13 @@ body#fullscreen > .content
               display: inline-block
 
             .scrubber
-              +bounds(80%, 100%)
+              +bounds(83%, 100%)
 
               margin-left: 5px
               margin-right: 5px
 
             .fps
+              margin-top: 4px
               position: absolute
               right: 0
               vertical-align: top
@@ -59,6 +63,13 @@ body#fullscreen > .content
 
         .sprites
           height: 50%
+
+          .sprite_container
+            display: inline-block
+            padding: 2px
+
+          .sprite
+            +bounds(50px)
 
       nav.left, nav.right
         height: 100%
