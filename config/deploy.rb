@@ -12,6 +12,9 @@ set :branch, "master"
 set :deploy_via, :remote_cache
 set :user, :rails
 
+set :unicorn_config, "#{current_path}/config/unicorn.rb"
+set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+
 set :default_env, 'production'
 set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
 
@@ -69,19 +72,27 @@ namespace :delayed_job do
 end
 after "deploy:symlink", "delayed_job:restart"
 
-# Passenger start Tasks
+# Unicorn start Tasks
 namespace :deploy do
-  task :start, :roles => :app do
-    run "touch #{current_release}/tmp/restart.txt"
+  task :start, :roles => :app, :except => { :no_release => true } do
+    run "cd #{current_path} && bundle exec unicorn -c #{unicorn_config} -E #{rails_env} -D"
   end
 
-  task :stop, :roles => :app do
-    # Do nothing.
+  task :stop, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} kill `cat #{unicorn_pid}`"
   end
 
-  desc "Restart Application"
-  task :restart, :roles => :app do
-    run "touch #{current_release}/tmp/restart.txt"
+  task :graceful_stop, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} kill -s QUIT `cat #{unicorn_pid}`"
+  end
+
+  task :reload, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`"
+  end
+
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    stop
+    start
   end
 end
 

@@ -117,6 +117,7 @@ GEM
     json (1.5.3)
     kaminari (0.12.4)
       rails (>= 3.0.0)
+    kgio (2.6.0)
     libv8 (3.3.10.2)
     mail (2.3.0)
       i18n (>= 0.4.0)
@@ -169,6 +170,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.6)
+    raindrops (0.7.0)
     rake (0.9.2)
     rdiscount (1.6.8)
     rdoc (3.8)
@@ -200,6 +202,10 @@ GEM
     turn (0.8.2)
       ansi (>= 1.2.2)
     tzinfo (0.3.29)
+    unicorn (4.0.1)
+      kgio (~> 2.4)
+      rack
+      raindrops (~> 0.6)
     whenever (0.6.8)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
@@ -237,5 +243,6 @@ DEPENDENCIES
   shoulda
   therubyracer
   turn
+  unicorn
   whenever
   will_paginate!
