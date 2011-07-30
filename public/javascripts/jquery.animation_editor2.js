@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 29 Jul 2011 22:04:52 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 00:54:02 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -6,6 +6,11 @@
   $.fn.animationEditor = function(options) {
     var Animation, Controls, animation, animationEditor, animationNumber, animationTemplate, animations, controls, editorTemplate, spriteTemplate, templates, updateUI;
     animationNumber = 1;
+    animationEditor = $(this.get(0)).addClass("editor animation_editor");
+    templates = $("#animation_editor_templates");
+    editorTemplate = templates.find('.editor.template');
+    animationTemplate = templates.find('.animation');
+    spriteTemplate = templates.find('.sprite');
     Controls = function() {
       var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, updateFrame;
       intervalId = null;
@@ -22,8 +27,9 @@
         val: fpsEl.val()
       };
       updateFrame = function() {
+        self.update();
         scrubber.val = (scrubber.val + 1) % scrubber.max;
-        return self.update();
+        return animation.currentFrameIndex(scrubber.val);
       };
       changePlayIcon = function(icon) {
         var el;
@@ -39,7 +45,6 @@
         fps: function(val) {
           if (val != null) {
             fps.val = val;
-            scrubber.max = val;
             return self;
           } else {
             return fps.val;
@@ -51,24 +56,37 @@
           return intervalId = null;
         },
         play: function() {
-          var stopped;
           if (!intervalId) {
             intervalId = setInterval(updateFrame, 1000 / fps.val);
           }
-          changePlayIcon('pause');
-          return stopped = false;
+          return changePlayIcon('pause');
+        },
+        scrubber: function(val) {
+          if (val != null) {
+            scrubber.val = val;
+            return self;
+          } else {
+            return scrubber.val;
+          }
+        },
+        scrubberMax: function(val) {
+          if (val != null) {
+            scrubber.max = val;
+            return self;
+          } else {
+            return scrubber.max;
+          }
         },
         scrubberPosition: function() {
           return "" + scrubber.val + " / " + scrubber.max;
         },
         stop: function() {
-          var stopped;
           scrubber.val = 0;
           self.update();
           clearInterval(intervalId);
           intervalId = null;
           changePlayIcon('play');
-          return stopped = true;
+          return animation.currentFrameIndex(-1);
         },
         update: function() {
           scrubberEl.val(scrubber.val);
@@ -78,29 +96,54 @@
       return self;
     };
     Animation = function(name) {
-      var currentFrameIndex, frames, self, sequences, tileset;
+      var currentFrameIndex, frames, self, sequences, tileset, updateSelected;
       tileset = [];
       sequences = [];
       frames = [];
       currentFrameIndex = 0;
       name || (name = "Animation " + animationNumber);
       animationNumber += 1;
+      updateSelected = function(val) {
+        $('.frame_sprites .sprite_container').removeClass('current');
+        if (val !== -1) {
+          return $('.frame_sprites .sprite_container').eq(val).addClass('current');
+        }
+      };
       self = {
         addFrame: function(imgSrc) {
           if ($.inArray(imgSrc, tileset) === -1) {
             tileset.push(imgSrc);
           }
-          return frames.push(tileset.indexOf(imgSrc));
+          frames.push(tileset.indexOf(imgSrc));
+          controls.scrubberMax(frames.length);
+          return self.update();
         },
-        name: name
+        currentFrameIndex: function(val) {
+          if (val != null) {
+            currentFrameIndex = val;
+            updateSelected(val);
+            return self;
+          } else {
+            return currentFrameIndex;
+          }
+        },
+        name: name,
+        update: function() {
+          var frame_index, spriteSrc, _i, _len, _results;
+          $('.frame_sprites').children().remove();
+          _results = [];
+          for (_i = 0, _len = frames.length; _i < _len; _i++) {
+            frame_index = frames[_i];
+            spriteSrc = tileset[frame_index];
+            _results.push(spriteTemplate.tmpl({
+              src: spriteSrc
+            }).appendTo($('.frame_sprites')));
+          }
+          return _results;
+        }
       };
       return self;
     };
-    animationEditor = $(this.get(0)).addClass("editor animation_editor");
-    templates = $("#animation_editor_templates");
-    editorTemplate = templates.find('.editor.template');
-    animationTemplate = templates.find('.animation');
-    spriteTemplate = templates.find('.sprite');
     editorTemplate.tmpl().appendTo(animationEditor);
     controls = Controls();
     animation = Animation();
@@ -114,7 +157,7 @@
         animations.children().remove();
         animationTemplate.tmpl(animation.name).appendTo(animations);
       }
-      spritesSrc = ["http://dev.pixie.strd6.com/sprites/15408/original.png", "http://dev.pixie.strd6.com/sprites/15407/original.png", "http://dev.pixie.strd6.com/sprites/15406/original.png", "http://dev.pixie.strd6.com/sprites/15405/original.png", "http://dev.pixie.strd6.com/sprites/15404/original.png", "http://dev.pixie.strd6.com/sprites/15403/original.png", "http://dev.pixie.strd6.com/sprites/15402/original.png", "http://dev.pixie.strd6.com/sprites/15401/original.png", "http://dev.pixie.strd6.com/sprites/15400/original.png", "http://dev.pixie.strd6.com/sprites/15399/original.png", "http://dev.pixie.strd6.com/sprites/15398/original.png", "http://dev.pixie.strd6.com/sprites/15397/original.png", "http://dev.pixie.strd6.com/sprites/15396/original.png", "http://dev.pixie.strd6.com/sprites/15395/original.png", "http://dev.pixie.strd6.com/sprites/15394/original.png", "http://dev.pixie.strd6.com/sprites/15393/original.png"];
+      spritesSrc = ["http://dev.pixie.strd6.com/sprites/323/original.png", "http://dev.pixie.strd6.com/sprites/324/original.png", "http://dev.pixie.strd6.com/sprites/325/original.png", "http://dev.pixie.strd6.com/sprites/326/original.png", "http://dev.pixie.strd6.com/sprites/327/original.png", "http://dev.pixie.strd6.com/sprites/328/original.png", "http://dev.pixie.strd6.com/sprites/329/original.png", "http://dev.pixie.strd6.com/sprites/330/original.png", "http://dev.pixie.strd6.com/sprites/331/original.png", "http://dev.pixie.strd6.com/sprites/332/original.png", "http://dev.pixie.strd6.com/sprites/333/original.png", "http://dev.pixie.strd6.com/sprites/334/original.png", "http://dev.pixie.strd6.com/sprites/335/original.png", "http://dev.pixie.strd6.com/sprites/336/original.png", "http://dev.pixie.strd6.com/sprites/337/original.png", "http://dev.pixie.strd6.com/sprites/338/original.png"];
       _results = [];
       for (_j = 0, _len2 = spritesSrc.length; _j < _len2; _j++) {
         src = spritesSrc[_j];
@@ -131,6 +174,9 @@
       } else {
         return controls.play();
       }
+    });
+    $('.scrubber').change(function() {
+      return controls.scrubber($(this).val());
     });
     $('.stop').mousedown(function() {
       return controls.stop();

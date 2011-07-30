@@ -12,7 +12,7 @@ body#fullscreen > .content
       section
         padding-left: 220px
         padding-right: 220px
-        padding-bottom: 200px
+        padding-bottom: 150px
 
         .relative
           +bounds(100%)
@@ -55,11 +55,10 @@ body#fullscreen > .content
                 vertical-align: top
                 width: 40px
 
-
       nav.left
         +box-sizing(border-box)
 
-        padding-bottom: 200px
+        padding-bottom: 150px
 
         .sprites
           height: 50%
@@ -86,7 +85,19 @@ body#fullscreen > .content
       .bottom
         +border-radius(0)
         +box-shadow(none)
-        height: 200px
+        height: 150px
+
+        .frame_sprites
+          .sprite_container
+            display: inline-block
+            padding: 2px
+
+            &.current
+              background-color: yellow
+              border: 3px solid red
+
+          .sprite
+            +bounds(85px)
 
   .animation
     +border-radius(4px)

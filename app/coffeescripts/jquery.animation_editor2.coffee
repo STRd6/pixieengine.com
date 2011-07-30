@@ -1,6 +1,13 @@
 $.fn.animationEditor = (options) ->
   animationNumber = 1
 
+  animationEditor = $(this.get(0)).addClass("editor animation_editor")
+
+  templates = $("#animation_editor_templates")
+  editorTemplate = templates.find('.editor.template')
+  animationTemplate = templates.find('.animation')
+  spriteTemplate = templates.find('.sprite')
+
   Controls = ->
     intervalId = null
 
@@ -19,8 +26,9 @@ $.fn.animationEditor = (options) ->
       val: fpsEl.val()
 
     updateFrame = ->
-      scrubber.val = (scrubber.val + 1) % scrubber.max
       self.update()
+      scrubber.val = (scrubber.val + 1) % (scrubber.max)
+      animation.currentFrameIndex(scrubber.val)
 
     changePlayIcon = (icon) ->
       el = $('.play')
@@ -36,7 +44,6 @@ $.fn.animationEditor = (options) ->
       fps: (val) ->
         if val?
           fps.val = val
-          scrubber.max = val
           return self
         else
           return fps.val
@@ -49,7 +56,20 @@ $.fn.animationEditor = (options) ->
       play: ->
         intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
         changePlayIcon('pause')
-        stopped = false
+
+      scrubber: (val) ->
+        if val?
+          scrubber.val = val
+          return self
+        else
+          return scrubber.val
+
+      scrubberMax: (val) ->
+        if val?
+          scrubber.max = val
+          return self
+        else
+          return scrubber.max
 
       scrubberPosition: ->
         "#{scrubber.val} / #{scrubber.max}"
@@ -60,7 +80,7 @@ $.fn.animationEditor = (options) ->
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
-        stopped = true
+        animation.currentFrameIndex(-1)
 
       update: ->
         scrubberEl.val(scrubber.val)
@@ -77,26 +97,38 @@ $.fn.animationEditor = (options) ->
     name ||= "Animation #{animationNumber}"
     animationNumber += 1
 
+    updateSelected = (val) ->
+      $('.frame_sprites .sprite_container').removeClass('current')
+      $('.frame_sprites .sprite_container').eq(val).addClass('current') unless val == -1
+
     self =
       addFrame: (imgSrc) ->
         tileset.push(imgSrc) if $.inArray(imgSrc, tileset) == -1
         frames.push(tileset.indexOf(imgSrc))
+        controls.scrubberMax(frames.length)
+        self.update()
+
+      currentFrameIndex: (val) ->
+        if val?
+          currentFrameIndex = val
+          updateSelected(val)
+          return self
+        else
+          return currentFrameIndex
 
       name: name
 
+      update: ->
+        $('.frame_sprites').children().remove()
+        for frame_index in frames
+          spriteSrc = tileset[frame_index]
+          spriteTemplate.tmpl(src: spriteSrc).appendTo($('.frame_sprites'))
+
     return self
-
-  animationEditor = $(this.get(0)).addClass("editor animation_editor")
-
-  templates = $("#animation_editor_templates")
-  editorTemplate = templates.find('.editor.template')
-  animationTemplate = templates.find('.animation')
-  spriteTemplate = templates.find('.sprite')
 
   editorTemplate.tmpl().appendTo(animationEditor)
 
   controls = Controls()
-
   animation = Animation()
 
   animations = [animation]
@@ -111,22 +143,22 @@ $.fn.animationEditor = (options) ->
       animationTemplate.tmpl(animation.name).appendTo(animations)
 
     spritesSrc = [
-      "http://dev.pixie.strd6.com/sprites/15408/original.png"
-      "http://dev.pixie.strd6.com/sprites/15407/original.png"
-      "http://dev.pixie.strd6.com/sprites/15406/original.png"
-      "http://dev.pixie.strd6.com/sprites/15405/original.png"
-      "http://dev.pixie.strd6.com/sprites/15404/original.png"
-      "http://dev.pixie.strd6.com/sprites/15403/original.png"
-      "http://dev.pixie.strd6.com/sprites/15402/original.png"
-      "http://dev.pixie.strd6.com/sprites/15401/original.png"
-      "http://dev.pixie.strd6.com/sprites/15400/original.png"
-      "http://dev.pixie.strd6.com/sprites/15399/original.png"
-      "http://dev.pixie.strd6.com/sprites/15398/original.png"
-      "http://dev.pixie.strd6.com/sprites/15397/original.png"
-      "http://dev.pixie.strd6.com/sprites/15396/original.png"
-      "http://dev.pixie.strd6.com/sprites/15395/original.png"
-      "http://dev.pixie.strd6.com/sprites/15394/original.png"
-      "http://dev.pixie.strd6.com/sprites/15393/original.png"
+      "http://dev.pixie.strd6.com/sprites/323/original.png"
+      "http://dev.pixie.strd6.com/sprites/324/original.png"
+      "http://dev.pixie.strd6.com/sprites/325/original.png"
+      "http://dev.pixie.strd6.com/sprites/326/original.png"
+      "http://dev.pixie.strd6.com/sprites/327/original.png"
+      "http://dev.pixie.strd6.com/sprites/328/original.png"
+      "http://dev.pixie.strd6.com/sprites/329/original.png"
+      "http://dev.pixie.strd6.com/sprites/330/original.png"
+      "http://dev.pixie.strd6.com/sprites/331/original.png"
+      "http://dev.pixie.strd6.com/sprites/332/original.png"
+      "http://dev.pixie.strd6.com/sprites/333/original.png"
+      "http://dev.pixie.strd6.com/sprites/334/original.png"
+      "http://dev.pixie.strd6.com/sprites/335/original.png"
+      "http://dev.pixie.strd6.com/sprites/336/original.png"
+      "http://dev.pixie.strd6.com/sprites/337/original.png"
+      "http://dev.pixie.strd6.com/sprites/338/original.png"
     ]
 
     for src in spritesSrc
@@ -139,6 +171,9 @@ $.fn.animationEditor = (options) ->
       controls.pause()
     else
       controls.play()
+
+  $('.scrubber').change ->
+    controls.scrubber($(this).val())
 
   $('.stop').mousedown -> controls.stop()
 
