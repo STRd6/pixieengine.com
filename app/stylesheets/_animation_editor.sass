@@ -17,6 +17,11 @@ body#fullscreen > .content
         .relative
           +bounds(100%)
 
+          .player
+            +contents-centered
+
+            height: 100%
+
           .controls
             +bounds(100%, 30px)
             +box-sizing(border-box)
@@ -67,8 +72,9 @@ body#fullscreen > .content
             display: inline-block
             padding: 2px
 
-          .sprite
-            +bounds(50px)
+            img
+              max-height: 50px
+              max-width: 50px
 
       nav.left, nav.right
         height: 100%

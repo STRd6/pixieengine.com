@@ -27,7 +27,7 @@ $.fn.animationEditor = (options) ->
 
     updateFrame = ->
       self.update()
-      scrubber.val = (scrubber.val + 1) % (scrubber.max)
+      scrubber.val = (scrubber.val + 1) % (scrubber.max + 1)
       animation.currentFrameIndex(scrubber.val)
 
     changePlayIcon = (icon) ->
@@ -106,8 +106,15 @@ $.fn.animationEditor = (options) ->
       addFrame: (imgSrc) ->
         tileset.push(imgSrc) if $.inArray(imgSrc, tileset) == -1
         frames.push(tileset.indexOf(imgSrc))
-        controls.scrubberMax(frames.length)
+        controls.scrubberMax(frames.length - 1)
         self.update()
+
+      addSequence: (sequence) ->
+        for frame in sequence
+          self.addFrame(frame)
+
+      createSequence: (sequence) ->
+        sequences.push(sequence)
 
       currentFrameIndex: (val) ->
         if val?

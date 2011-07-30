@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 01:11:37 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 01:33:55 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -28,7 +28,7 @@
       };
       updateFrame = function() {
         self.update();
-        scrubber.val = (scrubber.val + 1) % scrubber.max;
+        scrubber.val = (scrubber.val + 1) % (scrubber.max + 1);
         return animation.currentFrameIndex(scrubber.val);
       };
       changePlayIcon = function(icon) {
@@ -116,8 +116,20 @@
             tileset.push(imgSrc);
           }
           frames.push(tileset.indexOf(imgSrc));
-          controls.scrubberMax(frames.length);
+          controls.scrubberMax(frames.length - 1);
           return self.update();
+        },
+        addSequence: function(sequence) {
+          var frame, _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = sequence.length; _i < _len; _i++) {
+            frame = sequence[_i];
+            _results.push(self.addFrame(frame));
+          }
+          return _results;
+        },
+        createSequence: function(sequence) {
+          return sequences.push(sequence);
         },
         currentFrameIndex: function(val) {
           if (val != null) {
