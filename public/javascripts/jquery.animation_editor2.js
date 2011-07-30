@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 01:33:55 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 02:12:39 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -96,7 +96,7 @@
       return self;
     };
     Animation = function(name) {
-      var currentFrameIndex, frames, self, sequences, tileset, updateSelected;
+      var currentFrameIndex, frames, self, sequences, tileset, updateSelected, updateSequence;
       tileset = [];
       sequences = [];
       frames = [];
@@ -104,11 +104,39 @@
       name || (name = "Animation " + animationNumber);
       animationNumber += 1;
       updateSelected = function(val) {
+        var player;
         $('.frame_sprites .sprite_container').removeClass('current');
         if (val !== -1) {
           $('.frame_sprites .sprite_container').eq(val).addClass('current');
         }
-        return $('.player img').attr('src', tileset[currentFrameIndex]);
+        player = $('.player img');
+        if (val === -1) {
+          return player.attr('src', tileset[0]);
+        } else {
+          return player.attr('src', tileset[currentFrameIndex]);
+        }
+      };
+      updateSequence = function() {
+        var array, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
+        sequencesEl = $('.sequences');
+        sequencesEl.children().remove();
+        _results = [];
+        for (_i = 0, _len = sequences.length; _i < _len; _i++) {
+          array = sequences[_i];
+          _results.push((function() {
+            var _j, _len2, _results2;
+            _results2 = [];
+            for (_j = 0, _len2 = array.length; _j < _len2; _j++) {
+              spriteIndex = array[_j];
+              spriteSrc = tileset[spriteIndex];
+              _results2.push(spriteTemplate.tmpl({
+                src: spriteSrc
+              }).appendTo(sequencesEl));
+            }
+            return _results2;
+          })());
+        }
+        return _results;
       };
       self = {
         addFrame: function(imgSrc) {
@@ -128,8 +156,9 @@
           }
           return _results;
         },
-        createSequence: function(sequence) {
-          return sequences.push(sequence);
+        createSequence: function() {
+          sequences.push(frames);
+          return updateSequence();
         },
         currentFrameIndex: function(val) {
           if (val != null) {
@@ -201,6 +230,9 @@
       var imgSrc;
       imgSrc = $(this).find('img').attr('src');
       return animation.addFrame(imgSrc);
+    });
+    $('.save_sequence').click(function() {
+      return animation.createSequence();
     });
     return $('.fps input').change(function() {
       var newValue;

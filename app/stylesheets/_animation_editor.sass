@@ -93,15 +93,24 @@ body#fullscreen > .content
         +box-shadow(none)
         height: 150px
 
+        h3
+          display: inline-block
+          margin-bottom: 0
+          margin-top: 0
+
+        button
+          margin-bottom: 0
+          margin-top: 0
+
         .frame_sprites
           .sprite_container
-            border: 2px solid transparent
+            border: 1px solid transparent
             display: inline-block
             padding: 2px
 
             &.current
               background-color: #FEF7CB
-              border: 2px solid #FFE475
+              border: 1px solid #FFE475
 
           .sprite
             +bounds(85px)

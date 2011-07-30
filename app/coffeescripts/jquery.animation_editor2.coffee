@@ -100,7 +100,23 @@ $.fn.animationEditor = (options) ->
     updateSelected = (val) ->
       $('.frame_sprites .sprite_container').removeClass('current')
       $('.frame_sprites .sprite_container').eq(val).addClass('current') unless val == -1
-      $('.player img').attr('src', tileset[currentFrameIndex])
+
+      player = $('.player img')
+
+      if val == -1
+        player.attr('src', tileset[0])
+      else
+        player.attr('src', tileset[currentFrameIndex])
+
+    updateSequence = ->
+      sequencesEl = $('.sequences')
+
+      sequencesEl.children().remove()
+
+      for array in sequences
+        for spriteIndex in array
+          spriteSrc = tileset[spriteIndex]
+          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequencesEl)
 
     self =
       addFrame: (imgSrc) ->
@@ -113,8 +129,9 @@ $.fn.animationEditor = (options) ->
         for frame in sequence
           self.addFrame(frame)
 
-      createSequence: (sequence) ->
-        sequences.push(sequence)
+      createSequence: ->
+        sequences.push(frames)
+        updateSequence()
 
       currentFrameIndex: (val) ->
         if val?
@@ -192,6 +209,9 @@ $.fn.animationEditor = (options) ->
     imgSrc = $(this).find('img').attr('src')
 
     animation.addFrame(imgSrc)
+
+  $('.save_sequence').click ->
+    animation.createSequence()
 
   $('.fps input').change ->
     newValue = $(this).val()
