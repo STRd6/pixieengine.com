@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 00:54:02 GMT from
+/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 01:11:37 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -106,8 +106,9 @@
       updateSelected = function(val) {
         $('.frame_sprites .sprite_container').removeClass('current');
         if (val !== -1) {
-          return $('.frame_sprites .sprite_container').eq(val).addClass('current');
+          $('.frame_sprites .sprite_container').eq(val).addClass('current');
         }
+        return $('.player img').attr('src', tileset[currentFrameIndex]);
       };
       self = {
         addFrame: function(imgSrc) {
@@ -176,7 +177,10 @@
       }
     });
     $('.scrubber').change(function() {
-      return controls.scrubber($(this).val());
+      var newValue;
+      newValue = $(this).val();
+      controls.scrubber(newValue);
+      return animation.currentFrameIndex(newValue);
     });
     $('.stop').mousedown(function() {
       return controls.stop();

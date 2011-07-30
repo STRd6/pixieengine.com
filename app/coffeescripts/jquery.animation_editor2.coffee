@@ -100,6 +100,7 @@ $.fn.animationEditor = (options) ->
     updateSelected = (val) ->
       $('.frame_sprites .sprite_container').removeClass('current')
       $('.frame_sprites .sprite_container').eq(val).addClass('current') unless val == -1
+      $('.player img').attr('src', tileset[currentFrameIndex])
 
     self =
       addFrame: (imgSrc) ->
@@ -173,7 +174,10 @@ $.fn.animationEditor = (options) ->
       controls.play()
 
   $('.scrubber').change ->
-    controls.scrubber($(this).val())
+    newValue = $(this).val()
+
+    controls.scrubber(newValue)
+    animation.currentFrameIndex(newValue)
 
   $('.stop').mousedown -> controls.stop()
 
