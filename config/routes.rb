@@ -96,6 +96,7 @@ PixieStrd6Com::Application.routes.draw do
 
   match 'about' => "home#about", :as => :about
   match 'jukebox' => "home#jukebox"
+  match 'frost' => "home#frost", :as => :frost
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey
 

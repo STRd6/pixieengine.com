@@ -1,0 +1,34 @@
+%canvas.canvas(width=640 height=480)
+
+:coffeescript
+  Block = (I) ->
+    $.reverseMerge I,
+      color: "#F00"
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+
+    I.__proto__ = Block::
+
+    return I
+
+  Block:: =
+    draw: (canvas) ->
+      canvas.fillColor "#F00"
+      canvas.fillRect(
+        this.x * BLOCK_SIZE,
+        this.y * BLOCK_SIZE,
+        this.width * BLOCK_SIZE,
+        this.height * BLOCK_SIZE
+      )
+
+  BLOCK_SIZE = 16
+
+  canvas = $("canvas.canvas").powerCanvas()
+
+  block = Block
+    x: 6
+    y: 4
+
+  block.draw(canvas)
