@@ -27,8 +27,9 @@ $.fn.animationEditor = (options) ->
 
     updateFrame = ->
       self.update()
+
       scrubber.val = (scrubber.val + 1) % (scrubber.max + 1)
-      animation.currentFrameIndex(scrubber.val)
+      currentAnimation.currentFrameIndex(scrubber.val)
 
     changePlayIcon = (icon) ->
       el = $('.play')
@@ -80,7 +81,7 @@ $.fn.animationEditor = (options) ->
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
-        animation.currentFrameIndex(-1)
+        currentAnimation.currentFrameIndex(-1)
 
       update: ->
         scrubberEl.val(scrubber.val)
@@ -88,33 +89,35 @@ $.fn.animationEditor = (options) ->
 
     return self
 
-  Animation = (name) ->
+  Animation = ->
     tileset = []
     sequences = []
     frames = []
     currentFrameIndex = 0
 
-    name ||= "Animation #{animationNumber}"
+    name = "Animation #{animationNumber}"
     animationNumber += 1
 
-    updateSelected = (val) ->
+    updateSelected = (frameIndex) ->
+      tilesetIndex = frames[frameIndex]
+
       $('.frame_sprites .sprite_container').removeClass('current')
-      $('.frame_sprites .sprite_container').eq(val).addClass('current') unless val == -1
 
       player = $('.player img')
 
-      if val == -1
+      if frameIndex == -1
         player.attr('src', tileset[0])
       else
-        player.attr('src', tileset[currentFrameIndex])
+        player.attr('src', tileset[tilesetIndex])
+        $('.frame_sprites .sprite_container').eq(frameIndex).addClass('current')
 
     updateSequence = ->
       sequencesEl = $('.sequences')
-
       sequencesEl.children().remove()
 
       for array in sequences
         sequence = $('<div class="sequence"></div>').appendTo(sequencesEl)
+
         for spriteIndex in array
           spriteSrc = tileset[spriteIndex]
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
@@ -157,18 +160,18 @@ $.fn.animationEditor = (options) ->
   editorTemplate.tmpl().appendTo(animationEditor)
 
   controls = Controls()
-  animation = Animation()
-
-  animations = [animation]
+  currentAnimation = Animation()
+  animations = [currentAnimation]
 
   updateUI = ->
-    sprites = $('.sprites')
+    animationsEl = $('.animations')
+    animationsEl.children().remove()
+
+    spritesEl = $('.sprites')
+    spritesEl.children().remove()
 
     for animation in animations
-      animations = $('.animations')
-
-      animations.children().remove()
-      animationTemplate.tmpl(animation.name).appendTo(animations)
+      animationTemplate.tmpl(name: animation.name).appendTo(animationsEl)
 
     spritesSrc = [
       "http://dev.pixie.strd6.com/sprites/323/original.png"
@@ -190,7 +193,7 @@ $.fn.animationEditor = (options) ->
     ]
 
     for src in spritesSrc
-      spriteTemplate.tmpl(src: src).appendTo(sprites)
+      spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
   updateUI()
 
@@ -204,23 +207,27 @@ $.fn.animationEditor = (options) ->
     newValue = $(this).val()
 
     controls.scrubber(newValue)
-    animation.currentFrameIndex(newValue)
+    currentAnimation.currentFrameIndex(newValue)
 
   $('.stop').mousedown -> controls.stop()
+
+  $('.new_animation').mousedown ->
+    animations.push(Animation())
+    currentAnimation = animations.last()
+    updateUI()
 
   $('.sprites .sprite_container').mousedown ->
     imgSrc = $(this).find('img').attr('src')
 
-    animation.addFrame(imgSrc)
+    currentAnimation.addFrame(imgSrc)
 
   $('.sequence').live
     mousedown: ->
       index = $(this).index()
-
-      animation.addSequenceToFrames(index)
+      currentAnimation.addSequenceToFrames(index)
 
   $('.save_sequence').click ->
-    animation.createSequence()
+    currentAnimation.createSequence()
 
   $('.fps input').change ->
     newValue = $(this).val()

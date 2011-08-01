@@ -15,24 +15,26 @@
 
       %nav.left
         .background_color
-          %p Sprites
+          %h4 Sprites
           .sprites
-          %p Sequences
+          %h4 Sequences
           .sequences
 
       %nav.right
         .background_color
-          %h3 Animations
+          %h3.inline Animations
+          %button.new_animation New
           .animations
 
       %nav.module.bottom
         %h3 Frames
         %button.save_sequence Save as Sequence
-        %button.save_animation Save as Animation
+        %button.save_animation Save as State
         .frame_sprites
 
   %script.animation.template(type="text/x-jQuery-tmpl")
-    .animation ${name}
+    %h4 ${name}
+    .animation
 
   %script.sprite.template(type="text/x-jQuery-tmpl")
     .sprite_container
