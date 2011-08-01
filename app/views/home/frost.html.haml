@@ -10,87 +10,119 @@
         top: 0
 
 
-%canvas.ui(width=640 height=480)
 %canvas.canvas(width=640 height=480)
+%canvas.ui(width=640 height=480)
 
 :coffeescript
+  Sprite = (image, sourceX, sourceY, width, height) ->
+    sourceX ||= 0
+    sourceY ||= 0
+    width ||= image.width
+    height ||= image.height
+
+    draw: (canvas, x, y) ->
+      canvas.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        width,
+        height,
+        x,
+        y,
+        width,
+        height
+      )
+
+    width: width
+    height: height
+
+  $("body").dropImageReader
+    callback: (file, event) ->
+      img = new Image()
+
+      img.onload = ->
+        addObject Sprite(this)
+
+      img.src = event.target.result
+
+  DisplayObject = (I) ->
+    $.reverseMerge I,
+      transform: Matrix()
+
+    self = Core(I).extend
+      draw: (canvas) ->
+        if I.sprite
+          canvas.withTransform I.transform, (canvas) ->
+            I.sprite.draw(canvas, 0, 0)
+
+      drawOutline: (canvas) ->
+        canvas.withTransform I.transform, (canvas) ->
+          canvas.strokeRect(0, 0, I.width, I.height)
+
+      pointWithin: (point) ->
+        p = I.transform.inverse().transformPoint(point)
+
+        return (0 <= p.x <= I.width) && (0 <= p.y <= I.height)
+
+      move: (delta) ->
+        I.transform = I.transform.concat(Matrix.translation(delta.x, delta.y))
+
+    self.attrAccessor "transform"
+
+    self
+
+  objects = []
+
+  addObject = (sprite) ->
+    objects.push DisplayObject
+      height: sprite.height
+      sprite: sprite
+      width: sprite.width
+
+  refreshCanvas = ->
+    canvas.clear()
+    objects.invoke "draw", canvas
+
   uiElement = $("canvas.ui")
   ui = uiElement.powerCanvas()
 
   canvas = $("canvas.canvas").powerCanvas()
 
-  blocks = {}
-
-  Block = (I) ->
-    $.reverseMerge I,
-      color: "#F00"
-      x: 0
-      y: 0
-      width: 1
-      height: 1
-
-    I.__proto__ = Block::
-
-    return I
-
-  Block:: =
-    draw: (canvas) ->
-      canvas.fillColor "#F00"
-      canvas.fillRect(
-        this.x * BLOCK_SIZE,
-        this.y * BLOCK_SIZE,
-        this.width * BLOCK_SIZE,
-        this.height * BLOCK_SIZE
-      )
-
-    set: ->
-      locStr = "\#{this.x}x\#{this.y}"
-
-      blocks[locStr] = this
-
-      this.draw(canvas)
-
-  BLOCK_SIZE = 16
-
-  Block
-    x: 6
-    y: 4
-  .set()
-
   eventToLocal = (event) ->
     offset = uiElement.offset()
 
-    local =
-      y: (event.pageY - offset.top).snap(BLOCK_SIZE)
-      x: (event.pageX - offset.left).snap(BLOCK_SIZE)
+    Point(
+      event.pageX - offset.left,
+      event.pageY - offset.top
+    )
 
-  paint = (e) ->
-    local = eventToLocal(e)
-
-    x = local.x / BLOCK_SIZE
-    y = local.y / BLOCK_SIZE
-
-    Block
-      x: x
-      y: y
-    .set()
-
-  active = false
+  activeObject = null
+  previousMousePosition = Point(0, 0)
 
   $(document).bind "mousemove", (e) ->
     local = eventToLocal(e)
 
     ui.clear()
-    ui.strokeColor "#080"
-    ui.strokeRect(local.x, local.y, BLOCK_SIZE, BLOCK_SIZE)
+    ui.strokeColor "rgba(0, 0, 0, 0.25)"
+    ui.fillColor "rgba(255, 0, 0, 0.25)"
 
-    if active
-      paint(e)
+    objects.each (object) ->
+      if object.pointWithin(local)
+        object.drawOutline(ui)
+
+    if activeObject
+      activeObject.move(local.subtract(previousMousePosition))
+
+    previousMousePosition = local
 
   $(document).bind "mousedown", (e) ->
-    active = true
+    local = eventToLocal(e)
 
-    paint(e)
+    activeObject = objects.select (object) ->
+      object.pointWithin(local)
+    .first()
 
   $(document).bind "mouseup", (e) ->
-    active = false
+    activeObject = null
+
+  setInterval refreshCanvas, 1000 / 24
