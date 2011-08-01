@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 13 Jul 2011 18:01:28 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 01 Aug 2011 07:45:15 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -75,8 +75,10 @@
       $(this).toggleClass('on');
       return setLightTheme($(this).hasClass('on'));
     });
-    if (active = getVal('light') || $("body").is(".light")) {
-      setLightTheme(active);
+    if ((active = getVal('light')) === false) {
+      setLightTheme(false);
+    } else if ($('html').hasClass('light')) {
+      $('.bulb').toggleClass("on", true);
     }
     $("#flashes .notice").each(function() {
       return notify($(this).html());

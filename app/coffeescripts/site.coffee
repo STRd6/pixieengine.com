@@ -66,8 +66,10 @@ $ ->
 
     setLightTheme $(this).hasClass('on')
 
-  if active = (getVal('light') || $("body").is(".light"))
-    setLightTheme active
+  if (active = getVal('light')) == false
+    setLightTheme false
+  else if $('html').hasClass 'light'
+    $('.bulb').toggleClass("on", true)
 
   # Display Flash Notice
   $("#flashes .notice").each ->

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-%html
+%html.light
   = render :partial => "shared/head"
 
   - body_id = @fullscreen ? "fullscreen" : nil
-  %body(class=@theme id=body_id)
+  %body(id=body_id)
     = render :partial => "shared/header"
 
     .content
