@@ -1,17 +1,50 @@
+- @fullscreen = true
+
 %style
   :sass
-    body > .content
-      position: relative
+    @import util
 
-    canvas
-      &.ui, &.canvas
+    $bar_top: 20px
+    $margin: 12px
+
+    .viewport
+      & > .canvas
+        +bounds(642px, 482px)
+        +box-sizing(border-box)
+
+        background-color: white
+        border: 1px solid black
+
+      canvas
         left: 0
         position: absolute
         top: 0
 
+    .editor
+      & > .content
+        +box-sizing(border-box)
+        padding-top: $bar_top + $margin
 
-%canvas.canvas(width=640 height=480)
-%canvas.ui(width=640 height=480)
+      .actions
+        left: 0
+        position: absolute
+        top: 0
+
+.editor
+  .content
+    .actions
+      %button.raise Raise
+      %button.lower Lower
+      %button.rotate Rotate
+      %button.grow Grow
+      %button.shrink Shrink
+      %button.transparentize Transparentize
+      %button.opacify Opacify
+      %button.tween Tween
+    .viewport
+      .canvas
+        %canvas.canvas(width=640 height=480)
+        %canvas.ui(width=640 height=480)
 
 :coffeescript
   Sprite = (image, sourceX, sourceY, width, height) ->
@@ -38,34 +71,56 @@
 
   $("body").dropImageReader
     callback: (file, event) ->
-      img = new Image()
+      loadSprite(event.target.result)
 
-      img.onload = ->
-        addObject Sprite(this)
+  loadSprite = (url) ->
+    img = new Image()
 
-      img.src = event.target.result
+    img.onload = ->
+      addObject Sprite(this)
+
+    img.src = url
+
+  loadSprite("http://localhost:3000/images/shadow_logo_small.png")
 
   DisplayObject = (I) ->
     $.reverseMerge I,
+      alpha: 1
       transform: Matrix()
 
     self = Core(I).extend
       draw: (canvas) ->
         if I.sprite
           canvas.withTransform I.transform, (canvas) ->
+            canvas.globalAlpha I.alpha
             I.sprite.draw(canvas, 0, 0)
 
       drawOutline: (canvas) ->
         canvas.withTransform I.transform, (canvas) ->
           canvas.strokeRect(0, 0, I.width, I.height)
 
+      move: (delta) ->
+        I.transform = Matrix.translation(delta.x, delta.y).concat(I.transform)
+
+      opacify: (amount) ->
+        I.alpha = (I.alpha + amount).clamp(0, 1)
+
       pointWithin: (point) ->
         p = I.transform.inverse().transformPoint(point)
 
         return (0 <= p.x <= I.width) && (0 <= p.y <= I.height)
 
-      move: (delta) ->
-        I.transform = I.transform.concat(Matrix.translation(delta.x, delta.y))
+      registrationPoint: ->
+        Point(I.width/2, I.height/2)
+
+      rotate: (angle) ->
+        I.transform = I.transform.concat(Matrix.rotation(angle, self.registrationPoint()))
+
+      scale: (amount) ->
+        I.transform = I.transform.scale(1 + amount, 1 + amount, self.registrationPoint())
+
+      transparentize: (amount) ->
+        I.alpha = (I.alpha - amount).clamp(0, 1)
 
     self.attrAccessor "transform"
 
@@ -79,9 +134,18 @@
       sprite: sprite
       width: sprite.width
 
+  clock = 0
   refreshCanvas = ->
     canvas.clear()
     objects.invoke "draw", canvas
+
+    canvas.strokeColor "rgba(96, 0, 96, 0.75)"
+    activeObject?.drawOutline(canvas)
+
+    if tweenFn
+      activeObject.I.transform = tweenFn((clock % 128) / 128)
+
+    clock += 1
 
   uiElement = $("canvas.ui")
   ui = uiElement.powerCanvas()
@@ -97,32 +161,67 @@
     )
 
   activeObject = null
+  tweenFn = null
+  mousedown = false
   previousMousePosition = Point(0, 0)
 
   $(document).bind "mousemove", (e) ->
     local = eventToLocal(e)
 
-    ui.clear()
-    ui.strokeColor "rgba(0, 0, 0, 0.25)"
-    ui.fillColor "rgba(255, 0, 0, 0.25)"
-
-    objects.each (object) ->
-      if object.pointWithin(local)
-        object.drawOutline(ui)
-
     if activeObject
-      activeObject.move(local.subtract(previousMousePosition))
+      if mousedown
+        activeObject.move(local.subtract(previousMousePosition))
 
     previousMousePosition = local
 
-  $(document).bind "mousedown", (e) ->
+  uiElement.bind "mousedown", (e) ->
     local = eventToLocal(e)
 
     activeObject = objects.select (object) ->
       object.pointWithin(local)
-    .first()
+    .last()
 
-  $(document).bind "mouseup", (e) ->
-    activeObject = null
+    mousedown = true
+
+  uiElement.bind "mouseup", (e) ->
+    mousedown = false
+
+    return
 
   setInterval refreshCanvas, 1000 / 24
+
+  window.generateMatrixTweenFunction = (begin, end) ->
+    return (t) ->
+      params = ["a", "b", "c", "d", "tx", "ty"].map (key) ->
+        (1 - t) * begin[key] + t * end[key]
+
+      Matrix.apply null, params
+
+  $("button.raise").click ->
+    if activeObject
+      objects.remove(activeObject)
+      objects.push(activeObject)
+
+  $("button.lower").click ->
+    if activeObject
+      objects.remove(activeObject)
+      objects.unshift(activeObject)
+
+  $("button.rotate").click ->
+    activeObject?.rotate(Math.TAU / 16)
+
+  $("button.tween").click ->
+    if activeObject
+      tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform)
+
+  $("button.transparentize").click ->
+    activeObject?.transparentize(0.10)
+
+  $("button.opacify").click ->
+    activeObject?.opacify(0.10)
+
+  $("button.grow").click ->
+    activeObject?.scale(0.25)
+
+  $("button.shrink").click ->
+    activeObject?.scale(-0.2)
