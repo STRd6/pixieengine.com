@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sat, 30 Jul 2011 02:12:39 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 01 Aug 2011 06:46:24 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -117,12 +117,13 @@
         }
       };
       updateSequence = function() {
-        var array, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
+        var array, sequence, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
         sequencesEl = $('.sequences');
         sequencesEl.children().remove();
         _results = [];
         for (_i = 0, _len = sequences.length; _i < _len; _i++) {
           array = sequences[_i];
+          sequence = $('<div class="sequence"></div>').appendTo(sequencesEl);
           _results.push((function() {
             var _j, _len2, _results2;
             _results2 = [];
@@ -131,7 +132,7 @@
               spriteSrc = tileset[spriteIndex];
               _results2.push(spriteTemplate.tmpl({
                 src: spriteSrc
-              }).appendTo(sequencesEl));
+              }).appendTo(sequence));
             }
             return _results2;
           })());
@@ -147,18 +148,21 @@
           controls.scrubberMax(frames.length - 1);
           return self.update();
         },
-        addSequence: function(sequence) {
-          var frame, _i, _len, _results;
+        addSequenceToFrames: function(index) {
+          var imageIndex, _i, _len, _ref, _results;
+          _ref = sequences[index];
           _results = [];
-          for (_i = 0, _len = sequence.length; _i < _len; _i++) {
-            frame = sequence[_i];
-            _results.push(self.addFrame(frame));
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            imageIndex = _ref[_i];
+            _results.push(self.addFrame(tileset[imageIndex]));
           }
           return _results;
         },
         createSequence: function() {
-          sequences.push(frames);
-          return updateSequence();
+          sequences.push(frames.copy());
+          updateSequence();
+          frames.clear();
+          return self.update();
         },
         currentFrameIndex: function(val) {
           if (val != null) {
@@ -230,6 +234,13 @@
       var imgSrc;
       imgSrc = $(this).find('img').attr('src');
       return animation.addFrame(imgSrc);
+    });
+    $('.sequence').live({
+      mousedown: function() {
+        var index;
+        index = $(this).index();
+        return animation.addSequenceToFrames(index);
+      }
     });
     $('.save_sequence').click(function() {
       return animation.createSequence();

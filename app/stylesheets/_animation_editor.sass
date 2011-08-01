@@ -76,6 +76,30 @@ body#fullscreen > .content
               max-height: 50px
               max-width: 50px
 
+        .sequence
+          +bounds(50px)
+          display: inline-block
+          position: relative
+
+          .sprite_container
+            position: absolute
+
+          &:hover
+            display: inline-block
+            z-index: 2
+            -webkit-transform: translate(0, -3px) scale(1.05)
+
+          .sprite_container
+            &:first-child
+              display: inline-block
+              z-index: 3
+              -webkit-transform: rotate(-6deg) translate(-5px, -2px) scale(1.05)
+
+            &:last-child
+              display: inline-block
+              z-index: 1
+              -webkit-transform: rotate(6deg) translate(5px, -2px) scale(1.05)
+
       nav.left, nav.right
         height: 100%
         width: 220px

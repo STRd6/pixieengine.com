@@ -114,9 +114,10 @@ $.fn.animationEditor = (options) ->
       sequencesEl.children().remove()
 
       for array in sequences
+        sequence = $('<div class="sequence"></div>').appendTo(sequencesEl)
         for spriteIndex in array
           spriteSrc = tileset[spriteIndex]
-          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequencesEl)
+          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
     self =
       addFrame: (imgSrc) ->
@@ -125,13 +126,15 @@ $.fn.animationEditor = (options) ->
         controls.scrubberMax(frames.length - 1)
         self.update()
 
-      addSequence: (sequence) ->
-        for frame in sequence
-          self.addFrame(frame)
+      addSequenceToFrames: (index) ->
+        for imageIndex in sequences[index]
+          self.addFrame(tileset[imageIndex])
 
       createSequence: ->
-        sequences.push(frames)
+        sequences.push(frames.copy())
         updateSequence()
+        frames.clear()
+        self.update()
 
       currentFrameIndex: (val) ->
         if val?
@@ -209,6 +212,12 @@ $.fn.animationEditor = (options) ->
     imgSrc = $(this).find('img').attr('src')
 
     animation.addFrame(imgSrc)
+
+  $('.sequence').live
+    mousedown: ->
+      index = $(this).index()
+
+      animation.addSequenceToFrames(index)
 
   $('.save_sequence').click ->
     animation.createSequence()
