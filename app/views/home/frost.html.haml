@@ -1,6 +1,26 @@
+%style
+  :sass
+    body > .content
+      position: relative
+
+    canvas
+      &.ui, &.canvas
+        left: 0
+        position: absolute
+        top: 0
+
+
+%canvas.ui(width=640 height=480)
 %canvas.canvas(width=640 height=480)
 
 :coffeescript
+  uiElement = $("canvas.ui")
+  ui = uiElement.powerCanvas()
+
+  canvas = $("canvas.canvas").powerCanvas()
+
+  blocks = {}
+
   Block = (I) ->
     $.reverseMerge I,
       color: "#F00"
@@ -23,12 +43,54 @@
         this.height * BLOCK_SIZE
       )
 
+    set: ->
+      locStr = "\#{this.x}x\#{this.y}"
+
+      blocks[locStr] = this
+
+      this.draw(canvas)
+
   BLOCK_SIZE = 16
 
-  canvas = $("canvas.canvas").powerCanvas()
-
-  block = Block
+  Block
     x: 6
     y: 4
+  .set()
 
-  block.draw(canvas)
+  eventToLocal = (event) ->
+    offset = uiElement.offset()
+
+    local =
+      y: (event.pageY - offset.top).snap(BLOCK_SIZE)
+      x: (event.pageX - offset.left).snap(BLOCK_SIZE)
+
+  paint = (e) ->
+    local = eventToLocal(e)
+
+    x = local.x / BLOCK_SIZE
+    y = local.y / BLOCK_SIZE
+
+    Block
+      x: x
+      y: y
+    .set()
+
+  active = false
+
+  $(document).bind "mousemove", (e) ->
+    local = eventToLocal(e)
+
+    ui.clear()
+    ui.strokeColor "#080"
+    ui.strokeRect(local.x, local.y, BLOCK_SIZE, BLOCK_SIZE)
+
+    if active
+      paint(e)
+
+  $(document).bind "mousedown", (e) ->
+    active = true
+
+    paint(e)
+
+  $(document).bind "mouseup", (e) ->
+    active = false
