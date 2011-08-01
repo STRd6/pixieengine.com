@@ -26,7 +26,7 @@ $.fn.animationEditor = (options) ->
       val: fpsEl.val()
 
     updateFrame = ->
-      self.update()
+      update()
 
       scrubber.val = (scrubber.val + 1) % (scrubber.max + 1)
       currentAnimation.currentFrameIndex(scrubber.val)
@@ -40,6 +40,10 @@ $.fn.animationEditor = (options) ->
         el.addClass('pause')
       else
         el.removeClass('pause')
+
+    update = ->
+      scrubberEl.val(scrubber.val)
+      scrubberEl.get(0).max = scrubber.max
 
     self =
       fps: (val) ->
@@ -55,8 +59,9 @@ $.fn.animationEditor = (options) ->
         intervalId = null
 
       play: ->
-        intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
-        changePlayIcon('pause')
+        if currentAnimation.frames.length > 0
+          intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
+          changePlayIcon('pause')
 
       scrubber: (val) ->
         if val?
@@ -77,26 +82,44 @@ $.fn.animationEditor = (options) ->
 
       stop: ->
         scrubber.val = 0
-        self.update()
+        update()
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
         currentAnimation.currentFrameIndex(-1)
 
-      update: ->
-        scrubberEl.val(scrubber.val)
-        scrubberEl.get(0).max = scrubber.max
-
     return self
 
   Animation = ->
-    tileset = []
+    tileset = {}
+
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/323/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/324/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/325/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/326/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/327/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/328/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/329/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/330/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/331/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/332/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/333/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/334/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/335/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/336/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/337/original.png"
+    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/338/original.png"
+
     sequences = []
     frames = []
     currentFrameIndex = 0
 
     name = "Animation #{animationNumber}"
     animationNumber += 1
+
+    findTileIndex = (tileSrc) ->
+      for uuid, src of tileset
+        return uuid if src == tileSrc
 
     updateSelected = (frameIndex) ->
       tilesetIndex = frames[frameIndex]
@@ -122,12 +145,17 @@ $.fn.animationEditor = (options) ->
           spriteSrc = tileset[spriteIndex]
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
+    update = ->
+      $('.frame_sprites').children().remove()
+      for frame_index in frames
+        spriteSrc = tileset[frame_index]
+        spriteTemplate.tmpl(src: spriteSrc).appendTo($('.frame_sprites'))
+
     self =
       addFrame: (imgSrc) ->
-        tileset.push(imgSrc) if $.inArray(imgSrc, tileset) == -1
-        frames.push(tileset.indexOf(imgSrc))
+        frames.push(findTileIndex(imgSrc))
         controls.scrubberMax(frames.length - 1)
-        self.update()
+        update()
 
       addSequenceToFrames: (index) ->
         for imageIndex in sequences[index]
@@ -137,7 +165,7 @@ $.fn.animationEditor = (options) ->
         sequences.push(frames.copy())
         updateSequence()
         frames.clear()
-        self.update()
+        update()
 
       currentFrameIndex: (val) ->
         if val?
@@ -147,13 +175,20 @@ $.fn.animationEditor = (options) ->
         else
           return currentFrameIndex
 
+      frames: frames
+
       name: name
 
-      update: ->
-        $('.frame_sprites').children().remove()
-        for frame_index in frames
-          spriteSrc = tileset[frame_index]
-          spriteTemplate.tmpl(src: spriteSrc).appendTo($('.frame_sprites'))
+      tileset: tileset
+
+      removeFrame: (frameIndex) ->
+        tilesetIndex = frames[frameIndex]
+        frames.splice(frameIndex, 1)
+
+        if $.inArray(tilesetIndex, frames) == -1
+          delete tileset[tilesetIndex]
+
+        update()
 
     return self
 
@@ -173,26 +208,7 @@ $.fn.animationEditor = (options) ->
     for animation in animations
       animationTemplate.tmpl(name: animation.name).appendTo(animationsEl)
 
-    spritesSrc = [
-      "http://dev.pixie.strd6.com/sprites/323/original.png"
-      "http://dev.pixie.strd6.com/sprites/324/original.png"
-      "http://dev.pixie.strd6.com/sprites/325/original.png"
-      "http://dev.pixie.strd6.com/sprites/326/original.png"
-      "http://dev.pixie.strd6.com/sprites/327/original.png"
-      "http://dev.pixie.strd6.com/sprites/328/original.png"
-      "http://dev.pixie.strd6.com/sprites/329/original.png"
-      "http://dev.pixie.strd6.com/sprites/330/original.png"
-      "http://dev.pixie.strd6.com/sprites/331/original.png"
-      "http://dev.pixie.strd6.com/sprites/332/original.png"
-      "http://dev.pixie.strd6.com/sprites/333/original.png"
-      "http://dev.pixie.strd6.com/sprites/334/original.png"
-      "http://dev.pixie.strd6.com/sprites/335/original.png"
-      "http://dev.pixie.strd6.com/sprites/336/original.png"
-      "http://dev.pixie.strd6.com/sprites/337/original.png"
-      "http://dev.pixie.strd6.com/sprites/338/original.png"
-    ]
-
-    for src in spritesSrc
+    for index, src of currentAnimation.tileset
       spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
   updateUI()
@@ -225,6 +241,11 @@ $.fn.animationEditor = (options) ->
     mousedown: ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
+
+  $('.frame_sprites .sprite_container').live
+    mousedown: ->
+      index = $(this).index()
+      currentAnimation.removeFrame(index)
 
   $('.save_sequence').click ->
     currentAnimation.createSequence()
