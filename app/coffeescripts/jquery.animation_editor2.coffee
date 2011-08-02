@@ -177,7 +177,12 @@ $.fn.animationEditor = (options) ->
 
       frames: frames
 
-      name: name
+      name: (val) ->
+        if val?
+          name = val
+          return self
+        else
+          return name
 
       tileset: tileset
 
@@ -205,7 +210,7 @@ $.fn.animationEditor = (options) ->
     spritesEl = $('.sprites')
 
     for animation in animations
-      animationTemplate.tmpl(name: animation.name).appendTo(animationsEl)
+      animationTemplate.tmpl(name: animation.name()).appendTo(animationsEl)
 
     if spritesEl.find('.sprite_container').length == 0
       for index, src of currentAnimation.tileset
@@ -245,6 +250,11 @@ $.fn.animationEditor = (options) ->
     mousedown: ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
+    mouseenter: ->
+      $(this).find('.sprite_container:first-child').addClass('rotate_left')
+      $(this).find('.sprite_container:last-child').addClass('rotate_right')
+    mouseleave: ->
+      $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right')
 
   $('.frame_sprites .sprite_container').live
     mousedown: ->
@@ -259,5 +269,10 @@ $.fn.animationEditor = (options) ->
 
     controls.stop()
     controls.fps(newValue)
+
+  $('input.state_name').live
+    change: ->
+      updatedStateName = $(this).val()
+      currentAnimation.name(updatedStateName)
 
   $('.state_name').liveEdit()

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 06:10:16 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 07:38:25 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -210,7 +210,14 @@
           }
         },
         frames: frames,
-        name: name,
+        name: function(val) {
+          if (val != null) {
+            name = val;
+            return self;
+          } else {
+            return name;
+          }
+        },
         tileset: tileset,
         removeFrame: function(frameIndex) {
           var tilesetIndex;
@@ -236,7 +243,7 @@
       for (_i = 0, _len = animations.length; _i < _len; _i++) {
         animation = animations[_i];
         animationTemplate.tmpl({
-          name: animation.name
+          name: animation.name()
         }).appendTo(animationsEl);
       }
       if (spritesEl.find('.sprite_container').length === 0) {
@@ -285,6 +292,13 @@
         var index;
         index = $(this).index();
         return currentAnimation.addSequenceToFrames(index);
+      },
+      mouseenter: function() {
+        $(this).find('.sprite_container:first-child').addClass('rotate_left');
+        return $(this).find('.sprite_container:last-child').addClass('rotate_right');
+      },
+      mouseleave: function() {
+        return $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right');
       }
     });
     $('.frame_sprites .sprite_container').live({
@@ -302,6 +316,13 @@
       newValue = $(this).val();
       controls.stop();
       return controls.fps(newValue);
+    });
+    $('input.state_name').live({
+      change: function() {
+        var updatedStateName;
+        updatedStateName = $(this).val();
+        return currentAnimation.name(updatedStateName);
+      }
     });
     return $('.state_name').liveEdit();
   };

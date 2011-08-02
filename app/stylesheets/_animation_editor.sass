@@ -18,9 +18,16 @@ body#fullscreen > .content
           +bounds(100%)
 
           .player
-            +contents-centered
-
             height: 100%
+            position: relative
+
+            img
+              bottom: 0
+              left: 0
+              margin: auto
+              position: absolute
+              right: 0
+              top: 0
 
           .controls
             +bounds(100%, 30px)
@@ -29,6 +36,7 @@ body#fullscreen > .content
 
             background-color: #ccc
             bottom: 0
+            height: 100%
             padding: 2px
             position: absolute
 
@@ -44,17 +52,22 @@ body#fullscreen > .content
               background-image: url(/images/stop.png)
               display: inline-block
 
-            .scrubber
-              +bounds(83%, 100%)
+            .scrubber_container
+              +bounds(100%)
+              +box-sizing(border-box)
 
-              margin-left: 5px
-              margin-right: 5px
+              position: absolute
+              bottom: 0
+              left: 60px
+              padding-right: 135px
+
+            .scrubber
+              +bounds(100%)
 
             .fps
-              margin-top: 4px
+              bottom: 5px
               position: absolute
               right: 0
-              vertical-align: top
 
               input
                 vertical-align: top
@@ -77,28 +90,21 @@ body#fullscreen > .content
               max-width: 50px
 
         .sequence
-          +bounds(50px)
           display: inline-block
+          min-height: 40px
+          min-width: 40px
           position: relative
 
           .sprite_container
+            +transition
+
             position: absolute
 
-          &:hover
-            display: inline-block
-            z-index: 2
-            -webkit-transform: translate(0, -3px) scale(1.05)
+            &.rotate_right
+              +rotate(15deg, 10px, -3px)
 
-          .sprite_container
-            &:first-child
-              display: inline-block
-              z-index: 3
-              -webkit-transform: rotate(-6deg) translate(-5px, -2px) scale(1.05)
-
-            &:last-child
-              display: inline-block
-              z-index: 1
-              -webkit-transform: rotate(6deg) translate(5px, -2px) scale(1.05)
+            &.rotate_left
+              +rotate(-15deg, -10px, -3px)
 
       nav.left, nav.right
         height: 100%
