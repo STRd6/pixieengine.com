@@ -16,6 +16,8 @@ class ProjectsController < ApplicationController
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
+    @modify_remote_origin = true
+
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
       redirect_to subscribe_path

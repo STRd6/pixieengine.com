@@ -20,9 +20,10 @@
     = link_to_function "Advanced Options", "$(this).parent().next().toggle()"
 
   .advanced_options(style="display:none;")
-    %label
-      %h3 Remote Origin
-      = form.text_field :remote_origin
+    - if @modify_remote_origin
+      %label
+        %h3 Remote Origin
+        = form.text_field :remote_origin
 
     %label
       %h3 Import .zip
