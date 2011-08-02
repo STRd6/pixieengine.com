@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 21:33:26 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 22:52:28 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -13,24 +13,52 @@
     spriteTemplate = templates.find('.sprite');
     frameTemplate = templates.find('.frame');
     Controls = function() {
-      var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, update, updateFrame;
+      var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, updateFrame;
       intervalId = null;
+      fpsEl = animationEditor.find('.fps input');
       scrubberEl = animationEditor.find('.scrubber');
       scrubber = {
-        min: scrubberEl.get(0).min,
-        max: scrubberEl.get(0).max,
-        val: scrubberEl.val()
+        min: function(newMin) {
+          if (newMin != null) {
+            scrubberEl.get(0).min = newMin;
+            return scrubber;
+          } else {
+            return scrubberEl.get(0).min;
+          }
+        },
+        max: function(newMax) {
+          if (newMax != null) {
+            scrubberEl.get(0).max = newMax;
+            return scrubber;
+          } else {
+            return scrubberEl.get(0).max;
+          }
+        },
+        val: function(newValue) {
+          if (newValue != null) {
+            scrubberEl.val(newValue);
+            return scrubber;
+          } else {
+            return scrubberEl.val();
+          }
+        }
       };
-      fpsEl = animationEditor.find('.fps input');
       fps = {
         min: fpsEl.get(0).min,
         max: fpsEl.get(0).max,
-        val: fpsEl.val()
+        val: function(newValue) {
+          if (newValue != null) {
+            fpsEl.val(newValue);
+            return fps;
+          } else {
+            return fpsEl.val();
+          }
+        }
       };
       updateFrame = function() {
-        update();
-        scrubber.val = (scrubber.val + 1) % (scrubber.max + 1);
-        return currentAnimation.currentFrameIndex(scrubber.val);
+        animationEditor.trigger('updateFrames');
+        scrubber.val((parseInt(scrubber.val()) + 1) % (parseInt(scrubber.max()) + 1));
+        return currentAnimation.currentFrameIndex(scrubber.val());
       };
       changePlayIcon = function(icon) {
         var el;
@@ -42,18 +70,9 @@
           return el.removeClass('pause');
         }
       };
-      update = function() {
-        scrubberEl.val(scrubber.val);
-        return scrubberEl.get(0).max = scrubber.max;
-      };
       self = {
         fps: function(val) {
-          if (val != null) {
-            fps.val = val;
-            return self;
-          } else {
-            return fps.val;
-          }
+          return fps.val(val);
         },
         pause: function() {
           changePlayIcon('play');
@@ -63,33 +82,22 @@
         play: function() {
           if (currentAnimation.frames.length > 0) {
             if (!intervalId) {
-              intervalId = setInterval(updateFrame, 1000 / fps.val);
+              intervalId = setInterval(updateFrame, 1000 / fps.val());
             }
             return changePlayIcon('pause');
           }
         },
         scrubber: function(val) {
-          if (val != null) {
-            scrubber.val = val;
-            return self;
-          } else {
-            return scrubber.val;
-          }
+          return scrubber.val(val);
         },
         scrubberMax: function(val) {
-          if (val != null) {
-            scrubber.max = val;
-            return self;
-          } else {
-            return scrubber.max;
-          }
+          return scrubber.max(val);
         },
         scrubberPosition: function() {
-          return "" + scrubber.val + " / " + scrubber.max;
+          return "" + (scrubber.val()) + " / " + scrubber.max;
         },
         stop: function() {
-          scrubber.val = 0;
-          update();
+          scrubber.val(0);
           clearInterval(intervalId);
           intervalId = null;
           changePlayIcon('play');
@@ -99,24 +107,11 @@
       return self;
     };
     Animation = function() {
-      var currentFrameIndex, findTileIndex, frames, name, self, sequences, tileset, update, updateSequence;
+      var currentFrameIndex, findTileIndex, frames, name, self, sequences, tileset;
       tileset = {};
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/323/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/324/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/325/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/326/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/327/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/328/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/329/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/330/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/331/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/332/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/333/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/334/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/335/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/336/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/337/original.png";
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/338/original.png";
+      [323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338].each(function(n) {
+        return tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/" + n + "/original.png";
+      });
       sequences = [];
       frames = [];
       currentFrameIndex = 0;
@@ -131,7 +126,7 @@
           }
         }
       };
-      updateSequence = function() {
+      animationEditor.bind('updateSequence', function() {
         var array, sequence, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
         sequencesEl = animationEditor.find('.sequences');
         sequencesEl.children().remove();
@@ -153,8 +148,8 @@
           })());
         }
         return _results;
-      };
-      update = function() {
+      });
+      animationEditor.bind('updateFrames', function() {
         var frame_index, spriteSrc, _i, _len, _results;
         animationEditor.find('.frame_sprites').children().remove();
         _results = [];
@@ -166,12 +161,12 @@
           }).appendTo(animationEditor.find('.frame_sprites')));
         }
         return _results;
-      };
+      });
       self = {
         addFrame: function(imgSrc) {
           frames.push(findTileIndex(imgSrc));
           controls.scrubberMax(frames.length - 1);
-          return update();
+          return animationEditor.trigger('updateFrames');
         },
         addSequenceToFrames: function(index) {
           var imageIndex, _i, _len, _ref, _results;
@@ -193,9 +188,9 @@
         },
         createSequence: function() {
           sequences.push(frames.copy());
-          updateSequence();
+          animationEditor.trigger('updateSequence');
           frames.clear();
-          return update();
+          return animationEditor.trigger('updateFrames');
         },
         currentFrameIndex: function(val) {
           if (val != null) {
@@ -223,7 +218,7 @@
           if ($.inArray(tilesetIndex, frames) === -1) {
             delete tileset[tilesetIndex];
           }
-          return update();
+          return animationEditor.trigger('updateFrames');
         },
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
@@ -337,12 +332,16 @@
       }
     });
     animationEditor.find('.state_name').liveEdit();
-    return animationEditor.dropImageReader(function(file, event) {
+    animationEditor.dropImageReader(function(file, event) {
       var src;
       if (event.target.readyState === FileReader.DONE) {
         src = event.target.result;
         return currentAnimation.addTile(src);
       }
+    });
+    return $(document).bind('keydown', 'del backspace', function(e) {
+      e.preventDefault();
+      return currentAnimation.removeFrame(currentAnimation.currentFrameIndex());
     });
   };
 }).call(this);

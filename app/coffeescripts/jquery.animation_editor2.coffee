@@ -12,25 +12,44 @@ $.fn.animationEditor = (options) ->
   Controls = ->
     intervalId = null
 
+    fpsEl = animationEditor.find('.fps input')
     scrubberEl = animationEditor.find('.scrubber')
 
     scrubber =
-      min: scrubberEl.get(0).min
-      max: scrubberEl.get(0).max
-      val: scrubberEl.val()
-
-    fpsEl = animationEditor.find('.fps input')
+      min: (newMin) ->
+        if newMin?
+          scrubberEl.get(0).min = newMin
+          return scrubber
+        else
+          return scrubberEl.get(0).min
+      max: (newMax) ->
+        if newMax?
+          scrubberEl.get(0).max = newMax
+          return scrubber
+        else
+          return scrubberEl.get(0).max
+      val: (newValue) ->
+        if newValue?
+          scrubberEl.val(newValue)
+          return scrubber
+        else
+          scrubberEl.val()
 
     fps =
       min: fpsEl.get(0).min
       max: fpsEl.get(0).max
-      val: fpsEl.val()
+      val: (newValue) ->
+        if newValue?
+          fpsEl.val(newValue)
+          return fps
+        else
+          fpsEl.val()
 
     updateFrame = ->
-      update()
+      animationEditor.trigger 'updateFrames'
 
-      scrubber.val = (scrubber.val + 1) % (scrubber.max + 1)
-      currentAnimation.currentFrameIndex(scrubber.val)
+      scrubber.val((parseInt(scrubber.val()) + 1) % (parseInt(scrubber.max()) + 1))
+      currentAnimation.currentFrameIndex(scrubber.val())
 
     changePlayIcon = (icon) ->
       el = $('.play')
@@ -42,17 +61,9 @@ $.fn.animationEditor = (options) ->
       else
         el.removeClass('pause')
 
-    update = ->
-      scrubberEl.val(scrubber.val)
-      scrubberEl.get(0).max = scrubber.max
-
     self =
       fps: (val) ->
-        if val?
-          fps.val = val
-          return self
-        else
-          return fps.val
+        fps.val(val)
 
       pause: ->
         changePlayIcon('play')
@@ -61,29 +72,20 @@ $.fn.animationEditor = (options) ->
 
       play: ->
         if currentAnimation.frames.length > 0
-          intervalId = setInterval(updateFrame, 1000 / fps.val) unless intervalId
+          intervalId = setInterval(updateFrame, 1000 / fps.val()) unless intervalId
           changePlayIcon('pause')
 
       scrubber: (val) ->
-        if val?
-          scrubber.val = val
-          return self
-        else
-          return scrubber.val
+        scrubber.val(val)
 
       scrubberMax: (val) ->
-        if val?
-          scrubber.max = val
-          return self
-        else
-          return scrubber.max
+        scrubber.max(val)
 
       scrubberPosition: ->
-        "#{scrubber.val} / #{scrubber.max}"
+        "#{scrubber.val()} / #{scrubber.max}"
 
       stop: ->
-        scrubber.val = 0
-        update()
+        scrubber.val(0)
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
@@ -94,22 +96,8 @@ $.fn.animationEditor = (options) ->
   Animation = ->
     tileset = {}
 
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/323/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/324/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/325/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/326/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/327/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/328/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/329/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/330/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/331/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/332/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/333/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/334/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/335/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/336/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/337/original.png"
-    tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/338/original.png"
+    [323..338].each (n) ->
+      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/#{n}/original.png"
 
     sequences = []
     frames = []
@@ -122,7 +110,7 @@ $.fn.animationEditor = (options) ->
       for uuid, src of tileset
         return uuid if src == tileSrc
 
-    updateSequence = ->
+    animationEditor.bind 'updateSequence', ->
       sequencesEl = animationEditor.find('.sequences')
       sequencesEl.children().remove()
 
@@ -133,7 +121,7 @@ $.fn.animationEditor = (options) ->
           spriteSrc = tileset[spriteIndex]
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
-    update = ->
+    animationEditor.bind 'updateFrames', ->
       animationEditor.find('.frame_sprites').children().remove()
       for frame_index in frames
         spriteSrc = tileset[frame_index]
@@ -143,7 +131,7 @@ $.fn.animationEditor = (options) ->
       addFrame: (imgSrc) ->
         frames.push(findTileIndex(imgSrc))
         controls.scrubberMax(frames.length - 1)
-        update()
+        animationEditor.trigger 'updateFrames'
 
       addSequenceToFrames: (index) ->
         for imageIndex in sequences[index]
@@ -156,9 +144,9 @@ $.fn.animationEditor = (options) ->
 
       createSequence: ->
         sequences.push(frames.copy())
-        updateSequence()
+        animationEditor.trigger 'updateSequence'
         frames.clear()
-        update()
+        animationEditor.trigger 'updateFrames'
 
       currentFrameIndex: (val) ->
         if val?
@@ -186,7 +174,7 @@ $.fn.animationEditor = (options) ->
         if $.inArray(tilesetIndex, frames) == -1
           delete tileset[tilesetIndex]
 
-        update()
+        animationEditor.trigger 'updateFrames'
 
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
@@ -290,3 +278,7 @@ $.fn.animationEditor = (options) ->
       src = event.target.result
 
       currentAnimation.addTile(src)
+
+  $(document).bind 'keydown', 'del backspace', (e) ->
+    e.preventDefault()
+    currentAnimation.removeFrame(currentAnimation.currentFrameIndex())
