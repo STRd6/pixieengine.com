@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 07:38:25 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 20:08:48 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -194,6 +194,14 @@
           }
           return _results;
         },
+        addTile: function(src) {
+          var spritesEl;
+          tileset[Math.uuid(32, 16)] = src;
+          spritesEl = $('.sprites');
+          return spriteTemplate.tmpl({
+            src: src
+          }).appendTo(spritesEl);
+        },
         createSequence: function() {
           sequences.push(frames.copy());
           updateSequence();
@@ -282,10 +290,12 @@
       $('.frame_sprites').children().remove();
       return updateUI();
     });
-    $('.sprites .sprite_container').mousedown(function() {
-      var imgSrc;
-      imgSrc = $(this).find('img').attr('src');
-      return currentAnimation.addFrame(imgSrc);
+    $('.sprites .sprite_container').live({
+      mousedown: function() {
+        var imgSrc;
+        imgSrc = $(this).find('img').attr('src');
+        return currentAnimation.addFrame(imgSrc);
+      }
     });
     $('.sequence').live({
       mousedown: function() {
@@ -324,6 +334,13 @@
         return currentAnimation.name(updatedStateName);
       }
     });
-    return $('.state_name').liveEdit();
+    $('.state_name').liveEdit();
+    return animationEditor.dropImageReader(function(file, event) {
+      var src;
+      if (event.target.readyState === FileReader.DONE) {
+        src = event.target.result;
+        return currentAnimation.addTile(src);
+      }
+    });
   };
 }).call(this);

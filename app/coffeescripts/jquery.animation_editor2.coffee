@@ -161,6 +161,11 @@ $.fn.animationEditor = (options) ->
         for imageIndex in sequences[index]
           self.addFrame(tileset[imageIndex])
 
+      addTile: (src) ->
+        tileset[Math.uuid(32, 16)] = src
+        spritesEl = $('.sprites')
+        spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+
       createSequence: ->
         sequences.push(frames.copy())
         updateSequence()
@@ -241,10 +246,11 @@ $.fn.animationEditor = (options) ->
 
     updateUI()
 
-  $('.sprites .sprite_container').mousedown ->
-    imgSrc = $(this).find('img').attr('src')
+  $('.sprites .sprite_container').live
+    mousedown: ->
+      imgSrc = $(this).find('img').attr('src')
 
-    currentAnimation.addFrame(imgSrc)
+      currentAnimation.addFrame(imgSrc)
 
   $('.sequence').live
     mousedown: ->
@@ -276,3 +282,9 @@ $.fn.animationEditor = (options) ->
       currentAnimation.name(updatedStateName)
 
   $('.state_name').liveEdit()
+
+  animationEditor.dropImageReader (file, event) ->
+    if event.target.readyState == FileReader.DONE
+      src = event.target.result
+
+      currentAnimation.addTile(src)
