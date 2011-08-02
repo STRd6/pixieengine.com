@@ -106,16 +106,17 @@ body#fullscreen > .content
               +rotate(-15deg, -10px, -3px)
 
       nav.left, nav.right
-        height: 100%
-        width: 220px
+        +bounds(220px, 100%)
 
         .background_color
-          height: 100%
+          +box-sizing(border-box)
 
           background-color: $light_highlight
           border: 1px solid lighten($light_highlight, 5%)
           border-bottom: none
           border-right: none
+          height: 100%
+          padding: 0.5em
 
       .bottom
         +border-radius(0)
@@ -151,3 +152,6 @@ body#fullscreen > .content
     background-color: #AAA
     border: 1px solid #666
     margin: auto
+
+  .state_name, .frame_sprites .sprite_container
+    cursor: pointer

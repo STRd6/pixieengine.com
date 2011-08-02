@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 20:08:48 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 21:21:03 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -14,13 +14,13 @@
     Controls = function() {
       var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, update, updateFrame;
       intervalId = null;
-      scrubberEl = $('.scrubber');
+      scrubberEl = animationEditor.find('.scrubber');
       scrubber = {
         min: scrubberEl.get(0).min,
         max: scrubberEl.get(0).max,
         val: scrubberEl.val()
       };
-      fpsEl = $('.fps input');
+      fpsEl = animationEditor.find('.fps input');
       fps = {
         min: fpsEl.get(0).min,
         max: fpsEl.get(0).max,
@@ -98,7 +98,7 @@
       return self;
     };
     Animation = function() {
-      var currentFrameIndex, findTileIndex, frames, name, self, sequences, tileset, update, updateSelected, updateSequence;
+      var currentFrameIndex, findTileIndex, frames, name, self, sequences, tileset, update, updateSequence;
       tileset = {};
       tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/323/original.png";
       tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/324/original.png";
@@ -119,7 +119,7 @@
       sequences = [];
       frames = [];
       currentFrameIndex = 0;
-      name = "Animation " + animationNumber;
+      name = "State " + animationNumber;
       animationNumber += 1;
       findTileIndex = function(tileSrc) {
         var src, uuid;
@@ -130,21 +130,9 @@
           }
         }
       };
-      updateSelected = function(frameIndex) {
-        var player, tilesetIndex;
-        tilesetIndex = frames[frameIndex];
-        $('.frame_sprites .sprite_container').removeClass('current');
-        player = $('.player img');
-        if (frameIndex === -1) {
-          return player.attr('src', tileset[0]);
-        } else {
-          player.attr('src', tileset[tilesetIndex]);
-          return $('.frame_sprites .sprite_container').eq(frameIndex).addClass('current');
-        }
-      };
       updateSequence = function() {
         var array, sequence, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
-        sequencesEl = $('.sequences');
+        sequencesEl = animationEditor.find('.sequences');
         sequencesEl.children().remove();
         _results = [];
         for (_i = 0, _len = sequences.length; _i < _len; _i++) {
@@ -167,14 +155,14 @@
       };
       update = function() {
         var frame_index, spriteSrc, _i, _len, _results;
-        $('.frame_sprites').children().remove();
+        animationEditor.find('.frame_sprites').children().remove();
         _results = [];
         for (_i = 0, _len = frames.length; _i < _len; _i++) {
           frame_index = frames[_i];
           spriteSrc = tileset[frame_index];
           _results.push(spriteTemplate.tmpl({
             src: spriteSrc
-          }).appendTo($('.frame_sprites')));
+          }).appendTo(animationEditor.find('.frame_sprites')));
         }
         return _results;
       };
@@ -197,7 +185,7 @@
         addTile: function(src) {
           var spritesEl;
           tileset[Math.uuid(32, 16)] = src;
-          spritesEl = $('.sprites');
+          spritesEl = animationEditor.find('.sprites');
           return spriteTemplate.tmpl({
             src: src
           }).appendTo(spritesEl);
@@ -211,7 +199,7 @@
         currentFrameIndex: function(val) {
           if (val != null) {
             currentFrameIndex = val;
-            updateSelected(val);
+            self.updateSelected(val);
             return self;
           } else {
             return currentFrameIndex;
@@ -235,6 +223,18 @@
             delete tileset[tilesetIndex];
           }
           return update();
+        },
+        updateSelected: function(frameIndex) {
+          var player, tilesetIndex;
+          tilesetIndex = frames[frameIndex];
+          animationEditor.find('.frame_sprites .sprite_container').removeClass('current');
+          player = $('.player img');
+          if (frameIndex === -1) {
+            return player.attr('src', tileset[0]);
+          } else {
+            player.attr('src', tileset[tilesetIndex]);
+            return animationEditor.find('.frame_sprites .sprite_container').eq(frameIndex).addClass('current');
+          }
         }
       };
       return self;
@@ -245,9 +245,9 @@
     animations = [currentAnimation];
     updateUI = function() {
       var animation, animationsEl, index, spritesEl, src, _i, _len, _ref, _results;
-      animationsEl = $('.animations');
+      animationsEl = animationEditor.find('.animations');
       animationsEl.children().remove();
-      spritesEl = $('.sprites');
+      spritesEl = animationEditor.find('.sprites');
       for (_i = 0, _len = animations.length; _i < _len; _i++) {
         animation = animations[_i];
         animationTemplate.tmpl({
@@ -267,37 +267,38 @@
       }
     };
     updateUI();
-    $('.play').mousedown(function() {
+    animationEditor.find('.play').mousedown(function() {
       if ($(this).hasClass('pause')) {
         return controls.pause();
       } else {
         return controls.play();
       }
     });
-    $('.scrubber').change(function() {
+    animationEditor.find('.scrubber').change(function() {
       var newValue;
       newValue = $(this).val();
       controls.scrubber(newValue);
       return currentAnimation.currentFrameIndex(newValue);
     });
-    $('.stop').mousedown(function() {
+    animationEditor.find('.stop').mousedown(function() {
       return controls.stop();
     });
-    $('.new_animation').mousedown(function() {
+    animationEditor.find('.new_animation').mousedown(function() {
       animations.push(Animation());
       currentAnimation = animations.last();
-      $('.sequences').children().remove();
-      $('.frame_sprites').children().remove();
+      animationEditor.find('.sequences').children().remove();
+      animationEditor.find('.frame_sprites').children().remove();
+      animationEditor.find('.player img').removeAttr('src');
       return updateUI();
     });
-    $('.sprites .sprite_container').live({
+    animationEditor.find('.sprites .sprite_container').live({
       mousedown: function() {
         var imgSrc;
         imgSrc = $(this).find('img').attr('src');
         return currentAnimation.addFrame(imgSrc);
       }
     });
-    $('.sequence').live({
+    animationEditor.find('.sequence').live({
       mousedown: function() {
         var index;
         index = $(this).index();
@@ -311,30 +312,30 @@
         return $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right');
       }
     });
-    $('.frame_sprites .sprite_container').live({
+    animationEditor.find('.frame_sprites .sprite_container').live({
       mousedown: function() {
         var index;
         index = $(this).index();
-        return currentAnimation.removeFrame(index);
+        return currentAnimation.currentFrameIndex(index);
       }
     });
-    $('.save_sequence').click(function() {
+    animationEditor.find('.save_sequence').click(function() {
       return currentAnimation.createSequence();
     });
-    $('.fps input').change(function() {
+    animationEditor.find('.fps input').change(function() {
       var newValue;
       newValue = $(this).val();
       controls.stop();
       return controls.fps(newValue);
     });
-    $('input.state_name').live({
+    animationEditor.find('input.state_name').live({
       change: function() {
         var updatedStateName;
         updatedStateName = $(this).val();
         return currentAnimation.name(updatedStateName);
       }
     });
-    $('.state_name').liveEdit();
+    animationEditor.find('.state_name').liveEdit();
     return animationEditor.dropImageReader(function(file, event) {
       var src;
       if (event.target.readyState === FileReader.DONE) {
