@@ -1,16 +1,17 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 21:21:03 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 21:33:26 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, spriteTemplate, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, frameTemplate, spriteTemplate, templates, updateUI;
     animationNumber = 1;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
+    frameTemplate = templates.find('.frame');
     Controls = function() {
       var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, update, updateFrame;
       intervalId = null;
@@ -160,7 +161,7 @@
         for (_i = 0, _len = frames.length; _i < _len; _i++) {
           frame_index = frames[_i];
           spriteSrc = tileset[frame_index];
-          _results.push(spriteTemplate.tmpl({
+          _results.push(frameTemplate.tmpl({
             src: spriteSrc
           }).appendTo(animationEditor.find('.frame_sprites')));
         }
@@ -227,13 +228,13 @@
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
           tilesetIndex = frames[frameIndex];
-          animationEditor.find('.frame_sprites .sprite_container').removeClass('current');
+          animationEditor.find('.frame_sprites img').removeClass('current');
           player = $('.player img');
           if (frameIndex === -1) {
             return player.attr('src', tileset[0]);
           } else {
             player.attr('src', tileset[tilesetIndex]);
-            return animationEditor.find('.frame_sprites .sprite_container').eq(frameIndex).addClass('current');
+            return animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('current');
           }
         }
       };
@@ -312,7 +313,7 @@
         return $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right');
       }
     });
-    animationEditor.find('.frame_sprites .sprite_container').live({
+    animationEditor.find('.frame_sprites img').live({
       mousedown: function() {
         var index;
         index = $(this).index();

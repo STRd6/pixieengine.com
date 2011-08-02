@@ -133,7 +133,9 @@ body#fullscreen > .content
           margin-top: 0
 
         .frame_sprites
-          .sprite_container
+          img
+            +box-sizing(border-box)
+
             border: 1px solid transparent
             display: inline-block
             padding: 2px
@@ -141,9 +143,6 @@ body#fullscreen > .content
             &.current
               background-color: #FEF7CB
               border: 1px solid #FFE475
-
-          .sprite
-            +bounds(85px)
 
   .animation
     +border-radius(4px)

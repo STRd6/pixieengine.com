@@ -7,6 +7,7 @@ $.fn.animationEditor = (options) ->
   editorTemplate = templates.find('.editor.template')
   animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
+  frameTemplate = templates.find('.frame')
 
   Controls = ->
     intervalId = null
@@ -136,7 +137,7 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.frame_sprites').children().remove()
       for frame_index in frames
         spriteSrc = tileset[frame_index]
-        spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
+        frameTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
 
     self =
       addFrame: (imgSrc) ->
@@ -190,7 +191,7 @@ $.fn.animationEditor = (options) ->
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
 
-        animationEditor.find('.frame_sprites .sprite_container').removeClass('current')
+        animationEditor.find('.frame_sprites img').removeClass('current')
 
         player = $('.player img')
 
@@ -198,7 +199,7 @@ $.fn.animationEditor = (options) ->
           player.attr('src', tileset[0])
         else
           player.attr('src', tileset[tilesetIndex])
-          animationEditor.find('.frame_sprites .sprite_container').eq(frameIndex).addClass('current')
+          animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('current')
 
     return self
 
@@ -263,7 +264,7 @@ $.fn.animationEditor = (options) ->
     mouseleave: ->
       $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right')
 
-  animationEditor.find('.frame_sprites .sprite_container').live
+  animationEditor.find('.frame_sprites img').live
     mousedown: ->
       index = $(this).index()
       currentAnimation.currentFrameIndex(index)
