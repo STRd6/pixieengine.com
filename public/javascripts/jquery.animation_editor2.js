@@ -1,19 +1,18 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 22:52:28 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 23:56:12 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, frameTemplate, spriteTemplate, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, spriteTemplate, templates, updateUI;
     animationNumber = 1;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
-    frameTemplate = templates.find('.frame');
     Controls = function() {
-      var changePlayIcon, fps, fpsEl, intervalId, scrubber, scrubberEl, self, updateFrame;
+      var changePlayIcon, fpsEl, intervalId, scrubber, scrubberEl, self, updateFrame;
       intervalId = null;
       fpsEl = animationEditor.find('.fps input');
       scrubberEl = animationEditor.find('.scrubber');
@@ -23,7 +22,7 @@
             scrubberEl.get(0).min = newMin;
             return scrubber;
           } else {
-            return scrubberEl.get(0).min;
+            return parseInt(scrubberEl.get(0).min);
           }
         },
         max: function(newMax) {
@@ -31,7 +30,7 @@
             scrubberEl.get(0).max = newMax;
             return scrubber;
           } else {
-            return scrubberEl.get(0).max;
+            return parseInt(scrubberEl.get(0).max);
           }
         },
         val: function(newValue) {
@@ -39,25 +38,13 @@
             scrubberEl.val(newValue);
             return scrubber;
           } else {
-            return scrubberEl.val();
-          }
-        }
-      };
-      fps = {
-        min: fpsEl.get(0).min,
-        max: fpsEl.get(0).max,
-        val: function(newValue) {
-          if (newValue != null) {
-            fpsEl.val(newValue);
-            return fps;
-          } else {
-            return fpsEl.val();
+            return parseInt(scrubberEl.val());
           }
         }
       };
       updateFrame = function() {
         animationEditor.trigger('updateFrames');
-        scrubber.val((parseInt(scrubber.val()) + 1) % (parseInt(scrubber.max()) + 1));
+        scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1));
         return currentAnimation.currentFrameIndex(scrubber.val());
       };
       changePlayIcon = function(icon) {
@@ -71,8 +58,13 @@
         }
       };
       self = {
-        fps: function(val) {
-          return fps.val(val);
+        fps: function(newValue) {
+          if (newValue != null) {
+            fpsEl.val(newValue);
+            return fps;
+          } else {
+            return parseInt(fpsEl.val());
+          }
         },
         pause: function() {
           changePlayIcon('play');
@@ -82,7 +74,7 @@
         play: function() {
           if (currentAnimation.frames.length > 0) {
             if (!intervalId) {
-              intervalId = setInterval(updateFrame, 1000 / fps.val());
+              intervalId = setInterval(updateFrame, 1000 / self.fps());
             }
             return changePlayIcon('pause');
           }
@@ -94,7 +86,7 @@
           return scrubber.max(val);
         },
         scrubberPosition: function() {
-          return "" + (scrubber.val()) + " / " + scrubber.max;
+          return "" + (scrubber.val()) + " / " + (scrubber.max());
         },
         stop: function() {
           scrubber.val(0);
@@ -156,7 +148,7 @@
         for (_i = 0, _len = frames.length; _i < _len; _i++) {
           frame_index = frames[_i];
           spriteSrc = tileset[frame_index];
-          _results.push(frameTemplate.tmpl({
+          _results.push(spriteTemplate.tmpl({
             src: spriteSrc
           }).appendTo(animationEditor.find('.frame_sprites')));
         }
@@ -226,7 +218,7 @@
           animationEditor.find('.frame_sprites img').removeClass('current');
           player = $('.player img');
           if (frameIndex === -1) {
-            return player.attr('src', tileset[0]);
+            return player.removeAttr('src');
           } else {
             player.attr('src', tileset[tilesetIndex]);
             return animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('current');
@@ -250,7 +242,7 @@
           name: animation.name()
         }).appendTo(animationsEl);
       }
-      if (spritesEl.find('.sprite_container').length === 0) {
+      if (spritesEl.find('img').length === 0) {
         _ref = currentAnimation.tileset;
         _results = [];
         for (index in _ref) {
@@ -287,10 +279,10 @@
       animationEditor.find('.player img').removeAttr('src');
       return updateUI();
     });
-    animationEditor.find('.sprites .sprite_container').live({
+    animationEditor.find('.sprites img').live({
       mousedown: function() {
         var imgSrc;
-        imgSrc = $(this).find('img').attr('src');
+        imgSrc = $(this).attr('src');
         return currentAnimation.addFrame(imgSrc);
       }
     });
@@ -301,11 +293,11 @@
         return currentAnimation.addSequenceToFrames(index);
       },
       mouseenter: function() {
-        $(this).find('.sprite_container:first-child').addClass('rotate_left');
-        return $(this).find('.sprite_container:last-child').addClass('rotate_right');
+        $(this).find('img:first-child').addClass('rotate_left');
+        return $(this).find('img:last-child').addClass('rotate_right');
       },
       mouseleave: function() {
-        return $(this).find('.sprite_container').removeClass('rotate_left').removeClass('rotate_right');
+        return $(this).find('img').removeClass('rotate_left').removeClass('rotate_right');
       }
     });
     animationEditor.find('.frame_sprites img').live({

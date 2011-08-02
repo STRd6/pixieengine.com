@@ -80,13 +80,11 @@ body#fullscreen > .content
         .sprites
           height: 50%
 
-          .sprite_container
+          img
             display: inline-block
+            max-height: 50px
+            max-width: 50px
             padding: 2px
-
-            img
-              max-height: 50px
-              max-width: 50px
 
         .sequence
           display: inline-block
@@ -94,7 +92,7 @@ body#fullscreen > .content
           min-width: 40px
           position: relative
 
-          .sprite_container
+          img
             +transition
 
             position: absolute
@@ -152,5 +150,5 @@ body#fullscreen > .content
     border: 1px solid #666
     margin: auto
 
-  .state_name, .frame_sprites .sprite_container
+  .state_name, .frame_sprites .img, .sprites img
     cursor: pointer
