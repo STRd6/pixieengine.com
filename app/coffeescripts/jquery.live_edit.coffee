@@ -8,7 +8,7 @@
       textInput = $("<input/>",
         class: $this.attr("class")
         "data-origType": this.tagName
-        id: if id = $this.attr("id") then id else null
+        id: $this.attr("id") || null
         type: "text"
         value: $.trim($this.text())
       )
@@ -23,14 +23,14 @@
 
       $this = $(this)
 
-      return if $this.data("removed")
+      return if $this.attr("data-removed")
       return unless $this.is("input")
 
       $this.attr("data-removed", true)
 
-      $this.replaceWith $("<" + $this.data("origType") + " />",
+      $this.replaceWith $("<" + $this.attr("data-origType") + " />",
         class: $this.attr("class")
-        id: if id = $this.attr("id") then id else null
+        id: $this.attr("id") || null
         text: $this.val()
       )
 
