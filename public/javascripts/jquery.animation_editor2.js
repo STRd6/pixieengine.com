@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 01 Aug 2011 23:00:15 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 06:10:16 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -233,22 +233,23 @@
       animationsEl = $('.animations');
       animationsEl.children().remove();
       spritesEl = $('.sprites');
-      spritesEl.children().remove();
       for (_i = 0, _len = animations.length; _i < _len; _i++) {
         animation = animations[_i];
         animationTemplate.tmpl({
           name: animation.name
         }).appendTo(animationsEl);
       }
-      _ref = currentAnimation.tileset;
-      _results = [];
-      for (index in _ref) {
-        src = _ref[index];
-        _results.push(spriteTemplate.tmpl({
-          src: src
-        }).appendTo(spritesEl));
+      if (spritesEl.find('.sprite_container').length === 0) {
+        _ref = currentAnimation.tileset;
+        _results = [];
+        for (index in _ref) {
+          src = _ref[index];
+          _results.push(spriteTemplate.tmpl({
+            src: src
+          }).appendTo(spritesEl));
+        }
+        return _results;
       }
-      return _results;
     };
     updateUI();
     $('.play').mousedown(function() {
@@ -270,6 +271,8 @@
     $('.new_animation').mousedown(function() {
       animations.push(Animation());
       currentAnimation = animations.last();
+      $('.sequences').children().remove();
+      $('.frame_sprites').children().remove();
       return updateUI();
     });
     $('.sprites .sprite_container').mousedown(function() {
@@ -294,11 +297,12 @@
     $('.save_sequence').click(function() {
       return currentAnimation.createSequence();
     });
-    return $('.fps input').change(function() {
+    $('.fps input').change(function() {
       var newValue;
       newValue = $(this).val();
       controls.stop();
       return controls.fps(newValue);
     });
+    return $('.state_name').liveEdit();
   };
 }).call(this);

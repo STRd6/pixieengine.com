@@ -203,13 +203,13 @@ $.fn.animationEditor = (options) ->
     animationsEl.children().remove()
 
     spritesEl = $('.sprites')
-    spritesEl.children().remove()
 
     for animation in animations
       animationTemplate.tmpl(name: animation.name).appendTo(animationsEl)
 
-    for index, src of currentAnimation.tileset
-      spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+    if spritesEl.find('.sprite_container').length == 0
+      for index, src of currentAnimation.tileset
+        spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
   updateUI()
 
@@ -230,6 +230,10 @@ $.fn.animationEditor = (options) ->
   $('.new_animation').mousedown ->
     animations.push(Animation())
     currentAnimation = animations.last()
+
+    $('.sequences').children().remove()
+    $('.frame_sprites').children().remove()
+
     updateUI()
 
   $('.sprites .sprite_container').mousedown ->
@@ -255,3 +259,5 @@ $.fn.animationEditor = (options) ->
 
     controls.stop()
     controls.fps(newValue)
+
+  $('.state_name').liveEdit()

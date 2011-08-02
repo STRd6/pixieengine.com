@@ -22,7 +22,7 @@
 
       %nav.right
         .background_color
-          %h3.inline Animations
+          %h3.inline Animation States
           %button.new_animation New
           .animations
 
@@ -33,7 +33,7 @@
         .frame_sprites
 
   %script.animation.template(type="text/x-jQuery-tmpl")
-    %h4 ${name}
+    %h4.state_name ${name}
     .animation
 
   %script.sprite.template(type="text/x-jQuery-tmpl")
