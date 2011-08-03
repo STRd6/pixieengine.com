@@ -430,7 +430,8 @@ class Project < ActiveRecord::Base
 
     manifest_json = {
       :name => title,
-      :description => description,
+      # Truncate description to max of 132 characters for Chrome
+      :description => description[0...132],
       :app => {
         :launch => {
           :local_path => "webstore/main.html",
