@@ -1,16 +1,42 @@
-/* DO NOT MODIFY. This file was compiled Wed, 03 Aug 2011 00:51:25 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 03 Aug 2011 21:15:30 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, spriteTemplate, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
     animationNumber = 1;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
+    loadSpriteSheet = function(src, tileWidth, tileHeight) {
+      var image, sprites;
+      sprites = [];
+      image = new Image();
+      image.src = src;
+      image.onload = function() {
+        var columns, rows;
+        rows = image.height / tileHeight;
+        columns = image.width / tileWidth;
+        return rows.times(function(row) {
+          return columns.times(function(col) {
+            var sprite;
+            sprite = new Image();
+            sprite.src = src;
+            return sprite.onload = function() {
+              debugger;              sprite.offsetLeft = row * tileWidth;
+              sprite.offsetTop = col * tileHeight;
+              sprite.width = tileWidth;
+              sprite.height = tileHeight;
+              return sprites.push(sprite);
+            };
+          });
+        });
+      };
+      return sprites;
+    };
     Controls = function() {
       var changePlayIcon, fpsEl, intervalId, nextFrame, scrubber, scrubberEl, self;
       intervalId = null;
@@ -215,10 +241,10 @@
           tilesetIndex = frames[frameIndex];
           frames.splice(frameIndex, 1);
           controls.scrubberMax(controls.scrubberMax() - 1);
-          if ($.inArray(tilesetIndex, frames) === -1) {
-            delete tileset[tilesetIndex];
+          animationEditor.trigger('updateFrames');
+          if (frames.length === 0) {
+            return animationEditor.trigger('disableSave');
           }
-          return animationEditor.trigger('updateFrames');
         },
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
@@ -331,10 +357,22 @@
     });
     animationEditor.find('.state_name').liveEdit();
     animationEditor.dropImageReader(function(file, event) {
-      var src;
+      var dimensions, name, sheetSprites, sprite, src, tileHeight, tileWidth, _i, _len, _ref, _results;
       if (event.target.readyState === FileReader.DONE) {
         src = event.target.result;
-        return currentAnimation.addTile(src);
+        name = file.fileName;
+        _ref = name.match(/x(\d*)y(\d*)/) || [], dimensions = _ref[0], tileWidth = _ref[1], tileHeight = _ref[2];
+        if (tileWidth && tileHeight) {
+          sheetSprites = loadSpriteSheet(src, tileWidth, tileHeight);
+          _results = [];
+          for (_i = 0, _len = sheetSprites.length; _i < _len; _i++) {
+            sprite = sheetSprites[_i];
+            _results.push(currentAnimation.addTile(sprite.src));
+          }
+          return _results;
+        } else {
+          return currentAnimation.addTile(src);
+        }
       }
     });
     return $(document).bind('keydown', 'del backspace', function(e) {

@@ -8,6 +8,32 @@ $.fn.animationEditor = (options) ->
   animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
 
+  loadSpriteSheet = (src, tileWidth, tileHeight) ->
+    sprites = []
+
+    image = new Image()
+    image.src = src
+
+    image.onload = ->
+      rows = image.height / tileHeight
+      columns = image.width / tileWidth
+
+      rows.times (row) ->
+        columns.times (col) ->
+          sprite = new Image()
+          sprite.src = src
+
+          sprite.onload = ->
+            debugger
+            sprite.offsetLeft = row * tileWidth
+            sprite.offsetTop = col * tileHeight
+            sprite.width = tileWidth
+            sprite.height = tileHeight
+
+            sprites.push(sprite)
+
+    return sprites
+
   Controls = ->
     intervalId = null
 
@@ -171,10 +197,8 @@ $.fn.animationEditor = (options) ->
         frames.splice(frameIndex, 1)
         controls.scrubberMax(controls.scrubberMax() - 1)
 
-        if $.inArray(tilesetIndex, frames) == -1
-          delete tileset[tilesetIndex]
-
         animationEditor.trigger 'updateFrames'
+        animationEditor.trigger 'disableSave' if frames.length == 0
 
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
@@ -278,8 +302,17 @@ $.fn.animationEditor = (options) ->
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
       src = event.target.result
+      name = file.fileName
 
-      currentAnimation.addTile(src)
+      [dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
+
+      if tileWidth && tileHeight
+        sheetSprites = loadSpriteSheet(src, tileWidth, tileHeight)
+
+        for sprite in sheetSprites
+          currentAnimation.addTile(sprite.src)
+      else
+        currentAnimation.addTile(src)
 
   $(document).bind 'keydown', 'del backspace', (e) ->
     e.preventDefault()
