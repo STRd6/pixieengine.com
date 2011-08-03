@@ -23,14 +23,16 @@
 
       %nav.right
         .background_color
-          %h3.inline Animation States
-          %button.new_animation New
+          .module_header
+            %h3 Animation States
+            %button.new_animation New
           .animations
 
       %nav.module.bottom
-        %h3 Frames
-        %button.save_sequence Save as Sequence
-        %button.save_animation Save as State
+        .module_header
+          %h3 Frames
+          %button.save_sequence Save as Sequence
+          %button.save_animation Save as State
         .frame_sprites
 
   %script.animation.template(type="text/x-jQuery-tmpl")
