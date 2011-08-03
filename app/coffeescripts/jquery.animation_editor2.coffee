@@ -15,12 +15,6 @@ $.fn.animationEditor = (options) ->
     scrubberEl = animationEditor.find('.scrubber')
 
     scrubber =
-      min: (newMin) ->
-        if newMin?
-          scrubberEl.get(0).min = newMin
-          return scrubber
-        else
-          return parseInt(scrubberEl.get(0).min)
       max: (newMax) ->
         if newMax?
           scrubberEl.get(0).max = newMax
@@ -30,15 +24,13 @@ $.fn.animationEditor = (options) ->
       val: (newValue) ->
         if newValue?
           scrubberEl.val(newValue)
+          currentAnimation.currentFrameIndex(newValue)
           return scrubber
         else
           parseInt(scrubberEl.val())
 
-    updateFrame = ->
-      animationEditor.trigger 'updateFrames'
-
+    nextFrame = ->
       scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1))
-      currentAnimation.currentFrameIndex(scrubber.val())
 
     changePlayIcon = (icon) ->
       el = $('.play')
@@ -54,7 +46,7 @@ $.fn.animationEditor = (options) ->
       fps: (newValue) ->
         if newValue?
           fpsEl.val(newValue)
-          return fps
+          return self
         else
           parseInt(fpsEl.val())
 
@@ -65,7 +57,7 @@ $.fn.animationEditor = (options) ->
 
       play: ->
         if currentAnimation.frames.length > 0
-          intervalId = setInterval(updateFrame, 1000 / self.fps()) unless intervalId
+          intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
           changePlayIcon('pause')
 
       scrubber: (val) ->
@@ -73,9 +65,6 @@ $.fn.animationEditor = (options) ->
 
       scrubberMax: (val) ->
         scrubber.max(val)
-
-      scrubberPosition: ->
-        "#{scrubber.val()} / #{scrubber.max()}"
 
       stop: ->
         scrubber.val(0)
@@ -120,11 +109,29 @@ $.fn.animationEditor = (options) ->
         spriteSrc = tileset[frame_index]
         spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
 
+    animationEditor.bind 'disableSave', ->
+      animationEditor.find('.save_sequence, .save_animation').attr
+        disabled: true
+        title: 'Add frames to save'
+
+    animationEditor.bind 'enableSave', ->
+      animationEditor.find('.save_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames')
+
+    clearFrames = ->
+      frames.clear()
+      animationEditor.trigger 'updateFrames'
+      animationEditor.trigger 'disableSave'
+
+    pushSequence = (frameArray) ->
+      sequences.push(frameArray)
+      animationEditor.trigger 'updateSequence'
+
     self =
       addFrame: (imgSrc) ->
         frames.push(findTileIndex(imgSrc))
         controls.scrubberMax(frames.length - 1)
         animationEditor.trigger 'updateFrames'
+        animationEditor.trigger 'enableSave'
 
       addSequenceToFrames: (index) ->
         for imageIndex in sequences[index]
@@ -136,10 +143,9 @@ $.fn.animationEditor = (options) ->
         spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
       createSequence: ->
-        sequences.push(frames.copy())
-        animationEditor.trigger 'updateSequence'
-        frames.clear()
-        animationEditor.trigger 'updateFrames'
+        if frames.length
+          pushSequence(frames.copy())
+          clearFrames()
 
       currentFrameIndex: (val) ->
         if val?
@@ -163,6 +169,7 @@ $.fn.animationEditor = (options) ->
       removeFrame: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
         frames.splice(frameIndex, 1)
+        controls.scrubberMax(controls.scrubberMax() - 1)
 
         if $.inArray(tilesetIndex, frames) == -1
           delete tileset[tilesetIndex]
@@ -202,6 +209,8 @@ $.fn.animationEditor = (options) ->
     if spritesEl.find('img').length == 0
       for index, src of currentAnimation.tileset
         spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+
+      animationEditor.trigger 'disableSave'
 
   updateUI()
 
@@ -243,21 +252,21 @@ $.fn.animationEditor = (options) ->
       $(this).find('img:first-child').addClass('rotate_left')
       $(this).find('img:last-child').addClass('rotate_right')
     mouseleave: ->
-      $(this).find('img').removeClass('rotate_left').removeClass('rotate_right')
+      $(this).find('img').removeClass('rotate_left rotate_right')
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->
       index = $(this).index()
-      currentAnimation.currentFrameIndex(index)
+      controls.scrubber(index)
 
-  animationEditor.find('.save_sequence').click ->
-    currentAnimation.createSequence()
+  animationEditor.find('.save_sequence').click(currentAnimation.createSequence)
 
   animationEditor.find('.fps input').change ->
     newValue = $(this).val()
 
-    controls.stop()
+    controls.pause()
     controls.fps(newValue)
+    controls.play()
 
   animationEditor.find('input.state_name').live
     change: ->

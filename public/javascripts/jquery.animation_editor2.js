@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 23:56:12 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 03 Aug 2011 00:51:25 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -12,19 +12,11 @@
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
     Controls = function() {
-      var changePlayIcon, fpsEl, intervalId, scrubber, scrubberEl, self, updateFrame;
+      var changePlayIcon, fpsEl, intervalId, nextFrame, scrubber, scrubberEl, self;
       intervalId = null;
       fpsEl = animationEditor.find('.fps input');
       scrubberEl = animationEditor.find('.scrubber');
       scrubber = {
-        min: function(newMin) {
-          if (newMin != null) {
-            scrubberEl.get(0).min = newMin;
-            return scrubber;
-          } else {
-            return parseInt(scrubberEl.get(0).min);
-          }
-        },
         max: function(newMax) {
           if (newMax != null) {
             scrubberEl.get(0).max = newMax;
@@ -36,16 +28,15 @@
         val: function(newValue) {
           if (newValue != null) {
             scrubberEl.val(newValue);
+            currentAnimation.currentFrameIndex(newValue);
             return scrubber;
           } else {
             return parseInt(scrubberEl.val());
           }
         }
       };
-      updateFrame = function() {
-        animationEditor.trigger('updateFrames');
-        scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1));
-        return currentAnimation.currentFrameIndex(scrubber.val());
+      nextFrame = function() {
+        return scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1));
       };
       changePlayIcon = function(icon) {
         var el;
@@ -61,7 +52,7 @@
         fps: function(newValue) {
           if (newValue != null) {
             fpsEl.val(newValue);
-            return fps;
+            return self;
           } else {
             return parseInt(fpsEl.val());
           }
@@ -74,7 +65,7 @@
         play: function() {
           if (currentAnimation.frames.length > 0) {
             if (!intervalId) {
-              intervalId = setInterval(updateFrame, 1000 / self.fps());
+              intervalId = setInterval(nextFrame, 1000 / self.fps());
             }
             return changePlayIcon('pause');
           }
@@ -84,9 +75,6 @@
         },
         scrubberMax: function(val) {
           return scrubber.max(val);
-        },
-        scrubberPosition: function() {
-          return "" + (scrubber.val()) + " / " + (scrubber.max());
         },
         stop: function() {
           scrubber.val(0);
@@ -99,7 +87,7 @@
       return self;
     };
     Animation = function() {
-      var currentFrameIndex, findTileIndex, frames, name, self, sequences, tileset;
+      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self, sequences, tileset;
       tileset = {};
       [323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338].each(function(n) {
         return tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/" + n + "/original.png";
@@ -154,11 +142,30 @@
         }
         return _results;
       });
+      animationEditor.bind('disableSave', function() {
+        return animationEditor.find('.save_sequence, .save_animation').attr({
+          disabled: true,
+          title: 'Add frames to save'
+        });
+      });
+      animationEditor.bind('enableSave', function() {
+        return animationEditor.find('.save_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames');
+      });
+      clearFrames = function() {
+        frames.clear();
+        animationEditor.trigger('updateFrames');
+        return animationEditor.trigger('disableSave');
+      };
+      pushSequence = function(frameArray) {
+        sequences.push(frameArray);
+        return animationEditor.trigger('updateSequence');
+      };
       self = {
         addFrame: function(imgSrc) {
           frames.push(findTileIndex(imgSrc));
           controls.scrubberMax(frames.length - 1);
-          return animationEditor.trigger('updateFrames');
+          animationEditor.trigger('updateFrames');
+          return animationEditor.trigger('enableSave');
         },
         addSequenceToFrames: function(index) {
           var imageIndex, _i, _len, _ref, _results;
@@ -179,10 +186,10 @@
           }).appendTo(spritesEl);
         },
         createSequence: function() {
-          sequences.push(frames.copy());
-          animationEditor.trigger('updateSequence');
-          frames.clear();
-          return animationEditor.trigger('updateFrames');
+          if (frames.length) {
+            pushSequence(frames.copy());
+            return clearFrames();
+          }
         },
         currentFrameIndex: function(val) {
           if (val != null) {
@@ -207,6 +214,7 @@
           var tilesetIndex;
           tilesetIndex = frames[frameIndex];
           frames.splice(frameIndex, 1);
+          controls.scrubberMax(controls.scrubberMax() - 1);
           if ($.inArray(tilesetIndex, frames) === -1) {
             delete tileset[tilesetIndex];
           }
@@ -232,7 +240,7 @@
     currentAnimation = Animation();
     animations = [currentAnimation];
     updateUI = function() {
-      var animation, animationsEl, index, spritesEl, src, _i, _len, _ref, _results;
+      var animation, animationsEl, index, spritesEl, src, _i, _len, _ref;
       animationsEl = animationEditor.find('.animations');
       animationsEl.children().remove();
       spritesEl = animationEditor.find('.sprites');
@@ -244,14 +252,13 @@
       }
       if (spritesEl.find('img').length === 0) {
         _ref = currentAnimation.tileset;
-        _results = [];
         for (index in _ref) {
           src = _ref[index];
-          _results.push(spriteTemplate.tmpl({
+          spriteTemplate.tmpl({
             src: src
-          }).appendTo(spritesEl));
+          }).appendTo(spritesEl);
         }
-        return _results;
+        return animationEditor.trigger('disableSave');
       }
     };
     updateUI();
@@ -297,24 +304,23 @@
         return $(this).find('img:last-child').addClass('rotate_right');
       },
       mouseleave: function() {
-        return $(this).find('img').removeClass('rotate_left').removeClass('rotate_right');
+        return $(this).find('img').removeClass('rotate_left rotate_right');
       }
     });
     animationEditor.find('.frame_sprites img').live({
       mousedown: function() {
         var index;
         index = $(this).index();
-        return currentAnimation.currentFrameIndex(index);
+        return controls.scrubber(index);
       }
     });
-    animationEditor.find('.save_sequence').click(function() {
-      return currentAnimation.createSequence();
-    });
+    animationEditor.find('.save_sequence').click(currentAnimation.createSequence);
     animationEditor.find('.fps input').change(function() {
       var newValue;
       newValue = $(this).val();
-      controls.stop();
-      return controls.fps(newValue);
+      controls.pause();
+      controls.fps(newValue);
+      return controls.play();
     });
     animationEditor.find('input.state_name').live({
       change: function() {
