@@ -402,7 +402,7 @@ class Project < ActiveRecord::Base
         </head>
         <body class="contents_centered">
           <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>
-          <script>BASE_URL = "../";</script>
+          <script>BASE_URL = "../"; MTIME = "#{Time.now.to_i}";</script>
           <script src="/#{config[:name]}.js"></script>
         </body>
         </html>
