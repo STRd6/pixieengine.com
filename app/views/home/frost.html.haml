@@ -4,7 +4,7 @@
   :sass
     @import util
 
-    $bar_top: 20px
+    $bar_top: 40px
     $margin: 12px
 
     .viewport
@@ -21,32 +21,72 @@
         top: 0
 
     .editor
+      padding: 0
+
       & > .content
         +box-sizing(border-box)
         padding-top: $bar_top + $margin
 
-      .actions
+      .controls
         left: 0
         position: absolute
         top: 0
+        width: 100%
+
+        button
+          margin: 0
+
+      .timeline
+        .frame
+          +bounds(14px, 18px)
+          +box-sizing(border-box)
+          +inline-block
+
+          background-color: white
+          border-top: 1px solid black
+          border-bottom: 1px solid black
+
+          .state
+            display: none
+
+          &.key
+            border-left: 1px solid black
+            .state
+              display: inline
+          &:first-child
+            border-left: 1px solid black
+          &:last-child
+            border-right: 1px solid black
+
+          &.active
+            background-color: #EEF
 
 .editor
   .content
-    .actions
-      %button.raise Raise
-      %button.lower Lower
-      %button.rotate Rotate
-      %button.grow Grow
-      %button.shrink Shrink
-      %button.transparentize Transparentize
-      %button.opacify Opacify
-      %button.tween Tween
+    .controls
+      %ul.timeline
+        - 32.times do |i|
+          - if i == 0
+            - cssClass = "key active"
+          - elsif i == 31
+            - cssClass = "key"
+
+          %li.frame(class=cssClass)>
+            .state &#x25CF;
+      .actions
+
     .viewport
       .canvas
         %canvas.canvas(width=640 height=480)
         %canvas.ui(width=640 height=480)
 
+= javascript_include_tag "easing"
+= javascript_include_tag "display_object"
+
 :coffeescript
+  NUM_FRAMES = 32
+  editor = $(".editor")
+
   Sprite = (image, sourceX, sourceY, width, height) ->
     sourceX ||= 0
     sourceY ||= 0
@@ -83,69 +123,96 @@
 
   loadSprite("http://localhost:3000/images/shadow_logo_small.png")
 
-  DisplayObject = (I) ->
+  Timeline = (I) ->
     $.reverseMerge I,
-      alpha: 1
-      transform: Matrix()
+      frames: []
 
     self = Core(I).extend
-      draw: (canvas) ->
-        if I.sprite
-          canvas.withTransform I.transform, (canvas) ->
-            canvas.globalAlpha I.alpha
-            I.sprite.draw(canvas, 0, 0)
+      draw: () ->
+        line = editor.find(".timeline")
+        line.empty()
 
-      drawOutline: (canvas) ->
-        canvas.withTransform I.transform, (canvas) ->
-          canvas.strokeRect(0, 0, I.width, I.height)
+  objects = {}
+  keyFrames =
+    0: {}
+    31: {}
 
-      move: (delta) ->
-        I.transform = Matrix.translation(delta.x, delta.y).concat(I.transform)
+  playing = false
+  activeObject = null
+  mousedown = false
+  previousMousePosition = Point(0, 0)
 
-      opacify: (amount) ->
-        I.alpha = (I.alpha + amount).clamp(0, 1)
+  currentFrame = 0
+  currentKeyFrame = 0
+  activeKeyFrame = ->
+    keyFrames[currentKeyFrame]
 
-      pointWithin: (point) ->
-        p = I.transform.inverse().transformPoint(point)
+  activeFrameObjects = ->
+    # Temp hack for just one final keyframe
+    nextKeyFrame = NUM_FRAMES - 1
 
-        return (0 <= p.x <= I.width) && (0 <= p.y <= I.height)
+    if currentKeyFrame != nextKeyFrame
+      t = (currentFrame - currentKeyFrame) / (nextKeyFrame - currentKeyFrame)
+    else
+      t = 0
 
-      registrationPoint: ->
-        Point(I.width/2, I.height/2)
+    initialPositions = keyFrames[currentKeyFrame]
+    finalPositions = keyFrames[nextKeyFrame]
+    activeDisplayObjects = []
+    for uuid, transform of initialPositions
+      object = objects[uuid]
 
-      rotate: (angle) ->
-        I.transform = I.transform.rotate(angle, self.registrationPoint())
+      if t == 0
+        object.transform(transform)
+      else
+        object.transform(generateMatrixTweenFunction(transform, finalPositions[uuid])(t))
 
-      scale: (amount) ->
-        I.transform = I.transform.scale(1 + amount, 1 + amount, self.registrationPoint())
+      activeDisplayObjects.push(object)
 
-      transparentize: (amount) ->
-        I.alpha = (I.alpha - amount).clamp(0, 1)
+    activeDisplayObjects
 
-    self.attrAccessor "transform"
+  frameAdvance = ->
+    currentFrame = (currentFrame + 1) % NUM_FRAMES
+    if keyFrames[currentFrame]
+      currentKeyFrame = currentFrame
 
-    self
+  $(".timeline .frame").click ->
+    currentFrame = $(this).index()
 
-  objects = []
+    if $(this).is(".key")
+      currentKeyFrame = currentFrame
+    else
+      currentKeyFrame = $(this).prevAll(".key").filter(":last").index()
+
+    log currentFrame
+    log currentKeyFrame
+
+    $(this).takeClass("active")
+    activeObject = null
 
   addObject = (sprite) ->
-    objects.push DisplayObject
+    uuid = Math.uuid(32, 16)
+
+    # Add object to objects table
+    objects[uuid] = DisplayObject
       height: sprite.height
+      id: uuid
       sprite: sprite
       width: sprite.width
 
-  clock = 0
+    # Add object in default position to each key frame
+    for pos, frame of keyFrames
+      frame[uuid] = Matrix()
+
   refreshCanvas = ->
     canvas.clear()
-    objects.invoke "draw", canvas
+    activeFrameObjects().invoke "draw", canvas
 
-    canvas.strokeColor "rgba(96, 0, 96, 0.75)"
-    activeObject?.drawOutline(canvas)
-
-    if tweenFn
-      activeObject.I.transform = tweenFn((clock % 128) / 128)
-
-    clock += 1
+    if playing
+      frameAdvance()
+    else
+      canvas.strokeColor "rgba(96, 0, 96, 0.75)"
+      activeObject?.drawOutline(canvas)
 
   uiElement = $("canvas.ui")
   ui = uiElement.powerCanvas()
@@ -160,24 +227,22 @@
       event.pageY - offset.top
     )
 
-  activeObject = null
-  tweenFn = null
-  mousedown = false
-  previousMousePosition = Point(0, 0)
+  updateObject = (method, args...) ->
+    if activeObject
+      activeKeyFrame()[activeObject.id()] = activeObject[method](args...)
 
   $(document).bind "mousemove", (e) ->
     local = eventToLocal(e)
 
-    if activeObject
-      if mousedown
-        activeObject.move(local.subtract(previousMousePosition))
+    if mousedown
+      updateObject "move", local.subtract(previousMousePosition)
 
     previousMousePosition = local
 
   uiElement.bind "mousedown", (e) ->
     local = eventToLocal(e)
 
-    activeObject = objects.select (object) ->
+    activeObject = activeFrameObjects().select (object) ->
       object.pointWithin(local)
     .last()
 
@@ -200,66 +265,26 @@
 
       Matrix.apply null, params
 
-  $("button.raise").click ->
-    if activeObject
-      objects.remove(activeObject)
-      objects.push(activeObject)
+  # tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform, "sinusoidalInOut")
 
-  $("button.lower").click ->
-    if activeObject
-      objects.remove(activeObject)
-      objects.unshift(activeObject)
+  addButton = (text, fn) ->
+    button = $ "<button />",
+      text: text
+      click: fn
 
-  $("button.rotate").click ->
-    activeObject?.rotate(Math.TAU / 16)
+    editor.find(".actions").append button
 
-  $("button.tween").click ->
-    if activeObject
-      tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform, "sinusoidalInOut")
+  addButton "Rotate", ->
+    updateObject "rotate", Math.TAU / 16
 
-  $("button.transparentize").click ->
-    activeObject?.transparentize(0.10)
+  addButton "Grow", ->
+    updateObject "scale", 0.25
 
-  $("button.opacify").click ->
-    activeObject?.opacify(0.10)
+  addButton "Shrink", ->
+    updateObject "scale", -0.2
 
-  $("button.grow").click ->
-    activeObject?.scale(0.25)
+  addButton "Play", ->
+    playing = true
 
-  $("button.shrink").click ->
-    activeObject?.scale(-0.2)
-
-  window.Easing =
-    sinusoidal: (begin, end) ->
-      change = end - begin
-      (t) -> begin + change * (1 - Math.cos(t * Math.TAU / 4))
-
-    sinusoidalOut: (begin, end) ->
-      change = end - begin
-      (t) -> begin + change * (0 + Math.sin(t * Math.TAU / 4))
-
-  polynomialEasings = ["linear", "quadratic", "cubic", "quartic", "quintic"]
-
-  polynomialEasings.each (easing, i) ->
-    exponent = i + 1
-    sign = if exponent % 2 then 1 else -1
-
-    Easing[easing] = (begin, end) ->
-      change = (end - begin)
-      (t) -> begin + change * Math.pow(t, exponent)
-
-    Easing["\#{easing}Out"] = (begin, end) ->
-      change = end - begin
-      (t) -> begin + change * (1 + sign * Math.pow(t - 1, exponent))
-
-  ["sinusoidal"].concat(polynomialEasings).each (easing) ->
-    Easing["\#{easing}InOut"] = (begin, end) ->
-      midpoint = (begin + end)/2
-      easeIn = Easing[easing](begin, midpoint)
-      easeOut = Easing["\#{easing}Out"](midpoint, end)
-
-      (t) ->
-        if t < 0.5
-          easeIn(2 * t)
-        else
-          easeOut(2 * t - 1)
+  addButton "Pause", ->
+    playing = false
