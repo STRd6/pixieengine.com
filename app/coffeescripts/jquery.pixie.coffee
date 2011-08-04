@@ -689,18 +689,23 @@
 
           image = new Image()
           image.onload = ->
-            canvas.resize(image.width, image.height)
+            if image.width * image.height < 128 * 96
+              canvas.resize(image.width, image.height)
 
-            context.drawImage(image, 0, 0)
-            imageData = context.getImageData(0, 0, image.width, image.height)
+              context.drawImage(image, 0, 0)
+              imageData = context.getImageData(0, 0, image.width, image.height)
 
-            getColor = (x, y) ->
-              index = (x + y * imageData.width) * 4
+              getColor = (x, y) ->
+                index = (x + y * imageData.width) * 4
 
-              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
+                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
 
-            canvas.eachPixel (pixel, x, y) ->
-              pixel.color(getColor(x, y), true)
+              canvas.eachPixel (pixel, x, y) ->
+                pixel.color(getColor(x, y), true)
+            else
+              alert("This image is too big for our editor to handle, try 96x96 and smaller")
+
+            return
 
           image.src = dataURL
 

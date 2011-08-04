@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Fri, 10 Jun 2011 05:46:44 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 04 Aug 2011 01:23:59 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
@@ -735,17 +735,21 @@
             image = new Image();
             image.onload = function() {
               var getColor, imageData;
-              canvas.resize(image.width, image.height);
-              context.drawImage(image, 0, 0);
-              imageData = context.getImageData(0, 0, image.width, image.height);
-              getColor = function(x, y) {
-                var index;
-                index = (x + y * imageData.width) * 4;
-                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
-              };
-              return canvas.eachPixel(function(pixel, x, y) {
-                return pixel.color(getColor(x, y), true);
-              });
+              if (image.width * image.height < 128 * 96) {
+                canvas.resize(image.width, image.height);
+                context.drawImage(image, 0, 0);
+                imageData = context.getImageData(0, 0, image.width, image.height);
+                getColor = function(x, y) {
+                  var index;
+                  index = (x + y * imageData.width) * 4;
+                  return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
+                };
+                canvas.eachPixel(function(pixel, x, y) {
+                  return pixel.color(getColor(x, y), true);
+                });
+              } else {
+                alert("This image is too big for our editor to handle, try 96x96 and smaller");
+              }
             };
             return image.src = dataURL;
           },
@@ -762,7 +766,6 @@
             if (((0 <= y && y < height)) && ((0 <= x && x < width))) {
               return pixels[y][x];
             }
-            return void 0;
           },
           getReplayData: function() {
             return undoStack.replayData();

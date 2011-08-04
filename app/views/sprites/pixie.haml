@@ -36,6 +36,10 @@
   = button_to_function "New Canvas", "newCanvas()"
 
 :coffeescript
+  $("body").dropImageReader
+    callback: (file, event) ->
+      canvas.fromDataURL(event.target.result)
+
   (($) ->
     window.setNewDimensions = ->
       $("#newCanvasModal").removeAttr("style").modal
