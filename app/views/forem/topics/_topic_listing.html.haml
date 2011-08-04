@@ -13,7 +13,7 @@
     .subject= link_to topic_listing.subject, forum_topic_path(@forum, topic_listing)
     .started-by
       Started by
-      = link_to topic_listing.posts.last.user, topic_listing.posts.last.user
+      = link_to topic_listing.posts.last.user, main_app.user_path(topic_listing.posts.last.user)
 
   %td.latest-post
     = link_to_latest_post(topic_listing.posts.first)
