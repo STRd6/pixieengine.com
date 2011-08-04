@@ -1,5 +1,11 @@
 @import "util"
 
+$bottom_module: 250px
+$left_module: 300px
+$right_module: 100px
+
+$highlight: #FEF7CB
+
 body#fullscreen > .content
   height: 0
 
@@ -11,9 +17,9 @@ body#fullscreen > .content
   .content
     & >
       section
-        padding-left: 220px
-        padding-right: 220px
-        padding-bottom: 150px
+        padding-left: $left_module
+        padding-right: $right_module
+        padding-bottom: $bottom_module
 
         .relative
           +bounds(100%)
@@ -73,19 +79,26 @@ body#fullscreen > .content
                 vertical-align: top
                 width: 40px
 
+      nav.right
+        +bounds($right_module, 100%)
       nav.left
+        +bounds($left_module, 100%)
         +box-sizing(border-box)
 
-        padding-bottom: 150px
+        padding-bottom: $bottom_module
 
         .sprites
           height: 50%
 
           img
             display: inline-block
-            max-height: 50px
-            max-width: 50px
+            max-height: 40px
+            max-width: 40px
             padding: 2px
+
+            &:hover
+              +border-radius(2px)
+              background-color: $highlight
 
         .sequence
           display: inline-block
@@ -96,6 +109,8 @@ body#fullscreen > .content
           img
             +transition
 
+            max-height: 80px
+            max-width: 80px
             position: absolute
 
             &.rotate_right
@@ -105,8 +120,6 @@ body#fullscreen > .content
               +rotate(-15deg, -10px, -3px)
 
       nav.left, nav.right
-        +bounds(220px, 100%)
-
         .background_color
           +box-sizing(border-box)
 
@@ -128,7 +141,7 @@ body#fullscreen > .content
       .bottom
         +border-radius(0)
         +box-shadow(none)
-        height: 150px
+        height: 250px
 
         h3
           display: inline-block
@@ -147,19 +160,13 @@ body#fullscreen > .content
 
             border: 1px solid transparent
             display: inline-block
+            max-height: 80px
+            max-width: 80px
             padding: 2px
 
             &.current
-              background-color: #FEF7CB
+              background-color: $highlight
               border: 1px solid #FFE475
-
-  .animation
-    +border-radius(4px)
-    +bounds(75px)
-
-    background-color: #AAA
-    border: 1px solid #666
-    margin: auto
 
   .state_name, .frame_sprites .img, .sprites img
     cursor: pointer

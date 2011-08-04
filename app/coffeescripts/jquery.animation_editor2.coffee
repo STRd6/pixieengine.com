@@ -8,29 +8,50 @@ $.fn.animationEditor = (options) ->
   animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
 
-  loadSpriteSheet = (src, tileWidth, tileHeight) ->
+  LoaderProxy = ->
+    draw: $.noop
+    fill: $.noop
+    frame: $.noop
+    update: $.noop
+    width: null
+    height: null
+
+  loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     sprites = []
 
+    canvas = $('<canvas>').get(0)
+    context = canvas.getContext('2d')
+
     image = new Image()
-    image.src = src
+    proxy = LoaderProxy()
 
     image.onload = ->
-      rows = image.height / tileHeight
-      columns = image.width / tileWidth
+      tileWidth = image.width / rows
+      tileHeight = image.height / columns
 
-      rows.times (row) ->
-        columns.times (col) ->
-          sprite = new Image()
-          sprite.src = src
+      canvas.width = tileWidth
+      canvas.height = tileHeight
 
-          sprite.onload = ->
-            debugger
-            sprite.offsetLeft = row * tileWidth
-            sprite.offsetTop = col * tileHeight
-            sprite.width = tileWidth
-            sprite.height = tileHeight
+      columns.times (col) ->
+        rows.times (row) ->
+          sourceX = row * tileWidth
+          sourceY = col * tileHeight
+          sourceWidth = tileWidth
+          sourceHeight = tileHeight
+          destWidth = tileWidth
+          destHeight = tileHeight
+          destX = 0
+          destY = 0
 
-            sprites.push(sprite)
+          context.clearRect(0, 0, tileWidth, tileHeight)
+          context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight)
+
+          sprites.push(canvas.toDataURL())
+
+      if loadedCallback
+        loadedCallback(proxy)
+
+    image.src = src
 
     return sprites
 
@@ -104,9 +125,6 @@ $.fn.animationEditor = (options) ->
   Animation = ->
     tileset = {}
 
-    [323..338].each (n) ->
-      tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/#{n}/original.png"
-
     sequences = []
     frames = []
     currentFrameIndex = 0
@@ -129,11 +147,15 @@ $.fn.animationEditor = (options) ->
           spriteSrc = tileset[spriteIndex]
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
-    animationEditor.bind 'updateFrames', ->
+    animationEditor.bind 'clearFrames', ->
       animationEditor.find('.frame_sprites').children().remove()
-      for frame_index in frames
-        spriteSrc = tileset[frame_index]
-        spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
+
+    animationEditor.bind 'removeFrame', (e, frameIndex) ->
+      animationEditor.find('.frame_sprites img').eq(frameIndex).remove()
+
+    animationEditor.bind 'updateFrames', ->
+      spriteSrc = tileset[frames.last()]
+      spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
 
     animationEditor.bind 'disableSave', ->
       animationEditor.find('.save_sequence, .save_animation').attr
@@ -145,7 +167,7 @@ $.fn.animationEditor = (options) ->
 
     clearFrames = ->
       frames.clear()
-      animationEditor.trigger 'updateFrames'
+      animationEditor.trigger 'clearFrames'
       animationEditor.trigger 'disableSave'
 
     pushSequence = (frameArray) ->
@@ -197,7 +219,7 @@ $.fn.animationEditor = (options) ->
         frames.splice(frameIndex, 1)
         controls.scrubberMax(controls.scrubberMax() - 1)
 
-        animationEditor.trigger 'updateFrames'
+        animationEditor.trigger 'removeFrame', frameIndex
         animationEditor.trigger 'disableSave' if frames.length == 0
 
       updateSelected: (frameIndex) ->
@@ -307,10 +329,12 @@ $.fn.animationEditor = (options) ->
       [dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
 
       if tileWidth && tileHeight
-        sheetSprites = loadSpriteSheet(src, tileWidth, tileHeight)
+        sheetSprites = loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight))
+
+        debugger
 
         for sprite in sheetSprites
-          currentAnimation.addTile(sprite.src)
+          currentAnimation.addTile(sprite)
       else
         currentAnimation.addTile(src)
 

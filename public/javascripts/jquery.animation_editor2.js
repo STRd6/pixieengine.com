@@ -1,40 +1,60 @@
-/* DO NOT MODIFY. This file was compiled Wed, 03 Aug 2011 21:15:30 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 04 Aug 2011 03:51:22 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
+    var Animation, Controls, LoaderProxy, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
     animationNumber = 1;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
-    loadSpriteSheet = function(src, tileWidth, tileHeight) {
-      var image, sprites;
+    LoaderProxy = function() {
+      return {
+        draw: $.noop,
+        fill: $.noop,
+        frame: $.noop,
+        update: $.noop,
+        width: null,
+        height: null
+      };
+    };
+    loadSpriteSheet = function(src, rows, columns, loadedCallback) {
+      var canvas, context, image, proxy, sprites;
       sprites = [];
+      canvas = $('<canvas>').get(0);
+      context = canvas.getContext('2d');
       image = new Image();
-      image.src = src;
+      proxy = LoaderProxy();
       image.onload = function() {
-        var columns, rows;
-        rows = image.height / tileHeight;
-        columns = image.width / tileWidth;
-        return rows.times(function(row) {
-          return columns.times(function(col) {
-            var sprite;
-            sprite = new Image();
-            sprite.src = src;
-            return sprite.onload = function() {
-              debugger;              sprite.offsetLeft = row * tileWidth;
-              sprite.offsetTop = col * tileHeight;
-              sprite.width = tileWidth;
-              sprite.height = tileHeight;
-              return sprites.push(sprite);
-            };
+        var tileHeight, tileWidth;
+        tileWidth = image.width / rows;
+        tileHeight = image.height / columns;
+        canvas.width = tileWidth;
+        canvas.height = tileHeight;
+        columns.times(function(col) {
+          return rows.times(function(row) {
+            var destHeight, destWidth, destX, destY, sourceHeight, sourceWidth, sourceX, sourceY;
+            sourceX = row * tileWidth;
+            sourceY = col * tileHeight;
+            sourceWidth = tileWidth;
+            sourceHeight = tileHeight;
+            destWidth = tileWidth;
+            destHeight = tileHeight;
+            destX = 0;
+            destY = 0;
+            context.clearRect(0, 0, tileWidth, tileHeight);
+            context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+            return sprites.push(canvas.toDataURL());
           });
         });
+        if (loadedCallback) {
+          return loadedCallback(proxy);
+        }
       };
+      image.src = src;
       return sprites;
     };
     Controls = function() {
@@ -115,9 +135,6 @@
     Animation = function() {
       var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self, sequences, tileset;
       tileset = {};
-      [323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338].each(function(n) {
-        return tileset[Math.uuid(32, 16)] = "http://dev.pixie.strd6.com/sprites/" + n + "/original.png";
-      });
       sequences = [];
       frames = [];
       currentFrameIndex = 0;
@@ -155,18 +172,18 @@
         }
         return _results;
       });
+      animationEditor.bind('clearFrames', function() {
+        return animationEditor.find('.frame_sprites').children().remove();
+      });
+      animationEditor.bind('removeFrame', function(e, frameIndex) {
+        return animationEditor.find('.frame_sprites img').eq(frameIndex).remove();
+      });
       animationEditor.bind('updateFrames', function() {
-        var frame_index, spriteSrc, _i, _len, _results;
-        animationEditor.find('.frame_sprites').children().remove();
-        _results = [];
-        for (_i = 0, _len = frames.length; _i < _len; _i++) {
-          frame_index = frames[_i];
-          spriteSrc = tileset[frame_index];
-          _results.push(spriteTemplate.tmpl({
-            src: spriteSrc
-          }).appendTo(animationEditor.find('.frame_sprites')));
-        }
-        return _results;
+        var spriteSrc;
+        spriteSrc = tileset[frames.last()];
+        return spriteTemplate.tmpl({
+          src: spriteSrc
+        }).appendTo(animationEditor.find('.frame_sprites'));
       });
       animationEditor.bind('disableSave', function() {
         return animationEditor.find('.save_sequence, .save_animation').attr({
@@ -179,7 +196,7 @@
       });
       clearFrames = function() {
         frames.clear();
-        animationEditor.trigger('updateFrames');
+        animationEditor.trigger('clearFrames');
         return animationEditor.trigger('disableSave');
       };
       pushSequence = function(frameArray) {
@@ -241,7 +258,7 @@
           tilesetIndex = frames[frameIndex];
           frames.splice(frameIndex, 1);
           controls.scrubberMax(controls.scrubberMax() - 1);
-          animationEditor.trigger('updateFrames');
+          animationEditor.trigger('removeFrame', frameIndex);
           if (frames.length === 0) {
             return animationEditor.trigger('disableSave');
           }
@@ -363,11 +380,12 @@
         name = file.fileName;
         _ref = name.match(/x(\d*)y(\d*)/) || [], dimensions = _ref[0], tileWidth = _ref[1], tileHeight = _ref[2];
         if (tileWidth && tileHeight) {
-          sheetSprites = loadSpriteSheet(src, tileWidth, tileHeight);
+          sheetSprites = loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight));
+          debugger;
           _results = [];
           for (_i = 0, _len = sheetSprites.length; _i < _len; _i++) {
             sprite = sheetSprites[_i];
-            _results.push(currentAnimation.addTile(sprite.src));
+            _results.push(currentAnimation.addTile(sprite));
           }
           return _results;
         } else {
