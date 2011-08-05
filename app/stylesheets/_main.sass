@@ -15,7 +15,11 @@ html
 
   &.light
     background-color: $light_background
+    background-image: url(/images/textured_bg.png)
     color: $light_text
+
+    & body > .content
+      background-color: $light_background
 
 body
   +box-sizing(border-box)
@@ -23,9 +27,8 @@ body
   font-family: $normal_font
   font-size: 12px
   line-height: 1.5
-
-  min-height: 100%
-  padding-bottom: 4em
+  height: 100%
+  padding-bottom: 3.5em
   position: relative
 
 #fullscreen
@@ -45,6 +48,14 @@ body > .content, header > .content, footer > .content
 
 #fullscreen > .content
   +bounds(100%)
+
+body > .content
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05)
+  border-left: 1px solid rgba(0, 0, 0, 0.05)
+  border-right: 1px solid rgba(0, 0, 0, 0.05)
+  height: 100%
+  padding-left: 2em
+  padding-right: 2em
 
 p
   margin: 1em 0
