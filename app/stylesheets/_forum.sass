@@ -25,6 +25,33 @@
       padding: .5em
       font-size: .5em
 
+=forum_text_styles
+  img, ol, p, pre, ul
+    margin-bottom: 1em
+
+  em
+    font-style: italic
+
+  ol
+    list-style: decimal inside
+
+  p
+    margin-top: 0
+
+  pre
+    +box-sizing(border-box)
+
+    border: 1px dotted #CCC
+    display: block
+    padding: 0.5em
+    width: 100%
+
+  ul
+    list-style: disc inside
+
+  strong
+    font-weight: bold
+
 #posts
   .post
     min-height: 75px
@@ -53,24 +80,7 @@
       vertical-align: baseline
 
       .text
-
-        p
-          margin-top: 0
-
-        pre
-          margin-bottom: 1em
-
-        code
-          +box-sizing(border-box)
-
-          border: 1px dotted #CCC
-          display: block
-          padding: 0.5em
-          width: 100%
-
-        ul
-          list-style: disc inside
-
+        +forum_text_styles
 
       &:hover .actions
         display: block
@@ -139,3 +149,11 @@ table.subdued
   height: 15px
   background: transparent url(/assets/forem/pin_icon.png) 0 0
   display: inline-block
+
+#post_preview
+  +forum_text_styles
+
+  background-color: white
+  border: 1px solid #AAA
+  margin: 15px 0
+  padding: 0 5px
