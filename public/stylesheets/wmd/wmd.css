@@ -1,4 +1,28 @@
-/* line 1, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 12, ../../../app/stylesheets/partials/_contents_centered.sass */
+.contents_centered {
+  position: relative;
+}
+/* line 4, ../../../app/stylesheets/partials/_contents_centered.sass */
+.contents_centered > * {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* line 8, ../../../app/stylesheets/partials/_ellipsis.sass */
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  -moz-binding: url('/stylesheets/xml/ellipsis.xml#ellipsis');
+}
+
+/* line 4, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-panel {
   margin-left: 25%;
   margin-right: 25%;
@@ -6,17 +30,17 @@
   min-width: 500px;
 }
 
-/* line 7, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 10, ../../../app/stylesheets/wmd/wmd.sass */
 #wmd-editor {
   background-color: Aquamarine;
 }
 
-/* line 10, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 13, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-button-bar {
   width: 100%;
 }
 
-/* line 13, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 16, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-input {
   height: 500px;
   width: 100%;
@@ -24,17 +48,17 @@
   border: 1px solid DarkGray;
 }
 
-/* line 19, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 22, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-preview {
   background-color: LightGray;
 }
 
-/* line 22, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 25, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-output {
   background-color: Pink;
 }
 
-/* line 25, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 28, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-button-row {
   position: relative;
   margin: 0px;
@@ -42,21 +66,21 @@
   height: 20px;
 }
 
-/* line 31, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 34, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-spacer {
   width: 1px;
   height: 20px;
   margin-left: 7px;
   margin-right: 7px;
   position: relative;
-  background-color: silver;
+  background-color: rgba(0, 0, 0, 0.1);
   display: inline-block;
   zoom: 1;
   *display: inline;
   list-style: none;
 }
 
-/* line 43, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 46, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-button {
   width: 20px;
   height: 20px;
@@ -70,7 +94,7 @@
   *display: inline;
   list-style: none;
 }
-/* line 55, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 58, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-button > a {
   width: 20px;
   height: 20px;
@@ -79,169 +103,88 @@
   position: absolute;
   display: inline-block;
 }
-/* line 63, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 66, ../../../app/stylesheets/wmd/wmd.sass */
+.wmd-button:hover {
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -o-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -khtml-border-radius: 2px;
+  border-radius: 2px;
+  background-color: #fff6bf;
+}
+/* line 70, ../../../app/stylesheets/wmd/wmd.sass */
+.wmd-button:disabled {
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=75);
+  opacity: 0.75;
+}
+/* line 73, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-button:last-child {
   margin-right: 0;
 }
 
 /* sprite button slicing style information */
-/* line 68, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 78, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-bold-button {
   background-position: 0px 0px;
 }
-/* line 70, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-bold-button:hover {
-  background-position: 0px -40px;
-}
-/* line 72, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-bold-button.disabled {
-  background-position: 0px -20px;
-}
 
-/* line 75, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 81, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-italic-button {
   background-position: -20px 0px;
 }
-/* line 77, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-italic-button:hover {
-  background-position: -20px -40px;
-}
-/* line 79, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-italic-button.disabled {
-  background-position: -20px -20px;
-}
 
-/* line 82, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 84, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-link-button {
   background-position: -40px 0px;
 }
-/* line 84, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-link-button:hover {
-  background-position: -40px -40px;
-}
-/* line 86, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-link-button.disabled {
-  background-position: -40px -20px;
-}
 
-/* line 89, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 87, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-quote-button {
   background-position: -60px 0px;
 }
-/* line 91, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-quote-button:hover {
-  background-position: -60px -40px;
-}
-/* line 93, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-quote-button.disabled {
-  background-position: -60px -20px;
-}
 
-/* line 96, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 90, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-code-button {
   background-position: -80px 0px;
 }
-/* line 98, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-code-button:hover {
-  background-position: -80px -40px;
-}
-/* line 100, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-code-button.disabled {
-  background-position: -80px -20px;
-}
 
-/* line 103, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 93, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-image-button {
   background-position: -100px 0px;
 }
-/* line 105, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-image-button:hover {
-  background-position: -100px -40px;
-}
-/* line 107, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-image-button.disabled {
-  background-position: -100px -20px;
-}
 
-/* line 110, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 96, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-olist-button {
   background-position: -120px 0px;
 }
-/* line 112, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-olist-button:hover {
-  background-position: -120px -40px;
-}
-/* line 114, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-olist-button.disabled {
-  background-position: -120px -20px;
-}
 
-/* line 117, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 99, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-ulist-button {
   background-position: -140px 0px;
 }
-/* line 119, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-ulist-button:hover {
-  background-position: -140px -40px;
-}
-/* line 121, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-ulist-button.disabled {
-  background-position: -140px -20px;
-}
 
-/* line 124, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 102, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-heading-button {
   background-position: -160px 0px;
 }
-/* line 126, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-heading-button:hover {
-  background-position: -160px -40px;
-}
-/* line 128, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-heading-button.disabled {
-  background-position: -160px -20px;
-}
 
-/* line 131, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 105, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-hr-button {
   background-position: -180px 0px;
 }
-/* line 133, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-hr-button:hover {
-  background-position: -180px -40px;
-}
-/* line 135, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-hr-button.disabled {
-  background-position: -180px -20px;
-}
 
-/* line 138, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 108, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-undo-button {
   background-position: -200px 0px;
 }
-/* line 140, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-undo-button:hover {
-  background-position: -200px -40px;
-}
-/* line 142, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-undo-button.disabled {
-  background-position: -200px -20px;
-}
 
-/* line 145, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 111, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-redo-button {
   background-position: -220px 0px;
 }
-/* line 147, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-redo-button:hover {
-  background-position: -220px -40px;
-}
-/* line 149, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-redo-button.disabled {
-  background-position: -220px -20px;
-}
 
-/* line 152, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 114, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-help-button {
   background-position: -240px 0px;
   position: absolute;
@@ -249,31 +192,23 @@
   right: 0px;
   background-position: -240px 0;
 }
-/* line 154, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-help-button:hover {
-  background-position: -240px -40px;
-}
-/* line 156, ../../../app/stylesheets/wmd/wmd.sass */
-.wmd-help-button.disabled {
-  background-position: -240px -20px;
-}
 
-/* line 163, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 121, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-prompt-background {
   background-color: black;
 }
 
-/* line 166, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 124, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-prompt-dialog {
   border: 1px solid #999999;
   background-color: #f5f5f5;
 }
-/* line 173, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 131, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-prompt-dialog > form > input[type="text"] {
   border: 1px solid #999999;
   color: black;
 }
-/* line 177, ../../../app/stylesheets/wmd/wmd.sass */
+/* line 135, ../../../app/stylesheets/wmd/wmd.sass */
 .wmd-prompt-dialog > form > input[type="button"] {
   border: 1px solid #888888;
 }

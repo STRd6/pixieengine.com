@@ -1,3 +1,6 @@
+@import partials/base
+@import util
+
 .wmd-panel
   margin-left: 25%
   margin-right: 25%
@@ -34,15 +37,15 @@
   margin-left: 7px
   margin-right: 7px
   position: relative
-  background-color: Silver
+  background-color: rgba(0, 0, 0, 0.1)
   display: inline-block
   zoom: 1
   *display: inline
   list-style: none
 
 .wmd-button
-  width: 20px
-  height: 20px
+  +bounds(20px)
+
   margin-right: 5px
   position: relative
   background-image: url(wmd-buttons.png)
@@ -60,6 +63,13 @@
     position: absolute
     display: inline-block
 
+  &:hover
+    +border-radius(2px)
+    background-color: $hover
+
+  &:disabled
+    +opacity(0.75)
+
   &:last-child
     margin-right: 0
 
@@ -67,94 +77,42 @@
 
 .wmd-bold-button
   background-position: 0px   0px
-  &:hover
-    background-position: 0px -40px
-  &.disabled
-    background-position: 0px -20px
 
 .wmd-italic-button
   background-position: -20px 0px
-  &:hover
-    background-position: -20px -40px
-  &.disabled
-    background-position: -20px -20px
 
 .wmd-link-button
   background-position: -40px 0px
-  &:hover
-    background-position: -40px -40px
-  &.disabled
-    background-position: -40px -20px
 
 .wmd-quote-button
   background-position: -60px 0px
-  &:hover
-    background-position: -60px -40px
-  &.disabled
-    background-position: -60px -20px
 
 .wmd-code-button
   background-position: -80px 0px
-  &:hover
-    background-position: -80px -40px
-  &.disabled
-    background-position: -80px -20px
 
 .wmd-image-button
   background-position: -100px 0px
-  &:hover
-    background-position: -100px -40px
-  &.disabled
-    background-position: -100px -20px
 
 .wmd-olist-button
   background-position: -120px 0px
-  &:hover
-    background-position: -120px -40px
-  &.disabled
-    background-position: -120px -20px
 
 .wmd-ulist-button
   background-position: -140px 0px
-  &:hover
-    background-position: -140px -40px
-  &.disabled
-    background-position: -140px -20px
 
 .wmd-heading-button
   background-position: -160px 0px
-  &:hover
-    background-position: -160px -40px
-  &.disabled
-    background-position: -160px -20px
 
 .wmd-hr-button
   background-position: -180px 0px
-  &:hover
-    background-position: -180px -40px
-  &.disabled
-    background-position: -180px -20px
 
 .wmd-undo-button
   background-position: -200px 0px
-  &:hover
-    background-position: -200px -40px
-  &.disabled
-    background-position: -200px -20px
 
 .wmd-redo-button
   background-position: -220px 0px
-  &:hover
-    background-position: -220px -40px
-  &.disabled
-    background-position: -220px -20px
 
 .wmd-help-button
   background-position: -240px 0px
-  &:hover
-    background-position: -240px -40px
-  &.disabled
-    background-position: -240px -20px
   position: absolute
   top: 5px
   right: 0px
