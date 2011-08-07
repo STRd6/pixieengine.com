@@ -1,33 +1,22 @@
-/* DO NOT MODIFY. This file was compiled Thu, 04 Aug 2011 03:51:22 GMT from
+/* DO NOT MODIFY. This file was compiled Sun, 07 Aug 2011 00:15:52 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, LoaderProxy, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
     animationNumber = 1;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
-    LoaderProxy = function() {
-      return {
-        draw: $.noop,
-        fill: $.noop,
-        frame: $.noop,
-        update: $.noop,
-        width: null,
-        height: null
-      };
-    };
     loadSpriteSheet = function(src, rows, columns, loadedCallback) {
-      var canvas, context, image, proxy, sprites;
+      var canvas, context, image, sprites;
       sprites = [];
       canvas = $('<canvas>').get(0);
       context = canvas.getContext('2d');
       image = new Image();
-      proxy = LoaderProxy();
       image.onload = function() {
         var tileHeight, tileWidth;
         tileWidth = image.width / rows;
@@ -51,7 +40,7 @@
           });
         });
         if (loadedCallback) {
-          return loadedCallback(proxy);
+          return loadedCallback(sprites);
         }
       };
       image.src = src;
@@ -184,6 +173,12 @@
         return spriteTemplate.tmpl({
           src: spriteSrc
         }).appendTo(animationEditor.find('.frame_sprites'));
+      });
+      animationEditor.bind('updateAnimations', function() {
+        animationEditor.find('.player .animation_name').text(currentAnimation.name());
+        animationEditor.find('.sequences').children().remove();
+        animationEditor.find('.frame_sprites').children().remove();
+        return animationEditor.find('.player img').removeAttr('src');
       });
       animationEditor.bind('disableSave', function() {
         return animationEditor.find('.save_sequence, .save_animation').attr({
@@ -324,9 +319,7 @@
     animationEditor.find('.new_animation').mousedown(function() {
       animations.push(Animation());
       currentAnimation = animations.last();
-      animationEditor.find('.sequences').children().remove();
-      animationEditor.find('.frame_sprites').children().remove();
-      animationEditor.find('.player img').removeAttr('src');
+      animationEditor.trigger('updateAnimations');
       return updateUI();
     });
     animationEditor.find('.sprites img').live({
@@ -372,22 +365,23 @@
         return currentAnimation.name(updatedStateName);
       }
     });
-    animationEditor.find('.state_name').liveEdit();
+    animationEditor.find('.player .animation_name').liveEdit();
     animationEditor.dropImageReader(function(file, event) {
-      var dimensions, name, sheetSprites, sprite, src, tileHeight, tileWidth, _i, _len, _ref, _results;
+      var dimensions, name, src, tileHeight, tileWidth, _ref;
       if (event.target.readyState === FileReader.DONE) {
         src = event.target.result;
         name = file.fileName;
         _ref = name.match(/x(\d*)y(\d*)/) || [], dimensions = _ref[0], tileWidth = _ref[1], tileHeight = _ref[2];
         if (tileWidth && tileHeight) {
-          sheetSprites = loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight));
-          debugger;
-          _results = [];
-          for (_i = 0, _len = sheetSprites.length; _i < _len; _i++) {
-            sprite = sheetSprites[_i];
-            _results.push(currentAnimation.addTile(sprite));
-          }
-          return _results;
+          return loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), function(spriteArray) {
+            var sprite, _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = spriteArray.length; _i < _len; _i++) {
+              sprite = spriteArray[_i];
+              _results.push(currentAnimation.addTile(sprite));
+            }
+            return _results;
+          });
         } else {
           return currentAnimation.addTile(src);
         }

@@ -8,14 +8,6 @@ $.fn.animationEditor = (options) ->
   animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
 
-  LoaderProxy = ->
-    draw: $.noop
-    fill: $.noop
-    frame: $.noop
-    update: $.noop
-    width: null
-    height: null
-
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     sprites = []
 
@@ -23,7 +15,6 @@ $.fn.animationEditor = (options) ->
     context = canvas.getContext('2d')
 
     image = new Image()
-    proxy = LoaderProxy()
 
     image.onload = ->
       tileWidth = image.width / rows
@@ -49,7 +40,7 @@ $.fn.animationEditor = (options) ->
           sprites.push(canvas.toDataURL())
 
       if loadedCallback
-        loadedCallback(proxy)
+        loadedCallback(sprites)
 
     image.src = src
 
@@ -156,6 +147,12 @@ $.fn.animationEditor = (options) ->
     animationEditor.bind 'updateFrames', ->
       spriteSrc = tileset[frames.last()]
       spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
+
+    animationEditor.bind 'updateAnimations', ->
+      animationEditor.find('.player .animation_name').text(currentAnimation.name())
+      animationEditor.find('.sequences').children().remove()
+      animationEditor.find('.frame_sprites').children().remove()
+      animationEditor.find('.player img').removeAttr('src')
 
     animationEditor.bind 'disableSave', ->
       animationEditor.find('.save_sequence, .save_animation').attr
@@ -277,10 +274,7 @@ $.fn.animationEditor = (options) ->
   animationEditor.find('.new_animation').mousedown ->
     animations.push(Animation())
     currentAnimation = animations.last()
-
-    animationEditor.find('.sequences').children().remove()
-    animationEditor.find('.frame_sprites').children().remove()
-    animationEditor.find('.player img').removeAttr('src')
+    animationEditor.trigger 'updateAnimations'
 
     updateUI()
 
@@ -319,7 +313,7 @@ $.fn.animationEditor = (options) ->
       updatedStateName = $(this).val()
       currentAnimation.name(updatedStateName)
 
-  animationEditor.find('.state_name').liveEdit()
+  animationEditor.find('.player .animation_name').liveEdit()
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -329,12 +323,10 @@ $.fn.animationEditor = (options) ->
       [dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
 
       if tileWidth && tileHeight
-        sheetSprites = loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight))
-
-        debugger
-
-        for sprite in sheetSprites
-          currentAnimation.addTile(sprite)
+        loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), (spriteArray) ->
+          for sprite in spriteArray
+            currentAnimation.addTile(sprite)
+        )
       else
         currentAnimation.addTile(src)
 
