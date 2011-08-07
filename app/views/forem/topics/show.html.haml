@@ -1,3 +1,6 @@
+- @title = @topic.subject
+- @meta_desc = @posts.first.text
+
 #topic{ :class => ( @topic.locked? ? 'locked' : 'unlocked' ) }
   = render :partial => 'forem/topics/head', :locals => { :topic => @topic }
 

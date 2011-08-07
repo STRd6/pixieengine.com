@@ -1,3 +1,6 @@
+- @title = @forum.title
+- @meta_desc = @forum.description
+
 = render :partial => 'forem/forums/head', :locals => { :forum => @forum }
 
 - if @topics.num_pages > 1
