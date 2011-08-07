@@ -1,3 +1,6 @@
+- unless user.profile.blank?
+  - @meta_desc = user.profile.html_safe
+
 %style
   :sass
     @import util
