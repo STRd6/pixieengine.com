@@ -243,16 +243,12 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if current_user
-      if filter == "own"
-        Project.for_user(current_user)
-      elsif filter == "for_user"
-        Project.for_user(User.find(params[:user_id]))
-      else
-        Project.send(filter)
-      end
+    @projects ||= if filter == "own" && current_user
+      Project.for_user(current_user)
+    elsif filter == "for_user"
+      Project.for_user(User.find(params[:user_id]))
     else
-      Project
+      Project.send(filter)
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
