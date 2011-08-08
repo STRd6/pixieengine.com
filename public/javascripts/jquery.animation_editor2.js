@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 19:05:52 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 21:56:25 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -12,8 +12,7 @@
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
     loadSpriteSheet = function(src, rows, columns, loadedCallback) {
-      var canvas, context, image, sprites;
-      sprites = [];
+      var canvas, context, image;
       canvas = $('<canvas>').get(0);
       context = canvas.getContext('2d');
       image = new Image();
@@ -23,7 +22,7 @@
         tileHeight = image.height / columns;
         canvas.width = tileWidth;
         canvas.height = tileHeight;
-        columns.times(function(col) {
+        return columns.times(function(col) {
           return rows.times(function(row) {
             var destHeight, destWidth, destX, destY, sourceHeight, sourceWidth, sourceX, sourceY;
             sourceX = row * tileWidth;
@@ -36,15 +35,11 @@
             destY = 0;
             context.clearRect(0, 0, tileWidth, tileHeight);
             context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-            return sprites.push(canvas.toDataURL());
+            return typeof loadedCallback === "function" ? loadedCallback(canvas.toDataURL()) : void 0;
           });
         });
-        if (loadedCallback) {
-          return loadedCallback(sprites);
-        }
       };
-      image.src = src;
-      return sprites;
+      return image.src = src;
     };
     Controls = function() {
       var changePlayIcon, fpsEl, intervalId, nextFrame, scrubber, scrubberEl, self;
@@ -181,13 +176,13 @@
         return animationEditor.find('.player img').removeAttr('src');
       });
       animationEditor.bind('disableSave', function() {
-        return animationEditor.find('.save_sequence, .save_animation').attr({
+        return animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr({
           disabled: true,
           title: 'Add frames to save'
         });
       });
       animationEditor.bind('enableSave', function() {
-        return animationEditor.find('.save_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames');
+        return animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames');
       });
       clearFrames = function() {
         frames.clear();
@@ -334,13 +329,6 @@
         var index;
         index = $(this).index();
         return currentAnimation.addSequenceToFrames(index);
-      },
-      mouseenter: function() {
-        $(this).find('img:first-child').addClass('rotate_left');
-        return $(this).find('img:last-child').addClass('rotate_right');
-      },
-      mouseleave: function() {
-        return $(this).find('img').removeClass('rotate_left rotate_right');
       }
     });
     animationEditor.find('.frame_sprites img').live({
@@ -373,14 +361,8 @@
         name = file.fileName;
         _ref = name.match(/x(\d*)y(\d*)/) || [], dimensions = _ref[0], tileWidth = _ref[1], tileHeight = _ref[2];
         if (tileWidth && tileHeight) {
-          return loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), function(spriteArray) {
-            var sprite, _i, _len, _results;
-            _results = [];
-            for (_i = 0, _len = spriteArray.length; _i < _len; _i++) {
-              sprite = spriteArray[_i];
-              _results.push(currentAnimation.addTile(sprite));
-            }
-            return _results;
+          return loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), function(sprite) {
+            return currentAnimation.addTile(sprite);
           });
         } else {
           return currentAnimation.addTile(src);

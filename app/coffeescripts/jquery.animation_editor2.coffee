@@ -9,8 +9,6 @@ $.fn.animationEditor = (options) ->
   spriteTemplate = templates.find('.sprite')
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
-    sprites = []
-
     canvas = $('<canvas>').get(0)
     context = canvas.getContext('2d')
 
@@ -37,14 +35,9 @@ $.fn.animationEditor = (options) ->
           context.clearRect(0, 0, tileWidth, tileHeight)
           context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight)
 
-          sprites.push(canvas.toDataURL())
-
-      if loadedCallback
-        loadedCallback(sprites)
+          loadedCallback?(canvas.toDataURL())
 
     image.src = src
-
-    return sprites
 
   Controls = ->
     intervalId = null
@@ -155,12 +148,12 @@ $.fn.animationEditor = (options) ->
       animationEditor.find('.player img').removeAttr('src')
 
     animationEditor.bind 'disableSave', ->
-      animationEditor.find('.save_sequence, .save_animation').attr
+      animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr
         disabled: true
         title: 'Add frames to save'
 
     animationEditor.bind 'enableSave', ->
-      animationEditor.find('.save_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames')
+      animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames')
 
     clearFrames = ->
       frames.clear()
@@ -288,11 +281,6 @@ $.fn.animationEditor = (options) ->
     mousedown: ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
-    mouseenter: ->
-      $(this).find('img:first-child').addClass('rotate_left')
-      $(this).find('img:last-child').addClass('rotate_right')
-    mouseleave: ->
-      $(this).find('img').removeClass('rotate_left rotate_right')
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->
@@ -323,10 +311,8 @@ $.fn.animationEditor = (options) ->
       [dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
 
       if tileWidth && tileHeight
-        loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), (spriteArray) ->
-          for sprite in spriteArray
-            currentAnimation.addTile(sprite)
-        )
+        loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
+          currentAnimation.addTile(sprite)
       else
         currentAnimation.addTile(src)
 
