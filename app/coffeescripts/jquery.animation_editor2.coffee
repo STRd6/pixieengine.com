@@ -216,7 +216,7 @@ $.fn.animationEditor = (options) ->
         frames.splice(frameIndex, 1)
         controls.scrubberMax(controls.scrubberMax() - 1)
 
-        animationEditor.trigger 'removeFrame', frameIndex
+        animationEditor.trigger 'removeFrame', [frameIndex]
         animationEditor.trigger 'disableSave' if frames.length == 0
 
       updateSelected: (frameIndex) ->

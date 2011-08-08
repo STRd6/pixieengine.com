@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Sun, 07 Aug 2011 00:15:52 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 19:05:52 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -253,7 +253,7 @@
           tilesetIndex = frames[frameIndex];
           frames.splice(frameIndex, 1);
           controls.scrubberMax(controls.scrubberMax() - 1);
-          animationEditor.trigger('removeFrame', frameIndex);
+          animationEditor.trigger('removeFrame', [frameIndex]);
           if (frames.length === 0) {
             return animationEditor.trigger('disableSave');
           }
