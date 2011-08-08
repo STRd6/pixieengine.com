@@ -87,9 +87,11 @@ body#fullscreen > .content
 
         padding-bottom: $bottom_module
 
-        .sprites
+        .sequences, .sprites
           height: 50%
+          overflow: auto
 
+        .sprites
           img
             display: inline-block
             max-height: 40px
@@ -101,23 +103,36 @@ body#fullscreen > .content
               background-color: $highlight
 
         .sequence
+          +bounds(100px)
+
+          cursor: pointer
           display: inline-block
-          min-height: 40px
-          min-width: 40px
           position: relative
 
           img
-            +transition
+            +border-radius(2px)
 
+            border: 1px solid rgba(0, 0, 0, 0.15)
+            background: $light_background url(/images/icons/arrow_right.png) no-repeat left top
             max-height: 80px
             max-width: 80px
             position: absolute
 
-            &.rotate_right
-              +rotate(15deg, 10px, -3px)
+            &:nth-child(1)
+              left: 2px
+              top: 2px
 
-            &.rotate_left
-              +rotate(-15deg, -10px, -3px)
+            &:nth-child(2)
+              left: 4px
+              top: 4px
+
+            &:nth-child(3)
+              left: 6px
+              top: 6px
+
+            &:nth-child(4)
+              left: 8px
+              top: 8px
 
       nav.left, nav.right
         .background_color
