@@ -6,7 +6,7 @@
       margin-left: auto
       margin-right: auto
       margin-top: 2em
-      width: 475px
+      width: 620px
 
 = form_for @invite, :html => { :class => "module" } do |form|
   = form.error_messages
@@ -21,7 +21,7 @@
     %h3 Friend's email
     = form.text_field :email
 
-  = form.submit "Invite friend"
+  %button.full(eventLabel="Invite Submit") Invite friend
 
 .centered_content
   %h3
@@ -30,10 +30,3 @@
 
   %pre
     = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})
-
-:javascript
-  $(function() {
-    $('#invite_submit').click(function() {
-      _gaq.push(['_trackEvent', 'action_button', 'invite friend']);
-    });
-  });

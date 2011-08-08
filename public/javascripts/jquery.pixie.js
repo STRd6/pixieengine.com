@@ -1,11 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Thu, 04 Aug 2011 01:23:59 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 04:39:41 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   (function($) {
-    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, primaryButton, scale, tools;
+    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, primaryButton, scale, tools, track;
+    track = function(action, label) {
+      return typeof trackEvent === "function" ? trackEvent("Pixel Editor", action, label) : void 0;
+    };
     DEBUG = false;
     DIV = "<div />";
     IMAGE_DIR = "/images/pixie/";
@@ -503,7 +506,8 @@
         });
         preview.mousedown(function() {
           tilePreview = !tilePreview;
-          return canvas.preview();
+          canvas.preview();
+          return track('mousedown', 'preview');
         });
         currentTool = void 0;
         active = false;
@@ -528,9 +532,10 @@
         $(navRight).bind('mousedown touchstart', function(e) {
           var color, target;
           target = $(e.target);
-          color = Color(target.css('backgroundColor'));
           if (target.is('.swatch')) {
-            return canvas.color(color, !primaryButton(e));
+            color = Color(target.css('backgroundColor'));
+            canvas.color(color, !primaryButton(e));
+            return track(e.type, color.toString());
           }
         });
         pixels = [];
@@ -607,6 +612,7 @@
                   if (currentComponent === pixie) {
                     e.preventDefault();
                     doIt();
+                    track('hotkey', action.name);
                     return false;
                   }
                 });
@@ -624,7 +630,6 @@
                 if (!$(this).attr('disabled')) {
                   doIt();
                 }
-                _gaq.push(['_trackEvent', 'action_button', action.name]);
                 return false;
               });
               return actionButton.appendTo(actionbar);
@@ -653,6 +658,7 @@
                   if (currentComponent === pixie) {
                     e.preventDefault();
                     setMe();
+                    track("hotkey", tool.name);
                     return false;
                   }
                 });
@@ -665,6 +671,7 @@
             });
             toolDiv = $("<div class='tool'></div>").append(img).bind("mousedown touchstart", function(e) {
               setMe();
+              track(e.type, tool.name);
               return false;
             });
             return toolbar.append(toolDiv);

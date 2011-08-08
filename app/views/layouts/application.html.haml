@@ -3,10 +3,11 @@
   = render :partial => "shared/head"
 
   - body_id = @fullscreen ? "fullscreen" : nil
-  %body(id=body_id)
+  %body(id=body_id eventCategory="Page")
     = render :partial => "shared/header"
 
-    .content
+    - event_category = "#{controller.controller_name} #{controller.action_name}"
+    .content(eventCategory=event_category)
       = yield
 
     = render :partial => "shared/footer"

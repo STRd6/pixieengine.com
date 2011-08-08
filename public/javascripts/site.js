@@ -1,9 +1,28 @@
-/* DO NOT MODIFY. This file was compiled Tue, 02 Aug 2011 18:40:55 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 04:59:01 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
 (function() {
-  var getVal, setVal;
+  var clickTrackers, getVal, setVal, tag, type, _fn;
+  window.trackEvent = function(category, action, label) {
+    return _gaq.push(['_trackEvent', category, action, label]);
+  };
+  clickTrackers = {
+    a: "click",
+    button: "click"
+  };
+  _fn = function(tag, type) {
+    return $(tag).live(type, function() {
+      var category, label;
+      category = $(this).parents('[eventCategory]:first').attr('eventCategory');
+      label = $(this).attr('eventLabel') || $(this).text() || $(this).attr('title');
+      return trackEvent(category, type, $.trim(label));
+    });
+  };
+  for (tag in clickTrackers) {
+    type = clickTrackers[tag];
+    _fn(tag, type);
+  }
   window.notify = function(message, delay) {
     return $.pnotify({
       pnotify_text: message,

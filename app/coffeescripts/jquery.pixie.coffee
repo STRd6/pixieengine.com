@@ -1,4 +1,7 @@
 (($) ->
+  track = (action, label) ->
+    trackEvent?("Pixel Editor", action, label)
+
   DEBUG = false
 
   DIV = "<div />"
@@ -447,6 +450,8 @@
 
         canvas.preview()
 
+        track('mousedown', 'preview')
+
       currentTool = undefined
       active = false
       mode = undefined
@@ -476,9 +481,12 @@
 
       $(navRight).bind 'mousedown touchstart', (e) ->
         target = $(e.target)
-        color = Color(target.css('backgroundColor'))
 
-        canvas.color(color, !primaryButton(e)) if target.is('.swatch')
+        if target.is('.swatch')
+          color = Color(target.css('backgroundColor'))
+          canvas.color(color, !primaryButton(e))
+
+          track(e.type, color.toString())
 
       pixels = []
 
@@ -570,6 +578,8 @@
                   e.preventDefault()
                   doIt()
 
+                  track('hotkey', action.name)
+
                   return false
 
           if action.menu != false
@@ -585,7 +595,8 @@
             .bind "mousedown touchstart", (e) ->
               doIt() unless $(this).attr('disabled')
 
-              _gaq.push(['_trackEvent', 'action_button', action.name])
+              # These currently get covered by the global link click tracking
+              # track(e.type, action.name)
 
               return false
 
@@ -618,6 +629,8 @@
                   e.preventDefault()
                   setMe()
 
+                  track("hotkey", tool.name)
+
                   return false
 
           img = $ "<img />",
@@ -629,6 +642,9 @@
             .append(img)
             .bind("mousedown touchstart", (e) ->
               setMe()
+
+              track(e.type, tool.name)
+
               return false
             )
 
