@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 00:05:12 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 02:01:06 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -330,10 +330,36 @@
       return updateUI();
     });
     animationEditor.find('.sprites img').live({
-      mousedown: function() {
-        var imgSrc;
-        imgSrc = $(this).attr('src');
-        return currentAnimation.addFrame(imgSrc);
+      mousedown: function(e) {
+        var $this, currentIndex, lastIndex, sprite, sprites, _i, _len, _results;
+        $this = $(this);
+        sprites = [];
+        if (e.shiftKey && lastClickedSprite) {
+          lastIndex = lastClickedSprite.index();
+          currentIndex = $this.index();
+          if (currentIndex > lastIndex) {
+            sprites = animationEditor.find('.sprites img').filter(function() {
+              var imgIndex;
+              imgIndex = $(this).index();
+              return (lastIndex < imgIndex && imgIndex <= currentIndex);
+            }).get();
+          } else if (currentIndex <= lastIndex) {
+            sprites = animationEditor.find('.sprites img').filter(function() {
+              var imgIndex;
+              imgIndex = $(this).index();
+              return (currentIndex <= imgIndex && imgIndex < lastIndex);
+            }).get().reverse();
+          }
+        } else {
+          sprites.push($this);
+        }
+        lastClickedSprite = $this;
+        _results = [];
+        for (_i = 0, _len = sprites.length; _i < _len; _i++) {
+          sprite = sprites[_i];
+          _results.push(currentAnimation.addFrame($(sprite).attr('src')));
+        }
+        return _results;
       }
     });
     animationEditor.find('.left .sequence').live({

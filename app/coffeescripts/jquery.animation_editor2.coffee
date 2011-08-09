@@ -284,10 +284,31 @@ $.fn.animationEditor = (options) ->
     updateUI()
 
   animationEditor.find('.sprites img').live
-    mousedown: ->
-      imgSrc = $(this).attr('src')
+    mousedown: (e) ->
+      $this = $(this)
+      sprites = []
 
-      currentAnimation.addFrame(imgSrc)
+      if e.shiftKey && lastClickedSprite
+        lastIndex = lastClickedSprite.index()
+        currentIndex = $this.index()
+
+        if currentIndex > lastIndex
+          sprites = animationEditor.find('.sprites img').filter(->
+            imgIndex = $(this).index()
+            return lastIndex < imgIndex <= currentIndex
+          ).get()
+        else if currentIndex <= lastIndex
+          sprites = animationEditor.find('.sprites img').filter(->
+            imgIndex = $(this).index()
+            return currentIndex <= imgIndex < lastIndex
+          ).get().reverse()
+      else
+        sprites.push $this
+
+      lastClickedSprite = $this
+
+      for sprite in sprites
+        currentAnimation.addFrame($(sprite).attr('src'))
 
   animationEditor.find('.left .sequence').live
     mousedown: ->
