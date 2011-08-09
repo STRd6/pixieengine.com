@@ -9,7 +9,7 @@ clickTrackers =
 for tag, type of clickTrackers
   do (tag, type) ->
     $(tag).live type, ->
-      category = $(this).parents('[eventCategory]:first').attr('eventCategory')
+      category = $(this).parents('[eventCategory]:first').attr('eventCategory') || "Page"
       label = $(this).attr('eventLabel') || $(this).text() || $(this).attr('title')
       trackEvent(category, type, $.trim(label))
 

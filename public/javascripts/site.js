@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 04:59:01 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 16:08:34 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/site.coffee
  */
 
@@ -14,7 +14,7 @@
   _fn = function(tag, type) {
     return $(tag).live(type, function() {
       var category, label;
-      category = $(this).parents('[eventCategory]:first').attr('eventCategory');
+      category = $(this).parents('[eventCategory]:first').attr('eventCategory') || "Page";
       label = $(this).attr('eventLabel') || $(this).text() || $(this).attr('title');
       return trackEvent(category, type, $.trim(label));
     });
