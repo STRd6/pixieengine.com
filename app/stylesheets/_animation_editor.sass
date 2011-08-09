@@ -6,6 +6,8 @@ $right_module: 100px
 
 $highlight: #FEF7CB
 
+$action_bar_height: 30px
+
 body#fullscreen > .content
   height: 0
 
@@ -37,11 +39,11 @@ body#fullscreen > .content
               top: 0
 
           .controls
-            +bounds(100%, 30px)
+            +bounds(100%, $action_bar_height)
             +box-sizing(border-box)
+            +linear-gradient(color-stops(#7F7F7F, #666))
             +user-select
 
-            background-color: #ccc
             bottom: 0
             padding: 2px
             position: absolute
@@ -170,6 +172,38 @@ body#fullscreen > .content
           margin-top: 0
 
         .frame_sprites
+          .sequence
+            +bounds(100px)
+
+            cursor: pointer
+            display: inline-block
+            position: relative
+
+            img
+              +border-radius(2px)
+
+              border: 1px solid rgba(0, 0, 0, 0.15)
+              background: $light_background
+              max-height: 80px
+              max-width: 80px
+              position: absolute
+
+              &:nth-child(1)
+                left: 2px
+                top: 2px
+
+              &:nth-child(2)
+                left: 4px
+                top: 4px
+
+              &:nth-child(3)
+                left: 6px
+                top: 6px
+
+              &:nth-child(4)
+                left: 8px
+                top: 8px
+
           img
             +box-sizing(border-box)
 

@@ -1,11 +1,12 @@
-/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 21:56:25 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 00:05:12 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, loadSpriteSheet, spriteTemplate, templates, updateUI;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, lastClickedSprite, loadSpriteSheet, spriteTemplate, templates, updateUI;
     animationNumber = 1;
+    lastClickedSprite = null;
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
@@ -162,12 +163,15 @@
       animationEditor.bind('removeFrame', function(e, frameIndex) {
         return animationEditor.find('.frame_sprites img').eq(frameIndex).remove();
       });
-      animationEditor.bind('updateFrames', function() {
+      animationEditor.bind('updateLastFrame', function() {
         var spriteSrc;
         spriteSrc = tileset[frames.last()];
         return spriteTemplate.tmpl({
           src: spriteSrc
         }).appendTo(animationEditor.find('.frame_sprites'));
+      });
+      animationEditor.bind('updateLastFrameSequence', function(e, sequence) {
+        return sequence.appendTo(animationEditor.find('.frame_sprites'));
       });
       animationEditor.bind('updateAnimations', function() {
         animationEditor.find('.player .animation_name').text(currentAnimation.name());
@@ -197,16 +201,24 @@
         addFrame: function(imgSrc) {
           frames.push(findTileIndex(imgSrc));
           controls.scrubberMax(frames.length - 1);
-          animationEditor.trigger('updateFrames');
+          animationEditor.trigger('updateLastFrame');
           return animationEditor.trigger('enableSave');
         },
         addSequenceToFrames: function(index) {
-          var imageIndex, _i, _len, _ref, _results;
+          var sequence, spriteIndex, spriteSrc, _i, _len, _ref, _results;
+          sequence = $('<div class="sequence"></div>');
           _ref = sequences[index];
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            imageIndex = _ref[_i];
-            _results.push(self.addFrame(tileset[imageIndex]));
+            spriteIndex = _ref[_i];
+            spriteSrc = tileset[spriteIndex];
+            spriteTemplate.tmpl({
+              src: spriteSrc
+            }).appendTo(sequence);
+            frames.push(findTileIndex(spriteSrc));
+            controls.scrubberMax(frames.length - 1);
+            animationEditor.trigger('updateLastFrameSequence', [sequence]);
+            _results.push(animationEditor.trigger('enableSave'));
           }
           return _results;
         },
@@ -324,7 +336,7 @@
         return currentAnimation.addFrame(imgSrc);
       }
     });
-    animationEditor.find('.sequence').live({
+    animationEditor.find('.left .sequence').live({
       mousedown: function() {
         var index;
         index = $(this).index();

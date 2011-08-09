@@ -1,5 +1,6 @@
 $.fn.animationEditor = (options) ->
   animationNumber = 1
+  lastClickedSprite = null
 
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
@@ -137,9 +138,12 @@ $.fn.animationEditor = (options) ->
     animationEditor.bind 'removeFrame', (e, frameIndex) ->
       animationEditor.find('.frame_sprites img').eq(frameIndex).remove()
 
-    animationEditor.bind 'updateFrames', ->
+    animationEditor.bind 'updateLastFrame', ->
       spriteSrc = tileset[frames.last()]
       spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
+
+    animationEditor.bind 'updateLastFrameSequence', (e, sequence) ->
+      sequence.appendTo(animationEditor.find('.frame_sprites'))
 
     animationEditor.bind 'updateAnimations', ->
       animationEditor.find('.player .animation_name').text(currentAnimation.name())
@@ -168,12 +172,20 @@ $.fn.animationEditor = (options) ->
       addFrame: (imgSrc) ->
         frames.push(findTileIndex(imgSrc))
         controls.scrubberMax(frames.length - 1)
-        animationEditor.trigger 'updateFrames'
+        animationEditor.trigger 'updateLastFrame'
         animationEditor.trigger 'enableSave'
 
       addSequenceToFrames: (index) ->
-        for imageIndex in sequences[index]
-          self.addFrame(tileset[imageIndex])
+        sequence = $('<div class="sequence"></div>')
+
+        for spriteIndex in sequences[index]
+          spriteSrc = tileset[spriteIndex]
+
+          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+          frames.push(findTileIndex(spriteSrc))
+          controls.scrubberMax(frames.length - 1)
+          animationEditor.trigger 'updateLastFrameSequence', [sequence]
+          animationEditor.trigger 'enableSave'
 
       addTile: (src) ->
         tileset[Math.uuid(32, 16)] = src
@@ -277,7 +289,7 @@ $.fn.animationEditor = (options) ->
 
       currentAnimation.addFrame(imgSrc)
 
-  animationEditor.find('.sequence').live
+  animationEditor.find('.left .sequence').live
     mousedown: ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
