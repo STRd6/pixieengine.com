@@ -135,6 +135,9 @@ $.fn.animationEditor = (options) ->
     animationEditor.bind 'clearFrames', ->
       animationEditor.find('.frame_sprites').children().remove()
 
+    animationEditor.bind 'loadAnimation', (e, animationIndex) ->
+      #load the images for this particular animation
+
     animationEditor.bind 'removeFrame', (e, frameIndex) ->
       animationEditor.find('.frame_sprites img').eq(frameIndex).remove()
 
@@ -152,7 +155,9 @@ $.fn.animationEditor = (options) ->
       animationEditor.trigger 'updateCurrentAnimationTitle'
       animationEditor.find('.sequences').children().remove()
       animationEditor.find('.frame_sprites').children().remove()
-      animationEditor.find('.player img').removeAttr('src')
+
+      animationEditor.find('.player img').remove()
+      animationEditor.find('.player').append('<img />')
 
     animationEditor.bind 'disableSave', ->
       animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr
@@ -354,6 +359,7 @@ $.fn.animationEditor = (options) ->
       $this.parent().children().removeClass('selected')
       $this.addClass('selected')
 
+      animationEditor.trigger 'loadAnimation', [index]
       animationEditor.trigger 'updateCurrentAnimationTitle'
 
   animationEditor.find('.save_sequence').click(currentAnimation.createSequence)

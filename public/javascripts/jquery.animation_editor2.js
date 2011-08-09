@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 08:15:10 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 19:23:04 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -160,6 +160,7 @@
       animationEditor.bind('clearFrames', function() {
         return animationEditor.find('.frame_sprites').children().remove();
       });
+      animationEditor.bind('loadAnimation', function(e, animationIndex) {});
       animationEditor.bind('removeFrame', function(e, frameIndex) {
         return animationEditor.find('.frame_sprites img').eq(frameIndex).remove();
       });
@@ -180,7 +181,8 @@
         animationEditor.trigger('updateCurrentAnimationTitle');
         animationEditor.find('.sequences').children().remove();
         animationEditor.find('.frame_sprites').children().remove();
-        return animationEditor.find('.player img').removeAttr('src');
+        animationEditor.find('.player img').remove();
+        return animationEditor.find('.player').append('<img />');
       });
       animationEditor.bind('disableSave', function() {
         return animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr({
@@ -409,6 +411,7 @@
         currentAnimation = animations[index];
         $this.parent().children().removeClass('selected');
         $this.addClass('selected');
+        animationEditor.trigger('loadAnimation', [index]);
         return animationEditor.trigger('updateCurrentAnimationTitle');
       }
     });
