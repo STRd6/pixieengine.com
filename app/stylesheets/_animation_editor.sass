@@ -5,6 +5,7 @@ $left_module: 340px
 $right_module: 100px
 
 $highlight: #FEF7CB
+$highlight_border: #FFE475
 
 $action_bar_height: 30px
 
@@ -15,6 +16,11 @@ body#fullscreen > .content
   +user-select
   p
     margin: 0.25em 0
+
+  .animations
+    h4.selected
+      background: $highlight
+      border: 1px solid $highlight_border
 
   .content
     & >
@@ -408,7 +414,7 @@ body#fullscreen > .content
 
             &.current
               background-color: $highlight
-              border: 1px solid #FFE475
+              border: 1px solid $highlight_border
 
   .state_name, .frame_sprites .img, .sprites img
     cursor: pointer
