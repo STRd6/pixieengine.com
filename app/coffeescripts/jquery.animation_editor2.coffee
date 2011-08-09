@@ -283,7 +283,27 @@ $.fn.animationEditor = (options) ->
 
     updateUI()
 
+  $(document).bind 'keydown', (e) ->
+    return unless e.which == 37 || e.which == 39
+
+    index = currentAnimation.currentFrameIndex()
+    framesLength = currentAnimation.frames.length
+
+    if e.which == 37
+      controls.scrubber((index - 1).mod(framesLength))
+
+    if e.which == 39
+      controls.scrubber((index + 1).mod(framesLength))
+
   animationEditor.find('.sprites img').live
+    dblclick: (e) ->
+      $this = $(this)
+
+      4.times ->
+        currentAnimation.addFrame($this.attr('src'))
+
+      lastClickedSprite = $this
+
     mousedown: (e) ->
       $this = $(this)
       sprites = []

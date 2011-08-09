@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 02:01:06 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 02:51:19 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -329,7 +329,29 @@
       animationEditor.trigger('updateAnimations');
       return updateUI();
     });
+    $(document).bind('keydown', function(e) {
+      var framesLength, index;
+      if (!(e.which === 37 || e.which === 39)) {
+        return;
+      }
+      index = currentAnimation.currentFrameIndex();
+      framesLength = currentAnimation.frames.length;
+      if (e.which === 37) {
+        controls.scrubber((index - 1).mod(framesLength));
+      }
+      if (e.which === 39) {
+        return controls.scrubber((index + 1).mod(framesLength));
+      }
+    });
     animationEditor.find('.sprites img').live({
+      dblclick: function(e) {
+        var $this;
+        $this = $(this);
+        (4).times(function() {
+          return currentAnimation.addFrame($this.attr('src'));
+        });
+        return lastClickedSprite = $this;
+      },
       mousedown: function(e) {
         var $this, currentIndex, lastIndex, sprite, sprites, _i, _len, _results;
         $this = $(this);
