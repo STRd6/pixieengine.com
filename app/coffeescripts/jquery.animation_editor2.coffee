@@ -145,8 +145,11 @@ $.fn.animationEditor = (options) ->
     animationEditor.bind 'updateLastFrameSequence', (e, sequence) ->
       sequence.appendTo(animationEditor.find('.frame_sprites'))
 
-    animationEditor.bind 'updateAnimations', ->
+    animationEditor.bind 'updateCurrentAnimationTitle', ->
       animationEditor.find('.player .animation_name').text(currentAnimation.name())
+
+    animationEditor.bind 'updateAnimations', ->
+      animationEditor.trigger 'updateCurrentAnimationTitle'
       animationEditor.find('.sequences').children().remove()
       animationEditor.find('.frame_sprites').children().remove()
       animationEditor.find('.player img').removeAttr('src')
@@ -340,6 +343,19 @@ $.fn.animationEditor = (options) ->
       index = $(this).index()
       controls.scrubber(index)
 
+  animationEditor.find('.animations h4').live
+    mousedown: ->
+      $this = $(this)
+
+      index = $this.index()
+
+      currentAnimation = animations[index]
+
+      $this.parent().children().removeClass('selected')
+      $this.addClass('selected')
+
+      animationEditor.trigger 'updateCurrentAnimationTitle'
+
   animationEditor.find('.save_sequence').click(currentAnimation.createSequence)
 
   animationEditor.find('.fps input').change ->
@@ -349,12 +365,18 @@ $.fn.animationEditor = (options) ->
     controls.fps(newValue)
     controls.play()
 
-  animationEditor.find('input.state_name').live
+  animationEditor.find('.player .animation_name').liveEdit().live
     change: ->
-      updatedStateName = $(this).val()
+      $this = $(this)
+
+      prevValue = $this.get(0).defaultValue
+      updatedStateName = $this.val()
+
       currentAnimation.name(updatedStateName)
 
-  animationEditor.find('.player .animation_name').liveEdit()
+      animationEditor.find('.animations h4').filter(->
+        return $(this).text() == prevValue
+      ).text(updatedStateName)
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE

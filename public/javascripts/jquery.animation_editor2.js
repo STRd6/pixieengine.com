@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 02:51:19 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 08:15:10 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -173,8 +173,11 @@
       animationEditor.bind('updateLastFrameSequence', function(e, sequence) {
         return sequence.appendTo(animationEditor.find('.frame_sprites'));
       });
+      animationEditor.bind('updateCurrentAnimationTitle', function() {
+        return animationEditor.find('.player .animation_name').text(currentAnimation.name());
+      });
       animationEditor.bind('updateAnimations', function() {
-        animationEditor.find('.player .animation_name').text(currentAnimation.name());
+        animationEditor.trigger('updateCurrentAnimationTitle');
         animationEditor.find('.sequences').children().remove();
         animationEditor.find('.frame_sprites').children().remove();
         return animationEditor.find('.player img').removeAttr('src');
@@ -398,6 +401,17 @@
         return controls.scrubber(index);
       }
     });
+    animationEditor.find('.animations h4').live({
+      mousedown: function() {
+        var $this, index;
+        $this = $(this);
+        index = $this.index();
+        currentAnimation = animations[index];
+        $this.parent().children().removeClass('selected');
+        $this.addClass('selected');
+        return animationEditor.trigger('updateCurrentAnimationTitle');
+      }
+    });
     animationEditor.find('.save_sequence').click(currentAnimation.createSequence);
     animationEditor.find('.fps input').change(function() {
       var newValue;
@@ -406,14 +420,18 @@
       controls.fps(newValue);
       return controls.play();
     });
-    animationEditor.find('input.state_name').live({
+    animationEditor.find('.player .animation_name').liveEdit().live({
       change: function() {
-        var updatedStateName;
-        updatedStateName = $(this).val();
-        return currentAnimation.name(updatedStateName);
+        var $this, prevValue, updatedStateName;
+        $this = $(this);
+        prevValue = $this.get(0).defaultValue;
+        updatedStateName = $this.val();
+        currentAnimation.name(updatedStateName);
+        return animationEditor.find('.animations h4').filter(function() {
+          return $(this).text() === prevValue;
+        }).text(updatedStateName);
       }
     });
-    animationEditor.find('.player .animation_name').liveEdit();
     animationEditor.dropImageReader(function(file, event) {
       var dimensions, name, src, tileHeight, tileWidth, _ref;
       if (event.target.readyState === FileReader.DONE) {
