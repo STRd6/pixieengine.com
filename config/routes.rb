@@ -81,6 +81,7 @@ PixieStrd6Com::Application.routes.draw do
   resources :invites
 
   match 'begin' => "projects#info"
+  match 'create-games' => "projects#info"
 
   match 'facebook' => "sprites#new", :as => :facebook
 
