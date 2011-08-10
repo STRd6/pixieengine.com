@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 03:00:58 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 03:48:41 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -377,10 +377,11 @@
               return (currentIndex <= imgIndex && imgIndex < lastIndex);
             }).get().reverse();
           }
+          lastClickedSprite = null;
         } else {
           sprites.push($this);
+          lastClickedSprite = $this;
         }
-        lastClickedSprite = $this;
         _results = [];
         for (_i = 0, _len = sprites.length; _i < _len; _i++) {
           sprite = sprites[_i];

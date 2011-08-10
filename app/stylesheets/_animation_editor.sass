@@ -18,9 +18,12 @@ body#fullscreen > .content
     margin: 0.25em 0
 
   .animations
-    h4.selected
-      background: $highlight
-      border: 1px solid $highlight_border
+    h4
+      border: 1px solid transparent
+
+      &.selected
+        background: $highlight
+        border: 1px solid $highlight_border
 
   .content
     & >

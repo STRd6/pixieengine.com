@@ -330,10 +330,12 @@ $.fn.animationEditor = (options) ->
             imgIndex = $(this).index()
             return currentIndex <= imgIndex < lastIndex
           ).get().reverse()
+
+        lastClickedSprite = null
       else
         sprites.push $this
 
-      lastClickedSprite = $this
+        lastClickedSprite = $this
 
       for sprite in sprites
         currentAnimation.addFrame($(sprite).attr('src'))
