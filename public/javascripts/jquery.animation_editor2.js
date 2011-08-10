@@ -1,12 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 04:44:41 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 05:36:43 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, lastClickedSprite, loadSpriteSheet, spriteTemplate, templates;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, lastClickedSprite, loadSpriteSheet, sequences, spriteTemplate, templates, tileset;
     animationNumber = 1;
     lastClickedSprite = null;
+    tileset = {};
+    sequences = [];
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
     editorTemplate = templates.find('.editor.template');
@@ -42,6 +44,81 @@
       };
       return image.src = src;
     };
+    animationEditor.bind({
+      clearFrames: function() {
+        return $(this).find('.frame_sprites').children().remove();
+      },
+      disableSave: function() {
+        return $(this).find('.bottom .module_header > button').attr({
+          disabled: true,
+          title: 'Add frames to save'
+        });
+      },
+      enableSave: function() {
+        return $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames');
+      },
+      init: function() {
+        var animation, animationsEl, index, spritesEl, src, _i, _len;
+        animationsEl = animationEditor.find('.animations');
+        animationsEl.children().remove();
+        spritesEl = animationEditor.find('.sprites');
+        for (_i = 0, _len = animations.length; _i < _len; _i++) {
+          animation = animations[_i];
+          animationTemplate.tmpl({
+            name: animation.name()
+          }).appendTo(animationsEl);
+        }
+        if (spritesEl.find('img').length === 0) {
+          for (index in tileset) {
+            src = tileset[index];
+            spriteTemplate.tmpl({
+              src: src
+            }).appendTo(spritesEl);
+          }
+          return animationEditor.trigger('disableSave');
+        }
+      },
+      loadAnimation: function(e, animationIndex) {},
+      removeFrame: function(e, frameIndex) {
+        return $(this).find('.frame_sprites img').eq(frameIndex).remove();
+      },
+      updateAnimations: function() {
+        var $this;
+        $this = $(this);
+        $this.trigger('updateCurrentAnimationTitle');
+        return $this.find('.player img').removeAttr('src');
+      },
+      updateCurrentAnimationTitle: function() {
+        return $(this).find('.player .animation_name').text(currentAnimation.name());
+      },
+      updateLastFrame: function() {
+        var frameSprites, spriteSrc;
+        frameSprites = $(this).find('.frame_sprites');
+        spriteSrc = tileset[currentAnimation.frames.last()];
+        return spriteTemplate.tmpl({
+          src: spriteSrc
+        }).appendTo(frameSprites);
+      },
+      updateLastFrameSequence: function(e, sequence) {
+        var frameSprites;
+        frameSprites = $(this).find('.frame_sprites');
+        return sequence.appendTo(frameSprites);
+      },
+      updateLastSequence: function() {
+        var sequence, sequenceFrameArray, sequencesEl, spriteIndex, spriteSrc, _i, _len;
+        sequencesEl = $(this).find('.sequences');
+        sequenceFrameArray = sequences.last();
+        sequence = $('<div class="sequence" />').appendTo(sequencesEl);
+        for (_i = 0, _len = sequenceFrameArray.length; _i < _len; _i++) {
+          spriteIndex = sequenceFrameArray[_i];
+          spriteSrc = tileset[spriteIndex];
+          spriteTemplate.tmpl({
+            src: spriteSrc
+          }).appendTo(sequence);
+        }
+        return sequence.appendTo(sequencesEl);
+      }
+    });
     Controls = function() {
       var changePlayIcon, fpsEl, intervalId, nextFrame, scrubber, scrubberEl, self;
       intervalId = null;
@@ -120,9 +197,7 @@
       return self;
     };
     Animation = function() {
-      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self, sequences, tileset;
-      tileset = {};
-      sequences = [];
+      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self;
       frames = [];
       currentFrameIndex = 0;
       name = "State " + animationNumber;
@@ -136,92 +211,6 @@
           }
         }
       };
-      animationEditor.bind({
-        clearFrames: function() {
-          return $(this).find('.frame_sprites').children().remove();
-        },
-        disableSave: function() {
-          return $(this).find('.bottom .module_header > button').attr({
-            disabled: true,
-            title: 'Add frames to save'
-          });
-        },
-        enableSave: function() {
-          return $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames');
-        },
-        init: function() {
-          var animation, animationsEl, index, spritesEl, src, _i, _len, _ref;
-          animationsEl = animationEditor.find('.animations');
-          animationsEl.children().remove();
-          spritesEl = animationEditor.find('.sprites');
-          for (_i = 0, _len = animations.length; _i < _len; _i++) {
-            animation = animations[_i];
-            animationTemplate.tmpl({
-              name: animation.name()
-            }).appendTo(animationsEl);
-          }
-          if (spritesEl.find('img').length === 0) {
-            _ref = currentAnimation.tileset;
-            for (index in _ref) {
-              src = _ref[index];
-              spriteTemplate.tmpl({
-                src: src
-              }).appendTo(spritesEl);
-            }
-            return animationEditor.trigger('disableSave');
-          }
-        },
-        loadAnimation: function(e, animationIndex) {},
-        removeFrame: function(e, frameIndex) {
-          return $(this).find('.frame_sprites img').eq(frameIndex).remove();
-        },
-        updateAnimations: function() {
-          var $this;
-          $this = $(this);
-          $this.trigger('updateCurrentAnimationTitle');
-          $this.find('.frame_sprites, .sequences').children().remove();
-          return $this.find('.player img').removeAttr('src');
-        },
-        updateCurrentAnimationTitle: function() {
-          return $(this).find('.player .animation_name').text(currentAnimation.name());
-        },
-        updateLastFrame: function() {
-          var frameSprites, spriteSrc;
-          frameSprites = $(this).find('.frame_sprites');
-          spriteSrc = tileset[frames.last()];
-          return spriteTemplate.tmpl({
-            src: spriteSrc
-          }).appendTo(frameSprites);
-        },
-        updateLastFrameSequence: function(e, sequence) {
-          var frameSprites;
-          frameSprites = $(this).find('.frame_sprites');
-          return sequence.appendTo(frameSprites);
-        },
-        updateSequence: function() {
-          var array, sequence, sequencesEl, spriteIndex, spriteSrc, _i, _len, _results;
-          sequencesEl = animationEditor.find('.sequences');
-          sequencesEl.children().remove();
-          _results = [];
-          for (_i = 0, _len = sequences.length; _i < _len; _i++) {
-            array = sequences[_i];
-            sequence = $('<div class="sequence" />').appendTo(sequencesEl);
-            _results.push((function() {
-              var _j, _len2, _results2;
-              _results2 = [];
-              for (_j = 0, _len2 = array.length; _j < _len2; _j++) {
-                spriteIndex = array[_j];
-                spriteSrc = tileset[spriteIndex];
-                _results2.push(spriteTemplate.tmpl({
-                  src: spriteSrc
-                }).appendTo(sequence));
-              }
-              return _results2;
-            })());
-          }
-          return _results;
-        }
-      });
       clearFrames = function() {
         var event, _i, _len, _ref, _results;
         frames.clear();
@@ -235,7 +224,7 @@
       };
       pushSequence = function(frameArray) {
         sequences.push(frameArray);
-        return animationEditor.trigger('updateSequence');
+        return animationEditor.trigger('updateLastSequence');
       };
       self = {
         addFrame: function(imgSrc) {
@@ -298,7 +287,6 @@
             return name;
           }
         },
-        tileset: tileset,
         removeFrame: function(frameIndex) {
           var tilesetIndex;
           tilesetIndex = frames[frameIndex];
@@ -426,7 +414,7 @@
         return controls.scrubber(index);
       }
     });
-    animationEditor.find('.animations h4').live({
+    animationEditor.find('.animations .state_name').live({
       mousedown: function() {
         var index;
         index = $(this).takeClass('selected').index();
