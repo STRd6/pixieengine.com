@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Tue, 09 Aug 2011 19:23:04 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 03:00:58 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -399,7 +399,7 @@
     animationEditor.find('.frame_sprites img').live({
       mousedown: function() {
         var index;
-        index = $(this).index();
+        index = animationEditor.find('.frame_sprites img').index($(this));
         return controls.scrubber(index);
       }
     });

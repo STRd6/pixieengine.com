@@ -345,7 +345,8 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->
-      index = $(this).index()
+      index = animationEditor.find('.frame_sprites img').index($(this))
+
       controls.scrubber(index)
 
   animationEditor.find('.animations h4').live
