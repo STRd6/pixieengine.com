@@ -132,40 +132,35 @@ $.fn.animationEditor = (options) ->
           spriteSrc = tileset[spriteIndex]
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
-    animationEditor.bind 'clearFrames', ->
-      animationEditor.find('.frame_sprites').children().remove()
+    animationEditor.bind
+      clearFrames: ->
+        $(this).find('.frame_sprites').children().remove()
+      disableSave: ->
+        $(this).find('.bottom .module_header > button').attr
+          disabled: true
+          title: 'Add frames to save'
+      enableSave: ->
+        $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames')
+      loadAnimation: (e, animationIndex) ->
+        #load the images for this particular animation
+      removeFrame: (e, frameIndex) ->
+        $(this).find('.frame_sprites img').eq(frameIndex).remove()
+      updateAnimations: ->
+        $this = $(this)
 
-    animationEditor.bind 'loadAnimation', (e, animationIndex) ->
-      #load the images for this particular animation
+        $this.trigger 'updateCurrentAnimationTitle'
+        $this.find('.frame_sprites, .sequences').children().remove()
+        $this.find('.player img').removeAttr('src')
+      updateCurrentAnimationTitle: ->
+        $(this).find('.player .animation_name').text(currentAnimation.name())
+      updateLastFrame: ->
+        frameSprites = $(this).find('.frame_sprites')
+        spriteSrc = tileset[frames.last()]
 
-    animationEditor.bind 'removeFrame', (e, frameIndex) ->
-      animationEditor.find('.frame_sprites img').eq(frameIndex).remove()
-
-    animationEditor.bind 'updateLastFrame', ->
-      spriteSrc = tileset[frames.last()]
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(animationEditor.find('.frame_sprites'))
-
-    animationEditor.bind 'updateLastFrameSequence', (e, sequence) ->
-      sequence.appendTo(animationEditor.find('.frame_sprites'))
-
-    animationEditor.bind 'updateCurrentAnimationTitle', ->
-      animationEditor.find('.player .animation_name').text(currentAnimation.name())
-
-    animationEditor.bind 'updateAnimations', ->
-      animationEditor.trigger 'updateCurrentAnimationTitle'
-      animationEditor.find('.sequences').children().remove()
-      animationEditor.find('.frame_sprites').children().remove()
-
-      animationEditor.find('.player img').remove()
-      animationEditor.find('.player').append('<img />')
-
-    animationEditor.bind 'disableSave', ->
-      animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr
-        disabled: true
-        title: 'Add frames to save'
-
-    animationEditor.bind 'enableSave', ->
-      animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames')
+        spriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+      updateLastFrameSequence: (e, sequence) ->
+        frameSprites = $(this).find('.frame_sprites')
+        sequence.appendTo(frameSprites)
 
     clearFrames = ->
       frames.clear()
@@ -192,8 +187,9 @@ $.fn.animationEditor = (options) ->
           spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
           frames.push(findTileIndex(spriteSrc))
           controls.scrubberMax(frames.length - 1)
-          animationEditor.trigger 'updateLastFrameSequence', [sequence]
-          animationEditor.trigger 'enableSave'
+
+        animationEditor.trigger 'updateLastFrameSequence', [sequence]
+        animationEditor.trigger 'enableSave'
 
       addTile: (src) ->
         tileset[Math.uuid(32, 16)] = src

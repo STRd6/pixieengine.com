@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 03:48:41 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 04:15:02 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -157,41 +157,46 @@
         }
         return _results;
       });
-      animationEditor.bind('clearFrames', function() {
-        return animationEditor.find('.frame_sprites').children().remove();
-      });
-      animationEditor.bind('loadAnimation', function(e, animationIndex) {});
-      animationEditor.bind('removeFrame', function(e, frameIndex) {
-        return animationEditor.find('.frame_sprites img').eq(frameIndex).remove();
-      });
-      animationEditor.bind('updateLastFrame', function() {
-        var spriteSrc;
-        spriteSrc = tileset[frames.last()];
-        return spriteTemplate.tmpl({
-          src: spriteSrc
-        }).appendTo(animationEditor.find('.frame_sprites'));
-      });
-      animationEditor.bind('updateLastFrameSequence', function(e, sequence) {
-        return sequence.appendTo(animationEditor.find('.frame_sprites'));
-      });
-      animationEditor.bind('updateCurrentAnimationTitle', function() {
-        return animationEditor.find('.player .animation_name').text(currentAnimation.name());
-      });
-      animationEditor.bind('updateAnimations', function() {
-        animationEditor.trigger('updateCurrentAnimationTitle');
-        animationEditor.find('.sequences').children().remove();
-        animationEditor.find('.frame_sprites').children().remove();
-        animationEditor.find('.player img').remove();
-        return animationEditor.find('.player').append('<img />');
-      });
-      animationEditor.bind('disableSave', function() {
-        return animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').attr({
-          disabled: true,
-          title: 'Add frames to save'
-        });
-      });
-      animationEditor.bind('enableSave', function() {
-        return animationEditor.find('.save_sequence, .save_reverse_sequence, .save_animation').removeAttr('disabled').attr('title', 'Save frames');
+      animationEditor.bind({
+        clearFrames: function() {
+          return $(this).find('.frame_sprites').children().remove();
+        },
+        disableSave: function() {
+          return $(this).find('.bottom .module_header > button').attr({
+            disabled: true,
+            title: 'Add frames to save'
+          });
+        },
+        enableSave: function() {
+          return $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames');
+        },
+        loadAnimation: function(e, animationIndex) {},
+        removeFrame: function(e, frameIndex) {
+          return $(this).find('.frame_sprites img').eq(frameIndex).remove();
+        },
+        updateAnimations: function() {
+          var $this;
+          $this = $(this);
+          $this.trigger('updateCurrentAnimationTitle');
+          $this.find('.frame_sprites, .sequences').children().remove();
+          return $this.find('.player img').removeAttr('src');
+        },
+        updateCurrentAnimationTitle: function() {
+          return $(this).find('.player .animation_name').text(currentAnimation.name());
+        },
+        updateLastFrame: function() {
+          var frameSprites, spriteSrc;
+          frameSprites = $(this).find('.frame_sprites');
+          spriteSrc = tileset[frames.last()];
+          return spriteTemplate.tmpl({
+            src: spriteSrc
+          }).appendTo(frameSprites);
+        },
+        updateLastFrameSequence: function(e, sequence) {
+          var frameSprites;
+          frameSprites = $(this).find('.frame_sprites');
+          return sequence.appendTo(frameSprites);
+        }
       });
       clearFrames = function() {
         frames.clear();
@@ -210,10 +215,9 @@
           return animationEditor.trigger('enableSave');
         },
         addSequenceToFrames: function(index) {
-          var sequence, spriteIndex, spriteSrc, _i, _len, _ref, _results;
+          var sequence, spriteIndex, spriteSrc, _i, _len, _ref;
           sequence = $('<div class="sequence"></div>');
           _ref = sequences[index];
-          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             spriteIndex = _ref[_i];
             spriteSrc = tileset[spriteIndex];
@@ -222,10 +226,9 @@
             }).appendTo(sequence);
             frames.push(findTileIndex(spriteSrc));
             controls.scrubberMax(frames.length - 1);
-            animationEditor.trigger('updateLastFrameSequence', [sequence]);
-            _results.push(animationEditor.trigger('enableSave'));
           }
-          return _results;
+          animationEditor.trigger('updateLastFrameSequence', [sequence]);
+          return animationEditor.trigger('enableSave');
         },
         addTile: function(src) {
           var spritesEl;
