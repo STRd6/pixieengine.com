@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 22:51:42 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 23:07:31 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -335,6 +335,7 @@
     currentAnimation = Animation();
     animations = [currentAnimation];
     animationEditor.trigger('init');
+    animationEditor.find('.state_name').addClass('selected');
     animationEditor.find('.play').mousedown(function() {
       if ($(this).hasClass('pause')) {
         return controls.pause();
@@ -352,16 +353,15 @@
       return controls.stop();
     });
     animationEditor.find('.new_animation').mousedown(function() {
-      var event, _i, _len, _ref, _results;
+      var event, _i, _len, _ref;
       animations.push(Animation());
       currentAnimation = animations.last();
       _ref = ['init', 'loadCurrentAnimation'];
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         event = _ref[_i];
-        _results.push(animationEditor.trigger(event));
+        animationEditor.trigger(event);
       }
-      return _results;
+      return animationEditor.find('.animations .state_name:last').takeClass('selected');
     });
     $(document).bind('keydown', function(e) {
       var framesLength, index, keyMapping;

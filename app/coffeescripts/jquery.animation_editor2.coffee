@@ -277,6 +277,7 @@ $.fn.animationEditor = (options) ->
   animations = [currentAnimation]
 
   animationEditor.trigger 'init'
+  animationEditor.find('.state_name').addClass('selected')
 
   animationEditor.find('.play').mousedown ->
     if $(this).hasClass('pause')
@@ -299,6 +300,7 @@ $.fn.animationEditor = (options) ->
     currentAnimation = animations.last()
 
     animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
+    animationEditor.find('.animations .state_name:last').takeClass('selected')
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
