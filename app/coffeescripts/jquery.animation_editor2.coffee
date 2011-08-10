@@ -47,6 +47,8 @@ $.fn.animationEditor = (options) ->
   animationEditor.bind
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
+    currentAnimationTitle: (title) ->
+      $(this).find('.player .animation_name').text(title)
     disableSave: ->
       $(this).find('.bottom .module_header > button').attr
         disabled: true
@@ -67,17 +69,21 @@ $.fn.animationEditor = (options) ->
           spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
         animationEditor.trigger 'disableSave'
-    loadAnimation: (e, animationIndex) ->
-      #load the images for this particular animation
     removeFrame: (e, frameIndex) ->
       $(this).find('.frame_sprites img').eq(frameIndex).remove()
-    updateAnimations: ->
+    loadCurrentAnimation: ->
       $this = $(this)
 
-      $this.trigger 'updateCurrentAnimationTitle'
+      $this.trigger 'clearFrames'
+      $this.trigger 'currentAnimationTitle', [currentAnimation.name()]
       $this.find('.player img').removeAttr('src')
-    updateCurrentAnimationTitle: ->
-      $(this).find('.player .animation_name').text(currentAnimation.name())
+
+      currentAnimation.load()
+    updateFrame: (e, index) ->
+      frameSprites = $(this).find('.frame_sprites')
+      spriteSrc = tileset[index]
+
+      spriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
     updateLastFrame: ->
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[currentAnimation.frames.last()]
@@ -227,6 +233,12 @@ $.fn.animationEditor = (options) ->
 
       frames: frames
 
+      load: ->
+        for frameIndex in frames
+          animationEditor.trigger 'updateFrame', [frameIndex]
+
+        controls.scrubberMax(frames.length - 1)
+
       name: (val) ->
         if val?
           name = val
@@ -282,9 +294,10 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.new_animation').mousedown ->
     animations.push(Animation())
+
     currentAnimation = animations.last()
 
-    animationEditor.trigger(event) for event in ['init', 'updateAnimations']
+    animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
@@ -351,8 +364,7 @@ $.fn.animationEditor = (options) ->
 
       currentAnimation = animations[index]
 
-      animationEditor.trigger 'loadAnimation', [index]
-      animationEditor.trigger 'updateCurrentAnimationTitle'
+      animationEditor.trigger 'loadCurrentAnimation'
 
   animationEditor.find('.save_sequence').click(currentAnimation.createSequence)
 

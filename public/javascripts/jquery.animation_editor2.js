@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 05:36:43 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 20:19:36 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -48,6 +48,9 @@
       clearFrames: function() {
         return $(this).find('.frame_sprites').children().remove();
       },
+      currentAnimationTitle: function(title) {
+        return $(this).find('.player .animation_name').text(title);
+      },
       disableSave: function() {
         return $(this).find('.bottom .module_header > button').attr({
           disabled: true,
@@ -78,18 +81,24 @@
           return animationEditor.trigger('disableSave');
         }
       },
-      loadAnimation: function(e, animationIndex) {},
       removeFrame: function(e, frameIndex) {
         return $(this).find('.frame_sprites img').eq(frameIndex).remove();
       },
-      updateAnimations: function() {
+      loadCurrentAnimation: function() {
         var $this;
         $this = $(this);
-        $this.trigger('updateCurrentAnimationTitle');
-        return $this.find('.player img').removeAttr('src');
+        $this.trigger('clearFrames');
+        $this.trigger('currentAnimationTitle', [currentAnimation.name()]);
+        $this.find('.player img').removeAttr('src');
+        return currentAnimation.load();
       },
-      updateCurrentAnimationTitle: function() {
-        return $(this).find('.player .animation_name').text(currentAnimation.name());
+      updateFrame: function(e, index) {
+        var frameSprites, spriteSrc;
+        frameSprites = $(this).find('.frame_sprites');
+        spriteSrc = tileset[index];
+        return spriteTemplate.tmpl({
+          src: spriteSrc
+        }).appendTo(frameSprites);
       },
       updateLastFrame: function() {
         var frameSprites, spriteSrc;
@@ -279,6 +288,14 @@
           }
         },
         frames: frames,
+        load: function() {
+          var frameIndex, _i, _len;
+          for (_i = 0, _len = frames.length; _i < _len; _i++) {
+            frameIndex = frames[_i];
+            animationEditor.trigger('updateFrame', [frameIndex]);
+          }
+          return controls.scrubberMax(frames.length - 1);
+        },
         name: function(val) {
           if (val != null) {
             name = val;
@@ -337,7 +354,7 @@
       var event, _i, _len, _ref, _results;
       animations.push(Animation());
       currentAnimation = animations.last();
-      _ref = ['init', 'updateAnimations'];
+      _ref = ['init', 'loadCurrentAnimation'];
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         event = _ref[_i];
@@ -419,8 +436,7 @@
         var index;
         index = $(this).takeClass('selected').index();
         currentAnimation = animations[index];
-        animationEditor.trigger('loadAnimation', [index]);
-        return animationEditor.trigger('updateCurrentAnimationTitle');
+        return animationEditor.trigger('loadCurrentAnimation');
       }
     });
     animationEditor.find('.save_sequence').click(currentAnimation.createSequence);
