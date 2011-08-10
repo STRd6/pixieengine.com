@@ -131,9 +131,11 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @project.user = current_user
 
-    @project.save
-
-    respond_with([:ide, @project])
+    if @project.save
+      respond_with([:ide, @project])
+    else
+      respond_with @project
+    end
   end
 
   def fork
