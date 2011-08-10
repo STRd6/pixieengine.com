@@ -277,12 +277,21 @@ body#fullscreen > .content
           margin-top: 0
 
         .frame_sprites
+          .frame_sprite
+            +bounds(140px)
+
+            cursor: pointer
+            display: inline-block
+            position: relative
+            vertical-align: top
+
           .sequence
             +bounds(140px)
 
             cursor: pointer
             display: inline-block
             position: relative
+            vertical-align: top
 
             img
               +border-radius(2px)

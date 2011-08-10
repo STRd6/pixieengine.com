@@ -11,6 +11,7 @@ $.fn.animationEditor = (options) ->
   editorTemplate = templates.find('.editor.template')
   animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
+  frameSpriteTemplate = templates.find('.frame_sprite')
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
@@ -83,12 +84,12 @@ $.fn.animationEditor = (options) ->
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[index]
 
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
     updateLastFrame: ->
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[currentAnimation.frames.last()]
 
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
     updateLastFrameSequence: (e, sequence) ->
       frameSprites = $(this).find('.frame_sprites')
       sequence.appendTo(frameSprites)

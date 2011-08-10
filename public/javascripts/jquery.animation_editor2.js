@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 20:19:36 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 22:51:42 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, lastClickedSprite, loadSpriteSheet, sequences, spriteTemplate, templates, tileset;
+    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, sequences, spriteTemplate, templates, tileset;
     animationNumber = 1;
     lastClickedSprite = null;
     tileset = {};
@@ -14,6 +14,7 @@
     editorTemplate = templates.find('.editor.template');
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
+    frameSpriteTemplate = templates.find('.frame_sprite');
     loadSpriteSheet = function(src, rows, columns, loadedCallback) {
       var canvas, context, image;
       canvas = $('<canvas>').get(0);
@@ -96,7 +97,7 @@
         var frameSprites, spriteSrc;
         frameSprites = $(this).find('.frame_sprites');
         spriteSrc = tileset[index];
-        return spriteTemplate.tmpl({
+        return frameSpriteTemplate.tmpl({
           src: spriteSrc
         }).appendTo(frameSprites);
       },
@@ -104,7 +105,7 @@
         var frameSprites, spriteSrc;
         frameSprites = $(this).find('.frame_sprites');
         spriteSrc = tileset[currentAnimation.frames.last()];
-        return spriteTemplate.tmpl({
+        return frameSpriteTemplate.tmpl({
           src: spriteSrc
         }).appendTo(frameSprites);
       },
