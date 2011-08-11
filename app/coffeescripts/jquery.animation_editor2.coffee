@@ -261,7 +261,7 @@ $.fn.animationEditor = (options) ->
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
 
-        animationEditor.find('.frame_sprites img').removeClass('current')
+        animationEditor.find('.frame_sprites img').removeClass('selected')
 
         player = $('.player img')
 
@@ -269,7 +269,7 @@ $.fn.animationEditor = (options) ->
           player.removeAttr('src')
         else
           player.attr('src', tileset[tilesetIndex])
-          animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('current')
+          animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('selected')
 
     return self
 

@@ -9,14 +9,24 @@ $highlight_border: #FFE475
 
 $action_bar_height: 30px
 $sequence_width: 100px
-
-body#fullscreen > .content
-  height: 0
+$tileset_sprite_width: 60px
 
 .animation_editor
   +user-select
-  p
-    margin: 0.25em 0
+
+  button
+    margin-bottom: 0
+    margin-top: 0
+
+  h3, h4
+    display: inline-block
+    margin: 0 1em 0 0
+    padding: 0
+    vertical-align: middle
+
+  .selected
+    background: $highlight
+    border: 1px solid $highlight_border
 
   .sequence
     +bounds($sequence_width)
@@ -27,11 +37,10 @@ body#fullscreen > .content
 
     img
       +border-radius(2px)
+      +max-bounds(80px)
 
       border: 1px solid rgba(0, 0, 0, 0.15)
       background: $light_background
-      max-height: 80px
-      max-width: 80px
       position: absolute
 
       /* I <3 SASS */
@@ -41,176 +50,123 @@ body#fullscreen > .content
           top: 2px * $n
           z-index: $n
 
-  .animations
-    h4
-      border: 1px solid transparent
-
-      &.selected
-        background: $highlight
-        border: 1px solid $highlight_border
-
   .content
-    & >
-      section
-        padding-left: $left_module
-        padding-right: $right_module
-        padding-bottom: $bottom_module
+    section
+      padding: 0 $right_module $bottom_module $left_module
 
-        .relative
-          +bounds(100%)
+    .relative
+      +bounds(100%)
 
-          .player
-            +user-select
+    .player
+      +user-select
 
-            height: 100%
-            position: relative
+      height: 100%
+      position: relative
 
-            .animation_name
-              display: inline-block
-              margin-bottom: 0
-              margin-right: 1em
-              margin-top: 0
-              padding-bottom: 0
-              padding-top: 0
-              vertical-align: middle
+      img
+        bottom: 0
+        left: 0
+        margin: auto
+        position: absolute
+        right: 0
+        top: 0
 
-            img
-              bottom: 0
-              left: 0
-              margin: auto
-              position: absolute
-              right: 0
-              top: 0
+    .controls
+      +bounds(100%, $action_bar_height)
+      +box-sizing(border-box)
+      +linear-gradient(color-stops(#7F7F7F, #666))
+      +user-select
 
-          .controls
-            +bounds(100%, $action_bar_height)
-            +box-sizing(border-box)
-            +linear-gradient(color-stops(#7F7F7F, #666))
-            +user-select
+      bottom: 0
+      padding: 2px
+      position: absolute
 
-            bottom: 0
-            padding: 2px
-            position: absolute
+      .play, .stop
+        +bounds(25px, 29px)
+        display: inline-block
 
-            .play
-              +bounds(25px, 29px)
+      @each $action in play, stop
+        .#{$action}
+          background-image: url(/images/#{$action}.png)
 
-              background-image: url(/images/play.png)
-              display: inline-block
-
-            .stop
-              +bounds(25px, 29px)
-
-              background-image: url(/images/stop.png)
-              display: inline-block
-
-            .scrubber_container
-              +bounds(100%)
-              +box-sizing(border-box)
-
-              position: absolute
-              bottom: 0
-              left: 60px
-              padding-right: 135px
-
-            .scrubber
-              +bounds(100%)
-
-            .fps
-              bottom: 5px
-              position: absolute
-              right: 0
-
-              input
-                vertical-align: top
-                width: 40px
-
-      nav.right
-        +bounds($right_module, 100%)
-      nav.left
-        +bounds($left_module, 100%)
+      .scrubber_container
+        +bounds(100%)
         +box-sizing(border-box)
 
+        position: absolute
+        bottom: 0
+        left: 60px
+        padding-right: 135px
+
+      .scrubber
+        +bounds(100%)
+
+      .fps
+        bottom: 5px
+        position: absolute
+        right: 0
+
+        input
+          vertical-align: top
+          width: 40px
+
+    .left, .right
+      .background_color
+        +box-sizing(border-box)
+
+        background-color: $light_highlight
+        border-left: 1px solid lighten($light_highlight, 5%)
+        border-top: 1px solid lighten($light_highlight, 5%)
+        height: 100%
+        padding: 0.5em
         padding-bottom: $bottom_module
 
-        .sequences, .sprites
-          height: 50%
-          overflow: auto
+    .left
+      +bounds($left_module, 100%)
 
-        .sprites
-          img
-            display: inline-block
-            max-height: 40px
-            max-width: 40px
-            padding: 2px
-
-            &:hover
-              +border-radius(2px)
-              background-color: $highlight
-
-      nav.left, nav.right
-        .background_color
-          +box-sizing(border-box)
-
-          background-color: $light_highlight
-          border: 1px solid lighten($light_highlight, 5%)
-          border-bottom: none
-          border-right: none
-          height: 100%
-          padding: 0.5em
-
-      .left, .right
-        h3
-          display: inline-block
-          margin-bottom: 0
-          margin-top: 0
-          margin-right: 0.5em
-          vertical-align: middle
-
-      .bottom
-        +border-radius(0)
-        +box-shadow(none)
-        height: 250px
+      .sequences, .sprites
+        height: 50%
         overflow: auto
-        z-index: 100
 
-        h3
-          display: inline-block
-          margin-bottom: 0
-          margin-top: 0
-          margin-right: 0.5em
-          vertical-align: middle
+      .sprites img
+        +max-bounds($tileset_sprite_width)
 
-        button
-          margin-bottom: 0
-          margin-top: 0
+        display: inline-block
+        padding: 2px
 
-        .frame_sprites
-          .frame_sprite
-            +bounds($sequence_width)
+        &:hover
+          +border-radius(2px)
+          background-color: $highlight
 
-            cursor: pointer
-            display: inline-block
-            position: relative
-            vertical-align: top
+    .right
+      +bounds($right_module, 100%)
 
-          img
-            +box-sizing(border-box)
+    .bottom
+      +border-radius(0)
+      +box-shadow(none)
 
-            border: 1px solid transparent
-            display: inline-block
-            max-height: 80px
-            max-width: 80px
-            padding: 2px
-            vertical-align: top
+      height: $bottom_module
+      overflow: auto
+      z-index: 100
 
-            &.current
-              background-color: $highlight
-              border: 1px solid $highlight_border
+    .frame_sprite, img
+      +box-sizing(border-box)
+
+      border: 1px solid transparent
+      cursor: pointer
+      display: inline-block
+      padding: 2px
+      vertical-align: top
+
+    .frame_sprite
+      +bounds($sequence_width)
+
+      position: relative
+
+      img
+        +max-bounds(80px)
 
   .state_name
+    cursor: pointer
     overflow-x: hidden
     white-space: nowrap
-
-  .state_name, .frame_sprites .img, .sprites img
-    cursor: pointer

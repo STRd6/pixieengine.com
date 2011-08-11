@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 01:41:32 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 21:28:16 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -321,13 +321,13 @@
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
           tilesetIndex = frames[frameIndex];
-          animationEditor.find('.frame_sprites img').removeClass('current');
+          animationEditor.find('.frame_sprites img').removeClass('selected');
           player = $('.player img');
           if (frameIndex === -1) {
             return player.removeAttr('src');
           } else {
             player.attr('src', tileset[tilesetIndex]);
-            return animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('current');
+            return animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('selected');
           }
         }
       };
