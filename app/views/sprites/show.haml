@@ -24,7 +24,6 @@
     #tag
       width: 200px
 
-
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
@@ -42,6 +41,23 @@
     = link_to sprite.user, sprite.user
   - else
     Anonymous
+
+-if sprite.parent
+  %h2
+    Remixed from
+    = sprite.parent.display_name
+
+  = link_to image_tag(sprite.parent.image.url, :alt => sprite.parent.display_name), load_sprite_path(sprite.parent)
+
+  %p= sprite.parent.description
+
+  .clear
+  %p
+    By
+    - if sprite.parent.user
+      = link_to sprite.parent.user, sprite.parent.user
+    - else
+      Anonymous
 
 %ul.actions
   %li= link_to "#{image_tag "icons/picture_edit.png"} Load in Editor".html_safe, load_sprite_path(sprite), :class => "button"
