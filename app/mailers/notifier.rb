@@ -59,6 +59,6 @@ class Notifier < ActionMailer::Base
   def new_post(post, user)
     @post = post
 
-    mail :subject => "A new post has been created", :to => user.email
+    mail :subject => "A new post has been created in #{post.topic.subject}", :to => user.email
   end
 end
