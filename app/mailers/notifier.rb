@@ -55,4 +55,10 @@ class Notifier < ActionMailer::Base
 
     mail :subject => "Weekly Analytics", :to => user.email
   end
+
+  def new_post(post, user)
+    @post = post
+
+    mail :subject => "A new post has been created", :to => user.email
+  end
 end
