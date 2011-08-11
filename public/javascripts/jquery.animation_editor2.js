@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 10 Aug 2011 23:07:31 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 00:05:38 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -49,7 +49,7 @@
       clearFrames: function() {
         return $(this).find('.frame_sprites').children().remove();
       },
-      currentAnimationTitle: function(title) {
+      currentAnimationTitle: function(e, title) {
         return $(this).find('.player .animation_name').text(title);
       },
       disableSave: function() {
@@ -69,6 +69,7 @@
         for (_i = 0, _len = animations.length; _i < _len; _i++) {
           animation = animations[_i];
           animationTemplate.tmpl({
+            stateId: animation.stateId,
             name: animation.name()
           }).appendTo(animationsEl);
         }
@@ -207,9 +208,10 @@
       return self;
     };
     Animation = function() {
-      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self;
+      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self, stateId;
       frames = [];
       currentFrameIndex = 0;
+      stateId = Math.uuid(32, 16);
       name = "State " + animationNumber;
       animationNumber += 1;
       findTileIndex = function(tileSrc) {
@@ -289,6 +291,7 @@
           }
         },
         frames: frames,
+        stateId: stateId,
         load: function() {
           var frameIndex, _i, _len;
           for (_i = 0, _len = frames.length; _i < _len; _i++) {
@@ -453,8 +456,8 @@
         prevValue = $this.get(0).defaultValue;
         updatedStateName = $this.val();
         currentAnimation.name(updatedStateName);
-        return animationEditor.find('.animations h4').filter(function() {
-          return $(this).text() === prevValue;
+        return animationEditor.find('.animations .state_name').filter(function() {
+          return $(this).attr('data-state_id') === currentAnimation.stateId;
         }).text(updatedStateName);
       }
     });

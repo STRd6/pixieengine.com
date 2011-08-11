@@ -48,7 +48,7 @@ $.fn.animationEditor = (options) ->
   animationEditor.bind
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
-    currentAnimationTitle: (title) ->
+    currentAnimationTitle: (e, title) ->
       $(this).find('.player .animation_name').text(title)
     disableSave: ->
       $(this).find('.bottom .module_header > button').attr
@@ -63,7 +63,7 @@ $.fn.animationEditor = (options) ->
       spritesEl = animationEditor.find('.sprites')
 
       for animation in animations
-        animationTemplate.tmpl(name: animation.name()).appendTo(animationsEl)
+        animationTemplate.tmpl({stateId: animation.stateId, name: animation.name()}).appendTo(animationsEl)
 
       if spritesEl.find('img').length == 0
         for index, src of tileset
@@ -179,6 +179,7 @@ $.fn.animationEditor = (options) ->
   Animation = ->
     frames = []
     currentFrameIndex = 0
+    stateId = Math.uuid(32, 16)
 
     name = "State #{animationNumber}"
     animationNumber += 1
@@ -233,6 +234,8 @@ $.fn.animationEditor = (options) ->
           return currentFrameIndex
 
       frames: frames
+
+      stateId: stateId
 
       load: ->
         for frameIndex in frames
@@ -385,8 +388,8 @@ $.fn.animationEditor = (options) ->
 
       currentAnimation.name(updatedStateName)
 
-      animationEditor.find('.animations h4').filter(->
-        return $(this).text() == prevValue
+      animationEditor.find('.animations .state_name').filter(->
+        return $(this).attr('data-state_id') == currentAnimation.stateId
       ).text(updatedStateName)
 
   animationEditor.dropImageReader (file, event) ->
