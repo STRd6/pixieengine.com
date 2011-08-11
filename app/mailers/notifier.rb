@@ -61,5 +61,4 @@ class Notifier < ActionMailer::Base
 
     mail :subject => "A new post has been created in #{post.topic.forum.title} >> #{post.topic.subject}", :to => user.email
   end
-  handle_asynchronously :new_post if Rails.env.production?
 end
