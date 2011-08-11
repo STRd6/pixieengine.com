@@ -13,6 +13,15 @@ $.fn.animationEditor = (options) ->
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
 
+  exportAnimation = ->
+    animationData = ({ frames: animation.frames, name: animation.name() } for animation in animations)
+
+    return {
+      sequences: sequences
+      tileset: tileset
+      animations: animationData
+    }
+
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
     context = canvas.getContext('2d')
@@ -43,6 +52,13 @@ $.fn.animationEditor = (options) ->
           loadedCallback?(canvas.toDataURL())
 
     image.src = src
+
+  addTile = (src) ->
+    id = Math.uuid(32, 16)
+
+    tileset[id] = src
+    spritesEl = animationEditor.find('.sprites')
+    spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
   #UI updating events
   animationEditor.bind
@@ -104,6 +120,15 @@ $.fn.animationEditor = (options) ->
         spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
       sequence.appendTo(sequencesEl)
+
+  pushSequence = (frameArray) ->
+    sequences.push(frameArray)
+    animationEditor.trigger 'updateLastSequence'
+
+  createSequence = ->
+    if currentAnimation.frames.length
+      pushSequence(currentAnimation.frames.copy())
+      currentAnimation.clearFrames()
 
   Controls = ->
     intervalId = null
@@ -188,14 +213,6 @@ $.fn.animationEditor = (options) ->
       for uuid, src of tileset
         return uuid if src == tileSrc
 
-    clearFrames = ->
-      frames.clear()
-      animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
-
-    pushSequence = (frameArray) ->
-      sequences.push(frameArray)
-      animationEditor.trigger 'updateLastSequence'
-
     self =
       addFrame: (imgSrc) ->
         frames.push(findTileIndex(imgSrc))
@@ -215,15 +232,9 @@ $.fn.animationEditor = (options) ->
         animationEditor.trigger 'updateLastFrameSequence', [sequence]
         animationEditor.trigger 'enableSave'
 
-      addTile: (src) ->
-        tileset[Math.uuid(32, 16)] = src
-        spritesEl = animationEditor.find('.sprites')
-        spriteTemplate.tmpl(src: src).appendTo(spritesEl)
-
-      createSequence: ->
-        if frames.length
-          pushSequence(frames.copy())
-          clearFrames()
+      clearFrames: ->
+        frames.clear()
+        animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
 
       currentFrameIndex: (val) ->
         if val?
@@ -305,6 +316,9 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
     animationEditor.find('.animations .state_name:last').takeClass('selected')
 
+  animationEditor.find('.export').mousedown ->
+    console.log exportAnimation()
+
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
 
@@ -372,7 +386,8 @@ $.fn.animationEditor = (options) ->
 
       animationEditor.trigger 'loadCurrentAnimation'
 
-  animationEditor.find('.save_sequence').click(currentAnimation.createSequence)
+  animationEditor.find('.save_sequence').click ->
+    createSequence()
 
   animationEditor.find('.fps input').change ->
     newValue = $(this).val()
@@ -401,9 +416,9 @@ $.fn.animationEditor = (options) ->
 
       if tileWidth && tileHeight
         loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
-          currentAnimation.addTile(sprite)
+          addTile(sprite)
       else
-        currentAnimation.addTile(src)
+        addTile(src)
 
   $(document).bind 'keydown', 'del backspace', (e) ->
     e.preventDefault()

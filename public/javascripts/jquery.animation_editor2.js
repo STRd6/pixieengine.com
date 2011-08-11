@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 21:28:16 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 23:17:15 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, animationEditor, animationNumber, animationTemplate, animations, controls, currentAnimation, editorTemplate, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, sequences, spriteTemplate, templates, tileset;
+    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimation, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileset;
     animationNumber = 1;
     lastClickedSprite = null;
     tileset = {};
@@ -15,6 +15,26 @@
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
     frameSpriteTemplate = templates.find('.frame_sprite');
+    exportAnimation = function() {
+      var animation, animationData;
+      animationData = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = animations.length; _i < _len; _i++) {
+          animation = animations[_i];
+          _results.push({
+            frames: animation.frames,
+            name: animation.name()
+          });
+        }
+        return _results;
+      })();
+      return {
+        sequences: sequences,
+        tileset: tileset,
+        animations: animationData
+      };
+    };
     loadSpriteSheet = function(src, rows, columns, loadedCallback) {
       var canvas, context, image;
       canvas = $('<canvas>').get(0);
@@ -44,6 +64,15 @@
         });
       };
       return image.src = src;
+    };
+    addTile = function(src) {
+      var id, spritesEl;
+      id = Math.uuid(32, 16);
+      tileset[id] = src;
+      spritesEl = animationEditor.find('.sprites');
+      return spriteTemplate.tmpl({
+        src: src
+      }).appendTo(spritesEl);
     };
     animationEditor.bind({
       clearFrames: function() {
@@ -130,6 +159,16 @@
         return sequence.appendTo(sequencesEl);
       }
     });
+    pushSequence = function(frameArray) {
+      sequences.push(frameArray);
+      return animationEditor.trigger('updateLastSequence');
+    };
+    createSequence = function() {
+      if (currentAnimation.frames.length) {
+        pushSequence(currentAnimation.frames.copy());
+        return currentAnimation.clearFrames();
+      }
+    };
     Controls = function() {
       var changePlayIcon, fpsEl, intervalId, nextFrame, scrubber, scrubberEl, self;
       intervalId = null;
@@ -208,7 +247,7 @@
       return self;
     };
     Animation = function() {
-      var clearFrames, currentFrameIndex, findTileIndex, frames, name, pushSequence, self, stateId;
+      var currentFrameIndex, findTileIndex, frames, name, self, stateId;
       frames = [];
       currentFrameIndex = 0;
       stateId = Math.uuid(32, 16);
@@ -222,21 +261,6 @@
             return uuid;
           }
         }
-      };
-      clearFrames = function() {
-        var event, _i, _len, _ref, _results;
-        frames.clear();
-        _ref = ['clearFrames', 'disableSave'];
-        _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          event = _ref[_i];
-          _results.push(animationEditor.trigger(event));
-        }
-        return _results;
-      };
-      pushSequence = function(frameArray) {
-        sequences.push(frameArray);
-        return animationEditor.trigger('updateLastSequence');
       };
       self = {
         addFrame: function(imgSrc) {
@@ -267,19 +291,16 @@
           animationEditor.trigger('updateLastFrameSequence', [sequence]);
           return animationEditor.trigger('enableSave');
         },
-        addTile: function(src) {
-          var spritesEl;
-          tileset[Math.uuid(32, 16)] = src;
-          spritesEl = animationEditor.find('.sprites');
-          return spriteTemplate.tmpl({
-            src: src
-          }).appendTo(spritesEl);
-        },
-        createSequence: function() {
-          if (frames.length) {
-            pushSequence(frames.copy());
-            return clearFrames();
+        clearFrames: function() {
+          var event, _i, _len, _ref, _results;
+          frames.clear();
+          _ref = ['clearFrames', 'disableSave'];
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            event = _ref[_i];
+            _results.push(animationEditor.trigger(event));
           }
+          return _results;
         },
         currentFrameIndex: function(val) {
           if (val != null) {
@@ -366,6 +387,9 @@
       }
       return animationEditor.find('.animations .state_name:last').takeClass('selected');
     });
+    animationEditor.find('.export').mousedown(function() {
+      return console.log(exportAnimation());
+    });
     $(document).bind('keydown', function(e) {
       var framesLength, index, keyMapping;
       if (!(e.which === 37 || e.which === 39)) {
@@ -443,7 +467,9 @@
         return animationEditor.trigger('loadCurrentAnimation');
       }
     });
-    animationEditor.find('.save_sequence').click(currentAnimation.createSequence);
+    animationEditor.find('.save_sequence').click(function() {
+      return createSequence();
+    });
     animationEditor.find('.fps input').change(function() {
       var newValue;
       newValue = $(this).val();
@@ -469,10 +495,10 @@
         _ref = name.match(/x(\d*)y(\d*)/) || [], dimensions = _ref[0], tileWidth = _ref[1], tileHeight = _ref[2];
         if (tileWidth && tileHeight) {
           return loadSpriteSheet(src, parseInt(tileWidth), parseInt(tileHeight), function(sprite) {
-            return currentAnimation.addTile(sprite);
+            return addTile(sprite);
           });
         } else {
-          return currentAnimation.addTile(src);
+          return addTile(src);
         }
       }
     });
