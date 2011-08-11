@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Experimentable
   helper :all
   protect_from_forgery
   layout 'application'

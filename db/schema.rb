@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110726222829) do
+ActiveRecord::Schema.define(:version => 20110810222222) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -24,18 +24,6 @@ ActiveRecord::Schema.define(:version => 20110726222829) do
   end
 
   add_index "access_tokens", ["key"], :name => "index_access_tokens_on_key", :unique => true
-
-  create_table "alternatives", :force => true do |t|
-    t.integer "experiment_id"
-    t.string  "content"
-    t.string  "lookup",        :limit => 32
-    t.integer "weight",                      :default => 1
-    t.integer "participants",                :default => 0
-    t.integer "conversions",                 :default => 0
-  end
-
-  add_index "alternatives", ["experiment_id"], :name => "index_alternatives_on_experiment_id"
-  add_index "alternatives", ["lookup"], :name => "index_alternatives_on_lookup"
 
   create_table "animations", :force => true do |t|
     t.integer  "user_id",           :null => false
@@ -264,13 +252,13 @@ ActiveRecord::Schema.define(:version => 20110726222829) do
   end
 
   create_table "experiments", :force => true do |t|
-    t.string   "test_name"
-    t.string   "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.datetime "ended_at"
   end
 
-  add_index "experiments", ["test_name"], :name => "index_experiments_on_test_name"
+  add_index "experiments", ["name"], :name => "index_experiments_on_name", :unique => true
 
   create_table "feedbacks", :force => true do |t|
     t.integer  "user_id"
@@ -499,6 +487,18 @@ ActiveRecord::Schema.define(:version => 20110726222829) do
     t.datetime "updated_at",                        :null => false
     t.integer  "user_id"
   end
+
+  create_table "treatments", :force => true do |t|
+    t.integer  "experiment_id",               :null => false
+    t.integer  "user_id"
+    t.string   "session_id",    :limit => 32
+    t.boolean  "control",                     :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "treatments", ["experiment_id", "session_id"], :name => "index_treatments_on_experiment_id_and_session_id", :unique => true
+  add_index "treatments", ["experiment_id", "user_id"], :name => "index_treatments_on_experiment_id_and_user_id", :unique => true
 
   create_table "user_plugins", :force => true do |t|
     t.integer  "user_id",    :null => false
