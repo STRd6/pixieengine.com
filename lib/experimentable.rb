@@ -1,7 +1,7 @@
 module Experimentable
   def self.included(controller)
     controller.class_eval do
-      helper_method :experiment
+      helper_method :experiment, :track_event
     end
   end
 
@@ -18,5 +18,19 @@ module Experimentable
     end
 
     !treatment.control
+  end
+
+  def track_event(name)
+    if current_user
+      Event.create(
+        :name => name,
+        :user => current_user
+      )
+    else
+      Event.create(
+        :name => name,
+        :session_id => request.session_options[:id]
+      )
+    end
   end
 end

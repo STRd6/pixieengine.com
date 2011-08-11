@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110810222222) do
+ActiveRecord::Schema.define(:version => 20110811222222) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -245,11 +245,16 @@ ActiveRecord::Schema.define(:version => 20110810222222) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "events", :force => true do |t|
+    t.string   "name",                     :null => false
     t.integer  "user_id"
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "session_id", :limit => 32
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
   end
+
+  add_index "events", ["name", "session_id"], :name => "index_events_on_name_and_session_id"
+  add_index "events", ["name", "user_id", "session_id"], :name => "index_events_on_name_and_user_id_and_session_id"
+  add_index "events", ["name", "user_id"], :name => "index_events_on_name_and_user_id"
 
   create_table "experiments", :force => true do |t|
     t.string   "name",       :null => false

@@ -8,7 +8,7 @@ class InvitesController < ApplicationController
   def create
     Invite.create params[:invite].merge(:user => current_user)
 
-    Event.create(:user => current_user, :name => "invite_friend")
+    track_event('send_email_invite')
     redirect_to current_user, :notice => "Your friend will receive the message shortly"
   end
 

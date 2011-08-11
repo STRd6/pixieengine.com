@@ -132,8 +132,12 @@ class ProjectsController < ApplicationController
     @project.user = current_user
 
     if @project.save
+      track_event('create_project')
+
       respond_with([:ide, @project])
     else
+      track_event('create_project_error')
+
       respond_with @project
     end
   end
