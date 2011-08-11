@@ -6,4 +6,5 @@ class PostObserver < ActiveRecord::Observer
       Notifier.new_post(post, user).deliver
     end
   end
+  handle_asynchronously :after_save
 end
