@@ -44,24 +44,17 @@
   list-style: none
 
 .wmd-button
+  +inline-block
   +bounds(20px)
 
   margin-right: 5px
+  padding: 2px
   position: relative
-  background-image: url(wmd-buttons.png)
-  background-repeat: no-repeat
-  background-position: 0px 0px
-  display: inline-block
-  zoom: 1
-  *display: inline
-  list-style: none
+  vertical-align: baseline
+
   > a
-    width: 20px
-    height: 20px
-    margin-left: 5px
-    margin-right: 5px
-    position: absolute
-    display: inline-block
+    display: block
+    height: 100%
 
   &:hover
     +border-radius(2px)
@@ -76,47 +69,47 @@
 /* sprite button slicing style information
 
 .wmd-bold-button
-  background-position: 0px   0px
+  +icon_image(text_bold)
 
 .wmd-italic-button
-  background-position: -20px 0px
+  +icon_image(text_italic)
 
 .wmd-link-button
-  background-position: -40px 0px
+  +icon_image(link)
 
 .wmd-quote-button
-  background-position: -60px 0px
+  +icon_image(text_quote)
 
 .wmd-code-button
-  background-position: -80px 0px
+  +icon_image(application_osx_terminal)
 
 .wmd-image-button
-  background-position: -100px 0px
+  +icon_image(image)
 
 .wmd-olist-button
-  background-position: -120px 0px
+  +icon_image(text_list_numbers)
 
 .wmd-ulist-button
-  background-position: -140px 0px
+  +icon_image(text_list_bullets)
 
 .wmd-heading-button
-  background-position: -160px 0px
+  +icon_image(text_heading_1)
 
 .wmd-hr-button
-  background-position: -180px 0px
+  +icon_image(text_horizontalrule)
 
 .wmd-undo-button
-  background-position: -200px 0px
+  +icon_image(arrow_undo)
 
 .wmd-redo-button
-  background-position: -220px 0px
+  +icon_image(arrow_redo)
 
 .wmd-help-button
-  background-position: -240px 0px
+  +icon_image(help)
+
   position: absolute
   top: 5px
   right: 0px
-  background-position: -240px 0
 
 .wmd-prompt-background
   background-color: Black
