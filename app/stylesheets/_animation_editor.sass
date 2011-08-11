@@ -8,6 +8,7 @@ $highlight: #FEF7CB
 $highlight_border: #FFE475
 
 $action_bar_height: 30px
+$sequence_width: 100px
 
 body#fullscreen > .content
   height: 0
@@ -114,7 +115,7 @@ body#fullscreen > .content
               background-color: $highlight
 
         .sequence
-          +bounds(140px)
+          +bounds($sequence_width)
 
           cursor: pointer
           display: inline-block
@@ -132,114 +133,142 @@ body#fullscreen > .content
             &:nth-child(1)
               left: 2px
               top: 2px
+              z-index: 1
 
             &:nth-child(2)
               left: 4px
               top: 4px
+              z-index: 2
 
             &:nth-child(3)
               left: 6px
               top: 6px
+              z-index: 3
 
             &:nth-child(4)
               left: 8px
               top: 8px
+              z-index: 4
 
             &:nth-child(5)
               left: 10px
               top: 10px
+              z-index: 5
 
             &:nth-child(6)
               left: 12px
               top: 12px
+              z-index: 6
 
             &:nth-child(7)
               left: 14px
               top: 14px
+              z-index: 7
 
             &:nth-child(8)
               left: 16px
               top: 16px
+              z-index: 8
 
             &:nth-child(9)
               left: 18px
               top: 18px
+              z-index: 9
 
             &:nth-child(10)
               left: 20px
               top: 20px
+              z-index: 10
 
             &:nth-child(11)
               left: 22px
               top: 22px
+              z-index: 11
 
             &:nth-child(12)
               left: 24px
               top: 24px
+              z-index: 12
 
             &:nth-child(13)
               left: 26px
               top: 26px
+              z-index: 13
 
             &:nth-child(14)
               left: 28px
               top: 28px
+              z-index: 14
 
             &:nth-child(15)
               left: 30px
               top: 30px
+              z-index: 15
 
             &:nth-child(16)
               left: 32px
               top: 32px
+              z-index: 16
 
             &:nth-child(17)
               left: 34px
               top: 34px
+              z-index: 17
 
             &:nth-child(18)
               left: 36px
               top: 36px
+              z-index: 18
 
             &:nth-child(19)
               left: 38px
               top: 38px
+              z-index: 19
 
             &:nth-child(20)
               left: 40px
               top: 40px
+              z-index: 20
 
             &:nth-child(21)
               left: 42px
               top: 42px
+              z-index: 21
 
             &:nth-child(22)
               left: 44px
               top: 44px
+              z-index: 22
 
             &:nth-child(23)
               left: 46px
               top: 46px
+              z-index: 23
 
             &:nth-child(24)
               left: 48px
               top: 48px
+              z-index: 24
 
             &:nth-child(25)
               left: 50px
               top: 50px
+              z-index: 25
 
             &:nth-child(26)
               left: 52px
               top: 52px
+              z-index: 26
 
             &:nth-child(27)
               left: 54px
               top: 54px
+              z-index: 27
 
             &:nth-child(28)
               left: 56px
               top: 56px
+              z-index: 28
 
       nav.left, nav.right
         .background_color
@@ -264,6 +293,8 @@ body#fullscreen > .content
         +border-radius(0)
         +box-shadow(none)
         height: 250px
+        overflow: auto
+        z-index: 100
 
         h3
           display: inline-block
@@ -278,7 +309,7 @@ body#fullscreen > .content
 
         .frame_sprites
           .frame_sprite
-            +bounds(140px)
+            +bounds($sequence_width)
 
             cursor: pointer
             display: inline-block
@@ -286,7 +317,7 @@ body#fullscreen > .content
             vertical-align: top
 
           .sequence
-            +bounds(140px)
+            +bounds($sequence_width)
 
             cursor: pointer
             display: inline-block
@@ -305,114 +336,142 @@ body#fullscreen > .content
               &:nth-child(1)
                 left: 2px
                 top: 2px
+                z-index: 1
 
               &:nth-child(2)
                 left: 4px
                 top: 4px
+                z-index: 2
 
               &:nth-child(3)
                 left: 6px
                 top: 6px
+                z-index: 3
 
               &:nth-child(4)
                 left: 8px
                 top: 8px
+                z-index: 4
 
               &:nth-child(5)
                 left: 10px
                 top: 10px
+                z-index: 5
 
               &:nth-child(6)
                 left: 12px
                 top: 12px
+                z-index: 6
 
               &:nth-child(7)
                 left: 14px
                 top: 14px
+                z-index: 7
 
               &:nth-child(8)
                 left: 16px
                 top: 16px
+                z-index: 8
 
               &:nth-child(9)
                 left: 18px
                 top: 18px
+                z-index: 9
 
               &:nth-child(10)
                 left: 20px
                 top: 20px
+                z-index: 10
 
               &:nth-child(11)
                 left: 22px
                 top: 22px
+                z-index: 11
 
               &:nth-child(12)
                 left: 24px
                 top: 24px
+                z-index: 12
 
               &:nth-child(13)
                 left: 26px
                 top: 26px
+                z-index: 13
 
               &:nth-child(14)
                 left: 28px
                 top: 28px
+                z-index: 14
 
               &:nth-child(15)
                 left: 30px
                 top: 30px
+                z-index: 15
 
               &:nth-child(16)
                 left: 32px
                 top: 32px
+                z-index: 16
 
               &:nth-child(17)
                 left: 34px
                 top: 34px
+                z-index: 17
 
               &:nth-child(18)
                 left: 36px
                 top: 36px
+                z-index: 18
 
               &:nth-child(19)
                 left: 38px
                 top: 38px
+                z-index: 19
 
               &:nth-child(20)
                 left: 40px
                 top: 40px
+                z-index: 20
 
               &:nth-child(21)
                 left: 42px
                 top: 42px
+                z-index: 21
 
               &:nth-child(22)
                 left: 44px
                 top: 44px
+                z-index: 22
 
               &:nth-child(23)
                 left: 46px
                 top: 46px
+                z-index: 23
 
               &:nth-child(24)
                 left: 48px
                 top: 48px
+                z-index: 24
 
               &:nth-child(25)
                 left: 50px
                 top: 50px
+                z-index: 25
 
               &:nth-child(26)
                 left: 52px
                 top: 52px
+                z-index: 26
 
               &:nth-child(27)
                 left: 54px
                 top: 54px
+                z-index: 27
 
               &:nth-child(28)
                 left: 56px
                 top: 56px
+                z-index: 28
 
           img
             +box-sizing(border-box)
