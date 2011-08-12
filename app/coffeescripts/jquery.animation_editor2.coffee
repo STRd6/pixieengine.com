@@ -1,8 +1,10 @@
 $.fn.animationEditor = (options) ->
   animationNumber = 1
+  tileIndex = 0
   lastClickedSprite = null
 
   tileset = {}
+  tilemap = {}
   sequences = []
 
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
@@ -14,11 +16,14 @@ $.fn.animationEditor = (options) ->
   frameSpriteTemplate = templates.find('.frame_sprite')
 
   exportAnimation = ->
-    animationData = ({ frames: animation.frames, name: animation.name() } for animation in animations)
+    animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
+
+    console.log sequences
+    sequenceData = ((tileset[frame] for frame in array) for array in sequences)
 
     return {
-      sequences: sequences
-      tileset: tileset
+      sequences: sequenceData
+      tileset: (tilemap[tileId] for tileSrc, tileId in tileset)
       animations: animationData
     }
 
@@ -57,6 +62,8 @@ $.fn.animationEditor = (options) ->
     id = Math.uuid(32, 16)
 
     tileset[id] = src
+    tilemap[id] = tileIndex
+    tileIndex += 1
     spritesEl = animationEditor.find('.sprites')
     spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 

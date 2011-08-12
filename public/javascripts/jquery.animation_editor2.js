@@ -1,13 +1,15 @@
-/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 23:17:15 GMT from
+/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 23:49:25 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimation, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileset;
+    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimation, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
     animationNumber = 1;
+    tileIndex = 0;
     lastClickedSprite = null;
     tileset = {};
+    tilemap = {};
     sequences = [];
     animationEditor = $(this.get(0)).addClass("editor animation_editor");
     templates = $("#animation_editor_templates");
@@ -16,22 +18,57 @@
     spriteTemplate = templates.find('.sprite');
     frameSpriteTemplate = templates.find('.frame_sprite');
     exportAnimation = function() {
-      var animation, animationData;
+      var animation, animationData, array, frame, sequenceData, tileId, tileSrc;
       animationData = (function() {
         var _i, _len, _results;
         _results = [];
         for (_i = 0, _len = animations.length; _i < _len; _i++) {
           animation = animations[_i];
           _results.push({
-            frames: animation.frames,
+            frames: (function() {
+              var _j, _len2, _ref, _results2;
+              _ref = animation.frames;
+              _results2 = [];
+              for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+                frame = _ref[_j];
+                _results2.push(tilemap[frame]);
+              }
+              return _results2;
+            })(),
             name: animation.name()
           });
         }
         return _results;
       })();
+      console.log(sequences);
+      sequenceData = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = sequences.length; _i < _len; _i++) {
+          array = sequences[_i];
+          _results.push((function() {
+            var _j, _len2, _results2;
+            _results2 = [];
+            for (_j = 0, _len2 = array.length; _j < _len2; _j++) {
+              frame = array[_j];
+              _results2.push(tileset[frame]);
+            }
+            return _results2;
+          })());
+        }
+        return _results;
+      })();
       return {
-        sequences: sequences,
-        tileset: tileset,
+        sequences: sequenceData,
+        tileset: (function() {
+          var _len, _results;
+          _results = [];
+          for (tileId = 0, _len = tileset.length; tileId < _len; tileId++) {
+            tileSrc = tileset[tileId];
+            _results.push(tilemap[tileId]);
+          }
+          return _results;
+        })(),
         animations: animationData
       };
     };
@@ -69,6 +106,8 @@
       var id, spritesEl;
       id = Math.uuid(32, 16);
       tileset[id] = src;
+      tilemap[id] = tileIndex;
+      tileIndex += 1;
       spritesEl = animationEditor.find('.sprites');
       return spriteTemplate.tmpl({
         src: src
