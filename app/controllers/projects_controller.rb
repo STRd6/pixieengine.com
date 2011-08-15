@@ -249,8 +249,12 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if filter == "own" && current_user
-      Project.for_user(current_user)
+    @projects ||= if filter == "own"
+      if current_user
+        Project.for_user(current_user)
+      else
+        Project
+      end
     elsif filter == "for_user"
       Project.for_user(User.find(params[:user_id]))
     else
