@@ -5,7 +5,7 @@ class ChatsController < ApplicationController
   respond_to :html, :json
 
   def create
-    text = auto_link(params[:body])
+    text = auto_link(params[:body], :sanitize => false)
 
     cleaned_text = Sanitize.clean(text, :elements => ['a', 'img'],
       :attributes => {

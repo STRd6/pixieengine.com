@@ -7,6 +7,8 @@ class SpritesController < ApplicationController
   def create
     @sprite = Sprite.create params[:sprite].merge(:user => current_user)
 
+    track_event('create_sprite')
+
     respond_to do |format|
       format.html do
         if sprite.user
@@ -20,8 +22,6 @@ class SpritesController < ApplicationController
       end
       format.json do
         if sprite.user
-          Event.create(:user => current_user, :name => "save_sprite")
-
           render :json => {
             :sprite => {
               :id => @sprite.id,

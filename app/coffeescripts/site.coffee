@@ -1,3 +1,18 @@
+# Event tracking
+window.trackEvent = (category, action, label) ->
+  _gaq.push(['_trackEvent', category, action, label])
+
+clickTrackers =
+  a: "click"
+  button: "click"
+
+for tag, type of clickTrackers
+  do (tag, type) ->
+    $(tag).live type, ->
+      category = $(this).parents('[eventCategory]:first').attr('eventCategory') || "Page"
+      label = $(this).attr('eventLabel') || $(this).text() || $(this).attr('title')
+      trackEvent(category, type, $.trim(label))
+
 # Notifications
 window.notify = (message, delay) ->
   $.pnotify
@@ -66,8 +81,11 @@ $ ->
 
     setLightTheme $(this).hasClass('on')
 
-  if active = (getVal('light') || $("body").is(".light"))
+  active = getVal('light')
+  if active?
     setLightTheme active
+  else if $('html').hasClass 'light'
+    $('.bulb').toggleClass("on", true)
 
   # Display Flash Notice
   $("#flashes .notice").each ->

@@ -49,7 +49,7 @@ header
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
 
   height: 40px
-  margin-bottom: 1em
+  position: relative
 
   .logo
     +bounds(61px, 32px)
@@ -133,26 +133,13 @@ header
 
     height: 100%
 
-    span.active
-      +box-sizing(border-box)
-      +inline-block
-
-      background-color: rgba(0, 0, 0, 0.25)
-      color: white
-      font-size: 13px
-      font-weight: bold
-      height: 100%
-      padding-left: 10px
-      padding-right: 10px
-      padding-top: 10px
-      text-align: center
-
-    a
+    span, a
       +box-sizing(border-box)
       +inline-block
 
       color: #DCDCDC
-      font-size: 13px
+
+      font-size: 15px
       font-weight: normal
       height: 100%
       padding-left: 10px
@@ -160,9 +147,17 @@ header
       padding-top: 10px
       text-align: center
       text-decoration: none
+      width: 102px
 
       &:hover
+        background-color: rgba(0, 0, 0, 0.25)
         color: white
+
+      &.active
+        background-color: rgba(0, 0, 0, 0.25)
+        color: white
+        font-weight: bold
+
 
 .bulb
   +bounds(32px)

@@ -16,6 +16,8 @@ class ProjectsController < ApplicationController
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
+    @modify_remote_origin = true
+
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
       redirect_to subscribe_path
@@ -117,7 +119,6 @@ class ProjectsController < ApplicationController
     @title = "PixieEngine - Create Games"
     @hide_chat = true
     @hide_dock = true
-    @theme = :light
   end
 
   def update
@@ -130,9 +131,15 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @project.user = current_user
 
-    @project.save
+    if @project.save
+      track_event('create_project')
 
-    respond_with([:ide, @project])
+      respond_with([:ide, @project])
+    else
+      track_event('create_project_error')
+
+      respond_with @project
+    end
   end
 
   def fork
@@ -242,16 +249,16 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if current_user
-      if filter == "own"
+    @projects ||= if filter == "own"
+      if current_user
         Project.for_user(current_user)
-      elsif filter == "for_user"
-        Project.for_user(User.find(params[:user_id]))
       else
-        Project.send(filter)
+        Project
       end
+    elsif filter == "for_user"
+      Project.for_user(User.find(params[:user_id]))
     else
-      Project
+      Project.send(filter)
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 

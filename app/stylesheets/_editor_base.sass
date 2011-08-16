@@ -58,6 +58,7 @@
 
   .content
     +bounds(100%, 100%)
+    +box-sizing(border-box)
 
     position: relative
 
@@ -80,6 +81,8 @@
     font-size: 13px
 
   .screen, .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
     +contents_centered
 
     background-color: #222

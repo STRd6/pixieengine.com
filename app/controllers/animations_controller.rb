@@ -2,7 +2,6 @@ class AnimationsController < ApplicationController
   respond_to :html, :json
 
   before_filter :require_user, :except => [:index]
-  before_filter :filter_results, :only => [:index]
 
   def new
   end
@@ -21,41 +20,6 @@ class AnimationsController < ApplicationController
     @user_sprites = current_user.sprites
 
     respond_with(@animation)
-  end
-
-  def filter_results
-    @animations ||= if current_user
-      if filter == "own"
-        Animation.for_user(current_user)
-      elsif filter == "for_user"
-        Animation.for_user(User.find(params[:user_id]))
-      else
-        Animation.send(filter)
-      end
-    else
-      Animation
-    end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
-  end
-
-  def filters
-    ["own", "none", "for_user"]
-  end
-
-  def gallery_filters
-    filters = [
-      ["All", :none]
-    ]
-
-    if current_user
-      filters.push ["My Animations", :own]
-    end
-
-    filters
-  end
-  helper_method :gallery_filters
-
-  def per_page
-    24
   end
 
   private

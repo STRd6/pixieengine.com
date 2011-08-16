@@ -619,6 +619,11 @@
     $('.filetree .file').live 'click', ->
       openFile($(this).data('id'))
 
+      trackEvent("IDE", "open file", $(this).data('id'))
+
+    $('.filetree .folder').live 'click', ->
+      trackEvent("IDE", "click folder", $(this).text())
+
     $('.error.file').live 'click', ->
       if id = $(this).data('id')
         openFile(id)

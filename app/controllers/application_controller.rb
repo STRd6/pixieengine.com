@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Experimentable
   helper :all
   protect_from_forgery
   layout 'application'
@@ -12,6 +13,11 @@ class ApplicationController < ActionController::Base
   after_filter :flash_to_headers
 
   def track_visits
+    unless session['landed']
+      session['landed'] = true
+      track_event('landing')
+    end
+
     Visit.track(current_user, controller_name, action_name, request.session_options[:id])
   end
 

@@ -59,6 +59,8 @@ class UsersController < ApplicationController
 
       save_sprites_to_user(user)
 
+      track_event('registration')
+
       respond_to do |format|
         format.html do
           @registered = true
@@ -71,6 +73,8 @@ class UsersController < ApplicationController
         format.json { render :json => {:status => "ok"} }
       end
     else
+      track_event('registration_error')
+
       respond_to do |format|
         format.html do
           if subscribe

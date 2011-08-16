@@ -48,6 +48,8 @@ module PixieStrd6Com
       g.test_framework  :test_unit, :fixture => false
     end
 
+    config.active_record.observers = :post_observer
+
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 

@@ -1,11 +1,14 @@
-/* DO NOT MODIFY. This file was compiled Fri, 10 Jun 2011 05:46:44 GMT from
+/* DO NOT MODIFY. This file was compiled Mon, 08 Aug 2011 04:39:41 GMT from
  * /home/daniel/apps/pixie.strd6.com/app/coffeescripts/jquery.pixie.coffee
  */
 
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   (function($) {
-    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, primaryButton, scale, tools;
+    var ColorPicker, ColorUtil, DEBUG, DIV, IMAGE_DIR, RGB_PARSER, UndoStack, actions, colorNeighbors, debugTools, erase, falseFn, palette, primaryButton, scale, tools, track;
+    track = function(action, label) {
+      return typeof trackEvent === "function" ? trackEvent("Pixel Editor", action, label) : void 0;
+    };
     DEBUG = false;
     DIV = "<div />";
     IMAGE_DIR = "/images/pixie/";
@@ -503,7 +506,8 @@
         });
         preview.mousedown(function() {
           tilePreview = !tilePreview;
-          return canvas.preview();
+          canvas.preview();
+          return track('mousedown', 'preview');
         });
         currentTool = void 0;
         active = false;
@@ -528,9 +532,10 @@
         $(navRight).bind('mousedown touchstart', function(e) {
           var color, target;
           target = $(e.target);
-          color = Color(target.css('backgroundColor'));
           if (target.is('.swatch')) {
-            return canvas.color(color, !primaryButton(e));
+            color = Color(target.css('backgroundColor'));
+            canvas.color(color, !primaryButton(e));
+            return track(e.type, color.toString());
           }
         });
         pixels = [];
@@ -607,6 +612,7 @@
                   if (currentComponent === pixie) {
                     e.preventDefault();
                     doIt();
+                    track('hotkey', action.name);
                     return false;
                   }
                 });
@@ -624,7 +630,6 @@
                 if (!$(this).attr('disabled')) {
                   doIt();
                 }
-                _gaq.push(['_trackEvent', 'action_button', action.name]);
                 return false;
               });
               return actionButton.appendTo(actionbar);
@@ -653,6 +658,7 @@
                   if (currentComponent === pixie) {
                     e.preventDefault();
                     setMe();
+                    track("hotkey", tool.name);
                     return false;
                   }
                 });
@@ -665,6 +671,7 @@
             });
             toolDiv = $("<div class='tool'></div>").append(img).bind("mousedown touchstart", function(e) {
               setMe();
+              track(e.type, tool.name);
               return false;
             });
             return toolbar.append(toolDiv);
@@ -735,17 +742,21 @@
             image = new Image();
             image.onload = function() {
               var getColor, imageData;
-              canvas.resize(image.width, image.height);
-              context.drawImage(image, 0, 0);
-              imageData = context.getImageData(0, 0, image.width, image.height);
-              getColor = function(x, y) {
-                var index;
-                index = (x + y * imageData.width) * 4;
-                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
-              };
-              return canvas.eachPixel(function(pixel, x, y) {
-                return pixel.color(getColor(x, y), true);
-              });
+              if (image.width * image.height < 128 * 96) {
+                canvas.resize(image.width, image.height);
+                context.drawImage(image, 0, 0);
+                imageData = context.getImageData(0, 0, image.width, image.height);
+                getColor = function(x, y) {
+                  var index;
+                  index = (x + y * imageData.width) * 4;
+                  return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255);
+                };
+                canvas.eachPixel(function(pixel, x, y) {
+                  return pixel.color(getColor(x, y), true);
+                });
+              } else {
+                alert("This image is too big for our editor to handle, try 96x96 and smaller");
+              }
             };
             return image.src = dataURL;
           },
@@ -762,7 +773,6 @@
             if (((0 <= y && y < height)) && ((0 <= x && x < width))) {
               return pixels[y][x];
             }
-            return void 0;
           },
           getReplayData: function() {
             return undoStack.replayData();

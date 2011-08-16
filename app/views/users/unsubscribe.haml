@@ -1,7 +1,12 @@
-= form_tag(url_for({:action => "do_unsubscribe"})) do
+%style
+  :sass
+    form
+      margin: auto
+      width: 350px
 
+= form_tag(url_for({:action => "do_unsubscribe"}), :class => "module") do
   - if user = User.find_by_perishable_token(params[:token])
-    = hidden_field_tag (:id, user.id)
+    = hidden_field_tag(:id, user.id)
     %p Really unsubscribe #{user.email} from Pixie newsletter?
   - else
     %p

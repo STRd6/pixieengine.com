@@ -38,6 +38,7 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
+gem 'unicorn'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
 

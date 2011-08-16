@@ -1,0 +1,30 @@
+:ruby
+  delivery_date = Time.now.strftime("%b %d %Y")
+  link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => delivery_date }
+
+  pixteroids = Project.find(123)
+  kitten_no_densetsu = Project.find(106)
+
+  newsletter_header = "This week in Pixie: #{delivery_date}"
+
+  user_list = []
+
+  @featured_users.each do |user|
+    user_list.push(user_url(user, link_tracking))
+  end
+
+:plain
+
+  Hey guys. It's been a long time and we've been keeping busy here making Pixie as great as we can. We've come a long way since our last newsletter.
+
+  Our most exciting new feature is an #{forem_url(link_tracking)}. Pixie is becoming a thriving community so come on by, introduce yourself, ask questions, and make new friends. A big shout out goes to our newest active forum members: #{user_list.to_sentence}.
+
+  If you're looking for a fun and simple adventure game, check out #{fullscreen_project_url(kitten_no_densetsu, link_tracking)}. In this rip-roaring adventure you help an elf boy and kitten solve puzzles to find their way home.
+
+  There have been big improvements to the game design tools. Take a look at our full demo about how to make an Asteroids type game: #{ide_project_url(pixteroids, link_tracking)}. You'll learn how to create a spaceship that moves and shoots, as well as how to create and destroy asteroids.
+
+  That's all we've got for this week, but stay tuned and we'll be back next week with more hot new features, games and tutorials.
+
+  #{unsubscribe_users_url(:id => @user.id)}
+
+
