@@ -47,7 +47,6 @@
               if chat.id > 0
                 $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + chat.id + '">' + chat.name + '</a>')
 
-
             $('#chats').append(chatData)
             prevChat = chat.name
 
@@ -119,3 +118,7 @@
       ).live("mouseleave", ->
         $(this).find('.time').css('display', 'none')
       )
+
+      $(document).bind 'keydown', 'c', (e) ->
+        e.preventDefault()
+        $('#openChat').mousedown()

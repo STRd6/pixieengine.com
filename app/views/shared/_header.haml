@@ -26,9 +26,3 @@
     = render :partial => "/shared/login"
 
 .bulb
-
-:coffeescript
-  $ ->
-    $(document).bind 'keydown', 'c', (e) ->
-      e.preventDefault()
-      $('#openChat').mousedown()
