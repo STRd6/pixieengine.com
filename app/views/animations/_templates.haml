@@ -7,7 +7,9 @@
             .module_header
               %h3.animation_name State 1
               %button.new_animation New
-              %button.export Export
+              .button_group
+                %button.export_json> Export JSON
+                %button.export_csv> Export CSV
             %img
             .controls.actions_bar
               .play
@@ -34,6 +36,7 @@
         .module_header
           %h3 Frames
           %button.save_sequence> Create Sequence
+          %button.clear_frames> Clear
         .frame_sprites
 
   %script.animation.template(type="text/x-jQuery-tmpl")

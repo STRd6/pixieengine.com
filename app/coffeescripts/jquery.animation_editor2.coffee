@@ -15,15 +15,22 @@ $.fn.animationEditor = (options) ->
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
 
-  exportAnimation = ->
+  exportAnimationCSV = ->
+    output = ""
+
+    for animation in animations
+      output = output + animation.name() + ": " + (tilemap[frame] for frame in animation.frames).join(",") + "\n"
+
+    return output
+
+  exportAnimationJSON = ->
     animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
 
-    console.log sequences
-    sequenceData = ((tileset[frame] for frame in array) for array in sequences)
+    sequenceData = ((tilemap[frame] for frame in array) for array in sequences)
 
     return {
       sequences: sequenceData
-      tileset: (tilemap[tileId] for tileSrc, tileId in tileset)
+      tileset: (tileSrc for tileId, tileSrc of tileset)
       animations: animationData
     }
 
@@ -94,7 +101,7 @@ $.fn.animationEditor = (options) ->
 
         animationEditor.trigger 'disableSave'
     removeFrame: (e, frameIndex) ->
-      $(this).find('.frame_sprites img').eq(frameIndex).remove()
+      $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
     loadCurrentAnimation: ->
       $this = $(this)
 
@@ -323,8 +330,11 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
     animationEditor.find('.animations .state_name:last').takeClass('selected')
 
-  animationEditor.find('.export').mousedown ->
-    console.log exportAnimation()
+  animationEditor.find('.export_json').mousedown ->
+    console.log exportAnimationJSON()
+
+  animationEditor.find('.export_csv').mousedown ->
+    console.log exportAnimationCSV()
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
@@ -395,6 +405,9 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.save_sequence').click ->
     createSequence()
+
+  animationEditor.find('.clear_frames').click ->
+    currentAnimation.clearFrames()
 
   animationEditor.find('.fps input').change ->
     newValue = $(this).val()

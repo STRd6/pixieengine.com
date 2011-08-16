@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Thu, 11 Aug 2011 23:49:25 GMT from
+/* DO NOT MODIFY. This file was compiled Tue, 16 Aug 2011 20:41:48 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimation, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
+    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimationCSV, exportAnimationJSON, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
     animationNumber = 1;
     tileIndex = 0;
     lastClickedSprite = null;
@@ -17,7 +17,25 @@
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
     frameSpriteTemplate = templates.find('.frame_sprite');
-    exportAnimation = function() {
+    exportAnimationCSV = function() {
+      var animation, frame, output, _i, _len;
+      output = "";
+      for (_i = 0, _len = animations.length; _i < _len; _i++) {
+        animation = animations[_i];
+        output = output + animation.name() + ": " + ((function() {
+          var _j, _len2, _ref, _results;
+          _ref = animation.frames;
+          _results = [];
+          for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+            frame = _ref[_j];
+            _results.push(tilemap[frame]);
+          }
+          return _results;
+        })()).join(",") + "\n";
+      }
+      return output;
+    };
+    exportAnimationJSON = function() {
       var animation, animationData, array, frame, sequenceData, tileId, tileSrc;
       animationData = (function() {
         var _i, _len, _results;
@@ -40,7 +58,6 @@
         }
         return _results;
       })();
-      console.log(sequences);
       sequenceData = (function() {
         var _i, _len, _results;
         _results = [];
@@ -51,7 +68,7 @@
             _results2 = [];
             for (_j = 0, _len2 = array.length; _j < _len2; _j++) {
               frame = array[_j];
-              _results2.push(tileset[frame]);
+              _results2.push(tilemap[frame]);
             }
             return _results2;
           })());
@@ -61,11 +78,11 @@
       return {
         sequences: sequenceData,
         tileset: (function() {
-          var _len, _results;
+          var _results;
           _results = [];
-          for (tileId = 0, _len = tileset.length; tileId < _len; tileId++) {
+          for (tileId in tileset) {
             tileSrc = tileset[tileId];
-            _results.push(tilemap[tileId]);
+            _results.push(tileSrc);
           }
           return _results;
         })(),
@@ -152,7 +169,7 @@
         }
       },
       removeFrame: function(e, frameIndex) {
-        return $(this).find('.frame_sprites img').eq(frameIndex).remove();
+        return $(this).find('.frame_sprites img').eq(frameIndex).parent().remove();
       },
       loadCurrentAnimation: function() {
         var $this;
@@ -426,8 +443,11 @@
       }
       return animationEditor.find('.animations .state_name:last').takeClass('selected');
     });
-    animationEditor.find('.export').mousedown(function() {
-      return console.log(exportAnimation());
+    animationEditor.find('.export_json').mousedown(function() {
+      return console.log(exportAnimationJSON());
+    });
+    animationEditor.find('.export_csv').mousedown(function() {
+      return console.log(exportAnimationCSV());
     });
     $(document).bind('keydown', function(e) {
       var framesLength, index, keyMapping;
@@ -508,6 +528,9 @@
     });
     animationEditor.find('.save_sequence').click(function() {
       return createSequence();
+    });
+    animationEditor.find('.clear_frames').click(function() {
+      return currentAnimation.clearFrames();
     });
     animationEditor.find('.fps input').change(function() {
       var newValue;
