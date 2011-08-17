@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 07:48:43 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 19:42:13 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
+    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, removeSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
     animationNumber = 1;
     tileIndex = 0;
     lastClickedSprite = null;
@@ -130,6 +130,10 @@
         src: src
       }).appendTo(spritesEl);
     };
+    removeSequence = function(sequenceIndex) {
+      sequences.splice(sequenceIndex, 1);
+      return animationEditor.trigger('removeSequence', [sequenceIndex]);
+    };
     animationEditor.bind({
       clearFrames: function() {
         return $(this).find('.frame_sprites').children().remove();
@@ -170,6 +174,9 @@
       },
       removeFrame: function(e, frameIndex) {
         return $(this).find('.frame_sprites img').eq(frameIndex).parent().remove();
+      },
+      removeSequence: function(e, sequenceIndex) {
+        return $(this).find('.sequences .sequence').eq(sequenceIndex).remove();
       },
       loadCurrentAnimation: function() {
         var $this;
@@ -386,8 +393,6 @@
           }
         },
         removeFrame: function(frameIndex) {
-          var tilesetIndex;
-          tilesetIndex = frames[frameIndex];
           frames.splice(frameIndex, 1);
           controls.scrubberMax(controls.scrubberMax() - 1);
           animationEditor.trigger('removeFrame', [frameIndex]);
@@ -520,6 +525,12 @@
         return $('.right .x').remove();
       }
     });
+    animationEditor.find('.right .x').live({
+      mousedown: function(e) {
+        e.stopPropagation();
+        return removeSequence($(this).parent().index());
+      }
+    });
     animationEditor.find('.frame_sprites img').live({
       mousedown: function() {
         var index;
@@ -539,7 +550,8 @@
       return createSequence();
     });
     animationEditor.find('.clear_frames').click(function() {
-      return currentAnimation.clearFrames();
+      currentAnimation.clearFrames();
+      return controls.stop();
     });
     animationEditor.find('.fps input').change(function() {
       var newValue;

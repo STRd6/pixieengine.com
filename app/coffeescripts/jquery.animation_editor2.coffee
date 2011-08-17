@@ -74,6 +74,11 @@ $.fn.animationEditor = (options) ->
     spritesEl = animationEditor.find('.sprites')
     spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
+  removeSequence = (sequenceIndex) ->
+    sequences.splice(sequenceIndex, 1)
+
+    animationEditor.trigger 'removeSequence', [sequenceIndex]
+
   #UI updating events
   animationEditor.bind
     clearFrames: ->
@@ -102,6 +107,8 @@ $.fn.animationEditor = (options) ->
         animationEditor.trigger 'disableSave'
     removeFrame: (e, frameIndex) ->
       $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
+    removeSequence: (e, sequenceIndex) ->
+      $(this).find('.sequences .sequence').eq(sequenceIndex).remove()
     loadCurrentAnimation: ->
       $this = $(this)
 
@@ -276,7 +283,6 @@ $.fn.animationEditor = (options) ->
           return name
 
       removeFrame: (frameIndex) ->
-        tilesetIndex = frames[frameIndex]
         frames.splice(frameIndex, 1)
         controls.scrubberMax(controls.scrubberMax() - 1)
 
@@ -395,9 +401,13 @@ $.fn.animationEditor = (options) ->
         src: '/images/x.png'
 
       $('.right .sequence').append(img)
-
     else
       $('.right .x').remove()
+
+  animationEditor.find('.right .x').live
+    mousedown: (e) ->
+      e.stopPropagation()
+      removeSequence($(this).parent().index())
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->
@@ -418,6 +428,7 @@ $.fn.animationEditor = (options) ->
 
   animationEditor.find('.clear_frames').click ->
     currentAnimation.clearFrames()
+    controls.stop()
 
   animationEditor.find('.fps input').change ->
     newValue = $(this).val()
