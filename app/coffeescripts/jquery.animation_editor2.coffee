@@ -424,18 +424,12 @@ $.fn.animationEditor = (options) ->
 
     controls.pause().fps(newValue).play()
 
-  animationEditor.find('.player .animation_name').liveEdit().live
+  animationEditor.find('.player .state_name').liveEdit().live
     change: ->
       $this = $(this)
 
-      prevValue = $this.get(0).defaultValue
       updatedStateName = $this.val()
-
       currentAnimation.name(updatedStateName)
-
-      animationEditor.find('.animations .state_name').filter(->
-        return $(this).attr('data-state_id') == currentAnimation.stateId
-      ).text(updatedStateName)
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE

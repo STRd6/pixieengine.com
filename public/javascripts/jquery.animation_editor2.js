@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 02:27:00 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 07:48:43 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -546,16 +546,12 @@
       newValue = $(this).val();
       return controls.pause().fps(newValue).play();
     });
-    animationEditor.find('.player .animation_name').liveEdit().live({
+    animationEditor.find('.player .state_name').liveEdit().live({
       change: function() {
-        var $this, prevValue, updatedStateName;
+        var $this, updatedStateName;
         $this = $(this);
-        prevValue = $this.get(0).defaultValue;
         updatedStateName = $this.val();
-        currentAnimation.name(updatedStateName);
-        return animationEditor.find('.animations .state_name').filter(function() {
-          return $(this).attr('data-state_id') === currentAnimation.stateId;
-        }).text(updatedStateName);
+        return currentAnimation.name(updatedStateName);
       }
     });
     animationEditor.dropImageReader(function(file, event) {
