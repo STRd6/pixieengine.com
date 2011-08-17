@@ -22,8 +22,6 @@ $header_gradient_end: darken($branded_blue, 3%)
     width: 100%
 
     li
-      +border-bottom-radius
-
       background: $header_gradient_end
       display: block
       margin: 0
@@ -34,8 +32,13 @@ $header_gradient_end: darken($branded_blue, 3%)
         background: rgba(255, 255, 255, 0.1)
         color: white
 
+      &:last-child
+        +border-bottom-radius
+
       a
-        color: #DCDCDC
+        +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+
+        color: $dark_text
         display: inline-block
         font-weight: normal
         padding: 6px 15px
@@ -110,7 +113,9 @@ header
       margin-right: 2px
 
     .log_out
-      color: #DCDCDC
+      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+
+      color: $dark_text
       height: 40px
 
       display: inline-block
@@ -136,9 +141,9 @@ header
     span, a
       +box-sizing(border-box)
       +inline-block
+      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
 
-      color: #DCDCDC
-
+      color: $dark_text
       font-size: 15px
       font-weight: normal
       height: 100%
