@@ -106,7 +106,16 @@ $.fn.animationEditor = (options) ->
 
         animationEditor.trigger 'disableSave'
     removeFrame: (e, frameIndex) ->
-      $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
+      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('frame_sprite')
+        $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
+
+      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')
+        parent = $(this).find('.frame_sprites img').eq(frameIndex).parent()
+        $(this).find('.frame_sprites img').eq(frameIndex).remove()
+
+        if parent.children().length == 0
+          parent.remove()
+
     removeSequence: (e, sequenceIndex) ->
       $(this).find('.sequences .sequence').eq(sequenceIndex).remove()
     loadCurrentAnimation: ->
@@ -289,6 +298,16 @@ $.fn.animationEditor = (options) ->
         animationEditor.trigger 'removeFrame', [frameIndex]
         animationEditor.trigger 'disableSave' if frames.length == 0
 
+      removeFrameSequence: (sequenceIndex) ->
+        sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children()
+        frameImages = animationEditor.find('.frame_sprites img')
+
+        for image in sequenceImages
+          index = $(image).index(frameImages)
+          self.removeFrame(index)
+
+        animationEditor.trigger 'removeFrameSequence', [sequenceIndex]
+
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]
 
@@ -300,7 +319,7 @@ $.fn.animationEditor = (options) ->
           player.removeAttr('src')
         else
           player.attr('src', tileset[tilesetIndex])
-          animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('selected')
+          animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
 
     return self
 
@@ -404,10 +423,37 @@ $.fn.animationEditor = (options) ->
     else
       $('.right .x').remove()
 
+  animationEditor.find('.edit_frames').mousedown ->
+    $this = $(this)
+    text = $this.text()
+
+    $this.text(if text == "Edit" then "Done" else "Edit")
+
+    if text == "Edit"
+      img = $ '<img />'
+        class: 'x'
+        src: '/images/x.png'
+
+      $('.bottom .sequence, .bottom .frame_sprite').append(img)
+    else
+      $('.bottom .x').remove()
+
   animationEditor.find('.right .x').live
     mousedown: (e) ->
       e.stopPropagation()
       removeSequence($(this).parent().index())
+
+  animationEditor.find('.bottom .x').live
+    mousedown: (e) ->
+      e.stopPropagation()
+
+      parent = $(this).parent()
+
+      if parent.hasClass('sequence')
+        currentAnimation.removeFrameSequence(parent.index())
+
+      if parent.hasClass('frame_sprite')
+        currentAnimation.removeFrame(parent.index())
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->

@@ -21,12 +21,12 @@ $tileset_sprite_width: 60px
     margin-bottom: 0
     margin-top: 0
 
-  .edit_sequences
+  .edit_sequences, .edit_frames
     cursor: pointer
     height: 16px
     text-decoration: none
 
-  h3, h4, .edit_sequences
+  h3, h4, .edit_sequences, .edit_frames
     display: inline-block
     margin: 0 1em 0 0
     padding: 0
@@ -166,6 +166,14 @@ $tileset_sprite_width: 60px
       overflow-y: hidden
       white-space: nowrap
       z-index: 1
+
+      .x
+        background: none
+        border: none
+        position: absolute
+        top: -8px
+        left: -10px
+        z-index: 200
 
     .frame_sprite, img
       +box-sizing(border-box)

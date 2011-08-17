@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 19:42:13 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 20:55:27 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -173,7 +173,17 @@
         }
       },
       removeFrame: function(e, frameIndex) {
-        return $(this).find('.frame_sprites img').eq(frameIndex).parent().remove();
+        var parent;
+        if ($(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('frame_sprite')) {
+          $(this).find('.frame_sprites img').eq(frameIndex).parent().remove();
+        }
+        if ($(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')) {
+          parent = $(this).find('.frame_sprites img').eq(frameIndex).parent();
+          $(this).find('.frame_sprites img').eq(frameIndex).remove();
+          if (parent.children().length === 0) {
+            return parent.remove();
+          }
+        }
       },
       removeSequence: function(e, sequenceIndex) {
         return $(this).find('.sequences .sequence').eq(sequenceIndex).remove();
@@ -400,6 +410,17 @@
             return animationEditor.trigger('disableSave');
           }
         },
+        removeFrameSequence: function(sequenceIndex) {
+          var frameImages, image, index, sequenceImages, _i, _len;
+          sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children();
+          frameImages = animationEditor.find('.frame_sprites img');
+          for (_i = 0, _len = sequenceImages.length; _i < _len; _i++) {
+            image = sequenceImages[_i];
+            index = $(image).index(frameImages);
+            self.removeFrame(index);
+          }
+          return animationEditor.trigger('removeFrameSequence', [sequenceIndex]);
+        },
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
           tilesetIndex = frames[frameIndex];
@@ -409,7 +430,7 @@
             return player.removeAttr('src');
           } else {
             player.attr('src', tileset[tilesetIndex]);
-            return animationEditor.find('.frame_sprites img').eq(frameIndex).addClass('selected');
+            return animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected');
           }
         }
       };
@@ -525,10 +546,38 @@
         return $('.right .x').remove();
       }
     });
+    animationEditor.find('.edit_frames').mousedown(function() {
+      var $this, img, text;
+      $this = $(this);
+      text = $this.text();
+      $this.text(text === "Edit" ? "Done" : "Edit");
+      if (text === "Edit") {
+        img = $('<img />', {
+          "class": 'x',
+          src: '/images/x.png'
+        });
+        return $('.bottom .sequence, .bottom .frame_sprite').append(img);
+      } else {
+        return $('.bottom .x').remove();
+      }
+    });
     animationEditor.find('.right .x').live({
       mousedown: function(e) {
         e.stopPropagation();
         return removeSequence($(this).parent().index());
+      }
+    });
+    animationEditor.find('.bottom .x').live({
+      mousedown: function(e) {
+        var parent;
+        e.stopPropagation();
+        parent = $(this).parent();
+        if (parent.hasClass('sequence')) {
+          currentAnimation.removeFrameSequence(parent.index());
+        }
+        if (parent.hasClass('frame_sprite')) {
+          return currentAnimation.removeFrame(parent.index());
+        }
       }
     });
     animationEditor.find('.frame_sprites img').live({
