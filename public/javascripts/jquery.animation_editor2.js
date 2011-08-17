@@ -1,10 +1,10 @@
-/* DO NOT MODIFY. This file was compiled Tue, 16 Aug 2011 20:41:48 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 02:27:00 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
 (function() {
   $.fn.animationEditor = function(options) {
-    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, exportAnimationCSV, exportAnimationJSON, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
+    var Animation, Controls, addTile, animationEditor, animationNumber, animationTemplate, animations, controls, createSequence, currentAnimation, editorTemplate, frameSpriteTemplate, lastClickedSprite, loadSpriteSheet, pushSequence, sequences, spriteTemplate, templates, tileIndex, tilemap, tileset;
     animationNumber = 1;
     tileIndex = 0;
     lastClickedSprite = null;
@@ -17,7 +17,7 @@
     animationTemplate = templates.find('.animation');
     spriteTemplate = templates.find('.sprite');
     frameSpriteTemplate = templates.find('.frame_sprite');
-    exportAnimationCSV = function() {
+    window.exportAnimationCSV = function() {
       var animation, frame, output, _i, _len;
       output = "";
       for (_i = 0, _len = animations.length; _i < _len; _i++) {
@@ -35,7 +35,7 @@
       }
       return output;
     };
-    exportAnimationJSON = function() {
+    window.exportAnimationJSON = function() {
       var animation, animationData, array, frame, sequenceData, tileId, tileSrc;
       animationData = (function() {
         var _i, _len, _results;
@@ -75,7 +75,7 @@
         }
         return _results;
       })();
-      return {
+      return JSON.stringify({
         sequences: sequenceData,
         tileset: (function() {
           var _results;
@@ -87,7 +87,7 @@
           return _results;
         })(),
         animations: animationData
-      };
+      });
     };
     loadSpriteSheet = function(src, rows, columns, loadedCallback) {
       var canvas, context, image;
@@ -443,12 +443,6 @@
       }
       return animationEditor.find('.animations .state_name:last').takeClass('selected');
     });
-    animationEditor.find('.export_json').mousedown(function() {
-      return console.log(exportAnimationJSON());
-    });
-    animationEditor.find('.export_csv').mousedown(function() {
-      return console.log(exportAnimationCSV());
-    });
     $(document).bind('keydown', function(e) {
       var framesLength, index, keyMapping;
       if (!(e.which === 37 || e.which === 39)) {
@@ -504,11 +498,26 @@
         return _results;
       }
     });
-    animationEditor.find('.left .sequence').live({
+    animationEditor.find('.right .sequence').live({
       mousedown: function() {
         var index;
         index = $(this).index();
         return currentAnimation.addSequenceToFrames(index);
+      }
+    });
+    animationEditor.find('.edit_sequences').mousedown(function() {
+      var $this, img, text;
+      $this = $(this);
+      text = $this.text();
+      $this.text(text === "Edit" ? "Done" : "Edit");
+      if (text === "Edit") {
+        img = $('<img />', {
+          "class": 'x',
+          src: '/images/x.png'
+        });
+        return $('.right .sequence').append(img);
+      } else {
+        return $('.right .x').remove();
       }
     });
     animationEditor.find('.frame_sprites img').live({

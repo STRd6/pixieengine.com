@@ -15,7 +15,7 @@ $.fn.animationEditor = (options) ->
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
 
-  exportAnimationCSV = ->
+  window.exportAnimationCSV = ->
     output = ""
 
     for animation in animations
@@ -23,16 +23,16 @@ $.fn.animationEditor = (options) ->
 
     return output
 
-  exportAnimationJSON = ->
+  window.exportAnimationJSON = ->
     animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
 
     sequenceData = ((tilemap[frame] for frame in array) for array in sequences)
 
-    return {
+    return JSON.stringify({
       sequences: sequenceData
       tileset: (tileSrc for tileId, tileSrc of tileset)
       animations: animationData
-    }
+    })
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
@@ -330,12 +330,6 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
     animationEditor.find('.animations .state_name:last').takeClass('selected')
 
-  animationEditor.find('.export_json').mousedown ->
-    console.log exportAnimationJSON()
-
-  animationEditor.find('.export_csv').mousedown ->
-    console.log exportAnimationCSV()
-
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
 
@@ -384,10 +378,26 @@ $.fn.animationEditor = (options) ->
 
       currentAnimation.addFrame($(sprite).attr('src')) for sprite in sprites
 
-  animationEditor.find('.left .sequence').live
+  animationEditor.find('.right .sequence').live
     mousedown: ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
+
+  animationEditor.find('.edit_sequences').mousedown ->
+    $this = $(this)
+    text = $this.text()
+
+    $this.text(if text == "Edit" then "Done" else "Edit")
+
+    if text == "Edit"
+      img = $ '<img />'
+        class: 'x'
+        src: '/images/x.png'
+
+      $('.right .sequence').append(img)
+
+    else
+      $('.right .x').remove()
 
   animationEditor.find('.frame_sprites img').live
     mousedown: ->
