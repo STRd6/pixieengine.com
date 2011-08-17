@@ -1,565 +1,521 @@
 $.fn.animationEditor = (options) ->
-  options = $.extend(
-    speed: 110
-  , options)
+  animationNumber = 1
+  tileIndex = 0
+  lastClickedSprite = null
 
-  animationCount = 0
+  tileset = {}
+  tilemap = {}
+  sequences = []
 
-  animationEditor = $(this.get(0)).addClass("animation_editor")
+  animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
   templates = $("#animation_editor_templates")
+  editorTemplate = templates.find('.editor.template')
+  animationTemplate = templates.find('.animation')
+  spriteTemplate = templates.find('.sprite')
+  frameSpriteTemplate = templates.find('.frame_sprite')
 
-  templates.find(".editor.template").tmpl().appendTo(animationEditor)
+  window.exportAnimationCSV = ->
+    output = ""
 
-  animationEditor.find('input.speed').val(options.speed)
+    for animation in animations
+      output = output + animation.name() + ": " + (tilemap[frame] for frame in animation.frames).join(",") + "\n"
 
-  animationEditor.mousedown ->
-    window.currentComponent = animationEditor
+    return output
 
-  animation_id = null
-  preview_dirty = false
-  clear_frame_sprites = -> frame_sprites().remove()
+  window.exportAnimationJSON = ->
+    animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
 
-  frame_sprites = -> frame_sprites_container().children()
+    sequenceData = ((tilemap[frame] for frame in array) for array in sequences)
 
-  frame_sprites_container = -> animationEditor.find('.frame_sprites')
+    return JSON.stringify({
+      sequences: sequenceData
+      tileset: (tileSrc for tileId, tileSrc of tileset)
+      animations: animationData
+    })
 
-  frame_selected_sprite = -> animationEditor.find('.frame_sprites .sprite_container.selected')
+  loadSpriteSheet = (src, rows, columns, loadedCallback) ->
+    canvas = $('<canvas>').get(0)
+    context = canvas.getContext('2d')
 
-  active_animation = -> animationEditor.find('.animations .animation .active')
+    image = new Image()
 
-  active_animation_sprites = -> active_animation().parent().find('.sprites')
+    image.onload = ->
+      tileWidth = image.width / rows
+      tileHeight = image.height / columns
 
-  clear_preview = -> animationEditor.find('.preview_box img').remove()
+      canvas.width = tileWidth
+      canvas.height = tileHeight
 
-  if $.fn.hitcircleEditor
-    createHitcircleEditor = (options) ->
-      animationEditor = options.animationEditor
+      columns.times (col) ->
+        rows.times (row) ->
+          sourceX = row * tileWidth
+          sourceY = col * tileHeight
+          sourceWidth = tileWidth
+          sourceHeight = tileHeight
+          destWidth = tileWidth
+          destHeight = tileHeight
+          destX = 0
+          destY = 0
 
-      hitcircleEditor = $('<div />').hitcircleEditor
-        width: 640
-        height: 480
-        animationEditor: options.animationEditor
-        sprite: options.sprite
-        hitcircles: options.hitcircles
+          context.clearRect(0, 0, tileWidth, tileHeight)
+          context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight)
 
-      animationEditor.hide().after(hitcircleEditor)
+          loadedCallback?(canvas.toDataURL())
 
-      window.currentComponent = hitcircleEditor
+    image.src = src
 
-      return hitcircleEditor
+  addTile = (src) ->
+    id = Math.uuid(32, 16)
 
-  if $.fn.pixie
-    createPixelEditor = (options) ->
-      url = options.url
-      animationEditor = options.animationEditor
+    tileset[id] = src
+    tilemap[id] = tileIndex
+    tileIndex += 1
+    spritesEl = animationEditor.find('.sprites')
+    spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
-      pixelEditor = $('<div />').pixie
-        width: options.width
-        height: options.height
-        initializer: (canvas) ->
-          if url
-            canvas.fromDataURL(url)
+  removeSequence = (sequenceIndex) ->
+    sequences.splice(sequenceIndex, 1)
 
-          canvas.addAction
-            name: "Save Frame"
-            icon: "/images/icons/database_save.png"
-            perform: (canvas) ->
-              pixelEditor.trigger 'save',
-                'sprite[width]': canvas.width
-                'sprite[height]': canvas.height
-                'sprite[file_base64_encoded]': canvas.toBase64()
-              pixelEditor.remove()
-              animationEditor.show()
-            undoable: false
+    animationEditor.trigger 'removeSequence', [sequenceIndex]
 
-          canvas.addAction
-            name: "Back to Animation"
-            icon: "/images/icons/arrow_left.png"
-            perform: (canvas) ->
-              pixelEditor.remove()
-              animationEditor.show()
-            undoable: false
+  #UI updating events
+  animationEditor.bind
+    checkExportStatus: ->
+      framesEmpty = true
 
-      animationEditor.hide().after(pixelEditor)
+      for animation in animations
+        if animation.frames.length
+          framesEmpty = false
 
-      window.currentComponent = pixelEditor
+      console.log framesEmpty
 
-      return pixelEditor
+      $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation')
+      $(this).find('.player button:not(.new_animation)').attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
+    clearFrames: ->
+      $(this).find('.frame_sprites').children().remove()
+    currentAnimationTitle: (e, title) ->
+      $(this).find('.player .animation_name').text(title)
+    disableSave: ->
+      $(this).find('.bottom .module_header > button').attr
+        disabled: true
+        title: 'Add frames to save'
 
-  pixelEditFrame = (selectedFrame) ->
-    $(selectedFrame).parent().addClass('pixel_editor')
+    enableSave: ->
+      $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames')
+    init: ->
+      animationsEl = animationEditor.find('.animations')
+      animationsEl.children().remove()
 
-    if createPixelEditor
-      imgSource = selectedFrame.attr('src')
+      spritesEl = animationEditor.find('.sprites')
 
-      pixelEditor = createPixelEditor
-        width: selectedFrame.get(0).width
-        height: selectedFrame.get(0).height
-        animationEditor: animationEditor
-        url: imgSource.replace('http://images.pixie.strd6.com', '/s3')
+      for animation in animations
+        animationTemplate.tmpl({stateId: animation.stateId, name: animation.name()}).appendTo(animationsEl)
 
-      pixelEditor.bind 'save', save
+      if spritesEl.find('img').length == 0
+        for index, src of tileset
+          spriteTemplate.tmpl(src: src).appendTo(spritesEl)
 
-  editFrameCircles = (sprite, hitcircles) ->
-    if createHitcircleEditor
-      imgSource = sprite.find('img').attr('src')
+        animationEditor.trigger 'disableSave'
+        animationEditor.trigger 'checkExportStatus'
+    removeFrame: (e, frameIndex) ->
+      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('frame_sprite')
+        $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
 
-      hitcircleEditor = createHitcircleEditor
-        width: 640
-        height: 480
-        animationEditor: animationEditor
-        sprite: imgSource
-        hitcircles: hitcircles
+      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')
+        parent = $(this).find('.frame_sprites img').eq(frameIndex).parent()
+        $(this).find('.frame_sprites img').eq(frameIndex).remove()
 
-  save = (event, data) ->
-    notify "Saving..."
+        if parent.children().length == 0
+          parent.remove()
 
-    successCallback = (data) ->
-      notify "Saved!"
-
-      new_sprite = templates.find('.load_sprite').tmpl
-        alt: data.sprite.title || "Sprite #{data.sprite.id}"
-        id: data.sprite.id
-        title: data.sprite.title || "Sprite #{data.sprite.id}"
-        url: data.sprite.src
-
-      new_sprite.clone().appendTo(animationEditor.find('.user_sprites'))
-      animationEditor.find(".frame_sprites .sprite_container.pixel_editor").before(new_sprite.clone()).remove()
-      animationEditor.find('.animations .animation .cover.active img').before(new_sprite.find('img')).remove()
-
-    if data
-      postData = $.extend({format: 'json'}, data)
-
-      $.post '/sprites', postData, successCallback
-
-    $('.pixie').remove()
-    animationEditor.show()
-
-  update_active_animation = ->
-    active_animation_sprites().parent().find('.sprites').children().remove()
-    animationEditor.find('.frame_sprites .sprite_container').clone().appendTo(active_animation_sprites())
-
-    active_animation().parent().find('.complete').text(animationEditor.find('.goto option:selected').val())
-    active_animation().parent().find('.speed').text(animationEditor.find('input.speed').val())
-
-  animationEditor.find(".frame_sprites").dropImageReader (file, event) ->
-    if event.target.readyState == FileReader.DONE
-      sprite_container = $("<div class='sprite_container'></div>")
-
-      img = $ "<img/>",
-        alt: file.name
-        src: event.target.result
-        title: file.name
-
-      img.attr('data-hit_circles', JSON.stringify({ circles: [] }))
-
-      sprite_container.append(img)
-
-      animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
-      $(this).append sprite_container
-
-  animationEditor.find('.animations .name').liveEdit()
-
-  animationEditor.find('.animation').live
-    mousedown: (e) ->
-      return if $(e.target).is('.x')
-
-      update_active_animation()
-
-      animationEditor.find('.speed').val($(this).find('.speed').text())
-      animationEditor.find('.goto select').val($(this).find('.complete').text())
-
-      stop_animation()
-      clear_frame_sprites()
-
-      $(this).find('.sprite_container').each (i, sprite_container) ->
-        $(sprite_container).find('.tags').removeClass('tag_container').children().remove()
-        $(sprite_container).clone().appendTo(frame_sprites_container())
-
-        if $(sprite_container).find('img')?.attr('data-hflip') == 'true'
-          $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_horizontal')
-        if $(sprite_container).find('img')?.attr('data-vflip') == 'true'
-          $(".frame_sprites .sprite_container").eq(i).find('img').addClass('flipped_vertical')
-
-      unless $(this).find('.sprites') && $(this).find('.sprites').children().length
-        templates.find('.placeholder').tmpl().appendTo('.frame_sprites')
-
-      active_animation().removeClass('active')
-      $(this).find('.cover').addClass('active')
-
-      if $(this).find('.cover').hasClass('locked')
-        animationEditor.find('.lock').css('opacity', 1)
-      else
-        animationEditor.find('.lock').css('opacity', 0.5)
-    mouseenter: ->
-      if animationEditor.find('.animations .animation').length > 1
-        $(this).find('.cover').append('<div class="x" title="close" alt="close" />')
-    mouseleave: ->
-      $(this).find('.x').remove()
-
-  animationEditor.find('.animation .x').live
-    mousedown: ->
-      animation = $(this).parent().parent()
-      index = animationEditor.find('.animations .animation').index(animation)
-      animationEditor.find(".goto option").eq(index).remove()
-
-      animation.prev().fadeOut 150, ->
-        animation.prev().remove()
-
-      animation.fadeOut 150, ->
-        animation.remove()
-
-  animationEditor.find('.lock').tipsy(
-    delayIn: 500
-    delayOut: 500
-    fade: 50
-    gravity: 'sw'
-  ).live
-    mousedown: ->
+    removeSequence: (e, sequenceIndex) ->
+      $(this).find('.sequences .sequence').eq(sequenceIndex).remove()
+    loadCurrentAnimation: ->
       $this = $(this)
-      animation = active_animation()
 
-      animation.toggleClass('locked')
+      $this.trigger 'clearFrames'
+      $this.trigger 'currentAnimationTitle', [currentAnimation.name()]
+      $this.find('.player img').removeAttr('src')
 
-      if animation.hasClass('locked')
-        $this.css('opacity', 1)
+      currentAnimation.load()
+    updateFrame: (e, index) ->
+      frameSprites = $(this).find('.frame_sprites')
+      spriteSrc = tileset[index]
+
+      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+    updateLastFrame: ->
+      frameSprites = $(this).find('.frame_sprites')
+      spriteSrc = tileset[currentAnimation.frames.last()]
+
+      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+    updateLastFrameSequence: (e, sequence) ->
+      frameSprites = $(this).find('.frame_sprites')
+      sequence.appendTo(frameSprites)
+    updateLastSequence: ->
+      sequencesEl = $(this).find('.sequences')
+
+      sequenceFrameArray = sequences.last()
+      sequence = $('<div class="sequence" />').appendTo(sequencesEl)
+
+      for spriteIndex in sequenceFrameArray
+        spriteSrc = tileset[spriteIndex]
+        spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+
+      sequence.appendTo(sequencesEl)
+
+  pushSequence = (frameArray) ->
+    sequences.push(frameArray)
+    animationEditor.trigger 'updateLastSequence'
+
+  createSequence = ->
+    if currentAnimation.frames.length
+      pushSequence(currentAnimation.frames.copy())
+      currentAnimation.clearFrames()
+
+  Controls = ->
+    intervalId = null
+
+    fpsEl = animationEditor.find('.fps input')
+    scrubberEl = animationEditor.find('.scrubber')
+
+    scrubber =
+      max: (newMax) ->
+        if newMax?
+          scrubberEl.get(0).max = newMax
+          return scrubber
+        else
+          return parseInt(scrubberEl.get(0).max)
+      val: (newValue) ->
+        if newValue?
+          scrubberEl.val(newValue)
+          currentAnimation.currentFrameIndex(newValue)
+          return scrubber
+        else
+          parseInt(scrubberEl.val())
+
+    nextFrame = ->
+      scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1))
+
+    changePlayIcon = (icon) ->
+      el = $('.play')
+
+      el.css "background-image", "url(/images/#{icon}.png)"
+
+      if icon == 'pause'
+        el.addClass('pause')
       else
-        $this.css('opacity', 0.5)
+        el.removeClass('pause')
 
-  animationEditor.find('.new_animation').mousedown ->
-    update_active_animation()
-    stop_animation()
+    self =
+      fps: (newValue) ->
+        if newValue?
+          fpsEl.val(newValue)
+          return self
+        else
+          parseInt(fpsEl.val())
 
-    active_animation().removeClass('active')
+      pause: ->
+        changePlayIcon('play')
+        clearInterval(intervalId)
+        intervalId = null
 
-    clear_frame_sprites()
+        return self
 
-    animation_name = ("Animation " + ++animationCount)
+      play: ->
+        if currentAnimation.frames.length > 0
+          intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
+          changePlayIcon('pause')
 
-    animation = templates.find('.create_animation').tmpl
-      name: animation_name
-      complete: animation_name
+        return self
 
-    animation.insertBefore(animationEditor.find('.new_animation'))
-    animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
-    animationEditor.find('.goto select').val(animation_name)
+      scrubber: (val) ->
+        scrubber.val(val)
 
-    animation.mousedown()
+      scrubberMax: (val) ->
+        scrubber.max(val)
 
-  animationEditor.find('.frame_sprites').sortable
-    axis: "x"
-    out: ->
-      $(this).removeClass('highlight')
-    over: ->
-      $(this).addClass('highlight')
-      animationEditor.find('.frame_sprites .demo, .frame_sprites p').remove()
-    receive: (event, ui) ->
-      $(this).removeClass('highlight')
-      active_animation().children().remove()
-      active_animation().append(ui.item.find('img').clone())
+      stop: ->
+        scrubber.val(0)
+        clearInterval(intervalId)
+        intervalId = null
+        changePlayIcon('play')
+        currentAnimation.currentFrameIndex(-1)
 
-  $(window).resize ->
-    if window.currentComponent == animationEditor
-      animationEditor.find('.frame_sprites').sortable('refresh')
-      frame_selected_sprite().removeClass('selected')
+    return self
 
-  animationEditor.find('.user_sprites .sprite_container').draggable
-    addClasses: false
-    connectToSortable: '.frame_sprites'
-    containment: 'window'
-    helper: 'clone'
-    opacity: 0.7
-    refreshPositions: true
-    zIndex: 200
+  Animation = ->
+    frames = []
+    currentFrameIndex = 0
+    stateId = Math.uuid(32, 16)
 
-  animationEditor.find('.animation_editor img, .user_sprites .sprite_container').live 'click mousedown mousemove', (event) ->
-    event.preventDefault()
+    name = "State #{animationNumber}"
+    animationNumber += 1
 
-  play_next = ->
-    preview_sprites = animationEditor.find('.preview_box img')
-    active = animationEditor.find('.preview_box img.active').removeClass('active')
+    findTileIndex = (tileSrc) ->
+      for uuid, src of tileset
+        return uuid if src == tileSrc
 
-    active_index = active.index()
-    length = preview_sprites.length
+    self =
+      addFrame: (imgSrc) ->
+        frames.push(findTileIndex(imgSrc))
+        controls.scrubberMax(frames.length - 1)
+        animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave', 'updateLastFrame']
 
-    preview_sprites.eq((active_index + 1) % length).addClass('active')
+      addSequenceToFrames: (index) ->
+        sequence = $('<div class="sequence" />')
 
-  play_animation = ->
-    clearInterval(animation_id)
+        for spriteIndex in sequences[index]
+          spriteSrc = tileset[spriteIndex]
 
-    if (animationEditor.find('.preview_box img').length != animationEditor.find('.frame_sprites img').length) || preview_dirty
-      preview_dirty = false
-      clear_preview()
-      preview_sprites = animationEditor.find('.frame_sprites img').attr('style', '').clone()
-      animationEditor.find('.preview_box .sprites').append(preview_sprites)
+          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+          frames.push(findTileIndex(spriteSrc))
+          controls.scrubberMax(frames.length - 1)
 
-      preview_sprites.first().addClass('active')
+        animationEditor.trigger 'updateLastFrameSequence', [sequence]
+        animationEditor.trigger 'enableSave'
+        animationEditor.trigger 'checkExportStatus'
 
-    animation_id = setInterval(play_next, animationEditor.find('input.speed').val())
+      clearFrames: ->
+        frames.clear()
+        animationEditor.trigger(event) for event in ['checkExportStatus', 'clearFrames', 'disableSave']
 
-  pause_animation = ->
-    clearInterval(animation_id)
+      currentFrameIndex: (val) ->
+        if val?
+          currentFrameIndex = val
+          self.updateSelected(val)
+          return self
+        else
+          return currentFrameIndex
 
-  stop_animation = ->
-    clearInterval(animation_id)
+      frames: frames
 
-    clear_preview()
+      stateId: stateId
 
-    animationEditor.find('.play').removeClass("pause")
+      load: ->
+        for frameIndex in frames
+          animationEditor.trigger 'updateFrame', [frameIndex]
+
+        controls.scrubberMax(frames.length - 1)
+
+      name: (val) ->
+        if val?
+          name = val
+          return self
+        else
+          return name
+
+      removeFrame: (frameIndex) ->
+        frames.splice(frameIndex, 1)
+        controls.scrubberMax(controls.scrubberMax() - 1)
+
+        animationEditor.trigger 'removeFrame', [frameIndex]
+        animationEditor.trigger 'disableSave' if frames.length == 0
+        animationEditor.trigger 'checkExportStatus'
+
+      removeFrameSequence: (sequenceIndex) ->
+        sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children()
+        frameImages = animationEditor.find('.frame_sprites img')
+
+        for image in sequenceImages
+          index = $(image).index(frameImages)
+          self.removeFrame(index)
+
+        animationEditor.trigger 'removeFrameSequence', [sequenceIndex]
+
+      updateSelected: (frameIndex) ->
+        tilesetIndex = frames[frameIndex]
+
+        animationEditor.find('.frame_sprites img').removeClass('selected')
+
+        player = $('.player img')
+
+        if frameIndex == -1
+          player.removeAttr('src')
+        else
+          player.attr('src', tileset[tilesetIndex])
+          animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
+
+    return self
+
+  editorTemplate.tmpl().appendTo(animationEditor)
+
+  controls = Controls()
+  currentAnimation = Animation()
+  animations = [currentAnimation]
+
+  animationEditor.trigger 'init'
+  animationEditor.find('.state_name').addClass('selected')
 
   animationEditor.find('.play').mousedown ->
-    if $(this).hasClass("pause") then pause_animation() else play_animation()
+    if $(this).hasClass('pause')
+      controls.pause()
+    else
+      controls.play()
 
-    $(this).toggleClass("pause") unless frame_sprites_container().find('.demo').length
+  animationEditor.find('.scrubber').change ->
+    newValue = $(this).val()
+
+    controls.scrubber(newValue)
+    currentAnimation.currentFrameIndex(newValue)
 
   animationEditor.find('.stop').mousedown ->
-    stop_animation()
+    controls.stop()
 
-  animationEditor.find('.frame_sprites .sprite_container').live
-    click: ->
+  animationEditor.find('.new_animation').mousedown ->
+    animations.push(Animation())
+
+    currentAnimation = animations.last()
+
+    animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
+    animationEditor.find('.animations .state_name:last').takeClass('selected')
+
+  $(document).bind 'keydown', (e) ->
+    return unless e.which == 37 || e.which == 39
+
+    index = currentAnimation.currentFrameIndex()
+    framesLength = currentAnimation.frames.length
+
+    keyMapping =
+      "37": -1
+      "39": 1
+
+    controls.scrubber((index + keyMapping[e.which]).mod(framesLength))
+
+  animationEditor.find('.sprites img').live
+    dblclick: (e) ->
       $this = $(this)
 
-      $this.addClass('selected')
-      unless $this.find('.tags').hasClass('tag_container')
-        $this.find('.tags').tagbox
-          placeholder: "New event trigger"
-          presets: $this.find('.tags')?.attr('data-tags')?.split(',') || []
+      4.times ->
+        currentAnimation.addFrame($this.attr('src'))
 
-      if $this.find('.tags').hasClass('tag_container')
-        animationEditor.find('.frame_sprites .tags').hide()
-        $this.find('.tags').show()
-        $this.find('.tag_container input').focus()
+      lastClickedSprite = $this
 
-    dblclick: (event) ->
-      pixelEditFrame($(this).find('img'))
-    mouseenter: ->
-      x = $('<div class="x" title="close" alt="close" />')
-      duplicate = $('<div class="duplicate" title="copy this frame" alt="copy this frame" />')
-      hflip = $('<div class="hflip" title="flip horizontally" alt="flip horizontally" />')
-      vflip = $('<div class="vflip" title="flip vertically" alt="flip vertically" />')
+    mousedown: (e) ->
+      $this = $(this)
+      sprites = []
 
-      $(this).append(x, duplicate, vflip, hflip)
-    mouseleave: ->
-      $(this).find('.x, .duplicate, .hflip, .vflip').remove()
+      if e.shiftKey && lastClickedSprite
+        lastIndex = lastClickedSprite.index()
+        currentIndex = $this.index()
 
-  animationEditor.find('.frame_sprites .sprite_container .tags').live
-    blur: ->
-      $(this).hide()
+        if currentIndex > lastIndex
+          sprites = animationEditor.find('.sprites img').filter(->
+            imgIndex = $(this).index()
+            return lastIndex < imgIndex <= currentIndex
+          ).get()
+        else if currentIndex <= lastIndex
+          sprites = animationEditor.find('.sprites img').filter(->
+            imgIndex = $(this).index()
+            return currentIndex <= imgIndex < lastIndex
+          ).get().reverse()
 
-  animationEditor.find('.animations input').live
-    change: ->
-      animationEditor.find('.goto select option').remove()
+        lastClickedSprite = null
+      else
+        sprites.push $this
 
-      animationEditor.find('.animations .animation').each (i, animation) ->
-        animation_name = if $(animation).prev().val() == "" then $(animation).prev().text() else $(animation).prev().val()
+        lastClickedSprite = $this
 
-        animationEditor.find('.goto select').append("<option value='#{animation_name}'>#{animation_name}</option>")
+      currentAnimation.addFrame($(sprite).attr('src')) for sprite in sprites
 
-  animationEditor.find('.goto select').change ->
-    selected_value = animationEditor.find('.goto options:selected').val()
+  animationEditor.find('.right .sequence').live
+    mousedown: ->
+      index = $(this).index()
+      currentAnimation.addSequenceToFrames(index)
 
-    active_animation().parent().find('.complete').text(selected_value)
+  animationEditor.find('.edit_sequences').mousedown ->
+    $this = $(this)
+    text = $this.text()
 
-  animationEditor.mousedown ->
-    frame_selected_sprite().removeClass('selected')
-    frame_selected_sprite().find('.tags').hide()
+    $this.text(if text == "Edit" then "Done" else "Edit")
 
-  $(document).bind "keydown", 'h', (event) ->
-    if window.currentComponent == animationEditor
-      window.editorActive = true
-      event.preventDefault()
+    if text == "Edit"
+      img = $ '<img />'
+        class: 'x'
+        src: '/images/x.png'
 
-    find_hit_circles = (sprite_el) ->
-      if $(sprite_el).length && $(sprite_el).find('img[data-hit_circles]').length && (sprite_el).find('img').attr('data-hit_circles').length
-        return JSON.parse($(sprite_el).find('img').attr('data-hit_circles')).circles
-
-      return null
-
-    selected_sprite = frame_selected_sprite()
-
-    if $(selected_sprite).length
-      image_src = $(selected_sprite).find('img').attr('src').replace('http://images.pixie.strd6.com', '/s3')
-
-      image_circles = find_hit_circles(selected_sprite)
-
-      editFrameCircles(selected_sprite, image_circles)
-
-  animationEditor.find('.frame_sprites .x').live 'mousedown', ->
-    parent = $(this).parent()
-
-    if parent.next().length && !parent.next().find('.x').length && !parent.next().find('.duplicate').length
-      parent.next().append('<div class= "x" />')
-      parent.next().append('<div class= "duplicate" />')
-
-    if parent.get(0) == $('.frame_sprites .sprite_container:last').get(0)
-      active_animation().children().remove()
-      active_animation().append($('.frame_sprites .sprite_container:last').prev().find('img').clone())
-
-    parent.fadeOut 150, ->
-      parent.remove()
-
-      templates.find('.placeholder').tmpl().appendTo('.frame_sprites') unless frame_sprites().length
-
-  animationEditor.find('.duplicate').live 'mousedown', ->
-    parent = $(this).parent()
-    newEl = parent.clone()
-
-    newEl.find('.x, .duplicate, .hflip, .vflip').remove()
-    newEl.insertAfter(parent)
-
-    newEl.find('.tags').remove()
-    newEl.find('img').before('<div class="tags" />')
-
-  animationEditor.find('.hflip').live 'mousedown', ->
-    $(this).parent().find('img').toggleClass('flipped_horizontal')
-
-  animationEditor.find('.vflip').live 'mousedown', ->
-    $(this).parent().find('img').toggleClass('flipped_vertical')
-
-  animationEditor.find("button.save").click ->
-    options.save?(saveData())
-
-  loadData = (data) ->
-    if data?.animations.length
-      animationEditor.find('.goto select').children().remove()
-
-      hasComplete = false
-
-      $(data.animations).each (index, animation) ->
-        if animation.complete
-          hasComplete = true
-
-        animationEditor.find('.goto select').append("<option value='#{animation.name}'>#{animation.name}</option>")
-
-        animation_el = templates.find('.create_animation').tmpl(
-          name: animation.name
-          speed: animation.speed
-          complete: animation.complete
-        ).insertBefore('nav.right .new_animation')
-
-        if animation.hasOwnProperty('interruptible') && animation.interruptible == false
-          animation_el.find('.cover').addClass('locked')
-
-        active_animation().removeClass('active')
-
-        $.each animation.frames, (i, frame) ->
-          sprite = data.tileset[frame]
-
-          sprite_container = templates.find('.load_sprite').tmpl(
-            url: sprite.src
-            alt: sprite.title
-            title: sprite.title
-            hflip: animation.transform?[i]?.hflip || false
-            vflip: animation.transform?[i]?.vflip || false
-            id: sprite.id
-            circles: JSON.stringify({ circles: sprite.circles })
-          ).appendTo(animationEditor.find('.animations .animation').eq(index).find('.sprites'))
-
-          sprite_container.find('.tags').tagbox
-            placeholder: "New event trigger"
-            presets: animation.triggers?[i] || []
-
-          sprite_container.find('.tags').hide()
-
-        matching_animation = animationEditor.find('.animations .animation').eq(index)
-
-        last_sprite_img = matching_animation.find('.sprites .sprite_container:last img')
-
-        matching_animation.find('.cover').append(last_sprite_img.clone())
-
-      animationEditor.find('.goto').remove() unless hasComplete
-
-      animationEditor.find('.speed').val(active_animation().find('.speed').text())
-      stop_animation()
-      clear_frame_sprites()
-
-      active_animation().find('.sprites').children().clone().appendTo(frame_sprites_container())
-
-      animationCount = animationEditor.find('.animations .animation').length
-
-      animationEditor.find('.animations .animation').first().mousedown()
+      $('.right .sequence').append(img)
     else
-      templates.find('.create_animation').tmpl(
-        name: "Animation 1"
-        speed: animationEditor.find('.speed').val()
-        complete: "Animation 1"
-      ).insertBefore(animationEditor.find('.new_animation'))
+      $('.right .x').remove()
 
-      animationCount = animationEditor.find('.animations .animation').length
+  animationEditor.find('.edit_frames').mousedown ->
+    $this = $(this)
+    text = $this.text()
 
-      templates.find('.placeholder').tmpl().appendTo(animationEditor.find('.frame_sprites'))
-      animationEditor.find('.goto select').append("<option value='Animation 1'>Animation 1</option>")
+    $this.text(if text == "Edit" then "Done" else "Edit")
 
-  saveData = ->
-    update_active_animation()
+    if text == "Edit"
+      img = $ '<img />'
+        class: 'x'
+        src: '/images/x.png'
 
-    frames = []
-    srcs = []
-    tiles = []
+      $('.bottom .sequence, .bottom .frame_sprite').append(img)
+    else
+      $('.bottom .x').remove()
 
-    animationEditor.find('.animations .animation').find('.sprites img').each (i, img) ->
-      circles = if $(img).data('hit_circles') then $(img).data('hit_circles').circles else []
+  animationEditor.find('.right .x').live
+    mousedown: (e) ->
+      e.stopPropagation()
+      removeSequence($(this).parent().index())
 
-      tile =
-        id: $(img).data('id')
-        src: $(img).attr('src')
-        title: $(img).attr('title') || $(img).attr('alt')
-        circles: circles
+  animationEditor.find('.bottom .x').live
+    mousedown: (e) ->
+      e.stopPropagation()
 
-      if $.inArray(tile.src, srcs) == -1
-        srcs.push tile.src
-        tiles.push(tile)
+      parent = $(this).parent()
 
-    animation_data = animationEditor.find('.animations .animation').map(->
-      triggers = {}
+      if parent.hasClass('sequence')
+        currentAnimation.removeFrameSequence(parent.index())
 
-      transform = []
+      if parent.hasClass('frame_sprite')
+        currentAnimation.removeFrame(parent.index())
 
-      frame_data = $(this).find('.sprites img').each (i, img) ->
-        tile_src = $(this).attr('src')
-        hflip = false
-        vflip = false
+  animationEditor.find('.frame_sprites img').live
+    mousedown: ->
+      index = animationEditor.find('.frame_sprites img').index($(this))
 
-        if $(img).parent().find('.tags').attr('data-tags') && $(img).parent().find('.tags').attr('data-tags').length
-          triggers[i] = $(img).parent().find('.tags').attr('data-tags').split(',')
+      controls.scrubber(index)
 
-        vflip = true if $(img).hasClass('flipped_vertical')
-        hflip = true if $(img).hasClass('flipped_horizontal')
+  animationEditor.find('.animations .state_name').live
+    mousedown: ->
+      index = $(this).takeClass('selected').index()
 
-        transform.push({
-          hflip: hflip
-          vflip: vflip
-        })
+      currentAnimation = animations[index]
 
-        frames.push(srcs.indexOf(tile_src))
+      animationEditor.trigger 'loadCurrentAnimation'
 
-      if frames.length
-        animation = {
-          complete: $(this).find('.complete').text()
-          name: $(this).prev().text()
-          interruptible: !$(this).find('.cover').hasClass('locked')
-          speed: $(this).find('.speed').text()
-          transform: transform
-          triggers: triggers
-          frames: frames
-        }
+  animationEditor.find('.save_sequence').click ->
+    createSequence()
 
-      frames = []
-      transform = []
+  animationEditor.find('.clear_frames').click ->
+    currentAnimation.clearFrames()
+    controls.stop()
 
-      return animation
+  animationEditor.find('.fps input').change ->
+    newValue = $(this).val()
 
-    ).get()
+    controls.pause().fps(newValue).play()
 
-    return {
-      version: "1.4"
-      name: "Animation"
-      tileset: tiles
-      animations: animation_data
-    }
+  animationEditor.find('.player .state_name').liveEdit().live
+    change: ->
+      $this = $(this)
 
-  loadData(options.data)
+      updatedStateName = $this.val()
+      currentAnimation.name(updatedStateName)
 
-  $.extend animationEditor,
-    animationData: saveData
+  animationEditor.dropImageReader (file, event) ->
+    if event.target.readyState == FileReader.DONE
+      src = event.target.result
+      name = file.fileName
+
+      [dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
+
+      if tileWidth && tileHeight
+        loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
+          addTile(sprite)
+      else
+        addTile(src)
+
+  $(document).bind 'keydown', 'del backspace', (e) ->
+    e.preventDefault()
+    currentAnimation.removeFrame(currentAnimation.currentFrameIndex())

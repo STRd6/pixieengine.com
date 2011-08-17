@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 20:55:27 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 21:08:36 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor2.coffee
  */
 
@@ -135,6 +135,24 @@
       return animationEditor.trigger('removeSequence', [sequenceIndex]);
     };
     animationEditor.bind({
+      checkExportStatus: function() {
+        var animation, framesEmpty, _i, _len;
+        framesEmpty = true;
+        for (_i = 0, _len = animations.length; _i < _len; _i++) {
+          animation = animations[_i];
+          if (animation.frames.length) {
+            framesEmpty = false;
+          }
+        }
+        console.log(framesEmpty);
+        $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation');
+        if (framesEmpty) {
+          return $(this).find('.player button:not(.new_animation)').attr({
+            disabled: true,
+            title: 'Add frames to export'
+          });
+        }
+      },
       clearFrames: function() {
         return $(this).find('.frame_sprites').children().remove();
       },
@@ -169,7 +187,8 @@
               src: src
             }).appendTo(spritesEl);
           }
-          return animationEditor.trigger('disableSave');
+          animationEditor.trigger('disableSave');
+          return animationEditor.trigger('checkExportStatus');
         }
       },
       removeFrame: function(e, frameIndex) {
@@ -340,7 +359,7 @@
           var event, _i, _len, _ref, _results;
           frames.push(findTileIndex(imgSrc));
           controls.scrubberMax(frames.length - 1);
-          _ref = ['enableSave', 'updateLastFrame'];
+          _ref = ['checkExportStatus', 'enableSave', 'updateLastFrame'];
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             event = _ref[_i];
@@ -362,12 +381,13 @@
             controls.scrubberMax(frames.length - 1);
           }
           animationEditor.trigger('updateLastFrameSequence', [sequence]);
-          return animationEditor.trigger('enableSave');
+          animationEditor.trigger('enableSave');
+          return animationEditor.trigger('checkExportStatus');
         },
         clearFrames: function() {
           var event, _i, _len, _ref, _results;
           frames.clear();
-          _ref = ['clearFrames', 'disableSave'];
+          _ref = ['checkExportStatus', 'clearFrames', 'disableSave'];
           _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             event = _ref[_i];
@@ -407,8 +427,9 @@
           controls.scrubberMax(controls.scrubberMax() - 1);
           animationEditor.trigger('removeFrame', [frameIndex]);
           if (frames.length === 0) {
-            return animationEditor.trigger('disableSave');
+            animationEditor.trigger('disableSave');
           }
+          return animationEditor.trigger('checkExportStatus');
         },
         removeFrameSequence: function(sequenceIndex) {
           var frameImages, image, index, sequenceImages, _i, _len;
