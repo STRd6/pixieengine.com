@@ -88,8 +88,6 @@ $.fn.animationEditor = (options) ->
         if animation.frames.length
           framesEmpty = false
 
-      console.log framesEmpty
-
       $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation')
       $(this).find('.player button:not(.new_animation)').attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
     clearFrames: ->
@@ -126,7 +124,7 @@ $.fn.animationEditor = (options) ->
         parent = $(this).find('.frame_sprites img').eq(frameIndex).parent()
         $(this).find('.frame_sprites img').eq(frameIndex).remove()
 
-        if parent.children().length == 0
+        if parent.children().not('.x').length == 0
           parent.remove()
 
     removeSequence: (e, sequenceIndex) ->
@@ -314,14 +312,11 @@ $.fn.animationEditor = (options) ->
         animationEditor.trigger 'checkExportStatus'
 
       removeFrameSequence: (sequenceIndex) ->
-        sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children()
-        frameImages = animationEditor.find('.frame_sprites img')
+        sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children().not('.x')
 
         for image in sequenceImages
-          index = $(image).index(frameImages)
+          index = $(image).index('.frame_sprites img')
           self.removeFrame(index)
-
-        animationEditor.trigger 'removeFrameSequence', [sequenceIndex]
 
       updateSelected: (frameIndex) ->
         tilesetIndex = frames[frameIndex]

@@ -1,4 +1,4 @@
-/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 21:13:08 GMT from
+/* DO NOT MODIFY. This file was compiled Wed, 17 Aug 2011 23:38:37 GMT from
  * /Users/matt/pixie.strd6.com/app/coffeescripts/jquery.animation_editor.coffee
  */
 
@@ -144,7 +144,6 @@
             framesEmpty = false;
           }
         }
-        console.log(framesEmpty);
         $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation');
         if (framesEmpty) {
           return $(this).find('.player button:not(.new_animation)').attr({
@@ -199,7 +198,7 @@
         if ($(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')) {
           parent = $(this).find('.frame_sprites img').eq(frameIndex).parent();
           $(this).find('.frame_sprites img').eq(frameIndex).remove();
-          if (parent.children().length === 0) {
+          if (parent.children().not('.x').length === 0) {
             return parent.remove();
           }
         }
@@ -432,15 +431,15 @@
           return animationEditor.trigger('checkExportStatus');
         },
         removeFrameSequence: function(sequenceIndex) {
-          var frameImages, image, index, sequenceImages, _i, _len;
-          sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children();
-          frameImages = animationEditor.find('.frame_sprites img');
+          var image, index, sequenceImages, _i, _len, _results;
+          sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children().not('.x');
+          _results = [];
           for (_i = 0, _len = sequenceImages.length; _i < _len; _i++) {
             image = sequenceImages[_i];
-            index = $(image).index(frameImages);
-            self.removeFrame(index);
+            index = $(image).index('.frame_sprites img');
+            _results.push(self.removeFrame(index));
           }
-          return animationEditor.trigger('removeFrameSequence', [sequenceIndex]);
+          return _results;
         },
         updateSelected: function(frameIndex) {
           var player, tilesetIndex;
