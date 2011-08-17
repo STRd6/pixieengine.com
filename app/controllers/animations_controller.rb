@@ -22,6 +22,16 @@ class AnimationsController < ApplicationController
     respond_with(@animation)
   end
 
+  def download
+    if params[:export_csv_data]
+      send_data params[:export_csv_data], :type =>"plain/text", :filename => "animation.txt"
+    end
+
+    if params[:export_json_data]
+      send_data params[:export_json_data], :type =>"application/json", :filename => "animation.json"
+    end
+  end
+
   private
   def object
     @animation ||= animation.find params[:id]
