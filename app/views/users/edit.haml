@@ -1,3 +1,12 @@
+%style
+  :sass
+    h3.check_box
+      display: inline-block
+      font-size: 120%
+
+    #user_forum_notifications, #user_site_notifications
+      margin-right: 5px
+
 = stylesheet_link_tag "branded"
 
 = javascript_include_tag 'pixie/jqcolor'
@@ -22,6 +31,13 @@
   %label
     %h3 Avatar
     = form.file_field :avatar
+
+  %label
+    = form.check_box :forum_notifications
+    %h3.check_box Receive Forum Email Notifications?
+  %label
+    = form.check_box :site_notifications
+    %h3.check_box Receive Notifications About Your Art?
 
   %button.full Update Information
 
