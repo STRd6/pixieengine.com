@@ -5,7 +5,7 @@ class PostObserver < ActiveRecord::Observer
     users = post.topic.posts.map(&:user).uniq - [post.user]
 
     users.each do |user|
-      Notifier.new_post(post, user).deliver
+      Notifier.new_post(post, user).deliver if user.forum_notifications
     end
   end
   handle_asynchronously :after_save
