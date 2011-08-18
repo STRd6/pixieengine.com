@@ -16,6 +16,7 @@ class Comment < ActiveRecord::Base
   def notify_commentee
     if commentee && commentee.site_notifications
       Notifier.comment(self).deliver
+    end
   end
   handle_asynchronously :notify_commentee
 end
