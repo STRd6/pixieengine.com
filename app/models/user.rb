@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
 
-  attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color
+  attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications
 
   scope :online_now, lambda {
     where("last_request_at >= ?", Time.zone.now - 15.minutes)

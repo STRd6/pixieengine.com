@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110811222222) do
+ActiveRecord::Schema.define(:version => 20110818222222) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -547,6 +548,8 @@ ActiveRecord::Schema.define(:version => 20110811222222) do
     t.string   "favorite_color"
     t.boolean  "paying",              :default => false, :null => false
     t.boolean  "forem_admin",         :default => false, :null => false
+    t.boolean  "forum_notifications", :default => true,  :null => false
+    t.boolean  "site_notifications",  :default => true,  :null => false
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
