@@ -1,0 +1,11 @@
+#= require jquery.animation_editor
+#= require jquery.dropimagereader
+#= require jquery.live_edit
+#= require jquery.pixie
+#= require jquery.power_canvas
+#= require jquery.property_editor
+#= require jquery.serialize_object
+#= require jquery.tagbox
+#= require jquery.take_class
+#= require jquery.tile_editor
+#= require jquery.vector_picker
