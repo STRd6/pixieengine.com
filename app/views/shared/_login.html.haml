@@ -29,4 +29,5 @@
     target = e.target
     drop_down = $('.user_drop_down').get(0)
 
-    $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
+    if drop_down
+      $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
