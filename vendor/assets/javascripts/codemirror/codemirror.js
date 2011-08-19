@@ -86,11 +86,11 @@ var CodeMirror = (function(){
     // Hack to work around a bunch of IE8-specific problems.
     html.push("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\"/>");
     forEach(options.stylesheet, function(file) {
-      html.push("<link rel=\"assets\" type=\"text/css\" href=\"" + file + "\"/>");
+      html.push("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + file + "\"/>");
     });
     forEach(options.basefiles.concat(options.parserfile), function(file) {
       if (!/^https?:/.test(file)) file = options.path + file;
-      html.push("<script type=\"text/assets\" src=\"" + file + "\"><" + "/script>");
+      html.push("<script type=\"text/javascript\" src=\"" + file + "\"><" + "/script>");
     });
     html.push("</head><body style=\"border-width: 0;\" class=\"editbox\" spellcheck=\"" +
               (options.disableSpellcheck ? "false" : "true") + "\"></body></html>");
