@@ -16,11 +16,10 @@
   = stylesheet_link_tag 'screen', :media => 'screen, projection'
 
   -# All JavaScript at the bottom, except for Modernizr which enables HTML5 elements & feature detects
+  -# FIX THIS
 
-  = javascript_include_tag 'application'
-
-  -# TODO: Move this to footer and set up a filter that renders inline js at bottom
   = render :partial => "/shared/javascripts"
+  = javascript_include_tag 'application'
 
   :javascript
     var loggedIn = #{!!current_user};
