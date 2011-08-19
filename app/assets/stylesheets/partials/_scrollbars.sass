@@ -1,0 +1,39 @@
+=scrollbars
+  ::-webkit-scrollbar-corner, ::-webkit-resizer
+    +bounds(0)
+    background-color: transparent
+
+  ::-webkit-scrollbar
+    +bounds(14px)
+
+  ::-webkit-scrollbar-button:start:decrement, ::-webkit-scrollbar-button:end:increment
+    +bounds(2px)
+    display: block
+    background-color: transparent
+
+  ::-webkit-scrollbar-track-piece:vertical:decrement
+    border-width: 11px 0 0 0
+
+  ::-webkit-scrollbar-track-piece:vertical:increment
+    border-width: 0 0 11px 0
+
+  ::-webkit-scrollbar-track-piece:horizontal:decrement
+    border-width: 0 0 0 11px
+
+  ::-webkit-scrollbar-track-piece:horizontal:increment
+    border-width: 0 11px 0 0
+
+  ::-webkit-scrollbar-corner
+    display: none
+
+  ::-webkit-scrollbar-thumb:vertical
+    -webkit-border-image: url(/images/scroll/vertical_thumb.png) 11 0 11 0
+    border-color: transparent
+    border-width: 11px 0
+    min-height: 20px
+
+  ::-webkit-scrollbar-thumb:horizontal
+    -webkit-border-image: url(/images/scroll/horizontal_thumb.png) 0 11 0 11
+    border-color: transparent
+    border-width: 0 11px
+    min-width: 20px
