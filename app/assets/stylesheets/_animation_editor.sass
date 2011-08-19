@@ -1,0 +1,216 @@
+@import "util"
+
+$bottom_module: 200px
+$left_module: 210px
+$right_module: 350px
+
+$highlight: #FEF7CB
+$highlight_border: #FFE475
+
+$action_bar_height: 30px
+$sequence_width: 100px
+$tileset_sprite_width: 60px
+
+.animation_editor
+  +user-select
+
+  img
+    border: 1px solid transparent
+
+  button
+    margin-bottom: 0
+    margin-top: 0
+
+  .edit_sequences, .edit_frames
+    cursor: pointer
+    height: 16px
+    text-decoration: none
+
+  h3, h4, .edit_sequences, .edit_frames
+    display: inline-block
+    margin: 0 1em 0 0
+    padding: 0
+    vertical-align: middle
+
+  .sequence
+    +bounds($sequence_width)
+
+    cursor: pointer
+    display: inline-block
+    position: relative
+
+    img
+      +border-radius(2px)
+      +max-bounds(80px)
+
+      border: 1px solid rgba(0, 0, 0, 0.15)
+      background: $light_background
+      position: absolute
+
+      /* I <3 SASS */
+      @for $n from 1 through 50
+        &:not(.x):nth-child(#{$n})
+          left: 2px * $n
+          top: 2px * $n
+          z-index: $n
+
+      &.selected
+        background: $highlight
+        border: 1px solid $highlight_border
+
+  .content
+    section
+      padding: 0 $right_module $bottom_module $left_module
+
+    .relative
+      +bounds(100%)
+
+    .player
+      +user-select
+
+      height: 100%
+      position: relative
+
+      img
+        bottom: 0
+        left: 0
+        margin: auto
+        position: absolute
+        right: 0
+        top: 0
+
+    .controls
+      +bounds(100%, $action_bar_height)
+      +box-sizing(border-box)
+      +linear-gradient(color-stops(#7F7F7F, #666))
+      +user-select
+
+      bottom: 0
+      padding: 2px
+      position: absolute
+
+      .play, .stop
+        +bounds(25px, 29px)
+        display: inline-block
+
+      @each $action in play, stop
+        .#{$action}
+          background-image: url(/assets/#{$action}.png)
+
+      .scrubber_container
+        +bounds(100%)
+        +box-sizing(border-box)
+
+        position: absolute
+        bottom: 0
+        left: 60px
+        padding-right: 125px
+
+      .scrubber
+        +bounds(100%)
+
+      .fps
+        +text-shadow(rgba(0, 0, 0, 0.4), 1px, 0, 0)
+
+        bottom: 6px
+        color: white
+        position: absolute
+        right: 3px
+
+        input
+          width: 30px
+
+    .left, .right
+      .background_color
+        +border-top-radius(4px)
+        +box-sizing(border-box)
+
+        background-color: $light_highlight
+        border-left: 1px solid lighten($light_highlight, 5%)
+        border-top: 1px solid lighten($light_highlight, 5%)
+        height: 100%
+        overflow: auto
+        padding: 0.5em
+        padding-bottom: $bottom_module
+
+    .left
+      +bounds($left_module, 100%)
+
+      .sprites img
+        +max-bounds($tileset_sprite_width)
+
+        display: inline-block
+        padding: 2px
+
+        &:hover
+          +border-radius(2px)
+          background-color: $highlight
+
+    .right
+      +bounds($right_module, 100%)
+
+      .x
+        background: none
+        border: none
+        position: absolute
+        top: -8px
+        left: -10px
+        z-index: 200
+
+    .bottom
+      +border-radius(0)
+      +box-shadow(none)
+
+      height: $bottom_module
+      overflow-x: auto
+      overflow-y: hidden
+      white-space: nowrap
+      z-index: 1
+
+      .x
+        background: none
+        border: none
+        position: absolute
+        top: -8px
+        left: -10px
+        z-index: 200
+
+    .frame_sprite, img
+      +box-sizing(border-box)
+
+      cursor: pointer
+      display: inline-block
+      padding: 2px
+      vertical-align: top
+
+    .frame_sprite
+      +bounds($sequence_width)
+
+      position: relative
+
+      img
+        +max-bounds(80px)
+
+        &.selected
+          background: $highlight
+          border: 1px solid $highlight_border
+
+  .animation_name
+    display: inline-block
+    width: 150px
+
+  .animations
+    position: absolute
+    right: 0
+    top: 10px
+
+    .state_name
+      border: 1px solid transparent
+      cursor: pointer
+      overflow-x: hidden
+      padding: 0 4px
+      white-space: nowrap
+
+      &.selected
+        background: $highlight
+        border: 1px solid $highlight_border

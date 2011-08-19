@@ -1,0 +1,176 @@
+$header_gradient_start: lighten($branded_blue, 4%)
+$header_gradient_end: darken($branded_blue, 3%)
+
+.user_drop_down
+  +border-bottom-radius(4px)
+  +box-shadow(#333, 0, 1px, 2px)
+
+  background-color: $header_gradient_end
+  display: none
+  max-height: 350px
+  min-width: 98px
+  position: absolute
+  top: 40px
+  right: 0
+
+  &.active
+    display: block
+
+  ul
+    font-size: 12px
+    margin: 0
+    width: 100%
+
+    li
+      background: $header_gradient_end
+      display: block
+      margin: 0
+      padding: 0
+      width: 100%
+
+      &:hover
+        background: rgba(255, 255, 255, 0.1)
+        color: white
+
+      &:last-child
+        +border-bottom-radius
+
+      a
+        +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+
+        color: $dark_text
+        display: inline-block
+        font-weight: normal
+        padding: 6px 15px
+        text-decoration: none
+
+footer
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
+header
+  +box-shadow(#333, 0, 0, 7px, 1px)
+  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+
+  height: 40px
+  position: relative
+
+  .logo
+    +bounds(61px, 32px)
+    +inline-block
+
+    background-image: url(/assets/shadow_logo_small.png)
+    background-repeat: no-repeat
+    float: left
+    margin: 0
+    margin-top: 3px
+    margin-right: 50px
+    position: static
+
+  .content
+    height: 40px
+    overflow: visible
+    padding: 0
+
+    #fullscreen &
+      width: 100%
+
+  .blurb
+    display: none
+
+  .login_link
+    display: inline-block
+    float: right
+    position: relative
+    z-index: 20
+
+    a[title='Log in']
+      display: inline-block
+      float: right
+      margin-top: 11px
+
+    span.vertical_rule
+      border-left: 1px solid rgba(0, 0, 0, 0.3)
+      border-right: 1px solid rgba(255, 255, 255, 0.08)
+      height: 28px
+      display: inline-block
+      margin: 6px 3px 1px 3px
+
+    a.new_project
+      +bounds(16px)
+      +box-sizing(border-box)
+
+      display: inline-block
+      margin-top: 14px
+      vertical-align: top
+
+    img.user_info
+      +bounds(20px)
+
+      margin-top: 11px
+      vertical-align: bottom
+
+    .user_name
+      margin-right: 2px
+
+    .log_out
+      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+
+      color: $dark_text
+      height: 40px
+
+      display: inline-block
+      padding: 0 1em
+      vertical-align: top
+
+      &:hover
+        background-color: rgba(255, 255, 255, 0.1)
+        color: white
+        cursor: pointer
+
+    .login_arrow
+      +bounds(7px, 4px)
+      +inline-block
+
+      background: url(/assets/login_arrow.png)
+
+  nav.top_bar
+    +inline-block
+
+    height: 100%
+
+    span, a
+      +box-sizing(border-box)
+      +inline-block
+      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+
+      color: $dark_text
+      font-size: 15px
+      font-weight: normal
+      height: 100%
+      padding-left: 10px
+      padding-right: 10px
+      padding-top: 10px
+      text-align: center
+      text-decoration: none
+      width: 102px
+
+      &:hover
+        background-color: rgba(0, 0, 0, 0.25)
+        color: white
+
+      &.active
+        background-color: rgba(0, 0, 0, 0.25)
+        color: white
+        font-weight: bold
+
+
+.bulb
+  +bounds(32px)
+
+  background-image: url(/assets/lightbulb_off.png)
+  position: absolute
+  top: 5px
+  right: 5px
+
+  &.on
+    background-image: url(/assets/lightbulb.png)

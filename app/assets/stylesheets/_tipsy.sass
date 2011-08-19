@@ -1,0 +1,65 @@
+.tipsy
+  padding: 5px
+  font-size: 10px
+  position: absolute
+  z-index: 100000
+
+.tipsy-inner
+  padding: 5px 8px 4px 8px
+  background-color: black
+  color: white
+  max-width: 200px
+  text-align: center
+
+.tipsy-inner
+  +border-radius(3px)
+
+.tipsy-arrow
+  +bounds(9px, 5px)
+
+  position: absolute
+  background: url('../assets/tipsy.gif') no-repeat top left
+
+.tipsy-n .tipsy-arrow
+  top: 0
+  left: 50%
+  margin-left: -4px
+
+.tipsy-nw .tipsy-arrow
+  top: 0
+  left: 10px
+
+.tipsy-ne .tipsy-arrow
+  top: 0
+  right: 10px
+
+.tipsy-s .tipsy-arrow
+  bottom: 0
+  left: 50%
+  margin-left: -4px
+  background-position: bottom left
+
+.tipsy-sw .tipsy-arrow
+  bottom: 0
+  left: 10px
+  background-position: bottom left
+
+.tipsy-se .tipsy-arrow
+  bottom: 0
+  right: 10px
+  background-position: bottom left
+
+.tipsy-e .tipsy-arrow
+  +bounds(5px, 9px)
+
+  top: 50%
+  margin-top: -4px
+  right: 0
+  background-position: top right
+
+.tipsy-w .tipsy-arrow
+  +bounds(5px, 9px)
+
+  top: 50%
+  margin-top: -4px
+  left: 0

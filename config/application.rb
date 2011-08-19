@@ -4,7 +4,7 @@ require 'rails/all'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env) if defined?(Bundler)
+Bundler.require *Rails.groups(:assets) if defined?(Bundler)
 
 module PixieStrd6Com
   class Application < Rails::Application
@@ -49,6 +49,9 @@ module PixieStrd6Com
     end
 
     config.active_record.observers = :post_observer
+
+    config.assets.enabled = true
+    config.generators.stylesheet_engine = :sass
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"

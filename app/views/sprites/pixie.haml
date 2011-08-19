@@ -4,7 +4,7 @@
 - unless sprite.new_record?
   - @meta_desc = "Load #{sprite.meta_desc}"
 
-= stylesheet_link_tag 'pixie/pixie'
+= stylesheet_link_tag 'pixie'
 
 - width = @width || 32
 - height = @height || 32
@@ -108,7 +108,7 @@
         if #{facebook?}
           canvas.addAction
             name: "Post to FB"
-            icon: "/images/icons/user_comment.png"
+            icon: "/assets/icons/user_comment.png"
             perform: (canvas) ->
               postImage()
             undoable: false
@@ -129,7 +129,7 @@
 
           canvas.addAction
             name: "Post to Chat"
-            icon: "/images/icons/picture_go.png"
+            icon: "/assets/icons/picture_go.png"
             perform: (canvas) ->
               wrapper = $ "<div />"
               img = $ "<img />"
