@@ -29,13 +29,15 @@ button, a.button
     &:active, &.active
       +linear-gradient(color-stops(darken($complementary_orange, 10%), $complementary_orange 33%, lighten($complementary_orange, 15%)))
 
-  &:active:not([disabled]), &.active:not([disabled])
+  &:active, &.active
     +text-shadow(rgba(0, 0, 0, 0.25), 0, 1px, 0)
 
     background: $button_background_active
     color: white
 
   &[disabled]
+    +text-shadow(none)
+
     background: #CCEBFF
     border-color: #DBF1FF
     color: #75C1F0
