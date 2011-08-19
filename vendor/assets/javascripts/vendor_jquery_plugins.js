@@ -1,9 +1,0 @@
-//= require jquery.contextMenu
-//= require jquery.simplemodal-1.3.5.min
-//= require jquery.form.js
-//= require jquery.scrollTo-min
-//= require jquery.hotkeys
-//= require jquery.tmpl.min
-//= require jquery.pnotify.min.js
-//= require jquery.property_editor
-//= require jquery.tipsy
