@@ -1,16 +1,36 @@
+%style
+  :sass
+    @import util
+    @import branded
+
+    ul.steps
+      font-size: 14px
+
+      li
+        margin: 1em 0
+
+        &.tuts-pixie_user
+          +bounds(981px, 505px)
+
+        &.tuts-web_hooks
+          +bounds(960px, 400px)
+
+        &.tuts-new_project
+          +bounds(960px, 565px)
+
 %h2 How to Integrate With an Existing Github Project
 
 %ul.steps
   %li
     Go to your github repository admin panel. In the 'Collaborators' panel add
     PixieCode to the collaborators.
-  %li= image_tag "tuts/pixie_user.png"
+  %li.tuts-sprite.tuts-pixie_user
 
   %li
     On your github repository in the 'Service Hooks' panel add
     = hook_projects_path(:only_path => false)
     to your 'Post-Receive URLs'
-  %li= image_tag "tuts/web_hooks.png"
+  %li.tuts-sprite.tuts-web_hooks
 
   %li
     = link_to "Create a project on Pixie", new_project_path
@@ -20,19 +40,9 @@
 
     It should look something like: git@github.com:my_username/my_repo.git
 
-  %li= image_tag "tuts/new_project.png"
+  %li.tuts-sprite.tuts-new_project
 
   %li
     Done! When you make changes to your code in Pixie it will be pushed to the
     'pixie' branch of your repo. You may then merge it in to master at your own
     convenience.
-
-%style
-  :sass
-    @import branded
-
-    ul.steps
-      font-size: 14px
-
-      li
-        margin: 1em 0
