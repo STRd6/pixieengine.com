@@ -72,20 +72,21 @@ $ ->
   setLightTheme = (active) ->
     $('html').toggleClass('light', active)
     $('iframe').contents().find('html').toggleClass("light", active)
-    $('.bulb').toggleClass("on", active)
+    $('.bulb-sprite').toggleClass('bulb-off', !active).toggleClass('bulb-on', active)
 
     setVal('light', active)
 
-  $('.bulb').click ->
-    $(this).toggleClass('on')
+  $('.bulb-sprite').click ->
+    $this = $(this)
+    $this.toggleClass('bulb-off').toggleClass('bulb-on')
 
-    setLightTheme $(this).hasClass('on')
+    setLightTheme $this.hasClass('bulb-on')
 
   active = getVal('light')
   if active?
     setLightTheme active
   else if $('html').hasClass 'light'
-    $('.bulb').toggleClass("on", true)
+    $('.bulb-sprite').removeClass('bulb-off').addClass('bulb-on')
 
   # Display Flash Notice
   $("#flashes .notice").each ->
