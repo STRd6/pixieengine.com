@@ -13,8 +13,8 @@
     %button#test> Test
   - if demo? || has_access?
     .button_group
-      %button#build(title="Build and publish the current version of the project")> Build
-      %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
+      %button#build(title="Publish the current version of your game")> Publish
+      %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
 
@@ -24,7 +24,7 @@
   .status
     %label.inline
       %h4 What are you working on?
-      %input.message(placeholder="Your commit message" type="text")
+      %input.message(placeholder="message" type="text")
 
 #content
   #error

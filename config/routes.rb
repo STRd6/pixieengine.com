@@ -102,8 +102,11 @@ PixieStrd6Com::Application.routes.draw do
   match 'i/:token' => "invites#track", :as => :invite_token
 
   match 'about' => "home#about", :as => :about
+  match 'contact_us' => "home#contact", :as => :contact_us
   match 'jukebox' => "home#jukebox"
   match 'frost' => "home#frost", :as => :frost
+  match 'privacy_policy' => "home#privacy_policy", :as => :privacy_policy
+  match 'products_and_services' => "home#products", :as => :products_and_services
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey
   match 'wiki' => redirect('https://docs.google.com/document/d/1N_VbAu7hPmOQIL2XjLr0gTVfLL3W2qPWS3o1id4d-xI/edit?hl=en_US'), :as => :wiki
