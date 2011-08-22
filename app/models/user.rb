@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
   def self.send_newsletter_email
     failed_user_ids = []
 
-    User.all(:conditions => {:subscribed => true}).each do |user|
+    User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
         Notifier.newsletter3(user).deliver unless user.email.blank?
       rescue
