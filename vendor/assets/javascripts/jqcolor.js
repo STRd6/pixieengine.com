@@ -35,7 +35,7 @@
         break;
     }
 
-    var dir = options.dir || '/images/jscolor/';
+    var dir = options.dir || '/assets/jscolor/';
 
     var padding = 10;
     var borderWidth = 1;
