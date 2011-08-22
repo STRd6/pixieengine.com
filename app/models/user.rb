@@ -65,9 +65,17 @@ class User < ActiveRecord::Base
   end
 
   def self.send_newsletter_email
+    failed_user_ids = []
+
     User.all(:conditions => {:subscribed => true}).each do |user|
-      Notifier.newsletter(user).deliver unless user.email.blank?
+      begin
+        Notifier.newsletter3(user).deliver unless user.email.blank?
+      rescue
+        failed_user_ids.push(user.id)
+      end
     end
+
+    return failed_user_ids
   end
 
   def add_to_collection(item, collection_name="favorites")

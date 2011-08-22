@@ -44,6 +44,19 @@ class Notifier < ActionMailer::Base
     mail :subject => "Pixie Newsletter", :to => user.email
   end
 
+  def newsletter3(user)
+    @user = user
+    @daniel = User.find 1
+
+    @featured_users = []
+
+    User.find(531, 1646).each do |featured_user|
+      @featured_users.push featured_user
+    end
+
+    mail :subject => "Pixie Newsletter", :to => user.email
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email
