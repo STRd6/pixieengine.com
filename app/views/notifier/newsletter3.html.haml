@@ -35,7 +35,7 @@
                     = paragraph.html_safe
                     - if paragraph ==  paragraphs[3]
                       - @featured_users.each do |user|
-                        = link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :class => :avatar), user_url(user, link_tracking)
+                        = link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :class => :avatar), user_url(user, link_tracking) unless user.display_name == "xmagicx60"
                         = link_to user, user_url(user, link_tracking)
                         - if user == @featured_users.last
                           = "."
