@@ -1,6 +1,6 @@
 .login_link
   - if current_user
-    = link_to image_tag('/assets/icons/application_add.png', :alt => "New Project", :title => "New Project"), main_app.new_project_path,  :class => 'new_project', :eventLabel => "new project icon"
+    %a.static-icons.static-application_add.new_project(href="#{main_app.new_project_path}" eventLabel="new project icon" title="New Project")
     %span.vertical_rule
     %span.log_out
       = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
@@ -17,7 +17,7 @@
     = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in" }
 
 :coffeescript
-  $('.new_project img').tipsy
+  $('.new_project').tipsy
     gravity: 'e'
     opacity: 1
 

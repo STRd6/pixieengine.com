@@ -1,5 +1,6 @@
 @import partials/base
 @import util
+@import sprite_sheets
 
 .wmd-panel
   margin-left: 25%
@@ -33,7 +34,8 @@
 
 .wmd-spacer
   width: 1px
-  height: 20px
+  height: 18px
+  margin-bottom: 2px
   margin-left: 7px
   margin-right: 7px
   position: relative
@@ -45,10 +47,13 @@
 
 .wmd-button
   +inline-block
-  +bounds(20px)
+  +bounds(16px)
 
+  @extend .static-sprite
+
+  border: 2px solid #B2E2FF
+  margin: 2px
   margin-right: 5px
-  padding: 2px
   position: relative
   vertical-align: baseline
 
@@ -59,6 +64,7 @@
   &:hover
     +border-radius(2px)
     background-color: $hover
+    border: 2px solid $hover
 
   &:disabled
     +opacity(0.75)
@@ -69,43 +75,43 @@
 /* sprite button slicing style information
 
 .wmd-bold-button
-  +icon_image(text_bold)
+  @extend .static-text_bold
 
 .wmd-italic-button
-  +icon_image(text_italic)
+  @extend .static-text_italic
 
 .wmd-link-button
-  +icon_image(link)
+  @extend .static-link
 
 .wmd-quote-button
-  +icon_image(text_quote)
+  @extend .static-text_quote
 
 .wmd-code-button
-  +icon_image(application_osx_terminal)
+  @extend .static-application_osx_terminal
 
 .wmd-image-button
-  +icon_image(image)
+  @extend .static-image
 
 .wmd-olist-button
-  +icon_image(text_list_numbers)
+  @extend .static-text_list_numbers
 
 .wmd-ulist-button
-  +icon_image(text_list_bullets)
+  @extend .static-text_list_bullets
 
 .wmd-heading-button
-  +icon_image(text_heading_1)
+  @extend .static-text_heading_1
 
 .wmd-hr-button
-  +icon_image(text_horizontalrule)
+  @extend .static-text_horizontalrule
 
 .wmd-undo-button
-  +icon_image(arrow_undo)
+  @extend .static-arrow_undo
 
 .wmd-redo-button
-  +icon_image(arrow_redo)
+  @extend .static-arrow_redo
 
 .wmd-help-button
-  +icon_image(help)
+  @extend .static-help
 
   position: absolute
   top: 5px
