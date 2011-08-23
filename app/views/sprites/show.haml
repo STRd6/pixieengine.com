@@ -8,7 +8,6 @@
       ul
         padding-top: 0.5em
 
-
     .comments_area
       +module
 
@@ -21,6 +20,11 @@
       textarea
         height: 75px
 
+    .sprite_container
+      display: inline-block
+      margin-right: 5em
+      vertical-align: top
+
     #tag
       width: 200px
 
@@ -28,36 +32,28 @@
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
 
-%h1= sprite.display_name
+.sprite_container
+  %h1= sprite.display_name
 
-= link_to image_tag(sprite.image.url, :alt => sprite.display_name), load_sprite_path(sprite)
+  = link_to image_tag(sprite.image.url, :alt => sprite.display_name), load_sprite_path(sprite)
 
-%p= sprite.description
-
-.clear
-%p
-  By
-  - if sprite.user
-    = link_to sprite.user, sprite.user
-  - else
-    Anonymous
-
--if sprite.parent
-  %h2
-    Remixed from
-    = sprite.parent.display_name
-
-  = link_to image_tag(sprite.parent.image.url, :alt => sprite.parent.display_name), load_sprite_path(sprite.parent)
-
-  %p= sprite.parent.description
+  %p= sprite.description
 
   .clear
-  %p
-    By
-    - if sprite.parent.user
-      = link_to sprite.parent.user, sprite.parent.user
-    - else
-      Anonymous
+  %p= author_link(sprite)
+
+.sprite_container
+  -if sprite.parent
+    %h1
+      Remixed from
+      = sprite.parent.display_name
+
+    = link_to image_tag(sprite.parent.image.url, :alt => sprite.parent.display_name), load_sprite_path(sprite.parent)
+
+    %p= sprite.parent.description
+
+    .clear
+    %p= author_link(sprite.parent)
 
 %ul.actions
   %li= link_to "#{image_tag "icons/picture_edit.png"} Load in Editor".html_safe, load_sprite_path(sprite), :class => "button"

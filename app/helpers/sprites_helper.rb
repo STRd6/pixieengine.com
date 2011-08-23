@@ -19,6 +19,10 @@ module SpritesHelper
     end
   end
 
+  def author_link(sprite)
+    "By #{sprite.user ? link_to(sprite.user, sprite.user) : 'Anonymous'}".html_safe
+  end
+
   def image_link(sprite)
     link_to image_tag(sprite.image.url(:thumb), :alt => sprite.display_name, :title => sprite.display_name), sprite
   end
