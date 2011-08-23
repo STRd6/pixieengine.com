@@ -6,6 +6,30 @@
     @import util
     @import branded
 
+    .comment
+      +border-radius
+      +box-sizing(border-box)
+      +box-shadow(rgba(0, 0, 0, 0.15), 2px, 2px, 2px, 0, inset)
+
+      background-color: #D2EEFF
+      display: inline-block
+      margin-bottom: 1em
+      margin-right: 2em
+      padding: 1em
+      vertical-align: top
+      width: 460px
+
+      &:nth-child(2n + 1)
+        margin-right: 0
+
+      .about
+        color: #999
+        font-size: 80%
+        font-weight: bold
+
+      .commentable
+        float: right
+
     .feature .profile .favorite_color
       +inline-block
 
@@ -229,13 +253,10 @@
   - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
     .comments.module
       .messages
-        %h2
-          Messages
-
-        = render :partial => messages
+        %h2 Messages
+        = render :partial => 'users/comment', :collection => messages
 
 :coffeescript
-
 
   $ ->
     $('#show_projects').click ->
