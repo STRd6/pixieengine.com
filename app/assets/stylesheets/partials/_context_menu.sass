@@ -1,5 +1,7 @@
 /* Generic context menu styles
 
+@import sprite_sheets
+
 .context_menu
   position: absolute
   width: 120px
@@ -39,4 +41,6 @@
       border-top: solid 1px #CCC
 
     a[href="#delete"]
-      background-image: url(/assets/icons/delete.png)
+      +bounds(16px)
+
+      @extend .static-delete

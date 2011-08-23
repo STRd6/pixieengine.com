@@ -1,9 +1,15 @@
 @import util
 @import partials/base
+@import sprite_sheets
 
 $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
+
+.static-help
+  +bounds(15px)
+
+  display: inline-block
 
 #fullscreen.ide
   padding-top: 3.5em
@@ -96,56 +102,44 @@ ul.filetree
     &.folder, &.file
       padding: 1px 0px 1px 18px
 
-    &.folder
-      &.resources
-        background-image: url(/assets/icons/images.png)
-      &.sprites
-        background-image: url(/assets/icons/pictures.png)
-      &.sounds
-        background-image: url(/assets/icons/sound.png)
-
-    &.load_sprite
-      background-image: url(/assets/icons/picture_go.png)
-
-    &.new_sprite
-      background-image: url(/assets/icons/picture_add.png)
-
-    &.import_sprites
-      background-image: url(/assets/icons/image_add.png)
-
-    &.import_sounds
-      background-image: url(/assets/icons/sound_add.png)
-
     &.file
+      +bounds(16px)
+
       white-space: nowrap
+
       &.animation
-        background-image: url(/assets/icons/film.png)
+        @extend .static-film
       &.coffeescript, &.coffee
-        background-image: url(/assets/icons/cup.png)
+        @extend .static-cup
       &.javascript, &.js
-        background-image: url(/assets/icons/script.png)
+        @extend .static-script
+        height: 15px
       &.sprite, &.png, &.gif, &.jpg, &.jpeg, &.bmp
-        background-image: url(/assets/icons/picture.png)
+        @extend .static-picture
+        height: 15px
         margin: 0
       &.sound, &.sfs
-        background-image: url(/assets/icons/sound.png)
+        @extend .static-sound
+        height: 15px
         margin: 0
       &.wav, &.mp3
-        background-image: url(/assets/icons/cd.png)
+        @extend .static-cd
         margin: 0
       &.documentation
-        background-image: url(/assets/icons/book_open.png)
+        @extend .static-book_open
+        height: 15px
       &.tutorial
-        background-image: url(/assets/icons/book_open.png)
+        @extend .static-book_open
+        height: 15px
       &.entity
-        background-image: url(/assets/icons/sport_shuttlecock.png)
+        @extend .static-sport_shuttlecock
+        height: 14px
       &.tilemap
-        background-image: url(/assets/icons/world.png)
-
+        @extend .static-world
       &.new_script
-        background-image: url(/assets/icons/cup_add.png)
+        @extend .static-cup_add
       &.add_library
-        background-image: url(/assets/icons/book_add.png)
+        @extend .static-book_add
 
 #tabs
   +bounds(100%)
@@ -180,27 +174,29 @@ ul.filetree
       .ui-icon
 
         &.lang
+          +bounds(16px)
+
           float: left
           margin: 0.5em 0 0 0.2em
 
           &.animation
-            background-image: url(/assets/icons/film.png)
+            @extend .static-film
           &.coffeescript
-            background-image: url(/assets/icons/cup.png)
+            @extend .static-cup
           &.javascript
-            background-image: url(/assets/icons/script.png)
+            @extend .static-script
           &.sound
-            background-image: url(/assets/icons/sound.png)
+            @extend .static-sound
           &.sprite
-            background-image: url(/assets/icons/image.png)
+            @extend .static-image
           &.tilemap
-            background-image: url(/assets/icons/world.png)
+            @extend .static-world
           &.documentation
-            background-image: url(/assets/icons/book_open.png)
+            @extend .static-book_open
           &.tutorial
-            background-image: url(/assets/icons/book_open.png)
+            @extend .static-book_open
           &.entity
-            background-image: url(/assets/icons/sport_shuttlecock.png)
+            @extend .static-sport_shuttlecock
 
       a
         +box-sizing(border-box)
@@ -271,9 +267,9 @@ ul.filetree
       width: 200px
 
 #import_drop_zone
+  +bounds(320px, 170px)
+
   background: transparent url(/assets/import.png) no-repeat center top
-  height: 170px
-  width: 320px
 
   p
     bottom: 0
@@ -315,21 +311,6 @@ ul.filetree
       display: inline-block
       margin-left: -1px
       margin-right: -1px
-
-  .vector_picker
-    +bounds(126px)
-
-    background: url(/assets/unit_circle.png) no-repeat white
-    border: 2px solid #ccc
-    position: absolute
-    z-index: 1000
-
-    .unit_circle
-      +bounds(126px)
-
-      background: url(/assets/jscolor/circle.gif) no-repeat
-      cursor: crosshair
-      position: absolute
 
   #console_window
     width: 300px
