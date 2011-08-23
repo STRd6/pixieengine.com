@@ -2,9 +2,6 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.0.rc6'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
 group :assets do
   gem 'sass-rails', "~> 3.1.0.rc"
   gem 'coffee-rails', "~> 3.1.0.rc"
@@ -12,20 +9,14 @@ group :assets do
   gem 'compass', :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
 end
 
-gem 'pg'
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-gem 'capistrano'
-
-# To use debugger
-# gem 'ruby-debug19'
+group :production do
+  gem 'unicorn'
+end
 
 gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "aws-s3", :require => "aws/s3"
+gem "capistrano"
 gem "coffee-filter"
 gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
@@ -38,13 +29,13 @@ gem 'json'
 gem 'mail'
 gem "mocha"
 gem 'paperclip'
+gem "pg"
 gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
-gem 'unicorn'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
 
