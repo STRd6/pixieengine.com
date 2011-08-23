@@ -2,11 +2,9 @@
   #feedback
     = link_to "", "/survey", :target => "_blank", :eventLabel => "feedback"
 
-  :javascript
-    $(function() {
-      $("#feedback").mouseover(function() {
-        $(this).animate({left: -7}, "fast");
-      }).mouseout(function() {
-        $(this).animate({left: -15});
-      });
-    });
+  :coffeescript
+    $ ->
+      $("#feedback").mouseover(->
+        $(this).animate({left: -7}, "fast")
+      ).mouseout ->
+        $(this).animate({left: -15})

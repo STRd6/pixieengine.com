@@ -1,4 +1,6 @@
 %style
+  @import sprite_sheets
+
   :sass
     @import util
     @import branded
@@ -24,10 +26,10 @@
         padding: 0.5em 0
 
       .logo
-        +bounds(100px, 53px)
         +inline-block
 
-        background-image: url(/assets/shadow_logo.png)
+        @extend .static-shadow_logo_large
+
         float: left
         margin: 0
         margin-top: 15px
@@ -219,7 +221,7 @@
 
   .testimonial.module
     .thumb.fancy
-      = image_tag "daniel_128.jpg"
+      .static-daniel_128
 
     %h2 A message from the creator of Pixie
 

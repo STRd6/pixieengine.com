@@ -52,6 +52,11 @@
       padding: 1em
       width: 315px
 
+      .static-add, .static-thumb_up
+        +bounds(16px)
+
+        display: inline-block
+
     .featured_sprites, .featured_projects, .comments
       margin: 2em 0
       padding: 1em 2em
@@ -108,6 +113,12 @@
         position: absolute
         right: 1em
         top: 1em
+
+        a
+          display: block
+
+        div
+          display: inline-block
 
       &:hover
         background-color: $hover

@@ -1,6 +1,8 @@
 $header_gradient_start: lighten($branded_blue, 4%)
 $header_gradient_end: darken($branded_blue, 3%)
 
+@import sprite_sheets
+
 .user_drop_down
   +border-bottom-radius(4px)
   +box-shadow(#333, 0, 1px, 2px)
@@ -60,7 +62,8 @@ header
     +bounds(61px, 32px)
     +inline-block
 
-    background-image: url(/assets/shadow_logo_small.png)
+    @extend .static-shadow_logo_small
+
     background-repeat: no-repeat
     float: left
     margin: 0
@@ -98,7 +101,6 @@ header
       margin: 6px 3px 1px 3px
 
     a.new_project
-      +bounds(16px)
       +box-sizing(border-box)
 
       display: inline-block
@@ -130,13 +132,13 @@ header
         cursor: pointer
 
         & .login_arrow
-          background: url(/assets/login_arrow_hover.png)
+          @extend .static-login_arrow_white
 
     .login_arrow
       +bounds(7px, 4px)
       +inline-block
 
-      background: url(/assets/login_arrow.png)
+      @extend .static-login_arrow
 
   nav.top_bar
     +inline-block

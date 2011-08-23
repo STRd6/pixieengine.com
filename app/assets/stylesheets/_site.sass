@@ -1,14 +1,14 @@
 /* Element specific styles that apply throughout the site
+@import sprite_sheets
+
 #feedback
   position: fixed
   left: -15px
   top: 50%
 
   a
-    background-image: url(/assets/feedback.png)
+    @extend .static-feedback
     display: block
-    height: 102px
-    width: 50px
 
 #tooltip
   +border-radius
