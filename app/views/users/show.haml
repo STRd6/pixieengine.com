@@ -181,7 +181,7 @@
     .clear
 
     %h3.inline Favorite Color
-    .favorite_color{:style => "background: ##{user.favorite_color}"}
+    .favorite_color(style="background: ##{user.favorite_color};")
 
   - if user.projects.size > 0
     .featured_projects.module
