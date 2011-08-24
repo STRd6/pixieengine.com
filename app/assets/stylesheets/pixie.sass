@@ -80,13 +80,13 @@ body
       border: 1px solid #AAA
       cursor: pointer
       position: absolute
-      top: 270px
+      top: 375px
       left: 0
       right: 0
       margin: auto
 
     .swatches
-      +bounds(48px, 175px)
+      +bounds(76px, 175px)
 
       left: 0
       margin: auto
@@ -95,11 +95,12 @@ body
       top: 95px
 
     .swatch
-      +bounds(16px)
+      +border-radius(2px)
+      +bounds(30px)
       +box-sizing(border-box)
 
       cursor: pointer
-      border: 1px solid #666
+      border: 1px solid rgba(0, 0, 0, 0.15)
       float: left
       margin: 4px
 
@@ -114,10 +115,11 @@ body
       margin-right: auto
 
       input.color
+        +border-radius(4px)
         +bounds(50px)
 
         border: 2px solid
-        border-color: #CCC
+        border-color: rgba(255, 255, 255, 0.4)
         position: absolute
         text-align: center
 
