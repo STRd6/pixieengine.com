@@ -5,9 +5,6 @@
     @import util
     @import branded
 
-    .bulb
-      display: none
-
     header
       height: 90px
       position: relative
@@ -27,8 +24,6 @@
 
       .logo
         +inline-block
-
-        @extend .static-shadow_logo_large
 
         float: left
         margin: 0
@@ -165,6 +160,10 @@
 
           .light &
             color: $light_text
+
+:coffeescript
+  $ ->
+    $('a.logo').attr('class', 'static-landing_logo')
 
 .content
   .feature
