@@ -39,7 +39,7 @@
       tabMode: "shift"
       textWrapping: false
 
-    $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('bulb-on'))
+    $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
     $(editor.win.document).keyup ->
       textArea.val(editor.getCode())
