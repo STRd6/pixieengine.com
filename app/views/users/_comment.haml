@@ -6,6 +6,6 @@
 
   - if commentable = comment.commentable
     .commentable
-      = link_to image_tag(commentable.image.url(:thumb), :alt => commentable.display_name)
+      = link_to image_tag(commentable.image.url(:thumb), :alt => commentable.display_name), commentable
   
   %p= comment.body
