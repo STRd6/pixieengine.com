@@ -5,15 +5,6 @@
   :sass
     @import util
 
-    .static-thumb_up
-      display: inline-block
-
-    .hover_actions a
-      display: block
-
-      & div
-        display: inline-block
-
     .tasks
       float: right
       margin-left: 2em
@@ -30,18 +21,18 @@
         left: 200px
         position: absolute
         top: 0
-
+        
     .profile
       min-height: 284px
       margin-bottom: 1em
       overflow: auto
       padding-top: 1em
       width: 100%
-
+      
       .favorite_color
         +border-radius
         +inline-block
-
+  
         border: 1px solid $light_gray
         height: 50px
         width: 50px
@@ -69,27 +60,32 @@
     .projects, .sprites
       margin-bottom: 1em
 
+<<<<<<< HEAD
+      .static-add, .static-thumb_up
+        +bounds(16px)
+
+        display: inline-block
+
+    .featured_sprites, .featured_projects, .comments
+      margin: 2em 0
+      padding: 1em 2em
+=======
       .actions
         float: right
+>>>>>>> 5af5dc7fee52f36adc12d6fea6a05c55a82ea6d7
 
     .project
       overflow: auto
       width: 100%
-
-      &:nth-child(n + 7)
-        display: none
-
-      .show_all &:nth-child(n + 7)
-        display: inline-block
-
+      
       .thumb
         +border-radius
         +inline-block
-
+      
         float: left
         margin-bottom: 1em
         margin-right: 1em
-
+        
     .sprite_container
       +border-radius
       +bounds(48px)
@@ -112,26 +108,80 @@
         +contents-centered
 
         display: block
+<<<<<<< HEAD
 
+    .project
+      +border-radius
+      +bounds(460px, 172px)
+      +box-sizing(border-box)
+      +box-shadow(rgba(0, 0, 0, 0.15), 2px, 2px, 2px, 0, inset)
+      +inline-block
+
+      background-color: $light_background
+      margin-bottom: 1em
+      margin-right: 2em
+      overflow: hidden
+      padding: 1em
+      position: relative
+
+      &:nth-child(n + 7)
+        display: none
+
+      .show_all &:nth-child(n + 7)
+        display: inline-block
+
+      &:nth-child(2n)
+        margin-right: 0
+
+      .hover_actions
+        background-color: $hover
+        display: none
+        position: absolute
+        right: 1em
+        top: 1em
+
+        a
+          display: block
+
+        div
+          display: inline-block
+
+      &:hover
+        background-color: $hover
+
+        .hover_actions
+          display: inline-block
+
+      .gloss
+        +gloss
+
+        display: inline-block
+        position: absolute
+        left: 1em
+
+      .thumb
+=======
+        
     .comment
       overflow: auto
       width: 100%
-
+      
       .commentable
+>>>>>>> 5af5dc7fee52f36adc12d6fea6a05c55a82ea6d7
         float: left
-
+        
         img
           margin-right: 1em
-
+        
       .attribution
         float: right
         margin-left: 2em
         text-align: right
-
+        
         .name
           img
             margin-left: 1em
-
+        
         .time
           color: gray
 
@@ -153,15 +203,15 @@
     .favorite_color(style="background: ##{user.favorite_color};")
 
   .projects
-    .actions
-      - if current_user?
+    - if current_user?
+      .actions
         = link_to "New Project", new_project_path, :class => "button complement"
         = link_to "Tutorials", projects_path(:filter => "tutorial"), :class => "button complement"
-      - if user.projects.size > 6
-        %a#show_projects.button.complement Show all
     %h2
       ="Your" if current_user?
       Projects
+    - if user.projects.size > 6
+      %a#show_projects Show all
     - user.projects.order("updated_at DESC").each do |project|
       = render :partial => "users/project", :locals => { :project => project }
 
@@ -171,7 +221,7 @@
         = link_to "New Sprite", new_sprite_path, :class => "button complement"
       - if user.sprites.size > 68
         %a#show_sprites.button.complement Show all
-
+        
     %h2
       ="Your" if current_user?
       Sprites
