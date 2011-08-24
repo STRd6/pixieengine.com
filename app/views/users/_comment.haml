@@ -1,12 +1,11 @@
 .comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
-  = avatar_link comment.commenter
+  .attribution
+    - commenter = comment.commenter
+    %span.name= link_to (commenter.display_name + image_tag(commenter.avatar.url(:thumb), :size => "32x32")).html_safe, commenter
+    .time= "#{time_ago_in_words(comment.created_at)} ago"
+
   - if commentable = comment.commentable
     .commentable
-      = link_to image_tag(commentable.image.url(:thumb), :alt => commentable.display_name), comment.commentable_type == "Sprite" ? sprite_path(commentable) : fullscreen_project_path(commentable)
-      .about
-        About #{link_to commentable.display_name, comment.commentable_type == "Sprite" ? sprite_path(commentable) : fullscreen_project_path(commentable)}
-
+      = link_to image_tag(commentable.image.url(:thumb), :alt => commentable.display_name), commentable
+  
   %p= comment.body
-  %p.attribution
-    %span.name= link_to comment.commenter.display_name, comment.commenter
-    %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
