@@ -4,12 +4,12 @@
   .choice.zip
     .wrap
       %h3 Zip File
-    = image_tag "zip.png"
+    .static-zip
 
   .choice.chrome
     .wrap
       %h3 Packaged for Chrome Web Store
-    = image_tag "chrome_webstore.png"
+    .static-chrome_webstore
 
 :coffeescript
   $("#export").click ->
@@ -55,4 +55,4 @@
           height: 60px
 
         img
-          
+

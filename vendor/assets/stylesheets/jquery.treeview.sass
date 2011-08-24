@@ -1,3 +1,6 @@
+@import util
+@import sprite_sheets
+
 .treeview
   padding: 0
   margin: 0
@@ -9,12 +12,13 @@
     background-color: white
     margin-top: 4px
   .hitarea
+    +bounds(16px)
+
     background: url(/assets/treeview/treeview-default-white.gif) -64px -25px no-repeat
     margin-left: -16px
     float: left
     cursor: pointer
-    height: 16px
-    width: 16px
+
 
 /* fix for IE6
 
@@ -93,9 +97,9 @@
       background-image: url(/assets/treeview/treeview-famfamfam.gif)
 
 .treeview .placeholder
+  +bounds(16px)
+
   background: url(/assets/ajax-loader.gif) 0 0 no-repeat
-  height: 16px
-  width: 16px
   display: block
 
 .filetree
@@ -106,8 +110,9 @@
       padding: 1px 0 1px 16px
       display: block
     &.folder
-      background: url(/assets/folder.gif) 0 0 no-repeat
+      @extend .static-folder
   li.expandable span.folder
-    background: url(/assets/folder-closed.gif) 0 0 no-repeat
+    @extend .static-folder-closed
   span.file
-    background: url(/assets/file.gif) 0 0 no-repeat
+    @extend .static-file
+

@@ -34,7 +34,8 @@
   .icon
     +bounds(25px)
 
-    background-image: url(/assets/tip_pointer.png)
+    @extend .static-tip_pointer
+
     bottom: 0
     left: -12px
     margin: auto
@@ -50,7 +51,7 @@
   .next
     +bounds(40px, 50px)
 
-    background-image: url(/assets/next_bg.png)
+    @extend .static-next_bg
     bottom: -35px
     cursor: pointer
     display: inline-block
@@ -62,7 +63,8 @@
 
     -webkit-transition: -webkit-transform 0.5s ease-in-out
 
-    background-image: url(/assets/next_arrow.png)
+    @extend .static-next_arrow
+
     bottom: -35px
     cursor: pointer
     display: inline-block
@@ -75,7 +77,8 @@
   .close_tip.x
     +bounds(24px, 29px)
 
-    background-image: url(/assets/x.png)
+    @extend .static-x
+
     cursor: pointer
     display: inline-block
     right: -21px
@@ -85,7 +88,8 @@
 #logo
   +bounds(68px, 34px)
 
-  background-image: url(/assets/pixie.png)
+  @extend .static-pixie
+
   margin-left: 4px
   margin-top: 4px
   position: absolute

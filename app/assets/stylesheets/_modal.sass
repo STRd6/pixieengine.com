@@ -1,7 +1,10 @@
+@import sprite_sheets
+
 #simplemodal-container a.modalCloseImg
-  background: url(/assets/x.png) no-repeat
-  width: 25px
-  height: 29px
+  +bounds(25px, 29px)
+
+  @extend .static-x
+
   display: inline
   position: absolute
   top: -13px

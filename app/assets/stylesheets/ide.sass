@@ -6,10 +6,14 @@ $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
 
+.static-chrome_webstore, .static-zip
+  margin: auto
+
 .static-help
   +bounds(15px)
 
   display: inline-block
+  vertical-align: bottom
 
 #fullscreen.ide
   padding-top: 3.5em
@@ -267,9 +271,9 @@ ul.filetree
       width: 200px
 
 #import_drop_zone
-  +bounds(320px, 170px)
+  @extend .static-import
 
-  background: transparent url(/assets/import.png) no-repeat center top
+  width: 320px
 
   p
     bottom: 0
