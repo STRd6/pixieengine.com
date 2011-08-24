@@ -1,15 +1,13 @@
 .project.clickable>
-  %h2.title= link_to project.display_name, [:ide, project]
-
-  - if project.image?
-    .gloss
-    .thumb.fancy= image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name, :class => "show", :size => "96x96")
-
-  %p.description= project.description
-
   - if project.has_access?(current_user)
-    %ul.hover_actions
+    %ul.hover_actions.right
       %li= icon_link "Details", "table", project
       %li= icon_link "Run", "application_go", [:fullscreen, project]
       %li= icon_link "Edit Info", "pencil", [:edit, project]
       %li= icon_link "Delete", "cross", project, :method => "delete", :confirm => "Are you sure you want to delete this project?"
+
+  .thumb.fancy= image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name, :class => "show", :size => "96x96")
+
+  %h3.title= link_to project.display_name, [:ide, project]
+
+  %p.description= project.description
