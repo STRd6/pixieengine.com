@@ -2,3 +2,4 @@
 
 User-Agent: *
 Disallow: /production/apps/
+Disallow: /production/projects/
