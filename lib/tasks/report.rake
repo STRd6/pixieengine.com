@@ -233,4 +233,42 @@ namespace :report do
       p "#{key}: #{value} (#{((value / total.to_f) * 100).round}%)"
     end
   end
+
+  task :event_funnel => :environment do
+    include Ruport::Data
+
+    def subquery(column, amount)
+      "SELECT #{column} FROM events GROUP BY #{column} HAVING COUNT(name) > #{amount}"
+    end
+
+    user_events = Event.find_by_sql "SELECT COALESCE(CAST(user_id AS varchar), session_id) as person, name, created_at FROM events WHERE user_id IN (#{subquery('user_id', 2)}) OR session_id IN (#{subquery('session_id', 2)}) ORDER BY user, created_at DESC"
+
+    table = Table.new
+    table.add_columns(%w[events 1 2 3 4 5 6 7 8 9 10 11 12], :default => '')
+
+    previous_user = nil
+    user_actions = []
+    output = []
+
+    user_events.each do |event|
+      user = event.person
+
+      p event.name
+
+      if !previous_user
+        user_actions << "#{event.name} at #{event.created_at}"
+      elsif previous_user == user
+        user_actions << "#{event.name} at #{event.created_at}"
+      else
+        output << { :user => previous_user, :events => user_actions }
+        user_actions.clear
+        user_actions << "#{event.name} at #{event.created_at}"
+      end
+
+      previous_user = user
+    end
+
+    p output
+
+  end
 end
