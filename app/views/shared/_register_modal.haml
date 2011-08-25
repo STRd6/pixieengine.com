@@ -8,7 +8,7 @@
   = link_to_function "Log in with existing account", "$('#registration').hide(); $('#logIn').show(); $(this).hide().prev().show();"
 
 #subscriptionModal.modal(eventCategory="Subscription Modal")
-  %h2 Only Subscribers Can Access this Feature
+  %h2.header Only Subscribers Can Access this Feature
   .info
     %p Subscribe now for access to these benefits:
     %ul
@@ -20,7 +20,6 @@
 
   %button.full Free Trial
 
-
 :javascript
   var logInCallback;
 
@@ -30,7 +29,7 @@
       $.modal.close();
       $("#registerModal").modal({
         containerCss: {
-          height: 340,
+          height: 440,
           width: 300
         }
       });
