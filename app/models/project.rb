@@ -399,7 +399,7 @@ class Project < ActiveRecord::Base
       file.write <<-eof
         <html>
         <head>
-          <link href="/webstore/screen.css" media="screen" rel="stylesheet" type="text/css">
+          <link href="/webstore/project.css" media="screen" rel="stylesheet" type="text/css">
           <script src="/webstore/jquery.min.js" type="text/javascript"></script>
         </head>
         <body class="contents_centered">
