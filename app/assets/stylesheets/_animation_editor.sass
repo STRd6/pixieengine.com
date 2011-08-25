@@ -1,4 +1,4 @@
-@import "util"
+@import util
 
 $bottom_module: 200px
 $left_module: 210px
@@ -89,13 +89,8 @@ $tileset_sprite_width: 60px
       padding: 2px
       position: absolute
 
-      .play, .stop
-        +bounds(25px, 29px)
+      .play, .stop, .pause
         display: inline-block
-
-      @each $action in play, stop
-        .#{$action}
-          background-image: url(/assets/#{$action}.png)
 
       .scrubber_container
         +bounds(100%)
