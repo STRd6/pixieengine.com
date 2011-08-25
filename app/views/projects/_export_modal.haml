@@ -1,5 +1,5 @@
 #export_modal.modal
-  %h2 Choose an Export Method
+  %h2.header Choose an Export Method
 
   .choice.zip
     .wrap
@@ -30,29 +30,3 @@
       window.location = #{download_project_path(project, :chrome => 1).to_json}
 
       $.modal.close()
-
-%style
-  :sass
-    @import util
-    #export_modal
-
-      .choice
-        +border-radius
-        +inline-block
-
-        background-color: $dark_highlight
-        cursor: pointer
-        margin: 1em
-        padding: 0.5em
-        text-align: center
-
-        width: 256px
-
-        &:hover
-          background-color: lighten($dark_highlight, 20%)
-
-        .wrap
-          height: 60px
-
-        img
-

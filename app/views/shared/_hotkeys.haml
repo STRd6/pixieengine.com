@@ -44,7 +44,7 @@
     { description: hotkey.description, key: [].concat(hotkey.key).join(" <em>or</em> ") }
 
   hotkey_markup = (hotkeys, title, template) ->
-    container = $('<div><h2>' + title + '</h2></div>')
+    container = $('<div><h2 class="header">' + title + '</h2></div>')
     $.each hotkeys, (i, data) ->
       template.tmpl(key_join(data)).appendTo(container)
 

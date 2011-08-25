@@ -334,3 +334,22 @@ ul.filetree
     button
       margin-top: 0.5em
       margin-bottom: 0
+
+#export_modal
+  .choice
+    +border-radius
+    +inline-block
+
+    background-color: $light_highlight
+    cursor: pointer
+    margin: 1em
+    padding: 0.5em
+    text-align: center
+
+    width: 256px
+
+    &:hover
+      background-color: darken($light_highlight, 15%)
+
+    .wrap
+      height: 60px
