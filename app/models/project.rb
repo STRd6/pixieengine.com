@@ -388,18 +388,19 @@ class Project < ActiveRecord::Base
       `mogrify -background transparent -gravity center -extent 128x128 -write #{icon_path}128.png #{icon_path}96.png`
     else
       %w[128 96 16].each do |size|
-        FileUtils.cp Rails.root.join("public", "images", "webstore_#{size}.png"), icon_path + "#{size}.png"
+        FileUtils.cp Rails.root.join("app", "export", "images", "webstore_#{size}.png"), icon_path + "#{size}.png"
       end
     end
 
-    FileUtils.cp Rails.root.join("public", "stylesheets", "project.css"), webstore_asset_path
+    FileUtils.cp Rails.root.join("app", "export", "stylesheets", "project.css"), webstore_asset_path
+    FileUtils.cp Rails.root.join("app", "export", "javascripts", "jquery.min.js"), webstore_asset_path
 
     File.open(main_html_path, 'wb') do |file|
       file.write <<-eof
         <html>
         <head>
-          <link href="/webstore/screen.css" media="screen" rel="stylesheet" type="text/css">
-          <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js" type="text/javascript"></script>
+          <link href="/webstore/project.css" media="screen" rel="stylesheet" type="text/css">
+          <script src="/webstore/jquery.min.js" type="text/javascript"></script>
         </head>
         <body class="contents_centered">
           <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>

@@ -64,6 +64,7 @@ after "deploy:update_code" do
   run "ln -nfs #{shared_path}/local/database.yml #{release_path}/config/database.yml"
   run "ln -nfs #{shared_path}/local/settings.yml #{release_path}/config/settings.yml"
 end
+load 'deploy/assets' # This is loaded down here to have the above update code callback run first
 
 namespace :delayed_job do
   desc "Restart the delayed_job process"
