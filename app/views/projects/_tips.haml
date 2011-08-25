@@ -38,7 +38,8 @@
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# color' }).effect('highlight', {}, Infinity);" }
       .text
         That was fun but white is a really boring background color. Replace the highlighted line with
-        %b backgroundColor: Color.random()
+        %pre
+          = preserve "backgroundColor: Color.random()"
         to spice things up and then run the game again.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click();" }
       .text
@@ -48,6 +49,7 @@
         Okay, we're going to make you the boss now. Replace the highlighted line with
         %pre
           = preserve "if keydown.left\n&nbsp&nbspI.velocity = Point(-2, 0)"
+        Now you can press left to change the square's direction
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Try to make him move to the right and stop too.
