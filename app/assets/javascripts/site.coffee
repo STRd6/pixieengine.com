@@ -28,32 +28,28 @@ $(".clickable").live 'click', (event) ->
 window.showTooltip = (element, html) ->
   position = element.offset() || {top: 50, left: 50}
 
-  if !element.offset()
-    $("#tooltip .icon").hide()
+  if element.offset()
+    $('#tooltip .icon').show()
   else
-    $("#tooltip .icon").show()
+    $('#tooltip .icon').hide()
 
-  $("#tooltip").find(".content").html(html)
-
-  tooltipHeight = $('#tooltip').height()
+  $('#tooltip .content').html(html)
 
   position.left += element.width() + 30
-  position.top -= tooltipHeight / 2
+  position.top -= $('#tooltip').height() / 2
 
   if position.top < 5
     position.top = 5
-    $("#tooltip .icon").css('top', -tooltipHeight + 7)
-  else
-    $("#tooltip .icon").css('top', 0)
 
-  $("#tooltip").stop().offset(position).fadeIn()
+    if element.offset().top < 20
+      $('#tooltip .icon').css('top', -$('#tooltip').height() + 7)
+  else
+    $('#tooltip .icon').css('top', element.height() - $('#tooltip').height() / 2)
+
+  $('#tooltip').show().offset(position)
 
 window.hideTooltip = ->
-  $("#tooltip").stop().fadeOut()
-
-$("#tooltip").live
-  mouseenter: -> $(this).css('opacity', 1)
-  mouseleave: -> $(this).css('opacity', 0.4)
+  $("#tooltip").hide()
 
 # Local Storage
 getVal = (key) ->
