@@ -1,3 +1,6 @@
+#= require animation/state
+#= require animation/ui
+
 $.fn.animationEditor = (options) ->
   animationNumber = 1
   tileIndex = 0
@@ -8,12 +11,6 @@ $.fn.animationEditor = (options) ->
   sequences = []
 
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
-
-  templates = $("#animation_editor_templates")
-  editorTemplate = templates.find('.editor.template')
-  animationTemplate = templates.find('.animation')
-  spriteTemplate = templates.find('.sprite')
-  frameSpriteTemplate = templates.find('.frame_sprite')
 
   window.exportAnimationCSV = ->
     output = ""
@@ -65,113 +62,7 @@ $.fn.animationEditor = (options) ->
 
     image.src = src
 
-  addTile = (src) ->
-    id = Math.uuid(32, 16)
-
-    tileset[id] = src
-    tilemap[id] = tileIndex
-    tileIndex += 1
-    spritesEl = animationEditor.find('.sprites')
-    spriteTemplate.tmpl(src: src).appendTo(spritesEl)
-
-  removeSequence = (sequenceIndex) ->
-    sequences.splice(sequenceIndex, 1)
-
-    animationEditor.trigger 'removeSequence', [sequenceIndex]
-
-  #UI updating events
-  animationEditor.bind
-    checkExportStatus: ->
-      framesEmpty = true
-
-      for animation in animations
-        if animation.frames.length
-          framesEmpty = false
-
-      $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation')
-      $(this).find('.player button:not(.new_animation)').attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
-    clearFrames: ->
-      $(this).find('.frame_sprites').children().remove()
-    currentAnimationTitle: (e, title) ->
-      $(this).find('.player .animation_name').text(title)
-    disableSave: ->
-      $(this).find('.bottom .module_header > button').attr
-        disabled: true
-        title: 'Add frames to save'
-
-    enableSave: ->
-      $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames')
-    init: ->
-      animationsEl = animationEditor.find('.animations')
-      animationsEl.children().remove()
-
-      spritesEl = animationEditor.find('.sprites')
-
-      for animation in animations
-        animationTemplate.tmpl({stateId: animation.stateId, name: animation.name()}).appendTo(animationsEl)
-
-      if spritesEl.find('img').length == 0
-        for index, src of tileset
-          spriteTemplate.tmpl(src: src).appendTo(spritesEl)
-
-        animationEditor.trigger 'disableSave'
-        animationEditor.trigger 'checkExportStatus'
-    removeFrame: (e, frameIndex) ->
-      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('frame_sprite')
-        $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
-
-      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')
-        parent = $(this).find('.frame_sprites img').eq(frameIndex).parent()
-        $(this).find('.frame_sprites img').eq(frameIndex).remove()
-
-        if parent.children().not('.x').length == 0
-          parent.remove()
-
-    removeSequence: (e, sequenceIndex) ->
-      $(this).find('.sequences .sequence').eq(sequenceIndex).remove()
-    loadCurrentAnimation: ->
-      $this = $(this)
-
-      $this.trigger 'clearFrames'
-      $this.trigger 'currentAnimationTitle', [currentAnimation.name()]
-      $this.find('.player img').removeAttr('src')
-
-      currentAnimation.load()
-    updateFrame: (e, index) ->
-      frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[index]
-
-      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
-    updateLastFrame: ->
-      frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[currentAnimation.frames.last()]
-
-      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
-    updateLastFrameSequence: (e, sequence) ->
-      frameSprites = $(this).find('.frame_sprites')
-      sequence.appendTo(frameSprites)
-    updateLastSequence: ->
-      sequencesEl = $(this).find('.sequences')
-
-      sequenceFrameArray = sequences.last()
-      sequence = $('<div class="sequence" />').appendTo(sequencesEl)
-
-      for spriteIndex in sequenceFrameArray
-        spriteSrc = tileset[spriteIndex]
-        spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
-
-      sequence.appendTo(sequencesEl)
-
-  pushSequence = (frameArray) ->
-    sequences.push(frameArray)
-    animationEditor.trigger 'updateLastSequence'
-
-  createSequence = ->
-    if currentAnimation.frames.length
-      pushSequence(currentAnimation.frames.copy())
-      currentAnimation.clearFrames()
-
-  Controls = ->
+  Controls = (animationEditor) ->
     intervalId = null
 
     fpsEl = animationEditor.find('.fps input')
@@ -237,102 +128,32 @@ $.fn.animationEditor = (options) ->
 
     return self
 
-  Animation = ->
-    frames = []
-    currentFrameIndex = 0
-    stateId = Math.uuid(32, 16)
+  addTile = (src) ->
+    id = Math.uuid(32, 16)
 
-    name = "State #{animationNumber}"
-    animationNumber += 1
+    tileset[id] = src
+    tilemap[id] = tileIndex
+    tileIndex += 1
+    animationEditor.trigger 'addTile', [src]
 
-    findTileIndex = (tileSrc) ->
-      for uuid, src of tileset
-        return uuid if src == tileSrc
+  removeSequence = (sequenceIndex) ->
+    sequences.splice(sequenceIndex, 1)
 
-    self =
-      addFrame: (imgSrc) ->
-        frames.push(findTileIndex(imgSrc))
-        controls.scrubberMax(frames.length - 1)
-        animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave', 'updateLastFrame']
+    animationEditor.trigger 'removeSequence', [sequenceIndex]
 
-      addSequenceToFrames: (index) ->
-        sequence = $('<div class="sequence" />')
+  pushSequence = (frameArray) ->
+    sequences.push(frameArray)
+    animationEditor.trigger 'updateLastSequence'
 
-        for spriteIndex in sequences[index]
-          spriteSrc = tileset[spriteIndex]
+  createSequence = ->
+    if currentAnimation.frames.length
+      pushSequence(currentAnimation.frames.copy())
+      currentAnimation.clearFrames()
 
-          spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
-          frames.push(findTileIndex(spriteSrc))
-          controls.scrubberMax(frames.length - 1)
-
-        animationEditor.trigger 'updateLastFrameSequence', [sequence]
-        animationEditor.trigger 'enableSave'
-        animationEditor.trigger 'checkExportStatus'
-
-      clearFrames: ->
-        frames.clear()
-        animationEditor.trigger(event) for event in ['checkExportStatus', 'clearFrames', 'disableSave']
-
-      currentFrameIndex: (val) ->
-        if val?
-          currentFrameIndex = val
-          self.updateSelected(val)
-          return self
-        else
-          return currentFrameIndex
-
-      frames: frames
-
-      stateId: stateId
-
-      load: ->
-        for frameIndex in frames
-          animationEditor.trigger 'updateFrame', [frameIndex]
-
-        controls.scrubberMax(frames.length - 1)
-
-      name: (val) ->
-        if val?
-          name = val
-          return self
-        else
-          return name
-
-      removeFrame: (frameIndex) ->
-        frames.splice(frameIndex, 1)
-        controls.scrubberMax(controls.scrubberMax() - 1)
-
-        animationEditor.trigger 'removeFrame', [frameIndex]
-        animationEditor.trigger 'disableSave' if frames.length == 0
-        animationEditor.trigger 'checkExportStatus'
-
-      removeFrameSequence: (sequenceIndex) ->
-        sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children().not('.x')
-
-        for image in sequenceImages
-          index = $(image).index('.frame_sprites img')
-          self.removeFrame(index)
-
-      updateSelected: (frameIndex) ->
-        tilesetIndex = frames[frameIndex]
-
-        animationEditor.find('.frame_sprites img').removeClass('selected')
-
-        player = $('.player img')
-
-        if frameIndex == -1
-          player.removeAttr('src')
-        else
-          player.attr('src', tileset[tilesetIndex])
-          animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
-
-    return self
-
-  editorTemplate.tmpl().appendTo(animationEditor)
-
-  controls = Controls()
-  currentAnimation = Animation()
+  controls = Controls(animationEditor)
+  window.currentAnimation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
   animations = [currentAnimation]
+  ui = UI(animationEditor, animations, tileset)
 
   animationEditor.trigger 'init'
   animationEditor.find('.state_name').addClass('selected')
@@ -353,9 +174,9 @@ $.fn.animationEditor = (options) ->
     controls.stop()
 
   animationEditor.find('.new_animation').mousedown ->
-    animations.push(Animation())
+    animations.push(Animation(animationNumber++, tileset, controls, animationEditor, sequences))
 
-    currentAnimation = animations.last()
+    window.currentAnimation = animations.last()
 
     animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
     animationEditor.find('.animations .state_name:last').takeClass('selected')
@@ -373,14 +194,6 @@ $.fn.animationEditor = (options) ->
     controls.scrubber((index + keyMapping[e.which]).mod(framesLength))
 
   animationEditor.find('.sprites img').live
-    dblclick: (e) ->
-      $this = $(this)
-
-      4.times ->
-        currentAnimation.addFrame($this.attr('src'))
-
-      lastClickedSprite = $this
-
     mousedown: (e) ->
       $this = $(this)
       sprites = []
@@ -509,3 +322,11 @@ $.fn.animationEditor = (options) ->
   $(document).bind 'keydown', 'del backspace', (e) ->
     e.preventDefault()
     currentAnimation.removeFrame(currentAnimation.currentFrameIndex())
+
+  $(document).bind 'keydown', '1 2 3 4 5 6 7 8 9', (e) ->
+    return unless lastClickedSprite
+
+    keyOffset = 48
+
+    (e.which - keyOffset).times ->
+      currentAnimation.addFrame(lastClickedSprite.get(0).src)
