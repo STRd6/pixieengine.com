@@ -93,7 +93,10 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
       sequencesEl = $(this).find('.sequences')
 
       sequenceFrameArray = sequences.last().frameArray
-      sequence = $('<div class="sequence" />').appendTo(sequencesEl)
+      sequence = $('<div class="sequence" />')
+      name = $("<span class='name'>#{sequences.last().name}</span>").appendTo(sequence)
+
+      sequence.appendTo(sequencesEl)
 
       (sequenceFrameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequence)

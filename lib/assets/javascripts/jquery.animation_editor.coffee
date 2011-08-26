@@ -334,3 +334,9 @@ $.fn.animationEditor = (options) ->
 
     (e.which - keyOffset).times ->
       currentAnimation.addFrame(lastClickedSprite.get(0).src)
+
+  $(document).bind 'keydown', 'ctrl', (e) ->
+    $('#clipboard_modal').modal()
+
+  $(document).bind 'keyup', 'ctrl', (e) ->
+    $.modal.close()

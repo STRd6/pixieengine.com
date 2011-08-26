@@ -1,9 +1,13 @@
 %style
   :sass
+    html.light
+      background-image: url(/assets/editor_textured_background.png)
+
     #fullscreen
       padding-top: 3.5em
 
     body > .content
+      border: none
       padding: 0
 
 = form_tag download_animations_path, :class => "download_json" do
