@@ -5,13 +5,13 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
 
   name = "State #{animationNumber}"
 
-  findTileIndex = (tileSrc) ->
+  findUUID = (tileSrc) ->
     for uuid, src of tileset
       return uuid if src == tileSrc
 
   self =
     addFrame: (imgSrc) ->
-      frames.push(findTileIndex(imgSrc))
+      frames.push(findUUID(imgSrc))
       controls.scrubberMax(frames.length - 1)
       animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave', 'updateLastFrame']
 
@@ -22,7 +22,7 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
         spriteSrc = tileset[spriteIndex]
 
         animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
-        frames.push(findTileIndex(spriteSrc))
+        frames.push(findUUID(spriteSrc))
         controls.scrubberMax(frames.length - 1)
 
       animationEditor.trigger 'updateLastFrameSequence', [sequence]

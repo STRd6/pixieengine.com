@@ -65,10 +65,9 @@ $.fn.animationEditor = (options) ->
   Controls = (animationEditor) ->
     intervalId = null
 
-    fpsEl = animationEditor.find('.fps input')
-
     scrubberMax = 30
     scrubberValue = 0
+    fps = 30
 
     scrubber =
       max: (newMax) ->
@@ -98,10 +97,11 @@ $.fn.animationEditor = (options) ->
     self =
       fps: (newValue) ->
         if newValue?
-          fpsEl.val(newValue)
+          fps = newValue
+          animationEditor.trigger 'updateFPS', [newValue]
           return self
         else
-          parseInt(fpsEl.val())
+          fps
 
       pause: ->
         changePlayIcon('play')
@@ -159,30 +159,6 @@ $.fn.animationEditor = (options) ->
   ui = UI(animationEditor, animations, tileset, sequences)
 
   animationEditor.trigger 'init'
-  animationEditor.find('.state_name').addClass('selected')
-
-  animationEditor.find('.play').mousedown ->
-    if $(this).hasClass('pause')
-      controls.pause()
-    else
-      controls.play()
-
-  animationEditor.find('.scrubber').change ->
-    newValue = $(this).val()
-
-    controls.scrubber(newValue)
-    currentAnimation.currentFrameIndex(newValue)
-
-  animationEditor.find('.stop').mousedown ->
-    controls.stop()
-
-  animationEditor.find('.new_animation').mousedown ->
-    animations.push(Animation(animationNumber++, tileset, controls, animationEditor, sequences))
-
-    window.currentAnimation = animations.last()
-
-    animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
-    animationEditor.find('.animations .state_name:last').takeClass('selected')
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
@@ -195,6 +171,39 @@ $.fn.animationEditor = (options) ->
       "39": 1
 
     controls.scrubber((index + keyMapping[e.which]).mod(framesLength))
+
+  changeEvents =
+    '.fps input': (e) ->
+      newValue = $(this).val()
+
+      controls.pause().fps(newValue).play()
+    '.scrubber': (e) ->
+      newValue = $(this).val()
+
+      controls.scrubber(newValue)
+      currentAnimation.currentFrameIndex(newValue)
+
+  for key, value of changeEvents
+    animationEditor.find(key).change(value)
+
+  mousedownEvents =
+    '.new_animation': (e) ->
+      animations.push(Animation(animationNumber++, tileset, controls, animationEditor, sequences))
+
+      window.currentAnimation = animations.last()
+
+      animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
+      animationEditor.find('.animations .state_name:last').takeClass('selected')
+    '.play': (e) ->
+      if $(this).hasClass('pause')
+        controls.pause()
+      else
+        controls.play()
+    '.stop': (e) ->
+      controls.stop()
+
+  for key, value of mousedownEvents
+    animationEditor.find(key).mousedown(value)
 
   liveMousedownEvents =
     '.animations .state_name': (e) ->
@@ -288,11 +297,6 @@ $.fn.animationEditor = (options) ->
 
   for key, value of clickEvents
     animationEditor.find(key).click(value)
-
-  animationEditor.find('.fps input').change ->
-    newValue = $(this).val()
-
-    controls.pause().fps(newValue).play()
 
   animationEditor.find('.player .state_name').liveEdit().live
     change: ->

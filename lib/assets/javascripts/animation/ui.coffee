@@ -5,7 +5,6 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
 
-  #UI updating events
   animationEditor.bind
     addSpriteToSequence: (e, spriteSrc, sequence) ->
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
@@ -20,8 +19,10 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
         if animation.frames.length
           framesEmpty = false
 
-      $(this).find('.player button:not(.new_animation)').removeAttr('disabled').attr('title', 'Export animation')
-      $(this).find('.player button:not(.new_animation)').attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
+      exportButtons = $(this).find('.player button:not(.new_animation)')
+
+      exportButtons.removeAttr('disabled').attr('title', 'Export animation')
+      exportButtons.attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
     currentAnimationTitle: (e, title) ->
@@ -69,6 +70,8 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
       $this.find('.player img').removeAttr('src')
 
       currentAnimation.load()
+    updateFPS: (e, newValue) ->
+      animationEditor.find('.fps input').val(newValue)
     updateFrame: (e, index) ->
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[index]
