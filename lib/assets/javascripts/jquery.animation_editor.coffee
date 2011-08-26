@@ -142,7 +142,6 @@ $.fn.animationEditor = (options) ->
 
   removeSequence = (sequenceIndex) ->
     sequences.splice(sequenceIndex, 1)
-
     animationEditor.trigger 'removeSequence', [sequenceIndex]
 
   pushSequence = (frameArray) ->
@@ -197,8 +196,59 @@ $.fn.animationEditor = (options) ->
 
     controls.scrubber((index + keyMapping[e.which]).mod(framesLength))
 
-  animationEditor.find('.sprites img').live
-    mousedown: (e) ->
+  liveMousedownEvents =
+    '.animations .state_name': (e) ->
+      index = $(this).takeClass('selected').index()
+
+      currentAnimation = animations[index]
+
+      animationEditor.trigger 'loadCurrentAnimation'
+    '.bottom .x': (e) ->
+      e.stopPropagation()
+      parent = $(this).parent()
+
+      if parent.hasClass('sequence')
+        currentAnimation.removeFrameSequence(parent.index())
+
+      if parent.hasClass('frame_sprite')
+        currentAnimation.removeFrame(parent.index())
+    '.edit_frames': (e) ->
+      $this = $(this)
+      text = $this.text()
+
+      $this.text(if text == "Edit" then "Done" else "Edit")
+
+      if text == "Edit"
+        img = $ '<div />'
+          class: 'x static-x'
+
+        $('.bottom .sequence, .bottom .frame_sprite').append(img)
+      else
+        $('.bottom .x').remove()
+    '.edit_sequences': (e) ->
+      $this = $(this)
+      text = $this.text()
+
+      $this.text(if text == "Edit" then "Done" else "Edit")
+
+      if text == "Edit"
+        img = $ '<div />'
+          class: 'x static-x'
+
+        $('.right .sequence').append(img)
+      else
+        $('.right .x').remove()
+    '.frame_sprites img': (e) ->
+      index = animationEditor.find('.frame_sprites img').index($(this))
+
+      controls.scrubber(index)
+    '.right .sequence': (e) ->
+      index = $(this).index()
+      currentAnimation.addSequenceToFrames(index)
+    '.right .x': (e) ->
+      e.stopPropagation()
+      removeSequence $(this).parent().index()
+    '.sprites img': (e) ->
       $this = $(this)
       sprites = []
 
@@ -225,78 +275,19 @@ $.fn.animationEditor = (options) ->
 
       currentAnimation.addFrame($(sprite).attr('src')) for sprite in sprites
 
-  animationEditor.find('.right .sequence').live
-    mousedown: ->
-      index = $(this).index()
-      currentAnimation.addSequenceToFrames(index)
+  for key, value of liveMousedownEvents
+    animationEditor.find(key).live
+      mousedown: value
 
-  animationEditor.find('.edit_sequences').mousedown ->
-    $this = $(this)
-    text = $this.text()
+  clickEvents =
+    '.save_sequence': (e) ->
+      createSequence()
+    '.clear_frames': (e) ->
+      currentAnimation.clearFrames()
+      controls.stop()
 
-    $this.text(if text == "Edit" then "Done" else "Edit")
-
-    if text == "Edit"
-      img = $ '<img />'
-        class: 'x'
-        src: '/assets/x.png'
-
-      $('.right .sequence').append(img)
-    else
-      $('.right .x').remove()
-
-  animationEditor.find('.edit_frames').mousedown ->
-    $this = $(this)
-    text = $this.text()
-
-    $this.text(if text == "Edit" then "Done" else "Edit")
-
-    if text == "Edit"
-      img = $ '<img />'
-        class: 'x'
-        src: '/assets/x.png'
-
-      $('.bottom .sequence, .bottom .frame_sprite').append(img)
-    else
-      $('.bottom .x').remove()
-
-  animationEditor.find('.right .x').live
-    mousedown: (e) ->
-      e.stopPropagation()
-      removeSequence($(this).parent().index())
-
-  animationEditor.find('.bottom .x').live
-    mousedown: (e) ->
-      e.stopPropagation()
-
-      parent = $(this).parent()
-
-      if parent.hasClass('sequence')
-        currentAnimation.removeFrameSequence(parent.index())
-
-      if parent.hasClass('frame_sprite')
-        currentAnimation.removeFrame(parent.index())
-
-  animationEditor.find('.frame_sprites img').live
-    mousedown: ->
-      index = animationEditor.find('.frame_sprites img').index($(this))
-
-      controls.scrubber(index)
-
-  animationEditor.find('.animations .state_name').live
-    mousedown: ->
-      index = $(this).takeClass('selected').index()
-
-      currentAnimation = animations[index]
-
-      animationEditor.trigger 'loadCurrentAnimation'
-
-  animationEditor.find('.save_sequence').click ->
-    createSequence()
-
-  animationEditor.find('.clear_frames').click ->
-    currentAnimation.clearFrames()
-    controls.stop()
+  for key, value of clickEvents
+    animationEditor.find(key).click(value)
 
   animationEditor.find('.fps input').change ->
     newValue = $(this).val()

@@ -99,6 +99,16 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
     updateScrubberValue: (e, newValue) ->
       scrubberEl = animationEditor.find('.scrubber')
       scrubberEl.val(newValue)
+    updateSelected: (e, frameIndex, tileSrc) ->
+      animationEditor.find('.frame_sprites img').removeClass('selected')
+
+      player = $('.player img')
+
+      if frameIndex == -1
+        player.removeAttr('src')
+      else
+        player.attr('src', tileSrc)
+        animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
 
   editorTemplate.tmpl().appendTo(animationEditor)
 

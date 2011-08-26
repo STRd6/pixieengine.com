@@ -36,7 +36,8 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
     currentFrameIndex: (val) ->
       if val?
         currentFrameIndex = val
-        self.updateSelected(val)
+        animationEditor.trigger 'updateSelected', [currentFrameIndex, tileset[frames[currentFrameIndex]]]
+
         return self
       else
         return currentFrameIndex
@@ -72,18 +73,5 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
       for image in sequenceImages
         index = $(image).index('.frame_sprites img')
         self.removeFrame(index)
-
-    updateSelected: (frameIndex) ->
-      tilesetIndex = frames[frameIndex]
-
-      animationEditor.find('.frame_sprites img').removeClass('selected')
-
-      player = $('.player img')
-
-      if frameIndex == -1
-        player.removeAttr('src')
-      else
-        player.attr('src', tileset[tilesetIndex])
-        animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
 
   return self
