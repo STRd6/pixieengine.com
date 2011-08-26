@@ -66,22 +66,26 @@ $.fn.animationEditor = (options) ->
     intervalId = null
 
     fpsEl = animationEditor.find('.fps input')
-    scrubberEl = animationEditor.find('.scrubber')
+
+    scrubberMax = 30
+    scrubberValue = 0
 
     scrubber =
       max: (newMax) ->
         if newMax?
-          scrubberEl.get(0).max = newMax
+          scrubberMax = newMax
+          animationEditor.trigger 'updateScrubberMax', [newMax]
           return scrubber
         else
-          return parseInt(scrubberEl.get(0).max)
+          return scrubberMax
       val: (newValue) ->
         if newValue?
-          scrubberEl.val(newValue)
+          scrubberValue = newValue
+          animationEditor.trigger 'updateScrubberValue', [newValue]
           currentAnimation.currentFrameIndex(newValue)
           return scrubber
         else
-          parseInt(scrubberEl.val())
+          scrubberValue
 
     nextFrame = ->
       scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1))
@@ -153,7 +157,7 @@ $.fn.animationEditor = (options) ->
   controls = Controls(animationEditor)
   window.currentAnimation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
   animations = [currentAnimation]
-  ui = UI(animationEditor, animations, tileset)
+  ui = UI(animationEditor, animations, tileset, sequences)
 
   animationEditor.trigger 'init'
   animationEditor.find('.state_name').addClass('selected')

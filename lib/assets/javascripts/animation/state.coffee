@@ -21,7 +21,7 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
       for spriteIndex in sequences[index]
         spriteSrc = tileset[spriteIndex]
 
-        spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+        animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
         frames.push(findTileIndex(spriteSrc))
         controls.scrubberMax(frames.length - 1)
 

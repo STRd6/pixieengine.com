@@ -1,4 +1,4 @@
-window.UI = (animationEditor, animations, tileset) ->
+window.UI = (animationEditor, animations, tileset, sequences) ->
   templates = $("#animation_editor_templates")
   editorTemplate = templates.find('.editor.template')
   animationTemplate = templates.find('.animation')
@@ -7,6 +7,8 @@ window.UI = (animationEditor, animations, tileset) ->
 
   #UI updating events
   animationEditor.bind
+    addSpriteToSequence: (e, spriteSrc, sequence) ->
+      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
     addTile: (e, src) ->
       spritesEl = $(this).find('.sprites')
       spriteTemplate.tmpl(src: src).appendTo(spritesEl)
@@ -91,6 +93,12 @@ window.UI = (animationEditor, animations, tileset) ->
         spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
       sequence.appendTo(sequencesEl)
+    updateScrubberMax: (e, newMax) ->
+      scrubberEl = animationEditor.find('.scrubber')
+      scrubberEl.get(0).max = newMax
+    updateScrubberValue: (e, newValue) ->
+      scrubberEl = animationEditor.find('.scrubber')
+      scrubberEl.val(newValue)
 
   editorTemplate.tmpl().appendTo(animationEditor)
 
