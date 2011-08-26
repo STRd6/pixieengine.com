@@ -13,21 +13,24 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
     addFrame: (imgSrc) ->
       frames.push(findUUID(imgSrc))
       controls.scrubberMax(frames.length - 1)
-      animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave', 'updateLastFrame']
+      animationEditor.trigger 'updateLastFrame'
 
     addSequenceToFrames: (index) ->
       sequence = $('<div class="sequence" />')
 
+      (sequences[index].length - 1).times ->
+        $("<div class='placeholder' />").appendTo(sequence)
+
       for spriteIndex in sequences[index]
         spriteSrc = tileset[spriteIndex]
 
-        animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
         frames.push(findUUID(spriteSrc))
         controls.scrubberMax(frames.length - 1)
 
+      spriteSrc = tileset[sequences[index].last()]
+
+      animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
       animationEditor.trigger 'updateLastFrameSequence', [sequence]
-      animationEditor.trigger 'enableSave'
-      animationEditor.trigger 'checkExportStatus'
 
     clearFrames: ->
       frames.clear()

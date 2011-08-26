@@ -82,18 +82,26 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
       spriteSrc = tileset[currentAnimation.frames.last()]
 
       frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
+
+      animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave']
     updateLastFrameSequence: (e, sequence) ->
       frameSprites = $(this).find('.frame_sprites')
       sequence.appendTo(frameSprites)
+
+      animationEditor.trigger(event) for event in ['enableSave', 'checkExportStatus']
     updateLastSequence: ->
       sequencesEl = $(this).find('.sequences')
 
       sequenceFrameArray = sequences.last()
       sequence = $('<div class="sequence" />').appendTo(sequencesEl)
 
-      for spriteIndex in sequenceFrameArray
-        spriteSrc = tileset[spriteIndex]
-        spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+      (sequenceFrameArray.length - 1).times ->
+        $("<div class='placeholder' />").appendTo(sequence)
+
+      spriteIndex = sequenceFrameArray.last()
+      spriteSrc = tileset[spriteIndex]
+
+      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
       sequence.appendTo(sequencesEl)
     updateScrubberMax: (e, newMax) ->
@@ -114,4 +122,3 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
         animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
 
   editorTemplate.tmpl().appendTo(animationEditor)
-

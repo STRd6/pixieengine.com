@@ -39,9 +39,14 @@ $tileset_sprite_width: 60px
     display: inline-block
     position: relative
 
+    .placeholder
+      +bounds(80px)
+
     img
-      +border-radius(2px)
       +max-bounds(80px)
+
+    img, .placeholder
+      +border-radius(2px)
 
       border: 1px solid rgba(0, 0, 0, 0.15)
       background: #efefef
