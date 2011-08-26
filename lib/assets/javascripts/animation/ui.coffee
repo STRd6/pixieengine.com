@@ -92,7 +92,7 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
     updateLastSequence: ->
       sequencesEl = $(this).find('.sequences')
 
-      sequenceFrameArray = sequences.last()
+      sequenceFrameArray = sequences.last().frameArray
       sequence = $('<div class="sequence" />').appendTo(sequencesEl)
 
       (sequenceFrameArray.length - 1).times ->
@@ -111,7 +111,7 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
       scrubberEl = animationEditor.find('.scrubber')
       scrubberEl.val(newValue)
     updateSelected: (e, frameIndex, tileSrc) ->
-      animationEditor.find('.frame_sprites img').removeClass('selected')
+      animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').removeClass('selected')
 
       player = $('.player img')
 
@@ -119,6 +119,6 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
         player.removeAttr('src')
       else
         player.attr('src', tileSrc)
-        animationEditor.find('.frame_sprites img:not(.x)').eq(frameIndex).addClass('selected')
+        animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').eq(frameIndex).addClass('selected')
 
   editorTemplate.tmpl().appendTo(animationEditor)

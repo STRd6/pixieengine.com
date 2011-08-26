@@ -18,16 +18,16 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
     addSequenceToFrames: (index) ->
       sequence = $('<div class="sequence" />')
 
-      (sequences[index].length - 1).times ->
+      (sequences[index].frameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequence)
 
-      for spriteIndex in sequences[index]
+      for spriteIndex in sequences[index].frameArray
         spriteSrc = tileset[spriteIndex]
 
         frames.push(findUUID(spriteSrc))
         controls.scrubberMax(frames.length - 1)
 
-      spriteSrc = tileset[sequences[index].last()]
+      spriteSrc = tileset[sequences[index].frameArray.last()]
 
       animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
       animationEditor.trigger 'updateLastFrameSequence', [sequence]

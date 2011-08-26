@@ -23,7 +23,12 @@ $.fn.animationEditor = (options) ->
   window.exportAnimationJSON = ->
     animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
 
-    sequenceData = ((tilemap[frame] for frame in array) for array in sequences)
+    sequenceData = (
+      for sequenceObject in sequences
+        for name, frameArray of sequenceObject
+          for frame in frameArray
+            tilemap[frame]
+    )
 
     return JSON.stringify({
       sequences: sequenceData
@@ -141,11 +146,11 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger 'addTile', [src]
 
   removeSequence = (sequenceIndex) ->
-    sequences.splice(sequenceIndex, 1)
+    sequences.frameArray.splice(sequenceIndex, 1)
     animationEditor.trigger 'removeSequence', [sequenceIndex]
 
   pushSequence = (frameArray) ->
-    sequences.push(frameArray)
+    sequences.push({name: 'fake123', frameArray: frameArray})
     animationEditor.trigger 'updateLastSequence'
 
   createSequence = ->
@@ -247,8 +252,8 @@ $.fn.animationEditor = (options) ->
         $('.right .sequence').append(img)
       else
         $('.right .x').remove()
-    '.frame_sprites img': (e) ->
-      index = animationEditor.find('.frame_sprites img').index($(this))
+    '.frame_sprites img, .frame_sprites .placeholder': (e) ->
+      index = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').index($(this))
 
       controls.scrubber(index)
     '.right .sequence': (e) ->
