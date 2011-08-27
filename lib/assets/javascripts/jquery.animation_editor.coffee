@@ -146,7 +146,7 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger 'addTile', [src]
 
   removeSequence = (sequenceIndex) ->
-    sequences.frameArray.splice(sequenceIndex, 1)
+    sequences.splice(sequenceIndex, 1)
     animationEditor.trigger 'removeSequence', [sequenceIndex]
 
   pushSequence = (frameArray) ->
