@@ -3,6 +3,7 @@
 
 $.fn.animationEditor = (options) ->
   animationNumber = 1
+  sequenceNumber = 1
   tileIndex = 0
   lastClickedSprite = null
   lastSelectedFrame = null
@@ -32,11 +33,7 @@ $.fn.animationEditor = (options) ->
             tilemap[frame]
     )
 
-    return JSON.stringify({
-      sequences: sequenceData
-      tileset: (tileSrc for tileId, tileSrc of tileset)
-      animations: animationData
-    })
+    return JSON.stringify({ animations: animationData })
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
@@ -152,7 +149,7 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger 'removeSequence', [sequenceIndex]
 
   pushSequence = (frameArray) ->
-    sequences.push({name: 'fake123', frameArray: frameArray})
+    sequences.push({name: "sequence#{sequenceNumber++}", frameArray: frameArray})
     animationEditor.trigger 'updateLastSequence'
 
   createSequence = ->
@@ -278,6 +275,8 @@ $.fn.animationEditor = (options) ->
         lastSelectedFrame = $(this)
 
     '.right .sequence': (e) ->
+      return if $(e.target).is('.name')
+
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
     '.right .x': (e) ->
@@ -323,6 +322,8 @@ $.fn.animationEditor = (options) ->
 
   for key, value of clickEvents
     animationEditor.find(key).click(value)
+
+  animationEditor.find('.sequences .name').liveEdit()
 
   animationEditor.find('.player .state_name').liveEdit().live
     change: ->
