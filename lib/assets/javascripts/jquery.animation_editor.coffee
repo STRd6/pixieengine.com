@@ -346,7 +346,12 @@ $.fn.animationEditor = (options) ->
 
   $(document).bind 'keydown', 'del backspace', (e) ->
     e.preventDefault()
-    currentAnimation.removeFrame(currentAnimation.currentFrameIndex())
+
+    selectedFrames = animationEditor.find('.frame_sprites .selected')
+
+    for frame in selectedFrames
+      index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
+      currentAnimation.removeFrame(index)
 
   $(document).bind 'keydown', '1 2 3 4 5 6 7 8 9', (e) ->
     return unless lastClickedSprite
