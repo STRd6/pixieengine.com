@@ -5,10 +5,12 @@ $.fn.animationEditor = (options) ->
   animationNumber = 1
   tileIndex = 0
   lastClickedSprite = null
+  lastSelectedFrame = null
 
   tileset = {}
   tilemap = {}
   sequences = []
+  clipboard = []
 
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
@@ -253,9 +255,28 @@ $.fn.animationEditor = (options) ->
       else
         $('.right .x').remove()
     '.frame_sprites img, .frame_sprites .placeholder': (e) ->
-      index = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').index($(this))
+      if e.shiftKey && lastSelectedFrame
+        lastIndex = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(lastSelectedFrame)
+        currentIndex = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index($(this))
 
-      controls.scrubber(index)
+        if currentIndex > lastIndex
+          sprites = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').filter ->
+            imgIndex = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index($(this))
+            return lastIndex < imgIndex <= currentIndex
+        else if currentIndex <= lastIndex
+          sprites = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').filter ->
+            imgIndex = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index($(this))
+            return currentIndex <= imgIndex < lastIndex
+
+        sprites.addClass('selected')
+        lastSelectedFrame = $(this)
+      else
+        index = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').index($(this))
+
+        controls.scrubber(index)
+
+        lastSelectedFrame = $(this)
+
     '.right .sequence': (e) ->
       index = $(this).index()
       currentAnimation.addSequenceToFrames(index)
