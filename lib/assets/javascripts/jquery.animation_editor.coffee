@@ -196,14 +196,9 @@ $.fn.animationEditor = (options) ->
       scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1))
 
     changePlayIcon = (icon) ->
-      el = $('.play')
+      el = $(".#{icon}")
 
-      el.css "background-image", "url(/assets/#{icon}.png)"
-
-      if icon == 'pause'
-        el.addClass('pause')
-      else
-        el.removeClass('pause')
+      el.attr("class", "#{icon} static-#{icon}")
 
     self =
       fps: (newValue) ->
@@ -222,8 +217,8 @@ $.fn.animationEditor = (options) ->
 
       play: ->
         if currentAnimation.frames.length > 0
-          intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
           changePlayIcon('pause')
+          intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
 
         return self
 

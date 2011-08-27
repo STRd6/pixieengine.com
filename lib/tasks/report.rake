@@ -237,14 +237,26 @@ namespace :report do
   task :event_funnel => :environment do
     include Ruport::Data
 
-    def subquery(column, amount)
-      "SELECT #{column} FROM events GROUP BY #{column} HAVING COUNT(name) > #{amount}"
-    end
+    user_events = Event.find_by_sql(<<-eos
+      SELECT x.*
+      FROM (
+      (SELECT COALESCE(CAST(user_id AS varchar), session_id) AS person, name, created_at
+      FROM events
+      WHERE created_at > '#{(Time.now - 1.week).strftime('%F')}'
+        AND session_id = 'bd670aa9e9589e6758eb3c7348620f82'
+      )
+      UNION
+      (SELECT COALESCE(CAST(user_ID AS varchar), session_id) AS person, (controller || '/' || action) AS name, created_at
+      FROM visits
+      WHERE created_at > '#{(Time.now - 1.week).strftime('%F')}'
+        AND session_id = 'bd670aa9e9589e6758eb3c7348620f82'
+      )) AS x
+      ORDER BY person, created_at
+      eos
+    )
 
-    user_events = Event.find_by_sql "SELECT COALESCE(CAST(user_id AS varchar), session_id) as person, name, created_at FROM events WHERE user_id IN (#{subquery('user_id', 2)}) OR session_id IN (#{subquery('session_id', 2)}) ORDER BY user, created_at DESC"
-
-    table = Table.new
-    table.add_columns(%w[events 1 2 3 4 5 6 7 8 9 10 11 12], :default => '')
+    #table = Table.new
+    #table.add_columns(%w[events 1 2 3 4 5 6 7 8 9 10 11 12], :default => '')
 
     previous_user = nil
     user_actions = []
@@ -253,22 +265,26 @@ namespace :report do
     user_events.each do |event|
       user = event.person
 
-      p event.name
-
-      if !previous_user
-        user_actions << "#{event.name} at #{event.created_at}"
+      if previous_user.nil?
+        user_actions << "#{event.name} at #{event.created_at.strftime('%m/%d/%y %H:%M:%S')}"
+      elsif event == user_events.last
+        output.push({ :user => previous_user, :events => user_actions.clone })
       elsif previous_user == user
-        user_actions << "#{event.name} at #{event.created_at}"
+        user_actions << "#{event.name} at #{event.created_at.strftime('%m/%d/%y %H:%M:%S')}"
       else
-        output << { :user => previous_user, :events => user_actions }
+        output.push({ :user => previous_user, :events => user_actions.clone })
         user_actions.clear
-        user_actions << "#{event.name} at #{event.created_at}"
+        user_actions << "#{event.name} at #{event.created_at.strftime('%m/%d/%y %H:%M:%S')}"
       end
 
       previous_user = user
     end
 
-    p output
-
+    output.each do |user_data|
+      p user_data[:user]
+      user_data[:events].each do |event|
+        p event
+      end
+    end
   end
 end

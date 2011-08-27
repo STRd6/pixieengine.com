@@ -1,6 +1,15 @@
 @import partials/base
 @import util
 
+.editor.pixie
+  background-image: url(/assets/editor_textured_background.png)
+
+html.light
+  background-image: url(/assets/editor_textured_background.png)
+
+  body .content
+    background: none
+
 body#fullscreen
   padding: 2.5em 1em 0
 
@@ -11,6 +20,8 @@ body#fullscreen
 
 body
   .content
+    background: none
+    border: none
     padding-left: 0
     padding-right: 0
 
@@ -35,7 +46,7 @@ body
 
   .light &
     nav.left, nav.right, nav.top
-      background-color: $light_highlight
+      background-color: $light_background
 
   nav.left, nav.right
     +border-radius
@@ -143,8 +154,7 @@ body
     +box-sizing(border-box)
     +contents-centered
 
-    background-color: rgba(0, 0, 0, 0.02)
-    border: rgba(0, 0, 0, 0.03)
+    background: none
     display: inline-block
     overflow: auto
     position: relative
