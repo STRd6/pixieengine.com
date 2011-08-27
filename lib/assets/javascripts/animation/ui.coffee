@@ -50,12 +50,12 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
         animationEditor.trigger 'disableSave'
         animationEditor.trigger 'checkExportStatus'
     removeFrame: (e, frameIndex) ->
-      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('frame_sprite')
-        $(this).find('.frame_sprites img').eq(frameIndex).parent().remove()
+      if $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent().hasClass('frame_sprite')
+        $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent().remove()
 
-      if $(this).find('.frame_sprites img').eq(frameIndex).parent().hasClass('sequence')
-        parent = $(this).find('.frame_sprites img').eq(frameIndex).parent()
-        $(this).find('.frame_sprites img').eq(frameIndex).remove()
+      if $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent().hasClass('sequence')
+        parent = $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent()
+        $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).remove()
 
         if parent.children().not('.x').length == 0
           parent.remove()
