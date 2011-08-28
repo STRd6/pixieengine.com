@@ -1,0 +1,50 @@
+:ruby
+  funnel = ["landing", "registration"]
+
+  results = Hash.new(0)
+  Event.select("name, count(DISTINCT(session_id)) as count").group("name").where(:name => funnel, :user_id => nil).each do |result|
+    results[result.name] = result.count
+  end
+
+- Experiment.all.each do |experiment|
+  :ruby
+    results = {}
+
+    Event.find_by_sql(<<-eos
+      SELECT events.name, treatments.control, COUNT(DISTINCT(events.session_id)) as count
+      FROM events
+        INNER JOIN treatments
+          ON events.session_id = treatments.session_id
+        INNER JOIN experiments
+          ON treatments.experiment_id = experiments.id
+      WHERE events.name IN ('landing', 'registration', 'subscribe')
+        AND events.user_id IS NULL
+        AND experiments.name = 'test'
+      GROUP BY treatments.control, events.name
+    eos
+    ).each do |result|
+      results[result.name] ||= {}
+      results[result.name][result.control] = result.count
+    end
+
+  %table
+    %thead
+      %tr
+        %th= experiment.name
+        - funnel.each do |name|
+          %th= name
+    %tbody
+      - ["t", "f"].each do |control|
+        %tr
+          - funnel.each_with_index do |name, i|
+            - if i == 0
+              %td= control == "t" ? "control" : "experiment"
+              - prev_total = results[funnel[i]][control].to_f
+            - else
+              - prev_total = results[funnel[i-1]][control].to_f
+
+            - current_total = results[name][control].to_f
+            %td
+              = "%1.2f%" % (current_total / prev_total * 100)
+              %br
+              = current_total

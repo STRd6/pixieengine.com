@@ -15,20 +15,21 @@
       overflow-y: auto
       overflow-x: hidden
 
-:coffeescript
-  window.showGameKeys = ->
-    controls = $("#game_keys_modal .game_controls").empty()
+- content_for :javascript do
+  :coffeescript
+    window.showGameKeys = ->
+      controls = $("#game_keys_modal .game_controls").empty()
 
-    if window.gameControlData
-      for action, keys of window.gameControlData
-        $("#game_key_template")
-          .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
-          .appendTo(controls)
-    else
-      controls.text("This game hasn't defined any controls")
+      if window.gameControlData
+        for action, keys of window.gameControlData
+          $("#game_key_template")
+            .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
+            .appendTo(controls)
+      else
+        controls.text("This game hasn't defined any controls")
 
-    $('#game_keys_modal').modal
-      onOpen: (dialog) ->
-        dialog.overlay.fadeIn 150, ->
-          dialog.data.show()
-          dialog.container.show()
+      $('#game_keys_modal').modal
+        onOpen: (dialog) ->
+          dialog.overlay.fadeIn 150, ->
+            dialog.data.show()
+            dialog.container.show()

@@ -216,6 +216,12 @@ class User < ActiveRecord::Base
     else
       self.update_attribute(:paying, false)
     end
+
+    if paying
+      #track_event('subscribe')
+    else
+      #track_event('unsubscribe')
+    end
   end
 
   def self.visit_report

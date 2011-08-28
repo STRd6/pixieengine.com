@@ -6,66 +6,67 @@
       %dt {{html key}}
     %dd ${description}
 
-:coffeescript
-  site_hotkeys = [
-    { description: "Toggle chat", key: "c"},
-    { description: "Bring up this dialog", key: "?"}
-  ]
+- content_for :javascript do
+  :coffeescript
+    site_hotkeys = [
+      { description: "Toggle chat", key: "c"},
+      { description: "Bring up this dialog", key: "?"}
+    ]
 
-  tilemap_hotkeys = [
-    { description: "Open tile in pixel editor", key: "double click" }
-    { description: "Edit tile properties", key: "p" }
-  ]
+    tilemap_hotkeys = [
+      { description: "Open tile in pixel editor", key: "double click" }
+      { description: "Edit tile properties", key: "p" }
+    ]
 
-  animation_hotkeys = [
-    { description: "Open selected frame in pixel editor", key: "double click" }
-    { description: "Edit selected frame hitcircles", key: "h" }
-  ]
+    animation_hotkeys = [
+      { description: "Open selected frame in pixel editor", key: "double click" }
+      { description: "Edit selected frame hitcircles", key: "h" }
+    ]
 
-  developer_hotkeys = [
-    { description: "Enter developer mode", key: "esc" }
-    { description: "Save game to github", key: ["ctrl s", "⌘ s"] }
-    { description: "Edit object properties", key: "right click" }
-    { description: "Increment numeric values. Flip booleans", key: "↑" }
-    { description: "Decrement numeric values. Flip booleans", key: "↓" }
-    { description: "Increment numeric values by 10", key: "shift ↑" }
-    { description: "Decrement numeric values by 10", key: "shift ↓" }
-  ]
+    developer_hotkeys = [
+      { description: "Enter developer mode", key: "esc" }
+      { description: "Save game to github", key: ["ctrl s", "⌘ s"] }
+      { description: "Edit object properties", key: "right click" }
+      { description: "Increment numeric values. Flip booleans", key: "↑" }
+      { description: "Decrement numeric values. Flip booleans", key: "↓" }
+      { description: "Increment numeric values by 10", key: "shift ↑" }
+      { description: "Decrement numeric values by 10", key: "shift ↓" }
+    ]
 
-  pixie_hotkeys = [
-    { description: "Pencil", key: ["p", 1] },
-    { description: "Brush", key: ["b", 2] },
-    { description: "Eye Dropper", key: ["i", 3] },
-    { description: "Eraser", key: ["e", 4] },
-    { description: "Fill", key: ["f", 5] }
-  ]
+    pixie_hotkeys = [
+      { description: "Pencil", key: ["p", 1] },
+      { description: "Brush", key: ["b", 2] },
+      { description: "Eye Dropper", key: ["i", 3] },
+      { description: "Eraser", key: ["e", 4] },
+      { description: "Fill", key: ["f", 5] }
+    ]
 
-  key_join = (hotkey) ->
-    { description: hotkey.description, key: [].concat(hotkey.key).join(" <em>or</em> ") }
+    key_join = (hotkey) ->
+      { description: hotkey.description, key: [].concat(hotkey.key).join(" <em>or</em> ") }
 
-  hotkey_markup = (hotkeys, title, template) ->
-    container = $('<div><h2 class="header">' + title + '</h2></div>')
-    $.each hotkeys, (i, data) ->
-      template.tmpl(key_join(data)).appendTo(container)
+    hotkey_markup = (hotkeys, title, template) ->
+      container = $('<div><h2 class="header">' + title + '</h2></div>')
+      $.each hotkeys, (i, data) ->
+        template.tmpl(key_join(data)).appendTo(container)
 
-    return container
+      return container
 
-  hotkeyHandler = ->
-    template = $('#hotkeys')
-    hotkeys = $('#hotkeysModal').empty()
+    hotkeyHandler = ->
+      template = $('#hotkeys')
+      hotkeys = $('#hotkeysModal').empty()
 
-    hotkey_markup(site_hotkeys, "Keyboard Shortcuts", template).appendTo(hotkeys)
+      hotkey_markup(site_hotkeys, "Keyboard Shortcuts", template).appendTo(hotkeys)
 
-    if $('#test_frame').contents().find('body *').length
-      hotkey_markup(developer_hotkeys, "Developer Mode", template).appendTo(hotkeys)
-    else if window.currentComponent
-      switch window.currentComponent.attr('class')
-        when "tile_editor" then hotkey_markup(tilemap_hotkeys, "Tile Editor", template).appendTo(hotkeys)
-        when "animation_editor" then hotkey_markup(animation_hotkeys, "Animation Editor", template).appendTo(hotkeys)
-        when "pixie" then hotkey_markup(pixie_hotkeys, "Pixel Editor", template).appendTo(hotkeys)
+      if $('#test_frame').contents().find('body *').length
+        hotkey_markup(developer_hotkeys, "Developer Mode", template).appendTo(hotkeys)
+      else if window.currentComponent
+        switch window.currentComponent.attr('class')
+          when "tile_editor" then hotkey_markup(tilemap_hotkeys, "Tile Editor", template).appendTo(hotkeys)
+          when "animation_editor" then hotkey_markup(animation_hotkeys, "Animation Editor", template).appendTo(hotkeys)
+          when "pixie" then hotkey_markup(pixie_hotkeys, "Pixel Editor", template).appendTo(hotkeys)
 
-    hotkeys.modal()
+      hotkeys.modal()
 
-  $('.help_hotkeys').mousedown(hotkeyHandler)
+    $('.help_hotkeys').mousedown(hotkeyHandler)
 
-  $(document).bind 'keydown', 'shift+/', hotkeyHandler
+    $(document).bind 'keydown', 'shift+/', hotkeyHandler

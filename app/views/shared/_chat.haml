@@ -11,114 +11,115 @@
     .users_wrapper
       %ul#active_users
 
-  :coffeescript
-    $ ->
-      templates = $("#chat_templates")
+  - content_for :javascript do
+    :coffeescript
+      $ ->
+        templates = $("#chat_templates")
 
-      scrollChat = ->
-        setTimeout ->
-          $('#chats').scrollTo
-            left: '0%'
-            top: '100%'
-        , 100
+        scrollChat = ->
+          setTimeout ->
+            $('#chats').scrollTo
+              left: '0%'
+              top: '100%'
+          , 100
 
-      refreshData = ->
-        $.get '/chats/active_users', (data) ->
-          $('#active_users li').remove()
+        refreshData = ->
+          $.get '/chats/active_users', (data) ->
+            $('#active_users li').remove()
 
-          for user in data.users
-            userData = templates.find('.active_user').tmpl(user)
+            for user in data.users
+              userData = templates.find('.active_user').tmpl(user)
 
-            $('#active_users').append(userData)
+              $('#active_users').append(userData)
 
-        $.get '/chats/recent', (data) ->
-          $('#chats li').remove()
+          $.get '/chats/recent', (data) ->
+            $('#chats li').remove()
 
-          prevChat = null
+            prevChat = null
 
-          for chat in data.chats
-            chatData = templates.find('.recent_chat').tmpl(chat)
+            for chat in data.chats
+              chatData = templates.find('.recent_chat').tmpl(chat)
 
-            if chat.name == prevChat
+              if chat.name == prevChat
+                $(chatData).find('hr').remove()
+                $(chatData).find('.name').remove()
+                $(chatData).find('.time').remove()
+              else
+                if chat.id > 0
+                  $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + chat.id + '">' + chat.name + '</a>')
+
+              $('#chats').append(chatData)
+              prevChat = chat.name
+
+            scrollChat()
+
+        refreshData()
+
+        window.setInterval ->
+          refreshData()
+        , 30000
+
+        send = (field) ->
+          if field.val()
+            $.post '/chats', { body: field.val() }
+
+            prevChat = $('#chats li span.name:last').text()
+            name = "#{ current_user ? current_user.display_name : 'Anonymous' }"
+            id = #{ current_user ? current_user.id : 0 }
+
+            chatData = templates.find('.recent_chat').tmpl
+              name: name
+              time: "#{Time.zone.now.strftime("%l:%M%P")}"
+              message: field.val()
+
+            if name == prevChat
               $(chatData).find('hr').remove()
               $(chatData).find('.name').remove()
               $(chatData).find('.time').remove()
             else
-              if chat.id > 0
-                $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + chat.id + '">' + chat.name + '</a>')
+              if id > 0
+                $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + id + '">' + name + '</a>')
 
             $('#chats').append(chatData)
-            prevChat = chat.name
 
-          scrollChat()
-
-      refreshData()
-
-      window.setInterval ->
-        refreshData()
-      , 30000
-
-      send = (field) ->
-        if field.val()
-          $.post '/chats', { body: field.val() }
-
-          prevChat = $('#chats li span.name:last').text()
-          name = "#{ current_user ? current_user.display_name : 'Anonymous' }"
-          id = #{ current_user ? current_user.id : 0 }
-
-          chatData = templates.find('.recent_chat').tmpl
-            name: name
-            time: "#{Time.zone.now.strftime("%l:%M%P")}"
-            message: field.val()
-
-          if name == prevChat
-            $(chatData).find('hr').remove()
-            $(chatData).find('.name').remove()
-            $(chatData).find('.time').remove()
-          else
-            if id > 0
-              $(chatData).find('.name').text("").append('<a target="_blank" href="/people/' + id + '">' + name + '</a>')
-
-          $('#chats').append(chatData)
-
-          scrollChat()
-
-          field.val("")
-
-      $("#chatZone").dropImageReader (file, event) ->
-
-        if event.target.readyState == FileReader.DONE
-          wrapper = $("<div />")
-          img = $ "<img/>",
-            alt: file.name
-            src: event.target.result
-            title: file.name
-
-          img.appendTo(wrapper)
-
-          $.post '/chats', { body: wrapper.html() }, ->
             scrollChat()
 
-      $('#chatZone #chat_body').keypress (e) ->
-        textBox = $('#chat_body')
+            field.val("")
 
-        send(textBox) if e.keyCode == 13
+        $("#chatZone").dropImageReader (file, event) ->
 
-      $('#openChat').mousedown ->
-        $('#chatZone').toggle()
-        $('#openChat').toggleClass('straight')
+          if event.target.readyState == FileReader.DONE
+            wrapper = $("<div />")
+            img = $ "<img/>",
+              alt: file.name
+              src: event.target.result
+              title: file.name
 
-        scrollChat()
+            img.appendTo(wrapper)
 
-      $('#chatZone .header').click ->
-        $('#openChat').mousedown()
+            $.post '/chats', { body: wrapper.html() }, ->
+              scrollChat()
 
-      $('#chats li').live("mouseenter", ->
-        $(this).find('.time').css('display', 'inline-block')
-      ).live("mouseleave", ->
-        $(this).find('.time').css('display', 'none')
-      )
+        $('#chatZone #chat_body').keypress (e) ->
+          textBox = $('#chat_body')
 
-      $(document).bind 'keydown', 'c', (e) ->
-        e.preventDefault()
-        $('#openChat').mousedown()
+          send(textBox) if e.keyCode == 13
+
+        $('#openChat').mousedown ->
+          $('#chatZone').toggle()
+          $('#openChat').toggleClass('straight')
+
+          scrollChat()
+
+        $('#chatZone .header').click ->
+          $('#openChat').mousedown()
+
+        $('#chats li').live("mouseenter", ->
+          $(this).find('.time').css('display', 'inline-block')
+        ).live("mouseleave", ->
+          $(this).find('.time').css('display', 'none')
+        )
+
+        $(document).bind 'keydown', 'c', (e) ->
+          e.preventDefault()
+          $('#openChat').mousedown()

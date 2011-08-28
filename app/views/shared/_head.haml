@@ -15,8 +15,8 @@
   = stylesheet_link_tag 'screen', :media => 'screen, projection'
 
   = javascript_include_tag 'modernizr/modernizr-1.5.min'
-  = render :partial => "/shared/javascripts"
 
-  :javascript
-    var loggedIn = #{!!current_user};
-    var subscriber = #{(current_user && current_user.paying).to_json};
+  - content_for :javascript do
+    :javascript
+      var loggedIn = #{!!current_user};
+      var subscriber = #{(current_user && current_user.paying).to_json};

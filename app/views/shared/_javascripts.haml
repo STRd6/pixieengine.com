@@ -15,3 +15,7 @@
   = javascript_include_tag "excanvas.compiled"
 
 = javascript_include_tag 'application'
+
+= yield :javascript
+
+= render :partial => "/shared/analytics"

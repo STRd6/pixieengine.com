@@ -110,110 +110,111 @@
 #newCollectionModal.modalElement
   = render :partial => "collections/form"
 
-:javascript
-  $(function() {
-    function ajaxifyForm(selector) {
-      var form = $(selector);
+- content_for :javascript do
+  :javascript
+    $(function() {
+      function ajaxifyForm(selector) {
+        var form = $(selector);
 
-      form.ajaxForm({
-        dataType: 'json',
-        beforeSerialize: function($form) {
-          $form.find("input[name=sprite_id]").val(spriteId);
-        },
-        success: function(data) {
-          if(data.status == "ok") {
-            $.modal.close();
-            newCollectionCallback(data.title, data.id);
-          } else {
-            var errorExplanation = form.find(".errorExplanation");
-            if(errorExplanation.length == 0) {
-              errorExplanation = $("<div class='errorExplanation' />");
+        form.ajaxForm({
+          dataType: 'json',
+          beforeSerialize: function($form) {
+            $form.find("input[name=sprite_id]").val(spriteId);
+          },
+          success: function(data) {
+            if(data.status == "ok") {
+              $.modal.close();
+              newCollectionCallback(data.title, data.id);
+            } else {
+              var errorExplanation = form.find(".errorExplanation");
+              if(errorExplanation.length == 0) {
+                errorExplanation = $("<div class='errorExplanation' />");
+              }
+
+              var errorList = $("<ul />");
+              $.each(data.errors, function(i, error) {
+                errorList.append($("<li />").text(error));
+              });
+
+              errorExplanation.html('');
+              errorExplanation.append(errorList);
+
+              form.prepend(errorExplanation);
             }
+          }
+        });
+      }
 
-            var errorList = $("<ul />");
-            $.each(data.errors, function(i, error) {
-              errorList.append($("<li />").text(error));
-            });
+      function newCollectionCallback(title, id) {
+        $(".listMenu ul li:last-child").each(function() {
+          var parentSpriteId = $(this).parent().prev().attr("data-sprite_id");
+          var newElem = $("<li />").attr("data-collection_id", id);
+          newElem.text(title);
 
-            errorExplanation.html('');
-            errorExplanation.append(errorList);
+          if(parentSpriteId == spriteId) {
+            newElem.prepend("<input type='checkbox', value='1' checked='checked' />");
+          } else {
+            newElem.prepend("<input type='checkbox', value='1' />");
+          }
 
-            form.prepend(errorExplanation);
+          $(this).before(newElem);
+        });
+      }
+
+      ajaxifyForm("#new_collection");
+
+      var displayedMenu;
+      var spriteId;
+
+      $(".listMenu .button").click(function() {
+        spriteId = $(this).attr("data-sprite_id");
+        displayedMenu = $(this).next("ul");
+        displayedMenu.show();
+
+        setTimeout(function() {
+          $(document).one('click', function() {
+            displayedMenu.fadeOut();
+          });
+        }, 0);
+
+        return false;
+      });
+
+      $(".menu li").live("click", function(event) {
+        var collectionId = $(this).attr("data-collection_id");
+        var checkbox = $(this).children("input");
+        var boxClick = false;
+
+        if($(event.target).is("input")) {
+          boxClick = true;
+        }
+
+        if(collectionId == "new") {
+          $("#newCollectionModal").modal();
+        } else {
+          var checked = !(checkbox.attr("checked") ^ boxClick);
+          checkbox.attr("checked", checked);
+
+          if(checked) {
+            $.post("/collections/" + collectionId + "/add", {
+              sprite_id: spriteId
+            }, "json");
+          } else {
+            $.post("/collections/" + collectionId + "/remove", {
+              sprite_id: spriteId
+            }, "json");
           }
         }
       });
-    }
 
-    function newCollectionCallback(title, id) {
-      $(".listMenu ul li:last-child").each(function() {
-        var parentSpriteId = $(this).parent().prev().attr("data-sprite_id");
-        var newElem = $("<li />").attr("data-collection_id", id);
-        newElem.text(title);
+      $(".avatar a").live("click", function(event) {
+        notify("Saving...");
 
-        if(parentSpriteId == spriteId) {
-          newElem.prepend("<input type='checkbox', value='1' checked='checked' />");
-        } else {
-          newElem.prepend("<input type='checkbox', value='1' />");
-        }
+        var spriteId = $(this).attr("data-sprite_id");
 
-        $(this).before(newElem);
+        $.post("/people/#{(current_user) ? current_user.id : 0}/set_avatar",
+          { sprite_id: spriteId },
+          function(data) { notify("Avatar successfully changed."); }
+        );
       });
-    }
-
-    ajaxifyForm("#new_collection");
-
-    var displayedMenu;
-    var spriteId;
-
-    $(".listMenu .button").click(function() {
-      spriteId = $(this).attr("data-sprite_id");
-      displayedMenu = $(this).next("ul");
-      displayedMenu.show();
-
-      setTimeout(function() {
-        $(document).one('click', function() {
-          displayedMenu.fadeOut();
-        });
-      }, 0);
-
-      return false;
     });
-
-    $(".menu li").live("click", function(event) {
-      var collectionId = $(this).attr("data-collection_id");
-      var checkbox = $(this).children("input");
-      var boxClick = false;
-
-      if($(event.target).is("input")) {
-        boxClick = true;
-      }
-
-      if(collectionId == "new") {
-        $("#newCollectionModal").modal();
-      } else {
-        var checked = !(checkbox.attr("checked") ^ boxClick);
-        checkbox.attr("checked", checked);
-
-        if(checked) {
-          $.post("/collections/" + collectionId + "/add", {
-            sprite_id: spriteId
-          }, "json");
-        } else {
-          $.post("/collections/" + collectionId + "/remove", {
-            sprite_id: spriteId
-          }, "json");
-        }
-      }
-    });
-
-    $(".avatar a").live("click", function(event) {
-      notify("Saving...");
-
-      var spriteId = $(this).attr("data-sprite_id");
-
-      $.post("/people/#{(current_user) ? current_user.id : 0}/set_avatar",
-        { sprite_id: spriteId },
-        function(data) { notify("Avatar successfully changed."); }
-      );
-    });
-  });

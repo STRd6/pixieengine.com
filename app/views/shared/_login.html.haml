@@ -16,18 +16,19 @@
   - else
     = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in" }
 
-:coffeescript
-  $('.new_project').tipsy
-    gravity: 'e'
-    opacity: 1
+- content_for :javascript do
+  :coffeescript
+    $('.new_project').tipsy
+      gravity: 'e'
+      opacity: 1
 
-  $('.log_out').mousedown (e) ->
-    $('.user_drop_down').toggleClass('active')
-    e.stopPropagation()
+    $('.log_out').mousedown (e) ->
+      $('.user_drop_down').toggleClass('active')
+      e.stopPropagation()
 
-  $(document).mousedown (e) ->
-    target = e.target
-    drop_down = $('.user_drop_down').get(0)
+    $(document).mousedown (e) ->
+      target = e.target
+      drop_down = $('.user_drop_down').get(0)
 
-    if drop_down
-      $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
+      if drop_down
+        $('.user_drop_down').removeClass('active') unless $.contains(drop_down, target)
