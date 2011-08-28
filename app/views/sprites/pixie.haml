@@ -33,169 +33,170 @@
 
   = button_to_function "New Canvas", "newCanvas()"
 
-:coffeescript
-  $("body").dropImageReader
-    callback: (file, event) ->
-      canvas.fromDataURL(event.target.result)
+- content_for :javascript do
+  :coffeescript
+    $("body").dropImageReader
+      callback: (file, event) ->
+        canvas.fromDataURL(event.target.result)
 
-  (($) ->
-    window.setNewDimensions = ->
-      $("#newCanvasModal").removeAttr("style").modal
-        containerCss:
-          height: 170
-          width: 200
-        ,
-        onClose: ->
-          $.modal.close()
-          $("#newCanvasModal").attr("style", "display: none")
+    (($) ->
+      window.setNewDimensions = ->
+        $("#newCanvasModal").removeAttr("style").modal
+          containerCss:
+            height: 170
+            width: 200
+          ,
+          onClose: ->
+            $.modal.close()
+            $("#newCanvasModal").attr("style", "display: none")
 
-    window.newCanvas = ->
-      newWidth = $('#resize_width').val()
-      newHeight = $('#resize_height').val()
+      window.newCanvas = ->
+        newWidth = $('#resize_width').val()
+        newHeight = $('#resize_height').val()
 
-      window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
+        window.location.href = '/sprites/new?width=' + newWidth + '&height=' + newHeight
 
-    postImage = ->
-      notify "Saving, please wait..."
+      postImage = ->
+        notify "Saving, please wait..."
 
-      postData =
-        'format': 'json'
-        'sprite[width]': #{width}
-        'sprite[height]': #{height}
-        'sprite[parent_id]': #{@parent_id.to_json}
-        'sprite[file_base64_encoded]': canvas.toBase64()
-        'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
+        postData =
+          'format': 'json'
+          'sprite[width]': #{width}
+          'sprite[height]': #{height}
+          'sprite[parent_id]': #{@parent_id.to_json}
+          'sprite[file_base64_encoded]': canvas.toBase64()
+          'sprite[replay_data]': JSON.stringify(canvas.getReplayData())
 
-      $.post '/sprites', postData, (data) ->
-        if #{facebook?}
-          FB.ui
-            method: 'feed'
-            link: 'http://pixie.strd6.com'
-            picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/large.png"
-            message: 'Check out my awesome pixel art!'
-          , (response) ->
-            if response && response.post_id
-              alert 'Post was published.'
-            else
-              alert 'Post was not published.'
-
-          notify "Saved!"
-        else
-          if data.redirect
-            window.location = data.redirect
-          else
-            notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
-
-        trackPageview "/event/save_drawing"
-        canvas.dirty(false)
-        $(".tool.button[title=Save]").removeAttr("disabled")
-      , "json"
-
-    pixie = $('#pixie').pixie
-      width: #{width}
-      height: #{height}
-      pixelSize: if #{facebook?} then 8 else 16
-      initializer: (canvas) ->
-        # HAX: Global ref of canvas
-        window.canvas = canvas
-
-        canvas.addAction
-          name: "replay"
-          perform: (canvas) ->
-            canvas.replay()
-          undoable: false
-
-        if #{facebook?}
-          canvas.addAction
-            name: "Post to FB"
-            icon: "/assets/icons/user_comment.png"
-            perform: (canvas) ->
-              postImage()
-            undoable: false
-        else
-          canvas.addAction
-            name: "new"
-            perform: (canvas) ->
-              setNewDimensions()
-            undoable: false
-
-          canvas.addAction
-            name: "save"
-            perform: (canvas) ->
-              $(".tool.button[title=Save]").attr("disabled", true)
-              window.onbeforeunload = undefined
-              postImage()
-            undoable: false
-
-          canvas.addAction
-            name: "Post to Chat"
-            icon: "/assets/icons/picture_go.png"
-            perform: (canvas) ->
-              wrapper = $ "<div />"
-              img = $ "<img />"
-              img.attr('src', canvas.toDataURL())
-
-              img.appendTo(wrapper)
-
-              $.post '/chats', { body: wrapper.html() }, ->
-                $('body').scrollTo
-                  left: '0%'
-                  top: '100%'
-
-              commenter = "#{ current_user ? current_user.display_name : 'Anonymous' }"
-              commenter_id = #{ current_user ? current_user.id : -1 }
-              prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
-
-              li = $ "<li />"
-              hr = $ "<hr />"
-              if commenter_id > 0
-                a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
-
-              if a
-                name = $ '<span />',
-                  class: "name"
-
-                name.append(a)
+        $.post '/sprites', postData, (data) ->
+          if #{facebook?}
+            FB.ui
+              method: 'feed'
+              link: 'http://pixie.strd6.com'
+              picture: "http://images.pixie.strd6.com/sprites/" + data.id + "/large.png"
+              message: 'Check out my awesome pixel art!'
+            , (response) ->
+              if response && response.post_id
+                alert 'Post was published.'
               else
-                name = $ '<span />',
-                  class: "name"
-                  text: commenter
+                alert 'Post was not published.'
 
-              time = $ '<span />',
-                class: "time"
-                text: "#{Time.zone.now.strftime('%I:%M%p')} "
+            notify "Saved!"
+          else
+            if data.redirect
+              window.location = data.redirect
+            else
+              notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
 
-              message = $ '<span />',
-                class: "message"
+          trackPageview "/event/save_drawing"
+          canvas.dirty(false)
+          $(".tool.button[title=Save]").removeAttr("disabled")
+        , "json"
 
-              message.append(img)
+      pixie = $('#pixie').pixie
+        width: #{width}
+        height: #{height}
+        pixelSize: if #{facebook?} then 8 else 16
+        initializer: (canvas) ->
+          # HAX: Global ref of canvas
+          window.canvas = canvas
 
-              if commenter != prev_commenter
-                li.append(hr, name, time)
+          canvas.addAction
+            name: "replay"
+            perform: (canvas) ->
+              canvas.replay()
+            undoable: false
 
-              li.append(message)
+          if #{facebook?}
+            canvas.addAction
+              name: "Post to FB"
+              icon: "/assets/icons/user_comment.png"
+              perform: (canvas) ->
+                postImage()
+              undoable: false
+          else
+            canvas.addAction
+              name: "new"
+              perform: (canvas) ->
+                setNewDimensions()
+              undoable: false
 
-              $('#chats').append(li)
+            canvas.addAction
+              name: "save"
+              perform: (canvas) ->
+                $(".tool.button[title=Save]").attr("disabled", true)
+                window.onbeforeunload = undefined
+                postImage()
+              undoable: false
 
-              $("#chatZone").fadeIn()
-              $("#openChat").addClass('straight')
+            canvas.addAction
+              name: "Post to Chat"
+              icon: "/assets/icons/picture_go.png"
+              perform: (canvas) ->
+                wrapper = $ "<div />"
+                img = $ "<img />"
+                img.attr('src', canvas.toDataURL())
 
-              setTimeout ->
-                $('#chats').scrollTo
-                  left: '0%'
-                  top: '100%'
-              , 100
+                img.appendTo(wrapper)
 
-        ((frameData) ->
-          canvas.setInitialState(frameData)
-        )(#{data.to_json})
+                $.post '/chats', { body: wrapper.html() }, ->
+                  $('body').scrollTo
+                    left: '0%'
+                    top: '100%'
 
-        if #{!!@replay_data}
-          canvas.replay(#{@replay_data || "null"}, #{parent_data.to_json})
+                commenter = "#{ current_user ? current_user.display_name : 'Anonymous' }"
+                commenter_id = #{ current_user ? current_user.id : -1 }
+                prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
 
-        window.onbeforeunload = ->
-          if canvas.dirty()
-            "Your changes haven't yet been saved, if you leave now you will lose your work."
+                li = $ "<li />"
+                hr = $ "<hr />"
+                if commenter_id > 0
+                  a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
 
-    window.currentComponent = pixie
-  )(jQuery)
+                if a
+                  name = $ '<span />',
+                    class: "name"
+
+                  name.append(a)
+                else
+                  name = $ '<span />',
+                    class: "name"
+                    text: commenter
+
+                time = $ '<span />',
+                  class: "time"
+                  text: "#{Time.zone.now.strftime('%I:%M%p')} "
+
+                message = $ '<span />',
+                  class: "message"
+
+                message.append(img)
+
+                if commenter != prev_commenter
+                  li.append(hr, name, time)
+
+                li.append(message)
+
+                $('#chats').append(li)
+
+                $("#chatZone").fadeIn()
+                $("#openChat").addClass('straight')
+
+                setTimeout ->
+                  $('#chats').scrollTo
+                    left: '0%'
+                    top: '100%'
+                , 100
+
+          ((frameData) ->
+            canvas.setInitialState(frameData)
+          )(#{data.to_json})
+
+          if #{!!@replay_data}
+            canvas.replay(#{@replay_data || "null"}, #{parent_data.to_json})
+
+          window.onbeforeunload = ->
+            if canvas.dirty()
+              "Your changes haven't yet been saved, if you leave now you will lose your work."
+
+      window.currentComponent = pixie
+    )(jQuery)

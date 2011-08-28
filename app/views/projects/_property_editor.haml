@@ -4,18 +4,19 @@
   .content
     %table#prop_editor
 
-:coffeescript
-  window.editProperties = (props) ->
-    propertyEditor.setProps(props)
+- content_for :javascript do
+  :coffeescript
+    window.editProperties = (props) ->
+      propertyEditor.setProps(props)
 
-    $("#properties_editor_window").show()
+      $("#properties_editor_window").show()
 
-  $ ->
-    window.propertyEditor = $("#prop_editor").propertyEditor()
-    window.propertyEditor.bind "change", (event, newProperties) ->
-      unless newProperties
-        console?.warn?("Property editor didn't send any updated properties!")
-        return
+    $ ->
+      window.propertyEditor = $("#prop_editor").propertyEditor()
+      window.propertyEditor.bind "change", (event, newProperties) ->
+        unless newProperties
+          console?.warn?("Property editor didn't send any updated properties!")
+          return
 
-      if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
-        runningGameFrame.eval "updateObjectProperties(\#{JSON.stringify(newProperties)})"
+        if (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+          runningGameFrame.eval "updateObjectProperties(\#{JSON.stringify(newProperties)})"

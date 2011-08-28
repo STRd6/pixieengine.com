@@ -9,21 +9,22 @@
 
   %button Tag Version
 
-:coffeescript
-  $("#tag").live 'click', ->
-    $("#tag_version_modal").modal()
+- content_for :javascript do
+  :coffeescript
+    $("#tag").live 'click', ->
+      $("#tag_version_modal").modal()
 
-  $("#tag_version_modal button").live 'click', (event) ->
-    event.preventDefault()
+    $("#tag_version_modal button").live 'click', (event) ->
+      event.preventDefault()
 
-    data = $(this).parent().serializeObject()
+      data = $(this).parent().serializeObject()
 
-    if data.tag
-      $.modal.close()
+      if data.tag
+        $.modal.close()
 
-      notify("Saving tag...")
+        notify("Saving tag...")
 
-      $.post #{tag_version_project_path(project).to_json}, data, ->
-        notify("Tagged version \#{data.tag}", 3000)
-    else
-      alert "You need to enter a tag for the version!"
+        $.post #{tag_version_project_path(project).to_json}, data, ->
+          notify("Tagged version \#{data.tag}", 3000)
+      else
+        alert "You need to enter a tag for the version!"

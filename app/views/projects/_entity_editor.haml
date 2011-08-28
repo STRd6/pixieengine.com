@@ -23,109 +23,110 @@
       .actions.top
         %button.save Save
 
-:coffeescript
-  createCodeMirrorEditor = (textArea) ->
-    code = textArea.val()
-    lang = "coffeescript"
+- content_for :javascript do
+  :coffeescript
+    createCodeMirrorEditor = (textArea) ->
+      code = textArea.val()
+      lang = "coffeescript"
 
-    editor = new CodeMirror.fromTextArea textArea.get(0),
-      autoMatchParens: true
-      content: code
-      height: "100%"
-      lineNumbers: true
-      parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-      path: "/assets/codemirror/"
-      stylesheet: ["/public/stylesheets/codemirror/main.css"]
-      tabMode: "shift"
-      textWrapping: false
+      editor = new CodeMirror.fromTextArea textArea.get(0),
+        autoMatchParens: true
+        content: code
+        height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/assets/codemirror/"
+        stylesheet: ["/public/stylesheets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
 
-    $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
-    $(editor.win.document).keyup ->
-      textArea.val(editor.getCode())
+      $(editor.win.document).keyup ->
+        textArea.val(editor.getCode())
 
-  window.createEntityEditor = (options) ->
-    {panel, uuid} = options
+    window.createEntityEditor = (options) ->
+      {panel, uuid} = options
 
-    panel.find('form').hide()
-    panel.find('.editor').remove()
+      panel.find('form').hide()
+      panel.find('.editor').remove()
 
-    try
-      data = JSON.parse(panel.find("[name=contents]").val()) || {}
-    catch e
-      console?.warn? e
-      data = {}
+      try
+        data = JSON.parse(panel.find("[name=contents]").val()) || {}
+      catch e
+        console?.warn? e
+        data = {}
 
-    editorOptions = $.extend panel.data("options"),
-      data: data
+      editorOptions = $.extend panel.data("options"),
+        data: data
 
-    entityEditor = $("#entity_editor_template").tmpl().appendTo(panel)
+      entityEditor = $("#entity_editor_template").tmpl().appendTo(panel)
 
-    entityEditor.find(".events").accordion
-      collapsible: true
-
-    entityEditor.find(".events .event textarea").each ->
-      input = $(this)
-      name = input.attr("name")
-
-      input.val(data[name + "Coffee"])
-
-      createCodeMirrorEditor(input)
-
-    propertyEditor = entityEditor.find('table').propertyEditor(data)
-    entityEditor.find('button.save').click ->
-      entityEditor.trigger('doSave')
-
-    ###
-    entityEditor.addAction
-      name: "Save As"
-      perform: ->
-        title = prompt("Title")
-
-        if title
-          filePath = projectConfig.directories["entities"]
-
-          extension = "entity"
-          dataString = JSON.stringify(entityEditor.getProps())
-
-          newFileNode
-            name: title
-            type: "entity"
-            ext: extension
-            path: filePath
-            contents: dataString
-
-          entityEditor.trigger 'save',
-            contents: dataString
-            path: filePath + "/" + title + "." + extension
-    ###
-
-    entityEditor.bind 'doSave', ->
-      entityData = propertyEditor.getProps()
+      entityEditor.find(".events").accordion
+        collapsible: true
 
       entityEditor.find(".events .event textarea").each ->
         input = $(this)
         name = input.attr("name")
 
-        if name
-          source = input.val()
+        input.val(data[name + "Coffee"])
 
-          # Merge in events data
-          entityData[name + "Coffee"] = source
-          entityData[name] = window.compileCode source, "coffee"
+        createCodeMirrorEditor(input)
 
-      # Propagate changes back to IDE
-      window.entities[uuid] = entityData
+      propertyEditor = entityEditor.find('table').propertyEditor(data)
+      entityEditor.find('button.save').click ->
+        entityEditor.trigger('doSave')
 
-      dataString = JSON.stringify(entityData)
+      ###
+      entityEditor.addAction
+        name: "Save As"
+        perform: ->
+          title = prompt("Title")
 
-      panel.find("[name=contents]").val(dataString)
+          if title
+            filePath = projectConfig.directories["entities"]
 
-      entityEditor.trigger 'save',
-        contents: dataString
-        path: options.path
+            extension = "entity"
+            dataString = JSON.stringify(entityEditor.getProps())
 
-      #TODO: This may not be the exact time it is saved
-      propertyEditor.trigger('clean')
+            newFileNode
+              name: title
+              type: "entity"
+              ext: extension
+              path: filePath
+              contents: dataString
 
-    return entityEditor
+            entityEditor.trigger 'save',
+              contents: dataString
+              path: filePath + "/" + title + "." + extension
+      ###
+
+      entityEditor.bind 'doSave', ->
+        entityData = propertyEditor.getProps()
+
+        entityEditor.find(".events .event textarea").each ->
+          input = $(this)
+          name = input.attr("name")
+
+          if name
+            source = input.val()
+
+            # Merge in events data
+            entityData[name + "Coffee"] = source
+            entityData[name] = window.compileCode source, "coffee"
+
+        # Propagate changes back to IDE
+        window.entities[uuid] = entityData
+
+        dataString = JSON.stringify(entityData)
+
+        panel.find("[name=contents]").val(dataString)
+
+        entityEditor.trigger 'save',
+          contents: dataString
+          path: options.path
+
+        #TODO: This may not be the exact time it is saved
+        propertyEditor.trigger('clean')
+
+      return entityEditor

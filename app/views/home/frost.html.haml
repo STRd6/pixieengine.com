@@ -80,211 +80,212 @@
         %canvas.canvas(width=640 height=480)
         %canvas.ui(width=640 height=480)
 
-= javascript_include_tag "easing"
-= javascript_include_tag "display_object"
+- content_for :javascript do
+  = javascript_include_tag "easing"
+  = javascript_include_tag "display_object"
 
-:coffeescript
-  NUM_FRAMES = 32
-  editor = $(".editor")
+  :coffeescript
+    NUM_FRAMES = 32
+    editor = $(".editor")
 
-  Sprite = (image, sourceX, sourceY, width, height) ->
-    sourceX ||= 0
-    sourceY ||= 0
-    width ||= image.width
-    height ||= image.height
+    Sprite = (image, sourceX, sourceY, width, height) ->
+      sourceX ||= 0
+      sourceY ||= 0
+      width ||= image.width
+      height ||= image.height
 
-    draw: (canvas, x, y) ->
-      canvas.drawImage(
-        image,
-        sourceX,
-        sourceY,
-        width,
-        height,
-        x,
-        y,
-        width,
-        height
+      draw: (canvas, x, y) ->
+        canvas.drawImage(
+          image,
+          sourceX,
+          sourceY,
+          width,
+          height,
+          x,
+          y,
+          width,
+          height
+        )
+
+      width: width
+      height: height
+
+    $("body").dropImageReader
+      callback: (file, event) ->
+        loadSprite(event.target.result)
+
+    loadSprite = (url) ->
+      img = new Image()
+
+      img.onload = ->
+        addObject Sprite(this)
+
+      img.src = url
+
+    loadSprite("http://localhost:3000/assets/shadow_logo_small.png")
+
+    Timeline = (I) ->
+      $.reverseMerge I,
+        frames: []
+
+      self = Core(I).extend
+        draw: () ->
+          line = editor.find(".timeline")
+          line.empty()
+
+    objects = {}
+    keyFrames =
+      0: {}
+      31: {}
+
+    playing = false
+    activeObject = null
+    mousedown = false
+    previousMousePosition = Point(0, 0)
+
+    currentFrame = 0
+    currentKeyFrame = 0
+    activeKeyFrame = ->
+      keyFrames[currentKeyFrame]
+
+    activeFrameObjects = ->
+      # Temp hack for just one final keyframe
+      nextKeyFrame = NUM_FRAMES - 1
+
+      if currentKeyFrame != nextKeyFrame
+        t = (currentFrame - currentKeyFrame) / (nextKeyFrame - currentKeyFrame)
+      else
+        t = 0
+
+      initialPositions = keyFrames[currentKeyFrame]
+      finalPositions = keyFrames[nextKeyFrame]
+      activeDisplayObjects = []
+      for uuid, transform of initialPositions
+        object = objects[uuid]
+
+        if t == 0
+          object.transform(transform)
+        else
+          object.transform(generateMatrixTweenFunction(transform, finalPositions[uuid])(t))
+
+        activeDisplayObjects.push(object)
+
+      activeDisplayObjects
+
+    frameAdvance = ->
+      currentFrame = (currentFrame + 1) % NUM_FRAMES
+      if keyFrames[currentFrame]
+        currentKeyFrame = currentFrame
+
+    $(".timeline .frame").click ->
+      currentFrame = $(this).index()
+
+      if $(this).is(".key")
+        currentKeyFrame = currentFrame
+      else
+        currentKeyFrame = $(this).prevAll(".key").filter(":last").index()
+
+      log currentFrame
+      log currentKeyFrame
+
+      $(this).takeClass("active")
+      activeObject = null
+
+    addObject = (sprite) ->
+      uuid = Math.uuid(32, 16)
+
+      # Add object to objects table
+      objects[uuid] = DisplayObject
+        height: sprite.height
+        id: uuid
+        sprite: sprite
+        width: sprite.width
+
+      # Add object in default position to each key frame
+      for pos, frame of keyFrames
+        frame[uuid] = Matrix()
+
+    refreshCanvas = ->
+      canvas.clear()
+      activeFrameObjects().invoke "draw", canvas
+
+      if playing
+        frameAdvance()
+      else
+        canvas.strokeColor "rgba(96, 0, 96, 0.75)"
+        activeObject?.drawOutline(canvas)
+
+    uiElement = $("canvas.ui")
+    ui = uiElement.powerCanvas()
+
+    canvas = $("canvas.canvas").powerCanvas()
+
+    eventToLocal = (event) ->
+      offset = uiElement.offset()
+
+      Point(
+        event.pageX - offset.left,
+        event.pageY - offset.top
       )
 
-    width: width
-    height: height
+    updateObject = (method, args...) ->
+      if activeObject
+        activeKeyFrame()[activeObject.id()] = activeObject[method](args...)
 
-  $("body").dropImageReader
-    callback: (file, event) ->
-      loadSprite(event.target.result)
+    $(document).bind "mousemove", (e) ->
+      local = eventToLocal(e)
 
-  loadSprite = (url) ->
-    img = new Image()
+      if mousedown
+        updateObject "move", local.subtract(previousMousePosition)
 
-    img.onload = ->
-      addObject Sprite(this)
+      previousMousePosition = local
 
-    img.src = url
+    uiElement.bind "mousedown", (e) ->
+      local = eventToLocal(e)
 
-  loadSprite("http://localhost:3000/assets/shadow_logo_small.png")
+      activeObject = activeFrameObjects().select (object) ->
+        object.pointWithin(local)
+      .last()
 
-  Timeline = (I) ->
-    $.reverseMerge I,
-      frames: []
+      mousedown = true
 
-    self = Core(I).extend
-      draw: () ->
-        line = editor.find(".timeline")
-        line.empty()
+    uiElement.bind "mouseup", (e) ->
+      mousedown = false
 
-  objects = {}
-  keyFrames =
-    0: {}
-    31: {}
+      return
 
-  playing = false
-  activeObject = null
-  mousedown = false
-  previousMousePosition = Point(0, 0)
+    setInterval refreshCanvas, 1000 / 24
 
-  currentFrame = 0
-  currentKeyFrame = 0
-  activeKeyFrame = ->
-    keyFrames[currentKeyFrame]
+    window.generateMatrixTweenFunction = (begin, end, easing="linear") ->
+      interpolations = ["a", "b", "c", "d", "tx", "ty"].map (key) ->
+        Easing[easing](begin[key], end[key])
 
-  activeFrameObjects = ->
-    # Temp hack for just one final keyframe
-    nextKeyFrame = NUM_FRAMES - 1
+      return (t) ->
+        params = interpolations.map (interpolation) ->
+          interpolation(t)
 
-    if currentKeyFrame != nextKeyFrame
-      t = (currentFrame - currentKeyFrame) / (nextKeyFrame - currentKeyFrame)
-    else
-      t = 0
+        Matrix.apply null, params
 
-    initialPositions = keyFrames[currentKeyFrame]
-    finalPositions = keyFrames[nextKeyFrame]
-    activeDisplayObjects = []
-    for uuid, transform of initialPositions
-      object = objects[uuid]
+    # tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform, "sinusoidalInOut")
 
-      if t == 0
-        object.transform(transform)
-      else
-        object.transform(generateMatrixTweenFunction(transform, finalPositions[uuid])(t))
+    addButton = (text, fn) ->
+      button = $ "<button />",
+        text: text
+        click: fn
 
-      activeDisplayObjects.push(object)
+      editor.find(".actions").append button
 
-    activeDisplayObjects
+    addButton "Rotate", ->
+      updateObject "rotate", Math.TAU / 16
 
-  frameAdvance = ->
-    currentFrame = (currentFrame + 1) % NUM_FRAMES
-    if keyFrames[currentFrame]
-      currentKeyFrame = currentFrame
+    addButton "Grow", ->
+      updateObject "scale", 0.25
 
-  $(".timeline .frame").click ->
-    currentFrame = $(this).index()
+    addButton "Shrink", ->
+      updateObject "scale", -0.2
 
-    if $(this).is(".key")
-      currentKeyFrame = currentFrame
-    else
-      currentKeyFrame = $(this).prevAll(".key").filter(":last").index()
+    addButton "Play", ->
+      playing = true
 
-    log currentFrame
-    log currentKeyFrame
-
-    $(this).takeClass("active")
-    activeObject = null
-
-  addObject = (sprite) ->
-    uuid = Math.uuid(32, 16)
-
-    # Add object to objects table
-    objects[uuid] = DisplayObject
-      height: sprite.height
-      id: uuid
-      sprite: sprite
-      width: sprite.width
-
-    # Add object in default position to each key frame
-    for pos, frame of keyFrames
-      frame[uuid] = Matrix()
-
-  refreshCanvas = ->
-    canvas.clear()
-    activeFrameObjects().invoke "draw", canvas
-
-    if playing
-      frameAdvance()
-    else
-      canvas.strokeColor "rgba(96, 0, 96, 0.75)"
-      activeObject?.drawOutline(canvas)
-
-  uiElement = $("canvas.ui")
-  ui = uiElement.powerCanvas()
-
-  canvas = $("canvas.canvas").powerCanvas()
-
-  eventToLocal = (event) ->
-    offset = uiElement.offset()
-
-    Point(
-      event.pageX - offset.left,
-      event.pageY - offset.top
-    )
-
-  updateObject = (method, args...) ->
-    if activeObject
-      activeKeyFrame()[activeObject.id()] = activeObject[method](args...)
-
-  $(document).bind "mousemove", (e) ->
-    local = eventToLocal(e)
-
-    if mousedown
-      updateObject "move", local.subtract(previousMousePosition)
-
-    previousMousePosition = local
-
-  uiElement.bind "mousedown", (e) ->
-    local = eventToLocal(e)
-
-    activeObject = activeFrameObjects().select (object) ->
-      object.pointWithin(local)
-    .last()
-
-    mousedown = true
-
-  uiElement.bind "mouseup", (e) ->
-    mousedown = false
-
-    return
-
-  setInterval refreshCanvas, 1000 / 24
-
-  window.generateMatrixTweenFunction = (begin, end, easing="linear") ->
-    interpolations = ["a", "b", "c", "d", "tx", "ty"].map (key) ->
-      Easing[easing](begin[key], end[key])
-
-    return (t) ->
-      params = interpolations.map (interpolation) ->
-        interpolation(t)
-
-      Matrix.apply null, params
-
-  # tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform, "sinusoidalInOut")
-
-  addButton = (text, fn) ->
-    button = $ "<button />",
-      text: text
-      click: fn
-
-    editor.find(".actions").append button
-
-  addButton "Rotate", ->
-    updateObject "rotate", Math.TAU / 16
-
-  addButton "Grow", ->
-    updateObject "scale", 0.25
-
-  addButton "Shrink", ->
-    updateObject "scale", -0.2
-
-  addButton "Play", ->
-    playing = true
-
-  addButton "Pause", ->
-    playing = false
+    addButton "Pause", ->
+      playing = false

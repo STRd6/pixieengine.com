@@ -21,36 +21,37 @@
         %span.name You
       %span.time Just moments ago
 
-:coffeescript
-  $ ->
-    commentForm = $("#new_comment")
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      commentForm = $("#new_comment")
 
-    postComment = ->
-      text = $.trim(commentForm.find("textarea").val())
+      postComment = ->
+        text = $.trim(commentForm.find("textarea").val())
 
-      if text.length
-        commentForm.ajaxSubmit
-          type: 'POST'
-          dataType: "json"
+        if text.length
+          commentForm.ajaxSubmit
+            type: 'POST'
+            dataType: "json"
 
-        newComment = $("#comment_template").tmpl
-          text: text
+          newComment = $("#comment_template").tmpl
+            text: text
 
-        commentForm.siblings(".comments").prepend(newComment)
+          commentForm.siblings(".comments").prepend(newComment)
 
-        commentForm.find("textarea").val("")
-      else
-        alert("Please enter a comment first")
+          commentForm.find("textarea").val("")
+        else
+          alert("Please enter a comment first")
 
-    commentForm.submit (e) ->
-      e.preventDefault()
+      commentForm.submit (e) ->
+        e.preventDefault()
 
-      if loggedIn
-        postComment()
-
-        return false
-      else
-        requireLogin ->
+        if loggedIn
           postComment()
 
-        return false
+          return false
+        else
+          requireLogin ->
+            postComment()
+
+          return false

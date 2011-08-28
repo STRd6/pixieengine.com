@@ -24,26 +24,27 @@
 
   %button.full#user_session_submit Log In
 
-:coffeescript
-  $ ->
-    loginMode = (login) ->
-      if login
-        $('#user_session_password').removeAttr('disabled').focus()
-        $('#user_session_submit').text('Log In')
-      else
-        $('#user_session_password').attr('disabled', true)
-        $('#user_session_submit').text('Sign Up')
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      loginMode = (login) ->
+        if login
+          $('#user_session_password').removeAttr('disabled').focus()
+          $('#user_session_submit').text('Log In')
+        else
+          $('#user_session_password').attr('disabled', true)
+          $('#user_session_submit').text('Sign Up')
 
-    $('#user_session_login_yes, #user_session_login_no').change ->
-      loginMode($(this).val() == 'yes')
+      $('#user_session_login_yes, #user_session_login_no').change ->
+        loginMode($(this).val() == 'yes')
 
-    setTimeout ->
-      if $('#user_session_email').val()
-        $('#user_session_login_yes').click()
-        loginMode(true)
-      else
-        $('#user_session_login_no').click()
-        loginMode(false)
-    , 10
+      setTimeout ->
+        if $('#user_session_email').val()
+          $('#user_session_login_yes').click()
+          loginMode(true)
+        else
+          $('#user_session_login_no').click()
+          loginMode(false)
+      , 10
 
-    trackPageview("/event/login_screen")
+      trackPageview("/event/login_screen")

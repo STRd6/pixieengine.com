@@ -9,16 +9,17 @@
 
 = render :partial => 'shared/register_modal'
 
-:javascript
-  (function($) {
-    $("#new_sprite").submit(function() {
-      if(loggedIn) {
-        return true;
-      } else {
-        requireLogin(function() {
-          $("#new_sprite").submit();
-        });
-        return false;
-      }
-    });
-  })(jQuery);
+- content_for :javascript do
+  :javascript
+    (function($) {
+      $("#new_sprite").submit(function() {
+        if(loggedIn) {
+          return true;
+        } else {
+          requireLogin(function() {
+            $("#new_sprite").submit();
+          });
+          return false;
+        }
+      });
+    })(jQuery);
