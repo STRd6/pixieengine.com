@@ -66,10 +66,11 @@ class User < ActiveRecord::Base
 
   def self.send_newsletter_email
     failed_user_ids = []
+    delivery_date = Time.now.strftime("%b %d %Y")
 
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
-        Notifier.newsletter3(user).deliver unless user.email.blank?
+        Notifier.newsletter(user, delivery_date).deliver unless user.email.blank?
       rescue
         failed_user_ids.push(user.id)
       end

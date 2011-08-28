@@ -1,0 +1,18 @@
+:ruby
+  pixie_blue = "#1084CE"
+  content_bg = "#FFFFFF"
+  text_color = "#555555"
+
+- paragraphs.each do |paragraph|
+  %div(style="font-size:11px;font-weight:normal;color:#{text_color};font-style:italic;font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+    = paragraph.html_safe
+    - if paragraph ==  paragraphs[3]
+      - @featured_users.each do |user|
+        = link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :class => :avatar), user_url(user, link_tracking) unless user.display_name == "xmagicx60"
+        = link_to user, user_url(user, link_tracking)
+        - if user == @featured_users.last
+          = "."
+        - elsif user == @featured_users[-2]
+          and
+        - else
+          ,

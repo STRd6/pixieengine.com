@@ -1,0 +1,5 @@
+%center(style="margin-bottom:2px;")
+  = link_to "Unsubscribe", { :controller => "/users", :action => "unsubscribe", :token => @user.perishable_token, :only_path => false }, link_tracking
+  %br
+  %br
+  Copyright (C) #{Time.now.year} STRd6 All rights reserved.
