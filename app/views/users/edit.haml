@@ -1,6 +1,13 @@
-= stylesheet_link_tag "branded"
+%style
+  :sass
+    h3.check_box
+      display: inline-block
+      font-size: 120%
 
-= javascript_include_tag 'pixie/jqcolor'
+    #user_forum_notifications, #user_site_notifications
+      margin-right: 5px
+
+= stylesheet_link_tag "branded"
 
 = form_for user, :html => { :class => "module", :multipart => true } do |form|
   = form.error_messages
@@ -13,7 +20,7 @@
 
   %label
     %h3 Favorite Color
-    = form.text_field :favorite_color
+    = form.text_field :favorite_color, :style => "border:none;"
 
   %label
     %h3 Profile
@@ -22,6 +29,13 @@
   %label
     %h3 Avatar
     = form.file_field :avatar
+
+  %label
+    = form.check_box :forum_notifications
+    %h3.check_box Receive Forum Email Notifications?
+  %label
+    = form.check_box :site_notifications
+    %h3.check_box Receive Notifications About Your Art?
 
   %button.full Update Information
 

@@ -14,6 +14,9 @@ class Comment < ActiveRecord::Base
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
   def notify_commentee
-    Notifier.comment(self).deliver if commentee
+    if commentee && commentee.site_notifications
+      Notifier.comment(self).deliver
+    end
   end
+  handle_asynchronously :notify_commentee
 end

@@ -1,0 +1,52 @@
+/* Styles for ol, ul, li, etc.
+
+ol.numbered
+  list-style: decimal outside
+  margin-left: 1em
+
+ul
+  list-style: none
+
+  &.square
+    list-style: square inside
+
+  &.disc
+    list-style: disc inside
+
+  &.actions
+    margin-bottom: 1em
+    & > li
+      +inline-block
+
+  &.inline
+    li
+      +inline-block
+
+  &.actions
+    .menu
+      .button
+        margin: 0 !important
+      ul
+        background-color: #FFF
+        border: 1px solid #666
+        margin-top: -1px
+        position: absolute
+        width: 200px
+        z-index: 1023
+
+        li
+          padding-left: 5px
+          &:hover
+            background-color: #666
+            color: #FFF
+
+          label
+            font-weight: normal
+
+          input[type="checkbox"]
+            +inline-block
+            color: #666
+            margin: 0
+            padding: 0
+            position: relative
+            vertical-align: top

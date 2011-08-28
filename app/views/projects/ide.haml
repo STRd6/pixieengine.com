@@ -13,18 +13,18 @@
     %button#test> Test
   - if demo? || has_access?
     .button_group
-      %button#build(title="Build and publish the current version of the project")> Build
-      %button#update_libs(title="Update to the latest libs defined in pixie.json")> Update Libs
+      %button#build(title="Publish the current version of your game")> Publish
+      %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
 
   %button#help>
-    = image_tag('/images/icons/help.png')
+    %span.static-help(alt="Help")
     Help
   .status
     %label.inline
       %h4 What are you working on?
-      %input.message(placeholder="Your commit message" type="text")
+      %input.message(placeholder="message" type="text")
 
 #content
   #error
@@ -39,7 +39,7 @@
       .bottom.actionable
         .featured_action
           %h3 Package App for Chrome Web Store
-          = image_tag "chrome_webstore.png"
+          .static-chrome_webstore
 
   %section
     #tabs.module
@@ -461,12 +461,12 @@
         height: "100%"
         lineNumbers: true
         parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-        path: "/javascripts/codemirror/"
-        stylesheet: ["/stylesheets/codemirror/main.css"]
+        path: "/assets/codemirror/"
+        stylesheet: ["/assets/codemirror/main.css"]
         tabMode: "shift"
         textWrapping: false
 
-      $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
       bindKeys(editor.win.document, ctrlKeys)
 
@@ -618,6 +618,11 @@
 
     $('.filetree .file').live 'click', ->
       openFile($(this).data('id'))
+
+      trackEvent("IDE", "open file", $(this).data('id'))
+
+    $('.filetree .folder').live 'click', ->
+      trackEvent("IDE", "click folder", $(this).text())
 
     $('.error.file').live 'click', ->
       if id = $(this).data('id')

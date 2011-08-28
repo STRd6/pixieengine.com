@@ -1,30 +1,93 @@
+- unless user.profile.blank?
+  - @meta_desc = user.profile.html_safe
+
 %style
   :sass
     @import util
-    @import branded
 
-    .favorite_color
-      +inline-block
-      border: 1px solid light_gray
-      height: 50px
-      width: 50px
+    .static-thumb_up, .static-add
+      display: inline-block
 
-    #show_projects, #show_sprites
-      float: right
-      font-size: 120%
-      margin-top: 0.7em
+    .hover_actions a
+      display: block
 
-    .description
-      text-align: justify
+      & div
+        display: inline-block
 
     .tasks
       float: right
+      margin-left: 2em
       padding: 1em
-      width: 300px
+      width: 315px
 
-    .featured_sprites, .featured_projects, .comments
-      margin: 2em 0
-      padding: 1em 2em
+    .task
+      font-size: 1.1em
+      margin-bottom: 0.5em
+      position: relative
+      img
+        vertical-align: top
+      .value
+        left: 200px
+        position: absolute
+        top: 0
+
+    .profile
+      min-height: 284px
+      margin-bottom: 1em
+      overflow: auto
+      padding-top: 1em
+      width: 100%
+
+      .favorite_color
+        +border-radius
+        +inline-block
+
+        border: 1px solid rgba(255, 255, 255, 0.3)
+        height: 50px
+        width: 50px
+
+      h1
+        a
+          font-size: 0.6em
+          letter-spacing: 0
+          margin-left: 0.25em
+
+      label
+        margin-bottom: 1em
+
+      p
+        margin-bottom: 0.5em
+
+      .avatar
+        float: left
+        margin: 0 1em 1em 0
+
+    h2
+      border-bottom: 1px solid rgba(8, 66, 103, 0.25)
+
+    .projects, .sprites
+      margin-bottom: 1em
+
+      .actions
+        float: right
+
+    .project
+      overflow: auto
+      width: 100%
+
+      &:nth-child(n + 7)
+        display: none
+
+      .show_all &:nth-child(n + 7)
+        display: inline-block
+
+      .thumb
+        +border-radius
+        +inline-block
+
+        float: left
+        margin-bottom: 1em
+        margin-right: 1em
 
     .sprite_container
       +border-radius
@@ -49,124 +112,34 @@
 
         display: block
 
-    .project
-      +border-radius
-      +bounds(462px, 172px)
-      +box-sizing(border-box)
-      +inline-block
+    .comment
+      overflow: auto
+      width: 100%
 
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1)
-      border-left: 1px solid rgba(255, 255, 255, 0.3)
-      border-right: 1px solid rgba(0, 0, 0, 0.1)
-      border-top: 1px solid rgba(255, 255, 255, 0.3)
-      margin-bottom: 1em
-      margin-right: 2em
-      overflow: hidden
-      padding: 1em
-      position: relative
-
-      &:nth-child(n + 7)
-        display: none
-
-      .show_all &:nth-child(n + 7)
-        display: inline-block
-
-      &:nth-child(2n)
-        margin-right: 0
-
-      .hover_actions
-        background-color: $hover
-        display: none
-        position: absolute
-        right: 1em
-        top: 1em
-
-      &:hover
-        background-color: $hover
-
-        .hover_actions
-          display: inline-block
-
-      .gloss
-        +gloss
-
-        display: inline-block
-        position: absolute
-        left: 1em
-
-      .thumb
+      .commentable
         float: left
-        margin-bottom: 1em
-        margin-right: 1em
 
-        &.fancy
+        img
+          margin-right: 1em
+
+      .attribution
+        float: right
+        margin-left: 2em
+        text-align: right
+
+        .name
           img
-            +border-radius(17px)
-            +box-shadow(#000F1A, 0, 4px, 6px)
+            margin-left: 1em
 
-            .light &
-              +box-shadow(#8c8c8c, 0, 4px, 6px)
+        .time
+          color: gray
 
-      .title
-        a
-          color: $dark_text
-          font-size: 20px
-          font-weight: 600
-          text-decoration: none
-          white-space: nowrap
-
-          .light &
-            color: $light_text
-
-    .module
-      > h2
-        display: inline-block
-
-      button
-        +bounds(110px, 35px)
-
-        font-size: 115%
-        margin-left: 1em
-        margin-top: 0
-
-    .task
-      font-size: 1.1em
-      margin-bottom: 0.5em
-      position: relative
-      img
-        vertical-align: top
-      .value
-        left: 200px
-        position: absolute
-        top: 0
-
-    .profile
-      min-height: 284px
-      margin-bottom: 1em
-      margin-top: 2em
-
-      h2
-        a
-          font-size: 0.75em
-          letter-spacing: 0
-          margin-left: 0.25em
-
-      label
-        margin-bottom: 1em
-
-      p
-        margin-bottom: 0.5em
-        width: 400px
-
-      .avatar
-        float: left
-        margin: 0 1em 1em 0
 
 .feature
   .profile
     = render :partial => "tasks", :user => user
 
-    %h2
+    %h1
       = user.display_name
       - if current_user?
         = link_to "Edit profile", [:edit, user]
@@ -175,64 +148,42 @@
       - if user.profile
         %p= user.profile.html_safe
 
-    .clear
+    %h3.inline Favorite Color
+    .favorite_color(style="background: ##{user.favorite_color};")
 
-    %label.inline
-      %h3 Favorite Color
-      .favorite_color{:style => "background: ##{user.favorite_color}"}
-
-  - if user.projects.size > 0
-    .featured_projects.module
-      %h2
-        ="Your" if current_user?
-        Projects
+  .projects
+    .actions
       - if current_user?
-        %button.clickable.complement
-          New Project
-          = link_to "", new_project_path, :style => "display: none;"
-        %button.clickable.complement
-          Tutorials
-          = link_to "", projects_path(:filter => "tutorial"), :style => "display: none;"
+        = link_to "New Project", new_project_path, :class => "button complement"
+        = link_to "Tutorials", projects_path(:filter => "tutorial"), :class => "button complement"
       - if user.projects.size > 6
-        %a#show_projects Show all
-      .projects
-        - user.projects.order("updated_at DESC").each do |project|
-          = render :partial => "users/project", :locals => { :project => project }
-  - else
-    - if current_user?
-      %button.clickable.complement
-        New Project
-        = link_to "", new_project_path, :style => "display: none;"
+        %a#show_projects.button.complement Show all
+    %h2
+      ="Your" if current_user?
+      Projects
+    - user.projects.order("updated_at DESC").each do |project|
+      = render :partial => "users/project", :locals => { :project => project }
 
-  - if user.sprites.size > 0
-    .featured_sprites.module
-      %h2
-        ="Your" if current_user?
-        Sprites
+  .sprites
+    .actions
       - if current_user?
-        %button.clickable.complement
-          New Sprite
-          = link_to "", new_sprite_path, :style => "display: none;"
-      - if user.sprites.size > 32
-        %a#show_sprites Show all
-      .sprites
-        - user.sprites.each_with_index do |sprite, i|
-          = render :partial => "index_sprites", :locals => { :sprite => sprite, :i => i }
-  - else
-    - if current_user?
-      %button.clickable.complement
-        New Sprite
-        = link_to "", new_sprite_path, :style => "display: none;"
+        = link_to "New Sprite", new_sprite_path, :class => "button complement"
+      - if user.sprites.size > 68
+        %a#show_sprites.button.complement Show all
 
-  - if (messages = Comment.for_user(user).order("id DESC").limit(10)).size > 0
-    .comments.module
-      .messages
-        %h2
-          Messages
+    %h2
+      ="Your" if current_user?
+      Sprites
+    - user.sprites.each_with_index do |sprite, i|
+      = render :partial => "index_sprites", :locals => { :sprite => sprite, :i => i }
 
-        = render :partial => messages
+  - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
+    .messages
+      %h2 Messages
+      = render :partial => 'users/comment', :collection => messages
 
 :coffeescript
+
   $ ->
     $('#show_projects').click ->
       $this = $(this)

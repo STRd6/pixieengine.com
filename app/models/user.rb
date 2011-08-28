@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
 
-  attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color
+  attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications
 
   scope :online_now, lambda {
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
@@ -65,9 +65,17 @@ class User < ActiveRecord::Base
   end
 
   def self.send_newsletter_email
-    User.all(:conditions => {:subscribed => true}).each do |user|
-      Notifier.newsletter(user).deliver unless user.email.blank?
+    failed_user_ids = []
+
+    User.order('id').all(:conditions => {:subscribed => true}).each do |user|
+      begin
+        Notifier.newsletter3(user).deliver unless user.email.blank?
+      rescue
+        failed_user_ids.push(user.id)
+      end
     end
+
+    return failed_user_ids
   end
 
   def add_to_collection(item, collection_name="favorites")
@@ -196,7 +204,7 @@ class User < ActiveRecord::Base
   end
 
   def subscribe_url
-    "https://spreedly.com/pixie/subscribers/#{id}/subscribe/10491/#{display_name}?email=#{email}"
+    "https://spreedly.com/pixie/subscribers/#{id}/subscribe/10491/#{display_name.gsub(' ', '_')}?email=#{email}"
   end
 
   def refresh_from_spreedly

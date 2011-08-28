@@ -1,0 +1,117 @@
+/* Element specific styles that apply throughout the site
+@import sprite_sheets
+
+#feedback
+  position: fixed
+  left: -15px
+  top: 50%
+
+  a
+    @extend .static-feedback
+    display: block
+
+#tooltip
+  +border-radius
+  +box-shadow
+  +text-shadow(black, 1px, 1px)
+
+  background-color: #444
+  border-left: 1px solid #595959
+  border-top: 1px solid #595959
+  color: $dark_text
+  display: none
+  min-height: 50px
+  min-width: 100px
+  max-width: 225px
+  padding: 1em
+  position: absolute
+  z-index: 10
+
+  pre
+    +border-radius(4px)
+    +box-shadow(rgba(0, 0, 0, 0.5), 1px, 1px, 3px, inset)
+
+    background-color: rgba(255, 255, 255, 0.3)
+    margin-bottom: 1em
+    margin-top: 1em
+    padding: 3px
+
+  .next_tip, .close_tip
+    margin-right: 0
+    width: 80px
+
+  .icon
+    +bounds(25px)
+
+    @extend .static-tip_pointer
+
+    bottom: 0
+    left: -12px
+    margin: auto
+    position: absolute
+    top: 0
+
+  .content
+    color: $dark_text
+    min-height: 50px
+    min-width: 100px
+    position: relative
+
+  .next
+    +bounds(40px, 50px)
+
+    @extend .static-next_bg
+    bottom: -35px
+    cursor: pointer
+    display: inline-block
+    position: absolute
+    right: -27px
+
+  .next_arrow
+    +bounds(40px, 50px)
+
+    -webkit-transition: -webkit-transform 0.5s ease-in-out
+
+    @extend .static-next_arrow
+
+    bottom: -35px
+    cursor: pointer
+    display: inline-block
+    position: absolute
+    right: -27px
+
+    &:hover
+      -webkit-transform: translateX(5%)
+
+  .close_tip.x
+    +bounds(24px, 29px)
+
+    @extend .static-x
+
+    cursor: pointer
+    display: inline-block
+    right: -21px
+    position: absolute
+    top: -19px
+
+#logo
+  +bounds(68px, 34px)
+
+  @extend .static-pixie
+
+  margin-left: 4px
+  margin-top: 4px
+  position: absolute
+  top: 0
+  left: 0
+
+#content
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  border: none
+  margin: 0
+  padding: 0
+
+  .subnav
+    display: none

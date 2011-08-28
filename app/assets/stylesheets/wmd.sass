@@ -1,0 +1,135 @@
+@import partials/base
+@import util
+@import sprite_sheets
+
+.wmd-panel
+  margin-left: 25%
+  margin-right: 25%
+  width: 50%
+  min-width: 500px
+
+#wmd-editor
+  background-color: Aquamarine
+
+.wmd-button-bar
+  width: 100%
+
+.wmd-input
+  height: 500px
+  width: 100%
+  background-color: Gainsboro
+  border: 1px solid DarkGray
+
+.wmd-preview
+  background-color: LightGray
+
+.wmd-output
+  background-color: Pink
+
+.wmd-button-row
+  position: relative
+  margin: 0px
+  padding: 5px 0
+  height: 20px
+
+.wmd-spacer
+  width: 1px
+  height: 18px
+  margin-bottom: 2px
+  margin-left: 7px
+  margin-right: 7px
+  position: relative
+  background-color: rgba(0, 0, 0, 0.1)
+  display: inline-block
+  zoom: 1
+  *display: inline
+  list-style: none
+
+.wmd-button
+  +inline-block
+  +bounds(16px)
+
+  @extend .static-sprite
+
+  border: 2px solid #B2E2FF
+  margin: 2px
+  margin-right: 5px
+  position: relative
+  vertical-align: baseline
+
+  > a
+    display: block
+    height: 100%
+
+  &:hover
+    +border-radius(2px)
+    background-color: $hover
+    border: 2px solid $hover
+
+  &:disabled
+    +opacity(0.75)
+
+  &:last-child
+    margin-right: 0
+
+/* sprite button slicing style information
+
+.wmd-bold-button
+  @extend .static-text_bold
+
+.wmd-italic-button
+  @extend .static-text_italic
+
+.wmd-link-button
+  @extend .static-link
+
+.wmd-quote-button
+  @extend .static-text_quote
+
+.wmd-code-button
+  @extend .static-application_osx_terminal
+
+.wmd-image-button
+  @extend .static-image
+
+.wmd-olist-button
+  @extend .static-text_list_numbers
+
+.wmd-ulist-button
+  @extend .static-text_list_bullets
+
+.wmd-heading-button
+  @extend .static-text_heading_1
+
+.wmd-hr-button
+  @extend .static-text_horizontalrule
+
+.wmd-undo-button
+  @extend .static-arrow_undo
+
+.wmd-redo-button
+  @extend .static-arrow_redo
+
+.wmd-help-button
+  @extend .static-help
+
+  position: absolute
+  top: 5px
+  right: 0px
+
+.wmd-prompt-background
+  background-color: Black
+
+.wmd-prompt-dialog
+  border: 1px solid #999999
+  background-color: #F5F5F5
+
+  > form >
+
+    input
+      &[type="text"]
+        border: 1px solid #999999
+        color: black
+
+      &[type="button"]
+        border: 1px solid #888888

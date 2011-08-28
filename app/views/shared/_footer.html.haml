@@ -2,6 +2,11 @@
   .content
     &copy; 2011 STRd6
 
+    %ul.inline
+      %li= link_to "Contact Us", main_app.contact_us_path
+      %li= link_to "Products and Services", main_app.products_and_services_path
+      %li= link_to "Privacy Policy", main_app.privacy_policy_path
+
   - if @has_reg_popup
     = render :partial => 'shared/register_modal'
   = render :partial => "/shared/feedback"

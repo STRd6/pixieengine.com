@@ -1,6 +1,6 @@
 namespace :doc do
   task :pixie => :environment do
-    dir = "public/javascripts/pixie"
+    dir = "/assets/pixie"
     output_dir = "public/system/docs/pixie"
     jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
 

@@ -1,0 +1,31 @@
+:ruby
+  delivery_date = Time.now.strftime("%b %d %Y")
+  link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => delivery_date }
+
+  newsletter_header = "This week in Pixie: #{delivery_date}"
+
+  tutorial_1 = Project.find 176
+  tutorial_2 = Project.find 218
+  tutorial_3 = Project.find 227
+  tutorial_4 = Project.find 265
+  sur5n = Project.find 596
+
+  user_list = []
+
+  @featured_users.each do |user|
+    user_list.push(user_url(user, link_tracking))
+  end
+
+:plain
+
+  We've added cool new email features to keep you up to date with the ever growing Pixie community. Now you receive emails when people remix your sprites or reply to a forum thread you are interested in. These emails are enabled by default but you can always change your settings by clicking #{edit_user_url(@user, link_tracking)} on your home page.
+
+  The tutorial for this week is a four parter. It teaches you, step by step, how to move an object around and make it jump like in a Mario game. #{ide_project_url(tutorial_1, link_tracking)}, #{ide_project_url(tutorial_2, link_tracking)}, #{ide_project_url(tutorial_3, link_tracking)}, and #{ide_project_url(tutorial_4, link_tracking)}.
+
+  Drop by the #{forem_url(nil, link_tracking)}, ask the tough questions, and learn how to make the game of your dreams. Make sure to introduce yourself to our newest forum members: #{user_list.to_sentence}
+
+  In other news, Ludum Dare 21 happened this past weekend. Ludum Dare is a 48 hour themed game competition. Our own Daniel X. Moore built his entry using Pixie. Check out his FBI surf escape simulator, #{fullscreen_project_url(sur5n, link_tracking)}.
+
+  That's all for now. Now get out there and make those games!
+
+  #{unsubscribe_users_url(:id => @user.id)}

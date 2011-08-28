@@ -4,7 +4,7 @@
 - unless sprite.new_record?
   - @meta_desc = "Load #{sprite.meta_desc}"
 
-= stylesheet_link_tag 'pixie/pixie'
+= stylesheet_link_tag 'pixie'
 
 - width = @width || 32
 - height = @height || 32
@@ -18,8 +18,6 @@
     IE8 or below... If you're serious about being on the internet,
     please come back with a better browser:
     = link_to "Google Chrome", "http://www.google.com/chrome"
-
-  %iframe(allowFullScreen){ :title => "YouTube video player", :class=> "youtube-player", :type => "text/html", :width => "640", :height => "390",  :src => "http://www.youtube.com/embed/BrXPcaRlBqo", :frameborder => "0" }
 
 %section#pixie
 
@@ -36,6 +34,10 @@
   = button_to_function "New Canvas", "newCanvas()"
 
 :coffeescript
+  $("body").dropImageReader
+    callback: (file, event) ->
+      canvas.fromDataURL(event.target.result)
+
   (($) ->
     window.setNewDimensions = ->
       $("#newCanvasModal").removeAttr("style").modal
@@ -106,7 +108,7 @@
         if #{facebook?}
           canvas.addAction
             name: "Post to FB"
-            icon: "/images/icons/user_comment.png"
+            icon: "/assets/icons/user_comment.png"
             perform: (canvas) ->
               postImage()
             undoable: false
@@ -127,7 +129,7 @@
 
           canvas.addAction
             name: "Post to Chat"
-            icon: "/images/icons/picture_go.png"
+            icon: "/assets/icons/picture_go.png"
             perform: (canvas) ->
               wrapper = $ "<div />"
               img = $ "<img />"

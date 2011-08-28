@@ -34,12 +34,12 @@
       height: "100%"
       lineNumbers: true
       parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-      path: "/javascripts/codemirror/"
-      stylesheet: ["/stylesheets/codemirror/main.css"]
+      path: "/assets/codemirror/"
+      stylesheet: ["/public/stylesheets/codemirror/main.css"]
       tabMode: "shift"
       textWrapping: false
 
-    $(editor.win.document).find('html').toggleClass('light', $(".bulb").hasClass('on'))
+    $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
     $(editor.win.document).keyup ->
       textArea.val(editor.getCode())

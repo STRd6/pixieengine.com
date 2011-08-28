@@ -1,0 +1,118 @@
+@import util
+@import sprite_sheets
+
+.treeview
+  padding: 0
+  margin: 0
+  list-style: none
+  ul
+    padding: 0
+    margin: 0
+    list-style: none
+    background-color: white
+    margin-top: 4px
+  .hitarea
+    +bounds(16px)
+
+    background: url(/assets/treeview/treeview-default-white.gif) -64px -25px no-repeat
+    margin-left: -16px
+    float: left
+    cursor: pointer
+
+
+/* fix for IE6
+
+* html .hitarea
+  display: inline
+  float: none
+
+.treeview
+  li
+    margin: 0
+    padding: 3px 0pt 3px 16px
+  a.selected
+    background-color: #eee
+
+#treecontrol
+  margin: 1em 0
+  display: none
+
+.treeview
+  .hover
+    color: red
+    cursor: pointer
+  li
+    background: url(/assets/treeview/treeview-default-line.gif) 0 0 no-repeat
+    &.collapsable, &.expandable
+      background-position: 0 -176px
+  .expandable-hitarea
+    background-position: -80px -3px
+  li
+    &.last
+      background-position: 0 -1766px
+    &.lastCollapsable, &.lastExpandable
+      background-image: url(/assets/treeview/treeview-default-white.gif)
+    &.lastCollapsable
+      background-position: 0 -111px
+    &.lastExpandable
+      background-position: -32px -67px
+  div
+    &.lastCollapsable-hitarea, &.lastExpandable-hitarea
+      background-position: 0
+
+.treeview-red
+  li
+    background-image: url(/assets/treeview/treeview-red-line.gif)
+  .hitarea
+    background-image: url(/assets/treeview/treeview-red.gif)
+  li
+    &.lastCollapsable, &.lastExpandable
+      background-image: url(/assets/treeview/treeview-red.gif)
+
+.treeview-black
+  li
+    background-image: url(/assets/treeview/treeview-black-line.gif)
+  .hitarea
+    background-image: url(/assets/treeview/treeview-black.gif)
+  li
+    &.lastCollapsable, &.lastExpandable
+      background-image: url(/assets/treeview/treeview-black.gif)
+
+.treeview-gray
+  li
+    background-image: url(/assets/treeview/treeview-gray-line.gif)
+  .hitarea
+    background-image: url(/assets/treeview/treeview-gray.gif)
+  li
+    &.lastCollapsable, &.lastExpandable
+      background-image: url(/assets/treeview/treeview-gray.gif)
+
+.treeview-famfamfam
+  li
+    background-image: url(/assets/treeview/treeview-famfamfam-line.gif)
+  .hitarea
+    background-image: url(/assets/treeview/treeview-famfamfam.gif)
+  li
+    &.lastCollapsable, &.lastExpandable
+      background-image: url(/assets/treeview/treeview-famfamfam.gif)
+
+.treeview .placeholder
+  +bounds(16px)
+
+  background: url(/assets/ajax-loader.gif) 0 0 no-repeat
+  display: block
+
+.filetree
+  li
+    padding: 3px 0 3px 16px
+  span
+    &.folder, &.file
+      padding: 1px 0 1px 16px
+      display: block
+    &.folder
+      @extend .static-folder
+  li.expandable span.folder
+    @extend .static-folder-closed
+  span.file
+    @extend .static-file
+

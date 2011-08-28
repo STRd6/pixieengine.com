@@ -1,10 +1,13 @@
 :plain
   Hello #{to.display_name},
 
-  #{from.display_name} thinks that your Pixie #{type}
-  is really interesting so they left you a comment.
+  #{from.display_name} thinks that your Pixie #{type} is really interesting. They said:
 
-  Check it out #{user_url(to)}
+    #{body}
+
+  Check it out here #{user_url(to)}
 
   Creatively Yours,
   Pixie
+
+  Change your email notification settings: #{edit_user_url(to)}

@@ -17,7 +17,7 @@
 
         canvas.addAction
           name: "Save"
-          icon: "/images/icons/database_save.png"
+          icon: "/assets/icons/database_save.png"
           perform: (canvas) ->
             pixelEditor.trigger('doSave')
 
@@ -25,7 +25,7 @@
 
         canvas.addAction
           name: "Save As"
-          icon: "/images/icons/database_save.png"
+          icon: "/assets/icons/database_save.png"
           perform: (canvas) ->
             title = prompt("Title")
 
@@ -80,7 +80,7 @@
 
         canvas.addAction
           name: "Store"
-          icon: "/images/icons/database_save.png"
+          icon: "/assets/icons/database_save.png"
           perform: (canvas) ->
             imageData = canvas.toDataURL()
 

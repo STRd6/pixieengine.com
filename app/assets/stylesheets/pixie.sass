@@ -1,0 +1,223 @@
+@import partials/base
+@import util
+
+.editor.pixie
+  background-image: url(/assets/editor_textured_background.png)
+
+html.light
+  background-image: url(/assets/editor_textured_background.png)
+
+  body .content
+    background: none
+
+body#fullscreen
+  padding: 2.5em 1em 0
+
+  & > .content
+    +box-sizing(border-box)
+
+    padding: 1em 0 0 0
+
+body
+  .content
+    background: none
+    border: none
+    padding-left: 0
+    padding-right: 0
+
+.pixie
+  $sidebar_left: 50px
+  $sidebar_right: 150px
+  $margin: 12px
+
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  .content
+    +box-sizing(border-box)
+
+    height: 100%
+
+    padding-left: $sidebar_left + $margin
+    padding-right: $sidebar_right + $margin
+    padding-top: 34px
+
+    position: relative
+
+  .light &
+    nav.left, nav.right, nav.top
+      background-color: $light_background
+
+  nav.left, nav.right
+    +border-radius
+    +box-sizing(border-box)
+
+    background-color: $dark_highlight
+
+  nav.left
+    +bounds($sidebar_left, 100%)
+    padding: 0
+
+    .tool
+      +border-radius
+      +bounds(40px)
+      +box-sizing(border-box)
+
+      cursor: pointer
+      margin: 5px auto 0
+      padding-top: 12px
+      text-align: center
+
+      &:hover
+        background-color: #fff
+
+      &.active
+        +border-radius
+
+        background-color: #1084CE
+
+      img
+        border: none
+
+  nav.right
+    +bounds($sidebar_right, 100%)
+
+    padding: 1em
+
+    .preview
+      +bounds(150px)
+
+      background-color: #fff
+      border: 1px solid #AAA
+      cursor: pointer
+      position: absolute
+      top: 375px
+      left: 0
+      right: 0
+      margin: auto
+
+    .swatches
+      +bounds(76px, 175px)
+
+      left: 0
+      margin: auto
+      position: absolute
+      right: 0
+      top: 95px
+
+    .swatch
+      +border-radius(2px)
+      +bounds(30px)
+      +box-sizing(border-box)
+
+      cursor: pointer
+      border: 1px solid rgba(0, 0, 0, 0.15)
+      float: left
+      margin: 4px
+
+    .color_picker_holder
+      +bounds(74px, 76px)
+
+      margin-bottom: 7px
+      position: absolute
+      left: 0
+      right: 0
+      margin-left: auto
+      margin-right: auto
+
+      input.color
+        +border-radius(4px)
+        +bounds(50px)
+
+        border: 2px solid
+        border-color: rgba(255, 255, 255, 0.4)
+        position: absolute
+        text-align: center
+
+        &.primary
+          left: 0
+          top: 0
+          z-index: 10
+        &.secondary
+          left: 20px
+          top: 20px
+          z-index: 1
+
+  .canvas
+    +user-select(none)
+    +box-sizing(border-box)
+
+    border: 1px solid #000
+
+  .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
+    +contents-centered
+
+    background: none
+    display: inline-block
+    overflow: auto
+    position: relative
+
+  .layer
+    position: absolute
+
+    &:first-child
+      background: white url(/assets/pixie/pixel_bg.png)
+
+  .actions
+    position: absolute
+    top: 0
+
+  .actions, .layers
+    display: block
+
+    a.tool
+      margin: 1px
+      padding: .25em
+
+      &.active
+        background-color: $button_background_active
+        text-decoration: none
+
+  .toggle_holder
+    display: block
+    margin-left: 70px
+
+  .layers
+    display: inline-block
+    margin: 0
+    margin-top: 1em
+    width: 80px
+
+    h3
+      margin: 0
+
+    a.tool
+      display: inline-block
+      height: auto
+      margin: 0
+      margin-top: 5px
+      width: auto
+
+      &.active
+        color: white
+
+  .opacity
+    cursor: pointer
+    height: 73px
+    position: absolute
+    right: 1em
+
+    .val
+      cursor: pointer
+      position: absolute
+      right: -5px
+      bottom: -20px
+
+#newCanvasModal
+  #resize_width, #resize_height
+    float: right
+
+  input[type="button"]
+    margin-top: 10px

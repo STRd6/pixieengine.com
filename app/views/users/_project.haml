@@ -1,15 +1,21 @@
 .project.clickable>
-  %h2.title= link_to project.display_name, [:ide, project]
+  - if project.has_access?(current_user)
+    %ul.hover_actions.right
+      %a(href="#{project_path(project)}" title="Details")
+        .static-table
+        Details
+      %a(href="#{fullscreen_project_path(project)}" title="Run")
+        .static-application_go
+        Run
+      %a(href="#{edit_project_path(project)}" title="Edit Info")
+        .static-pencil
+        Edit Info
+      %a(href="#{project_path(project)}" title="Delete" data-method="delete" data-confirm="Are you sure you want to delete this project?")
+        .static-cross
+        Delete
 
-  - if project.image?
-    .gloss
-    .thumb.fancy= image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name, :class => "show", :size => "96x96")
+  .thumb.fancy= image_tag(project.image.url(:thumb), :alt => project.display_name, :title => project.display_name, :class => "show", :size => "96x96")
+
+  %h3.title= link_to project.display_name, [:ide, project]
 
   %p.description= project.description
-
-  - if project.has_access?(current_user)
-    %ul.hover_actions
-      %li= icon_link "Details", "table", project
-      %li= icon_link "Run", "application_go", [:fullscreen, project]
-      %li= icon_link "Edit Info", "pencil", [:edit, project]
-      %li= icon_link "Delete", "cross", project, :method => "delete", :confirm => "Are you sure you want to delete this project?"

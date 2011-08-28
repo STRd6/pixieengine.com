@@ -5,6 +5,7 @@ class HomeController < ApplicationController
     @sprite_pages_count = Sprite.count / Sprite.per_page
     @users = User.all(:select => "id, display_name, updated_at")
     @sprites = Sprite.select("id, title, updated_at").limit(1_000).order("id DESC")
+    @projects = Project.select("id, title, updated_at").limit(1_000).order("id DESC")
   end
 
   def survey
@@ -15,5 +16,11 @@ class HomeController < ApplicationController
   end
 
   def about
+  end
+
+  def contact
+  end
+
+  def products
   end
 end

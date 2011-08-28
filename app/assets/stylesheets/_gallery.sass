@@ -1,0 +1,119 @@
+.gallery
+  margin: auto
+  width: 1000px
+
+  nav
+    +clearfix
+
+    padding-bottom: 0.5em
+    padding-top: 1em
+
+    .filters
+      +inline-block
+
+      float: right
+      a
+        margin: 0
+
+    .pagination
+      +inline-block
+
+      float: left
+
+  .project, .sound, .user, .animation
+    +bounds(245px, 172px)
+    +module
+    +inline-block
+
+    margin-bottom: 0.5em
+    margin-right: 0.5em
+    overflow: hidden
+    padding: 1em
+    position: relative
+
+    &:nth-child(4n)
+      margin-right: 0
+
+    .gloss
+      +gloss
+
+      display: inline-block
+      position: absolute
+      left: 1em
+
+    .thumb
+      float: left
+      margin-bottom: 1em
+      margin-right: 1em
+
+      &.fancy
+        img
+          +border-radius(17px)
+          +box-shadow(#000F1A, 0, 4px, 6px)
+
+          .light &
+            +box-shadow(#8c8c8c, 0, 4px, 6px)
+
+    .title
+      a
+        color: $dark_text
+        text-decoration: none
+        white-space: nowrap
+
+        .light &
+          color: $light_text
+
+  .sound
+    .title_container
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
+    .sound_preview
+      +border-radius
+      +bounds(100%, 110px)
+      +contents-centered
+
+      margin: auto
+
+      #play
+        &:hover
+          background: url(/assets/play.png) no-repeat center center
+          cursor: pointer
+
+      img
+        border: none
+
+  .animation
+    .title_container
+      height: 45px
+      white-space: nowrap
+
+    h2
+      display: inline-block
+
+    .author
+      color: #888
+
+    .sprite_container
+      +border-radius
+      +bounds(64px)
+      +contents-centered
+      +inline-block
+
+      background-color: #fff
+      margin-right: 3px
+      margin-bottom: 15px
+
+      img
+        max-height: 60px
+        max-width: 60px
+
+      .name
+        text-align: center
+        top: -17px
+        white-space: nowrap

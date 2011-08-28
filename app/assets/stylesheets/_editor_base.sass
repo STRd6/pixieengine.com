@@ -1,0 +1,114 @@
+/* Styles common to all editors and editor components (pixel, animation, etc.)
+
+/* TODO: Clean up and remove a bunch of this
+#fullscreen
+  height: 100%
+  padding: 3em
+  padding-top: 4em
+
+  header
+    padding: 0 4em
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+
+
+  nav.bottom
+    position: absolute
+    bottom: 0
+    left: 0
+    width: 100%
+
+  nav.left
+    left: 0
+    position: absolute
+    top: 0
+
+  nav.right
+    +box-sizing(border-box)
+
+    right: 0
+    position: absolute
+    top: 0
+
+  section
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    .screen
+      +bounds(100%)
+      +box-sizing(border-box)
+
+      margin: auto
+      overflow: auto
+      position: relative
+
+
+/* This is the real base editor style
+.editor
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  background-image: url(/assets/editor_textured_background.png)
+  padding: 6px
+  padding-top: 8px
+
+  #fullscreen > &
+    padding: 0
+
+  .content
+    +bounds(100%, 100%)
+    +box-sizing(border-box)
+
+    position: relative
+
+  .module
+    padding: 10px
+    position: absolute
+
+    &.bottom
+      bottom: 0
+    &.left
+      left: 0
+      top: 0
+    &.right
+      right: 0
+      top: 0
+    &.top
+      top: 0
+
+  button
+    font-size: 13px
+
+  .screen, .viewport
+    +bounds(100%)
+    +box-sizing(border-box)
+    +contents_centered
+
+    background-color: #222
+
+.module
+  +module
+
+table.nested
+  +box-sizing(border-box)
+
+  padding-left: 1em
+
+table.properties
+  input, textarea
+    margin: 0
+
+  td
+    padding: 3px 1px
+
+    &:first-child
+      vertical-align: top
+
+    img
+      display: block
+      margin: auto
+
+  label
+    margin: 0

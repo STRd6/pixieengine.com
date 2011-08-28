@@ -1,0 +1,358 @@
+@import util
+@import partials/base
+@import sprite_sheets
+
+$sidebar_width: 220px
+$lower_sidebar_height: 210px
+$inner_margin: 14px
+
+.static-chrome_webstore, .static-zip
+  margin: auto
+
+html.light
+  background-image: url(/assets/textured_background.png)
+
+.static-help
+  +bounds(15px)
+
+  display: inline-block
+  vertical-align: bottom
+
+#fullscreen.ide
+  padding-top: 3.5em
+
+  header
+    padding: 0 3em 0 1em
+
+    nav.top_bar
+      display: none
+
+.ide
+  #content
+    padding-bottom: 0.5em
+    padding-left: $sidebar_width + $inner_margin
+    padding-top: 0.5em
+    position: relative
+
+nav.top.actions .status
+  color: $dark_text
+
+  input
+    background-color: #fff
+    color: #000
+    padding-left: 5px
+
+.featured_action
+  text-align: center
+
+.sidebar_container
+  +box-sizing(border-box)
+
+  height: 100%
+  width: $sidebar_width
+
+  left: 0
+  padding-top: 0.5em
+  padding-bottom: 0.5em
+  position: absolute
+  top: 0
+
+  .sidebar
+    +bounds(100%)
+    +module
+
+    overflow-y: auto
+    padding: 1em 0
+
+  .relative
+    +bounds(100%)
+    +box-sizing(border-box)
+
+    padding-bottom: $lower_sidebar_height + $inner_margin
+    position: relative
+
+  .bottom
+    +module
+
+    bottom: 0
+    height: $lower_sidebar_height
+    position: absolute
+    padding: 1em
+    width: 100%
+
+    &.actionable
+      cursor: pointer
+
+      &:hover
+        background-color: $hover
+
+
+.treeview ul
+  background-color: transparent
+
+.treeview .hover
+  color: $pixie_primary
+
+ul.filetree
+  margin-top: 0
+  margin-left: 1em
+  margin-right: 1em
+  overflow-x: hidden
+  vertical-align: top
+
+  .tab_data
+    display: none
+
+  span
+    cursor: pointer
+
+    &.folder
+      display: inline
+
+    &.folder, &.file
+      padding: 1px 0px 1px 18px
+
+    &.file
+      +bounds(12px)
+
+      white-space: nowrap
+
+      &.animation
+        +bounds(15px)
+        @extend .static-film
+      &.coffeescript, &.coffee
+        @extend .static-cup
+      &.javascript, &.js
+        height: 15px
+        @extend .static-script
+      &.sprite, &.png, &.gif, &.jpg, &.jpeg, &.bmp
+        height: 14px
+        margin: 0
+        @extend .static-picture
+      &.sound, &.sfs
+        height: 15px
+        margin: 0
+        @extend .static-sound
+      &.wav, &.mp3
+        margin: 0
+        @extend .static-cd
+      &.documentation
+        height: 14px
+        @extend .static-book_open
+      &.tutorial
+        height: 14px
+        @extend .static-book_open
+      &.entity
+        height: 14px
+        @extend .static-sport_shuttlecock
+      &.tilemap
+        height: 14px
+        @extend .static-world
+      &.new_script
+        @extend .static-cup_add
+      &.add_library
+        @extend .static-book_add
+
+#tabs
+  +bounds(100%)
+  +box-sizing(border-box)
+
+  .ui-tabs-nav
+    +box-sizing(border-box)
+    left: 0
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 1
+
+    li
+      .ui-icon-close
+        float: right
+        margin: 0.5em 0.2em 0 0
+        cursor: pointer
+
+      &.ui-state-default
+        cursor: pointer
+
+        a
+          cursor: pointer
+
+        &.ui-state-active
+          cursor: default
+
+          a
+            cursor: default
+
+      .ui-icon
+
+        &.lang
+          +bounds(16px)
+
+          float: left
+          margin: 0.5em 0 0 0.2em
+
+          &.animation
+            @extend .static-film
+          &.coffeescript
+            @extend .static-cup
+          &.javascript
+            @extend .static-script
+          &.sound
+            @extend .static-sound
+          &.sprite
+            @extend .static-image
+          &.tilemap
+            @extend .static-world
+          &.documentation
+            @extend .static-book_open
+          &.tutorial
+            @extend .static-book_open
+          &.entity
+            @extend .static-sport_shuttlecock
+
+      a
+        +box-sizing(border-box)
+        +ellipsis
+
+        font-weight: normal
+        padding: 0.5em 0.6em
+        width: 100px
+
+      &.unsaved
+        a
+          font-weight: bold
+          &:after
+            content: "*"
+
+  &.ui-tabs
+    .ui-tabs-hide
+      display: none
+
+    .ui-tabs-panel
+      +box-sizing(border-box)
+      height: 100%
+      padding: 0
+      padding-top: 30px
+      position: relative
+
+  form
+    height: 100%
+
+#titleModal, #libraries
+  display: none
+
+.window, #test_zone, #testZone
+  +border-radius(2px)
+  +box-shadow(rgba(0, 0, 0, 0.3), 0, 0, 15px)
+
+  background-color: #EFEFEF
+  display: none
+  margin-top: 1em
+  padding: 0.4em
+  position: absolute
+  z-index: 1000
+
+  h3
+    cursor: move
+    margin-bottom: 0
+    padding-left: 5px
+
+  iframe
+    margin-bottom: -5px
+
+  .ui-icon-close, #close_app
+    cursor: pointer
+    float: right
+    left: -5px
+    position: relative
+    top: 6px
+
+#test_frame, #testFrame
+  background-color: #EEE
+  border: 1px solid black
+
+.actions
+  display: inline-block
+  text-align: center
+
+  .status
+    +inline-block
+
+    .message
+      width: 200px
+
+#import_drop_zone
+  @extend .static-import
+
+  width: 320px
+
+  p
+    bottom: 0
+    left: 20px
+    font-size: 130%
+    position: absolute
+    width: 292px
+
+.ide
+  .file.error
+    cursor: pointer
+
+  #properties_editor_window
+    h3
+      margin-left: -1px
+      margin-right: 3px
+
+  #prop_editor
+    input
+      border: 1px solid #aaa
+      margin-right: 4px
+      padding: 2px
+      width: 130px
+
+    input[placeholder="key"]
+      color: #DB0000
+
+    tr
+      display: block
+      margin-bottom: -2px
+
+      &.child_property
+        margin-left: 15px
+
+        td:first-child input
+          width: 115px
+
+    td
+      display: inline-block
+      margin-left: -1px
+      margin-right: -1px
+
+  #console_window
+    width: 300px
+
+    textarea
+      display: block
+      margin-top: 0.5em
+
+    button
+      margin-top: 0.5em
+      margin-bottom: 0
+
+#export_modal
+  .choice
+    +border-radius
+    +inline-block
+
+    background-color: $light_highlight
+    cursor: pointer
+    margin: 1em
+    padding: 0.5em
+    text-align: center
+
+    width: 256px
+
+    &:hover
+      background-color: darken($light_highlight, 15%)
+
+    .wrap
+      height: 60px

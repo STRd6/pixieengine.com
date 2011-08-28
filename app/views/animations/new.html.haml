@@ -1,20 +1,28 @@
+%style
+  :sass
+    #fullscreen
+      padding-top: 3.5em
+
+    body > .content
+      padding: 0
+
+= form_tag download_animations_path, :class => "download_json" do
+  = hidden_field_tag :export_json_data
+
+= form_tag download_animations_path, :class => "download_csv" do
+  = hidden_field_tag :export_csv_data
+
 = render :partial => 'animation_editor'
 
 :coffeescript
   $ ->
-    editor = $("<div />").appendTo("body").animationEditor
-      save: (animationData) ->
-        notify("Saving...")
+    $('body').attr('id', 'fullscreen')
+    editor = $("<div />").appendTo("body > .content").animationEditor()
 
-        postData =
-          format: 'json'
-          animation:
-            name: animationData.name
-            states: animationData.animations.length
-            data_string: JSON.stringify(editor.animationData())
+    editor.find('.export_json').mousedown ->
+      $('#export_json_data').val(exportAnimationJSON())
+      $('form.download_json').submit()
 
-        callback = (data) ->
-          id = data.animation.id
-          notify("Saved as <a href='/animations/"+id+"'>Animation "+id+"</a>!")
-
-        $.post('/animations', postData, callback, "json")
+    editor.find('.export_csv').mousedown ->
+      $('#export_csv_data').val(exportAnimationCSV())
+      $('form.download_csv').submit()

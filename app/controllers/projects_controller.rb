@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   respond_to :html, :json
 
-  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade, :landing1]
+  PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade, :landing1, :widget]
   before_filter :require_user, :except => PUBLIC_ACTIONS
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade, :add_to_tutorial]
   before_filter :require_owner_or_admin, :only => :destroy
@@ -16,6 +16,8 @@ class ProjectsController < ApplicationController
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
+    @modify_remote_origin = true
+
     if current_user.projects.size > 0 && !current_user.paying
       flash[:notice] = "You have reached the limit of free projects. Please subscribe to access more."
       redirect_to subscribe_path
@@ -92,6 +94,7 @@ class ProjectsController < ApplicationController
   end
 
   def fullscreen
+    @show_bulb = true
     @has_reg_popup = true
   end
 
@@ -117,7 +120,6 @@ class ProjectsController < ApplicationController
     @title = "PixieEngine - Create Games"
     @hide_chat = true
     @hide_dock = true
-    @theme = :light
   end
 
   def update
@@ -130,9 +132,15 @@ class ProjectsController < ApplicationController
     @project = Project.new(params[:project])
     @project.user = current_user
 
-    @project.save
+    if @project.save
+      track_event('create_project')
 
-    respond_with([:ide, @project])
+      respond_with([:ide, @project])
+    else
+      track_event('create_project_error')
+
+      respond_with @project
+    end
   end
 
   def fork
@@ -158,6 +166,8 @@ class ProjectsController < ApplicationController
   end
 
   def ide
+    @show_bulb = true
+
     respond_with(project) do |format|
       format.html do
         @has_reg_popup = true
@@ -242,21 +252,21 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if current_user
-      if filter == "own"
+    @projects ||= if filter == "own"
+      if current_user
         Project.for_user(current_user)
-      elsif filter == "for_user"
-        Project.for_user(User.find(params[:user_id]))
       else
-        Project.send(filter)
+        Project
       end
+    elsif filter == "for_user"
+      Project.for_user(User.find(params[:user_id]))
     else
-      Project
+      Project.send(filter)
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def filters
-    ["featured", "own", "none", "for_user", "tutorial", "arcade"]
+    ["featured", "own", "none", "for_user", "recently_edited", "tutorial", "arcade"]
   end
 
   def gallery_filters
@@ -264,6 +274,7 @@ class ProjectsController < ApplicationController
       ["Arcade", :arcade],
       ["Featured", :featured],
       ["Tutorials", :tutorial],
+      ["Recently Edited", :recently_edited],
       ["All", :none]
     ]
 

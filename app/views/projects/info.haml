@@ -1,10 +1,9 @@
 %style
+  @import sprite_sheets
+
   :sass
     @import util
     @import branded
-
-    .bulb
-      display: none
 
     header
       height: 90px
@@ -17,17 +16,18 @@
         +inline-block
 
         margin-left: 7em
-        margin-top: 28px
+        margin-top: -25px
 
       .content
         height: 100%
         padding: 0.5em 0
 
+      .static-landing_logo
+        margin-top: 15px
+
       .logo
-        +bounds(100px, 53px)
         +inline-block
 
-        background-image: url(/images/shadow_logo.png)
         float: left
         margin: 0
         margin-top: 15px
@@ -64,7 +64,7 @@
         +opacity(0.75)
 
       .feature
-        margin: 2em 0 1em
+        margin-bottom: 1em
         overflow: auto
         padding-bottom: 1em
         width: 100%
@@ -164,11 +164,15 @@
           .light &
             color: $light_text
 
+:coffeescript
+  $ ->
+    $('a.logo').attr('class', 'static-landing_logo')
+
 .content
   .feature
     .info
       %h1
-        Achieve your dreams
+        Create Games!
 
       %p
         Pixie enables you to quickly and easily create your own games online.
@@ -219,7 +223,7 @@
 
   .testimonial.module
     .thumb.fancy
-      = image_tag "daniel_128.jpg"
+      =image_tag('daniel_128.jpg')
 
     %h2 A message from the creator of Pixie
 

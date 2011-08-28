@@ -67,7 +67,7 @@
               %td{:style => "background-color:#FFFFFF;border-top:10px solid #FFFFFF;", :valign => "top"}
                 %span{:style => "font-size:10px;color:#666666;line-height:100%;font-family:verdana;"}
                   %center
-                    = link_to "Unsubscribe", {:controller => "/users", :action => "unsubscribe", :token => @user.perishable_token, :only_path => false}
+                    = link_to "Unsubscribe", {:controller => "/users", :action => "unsubscribe", :token => @user.perishable_token, :only_path => false}, link_tracking
                     %br
                     Copyright (C) 2010 STRd6 All rights reserved.
                     %br

@@ -1,0 +1,99 @@
+#forgot_password_link
+  +bounds(5px)
+
+  position: absolute
+  top: 5px
+  right: 5px
+
+form
+  // Styles for stand-alone forms
+  &.module
+    margin: auto
+    margin-top: 3em
+    padding: 1.5em 2em
+    width: 340px
+
+  a.hint
+    img
+      bottom: 0
+      margin: auto
+      position: absolute
+      right: 7px
+      top: 0
+
+  .field_with_errors
+    display: inline
+
+    label
+      color: $error_color
+
+    input
+      border-color: $error_color
+
+  .errorExplanation
+    +border-radius(5px)
+
+    background-color: #FEF1EC
+    border: 1px solid $error_color
+    color: $error_color
+    margin-bottom: 1.5em
+    padding: 1em 1.5em
+
+    h2
+      font-size: 150%
+
+label, input, textarea
+  font-family: $normal_font
+  font-size: 12px
+  letter-spacing: 0.5px
+
+label
+  display: block
+  font-weight: bold
+  margin: 15px 0
+
+  h1, h2, h3, h4, h5, h6
+    margin: 0
+
+  h4, h5, h6
+    font-family: $normal_font
+    font-weight: bold
+
+  &.inline
+    margin: 0
+    h1, h2, h3, h4, h5, h6, input
+      display: inline
+
+input[disabled]
+  background-color: #ccc
+
+input[type=text], input[type=password], input[type=file], textarea
+  +border-radius(2px)
+  +box-sizing(border-box)
+
+  padding: 5px
+
+  &:focus
+    border-width: 1px
+    border-color: $pixie_primary
+
+input[type=text], input[type=password], textarea
+  +box-shadow(#888, 1px, 1px, 1px, 0px, inset)
+
+  border: 1px solid $light_gray
+  display: block
+  width: 100%
+
+input[type=radio]
+  margin-right: 0.5em
+
+input[type=file]
+  color: $dark_text
+  margin-top: 0.5em
+  padding: 0
+
+  .light &
+    color: $light_text
+
+textarea
+  height: 150px

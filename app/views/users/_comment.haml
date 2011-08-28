@@ -1,0 +1,11 @@
+.comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
+  .attribution
+    - commenter = comment.commenter
+    %span.name= link_to (commenter.display_name + image_tag(commenter.avatar.url(:thumb), :size => "32x32")).html_safe, commenter
+    .time= "#{time_ago_in_words(comment.created_at)} ago"
+
+  - if commentable = comment.commentable
+    .commentable
+      = link_to image_tag(commentable.image.url(:thumb), :alt => commentable.display_name), commentable
+  
+  %p= comment.body

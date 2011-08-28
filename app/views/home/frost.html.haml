@@ -1,96 +1,290 @@
+- @fullscreen = true
+
 %style
   :sass
-    body > .content
-      position: relative
+    @import util
 
-    canvas
-      &.ui, &.canvas
+    $bar_top: 40px
+    $margin: 12px
+
+    .viewport
+      & > .canvas
+        +bounds(642px, 482px)
+        +box-sizing(border-box)
+
+        background-color: white
+        border: 1px solid black
+
+      canvas
         left: 0
         position: absolute
         top: 0
 
+    .editor
+      padding: 0
 
-%canvas.ui(width=640 height=480)
-%canvas.canvas(width=640 height=480)
+      & > .content
+        +box-sizing(border-box)
+        padding-top: $bar_top + $margin
+
+      .controls
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+
+        button
+          margin: 0
+
+      .timeline
+        .frame
+          +bounds(14px, 18px)
+          +box-sizing(border-box)
+          +inline-block
+
+          background-color: white
+          border-top: 1px solid black
+          border-bottom: 1px solid black
+
+          .state
+            display: none
+
+          &.key
+            border-left: 1px solid black
+            .state
+              display: inline
+          &:first-child
+            border-left: 1px solid black
+          &:last-child
+            border-right: 1px solid black
+
+          &.active
+            background-color: #EEF
+
+.editor
+  .content
+    .controls
+      %ul.timeline
+        - 32.times do |i|
+          - if i == 0
+            - cssClass = "key active"
+          - elsif i == 31
+            - cssClass = "key"
+
+          %li.frame(class=cssClass)>
+            .state &#x25CF;
+      .actions
+
+    .viewport
+      .canvas
+        %canvas.canvas(width=640 height=480)
+        %canvas.ui(width=640 height=480)
+
+= javascript_include_tag "easing"
+= javascript_include_tag "display_object"
 
 :coffeescript
+  NUM_FRAMES = 32
+  editor = $(".editor")
+
+  Sprite = (image, sourceX, sourceY, width, height) ->
+    sourceX ||= 0
+    sourceY ||= 0
+    width ||= image.width
+    height ||= image.height
+
+    draw: (canvas, x, y) ->
+      canvas.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        width,
+        height,
+        x,
+        y,
+        width,
+        height
+      )
+
+    width: width
+    height: height
+
+  $("body").dropImageReader
+    callback: (file, event) ->
+      loadSprite(event.target.result)
+
+  loadSprite = (url) ->
+    img = new Image()
+
+    img.onload = ->
+      addObject Sprite(this)
+
+    img.src = url
+
+  loadSprite("http://localhost:3000/assets/shadow_logo_small.png")
+
+  Timeline = (I) ->
+    $.reverseMerge I,
+      frames: []
+
+    self = Core(I).extend
+      draw: () ->
+        line = editor.find(".timeline")
+        line.empty()
+
+  objects = {}
+  keyFrames =
+    0: {}
+    31: {}
+
+  playing = false
+  activeObject = null
+  mousedown = false
+  previousMousePosition = Point(0, 0)
+
+  currentFrame = 0
+  currentKeyFrame = 0
+  activeKeyFrame = ->
+    keyFrames[currentKeyFrame]
+
+  activeFrameObjects = ->
+    # Temp hack for just one final keyframe
+    nextKeyFrame = NUM_FRAMES - 1
+
+    if currentKeyFrame != nextKeyFrame
+      t = (currentFrame - currentKeyFrame) / (nextKeyFrame - currentKeyFrame)
+    else
+      t = 0
+
+    initialPositions = keyFrames[currentKeyFrame]
+    finalPositions = keyFrames[nextKeyFrame]
+    activeDisplayObjects = []
+    for uuid, transform of initialPositions
+      object = objects[uuid]
+
+      if t == 0
+        object.transform(transform)
+      else
+        object.transform(generateMatrixTweenFunction(transform, finalPositions[uuid])(t))
+
+      activeDisplayObjects.push(object)
+
+    activeDisplayObjects
+
+  frameAdvance = ->
+    currentFrame = (currentFrame + 1) % NUM_FRAMES
+    if keyFrames[currentFrame]
+      currentKeyFrame = currentFrame
+
+  $(".timeline .frame").click ->
+    currentFrame = $(this).index()
+
+    if $(this).is(".key")
+      currentKeyFrame = currentFrame
+    else
+      currentKeyFrame = $(this).prevAll(".key").filter(":last").index()
+
+    log currentFrame
+    log currentKeyFrame
+
+    $(this).takeClass("active")
+    activeObject = null
+
+  addObject = (sprite) ->
+    uuid = Math.uuid(32, 16)
+
+    # Add object to objects table
+    objects[uuid] = DisplayObject
+      height: sprite.height
+      id: uuid
+      sprite: sprite
+      width: sprite.width
+
+    # Add object in default position to each key frame
+    for pos, frame of keyFrames
+      frame[uuid] = Matrix()
+
+  refreshCanvas = ->
+    canvas.clear()
+    activeFrameObjects().invoke "draw", canvas
+
+    if playing
+      frameAdvance()
+    else
+      canvas.strokeColor "rgba(96, 0, 96, 0.75)"
+      activeObject?.drawOutline(canvas)
+
   uiElement = $("canvas.ui")
   ui = uiElement.powerCanvas()
 
   canvas = $("canvas.canvas").powerCanvas()
 
-  blocks = {}
-
-  Block = (I) ->
-    $.reverseMerge I,
-      color: "#F00"
-      x: 0
-      y: 0
-      width: 1
-      height: 1
-
-    I.__proto__ = Block::
-
-    return I
-
-  Block:: =
-    draw: (canvas) ->
-      canvas.fillColor "#F00"
-      canvas.fillRect(
-        this.x * BLOCK_SIZE,
-        this.y * BLOCK_SIZE,
-        this.width * BLOCK_SIZE,
-        this.height * BLOCK_SIZE
-      )
-
-    set: ->
-      locStr = "\#{this.x}x\#{this.y}"
-
-      blocks[locStr] = this
-
-      this.draw(canvas)
-
-  BLOCK_SIZE = 16
-
-  Block
-    x: 6
-    y: 4
-  .set()
-
   eventToLocal = (event) ->
     offset = uiElement.offset()
 
-    local =
-      y: (event.pageY - offset.top).snap(BLOCK_SIZE)
-      x: (event.pageX - offset.left).snap(BLOCK_SIZE)
+    Point(
+      event.pageX - offset.left,
+      event.pageY - offset.top
+    )
 
-  paint = (e) ->
-    local = eventToLocal(e)
-
-    x = local.x / BLOCK_SIZE
-    y = local.y / BLOCK_SIZE
-
-    Block
-      x: x
-      y: y
-    .set()
-
-  active = false
+  updateObject = (method, args...) ->
+    if activeObject
+      activeKeyFrame()[activeObject.id()] = activeObject[method](args...)
 
   $(document).bind "mousemove", (e) ->
     local = eventToLocal(e)
 
-    ui.clear()
-    ui.strokeColor "#080"
-    ui.strokeRect(local.x, local.y, BLOCK_SIZE, BLOCK_SIZE)
+    if mousedown
+      updateObject "move", local.subtract(previousMousePosition)
 
-    if active
-      paint(e)
+    previousMousePosition = local
 
-  $(document).bind "mousedown", (e) ->
-    active = true
+  uiElement.bind "mousedown", (e) ->
+    local = eventToLocal(e)
 
-    paint(e)
+    activeObject = activeFrameObjects().select (object) ->
+      object.pointWithin(local)
+    .last()
 
-  $(document).bind "mouseup", (e) ->
-    active = false
+    mousedown = true
+
+  uiElement.bind "mouseup", (e) ->
+    mousedown = false
+
+    return
+
+  setInterval refreshCanvas, 1000 / 24
+
+  window.generateMatrixTweenFunction = (begin, end, easing="linear") ->
+    interpolations = ["a", "b", "c", "d", "tx", "ty"].map (key) ->
+      Easing[easing](begin[key], end[key])
+
+    return (t) ->
+      params = interpolations.map (interpolation) ->
+        interpolation(t)
+
+      Matrix.apply null, params
+
+  # tweenFn = generateMatrixTweenFunction(Matrix(), activeObject.I.transform, "sinusoidalInOut")
+
+  addButton = (text, fn) ->
+    button = $ "<button />",
+      text: text
+      click: fn
+
+    editor.find(".actions").append button
+
+  addButton "Rotate", ->
+    updateObject "rotate", Math.TAU / 16
+
+  addButton "Grow", ->
+    updateObject "scale", 0.25
+
+  addButton "Shrink", ->
+    updateObject "scale", -0.2
+
+  addButton "Play", ->
+    playing = true
+
+  addButton "Pause", ->
+    playing = false

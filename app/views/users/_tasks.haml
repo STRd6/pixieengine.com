@@ -5,10 +5,10 @@
   - user.tasks.each do |task|
     .task{:class => ("incomplete" unless task[:complete])}
       - if task[:complete?]
-        = image_tag "icons/thumb_up.png"
+        .static-thumb_up
         = task[:description]
       - else
-        = image_tag "icons/add.png"
+        .static-add
         = link_to task[:description], task[:link]
       .value
         +#{task[:value]}%

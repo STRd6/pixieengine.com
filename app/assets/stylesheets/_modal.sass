@@ -1,0 +1,55 @@
+@import sprite_sheets
+
+#simplemodal-container a.modalCloseImg
+  +bounds(25px, 29px)
+  +opacity(0.3)
+
+  @extend .static-closelabel
+
+  display: inline
+  position: absolute
+  top: 18px
+  right: 14px
+  cursor: pointer
+
+  &:hover
+    +opacity(1.0)
+
+#simplemodal-overlay
+  background-color: #000
+  cursor: wait
+
+#simplemodal-container
+  +border-radius
+  +box-shadow(rgba(0, 0, 0, 0.3), 0, 0, 20px)
+
+  background-color: transparent
+  color: $light_text
+  padding: 4px
+  max-height: 500px
+  max-width: 600px
+
+.simplemodal-wrap
+  +border-radius(4px)
+
+  background: #D2EEFF
+
+.simplemodal-data
+  padding: 6px
+
+  .header
+    border-bottom: 1px solid rgba(8, 66, 103, 0.25)
+
+.modal, .modalElement
+  display: none
+
+#subscriptionModal
+  .header
+    padding-right: 1em
+
+  .info
+    font-size: 1.5em
+    margin-bottom: 1em
+
+  ul
+    margin-left: 4em

@@ -77,10 +77,17 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :animations, :comments, :password_resets, :tilemaps, :user_sessions
+  resources :animations do
+    collection do
+      post :download
+    end
+  end
+
+  resources :comments, :password_resets, :tilemaps, :user_sessions
   resources :invites
 
   match 'begin' => "projects#info"
+  match 'create-games' => "projects#info"
 
   match 'facebook' => "sprites#new", :as => :facebook
 
@@ -95,10 +102,14 @@ PixieStrd6Com::Application.routes.draw do
   match 'i/:token' => "invites#track", :as => :invite_token
 
   match 'about' => "home#about", :as => :about
+  match 'contact_us' => "home#contact", :as => :contact_us
   match 'jukebox' => "home#jukebox"
   match 'frost' => "home#frost", :as => :frost
+  match 'privacy_policy' => "home#privacy_policy", :as => :privacy_policy
+  match 'products_and_services' => "home#products", :as => :products_and_services
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey
+  match 'wiki' => redirect('https://docs.google.com/document/d/1N_VbAu7hPmOQIL2XjLr0gTVfLL3W2qPWS3o1id4d-xI/edit?hl=en_US'), :as => :wiki
 
   match "login" => "user_sessions#new", :as => :sign_in
   match "logout" => "user_sessions#destroy", :as => :sign_out

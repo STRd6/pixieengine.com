@@ -1,0 +1,59 @@
+@import partials/base
+@import util
+
+.sprite, .sound
+  +bounds(96px)
+
+  display: inline-block
+  height: auto
+  position: relative
+  vertical-align: top
+  word-wrap: break-word
+
+  img
+    border: 1px solid #aaa
+    display: block
+    margin: .5em 0
+
+  .favorites
+    cursor: pointer
+    display: inline-block
+
+  .title a
+    vertical-align: top
+
+
+.tags
+  form
+    +inline-block
+    input
+      +inline-block
+
+      &[type=button], &[type=submit]
+        margin: 0
+
+.tag
+  +inline-block
+  +border-radius(2px)
+
+  border: solid 1px #7aa9e3
+  background-color: #bbcee4
+  margin-bottom: 0.25em
+  padding: 3px 9px
+
+  &:hover
+    background-color: darken(#bbcee4, 10%)
+
+  a
+    +inline-block
+    color: #003153
+    float: left
+    text-decoration: none
+
+  .remove
+    +inline-block
+    cursor: pointer
+    float: left
+    font-size: 0.8em
+    margin-left: 8px
+    padding-top: 1px

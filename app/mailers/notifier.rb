@@ -32,6 +32,31 @@ class Notifier < ActionMailer::Base
       :to => user.email
   end
 
+  def newsletter2(user)
+    @user = user
+
+    @featured_users = []
+
+    User.find(182, 238, 1575, 1632, 1649).each do |featured_user|
+      @featured_users.push featured_user
+    end
+
+    mail :subject => "Pixie Newsletter", :to => user.email
+  end
+
+  def newsletter3(user)
+    @user = user
+    @daniel = User.find 1
+
+    @featured_users = []
+
+    User.find(531, 1646).each do |featured_user|
+      @featured_users.push featured_user
+    end
+
+    mail :subject => "Pixie Newsletter", :to => user.email
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email
@@ -54,5 +79,12 @@ class Notifier < ActionMailer::Base
     attachments['report.html'] = File.read report_html if File.exist?(report_html)
 
     mail :subject => "Weekly Analytics", :to => user.email
+  end
+
+  def new_post(post, user)
+    @post = post
+    @user = user
+
+    mail :subject => "A new post has been created in #{post.topic.forum.title} >> #{post.topic.subject}", :to => user.email
   end
 end
