@@ -384,7 +384,7 @@ $.fn.animationEditor = (options) ->
         currentAnimation.addFrame($(frame).attr('src'))
 
   $(document).bind 'keydown', 'ctrl', (e) ->
-    $('#clipboard_modal').children().remove()
+    $('#clipboard_modal').children().not('.header').remove()
 
     for frame in clipboard
       $('#clipboard_modal').append($(frame).clone())
