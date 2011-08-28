@@ -378,6 +378,11 @@ $.fn.animationEditor = (options) ->
       index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
       currentAnimation.removeFrame(index)
 
+  $(document).bind 'keydown', 'meta+v', (e) ->
+    if clipboard.length
+      for frame in clipboard
+        currentAnimation.addFrame($(frame).attr('src'))
+
   $(document).bind 'keydown', 'ctrl', (e) ->
     $('#clipboard_modal').children().remove()
 
