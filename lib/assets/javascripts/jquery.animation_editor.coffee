@@ -362,7 +362,28 @@ $.fn.animationEditor = (options) ->
     (e.which - keyOffset).times ->
       currentAnimation.addFrame(lastClickedSprite.get(0).src)
 
+  $(document).bind 'keydown', 'meta+c', (e) ->
+    e.preventDefault()
+
+    if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
+      clipboard = selectedSprites
+
+  $(document).bind 'keydown', 'meta+x', (e) ->
+    e.preventDefault()
+
+    if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
+      clipboard = selectedSprites
+
+    for frame in selectedSprites
+      index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
+      currentAnimation.removeFrame(index)
+
   $(document).bind 'keydown', 'ctrl', (e) ->
+    $('#clipboard_modal').children().remove()
+
+    for frame in clipboard
+      $('#clipboard_modal').append($(frame).clone())
+
     $('#clipboard_modal').modal()
 
   $(document).bind 'keyup', 'ctrl', (e) ->
