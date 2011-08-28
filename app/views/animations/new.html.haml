@@ -23,6 +23,8 @@
     $('body').attr('id', 'fullscreen')
     editor = $("<div />").appendTo("body > .content").animationEditor()
 
+    $('#feedback').hide()
+
     editor.find('.export_json').mousedown ->
       $('#export_json_data').val(exportAnimationJSON())
       $('form.download_json').submit()
