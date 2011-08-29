@@ -1,17 +1,16 @@
-- config = project.config
+:ruby
+  @title = project.title
+  @meta_desc = project.description
+  config = project.config
+  canvas_width = config[:width]
+  canvas_height = config[:height]
+
+%canvas(width=canvas_width height=canvas_height)
 
 - content_for :javascript do
   :javascript
-    var sandbox = document;
+    BASE_URL = #{project.base_url.to_json};
+    MTIME=#{project.updated_at.to_i};
 
-    sandbox.open();
 
-    sandbox.write(#{stylesheet_link_tag('project').to_json});
-    sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')});
-
-    sandbox.write("<script>BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')};MTIME=#{project.updated_at.to_i};<\/script>");
-
-    sandbox.write("<canvas width='#{config[:width]}' height='#{config[:height]}'></canvas>");
-    sandbox.write('<script src=#{"/production/projects/#{project.id}/#{config[:name]}.js?#{project.updated_at.to_i}".to_json}><\/script>');
-
-    sandbox.close();
+  %script(src="/production/projects/#{project.id}/#{config[:name]}.js?#{project.updated_at.to_i}")
