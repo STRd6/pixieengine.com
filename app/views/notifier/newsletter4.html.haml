@@ -1,0 +1,12 @@
+:ruby
+  @pixie_blue = "#1084CE"
+  @content_bg = "#FFFFFF"
+  @text_color = "#555555"
+
+  red_ice = Project.find 166
+  w_paint = Project.find 330
+  f_blast = Project.find 658
+
+  @paragraphs = ["This is a big week for Pixie. To start off, we've redesigned your home page to help you find everything at a glance. We also reorganized what people are saying about your sprites and projects so you can easily pick out the praise.","Secondly, we have cross platform support for making games with joysticks! Check it out here: #{link_to 'Boomstick', 'https://github.com/STRd6/Boomstick#readme'}.", "#{project_preview_left(red_ice)} #{project_preview_right(w_paint)} There are already a few games on Pixie taking advantage of this great breakthrough. Play #{link_to(red_ice.display_name, fullscreen_project_url(red_ice, @link_tracking))}, a hockey brawler, with up to five friends or collaboratively paint with your peers in #{link_to(w_paint.display_name, fullscreen_project_url(w_paint, @link_tracking))}.","We have two new forum members to mention this week. Check out the retro console art stylings of #{user_link(@hawthorn)} and play #{link_to @ntg, user_url(@ntg, @link_tracking)}'s #{link_to(f_blast.display_name, fullscreen_project_url(f_blast, @link_tracking))}, a game where you destroy your enemies by blasting them with their prime factorization before they go mersenne-saiyan.","Finally, we’ve added more support for exporting your Pixie games to great platforms. We’ve had a Google Chrome Webstore export for a while, but now we have the ability to publish to Kongregate, so you can publish your game all over to get lots of plays and good feedback.","Stay tuned next week for a full Kongregate export walkthrough."]
+
+= render :partial => "newsletter"

@@ -1,0 +1,17 @@
+:ruby
+  w_paint = Project.find 330
+  red_ice = Project.find 166
+  f_blast = Project.find 658
+
+:plain
+  This is a big week for Pixie. To start off, we've redesigned your home page to help you find everything at a glance. We also reorganized what people are saying about your sprites and projects so you can easily pick out the praise.
+
+  Secondly, we added cross platform support for making games with joysticks! Check it out here: https://github.com/STRd6/Boomstick#readme?utm_campaign=Aug+28+2011&utm_medium=email&utm_source=newsletter There are already a few games on Pixie taking advantage of this great breakthrough. Play #{fullscreen_project_url(red_ice, @link_tracking)}, a hockey brawler, with up to five friends or collaboratively paint with your peers in #{fullscreen_project_url(w_paint, @link_tracking)}
+
+  We have two new forum members to mention this week. Check out the retro console art stylings of #{user_url(@hawthorn, @link_tracking)} and play #{fullscreen_project_url(f_blast, @link_tracking)} by #{user_url(@ntg, @link_tracking)}, a game where you destroy your enemies by blasting them with their prime factorization before they go mersenne-saiyan.
+
+  Finally, we've added more support for exporting your Pixie games to great platforms. There's been a Google Chrome Webstore export for a while, but now you have the ability to publish to Kongregate, so you can publish your game all over to get tons of plays and good feedback.
+
+  Stay tuned next week for a full Kongregate export walkthrough.
+
+  #{unsubscribe_users_url(:id => @user.id)}

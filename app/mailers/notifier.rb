@@ -26,33 +26,13 @@ class Notifier < ActionMailer::Base
       :from => "#{user.display_name} <#{user.email}>"
   end
 
-  def newsletter(user)
+  def newsletter4(user, delivery_date)
     @user = user
-    mail :subject => "Pixie Newsletter",
-      :to => user.email
-  end
+    @delivery_date = delivery_date
+    @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
 
-  def newsletter2(user)
-    @user = user
-
-    @featured_users = []
-
-    User.find(182, 238, 1575, 1632, 1649).each do |featured_user|
-      @featured_users.push featured_user
-    end
-
-    mail :subject => "Pixie Newsletter", :to => user.email
-  end
-
-  def newsletter3(user)
-    @user = user
-    @daniel = User.find 1
-
-    @featured_users = []
-
-    User.find(531, 1646).each do |featured_user|
-      @featured_users.push featured_user
-    end
+    @hawthorn = User.find 1792
+    @ntg = User.find 211
 
     mail :subject => "Pixie Newsletter", :to => user.email
   end
