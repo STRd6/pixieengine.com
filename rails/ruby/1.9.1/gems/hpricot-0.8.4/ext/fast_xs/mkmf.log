@@ -1,0 +1,20 @@
+have_header: checking for stdio.h... -------------------- yes
+
+"gcc -o conftest -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1/i686-linux -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1/ruby/backward -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1 -I.  -D_FILE_OFFSET_BITS=64   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wpointer-arith -Wwrite-strings -Wno-missing-field-initializers -Wno-long-long  -fPIC conftest.c  -L. -L/home/daniel/.rvm/rubies/ruby-1.9.2-p180/lib -Wl,-R/home/daniel/.rvm/rubies/ruby-1.9.2-p180/lib -L.  -rdynamic -Wl,-export-dynamic     -Wl,-R -Wl,/home/daniel/.rvm/rubies/ruby-1.9.2-p180/lib -L/home/daniel/.rvm/rubies/ruby-1.9.2-p180/lib -lruby-static  -lpthread -lrt -ldl -lcrypt -lm   -lc"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: int main() {return 0;}
+/* end */
+
+"gcc -E -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1/i686-linux -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1/ruby/backward -I/home/daniel/.rvm/rubies/ruby-1.9.2-p180/include/ruby-1.9.1 -I.  -D_FILE_OFFSET_BITS=64   -O3 -ggdb -Wextra -Wno-unused-parameter -Wno-parentheses -Wpointer-arith -Wwrite-strings -Wno-missing-field-initializers -Wno-long-long  -fPIC  conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include "ruby.h"
+2: 
+3: #include <stdio.h>
+/* end */
+
+--------------------
+

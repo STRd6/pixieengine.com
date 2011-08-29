@@ -1,0 +1,113 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AppGenerator	application.rb	/^    class AppGenerator$/;"	c	class:Rails.Generators
+Application	application.rb	/^    module Application$/;"	m	class:Rails.Commands
+Commands	application.rb	/^  module Commands$/;"	m	class:Rails
+Commands	plugin.rb	/^module Commands$/;"	m
+Commands	runner.rb	/^  module Commands$/;"	m	class:Rails
+Console	console.rb	/^  class Console$/;"	c	class:Rails
+DBConsole	dbconsole.rb	/^  class DBConsole$/;"	c	class:Rails
+Generators	application.rb	/^  module Generators$/;"	m	class:Rails
+Info	plugin.rb	/^  class Info$/;"	c	class:Commands
+Install	plugin.rb	/^  class Install$/;"	c	class:Commands
+Options	server.rb	/^    class Options$/;"	c	class:Rails.Server
+Plugin	plugin.rb	/^  class Plugin$/;"	c	class:Commands
+Plugin	plugin.rb	/^class Plugin$/;"	c
+Rails	application.rb	/^module Rails$/;"	m
+Rails	console.rb	/^module Rails$/;"	m
+Rails	dbconsole.rb	/^module Rails$/;"	m
+Rails	runner.rb	/^module Rails$/;"	m
+Rails	server.rb	/^module Rails$/;"	m
+RailsEnvironment	plugin.rb	/^class RailsEnvironment$/;"	c
+RecursiveHTTPFetcher	plugin.rb	/^class RecursiveHTTPFetcher$/;"	c
+Remove	plugin.rb	/^  class Remove$/;"	c	class:Commands
+Runner	runner.rb	/^    module Runner$/;"	m	class:Rails.Commands
+Server	server.rb	/^  class Server < ::Rack::Server$/;"	c	class:Rails
+application.rb	application.rb	1;"	F
+benchmarker.rb	benchmarker.rb	1;"	F
+best_install_method	plugin.rb	/^  def best_install_method$/;"	f	class:RailsEnvironment
+console.rb	console.rb	1;"	F
+dbconsole.rb	dbconsole.rb	1;"	F
+default	plugin.rb	/^  def self.default$/;"	F	class:RailsEnvironment
+default	plugin.rb	/^  def self.default=(rails_env)$/;"	F	class:RailsEnvironment
+default_options	server.rb	/^    def default_options$/;"	f	class:Rails.Server
+destroy.rb	destroy.rb	1;"	F
+determine_install_method	plugin.rb	/^    def determine_install_method$/;"	f	class:Commands.Install
+download	plugin.rb	/^  def download(link)$/;"	f	class:RecursiveHTTPFetcher
+environment=	plugin.rb	/^    def environment=(value)$/;"	f	class:Commands.Plugin
+execute	application.rb	/^      def self.execute(app_path, argv)$/;"	F	class:Rails.Commands.Application
+execute	runner.rb	/^      def self.execute(app_path, argv)$/;"	F	class:Rails.Commands.Runner
+exit_on_failure	application.rb	/^      def self.exit_on_failure?$/;"	F	class:Rails.Generators.AppGenerator
+externals	plugin.rb	/^  def externals$/;"	f	class:RailsEnvironment
+externals=	plugin.rb	/^  def externals=(items)$/;"	f	class:RailsEnvironment
+fetch	plugin.rb	/^  def fetch(links = @urls_to_fetch)$/;"	f
+fetch_dir	plugin.rb	/^  def fetch_dir(url)$/;"	f
+find	plugin.rb	/^  def self.find(dir=nil)$/;"	F	class:RailsEnvironment
+find	plugin.rb	/^  def self.find(name)$/;"	F	class:Plugin
+find_cmd	dbconsole.rb	/^      def find_cmd(*commands)$/;"	f
+generate.rb	generate.rb	1;"	F
+git_url?	plugin.rb	/^  def git_url?$/;"	f	class:Plugin
+guess_name	plugin.rb	/^    def guess_name(url)$/;"	f
+info	plugin.rb	/^  def info$/;"	f	class:Plugin
+initialize	console.rb	/^    def initialize(app)$/;"	f	class:Rails.Console
+initialize	dbconsole.rb	/^    def initialize(app)$/;"	f	class:Rails.DBConsole
+initialize	plugin.rb	/^    def initialize$/;"	f	class:Commands.Plugin
+initialize	plugin.rb	/^    def initialize(base_command)$/;"	f	class:Commands.Info
+initialize	plugin.rb	/^    def initialize(base_command)$/;"	f	class:Commands.Install
+initialize	plugin.rb	/^    def initialize(base_command)$/;"	f	class:Commands.Remove
+initialize	plugin.rb	/^  def initialize(dir)$/;"	f	class:RailsEnvironment
+initialize	plugin.rb	/^  def initialize(uri, name = nil)$/;"	f	class:Plugin
+initialize	plugin.rb	/^  def initialize(urls_to_fetch, level = 1, cwd = ".")$/;"	f	class:RecursiveHTTPFetcher
+initialize	server.rb	/^    def initialize(*)$/;"	f	class:Rails.Server
+install	plugin.rb	/^  def install(method=nil, options = {})$/;"	f	class:Plugin
+install	plugin.rb	/^  def install(name_uri_or_plugin)$/;"	f	class:RailsEnvironment
+install_using_checkout	plugin.rb	/^    def install_using_checkout(options = {})$/;"	f	class:Plugin
+install_using_export	plugin.rb	/^    def install_using_export(options = {})$/;"	f	class:Plugin
+install_using_externals	plugin.rb	/^    def install_using_externals(options = {})$/;"	f	class:Plugin
+install_using_git	plugin.rb	/^    def install_using_git(options = {})$/;"	f
+install_using_http	plugin.rb	/^    def install_using_http(options = {})$/;"	f	class:Plugin
+installed?	plugin.rb	/^  def installed?$/;"	f	class:Plugin
+links	plugin.rb	/^  def links(base_url, contents)$/;"	f	class:RecursiveHTTPFetcher.ls
+log_path	server.rb	/^    def log_path$/;"	f	class:Rails.Server
+ls	plugin.rb	/^  def ls$/;"	f	class:RecursiveHTTPFetcher
+middleware	server.rb	/^    def middleware$/;"	f	class:Rails.Server
+opt_parser	server.rb	/^    def opt_parser$/;"	f	class:Rails.Server
+options	plugin.rb	/^    def options$/;"	f	class:Commands.Info
+options	plugin.rb	/^    def options$/;"	f	class:Commands.Install
+options	plugin.rb	/^    def options$/;"	f	class:Commands.Plugin
+options	plugin.rb	/^    def options$/;"	f	class:Commands.Remove
+parse	plugin.rb	/^    def self.parse!(args=ARGV)$/;"	F	class:Commands.Plugin
+parse!	plugin.rb	/^    def parse!(args)$/;"	f	class:Commands.Info
+parse!	plugin.rb	/^    def parse!(args)$/;"	f	class:Commands.Install
+parse!	plugin.rb	/^    def parse!(args)$/;"	f	class:Commands.Remove
+parse!	plugin.rb	/^    def parse!(args=ARGV)$/;"	f	class:Commands.Plugin
+parse!	server.rb	/^      def parse!(args)$/;"	f	class:Rails.Server.Options
+plugin.rb	plugin.rb	1;"	F
+plugin_new.rb	plugin_new.rb	1;"	F
+pop_d	plugin.rb	/^  def pop_d$/;"	f	class:RecursiveHTTPFetcher.ls
+profiler.rb	profiler.rb	1;"	F
+push_d	plugin.rb	/^  def push_d(dir)$/;"	f	class:RecursiveHTTPFetcher.ls
+rails_env	plugin.rb	/^    def rails_env$/;"	f
+run_install_hook	plugin.rb	/^    def run_install_hook$/;"	f	class:Plugin
+run_uninstall_hook	plugin.rb	/^    def run_uninstall_hook$/;"	f	class:Plugin
+runner.rb	runner.rb	1;"	F
+server.rb	server.rb	1;"	F
+set_environment	server.rb	/^    def set_environment$/;"	f	class:Rails.Server
+split_args	plugin.rb	/^    def split_args(args)$/;"	f	class:Commands.Plugin
+start	console.rb	/^    def self.start(app)$/;"	F	class:Rails.Console
+start	console.rb	/^    def start$/;"	f	class:Rails.Console
+start	dbconsole.rb	/^    def self.start(app)$/;"	F	class:Rails.DBConsole
+start	dbconsole.rb	/^    def start$/;"	f	class:Rails.DBConsole
+start	server.rb	/^    def start$/;"	f	class:Rails.Server
+svn_command	plugin.rb	/^    def svn_command(cmd, options = {})$/;"	f
+svn_url?	plugin.rb	/^  def svn_url?$/;"	f	class:Plugin
+to_s	plugin.rb	/^  def to_s$/;"	f	class:Plugin
+uninstall	plugin.rb	/^  def uninstall$/;"	f	class:Plugin
+update.rb	update.rb	1;"	F
+use_checkout?	plugin.rb	/^  def use_checkout?$/;"	f	class:RailsEnvironment
+use_externals?	plugin.rb	/^  def use_externals?$/;"	f	class:RailsEnvironment
+use_svn?	plugin.rb	/^  def use_svn?$/;"	f	class:RailsEnvironment
