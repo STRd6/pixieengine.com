@@ -10,3 +10,26 @@
   %li.closed(title="${name}")
     %span.folder ${name}
     %ul
+
+#file_templates
+  %script.script.template(type="text/x-jQuery-tmpl")
+    :preserve
+      ${className} = (I) ->
+        I ||= {}
+
+        # Set some default properties
+        $.reverseMerge I,
+          color: "blue"
+          height: 32
+          sprite: "placeholder"
+          width: 32
+
+        # Inherit from game object
+        self = GameObject(I)
+
+        # Add events and methods here
+        self.bind "update", ->
+          ; # Add update method behavior
+
+        # We must always return self as the last line
+        return self

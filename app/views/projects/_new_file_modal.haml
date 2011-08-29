@@ -10,7 +10,7 @@
         {}
       ],
       ["Script",
-        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
+        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript", :template => "script"},
         {}
       ],
       ["Test",
@@ -95,6 +95,11 @@
       }, inputData)
 
       treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
+
+      if template = inputData.template
+        className = data.name.camelize()
+        data.className = className.charAt(0).toUpperCase() + className.substring(1)
+        treeNode.find("[name=contents]").val $("#file_templates .\#{template}").tmpl(data).text()
 
       unless inputData.noAutoOpen
         treeNode.find(".file").click()
