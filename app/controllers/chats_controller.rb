@@ -30,7 +30,8 @@ class ChatsController < ApplicationController
       format.json do
         chats = Chat.recent.reverse.map do |chat|
           {
-            :id => chat.user ? chat.user.id : 0,
+            :user_id => chat.user ? chat.user.id : 0,
+            :id => chat.id,
             :name => chat.user_name,
             :time => chat.time,
             :message => chat.text.html_safe
