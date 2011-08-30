@@ -130,6 +130,8 @@
           value: value
         ).appendTo(fields)
 
+      $("#new_file_modal .details input[name='name']").focus()
+
     $("#new_file_modal button.create").live 'click', (event) ->
       event.preventDefault()
 
