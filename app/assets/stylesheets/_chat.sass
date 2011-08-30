@@ -38,7 +38,9 @@ $chat_header_background: $pixie_primary
   +bounds(530px, 300px)
   +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
   +box-sizing(border-box)
+  +opacity(0)
   +scrollbars
+  +transition(opacity)
 
   background-color: $chat_background
   color: #000
@@ -50,6 +52,8 @@ $chat_header_background: $pixie_primary
   z-index: 200
 
   &.visible
+    +opacity(1)
+
     visibility: visible
 
   .header
