@@ -50,14 +50,14 @@ window.hideTooltip = ->
   $("#tooltip").hide()
 
 # Local Storage
-getVal = (key) ->
+window.getVal = (key) ->
   if localStorage
     try
       JSON.parse(localStorage[key])
     catch error
       undefined
 
-setVal = (key, value) ->
+window.setVal = (key, value) ->
   if localStorage
     localStorage[key] = value
 

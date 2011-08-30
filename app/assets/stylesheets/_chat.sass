@@ -11,10 +11,11 @@ $chat_header_background: $pixie_primary
   border-right: 1px solid rgba(0, 0, 0, 0.1)
   display: inline-block
 
-#openChat
+#open_chat
   +border-top-radius
   +bounds(170px, 18px)
   +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
+  +transition(border-radius)
   +user-select
 
   background-color: $chat_header_background
@@ -29,26 +30,35 @@ $chat_header_background: $pixie_primary
 
   &.straight
     +border-radius(0)
+    +transition(border-radius)
 
-#chatZone
+#chat_zone
   +border-top-radius
   +border-bottom-left-radius
   +bounds(530px, 300px)
   +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
   +box-sizing(border-box)
+  +opacity(0)
   +scrollbars
+  +transition(opacity)
 
   background-color: $chat_background
   color: #000
-  display: none
   padding: 0
   position: fixed
   bottom: 18px
   right: 15px
+  visibility: hidden
   z-index: 200
+
+  &.visible
+    +opacity(1)
+
+    visibility: visible
 
   .header
     +border-top-radius
+    +user-select
 
     background-color: $chat_header_background
     color: white
@@ -57,6 +67,16 @@ $chat_header_background: $pixie_primary
     font-weight: bold
     margin: 0
     padding: 0.25em 0.5em
+
+    label
+      font-weight: normal
+      margin-bottom: 0
+      margin-top: 0
+
+      input[type="checkbox"]
+        display: inline-block
+        margin-left: 0.25em
+        vertical-align: middle
 
   #send
     margin: 0 0 0 -2px
@@ -103,12 +123,17 @@ $chat_header_background: $pixie_primary
     right: 0
     top: 12px
 
+  img
+    border: 1px solid rgba(0, 0, 0, 0.3)
+
   li
     padding: 5px 0 5px 5px
     position: relative
     margin: 0
 
 .users_wrapper
+  +user-select
+
   display: inline-block
   max-height: 300px
   overflow-y: auto
