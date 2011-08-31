@@ -14,15 +14,17 @@
   +border-radius
   +box-shadow
   +text-shadow(black, 1px, 1px)
+  +user-select
 
   background-color: #444
   border-left: 1px solid #595959
   border-top: 1px solid #595959
   color: $dark_text
+  cursor: default
   display: none
   min-height: 50px
   min-width: 100px
-  max-width: 225px
+  max-width: 325px
   padding: 1em
   position: absolute
   z-index: 10
@@ -30,8 +32,11 @@
   pre
     +border-radius(4px)
     +box-shadow(rgba(0, 0, 0, 0.5), 1px, 1px, 3px, inset)
+    +user-select(text)
 
     background-color: rgba(255, 255, 255, 0.3)
+    cursor: text
+    font-size: 90%
     margin-bottom: 1em
     margin-top: 1em
     padding: 3px
