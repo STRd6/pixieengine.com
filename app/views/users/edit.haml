@@ -39,6 +39,7 @@
 
   %button.full Update Information
 
-:coffeescript
-  $ ->
-    $("#user_favorite_color").colorPicker()
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $("#user_favorite_color").colorPicker()

@@ -1,0 +1,19 @@
+@import "partials/sass_import";
+@import "partials/scss_import";
+@import "globbed/**/*";
+@import "subfolder/plain";
+@import "subfolder/second_level";
+@import "partials/without_css_ext";
+
+.main {
+  color: yellow;
+  @include background-from-partial(red);
+}
+
+.rails {
+  asset-path: asset-path("rails.png", image);
+  asset-url: asset-url("rails.png", image);
+  image-url: image-url("rails.png");
+}
+
+@include without-css-ext;

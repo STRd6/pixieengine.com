@@ -1,0 +1,33 @@
+= Turn 0.8.0
+
+Version 0.8.0 is a fairly significant release for Turn. This release
+adds support for Ruby 1.9's Minitest framework. You can even use
+minitest with Ruby 1.8 by supplying the --minitest option on the turn
+command line.
+
+In addition, two new reporters have been a added, a new "pretty" reporter
+which provides a more a modern "OSX" look (thanks Paydro) and a Cue
+reporter which seeks user input with each failure or error (thanks
+Shindo).
+
+With this release we are encouraging users to move away from using
+autorun modes. Autorunning is when your test script includes code
+that "automagically" sets up a test runner, e.g. require 'test/unit'
+and MiniTest::Unit.autorun, and by simply running the scripts
+through the ruby interpretor the tests get run. There are a number
+of problems with this approach. To begin with, running tests this way
+limits Turn of a single mode of operation (that's no fun!) More
+importantly it prevents interoperability between the old TestUnit
+and the new MiniTest systems. By leaving these out and using a 
+commandline runner you can use the same tests for each version of
+Ruby. This may require some adjutments to build tools, but hell,
+why not use Turn there too. The Turn::Controller class makes it
+damn easy.
+
+One last note. Turn is no longer compatible with TestUnit 2.0+.
+TestUnit and MiniTest are deverging and after some consideration
+it was decided that Turn's goal is to support Ruby's native test
+framework, whatever it may be.
+
+Enjoy!
+

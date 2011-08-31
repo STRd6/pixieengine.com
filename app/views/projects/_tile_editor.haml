@@ -1,93 +1,94 @@
 = stylesheet_link_tag 'tile_editor'
 = render :partial => "tilemaps/templates"
 
-:coffeescript
-  window.createTileEditor = (options) ->
-    panel = options.panel
+- content_for :javascript do
+  :coffeescript
+    window.createTileEditor = (options) ->
+      panel = options.panel
 
-    panel.find('form').hide()
-    panel.find('.tile_editor, .pixie').remove()
+      panel.find('form').hide()
+      panel.find('.tile_editor, .pixie').remove()
 
-    try
-      data = JSON.parse(panel.find("[name=contents]").val())
-    catch e
+      try
+        data = JSON.parse(panel.find("[name=contents]").val())
+      catch e
 
-    editorOptions = $.extend panel.data("options"),
-      data: data
-      eachEntity: (fn) ->
-        for uuid, entity of window.entities
-          fn uuid, entity
+      editorOptions = $.extend panel.data("options"),
+        data: data
+        eachEntity: (fn) ->
+          for uuid, entity of window.entities
+            fn uuid, entity
 
-      editEntity: (uuid) ->
-        $("ul.filetree [title=\#{uuid}] span").click()
+        editEntity: (uuid) ->
+          $("ul.filetree [title=\#{uuid}] span").click()
 
-      loadEntity: (uuid, tileData) ->
-        if window.entities[uuid]
-          # We have this one, use our version instead of the map's
-          entity = tileData.entity = window.entities[uuid]
-        else
-          # We don't have this one, import it from the map entity cache
-          entity = window.entities[uuid] = tileData.entity || {}
+        loadEntity: (uuid, tileData) ->
+          if window.entities[uuid]
+            # We have this one, use our version instead of the map's
+            entity = tileData.entity = window.entities[uuid]
+          else
+            # We don't have this one, import it from the map entity cache
+            entity = window.entities[uuid] = tileData.entity || {}
 
-          displayName = entity.name || uuid
-          dataString = JSON.stringify(entity)
+            displayName = entity.name || uuid
+            dataString = JSON.stringify(entity)
 
-          # Create entity file node
-          filePath = projectConfig.directories["entities"]
-          newNode = newFileNode
-            name: uuid
-            displayName: displayName
-            type: "entity"
-            ext: "entity"
-            path: filePath
-            contents: dataString
-            noAutoOpen: true
-            forceSave: true
+            # Create entity file node
+            filePath = projectConfig.directories["entities"]
+            newNode = newFileNode
+              name: uuid
+              displayName: displayName
+              type: "entity"
+              ext: "entity"
+              path: filePath
+              contents: dataString
+              noAutoOpen: true
+              forceSave: true
 
-          notify("Imported \#{displayName} from map into entities.")
+            notify("Imported \#{displayName} from map into entities.")
 
-        # Lets the map get the updates if it wants
-        return entity
+          # Lets the map get the updates if it wants
+          return entity
 
-      removeEntity: (uuid) ->
-        console.log "TODO remove entity \#{uuid}"
-      save: ->
-        tileEditor.trigger 'doSave'
+        removeEntity: (uuid) ->
+          console.log "TODO remove entity \#{uuid}"
+        save: ->
+          tileEditor.trigger 'doSave'
 
-    tileEditor = $('<div />').appendTo(panel).tileEditor(editorOptions)
+      tileEditor = $('<div />').appendTo(panel).tileEditor(editorOptions)
 
-    tileEditor.addAction
-      name: "Save As"
-      perform: ->
-        title = prompt("Title")
+      tileEditor.addAction
+        name: "Save As"
+        perform: ->
+          title = prompt("Title")
 
-        if title
-          filePath = projectConfig.directories["data"]
+          if title
+            filePath = projectConfig.directories["data"]
 
-          extension = "tilemap"
-          dataString = JSON.stringify(tileEditor.mapData())
+            extension = "tilemap"
+            dataString = JSON.stringify(tileEditor.mapData())
 
-          newFileNode
-            name: title
-            type: "tilemap"
-            ext: extension
-            path: filePath
-            contents: dataString
+            newFileNode
+              name: title
+              type: "tilemap"
+              ext: extension
+              path: filePath
+              contents: dataString
 
-          tileEditor.trigger 'save',
-            contents: dataString
-            path: filePath + "/" + title + "." + extension
+            tileEditor.trigger 'save',
+              contents: dataString
+              path: filePath + "/" + title + "." + extension
 
-    tileEditor.bind 'doSave', ->
-      dataString = JSON.stringify(tileEditor.mapData())
+      tileEditor.bind 'doSave', ->
+        dataString = JSON.stringify(tileEditor.mapData())
 
-      panel.find("[name=contents]").val(dataString)
+        panel.find("[name=contents]").val(dataString)
 
-      tileEditor.trigger 'save',
-        contents: dataString
-        path: options.path
+        tileEditor.trigger 'save',
+          contents: dataString
+          path: options.path
 
-      #TODO: This may not be the exact time it is saved
-      tileEditor.trigger('clean')
+        #TODO: This may not be the exact time it is saved
+        tileEditor.trigger('clean')
 
-    return tileEditor
+      return tileEditor

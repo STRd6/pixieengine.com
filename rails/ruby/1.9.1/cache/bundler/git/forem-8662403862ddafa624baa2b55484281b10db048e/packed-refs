@@ -1,0 +1,6 @@
+# pack-refs with: peeled 
+690446a0d78fb5540ae030d18d5815e5adb855d1 refs/tags/v0.0.1
+^5f17842b714f00937cea506b74a6c849400e2354
+1fb54c98c0a3b432b692393170287daad78e6195 refs/heads/three-dot-oh
+2f8350d8b1b45b8eb3f6bb497e767cd35e022ff4 refs/heads/master
+a9ce93d15fa77dbb3c586c3583dda49e70750809 refs/heads/broken

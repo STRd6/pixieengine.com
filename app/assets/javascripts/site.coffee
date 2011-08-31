@@ -40,11 +40,9 @@ window.showTooltip = (element, html) ->
 
   if position.top < 5
     position.top = 5
-
-    if element.offset().top < 20
-      $('#tooltip .icon').css('top', -$('#tooltip').height() + 7)
+    $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
   else
-    $('#tooltip .icon').css('top', element.height() - $('#tooltip').height() / 2)
+    $('#tooltip .icon').css('top', 0)
 
   $('#tooltip').show().offset(position)
 
@@ -52,14 +50,14 @@ window.hideTooltip = ->
   $("#tooltip").hide()
 
 # Local Storage
-getVal = (key) ->
+window.getVal = (key) ->
   if localStorage
     try
       JSON.parse(localStorage[key])
     catch error
       undefined
 
-setVal = (key, value) ->
+window.setVal = (key, value) ->
   if localStorage
     localStorage[key] = value
 

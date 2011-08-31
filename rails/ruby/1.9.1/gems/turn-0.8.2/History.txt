@@ -1,0 +1,61 @@
+== 0.8.2 / 2011-03-31
+  * Add version in code and cli option to diplay it.
+  * Fix for files lookup controller bug
+  * Limit default test matching to *.rb files.
+  * Show first line from the test file when showing stack traces [F. Morgan Whitney]
+  * Make minitest output compatible with natural language case naming [David Heinemeier Hansson]
+
+== 0.8.1 / 2010-09-10
+  * Fix misspelling of "raised" which prevented proper recording of errors.
+  * Fix IsoRunner so it passes error, not just error message.
+
+== 0.8.0 / 2010-06-02
+  * Mintest support
+  * Two new reporters
+
+== 0.7.1 / 2009-12-25
+  * Copied String#tab from Facets.
+  * Facets is no longer needed as direct dependency.
+
+== 0.7.0 / 2009-10-13
+  * Fix typo and potential bug.
+  * Running ruby with /usr/bin/env for portability
+  * Adding --name=PATTERN for test name filtering
+  * ANSI class is all caps
+
+== 0.6.3 / 2009-10-12
+  * Fixing require statements
+
+== 0.6.2 / 2009-10-07
+  * Detecting rails environment and adjusting output accordingly
+  * Colorizing the filename
+
+== 0.6.1 / 2009-08-26
+  * Switched ANSI color support to ANSI project.
+
+== 0.6.0 / 2009-05-30
+  * Testrunner @io renamed to @output for test/unit 2.
+
+== 0.5.1 / 2009-03-25
+  * fixed a "convert nil into String" error
+
+== 0.4.0 / 2008-09-18
+  * add solo and cross runners
+  * move Colorize into separate file
+  * use ::ANSICode instead of ::Console::ANSICode
+
+== 0.3.0 / 2007-12-11
+  * color highlighting now works (need facets-2.0 library)
+
+== 0.2.0 / 2006-11-26
+  * add the "turn" executable
+  * fixed warnings
+
+== 0.1.2 / 2006-11-13
+  * added some instructions for using the package
+
+== 0.1.1 / 2006-11-10
+  * removed explicit dependency on the 'hoe' gem
+
+== 0.1.0 / 2006-11-10
+  * initial release

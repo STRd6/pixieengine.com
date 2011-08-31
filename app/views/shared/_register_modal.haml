@@ -20,70 +20,71 @@
 
   %button.full Free Trial
 
-:javascript
-  var logInCallback;
+- content_for :javascript do
+  :javascript
+    var logInCallback;
 
-  function requireLogin(callback) {
-    if(!loggedIn) {
-      logInCallback = callback;
-      $.modal.close();
-      $("#registerModal").modal({
-        containerCss: {
-          height: 440,
-          width: 300
-        }
-      });
-      trackPageview("/event/login_screen");
-    } else {
-      callback();
-    }
-  }
-
-  $(function() {
-    function ajaxifyForm(selector, registration) {
-      var form = $(selector);
-
-      form.ajaxForm({
-        dataType: 'json',
-        success: function(data) {
-          if(data.status == "ok") {
-            $.modal.close();
-            loggedIn = true;
-            if(registration) {
-              trackPageview("/event/registered");
-            }
-            logInCallback();
-          } else {
-            var errorExplanation = form.find(".errorExplanation");
-            if(errorExplanation.length == 0) {
-              errorExplanation = $("<div class='errorExplanation' />");
-            }
-
-            var errorList = $("<ul />");
-            $.each(data.errors, function(i, error) {
-              errorList.append($("<li />").text(error));
-            });
-
-            errorExplanation.html('');
-            errorExplanation.append(errorList);
-
-            form.prepend(errorExplanation);
+    function requireLogin(callback) {
+      if(!loggedIn) {
+        logInCallback = callback;
+        $.modal.close();
+        $("#registerModal").modal({
+          containerCss: {
+            height: 440,
+            width: 300
           }
-        }
-      });
+        });
+        trackPageview("/event/login_screen");
+      } else {
+        callback();
+      }
     }
 
-    ajaxifyForm("#new_user", true);
-    ajaxifyForm("#new_user_session");
-  });
+    $(function() {
+      function ajaxifyForm(selector, registration) {
+        var form = $(selector);
 
-:coffeescript
-  $("#subscriptionModal button").click ->
-    window.location = #{register_subscribe_path.to_json}
+        form.ajaxForm({
+          dataType: 'json',
+          success: function(data) {
+            if(data.status == "ok") {
+              $.modal.close();
+              loggedIn = true;
+              if(registration) {
+                trackPageview("/event/registered");
+              }
+              logInCallback();
+            } else {
+              var errorExplanation = form.find(".errorExplanation");
+              if(errorExplanation.length == 0) {
+                errorExplanation = $("<div class='errorExplanation' />");
+              }
 
-  window.requireSubscription = (callback) ->
-    if subscriber
-      callback()
-    else
-      $.modal.close()
-      $("#subscriptionModal").modal()
+              var errorList = $("<ul />");
+              $.each(data.errors, function(i, error) {
+                errorList.append($("<li />").text(error));
+              });
+
+              errorExplanation.html('');
+              errorExplanation.append(errorList);
+
+              form.prepend(errorExplanation);
+            }
+          }
+        });
+      }
+
+      ajaxifyForm("#new_user", true);
+      ajaxifyForm("#new_user_session");
+    });
+
+  :coffeescript
+    $("#subscriptionModal button").click ->
+      window.location = #{register_subscribe_path.to_json}
+
+    window.requireSubscription = (callback) ->
+      if subscriber
+        callback()
+      else
+        $.modal.close()
+        $("#subscriptionModal").modal()

@@ -14,19 +14,20 @@
 
 = render :partial => "game_keys"
 
-:coffeescript
-  $("#show_comments").click (event) ->
-    event.preventDefault()
+- content_for :javascript do
+  :coffeescript
+    $("#show_comments").click (event) ->
+      event.preventDefault()
 
-    if $(this).toggleClass("active").is(".active")
-      $(".comments_area").show()
-    else
-      $(".comments_area").hide()
+      if $(this).toggleClass("active").is(".active")
+        $(".comments_area").show()
+      else
+        $(".comments_area").hide()
 
-  $("#show_controls").click (event) ->
-    event.preventDefault()
+    $("#show_controls").click (event) ->
+      event.preventDefault()
 
-    showGameKeys()
+      showGameKeys()
 
 %style
   :sass

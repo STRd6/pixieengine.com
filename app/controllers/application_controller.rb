@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   def track_visits
     unless session['landed']
       session['landed'] = true
-      track_event('landing')
+      track_event('land')
     end
 
     Visit.track(current_user, controller_name, action_name, request.session_options[:id])

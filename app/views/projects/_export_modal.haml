@@ -11,22 +11,23 @@
       %h3 Packaged for Chrome Web Store
     .static-chrome_webstore
 
-:coffeescript
-  $("#export").click ->
-    $("#export_modal").modal()
+- content_for :javascript do
+  :coffeescript
+    $("#export").click ->
+      $("#export_modal").modal()
 
-  $("#export_modal .choice.zip").click ->
-    requireLogin ->
-      notify("Exporting .zip ...")
+    $("#export_modal .choice.zip").click ->
+      requireLogin ->
+        notify("Exporting .zip ...")
 
-      window.location = #{download_project_path(project).to_json}
+        window.location = #{download_project_path(project).to_json}
 
-      $.modal.close()
+        $.modal.close()
 
-  $("#export_modal .choice.chrome").click ->
-    requireSubscription ->
-      notify("Exporting Chrome Web Store Package ...")
+    $("#export_modal .choice.chrome").click ->
+      requireSubscription ->
+        notify("Exporting Chrome Web Store Package ...")
 
-      window.location = #{download_project_path(project, :chrome => 1).to_json}
+        window.location = #{download_project_path(project, :chrome => 1).to_json}
 
-      $.modal.close()
+        $.modal.close()

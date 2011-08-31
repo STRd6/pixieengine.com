@@ -55,106 +55,107 @@
     .title ${title}
     .duration ${durationFormat(duration)}
 
-:coffeescript
-  window.player = null
+- content_for :javascript do
+  :coffeescript
+    window.player = null
 
-  window.durationFormat = (time) ->
-    minutes = (time / 60).floor()
-    seconds = (time % 60)
-    seconds = "0" + seconds if seconds < 10
+    window.durationFormat = (time) ->
+      minutes = (time / 60).floor()
+      seconds = (time % 60)
+      seconds = "0" + seconds if seconds < 10
 
-    minutes + ":" + seconds
+      minutes + ":" + seconds
 
-  $("#search_results .song").live "click", ->
-    $(this).appendTo("#playlist .songs")
+    $("#search_results .song").live "click", ->
+      $(this).appendTo("#playlist .songs")
 
-  loadPlayerAPI = (callback) ->
-    # Load player api asynchronously.
-    tag = document.createElement('script')
-    tag.src = "http://www.youtube.com/player_api"
-    firstScriptTag = document.getElementsByTagName('script')[0]
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
-    done = false
-    player = null
+    loadPlayerAPI = (callback) ->
+      # Load player api asynchronously.
+      tag = document.createElement('script')
+      tag.src = "http://www.youtube.com/player_api"
+      firstScriptTag = document.getElementsByTagName('script')[0]
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      done = false
+      player = null
 
-    window.onYouTubePlayerAPIReady = ->
-      callback()
+      window.onYouTubePlayerAPIReady = ->
+        callback()
 
-  loadPlayerAPI ->
-    getSongs("Lady Gaga")
+    loadPlayerAPI ->
+      getSongs("Lady Gaga")
 
-    $("#search").click ->
-      getSongs($("#song_input").val())
-      $("#song_input").val('')
+      $("#search").click ->
+        getSongs($("#song_input").val())
+        $("#song_input").val('')
 
-    $("#next").click ->
-      nextSong()
-
-    $("#stop").click ->
-      stopSong()
-
-    $("#song_input").bind "keydown", "return", ->
-      getSongs($("#song_input").val())
-      $("#song_input").val('')
-
-  getSongs = (terms) ->
-    url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
-
-    $.getJSON url, {
-      enablejsapi: 1
-      q: terms
-    }, (result) ->
-      console.log result
-
-      entries = processSearchResults(result.feed.entry)
-
-      $("#song_template").tmpl(entries).appendTo($("#search_results .songs").empty())
-
-      if !player || player.state == -1
+      $("#next").click ->
         nextSong()
 
-  processSearchResults = (results) ->
-    results.map (result) ->
-      unless result.yt$noembed
-        duration: result.media$group.yt$duration.seconds
-        id: result.id.$t.split('/').last()
-        title: result.title.$t
-    .compact()
+      $("#stop").click ->
+        stopSong()
 
-  nextSong = () ->
-    song = $("#playlist .songs .song").first()
+      $("#song_input").bind "keydown", "return", ->
+        getSongs($("#song_input").val())
+        $("#song_input").val('')
 
-    song = $("#search_results .songs .song").first() unless song.length
+    getSongs = (terms) ->
+      url = "http://gdata.youtube.com/feeds/api/videos/-/{http%3A%2F%2Fgdata.youtube.com%2Fschemas%2F2007%2Fcategories.cat}Music?alt=json&callback=?"
 
-    if song.length
-      id = song.data("id")
-      title = song.attr("title")
+      $.getJSON url, {
+        enablejsapi: 1
+        q: terms
+      }, (result) ->
+        console.log result
 
-      createPlayer(id)
-      $("#now_playing").text("Now Playing: \#{title}")
+        entries = processSearchResults(result.feed.entry)
 
-      song.remove()
+        $("#song_template").tmpl(entries).appendTo($("#search_results .songs").empty())
 
-  stopSong = ->
-    player?.stopVideo()
+        if !player || player.state == -1
+          nextSong()
 
-  createPlayer = (id) ->
-    srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
-    $("#player").attr("src", srcUrl)
+    processSearchResults = (results) ->
+      results.map (result) ->
+        unless result.yt$noembed
+          duration: result.media$group.yt$duration.seconds
+          id: result.id.$t.split('/').last()
+          title: result.title.$t
+      .compact()
 
-  createPlayer = (id) ->
-    $("#player").empty()
+    nextSong = () ->
+      song = $("#playlist .songs .song").first()
 
-    window.player = new YT.Player 'player',
-      width: 1
-      height: 1
-      playerVars:
-        controls: 0
-      videoId: id
-      events:
-        onReady: (event) ->
-          event.target.playVideo()
+      song = $("#search_results .songs .song").first() unless song.length
 
-        onStateChange: (event) ->
-          if event.data == YT.PlayerState.ENDED
-            nextSong()
+      if song.length
+        id = song.data("id")
+        title = song.attr("title")
+
+        createPlayer(id)
+        $("#now_playing").text("Now Playing: \#{title}")
+
+        song.remove()
+
+    stopSong = ->
+      player?.stopVideo()
+
+    createPlayer = (id) ->
+      srcUrl = "http://www.youtube.com/embed/\#{id}?autoplay=1"
+      $("#player").attr("src", srcUrl)
+
+    createPlayer = (id) ->
+      $("#player").empty()
+
+      window.player = new YT.Player 'player',
+        width: 1
+        height: 1
+        playerVars:
+          controls: 0
+        videoId: id
+        events:
+          onReady: (event) ->
+            event.target.playVideo()
+
+          onStateChange: (event) ->
+            if event.data == YT.PlayerState.ENDED
+              nextSong()

@@ -55,14 +55,15 @@
         .static-book
         Tutorial
 
-:coffeescript
-  $("#feature, #arcade, #tutorial").click (event) ->
-    event.preventDefault()
+- content_for :javascript do
+  :coffeescript
+    $("#feature, #arcade, #tutorial").click (event) ->
+      event.preventDefault()
 
-    if $(this).is(".active")
-      #TODO: Unfeature
-    else
-      $(this).addClass("active")
+      if $(this).is(".active")
+        #TODO: Unfeature
+      else
+        $(this).addClass("active")
 
-      $.post $(this).attr("href"),
-        format: "json"
+        $.post $(this).attr("href"),
+          format: "json"

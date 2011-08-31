@@ -164,9 +164,10 @@
           .light &
             color: $light_text
 
-:coffeescript
-  $ ->
-    $('a.logo').attr('class', 'static-landing_logo')
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $('a.logo').attr('class', 'static-landing_logo')
 
 .content
   .feature
@@ -285,6 +286,7 @@
       - Project.featured.limit(4).each do |project|
         = render :partial => project
 
-/[if IE]
-  :coffeescript
-    $(".feature a").attr("href", #{register_subscribe_path.to_json})
+- content_for :javascript do
+  /[if IE]
+    :coffeescript
+      $(".feature a").attr("href", #{register_subscribe_path.to_json})

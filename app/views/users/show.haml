@@ -182,25 +182,26 @@
       %h2 Messages
       = render :partial => 'users/comment', :collection => messages
 
-:coffeescript
+- content_for :javascript do
+  :coffeescript
 
-  $ ->
-    $('#show_projects').click ->
-      $this = $(this)
+    $ ->
+      $('#show_projects').click ->
+        $this = $(this)
 
-      if $this.text() == "Show all"
-        $('.projects').addClass("show_all")
-        $this.text("Hide")
-      else
-        $('.projects').removeClass("show_all")
-        $this.text("Show all")
+        if $this.text() == "Show all"
+          $('.projects').addClass("show_all")
+          $this.text("Hide")
+        else
+          $('.projects').removeClass("show_all")
+          $this.text("Show all")
 
-    $('#show_sprites').click ->
-      $this = $(this)
+      $('#show_sprites').click ->
+        $this = $(this)
 
-      if $this.text() == "Show all"
-        $('.sprite_container.extras').css('display', 'inline-block')
-        $this.text('Hide')
-      else
-        $('.sprite_container.extras').hide()
-        $this.text('Show all')
+        if $this.text() == "Show all"
+          $('.sprite_container.extras').css('display', 'inline-block')
+          $this.text('Hide')
+        else
+          $('.sprite_container.extras').hide()
+          $this.text('Show all')

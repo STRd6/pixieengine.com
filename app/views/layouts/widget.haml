@@ -5,7 +5,8 @@
       - if @title
         = @title
       - else
-        Pixie App
+        Widget
+      PixieEngine - Create Games
     %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
     %meta{ :name => "description", :content => (@meta_desc || "Just another Pixie Application.") }
     <meta name="google-site-verification" content="0FAurYC_rgKeOIIzTKuunYVGbrc9gCI9xPClgJvN5_w" />
@@ -13,14 +14,16 @@
 
     = csrf_meta_tag
 
-    = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'project', :media => 'screen, projection'
 
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"
     :javascript
       var loggedIn = #{!!current_user};
 
-  %body
+  %body.contents_centered
     = yield
+
+    = content_for :javascript
 
     = render :partial => "/shared/analytics"
 
