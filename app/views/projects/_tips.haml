@@ -37,9 +37,10 @@
         Click on the "Run" button. You'll see a red square moving slowly to the right.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# color' }).effect('highlight', {}, Infinity);" }
       .text
-        That was fun but white is a really boring background color. Replace the highlighted line with
+        That was fun but black is a really boring background color. Replace the highlighted line with
         %pre
-          = preserve "backgroundColor: Color.random()"
+          :preserve
+            backgroundColor: Color.random()
         to spice things up and then run the game again.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click();" }
       .text
@@ -47,9 +48,11 @@
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# key handling' }).effect('highlight', {}, Infinity);" }
       .text
         Okay, we're going to make you the boss now. Replace the highlighted line with
-        %pre
-          = preserve "if keydown.left\n&nbsp&nbspI.velocity = Point(-2, 0)"
-        Now you can press left to change the square's direction
+      %pre
+        :preserve
+          if keydown.left
+            I.velocity = Point(-2, 0)
+      Now you can press left to change the square's direction.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Try to make him move to the right and stop too.
@@ -65,20 +68,53 @@
       .text
         At the top of
         %b src/square
-        we now have some constants: GRAVITY, SPEED, JUMP_POWER, and FLOAT_FACTOR. Take a minute to play around with those values. See if you can find the 'Space Jam' setting.
+        we now have some constants:
+        %pre
+          :preserve
+            SPEED = 7
+            GRAVITY = 3
+            JUMP_POWER = 17
+            FLOAT_FACTOR = 0.4
+        Take a minute to play around with those values. See if you can find the 'Space Jam' setting.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look at the contents of
         %b self.bind.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
-        We're reducing the effect of gravity when jumping, applying it normally when falling, and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
+        We're reducing the effect of gravity when jumping,
+        %pre
+          :preserve
+            if jumping
+              I.velocity = I.velocity.add(I.acceleration.scale(FLOAT_FACTOR))
+        applying it normally when falling,
+        %pre
+          :preserve
+            else if falling
+              I.velocity = I.velocity.add(Point(I.velocity.x, I.acceleration.y))
+        and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
+        %pre
+          :preserve
+            else
+              if keydown.z
+                jumping = true
+                I.velocity = Point(I.velocity.x, -JUMP_POWER)
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Each step we also set jumping to false if the jump key isn't held.
+        %pre
+          :preserve
+            jumping = false unless keydown.z
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
         Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.
+        %pre
+          :preserve
+            if I.y > FLOOR_HEIGHT - 25
+              I.y = FLOOR_HEIGHT - 25
+              falling = false
+            else
+              falling = true
     .tip
       .text
         In the eagerly anticipated lesson three:
@@ -92,15 +128,33 @@
         Here is our bullet behavior. The most important thing is that in
         %b self.bind
         we check to make sure the bullet doesn't go through the floor.
+        %pre
+          :preserve
+            if I.y > FLOOR_HEIGHT + 5
+              self.destroy()
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
       .text
         Take a look at the changes we made to this square.
-    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'facing = Point(1, 0)' }).effect('highlight', {}, Infinity);" }
+    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# facing' }).effect('highlight', {}, Infinity);" }
       .text
-        Look at the highlighted line. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.
+        Look below the highlighted line.
+        We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.
+        %pre
+          :preserve
+            facing = Point(1, 0)
     .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'if justPressed.x' }).effect('highlight', {}, Infinity);" }
       .text
-        Pressing the shoot key tells the engine that it should add an instance of our bullet class at the position of the square, firing in the direction it is facing, with the speed defined by BULLET_SPEED.
+        Pressing the shoot key tells the engine that it should add an instance of our bullet class
+        %pre
+          :preserve
+            if justPressed.x
+              engine.add
+                class: 'Bullet'
+                x: I.x + I.width
+                y: I.y
+                width: 5
+                height: 5
+                velocity: facing.scale(BULLET_SPEED)
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_enemy_coffee').prev().click()" }
       .text
         Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy.
@@ -109,7 +163,14 @@
         Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'for enemy in enemies' }).effect('highlight', {}, Infinity);" }
       .text
-        We iterate through all the enemies and bullets (if they exist), and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.
+        We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.
+        %pre
+          :preserve
+            for enemy in enemies
+              for bullet in bullets
+                if Collision.rectangular(enemy.bounds(), bullet.bounds())
+                  enemy.destroy()
+                  bullet.destroy()
     .tip
       .text
         That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa.
