@@ -5,7 +5,6 @@
         .relative
           .player
             .module_header
-              %button.new_animation> New
               .button_group
                 %button.export_json> Export JSON
                 %button.export_csv> Export CSV
@@ -40,9 +39,6 @@
           %button.clear_frames> Clear
           %a.edit_frames Edit
         .frame_sprites
-
-  %script.animation.template(type="text/x-jQuery-tmpl")
-    %h4.state_name.selected(data-state_id="${stateId}") ${name}
 
   %script.sprite.template(type="text/x-jQuery-tmpl")
     %img(src="${src}")

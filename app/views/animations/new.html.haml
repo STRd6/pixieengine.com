@@ -24,12 +24,12 @@
       $('body').attr('id', 'fullscreen')
       editor = $("<div />").appendTo("body > .content").animationEditor()
 
-    $('#feedback').hide()
+      $('#feedback').hide()
 
-    editor.find('.export_json').mousedown ->
-      $('#export_json_data').val(exportAnimationJSON())
-      $('form.download_json').submit()
+      editor.find('.export_json').mousedown ->
+        $('#export_json_data').val(exportAnimationJSON())
+        $('form.download_json').submit()
 
-      editor.find('.export_csv').mousedown ->
-        $('#export_csv_data').val(exportAnimationCSV())
-        $('form.download_csv').submit()
+        editor.find('.export_csv').mousedown ->
+          $('#export_csv_data').val(exportAnimationCSV())
+          $('form.download_csv').submit()

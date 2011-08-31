@@ -1,7 +1,6 @@
-window.UI = (animationEditor, animations, tileset, sequences) ->
+window.UI = (animationEditor, currentAnimation, tileset, sequences) ->
   templates = $("#animation_editor_templates")
   editorTemplate = templates.find('.editor.template')
-  animationTemplate = templates.find('.animation')
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
 
@@ -15,11 +14,10 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
     checkExportStatus: ->
       framesEmpty = true
 
-      for animation in animations
-        if animation.frames.length
-          framesEmpty = false
+      if currentAnimation.frames.length > 0 || sequences.length > 0
+        framesEmpty = false
 
-      exportButtons = $(this).find('.player button:not(.new_animation)')
+      exportButtons = $(this).find('.player button')
 
       exportButtons.removeAttr('disabled').attr('title', 'Export animation')
       exportButtons.attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
@@ -39,9 +37,6 @@ window.UI = (animationEditor, animations, tileset, sequences) ->
       animationsEl.children().remove()
 
       spritesEl = animationEditor.find('.sprites')
-
-      for animation in animations
-        animationTemplate.tmpl({stateId: animation.stateId, name: animation.name()}).appendTo(animationsEl)
 
       if spritesEl.find('img').length == 0
         for index, src of tileset

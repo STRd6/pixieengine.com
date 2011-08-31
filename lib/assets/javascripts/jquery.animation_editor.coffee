@@ -18,13 +18,12 @@ $.fn.animationEditor = (options) ->
   window.exportAnimationCSV = ->
     output = ""
 
-    for animation in animations
-      output = output + animation.name() + ": " + (tilemap[frame] for frame in animation.frames).join(",") + "\n"
+    output = output + currentAnimation.name() + ": " + (tilemap[frame] for frame in currentAnimation.frames).join(",") + "\n"
 
     return output
 
   window.exportAnimationJSON = ->
-    animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() } for animation in animations)
+    animationData = ({ frames: (tilemap[frame] for frame in currentAnimation.frames), name: currentAnimation.name() })
 
     sequenceData = (
       for sequenceObject in sequences
@@ -158,9 +157,8 @@ $.fn.animationEditor = (options) ->
       currentAnimation.clearFrames()
 
   controls = Controls(animationEditor)
-  window.currentAnimation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
-  animations = [currentAnimation]
-  ui = UI(animationEditor, animations, tileset, sequences)
+  currentAnimation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
+  ui = UI(animationEditor, currentAnimation, tileset, sequences)
 
   animationEditor.trigger 'init'
 
@@ -191,13 +189,6 @@ $.fn.animationEditor = (options) ->
     animationEditor.find(key).change(value)
 
   mousedownEvents =
-    '.new_animation': (e) ->
-      animations.push(Animation(animationNumber++, tileset, controls, animationEditor, sequences))
-
-      window.currentAnimation = animations.last()
-
-      animationEditor.trigger(event) for event in ['init', 'loadCurrentAnimation']
-      animationEditor.find('.animations .state_name:last').takeClass('selected')
     '.play': (e) ->
       if $(this).hasClass('pause')
         controls.pause()
@@ -210,12 +201,6 @@ $.fn.animationEditor = (options) ->
     animationEditor.find(key).mousedown(value)
 
   liveMousedownEvents =
-    '.animations .state_name': (e) ->
-      index = $(this).takeClass('selected').index()
-
-      currentAnimation = animations[index]
-
-      animationEditor.trigger 'loadCurrentAnimation'
     '.bottom .x': (e) ->
       e.stopPropagation()
       parent = $(this).parent()
