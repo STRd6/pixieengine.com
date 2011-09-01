@@ -18,12 +18,13 @@ $.fn.animationEditor = (options) ->
   window.exportAnimationCSV = ->
     output = ""
 
-    output = output + currentAnimation.name() + ": " + (tilemap[frame] for frame in currentAnimation.frames).join(",") + "\n"
+    for sequence in sequences
+      output = output + sequence.name + ": " + (tilemap[frame] for frame in sequence.frames).join(",") + "\n"
 
     return output
 
   window.exportAnimationJSON = ->
-    animationData = ({ frames: (tilemap[frame] for frame in currentAnimation.frames), name: currentAnimation.name() })
+    animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() })
 
     sequenceData = (
       for sequenceObject in sequences
@@ -84,7 +85,7 @@ $.fn.animationEditor = (options) ->
         if newValue?
           scrubberValue = newValue
           animationEditor.trigger 'updateScrubberValue', [newValue]
-          currentAnimation.currentFrameIndex(newValue)
+          animation.currentFrameIndex(newValue)
           return scrubber
         else
           scrubberValue
@@ -114,7 +115,7 @@ $.fn.animationEditor = (options) ->
         return self
 
       play: ->
-        if currentAnimation.frames.length > 0
+        if animation.frames.length > 0
           changePlayIcon('pause')
           intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
 
@@ -131,7 +132,7 @@ $.fn.animationEditor = (options) ->
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
-        currentAnimation.currentFrameIndex(-1)
+        animation.currentFrameIndex(-1)
 
     return self
 
@@ -152,21 +153,21 @@ $.fn.animationEditor = (options) ->
     animationEditor.trigger 'updateLastSequence'
 
   createSequence = ->
-    if currentAnimation.frames.length
-      pushSequence(currentAnimation.frames.copy())
-      currentAnimation.clearFrames()
+    if animation.frames.length
+      pushSequence(animation.frames.copy())
+      animation.clearFrames()
 
   controls = Controls(animationEditor)
-  currentAnimation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
-  ui = UI(animationEditor, currentAnimation, tileset, sequences)
+  animation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
+  ui = AnimationUI(animationEditor, animation, tileset, sequences)
 
   animationEditor.trigger 'init'
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
 
-    index = currentAnimation.currentFrameIndex()
-    framesLength = currentAnimation.frames.length
+    index = animation.currentFrameIndex()
+    framesLength = animation.frames.length
 
     keyMapping =
       "37": -1
@@ -183,7 +184,7 @@ $.fn.animationEditor = (options) ->
       newValue = $(this).val()
 
       controls.scrubber(newValue)
-      currentAnimation.currentFrameIndex(newValue)
+      animation.currentFrameIndex(newValue)
 
   for key, value of changeEvents
     animationEditor.find(key).change(value)
@@ -206,10 +207,10 @@ $.fn.animationEditor = (options) ->
       parent = $(this).parent()
 
       if parent.hasClass('sequence')
-        currentAnimation.removeFrameSequence(parent.index())
+        animation.removeFrameSequence(parent.index())
 
       if parent.hasClass('frame_sprite')
-        currentAnimation.removeFrame(parent.index())
+        animation.removeFrame(parent.index())
     '.edit_frames': (e) ->
       $this = $(this)
       text = $this.text()
@@ -263,7 +264,7 @@ $.fn.animationEditor = (options) ->
       return if $(e.target).is('.name')
 
       index = $(this).index()
-      currentAnimation.addSequenceToFrames(index)
+      animation.addSequenceToFrames(index)
     '.right .x': (e) ->
       e.stopPropagation()
       removeSequence $(this).parent().index()
@@ -292,7 +293,9 @@ $.fn.animationEditor = (options) ->
 
         lastClickedSprite = $this
 
-      currentAnimation.addFrame($(sprite).attr('src')) for sprite in sprites
+      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+
+      animation.addFrame($(sprite).attr('src'), index) for sprite in sprites
 
   for key, value of liveMousedownEvents
     animationEditor.find(key).live
@@ -302,7 +305,7 @@ $.fn.animationEditor = (options) ->
     '.save_sequence': (e) ->
       createSequence()
     '.clear_frames': (e) ->
-      currentAnimation.clearFrames()
+      animation.clearFrames()
       controls.stop()
 
   for key, value of clickEvents
@@ -315,7 +318,7 @@ $.fn.animationEditor = (options) ->
       $this = $(this)
 
       updatedStateName = $this.val()
-      currentAnimation.name(updatedStateName)
+      animation.name(updatedStateName)
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -337,15 +340,17 @@ $.fn.animationEditor = (options) ->
 
     for frame in selectedFrames
       index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-      currentAnimation.removeFrame(index)
+      animation.removeFrame(index)
 
   $(document).bind 'keydown', '1 2 3 4 5 6 7 8 9', (e) ->
     return unless lastClickedSprite
 
     keyOffset = 48
 
+    index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+
     (e.which - keyOffset).times ->
-      currentAnimation.addFrame(lastClickedSprite.get(0).src)
+      animation.addFrame(lastClickedSprite.get(0).src, index)
 
   $(document).bind 'keydown', 'meta+c', (e) ->
     e.preventDefault()
@@ -361,12 +366,14 @@ $.fn.animationEditor = (options) ->
 
     for frame in selectedSprites
       index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-      currentAnimation.removeFrame(index)
+      animation.removeFrame(index)
 
   $(document).bind 'keydown', 'meta+v', (e) ->
+    index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+
     if clipboard.length
       for frame in clipboard
-        currentAnimation.addFrame($(frame).attr('src'))
+        animation.addFrame($(frame).attr('src'), index)
 
   $(document).bind 'keydown', 'ctrl', (e) ->
     $('#clipboard_modal').children().not('.header').remove()

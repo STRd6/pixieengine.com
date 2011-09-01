@@ -1,4 +1,4 @@
-window.Animation = (animationNumber, tileset, controls, animationEditor, sequences) ->
+(exports ? this)["Animation"] = (animationNumber, tileset, controls, animationEditor, sequences) ->
   frames = []
   currentFrameIndex = 0
   stateId = Math.uuid(32, 16)
@@ -10,10 +10,15 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
       return uuid if src == tileSrc
 
   self =
-    addFrame: (imgSrc) ->
-      frames.push(findUUID(imgSrc))
+    addFrame: (imgSrc, index) ->
+      index ||= frames.length
+
+      uuid = findUUID(imgSrc)
+
+      frames.splice(index, 0, uuid)
+      animationEditor.trigger 'updateFrameSprite', [uuid, index]
+
       controls.scrubberMax(frames.length - 1)
-      animationEditor.trigger 'updateLastFrame'
 
     addSequenceToFrames: (index) ->
       sequence = $('<div class="sequence" />')
@@ -48,12 +53,6 @@ window.Animation = (animationNumber, tileset, controls, animationEditor, sequenc
     frames: frames
 
     stateId: stateId
-
-    load: ->
-      for frameIndex in frames
-        animationEditor.trigger 'updateFrame', [frameIndex]
-
-      controls.scrubberMax(frames.length - 1)
 
     name: (val) ->
       if val?
