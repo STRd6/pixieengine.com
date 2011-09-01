@@ -10,7 +10,7 @@
 - content_for :javascript do
   :javascript
     BASE_URL = #{project.base_url.to_json};
-    MTIME=#{project.updated_at.to_i};
+    MTIME = #{project.updated_at.to_i};
 
-
+  = javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js")
   %script(src="/production/projects/#{project.id}/#{config[:name]}.js?#{project.updated_at.to_i}")
