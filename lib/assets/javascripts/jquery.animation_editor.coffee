@@ -18,22 +18,18 @@ $.fn.animationEditor = (options) ->
   window.exportAnimationCSV = ->
     output = ""
 
-    for sequence in sequences
-      output = output + sequence.name + ": " + (tilemap[frame] for frame in sequence.frames).join(",") + "\n"
+    for sequenceObject in sequences
+      output = output + sequenceObject.name + ": " + (tilemap[frame] for frame in sequenceObject.frameArray).join(",") + "\n"
 
     return output
 
   window.exportAnimationJSON = ->
-    animationData = ({ frames: (tilemap[frame] for frame in animation.frames), name: animation.name() })
-
     sequenceData = (
       for sequenceObject in sequences
-        for name, frameArray of sequenceObject
-          for frame in frameArray
-            tilemap[frame]
+        {name: sequenceObject.name, frames: (tilemap[frame] for frame in sequenceObject.frameArray)}
     )
 
-    return JSON.stringify({ animations: animationData })
+    return JSON.stringify(sequenceData)
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
