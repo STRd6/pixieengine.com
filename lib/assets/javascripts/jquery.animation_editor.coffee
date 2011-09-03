@@ -365,6 +365,8 @@ $.fn.animationEditor = (options) ->
       animation.removeFrame(index)
 
   $(document).bind 'keydown', 'meta+v', (e) ->
+    e.preventDefault()
+
     index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
 
     if clipboard.length
