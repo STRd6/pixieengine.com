@@ -197,6 +197,7 @@ table.summaryTable
       width: 65%
       div.fixedFont
         font-weight: bold
+
   div.description
     color: #333
 
@@ -228,9 +229,13 @@ ul.fileList li
 .fixedFont
   font-family: Consolas, "Courier New", Courier, monospace
   &.heading
-    margin-bottom: 0.5em
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1)
     font-size: 1.25em
     line-height: 1.1em
+    margin-bottom: 0.5em
+    margin-top: 0.5em
+    padding-top: 1em
+
     + .description
       font-size: 1.2em
     .light, .lighter

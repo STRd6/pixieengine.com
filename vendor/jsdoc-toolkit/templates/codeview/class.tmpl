@@ -444,8 +444,6 @@
                   !}
                   </span>
 
-                  <if test="member.type"><span class="light">{{+new Link().toSymbol(member.type)+}}</span></if>
-
                   <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name.replace(/\^\d+$/, '')+}</b>{+makeSignature(member.params)+}
                 </div>
 
