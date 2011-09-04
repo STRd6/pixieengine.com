@@ -265,10 +265,6 @@
             <div class="innerProps">
               <a name="constructor"></a>
 
-              <div class="sectionTitle">
-                {+classType+}Detail
-              </div>
-
               <div class="fixedFont">{!
                 if (data.isPrivate) output += "&lt;private&gt; ";
                 if (data.isInner) output += "&lt;inner&gt; ";
@@ -355,11 +351,6 @@
         <if test="defined(ownProperties) && ownProperties.length">
           <div class="details props">
             <div class="innerProps">
-
-              <div class="sectionTitle">
-                Field Detail
-              </div>
-
               <for each="member" in="ownProperties">
                 <a name="{+Link.symbolNameToLinkName(member)+}"></a>
 
@@ -428,14 +419,9 @@
         <if test="defined(ownMethods) && ownMethods.length">
           <div class="details props">
             <div class="innerProps">
-              <div class="sectionTitle">
-                Method Detail
-              </div>
-
               <for each="member" in="ownMethods">
-                <a name="{+Link.symbolNameToLinkName(member)+}"></a>
-
                 <div class="fixedFont heading">
+                  <a name="{+Link.symbolNameToLinkName(member)+}"></a>
                   <span class='lighter'>
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
@@ -531,10 +517,6 @@
         <if test="defined(ownEvents) && ownEvents.length">
           <div class="details props">
             <div class="innerProps">
-              <div class="sectionTitle">
-                Event Detail
-              </div>
-
               <for each="member" in="ownEvents">
                 <a name="event:{+Link.symbolNameToLinkName(member)+}"> </a>
 
