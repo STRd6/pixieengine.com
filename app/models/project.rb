@@ -61,6 +61,7 @@ class Project < ActiveRecord::Base
   }
   BRANCH_NAME = "pixie"
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
+  DOCS_ID = 34
   DEMO_ID = 176
   JUMP_DEMO_ID = 218
   SHOOT_DEMO_ID = 227
