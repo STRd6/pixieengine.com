@@ -105,6 +105,7 @@ GEM
       execjs
     coffee-script-source (1.1.2)
     color (1.4.1)
+    corelib (0.0.1)
     daemons (1.1.4)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
@@ -239,6 +240,7 @@ DEPENDENCIES
   coffee-filter
   coffee-rails (~> 3.1.0)
   compass!
+  corelib
   delayed_job (= 2.1.4)
   exception_notification!
   factory_girl
