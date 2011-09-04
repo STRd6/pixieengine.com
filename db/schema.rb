@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110818222222) do
+ActiveRecord::Schema.define(:version => 20110903222312) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(:version => 20110818222222) do
     t.boolean  "featured"
     t.boolean  "arcade"
     t.datetime "deleted_at"
+    t.integer  "memberships_count"
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|
@@ -357,6 +358,19 @@ ActiveRecord::Schema.define(:version => 20110818222222) do
 
   add_index "links", ["token"], :name => "index_links_on_token", :unique => true
 
+  create_table "memberships", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "null_id"
+    t.integer  "group_id"
+    t.string   "group_type"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "memberships", ["group_id", "group_type", "user_id"], :name => "index_memberships_on_group_id_and_group_type_and_user_id", :unique => true
+  add_index "memberships", ["group_id", "group_type"], :name => "index_memberships_on_group_id_and_group_type"
+  add_index "memberships", ["user_id"], :name => "index_memberships_on_user_id"
+
   create_table "plugins", :force => true do |t|
     t.integer  "user_id"
     t.boolean  "approved",    :default => false, :null => false
@@ -388,6 +402,7 @@ ActiveRecord::Schema.define(:version => 20110818222222) do
     t.boolean  "tutorial",           :default => false, :null => false
     t.boolean  "featured",           :default => false, :null => false
     t.boolean  "arcade",             :default => false, :null => false
+    t.integer  "memberships_count",  :default => 0,     :null => false
   end
 
   add_index "projects", ["url"], :name => "index_projects_on_url"

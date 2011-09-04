@@ -1,5 +1,6 @@
 class Project < ActiveRecord::Base
   include Commentable
+  include Memberships
 
   acts_as_archive
 
@@ -304,12 +305,6 @@ class Project < ActiveRecord::Base
     when "tutorial"
       "tutorial"
     end
-  end
-
-  def has_access?(user)
-    #TODO: Project memberships
-
-    user == self.user
   end
 
   def push_enabled?
