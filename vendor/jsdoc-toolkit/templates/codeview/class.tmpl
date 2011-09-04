@@ -153,11 +153,6 @@
                 <tbody>
                   <for each="member" in="ownMethods">
                     <tr>
-                      <td class="attributes">{!
-                        if (member.isPrivate) output += "&lt;private&gt; ";
-                        if (member.isInner) output += "&lt;inner&gt; ";
-                        if (member.isStatic) output += "<em>static</em>";
-                      !}&nbsp;</td>
                       <td class="nameDescription">
                         <div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name.replace(/\^\d+$/, ''))+}</b>{+makeSignature(member.params)+}
                         </div>
