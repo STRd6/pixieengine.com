@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController
   end
 
   def add_to_arcade
-    project.update_attribute(:arcade, true)
+    project.update_attribute(:arcade, !params[:remove])
 
     respond_to do |format|
       format.json do
@@ -66,7 +66,7 @@ class ProjectsController < ApplicationController
   end
 
   def add_to_tutorial
-    project.update_attribute(:tutorial, true)
+    project.update_attribute(:tutorial, !params[:remove])
 
     respond_to do |format|
       format.json do
@@ -78,7 +78,7 @@ class ProjectsController < ApplicationController
   end
 
   def feature
-    project.update_attribute(:featured, true)
+    project.update_attribute(:featured, !params[:remove])
 
     respond_to do |format|
       format.html do
