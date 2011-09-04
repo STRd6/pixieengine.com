@@ -30,4 +30,20 @@ class ProjectTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "memberships" do
+    setup do
+      @project = Factory :project
+
+      @member = Factory :user
+      @non_member = Factory :user
+
+      Membership.create :group => @project, :user => @member
+    end
+
+    should "know members" do
+      assert @project.has_access?(@member)
+      assert !@project.has_access?(@non_member)
+    end
+  end
 end
