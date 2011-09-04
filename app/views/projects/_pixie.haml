@@ -1,111 +1,112 @@
-:coffeescript
-  window.createPixelEditor = (options) ->
-    dataUrl = options.dataUrl
-    path = options.path
-    panel = options.panel
-    _canvas = null
+- content_for :javascript do
+  :coffeescript
+    window.createPixelEditor = (options) ->
+      dataUrl = options.dataUrl
+      path = options.path
+      panel = options.panel
+      _canvas = null
 
-    editorOptions = $.extend panel.data("options"),
-      frames: 1
-      initializer: (canvas) ->
-        _canvas = canvas
+      editorOptions = $.extend panel.data("options"),
+        frames: 1
+        initializer: (canvas) ->
+          _canvas = canvas
 
-        if contentsVal = panel.find("[name=contents]").val()
-          canvas.fromDataURL(contentsVal)
-        if dataUrl
-          canvas.fromDataURL(dataUrl)
+          if contentsVal = panel.find("[name=contents]").val()
+            canvas.fromDataURL(contentsVal)
+          if dataUrl
+            canvas.fromDataURL(dataUrl)
 
-        canvas.addAction
-          name: "Save"
-          icon: "/assets/icons/database_save.png"
-          perform: (canvas) ->
-            pixelEditor.trigger('doSave')
+          canvas.addAction
+            name: "Save"
+            icon: "/assets/icons/database_save.png"
+            perform: (canvas) ->
+              pixelEditor.trigger('doSave')
 
-          undoable: false
+            undoable: false
 
-        canvas.addAction
-          name: "Save As"
-          icon: "/assets/icons/database_save.png"
-          perform: (canvas) ->
-            title = prompt("Title")
+          canvas.addAction
+            name: "Save As"
+            icon: "/assets/icons/database_save.png"
+            perform: (canvas) ->
+              title = prompt("Title")
 
-            base64Contents = _canvas.toBase64()
+              base64Contents = _canvas.toBase64()
 
-            if title
-              filePath = projectConfig.directories["images"]
+              if title
+                filePath = projectConfig.directories["images"]
 
-              newFileNode
-                name: title
-                type: "image"
-                ext: "png"
-                path: filePath
-                contents: "data:image/png;base64," + base64Contents
+                newFileNode
+                  name: title
+                  type: "image"
+                  ext: "png"
+                  path: filePath
+                  contents: "data:image/png;base64," + base64Contents
 
-              pixelEditor.trigger 'save',
-                contents_base64: base64Contents
-                path: filePath + "/" + title + ".png"
+                pixelEditor.trigger 'save',
+                  contents_base64: base64Contents
+                  path: filePath + "/" + title + ".png"
 
-          undoable: false
+            undoable: false
 
-    pixelEditor = $('<div />').pixie(editorOptions)
+      pixelEditor = $('<div />').pixie(editorOptions)
 
-    pixelEditor.bind 'doSave', ->
-      # Update mtime to bust browser image caching
-      pixelEditor.parent().attr("data-mtime", new Date().getTime())
+      pixelEditor.bind 'doSave', ->
+        # Update mtime to bust browser image caching
+        pixelEditor.parent().attr("data-mtime", new Date().getTime())
 
-      pixelEditor.trigger 'save',
-        contents_base64: _canvas.toBase64()
-        path: path
-
-    window.currentComponent = pixelEditor
-
-    return pixelEditor
-
-  $.fn.modalPixelEditor = (options) ->
-    input = this
-
-    return if input.data('modalPixelEditor')
-
-    previewImage = $ "<img />"
-      src: input.val()
-
-    input.after(previewImage).hide().data('modalPixelEditor', true)
-
-    options = $.extend {}, options,
-      initializer: (canvas) ->
-        _canvas = canvas
-
-        if dataUrl = input.val()
-          canvas.fromDataURL(dataUrl)
-
-        canvas.addAction
-          name: "Store"
-          icon: "/assets/icons/database_save.png"
-          perform: (canvas) ->
-            imageData = canvas.toDataURL()
-
-            input.val(imageData).trigger('blur')
-            previewImage.attr("src", imageData)
-
-            $.modal.close()
-
-            #TODO select props editor
-            window.currentComponent = null
-
-          undoable: false
-
-    showEditor = ->
-      pixelEditor = $('<div />').pixie(options)
-
-      pixelEditor.modal
-        containerCss:
-          height: 600
-          width: 800
-          maxHeight: 600
-          maxWidth: 800
+        pixelEditor.trigger 'save',
+          contents_base64: _canvas.toBase64()
+          path: path
 
       window.currentComponent = pixelEditor
 
-    input.parent().click(showEditor)
+      return pixelEditor
 
-    return this
+    $.fn.modalPixelEditor = (options) ->
+      input = this
+
+      return if input.data('modalPixelEditor')
+
+      previewImage = $ "<img />"
+        src: input.val()
+
+      input.after(previewImage).hide().data('modalPixelEditor', true)
+
+      options = $.extend {}, options,
+        initializer: (canvas) ->
+          _canvas = canvas
+
+          if dataUrl = input.val()
+            canvas.fromDataURL(dataUrl)
+
+          canvas.addAction
+            name: "Store"
+            icon: "/assets/icons/database_save.png"
+            perform: (canvas) ->
+              imageData = canvas.toDataURL()
+
+              input.val(imageData).trigger('blur')
+              previewImage.attr("src", imageData)
+
+              $.modal.close()
+
+              #TODO select props editor
+              window.currentComponent = null
+
+            undoable: false
+
+      showEditor = ->
+        pixelEditor = $('<div />').pixie(options)
+
+        pixelEditor.modal
+          containerCss:
+            height: 600
+            width: 800
+            maxHeight: 600
+            maxWidth: 800
+
+        window.currentComponent = pixelEditor
+
+      input.parent().click(showEditor)
+
+      return this

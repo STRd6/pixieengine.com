@@ -4,5 +4,7 @@ class Treatment < ActiveRecord::Base
 
   before_create do
     self.control = (rand(2) == 0)
+
+    true # Don't want to return false on the last line!
   end
 end

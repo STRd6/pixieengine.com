@@ -1,0 +1,4 @@
+# pack-refs with: peeled 
+e8b603e523c14f145da7b3a1729f5cc06eba2dd1 refs/tags/pre-2-3
+192a49a02d63d28b23ed41cebadfedd490929cf1 refs/heads/master
+f9865f54b415e4f87e582f6256a811d5c5f54d7b refs/heads/2-3-stable

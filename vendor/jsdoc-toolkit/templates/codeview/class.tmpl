@@ -29,7 +29,7 @@
               classType += "Class ";
             }
           !}
-          {+classType+}<span>{+data.alias+}</span>
+          <span>{+data.alias+}</span>
         </h1>
 
         <p class="description summary">
@@ -417,8 +417,6 @@
                     </if>
                   </dl>
                 </if>
-
-                <if test="!$member_last"><div class="hr"></div></if>
               </for>
             </div>
           </div>
@@ -446,8 +444,6 @@
                   !}
                   </span>
 
-                  <if test="member.type"><span class="light">{{+new Link().toSymbol(member.type)+}}</span></if>
-
                   <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name.replace(/\^\d+$/, '')+}</b>{+makeSignature(member.params)+}
                 </div>
 
@@ -468,7 +464,7 @@
                     <dt class="heading">Parameters:</dt>
                     <for each="item" in="member.params">
                       <dt>
-                        {+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}<b>{+item.name+}</b>
+                        <b>{+item.name+}</b>{+((item.type)?"<span class='light fixedFont'> "+(new Link().toSymbol(item.type))+"</span> " : "")+}
                         <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                       </dt>
                       <dd>{+resolveLinks(item.desc)+}</dd>
@@ -524,8 +520,6 @@
 
                   </dl>
                 </if>
-
-                <if test="!$member_last"><div class="hr"></div></if>
               </for>
             </div>
           </div>
@@ -627,8 +621,6 @@
                     </if>
                   </dl>
                 </if>
-
-                <if test="!$member_last"><div class="hr"></div></if>
               </for>
             </div>
           </div>

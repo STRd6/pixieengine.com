@@ -59,7 +59,7 @@ class UsersController < ApplicationController
 
       save_sprites_to_user(user)
 
-      track_event('registration')
+      track_event('register')
 
       respond_to do |format|
         format.html do

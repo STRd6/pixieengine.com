@@ -10,11 +10,11 @@
         {}
       ],
       ["Script",
-        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript"},
+        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript", :template => "script"},
         {}
       ],
       ["Test",
-        {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript"},
+        {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript", :template => "test"},
         {}
       ],
       ["Image",
@@ -50,90 +50,98 @@
 
 = render :partial => "file_template"
 
-:coffeescript
-  params = null
+- content_for :javascript do
+  :coffeescript
+    params = null
 
-  window.findDirectory = (directoryPath) ->
-    folderPaths = directoryPath.split("/")
+    window.findDirectory = (directoryPath) ->
+      folderPaths = directoryPath.split("/")
 
-    dirNode = $("ul.filetree")
+      dirNode = $("ul.filetree")
 
-    folderPaths.each (dirName) ->
-      dirNode = dirNode.children("[title=\#{dirName}]").children("ul")
+      folderPaths.each (dirName) ->
+        dirNode = dirNode.children("[title=\#{dirName}]").children("ul")
 
-    dirNode
+      dirNode
 
-  window.newFileNode = (inputData) ->
-    unless inputData.name
-      alert "You need to enter a name!"
-      return
+    window.newFileNode = (inputData) ->
+      unless inputData.name
+        alert "You need to enter a name!"
+        return
 
-    # Create/traverse directories
-    path = inputData.path
-    folderPaths = path.split("/")
-    addedTreeRoot = null
+      # Create/traverse directories
+      path = inputData.path
+      folderPaths = path.split("/")
+      addedTreeRoot = null
 
-    dirNode = $("ul.filetree")
-    folderPaths.each (dirName) ->
-      dirNode = (if (dir = dirNode.children("[title=\#{dirName}]")).length
-        dir.eq(0)
-      else
-        newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)
-        addedTreeRoot ||= newDir
+      dirNode = $("ul.filetree")
+      folderPaths.each (dirName) ->
+        dirNode = (if (dir = dirNode.children("[title=\#{dirName}]")).length
+          dir.eq(0)
+        else
+          newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)
+          addedTreeRoot ||= newDir
 
-        newDir
-      ).children('ul')
+          newDir
+        ).children('ul')
 
-    inputData.path = "/\#{inputData.path}/\#{inputData.name}.\#{inputData.ext}"
-    inputData.options = JSON.stringify(inputData.options)
-    dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
+      inputData.path = "/\#{inputData.path}/\#{inputData.name}.\#{inputData.ext}"
+      inputData.options = JSON.stringify(inputData.options)
+      dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
-    data = $.extend({
-      dataId: dataId
-      displayName: inputData.name
-    }, inputData)
+      data = $.extend({
+        dataId: dataId
+        displayName: inputData.name
+      }, inputData)
 
-    treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
+      treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
 
-    unless inputData.noAutoOpen
-      treeNode.find(".file").click()
+      if template = inputData.template
+        className = data.name.camelize()
+        data.className = className.charAt(0).toUpperCase() + className.substring(1)
+        treeNode.find("[name=contents]").val $("#file_templates .\#{template}").tmpl(data).text()
 
-    if inputData.forceSave
-      window.save null,
-        contents: inputData.contents
-        path: inputData.path
-        noNotify: true
+      unless inputData.noAutoOpen
+        treeNode.find(".file").click()
 
-    return treeNode
+      if inputData.forceSave
+        window.save null,
+          contents: inputData.contents
+          path: inputData.path
+          noNotify: true
 
-  $("#new_file_modal button.choice").live 'click', (event) ->
-    event.preventDefault()
+      return treeNode
 
-    $(this).takeClass("active")
+    $("#new_file_modal button.choice").live 'click', (event) ->
+      event.preventDefault()
 
-    $("#new_file_modal .details").show()
+      $(this).takeClass("active")
 
-    params = $(this).data('params')
-    params.path = projectConfig.directories[params.directory]
+      $("#new_file_modal .details").show()
 
-    fields = $("#new_file_modal .fields").empty()
+      params = $(this).data('params')
+      params.path = projectConfig.directories[params.directory]
 
-    for name, value of $(this).data('fields')
-      $("#new_file_modal .field.template").tmpl(
-        name: name
-        value: value
-      ).appendTo(fields)
+      fields = $("#new_file_modal .fields").empty()
 
-  $("#new_file_modal button.create").live 'click', (event) ->
-    event.preventDefault()
+      for name, value of $(this).data('fields')
+        $("#new_file_modal .field.template").tmpl(
+          name: name
+          value: value
+        ).appendTo(fields)
 
-    formData = $("#new_file_modal").serializeObject()
+      $("#new_file_modal .details input[name='name']").focus()
 
-    newNode = newFileNode($.extend(formData, params))
+    $("#new_file_modal button.create").live 'click', (event) ->
+      event.preventDefault()
 
-    if newNode
-      $.modal.close()
+      formData = $("#new_file_modal").serializeObject()
 
-  $("#new_file_modal input").live 'keydown', (event) ->
-    if event.which == 13
-      $("#new_file_modal button.create").click()
+      newNode = newFileNode($.extend(formData, params))
+
+      if newNode
+        $.modal.close()
+
+    $("#new_file_modal input").live 'keydown', (event) ->
+      if event.which == 13
+        $("#new_file_modal button.create").click()

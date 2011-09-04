@@ -8,28 +8,16 @@
     = stylesheet_link_tag "jquery.treeview.css"
     = stylesheet_link_tag 'ide'
 
-    = javascript_include_tag "treeview/jquery.treeview.js"
-    = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
+    - content_for :javascript do
+      = javascript_include_tag "treeview/jquery.treeview.js"
+      = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
 
     = render :partial => "/shared/header"
 
     = yield
 
-    - if @has_reg_popup
-      = render :partial => 'shared/register_modal'
-    = render :partial => "/shared/feedback"
-    = render :partial => "/shared/chat"
-    = render :partial => "/shared/hotkeys"
-
     #tooltip
       .icon
       .content
 
-    = render :partial => "/shared/analytics"
-
-    - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
-      = render :partial => "/shared/conversion"
-      :javascript
-        $(function() {
-          trackPageview("/event/registered");
-        });
+    = render :partial => "/shared/footer"

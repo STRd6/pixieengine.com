@@ -4,72 +4,73 @@
   #import_drop_zone
     %p Drag files from your desktop here and we'll add them to your project.
 
-:coffeescript
-  $("#import").live "mousedown", ->
-    if $(this).hasClass('active')
-      $("#import_drop_window").hide()
-    else
-      $("#import_drop_window").show()
+- content_for :javascript do
+  :coffeescript
+    $("#import").live "mousedown", ->
+      if $(this).hasClass('active')
+        $("#import_drop_window").hide()
+      else
+        $("#import_drop_window").show()
 
-    $(this).toggleClass('active')
+      $(this).toggleClass('active')
 
-  $("#import_drop_window .ui-icon-close").live "click", ->
-    $("#import").removeClass('active')
+    $("#import_drop_window .ui-icon-close").live "click", ->
+      $("#import").removeClass('active')
 
-  $ ->
-    extractBase64Data = (dataUrl) ->
-      dataUrl.substring(dataUrl.indexOf(',') + 1)
+    $ ->
+      extractBase64Data = (dataUrl) ->
+        dataUrl.substring(dataUrl.indexOf(',') + 1)
 
-    $("body").dropImageReader
-      matchType: /.*/
-      callback: (file, event) ->
-        if event.target.readyState == FileReader.DONE
-          if file.type == "application/javascript" || file.type == "application/x-javascript"
-            path = projectConfig.directories.lib
-            type = "text"
-            ext = "js"
-            lang = "javascript"
-
-          else if file.type.match "audio"
-            ext = file.name.match(/\.([^\.]*)$/, '')?[1]
-            path = projectConfig.directories.sounds
-            type = "binary"
-
-          else if file.type == ""
-            ext = file.name.match(/\.([^\.]*)$/, '')?[1]
-
-            if ext == "coffee"
-              path = projectConfig.directories.source
+      $("body").dropImageReader
+        matchType: /.*/
+        callback: (file, event) ->
+          if event.target.readyState == FileReader.DONE
+            if file.type == "application/javascript" || file.type == "application/x-javascript"
+              path = projectConfig.directories.lib
               type = "text"
-              lang = "coffeescript"
-            else if ext == "tilemap"
-              ;#TODO
-            else if ext == "tutorial"
-              path = ""
-              type = "text"
-            else if ext == "json"
-              path = ""
-              type = "text"
-              lang = "json"
+              ext = "js"
+              lang = "javascript"
 
-          else if file.type.match(/image.*/)
-            path = projectConfig.directories.images
-            type = "image"
-            ext = "png"
+            else if file.type.match "audio"
+              ext = file.name.match(/\.([^\.]*)$/, '')?[1]
+              path = projectConfig.directories.sounds
+              type = "binary"
 
-          if path?
-            contentsBase64 = extractBase64Data(event.target.result)
-            window.save event,
-              contents_base64: contentsBase64
-              path: "/" + path + "/" + file.name
+            else if file.type == ""
+              ext = file.name.match(/\.([^\.]*)$/, '')?[1]
 
-            contents = Base64.decode(contentsBase64) if type == "text"
+              if ext == "coffee"
+                path = projectConfig.directories.source
+                type = "text"
+                lang = "coffeescript"
+              else if ext == "tilemap"
+                ;#TODO
+              else if ext == "tutorial"
+                path = ""
+                type = "text"
+              else if ext == "json"
+                path = ""
+                type = "text"
+                lang = "json"
 
-            newFileNode
-              name: file.name.replace(/\.[^\.]*$/, '')
-              type: type
-              ext: ext
-              lang: lang
-              path: path
-              noAutoOpen: true
-              contents: contents
+            else if file.type.match(/image.*/)
+              path = projectConfig.directories.images
+              type = "image"
+              ext = "png"
+
+            if path?
+              contentsBase64 = extractBase64Data(event.target.result)
+              window.save event,
+                contents_base64: contentsBase64
+                path: "/" + path + "/" + file.name
+
+              contents = Base64.decode(contentsBase64) if type == "text"
+
+              newFileNode
+                name: file.name.replace(/\.[^\.]*$/, '')
+                type: type
+                ext: ext
+                lang: lang
+                path: path
+                noAutoOpen: true
+                contents: contents

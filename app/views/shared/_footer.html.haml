@@ -14,10 +14,11 @@
   = render :partial => "/shared/hotkeys"
   = render :partial => "/shared/tooltip"
 
-  = render :partial => "/shared/analytics"
+= render :partial => "/shared/javascripts"
 
-  - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
-    = render :partial => "/shared/conversion"
+- if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
+  = render :partial => "/shared/conversion"
+  - content_for :javascript do
     :javascript
       $(function() {
         trackPageview("/event/registered");
