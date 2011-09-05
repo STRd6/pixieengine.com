@@ -22,6 +22,12 @@ GIT
     gratr (0.5.1)
 
 GIT
+  remote: git://github.com/mdiebolt/corelib.git
+  revision: 5501c1785a8085d53d37f17c4607e2148254b3f4
+  specs:
+    corelib (0.0.1)
+
+GIT
   remote: git://github.com/odorcicd/authlogic.git
   revision: a087ad0cba3c165ba22fcf176c28b6f7517931e8
   branch: rails3
@@ -239,6 +245,7 @@ DEPENDENCIES
   coffee-filter
   coffee-rails (~> 3.1.0)
   compass!
+  corelib!
   delayed_job (= 2.1.4)
   exception_notification!
   factory_girl
