@@ -57,10 +57,6 @@
               <caption>{+classType+}Summary</caption>
               <tbody>
                 <tr>
-                  <td class="attributes">{!
-                    if (data.isPrivate) output += "&lt;private&gt; ";
-                    if (data.isInner) output += "&lt;inner&gt; ";
-                  !}&nbsp;</td>
                   <td class="nameDescription" {!if (data.comment.getTag("hilited").length){output += 'style="color: red"'}!}>
                     <div class="fixedFont">
                       <b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b><if test="classType != 'Namespace '">{+ makeSignature(data.params) +}</if>
@@ -206,11 +202,6 @@
               <tbody>
                 <for each="member" in="ownEvents">
                   <tr>
-                    <td class="attributes">{!
-                      if (member.isPrivate) output += "&lt;private&gt; ";
-                      if (member.isInner) output += "&lt;inner&gt; ";
-                      if (member.isStatic) output += "<em>static</em>";
-                    !}&nbsp;</td>
                     <td class="nameDescription">
                       <div class="fixedFont"><if test="member.isStatic && member.memberOf != '_global_'">{+member.memberOf+}.</if><b>{+new Link().toSymbol(member.alias).withText(member.name)+}</b>{+makeSignature(member.params)+}
                       </div>
@@ -445,7 +436,7 @@
                     <dt class="heading">Parameters:</dt>
                     <for each="item" in="member.params">
                       <dt>
-                        <b>{+item.name+}</b>{+((item.type)?"<span class='light fixedFont'> "+(new Link().toSymbol(item.type))+"</span> " : "")+}
+                        {+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
                         <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                       </dt>
                       <dd>{+resolveLinks(item.desc)+}</dd>
@@ -513,9 +504,8 @@
           <div class="details props">
             <div class="innerProps">
               <for each="member" in="ownEvents">
-                <a name="event:{+Link.symbolNameToLinkName(member)+}"> </a>
-
                 <div class="fixedFont heading">
+                  <a name="{+Link.symbolNameToLinkName(member)+}"> </a>
                   <span class='lighter'>
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
@@ -546,10 +536,10 @@
                     <dt class="heading">Parameters:</dt>
                     <for each="item" in="member.params">
                       <dt>
-                        {+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}<b>{+item.name+}</b>
+                        {+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
                         <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                       </dt>
-                      <dd>{+ resolveLinks(item.desc) +}</dd>
+                      <dd>{+resolveLinks(item.desc)+}</dd>
                     </for>
                   </dl>
                 </if>
