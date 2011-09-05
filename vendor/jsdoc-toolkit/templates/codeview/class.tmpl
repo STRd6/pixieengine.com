@@ -339,6 +339,9 @@
               <for each="member" in="ownProperties">
                 <div class="fixedFont heading">
                   <a name="{+Link.symbolNameToLinkName(member)+}"></a>
+                  <if test="member.type"><span class="light">{{+new Link().toSymbol(member.type)+}}</span></if>
+
+                  <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name+}</b>
                   <span class='lighter'>
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
@@ -347,10 +350,6 @@
                     if (member.isConstant) output += "&lt;constant&gt; ";
                   !}
                   </span>
-
-                  <if test="member.type"><span class="light">{{+new Link().toSymbol(member.type)+}}</span></if>
-
-                  <if test="member.isStatic && member.memberOf != '_global_'"><span class="light">{+member.memberOf+}.</span></if><b>{+member.name+}</b>
                 </div>
 
                 <div class="description">
