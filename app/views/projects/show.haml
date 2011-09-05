@@ -61,7 +61,12 @@
       event.preventDefault()
 
       if $(this).is(".active")
-        #TODO: Unfeature
+        $(this).removeClass("active")
+
+        $.post $(this).attr("href"),
+          remove: true
+          format: "json"
+
       else
         $(this).addClass("active")
 
