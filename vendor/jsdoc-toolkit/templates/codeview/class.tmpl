@@ -274,7 +274,7 @@
                   <dt class="heading">Parameters:</dt>
                   <for each="item" in="data.params">
                     <dt>
-                      {+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
+                      <b>{+item.name+}</b>{+((item.type)?"<span class='light fixedFont'> "+(new Link().toSymbol(item.type))+"</span> " : "")+}
                       <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                     </dt>
                     <dd>{+resolveLinks(item.desc)+}</dd>
@@ -436,7 +436,7 @@
                     <dt class="heading">Parameters:</dt>
                     <for each="item" in="member.params">
                       <dt>
-                        {+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
+                        <b>{+item.name+}</b>{+((item.type)?"<span class='light fixedFont'> "+(new Link().toSymbol(item.type))+"</span> " : "")+}
                         <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                       </dt>
                       <dd>{+resolveLinks(item.desc)+}</dd>
@@ -536,10 +536,10 @@
                     <dt class="heading">Parameters:</dt>
                     <for each="item" in="member.params">
                       <dt>
-                        {+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
+                        <b>{+item.name+}</b>{+((item.type)?"<span class='light fixedFont'> "+(new Link().toSymbol(item.type))+"</span> " : "")+}
                         <if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
                       </dt>
-                      <dd>{+resolveLinks(item.desc)+}</dd>
+                      <dd>{+ resolveLinks(item.desc) +}</dd>
                     </for>
                   </dl>
                 </if>
