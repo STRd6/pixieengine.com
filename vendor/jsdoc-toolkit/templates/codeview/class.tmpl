@@ -65,7 +65,6 @@
                   </td>
                 </tr>
                 <tr>
-                  <td></td>
                   <td class="instanceVariables">{!
                     if (data.comment.getTag("instanceVariables").length) {
                       output += "<b>Instance Variables (I):</b> ";
@@ -338,9 +337,8 @@
           <div class="details props">
             <div class="innerProps">
               <for each="member" in="ownProperties">
-                <a name="{+Link.symbolNameToLinkName(member)+}"></a>
-
                 <div class="fixedFont heading">
+                  <a name="{+Link.symbolNameToLinkName(member)+}"></a>
                   <span class='lighter'>
                   {!
                     if (member.isPrivate) output += "&lt;private&gt; ";
