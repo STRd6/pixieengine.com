@@ -120,7 +120,7 @@ div
   &.content
     min-width: 300px
   &.innerContent
-    padding: 0 0 0 2.5em
+    padding: 2em 0 0 2.5em
 
     .inheritsList
       margin-bottom: 1em
@@ -130,10 +130,13 @@ div
     ul, ol
       margin-bottom: 3em
     *.classTitle
-      margin-bottom: 0.5em
-      margin-left: -240px
       font-size: 2.5em
       letter-spacing: 2px
+      margin-bottom: 0.5em
+      margin-left: -240px
+      position: fixed
+      top: 0.5em
+
       span
         font-family: Consolas, "Courier New", Courier, monospace
     p.summary
@@ -161,7 +164,10 @@ div
           font-size: 1.4em
           letter-spacing: 1px
       &.hr
-        height: 2em
+        background-color: rgba(0, 0, 0, 0.15)
+        height: 1px
+        margin-bottom: 0.25em
+        margin-top: 0.25em
 
 table.summaryTable
   +box-sizing(content-box)
@@ -191,6 +197,7 @@ table.summaryTable
       width: 65%
       div.fixedFont
         font-weight: bold
+
   div.description
     color: #333
 
@@ -200,19 +207,25 @@ dl.detailList
     margin-top: 0
   dt
     display: inline
+    margin-left: 1em
     margin-right: 5px
     font-weight: bold
+    &.heading
+      margin-left: 0
     &:before
       display: block
       content: ""
   dd
     display: inline
   &.params
+    .heading
+      font-size: 120%
+      margin-bottom: 0.5em
     dt
       display: block
     dd
       display: block
-      padding-left: 2em
+      padding-left: 1em
       padding-bottom: 0.4em
 
 ul.fileList li
@@ -221,14 +234,31 @@ ul.fileList li
 
 .fixedFont
   font-family: Consolas, "Courier New", Courier, monospace
+
   &.heading
-    margin-bottom: 0.5em
-    font-size: 1.25em
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+    font-size: 1.5em
     line-height: 1.1em
+    margin-bottom: 0.5em
+    margin-top: 0.5em
+    padding-top: 1em
+
+    &:first-child
+      margin-top: 0
+      padding-top: 0
+
     + .description
       font-size: 1.2em
     .light, .lighter
       font-weight: bold
+
+code
+  pre
+    background-color: #FFFDE8
+    border: 1px solid rgba(0, 0, 0, 0.1)
+    margin-bottom: 0.5em
+    margin-top: 0.5em
+    padding: 0.5em
 
 pre.code
   +border-radius(2px)

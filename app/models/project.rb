@@ -1,5 +1,6 @@
 class Project < ActiveRecord::Base
   include Commentable
+  include Memberships
 
   acts_as_archive
 
@@ -61,6 +62,7 @@ class Project < ActiveRecord::Base
   }
   BRANCH_NAME = "pixie"
   DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
+  DOCS_ID = 34
   DEMO_ID = 176
   JUMP_DEMO_ID = 218
   SHOOT_DEMO_ID = 227
@@ -225,13 +227,14 @@ class Project < ActiveRecord::Base
 
   def file_node_data(file_path, project_root_path)
     filename = File.basename file_path
+    path = file_path.sub(project_root_path + File::SEPARATOR, '')
 
     if File.directory? file_path
       if filename == "docs"
         {
           :name => "Documentation",
           :ext => "documentation",
-          :path => file_path.sub(project_root_path + File::SEPARATOR, '')
+          :path => path,
         }
       else
         {
@@ -250,9 +253,15 @@ class Project < ActiveRecord::Base
       ext = (File.extname(filename)[1..-1] || "").downcase
       name = filename.sub(/\.[^\.]*$/, '')
       lang = lang_for(ext)
-      type = type_for(ext)
 
-      if ["text", "tilemap", "animation", "entity", "tutorial"].include? type
+      if path == "#{config[:name]}.js" || file_path == "#{title}.js"
+        # This is a 'compiled' JavaScript file for the project
+        type = "binary"
+      else
+        type = type_for(ext)
+      end
+
+      if ["text", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -268,7 +277,7 @@ class Project < ActiveRecord::Base
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,
-        :path => file_path.sub(project_root_path + File::SEPARATOR, ''),
+        :path => path,
       }
     end
   end
@@ -303,12 +312,6 @@ class Project < ActiveRecord::Base
     when "tutorial"
       "tutorial"
     end
-  end
-
-  def has_access?(user)
-    #TODO: Project memberships
-
-    user == self.user
   end
 
   def push_enabled?

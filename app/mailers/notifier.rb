@@ -26,13 +26,14 @@ class Notifier < ActionMailer::Base
       :from => "#{user.display_name} <#{user.email}>"
   end
 
-  def newsletter4(user, delivery_date)
+  def newsletter5(user, delivery_date)
     @user = user
     @delivery_date = delivery_date
     @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
 
-    @hawthorn = User.find 1792
-    @ntg = User.find 211
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
 
     mail :subject => "Pixie Newsletter", :to => user.email
   end

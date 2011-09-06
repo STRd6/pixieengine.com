@@ -619,6 +619,8 @@
       $('.filetree .file').live 'click', ->
         openFile($(this).data('id'))
 
+        $('.status .message').val($(this).text())
+
         trackEvent("IDE", "open file", $(this).data('id'))
 
       $('.filetree .folder').live 'click', ->
