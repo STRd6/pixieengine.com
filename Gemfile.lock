@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: git://github.com/mdiebolt/corelib.git
-  revision: 2bd55e3ca7530c3b69606ecadce6be5615ea4f11
+  revision: 02a9e8b3f9cd2914d189393908cdb3548e2e2071
   specs:
     corelib (0.0.1)
 
