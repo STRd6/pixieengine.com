@@ -1,5 +1,5 @@
-#= require animation/state
-#= require animation/ui
+#= require animation/animation
+#= require animation/animation_ui
 
 $.fn.animationEditor = (options) ->
   animationNumber = 1
@@ -329,57 +329,46 @@ $.fn.animationEditor = (options) ->
       else
         addTile(src)
 
-  $(document).bind 'keydown', 'del backspace', (e) ->
-    e.preventDefault()
+  keybindings =
+    "del backspace": (e) ->
+      e.preventDefault()
 
-    selectedFrames = animationEditor.find('.frame_sprites .selected')
+      selectedFrames = animationEditor.find('.frame_sprites .selected')
 
-    for frame in selectedFrames
-      index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-      animation.removeFrame(index)
+      for frame in selectedFrames
+        index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
+        animation.removeFrame(index)
+    "1 2 3 4 5 6 7 8 9": (e) ->
+      return unless lastClickedSprite
 
-  $(document).bind 'keydown', '1 2 3 4 5 6 7 8 9', (e) ->
-    return unless lastClickedSprite
+      keyOffset = 48
 
-    keyOffset = 48
+      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
 
-    index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+      (e.which - keyOffset).times ->
+        animation.addFrame(lastClickedSprite.get(0).src, index)
+    "meta+c": (e) ->
+      e.preventDefault()
 
-    (e.which - keyOffset).times ->
-      animation.addFrame(lastClickedSprite.get(0).src, index)
+      if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
+        clipboard = selectedSprites
+    "meta+x": (e) ->
+      e.preventDefault()
 
-  $(document).bind 'keydown', 'meta+c', (e) ->
-    e.preventDefault()
+      if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
+        clipboard = selectedSprites
 
-    if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
-      clipboard = selectedSprites
+      for frame in selectedSprites
+        index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
+        animation.removeFrame(index)
+    "meta+v": (e) ->
+      e.preventDefault()
 
-  $(document).bind 'keydown', 'meta+x', (e) ->
-    e.preventDefault()
+      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
 
-    if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
-      clipboard = selectedSprites
+      if clipboard.length
+        for frame in clipboard
+          animation.addFrame($(frame).attr('src'), index)
 
-    for frame in selectedSprites
-      index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-      animation.removeFrame(index)
-
-  $(document).bind 'keydown', 'meta+v', (e) ->
-    e.preventDefault()
-
-    index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
-
-    if clipboard.length
-      for frame in clipboard
-        animation.addFrame($(frame).attr('src'), index)
-
-  $(document).bind 'keydown', 'ctrl', (e) ->
-    $('#clipboard_modal').children().not('.header').remove()
-
-    for frame in clipboard
-      $('#clipboard_modal').append($(frame).clone())
-
-    $('#clipboard_modal').modal()
-
-  $(document).bind 'keyup', 'ctrl', (e) ->
-    $.modal.close()
+  for keybinding, handler of keybindings
+    $(document).bind 'keydown', keybinding, handler
