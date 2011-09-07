@@ -7,7 +7,7 @@
 
   $('.edit_sequence_modal img').live
     mousedown: (e) ->
-      $(this).toggleClass('selected')
+      $(this).takeClass('selected')
 
   animationEditor.bind
     addFrameToSequenceEditModal: (e, spriteSrc) ->
@@ -81,11 +81,13 @@
       sequence.appendTo(frameSprites)
 
       animationEditor.trigger(event) for event in ['enableSave', 'checkExportStatus']
-    updateSequence: (e, index) ->
-      sequenceFrameArray = if index then sequences[index].frameArray else sequences.last().frameArray
-      sequenceName = if index then sequences[index].name else sequences.last().name
+    updateSequence: (e, sequenceId) ->
+      sequenceFrameArray = if sequenceId then findSequence(sequenceId).frameArray else sequences.last().frameArray
+      sequenceName = if sequenceId then findSequence(sequenceId).name else sequences.last().name
+      id = sequences.last().id
+
       sequencesEl = $(this).find('.sequences')
-      sequence = $('<div class="sequence" />').append($("<span class='name'>#{sequenceName}</span>"))
+      sequence = $("<div class='sequence' data-id='#{sequenceId || id}' />").append($("<span class='name'>#{sequenceName}</span>"))
 
       (sequenceFrameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequence)
@@ -95,8 +97,14 @@
 
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
-      if index
-        sequencesEl.find('.sequence').eq(index).replaceWith(sequence)
+      if sequenceId
+        matches = animationEditor.find('.sequence').filter(->
+          return $(this).attr('data-id') == sequenceId
+        )
+
+        console.log matches
+
+        matches.replaceWith(sequence.clone())
       else
         sequence.appendTo(sequencesEl)
     updateScrubberMax: (e, newMax) ->

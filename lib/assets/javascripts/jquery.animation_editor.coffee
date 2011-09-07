@@ -135,20 +135,29 @@ $.fn.animationEditor = (options) ->
     tileIndex += 1
     animationEditor.trigger 'addTile', [src]
 
+  window.findSequence = (uuid) ->
+    for sequence in sequences
+      return sequence if sequence.id == uuid
+
   removeSequence = (sequenceIndex) ->
     sequences.splice(sequenceIndex, 1)
     animationEditor.trigger 'removeSequence', [sequenceIndex]
 
   pushSequence = (frameArray) ->
-    sequences.push({name: "sequence#{sequenceNumber++}", frameArray: frameArray})
+    sequenceId = Math.uuid(32, 16)
+
+    sequences.push({id: sequenceId, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
     animationEditor.trigger 'updateSequence'
 
-  shiftSequenceFrame = (sequenceIndex, frameIndex, shiftAmount) ->
-    elementToShift = removeSequenceFrame(sequenceIndex, frameIndex)
-    sequences[sequenceIndex].frameArray.splice((frameIndex + shiftAmount).mod(sequences.length), 0, elementToShift)
+  shiftSequenceFrame = (sequenceId, frameIndex, shiftAmount) ->
+    elementToShift = removeSequenceFrame(sequenceId, frameIndex)
+    sequence = findSequence(sequenceId)
 
-  removeSequenceFrame = (sequenceIndex, frameIndex) ->
-    sequences[sequenceIndex].frameArray.splice(frameIndex, 1).first()
+    sequence.frameArray.splice((frameIndex + shiftAmount).mod(sequences.length), 0, elementToShift)
+
+  removeSequenceFrame = (sequenceId, frameIndex) ->
+    sequence = findSequence(sequenceId)
+    sequence.frameArray.splice(frameIndex, 1).first()
 
   createSequence = ->
     if animation.frames.length
@@ -259,6 +268,7 @@ $.fn.animationEditor = (options) ->
         lastSelectedFrame = $(this)
     '.right .sequence.edit': (e) ->
       index = $(this).index()
+      sequenceId = $(this).attr('data-id')
       sequence = sequences[index]
 
       $('.edit_sequence_modal img').remove()
@@ -266,7 +276,7 @@ $.fn.animationEditor = (options) ->
       for uuid in sequence.frameArray
         animationEditor.trigger "addFrameToSequenceEditModal", [tileset[uuid]]
 
-      $('.edit_sequence_modal').attr('data-sequence_index', index)
+      $('.edit_sequence_modal').attr('data-id', sequenceId)
       $('.edit_sequence_modal').modal()
     '.right .sequence': (e) ->
       return if $(e.target).is('.name')
@@ -355,10 +365,10 @@ $.fn.animationEditor = (options) ->
       else if selectedSequenceFrames.length
         for frame in selectedSequenceFrames
           index = $('.edit_sequence_modal img').index(frame)
-          sequenceIndex = $('.edit_sequence_modal').attr('data-sequence_index')
-          removeSequenceFrame(sequenceIndex, index)
-          console.log sequences
-          animationEditor.trigger "updateSequence", [sequenceIndex]
+          sequenceId = $('.edit_sequence_modal').attr('data-id')
+          removeSequenceFrame(sequenceId, index)
+          animationEditor.trigger "updateSequence", [sequenceId]
+          $(frame).remove()
     "1 2 3 4 5 6 7 8 9": (e) ->
       return unless lastClickedSprite
 
