@@ -228,5 +228,14 @@ $tileset_sprite_width: 60px
         border: 1px solid $highlight_border
 
 #simplemodal-container
-  height: 250px
-  width: 350px
+  height: 300px
+  width: 600px
+
+.edit_sequence_modal img
+  +max-bounds(80px)
+
+  border: 2px solid transparent
+  margin: 2px
+
+  &.selected
+    border: 2px solid $highlight

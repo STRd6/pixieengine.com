@@ -3,8 +3,15 @@
   editorTemplate = templates.find('.editor.template')
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
+  editSequenceModal = templates.find('.edit_sequence_modal')
+
+  $('.edit_sequence_modal img').live
+    mousedown: (e) ->
+      $(this).toggleClass('selected')
 
   animationEditor.bind
+    addFrameToSequenceEditModal: (e, spriteSrc) ->
+      spriteTemplate.tmpl(src: spriteSrc).appendTo('.edit_sequence_modal')
     addSpriteToSequence: (e, spriteSrc, sequence) ->
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
     addTile: (e, src) ->
@@ -74,14 +81,11 @@
       sequence.appendTo(frameSprites)
 
       animationEditor.trigger(event) for event in ['enableSave', 'checkExportStatus']
-    updateLastSequence: ->
+    updateSequence: (e, index) ->
+      sequenceFrameArray = if index then sequences[index].frameArray else sequences.last().frameArray
+      sequenceName = if index then sequences[index].name else sequences.last().name
       sequencesEl = $(this).find('.sequences')
-
-      sequenceFrameArray = sequences.last().frameArray
-      sequence = $('<div class="sequence" />')
-      name = $("<span class='name'>#{sequences.last().name}</span>").appendTo(sequence)
-
-      sequence.appendTo(sequencesEl)
+      sequence = $('<div class="sequence" />').append($("<span class='name'>#{sequenceName}</span>"))
 
       (sequenceFrameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequence)
@@ -91,7 +95,10 @@
 
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
-      sequence.appendTo(sequencesEl)
+      if index
+        sequencesEl.find('.sequence').eq(index).replaceWith(sequence)
+      else
+        sequence.appendTo(sequencesEl)
     updateScrubberMax: (e, newMax) ->
       scrubberEl = animationEditor.find('.scrubber')
       scrubberEl.get(0).max = newMax

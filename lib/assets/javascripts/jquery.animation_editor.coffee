@@ -16,20 +16,15 @@ $.fn.animationEditor = (options) ->
   animationEditor = $(this.get(0)).addClass("editor animation_editor")
 
   window.exportAnimationCSV = ->
-    output = ""
-
-    for sequenceObject in sequences
-      output = output + sequenceObject.name + ": " + (tilemap[frame] for frame in sequenceObject.frameArray).join(",") + "\n"
-
-    return output
+    (for sequenceObject in sequences
+      sequenceObject.name + ": " + (tilemap[frame] for frame in sequenceObject.frameArray).join(",")
+    ).join("\n")
 
   window.exportAnimationJSON = ->
-    sequenceData = (
+    JSON.stringify(
       for sequenceObject in sequences
         {name: sequenceObject.name, frames: (tilemap[frame] for frame in sequenceObject.frameArray)}
     )
-
-    return JSON.stringify(sequenceData)
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
@@ -65,7 +60,7 @@ $.fn.animationEditor = (options) ->
   Controls = (animationEditor) ->
     intervalId = null
 
-    scrubberMax = 30
+    scrubberMax = 0
     scrubberValue = 0
     fps = 30
 
@@ -146,7 +141,14 @@ $.fn.animationEditor = (options) ->
 
   pushSequence = (frameArray) ->
     sequences.push({name: "sequence#{sequenceNumber++}", frameArray: frameArray})
-    animationEditor.trigger 'updateLastSequence'
+    animationEditor.trigger 'updateSequence'
+
+  shiftSequenceFrame = (sequenceIndex, frameIndex, shiftAmount) ->
+    elementToShift = removeSequenceFrame(sequenceIndex, frameIndex)
+    sequences[sequenceIndex].frameArray.splice((frameIndex + shiftAmount).mod(sequences.length), 0, elementToShift)
+
+  removeSequenceFrame = (sequenceIndex, frameIndex) ->
+    sequences[sequenceIndex].frameArray.splice(frameIndex, 1).first()
 
   createSequence = ->
     if animation.frames.length
@@ -156,8 +158,6 @@ $.fn.animationEditor = (options) ->
   controls = Controls(animationEditor)
   animation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
   ui = AnimationUI(animationEditor, animation, tileset, sequences)
-
-  animationEditor.trigger 'init'
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
@@ -230,8 +230,10 @@ $.fn.animationEditor = (options) ->
         img = $ '<div />'
           class: 'x static-x'
 
-        $('.right .sequence').append(img)
+
+        $('.right .sequence').append(img).addClass('edit')
       else
+        $('.right .sequence').removeClass('edit')
         $('.right .x').remove()
     '.frame_sprites img, .frame_sprites .placeholder': (e) ->
       if e.shiftKey && lastSelectedFrame
@@ -255,7 +257,17 @@ $.fn.animationEditor = (options) ->
         controls.scrubber(index)
 
         lastSelectedFrame = $(this)
+    '.right .sequence.edit': (e) ->
+      index = $(this).index()
+      sequence = sequences[index]
 
+      $('.edit_sequence_modal img').remove()
+
+      for uuid in sequence.frameArray
+        animationEditor.trigger "addFrameToSequenceEditModal", [tileset[uuid]]
+
+      $('.edit_sequence_modal').attr('data-sequence_index', index)
+      $('.edit_sequence_modal').modal()
     '.right .sequence': (e) ->
       return if $(e.target).is('.name')
 
@@ -334,10 +346,19 @@ $.fn.animationEditor = (options) ->
       e.preventDefault()
 
       selectedFrames = animationEditor.find('.frame_sprites .selected')
+      selectedSequenceFrames = $('.edit_sequence_modal img.selected')
 
-      for frame in selectedFrames
-        index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-        animation.removeFrame(index)
+      if selectedFrames.length
+        for frame in selectedFrames
+          index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
+          animation.removeFrame(index)
+      else if selectedSequenceFrames.length
+        for frame in selectedSequenceFrames
+          index = $('.edit_sequence_modal img').index(frame)
+          sequenceIndex = $('.edit_sequence_modal').attr('data-sequence_index')
+          removeSequenceFrame(sequenceIndex, index)
+          console.log sequences
+          animationEditor.trigger "updateSequence", [sequenceIndex]
     "1 2 3 4 5 6 7 8 9": (e) ->
       return unless lastClickedSprite
 
@@ -372,3 +393,5 @@ $.fn.animationEditor = (options) ->
 
   for keybinding, handler of keybindings
     $(document).bind 'keydown', keybinding, handler
+
+  animationEditor.trigger 'init'
