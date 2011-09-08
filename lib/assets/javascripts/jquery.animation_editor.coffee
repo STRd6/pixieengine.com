@@ -70,12 +70,7 @@ $.fn.animationEditor = ->
     fps = 30
 
     advanceFrame = ->
-      scrubberValue = (scrubberValue + 1) % (scrubberMax + 1)
-
-    changePlayIcon = (icon) ->
-      el = $(".#{icon}")
-
-      el.attr("class", "#{icon} static-#{icon}")
+      self.scrubberVal((self.scrubberVal() + 1) % (self.scrubberMax() + 1))
 
     self =
       fps: (newValue) ->
@@ -87,18 +82,15 @@ $.fn.animationEditor = ->
           fps
 
       pause: ->
-        changePlayIcon('play')
+        animationEditor.find('.controls').children().first().attr("class", "play static-play")
+
         clearInterval(intervalId)
         intervalId = null
 
-        return self
-
       play: ->
-        unless animationFrames.empty()
-          changePlayIcon('pause')
+        unless animationFrame.empty()
+          animationEditor.find('.controls').children().first().attr("class", "pause static-pause")
           intervalId = setInterval(advanceFrame, 1000 / self.fps()) unless intervalId
-
-        return self
 
       scrubberVal: (newValue) ->
         if newValue?
@@ -121,7 +113,7 @@ $.fn.animationEditor = ->
         self.scrubberVal(0)
         clearInterval(intervalId)
         intervalId = null
-        changePlayIcon('play')
+        animationEditor.find('.controls').children().first().attr("class", "play static-play")
         animationFrame.currentIndex(-1)
 
     return self
@@ -134,9 +126,9 @@ $.fn.animationEditor = ->
     tileIndex += 1
     animationEditor.trigger 'addTile', [src]
 
-  window.findSequence = (uuid) ->
+  findSequence = (id) ->
     for sequence in sequences
-      return sequence if sequence.id == uuid
+      return sequence if sequence.id == id
 
   removeSequence = (sequenceIndex) ->
     sequences.splice(sequenceIndex, 1)
@@ -147,14 +139,14 @@ $.fn.animationEditor = ->
     id = Math.uuid(32, 16)
 
     sequences.push({id: id, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
-    animationEditor.trigger event for event in ['updateSequence', 'enableExport']
+    animationEditor.trigger event for event in ['createSequence', 'enableExport']
 
   removeSequenceFrame = (sequenceId, frameIndex) ->
     sequence = findSequence(sequenceId)
     sequence.frameArray.splice(frameIndex, 1).first()
 
   createSequence = (frames) ->
-    unless animationFrames.empty()
+    unless animationFrame.empty()
       pushSequence(frames)
       animationFrame.clear()
 
@@ -295,7 +287,7 @@ $.fn.animationEditor = ->
 
   clickEvents =
     '.create_sequence': (e) ->
-      createSequence(animationFrames.frames.copy())
+      createSequence(animationFrame.flatten())
     '.clear_frames': (e) ->
       animationFrame.clear()
       controls.stop()
@@ -380,4 +372,6 @@ $.fn.animationEditor = ->
   for keybinding, handler of keybindings
     $(document).bind 'keydown', keybinding, handler
 
-  animationEditor.trigger 'init'
+  $('.edit_sequence_modal img').live
+    mousedown: (e) ->
+      $(this).takeClass('selected')

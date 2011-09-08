@@ -14,7 +14,10 @@
 
       frames.splice(index, 0, uuid)
 
-      animationEditor.trigger 'updateFrameSprite', [uuid, index]
+      if index == 0
+        animationEditor.trigger 'appendFrameSprite', [uuid]
+      else
+        animationEditor.trigger 'insertFrameSpriteAfter', [uuid, index - 1]
 
       controls.scrubberMax(frames.length - 1)
 
@@ -33,8 +36,7 @@
 
       spriteSrc = tileset[frameArray.last()]
 
-      # gross, this first ui call has side effects that modify sequenceEl
-      animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequenceEl]
+      $("#animation_editor_templates").find('.sprite').tmpl(src: spriteSrc).appendTo(sequenceEl)
       animationEditor.trigger 'updateLastFrameSequence', [sequenceEl]
 
     clear: ->
@@ -52,6 +54,9 @@
 
     empty: ->
       frames.length == 0
+
+    flatten: ->
+      (frame.frameArray || frame for frame in frames).flatten()
 
     frames: frames
 

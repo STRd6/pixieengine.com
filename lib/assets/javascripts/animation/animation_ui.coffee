@@ -5,23 +5,37 @@
   frameSpriteTemplate = templates.find('.frame_sprite')
   editSequenceModal = templates.find('.edit_sequence_modal')
 
-  $('.edit_sequence_modal img').live
-    mousedown: (e) ->
-      $(this).takeClass('selected')
-
   animationEditor.bind
     addFrameToSequenceEditModal: (e, spriteSrc) ->
       spriteTemplate.tmpl(src: spriteSrc).appendTo('.edit_sequence_modal')
-    addSpriteToSequence: (e, spriteSrc, sequence) ->
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
+    appendFrameSprite: (e, uuid) ->
+      frameSprites = $(this).find('.frame_sprites')
+      spriteSrc = tileset[uuid]
+
+      frameSprites.append(frameSpriteTemplate.tmpl(src: spriteSrc))
+
+      animationEditor.trigger 'enableSave'
     addTile: (e, src) ->
       spritesEl = $(this).find('.sprites')
       spriteTemplate.tmpl(src: src).appendTo(spritesEl)
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
-    currentFrame: (e, frameIndex, tileSrc) ->
-      console.log 'here'
+    createSequence: ->
+      sequence = sequences.last()
+      {frameArray, id, name} = sequence
 
+      sequencesEl = $(this).find('.sequences')
+      sequenceEl = $("<div class='sequence' data-id='#{id}' />").append($("<span class='name'>#{name}</span>"))
+
+      (frameArray.length - 1).times ->
+        $("<div class='placeholder' />").appendTo(sequenceEl)
+
+      spriteIndex = frameArray.last()
+      spriteSrc = tileset[spriteIndex]
+
+      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequenceEl)
+      sequenceEl.appendTo(sequencesEl)
+    currentFrame: (e, frameIndex, tileSrc) ->
       animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').removeClass('selected')
 
       player = $('.player img')
@@ -47,6 +61,13 @@
 
       $this.find('.create_sequence').removeAttr('disabled').attr('title', 'Create a sequence')
       $this.find('.clear_frames').removeAttr('disabled').attr('title', 'Clear frames')
+    insertFrameSpriteAfter: (e, uuid, index) ->
+      frameSprites = $(this).find('.frame_sprites')
+      spriteSrc = tileset[uuid]
+
+      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(frameSprites.find('.frame_sprite').eq(index))
+
+      animationEditor.trigger 'enableSave'
     removeFrame: (e, frameIndex) ->
       if (frame = $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent()).hasClass('frame_sprite')
         frame.remove()
@@ -66,23 +87,12 @@
       spriteSrc = tileset[index]
 
       frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
-    updateFrameSprite: (e, uuid, index) ->
-      frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[uuid]
-
-      if index == 0
-        frameSprites.append(frameSpriteTemplate.tmpl(src: spriteSrc))
-      else
-        frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(frameSprites.find('.frame_sprite').eq(index - 1))
-
-      animationEditor.trigger(event) for event in ['checkExportStatus', 'enableSave']
     updateLastFrameSequence: (e, sequence) ->
       frameSprites = $(this).find('.frame_sprites')
       sequence.appendTo(frameSprites)
 
       animationEditor.trigger(event) for event in ['enableSave', 'checkExportStatus']
-    updateSequence: (e, sequenceToUpdate) ->
-      sequence = sequenceToUpdate || sequences.last()
+    updateSequence: (e, sequence) ->
       {frameArray, id, name} = sequence
 
       sequencesEl = $(this).find('.sequences')
@@ -96,14 +106,11 @@
 
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequenceEl)
 
-      if sequenceToUpdate
-        matches = animationEditor.find('.sequence').filter ->
-          return $(this).attr('data-id') == id
+      matches = animationEditor.find('.sequence').filter ->
+        return $(this).attr('data-id') == id
 
-        for match in matches
-          $(match).replaceWith(sequenceEl.clone())
-      else
-        sequenceEl.appendTo(sequencesEl)
+      for match in matches
+        $(match).replaceWith(sequenceEl.clone())
     scrubberMax: (e, newMax) ->
       scrubberEl = animationEditor.find('.scrubber')
       scrubberEl.get(0).max = newMax
