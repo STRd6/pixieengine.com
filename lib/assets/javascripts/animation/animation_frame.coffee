@@ -1,5 +1,5 @@
 (exports ? this)["AnimationFrame"] = (tileset, controls, animationEditor, sequences) ->
-  currentFrameIndex = 0
+  currentIndex = 0
   frames = []
 
   findUUID = (tileSrc) ->
@@ -45,12 +45,15 @@
 
     currentIndex: (val) ->
       if val?
-        currentFrameIndex = val
-        animationEditor.trigger 'currentFrame', [currentFrameIndex, tileset[frames[currentFrameIndex]]]
+        currentIndex = val
+        flattenedFrames = self.flatten()
+        tileSrc = tileset[flattenedFrames[currentIndex]]
+
+        animationEditor.trigger 'currentFrame', [currentIndex, tileSrc]
 
         return self
       else
-        return currentFrameIndex
+        return currentIndex
 
     empty: ->
       frames.length == 0
