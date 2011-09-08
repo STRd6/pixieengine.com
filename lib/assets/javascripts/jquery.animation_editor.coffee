@@ -203,7 +203,6 @@ $.fn.animationEditor = ->
         img = $ '<div />'
           class: 'x static-x'
 
-
         $('.right .sequence').append(img).addClass('edit')
       else
         $('.right .sequence').removeClass('edit')
@@ -248,7 +247,10 @@ $.fn.animationEditor = ->
         animationEditor.trigger "addFrameToSequenceEditModal", [tileset[uuid]]
 
       $('.edit_sequence_modal').attr('data-id', sequenceId)
-      $('.edit_sequence_modal').modal()
+      $('.edit_sequence_modal').modal
+        onClose: ->
+          animationEditor.find('.edit_sequences').mousedown()
+          $.modal.close()
     '.right .sequence': (e) ->
       return if $(e.target).is('.name')
       return if $(e.target).hasClass('edit') || $(e.target).parent().hasClass('edit')
