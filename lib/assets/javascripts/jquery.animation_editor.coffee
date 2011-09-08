@@ -158,7 +158,7 @@ $.fn.animationEditor = ->
     return unless e.which == 37 || e.which == 39
 
     index = animationFrame.currentIndex()
-    framesLength = animationFrame.length()
+    framesLength = animationFrame.flatten().length
 
     keyMapping =
       "37": -1
@@ -235,6 +235,8 @@ $.fn.animationEditor = ->
         controls.scrubberVal(index)
 
         lastSelectedFrame = $(this)
+    '.help': (e) ->
+      $('.help_modal').modal()
     '.right .sequence.edit': (e) ->
       index = $(this).index()
       sequenceId = $(this).attr('data-id')
