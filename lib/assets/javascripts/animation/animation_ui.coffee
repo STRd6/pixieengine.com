@@ -65,21 +65,18 @@
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[uuid]
 
-      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(frameSprites.find('.frame_sprite').eq(index))
+      placeholderOrImage = frameSprites.find('.placeholder, img').eq(index)
+
+      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(placeholderOrImage.parent())
 
       animationEditor.trigger 'enableSave'
     removeFrame: (e, frameIndex) ->
       if (frame = $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent()).hasClass('frame_sprite')
         frame.remove()
-
-      if (parent = $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).parent()).hasClass('sequence')
-        $(this).find('.frame_sprites img, .frame_sprites .placeholder').eq(frameIndex).remove()
-
-        if parent.children().not('.x').length == 0
-          parent.remove()
-
-    removeSequence: (e, sequenceIndex) ->
-      $(this).find('.sequences .sequence').eq(sequenceIndex).remove()
+    removeSequence: (e, sequence) ->
+      $(this).find('.sequence').filter(->
+        return $(this).attr('data-id') == sequence.id
+      ).remove()
     fps: (e, newValue) ->
       animationEditor.find('.fps input').val(newValue)
     updateFrame: (e, index) ->

@@ -131,8 +131,8 @@ $.fn.animationEditor = ->
       return sequence if sequence.id == id
 
   removeSequence = (sequenceIndex) ->
-    sequences.splice(sequenceIndex, 1)
-    animationEditor.trigger 'removeSequence', [sequenceIndex]
+    sequence = sequences.splice(sequenceIndex, 1).first()
+    animationEditor.trigger 'removeSequence', [sequence]
     animationEditor.trigger "disableExport" if sequences.length == 0
 
   pushSequence = (frameArray) ->
@@ -225,7 +225,12 @@ $.fn.animationEditor = ->
         sprites.addClass('selected')
         lastSelectedFrame = $(this)
       else
-        index = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').index($(this))
+        frameElement = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img')
+
+        if (parent = frameElement.parent()).hasClass('sequence')
+          parent.addClass('selected')
+
+        index = frameElement.index($(this))
 
         controls.scrubberVal(index)
 
@@ -302,7 +307,9 @@ $.fn.animationEditor = ->
       updatedName = $this.val()
       sequenceId = $this.parent().attr('data-id')
 
-      findSequence(sequenceId).name = updatedName
+      sequence = findSequence(sequenceId)
+      sequence.name = updatedName
+      animationEditor.trigger 'updateSequence', [sequence]
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -375,3 +382,5 @@ $.fn.animationEditor = ->
   $('.edit_sequence_modal img').live
     mousedown: (e) ->
       $(this).takeClass('selected')
+
+  animationEditor.trigger 'init'

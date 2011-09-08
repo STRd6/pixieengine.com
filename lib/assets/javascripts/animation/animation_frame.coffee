@@ -8,7 +8,7 @@
 
   self =
     addImage: (imgSrc, index) ->
-      index ||= frames.length
+      index ||= self.flatten().length
 
       uuid = findUUID(imgSrc)
 
@@ -19,7 +19,7 @@
       else
         animationEditor.trigger 'insertFrameSpriteAfter', [uuid, index - 1]
 
-      controls.scrubberMax(frames.length - 1)
+      controls.scrubberMax(self.flatten().length - 1)
 
     addSequence: (sequenceIndex) ->
       sequence = sequences[sequenceIndex]
@@ -32,7 +32,7 @@
 
       frames.push(sequence)
 
-      #controls.scrubberMax(frames.length - 1)
+      controls.scrubberMax(self.flatten().length - 1)
 
       spriteSrc = tileset[frameArray.last()]
 
