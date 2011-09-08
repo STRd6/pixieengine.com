@@ -17,22 +17,18 @@
     addTile: (e, src) ->
       spritesEl = $(this).find('.sprites')
       spriteTemplate.tmpl(src: src).appendTo(spritesEl)
-    checkExportStatus: ->
-      framesEmpty = true
-
-      if animation.frames.length > 0 || sequences.length > 0
-        framesEmpty = false
-
-      exportButtons = $(this).find('.player button:not(.help)')
-
-      exportButtons.removeAttr('disabled').attr('title', 'Export animation')
-      exportButtons.attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
+    disableExport: ->
+      exportButtons = $(this).find('.player button:not(.help)')
+      exportButtons.attr({ disabled: true, title: 'Create a sequence to export' })
     disableSave: ->
       $(this).find('.bottom .module_header > button').attr
         disabled: true
         title: 'Add frames to save'
+    enableExport: ->
+      exportButtons = $(this).find('.player button:not(.help)')
+      exportButtons.removeAttr('disabled').attr('title', 'Export animation')
     enableSave: ->
       $(this).find('.bottom .module_header > button').removeAttr('disabled').attr('title', 'Save frames')
     init: ->

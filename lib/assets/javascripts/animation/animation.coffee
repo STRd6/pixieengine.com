@@ -14,33 +14,32 @@
 
       frames.splice(index, 0, uuid)
 
-      console.log frames
-
       animationEditor.trigger 'updateFrameSprite', [uuid, index]
 
       controls.scrubberMax(frames.length - 1)
 
-    addSequenceToFrames: (index) ->
-      sequenceName = sequences[index].name
-      sequence = $("<div class='sequence' data-id='#{sequences[index].id}' />").append($("<span class='name'>#{sequenceName}</span>"))
+    addSequenceToFrames: (sequenceIndex) ->
+      sequence = sequences[sequenceIndex]
+      {id, name, frameArray} = sequence
 
-      (sequences[index].frameArray.length - 1).times ->
-        $("<div class='placeholder' />").appendTo(sequence)
+      sequenceEl = $("<div class='sequence' data-id='#{id}' />").append($("<span class='name'>#{name}</span>"))
 
-      for spriteIndex in sequences[index].frameArray
-        spriteSrc = tileset[spriteIndex]
+      (frameArray.length - 1).times ->
+        $("<div class='placeholder' />").appendTo(sequenceEl)
 
-        frames.push(findUUID(spriteSrc))
-        controls.scrubberMax(frames.length - 1)
+      frames.push(sequence)
 
-      spriteSrc = tileset[sequences[index].frameArray.last()]
+      #controls.scrubberMax(frames.length - 1)
 
-      animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequence]
-      animationEditor.trigger 'updateLastFrameSequence', [sequence]
+      spriteSrc = tileset[frameArray.last()]
+
+      # gross, this first ui call has side effects that modify sequenceEl
+      animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequenceEl]
+      animationEditor.trigger 'updateLastFrameSequence', [sequenceEl]
 
     clearFrames: ->
       frames.clear()
-      animationEditor.trigger(event) for event in ['checkExportStatus', 'clearFrames', 'disableSave']
+      animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
 
     currentFrameIndex: (val) ->
       if val?
@@ -58,14 +57,4 @@
       controls.scrubberMax(controls.scrubberMax() - 1)
 
       animationEditor.trigger 'removeFrame', [frameIndex]
-      animationEditor.trigger 'disableSave' if frames.length == 0
-      animationEditor.trigger 'checkExportStatus'
-
-    removeFrameSequence: (sequenceIndex) ->
-      sequenceImages = animationEditor.find('.frame_sprites .sequence').eq(sequenceIndex).children().not('.x')
-
-      for image in sequenceImages
-        index = $(image).index('.frame_sprites img')
-        self.removeFrame(index)
-
   return self

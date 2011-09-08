@@ -1,7 +1,7 @@
 #= require animation/animation
 #= require animation/animation_ui
 
-$.fn.animationEditor = (options) ->
+$.fn.animationEditor = ->
   sequenceNumber = 1
   tileIndex = 0
   lastClickedSprite = null
@@ -141,13 +141,14 @@ $.fn.animationEditor = (options) ->
   removeSequence = (sequenceIndex) ->
     sequences.splice(sequenceIndex, 1)
     animationEditor.trigger 'removeSequence', [sequenceIndex]
-    animationEditor.trigger "checkExportStatus"
+    animationEditor.trigger "disableExport" if sequences.length == 0
 
   pushSequence = (frameArray) ->
     sequenceId = Math.uuid(32, 16)
 
     sequences.push({id: sequenceId, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
     animationEditor.trigger 'updateSequence'
+    animationEditor.trigger 'enableExport'
 
   shiftSequenceFrame = (sequenceId, frameIndex, shiftAmount) ->
     elementToShift = removeSequenceFrame(sequenceId, frameIndex)
