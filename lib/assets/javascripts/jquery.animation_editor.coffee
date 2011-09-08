@@ -375,7 +375,10 @@ $.fn.animationEditor = ->
       e.preventDefault()
 
       if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
-        clipboard = selectedSprites
+        if selectedSprites.index(lastSelectedFrame) == 0
+          clipboard = selectedSprites
+        else
+          clipboard = selectedSprites.get().reverse()
     "ctrl+x, meta+x": (e) ->
       e.preventDefault()
 
