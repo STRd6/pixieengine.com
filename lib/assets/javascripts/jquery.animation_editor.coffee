@@ -259,8 +259,10 @@ $.fn.animationEditor = (options) ->
       $('.edit_sequence_modal').modal()
     '.right .sequence': (e) ->
       return if $(e.target).is('.name')
+      return if $(e.target).hasClass('edit') || $(e.target).parent().hasClass('edit')
 
       index = $(this).index()
+
       animation.addSequenceToFrames(index)
     '.right .x': (e) ->
       e.stopPropagation()
