@@ -355,6 +355,10 @@ $.fn.animationEditor = ->
 
       (e.which - keyOffset).times ->
         animationFrame.addImage(lastClickedSprite.get(0).src, index)
+    "ctrl+s, meta+s": (e) ->
+      e.preventDefault()
+
+      animationEditor.find('.create_sequence').click()
     "ctrl+c, meta+c": (e) ->
       e.preventDefault()
 
