@@ -1,9 +1,6 @@
-(exports ? this)["Animation"] = (animationNumber, tileset, controls, animationEditor, sequences) ->
+(exports ? this)["Animation"] = (tileset, controls, animationEditor, sequences) ->
   frames = []
   currentFrameIndex = 0
-  stateId = Math.uuid(32, 16)
-
-  name = "State #{animationNumber}"
 
   findUUID = (tileSrc) ->
     for uuid, src of tileset
@@ -16,6 +13,9 @@
       uuid = findUUID(imgSrc)
 
       frames.splice(index, 0, uuid)
+
+      console.log frames
+
       animationEditor.trigger 'updateFrameSprite', [uuid, index]
 
       controls.scrubberMax(frames.length - 1)
@@ -52,15 +52,6 @@
         return currentFrameIndex
 
     frames: frames
-
-    stateId: stateId
-
-    name: (val) ->
-      if val?
-        name = val
-        return self
-      else
-        return name
 
     removeFrame: (frameIndex) ->
       frames.splice(frameIndex, 1)

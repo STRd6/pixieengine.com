@@ -2,7 +2,6 @@
 #= require animation/animation_ui
 
 $.fn.animationEditor = (options) ->
-  animationNumber = 1
   sequenceNumber = 1
   tileIndex = 0
   lastClickedSprite = null
@@ -166,7 +165,7 @@ $.fn.animationEditor = (options) ->
       animation.clearFrames()
 
   controls = Controls(animationEditor)
-  animation = Animation(animationNumber++, tileset, controls, animationEditor, sequences)
+  animation = Animation(tileset, controls, animationEditor, sequences)
   ui = AnimationUI(animationEditor, animation, tileset, sequences)
 
   $(document).bind 'keydown', (e) ->
@@ -292,7 +291,11 @@ $.fn.animationEditor = (options) ->
 
         lastClickedSprite = $this
 
-      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+      index =
+        if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length
+          animationEditor.find('.frame_sprites img').index(lastSelected)
+        else
+          null
 
       animation.addFrame($(sprite).attr('src'), index) for sprite in sprites
 
