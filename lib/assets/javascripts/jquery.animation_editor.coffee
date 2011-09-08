@@ -87,10 +87,14 @@ $.fn.animationEditor = ->
         clearInterval(intervalId)
         intervalId = null
 
+        return self
+
       play: ->
         unless animationFrame.empty()
           animationEditor.find('.controls').children().first().attr("class", "pause static-pause")
           intervalId = setInterval(advanceFrame, 1000 / self.fps()) unless intervalId
+
+        return self
 
       scrubberVal: (newValue) ->
         if newValue?
@@ -115,6 +119,8 @@ $.fn.animationEditor = ->
         intervalId = null
         animationEditor.find('.controls').children().first().attr("class", "play static-play")
         animationFrame.currentIndex(-1)
+
+        return self
 
     return self
 
@@ -144,6 +150,7 @@ $.fn.animationEditor = ->
   removeSequenceFrame = (sequenceId, frameIndex) ->
     sequence = findSequence(sequenceId)
     sequence.frameArray.splice(frameIndex, 1).first()
+    controls.scrubberMax(animationFrame.flatten().length - 1)
 
   createSequence = (frames) ->
     unless animationFrame.empty()
@@ -156,6 +163,7 @@ $.fn.animationEditor = ->
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
+    return if $(e.target).is('input')
 
     index = animationFrame.currentIndex()
     framesLength = animationFrame.flatten().length
@@ -330,6 +338,7 @@ $.fn.animationEditor = ->
 
   keybindings =
     "del backspace": (e) ->
+      return if $(e.target).is('input')
       e.preventDefault()
 
       selectedFrames = animationEditor.find('.frame_sprites .selected')
@@ -350,6 +359,7 @@ $.fn.animationEditor = ->
           $(frame).remove()
     "1 2 3 4 5 6 7 8 9": (e) ->
       return unless lastClickedSprite
+      return if $(e.target).is('input')
 
       keyOffset = 48
 

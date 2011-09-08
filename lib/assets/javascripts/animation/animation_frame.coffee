@@ -63,9 +63,6 @@
 
     frames: frames
 
-    length: ->
-      frames.length
-
     remove: (frameIndex) ->
       frames.splice(frameIndex, 1)
       controls.scrubberMax(controls.scrubberMax() - 1)
