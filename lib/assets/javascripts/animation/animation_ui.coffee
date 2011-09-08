@@ -23,7 +23,7 @@
       if animation.frames.length > 0 || sequences.length > 0
         framesEmpty = false
 
-      exportButtons = $(this).find('.player button')
+      exportButtons = $(this).find('.player button:not(.help)')
 
       exportButtons.removeAttr('disabled').attr('title', 'Export animation')
       exportButtons.attr({ disabled: true, title: 'Add frames to export'}) if framesEmpty
