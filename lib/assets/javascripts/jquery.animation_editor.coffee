@@ -359,12 +359,12 @@ $.fn.animationEditor = (options) ->
 
       (e.which - keyOffset).times ->
         animation.addFrame(lastClickedSprite.get(0).src, index)
-    "meta+c": (e) ->
+    "ctrl+c, meta+c": (e) ->
       e.preventDefault()
 
       if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
         clipboard = selectedSprites
-    "meta+x": (e) ->
+    "ctrl+x, meta+x": (e) ->
       e.preventDefault()
 
       if (selectedSprites = animationEditor.find('.frame_sprites .selected')).length
@@ -373,7 +373,7 @@ $.fn.animationEditor = (options) ->
       for frame in selectedSprites
         index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
         animation.removeFrame(index)
-    "meta+v": (e) ->
+    "ctrl+v, meta+v": (e) ->
       e.preventDefault()
 
       index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
