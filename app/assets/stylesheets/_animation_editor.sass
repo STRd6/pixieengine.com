@@ -18,6 +18,8 @@ $tileset_sprite_width: 60px
     border: 1px solid transparent
 
   button
+    +box-shadow(rgba(0, 0, 0, 0.07), 1px, 1px, 10px)
+
     margin-bottom: 0
     margin-top: 0
 
@@ -37,16 +39,19 @@ $tileset_sprite_width: 60px
 
     cursor: pointer
     display: inline-block
+    margin-bottom: 50px
     position: relative
+
+    &.edit:hover
+      background-color: $highlight
 
     .placeholder
       +bounds(80px)
 
     .name
-      bottom: -30px
-      left: 30px
+      left: 25px
       position: absolute
-      z-index: 51
+      top: 0
 
     img
       +max-bounds(80px)
@@ -59,10 +64,10 @@ $tileset_sprite_width: 60px
       position: absolute
 
       /* I <3 SASS */
-      @for $n from 1 through 50
+      @for $n from 1 through 100
         &:not(.x):nth-child(#{$n})
           left: 2px * $n
-          top: 2px * $n
+          top: (2px * $n) + 15px
           z-index: $n
 
       &.selected
@@ -165,7 +170,7 @@ $tileset_sprite_width: 60px
 
         border: none
         position: absolute
-        top: -5px
+        top: 8px
         left: -5px
         z-index: 200
 
@@ -174,11 +179,18 @@ $tileset_sprite_width: 60px
       +box-shadow(none)
 
       background-color: $light_background
+      border-top: 1px solid rgba(0, 0, 0, 0.05)
       height: $bottom_module
       overflow-x: auto
       overflow-y: hidden
       white-space: nowrap
       z-index: 1
+
+      .module_header
+        position: fixed
+
+      .frame_sprites
+        margin-top: 2em
 
       .x
         border: none
@@ -227,15 +239,18 @@ $tileset_sprite_width: 60px
         background: $highlight
         border: 1px solid $highlight_border
 
-#simplemodal-container
-  height: 300px
+.edit_sequence_modal
+  height: 400px
   width: 600px
+  overflow: auto
 
 .edit_sequence_modal img
+  +border-radius(2px)
   +max-bounds(80px)
 
   border: 2px solid transparent
   margin: 2px
 
   &.selected
+    background-color: $highlight
     border: 2px solid $highlight
