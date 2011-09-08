@@ -1,4 +1,4 @@
-#= require animation/animation
+#= require animation/animation_frame
 #= require animation/animation_ui
 
 $.fn.animationEditor = ->
@@ -24,6 +24,12 @@ $.fn.animationEditor = ->
       for sequenceObject in sequences
         {name: sequenceObject.name, frames: (tilemap[frame] for frame in sequenceObject.frameArray)}
     )
+
+  lastSelectedIndex = ->
+    if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length
+      animationEditor.find('.frame_sprites img').index(lastSelected)
+    else
+      null
 
   loadSpriteSheet = (src, rows, columns, loadedCallback) ->
     canvas = $('<canvas>').get(0)
@@ -63,25 +69,8 @@ $.fn.animationEditor = ->
     scrubberValue = 0
     fps = 30
 
-    scrubber =
-      max: (newMax) ->
-        if newMax?
-          scrubberMax = newMax
-          animationEditor.trigger 'updateScrubberMax', [newMax]
-          return scrubber
-        else
-          return scrubberMax
-      val: (newValue) ->
-        if newValue?
-          scrubberValue = newValue
-          animationEditor.trigger 'updateScrubberValue', [newValue]
-          animation.currentFrameIndex(newValue)
-          return scrubber
-        else
-          scrubberValue
-
-    nextFrame = ->
-      scrubber.val((scrubber.val() + 1) % (scrubber.max() + 1))
+    advanceFrame = ->
+      scrubberValue = (scrubberValue + 1) % (scrubberMax + 1)
 
     changePlayIcon = (icon) ->
       el = $(".#{icon}")
@@ -92,7 +81,7 @@ $.fn.animationEditor = ->
       fps: (newValue) ->
         if newValue?
           fps = newValue
-          animationEditor.trigger 'updateFPS', [newValue]
+          animationEditor.trigger 'fps', [newValue]
           return self
         else
           fps
@@ -105,24 +94,35 @@ $.fn.animationEditor = ->
         return self
 
       play: ->
-        if animation.frames.length > 0
+        unless animationFrames.empty()
           changePlayIcon('pause')
-          intervalId = setInterval(nextFrame, 1000 / self.fps()) unless intervalId
+          intervalId = setInterval(advanceFrame, 1000 / self.fps()) unless intervalId
 
         return self
 
-      scrubber: (val) ->
-        scrubber.val(val)
+      scrubberVal: (newValue) ->
+        if newValue?
+          scrubberValue = newValue
+          animationEditor.trigger 'scrubberValue', [newValue]
+          animationFrame.currentIndex(newValue)
+          return self
+        else
+          scrubberValue
 
-      scrubberMax: (val) ->
-        scrubber.max(val)
+      scrubberMax: (newMax) ->
+        if newMax?
+          scrubberMax = newMax
+          animationEditor.trigger 'scrubberMax', [newMax]
+          return self
+        else
+          return scrubberMax
 
       stop: ->
-        scrubber.val(0)
+        self.scrubberVal(0)
         clearInterval(intervalId)
         intervalId = null
         changePlayIcon('play')
-        animation.currentFrameIndex(-1)
+        animationFrame.currentIndex(-1)
 
     return self
 
@@ -144,42 +144,35 @@ $.fn.animationEditor = ->
     animationEditor.trigger "disableExport" if sequences.length == 0
 
   pushSequence = (frameArray) ->
-    sequenceId = Math.uuid(32, 16)
+    id = Math.uuid(32, 16)
 
-    sequences.push({id: sequenceId, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
-    animationEditor.trigger 'updateSequence'
-    animationEditor.trigger 'enableExport'
-
-  shiftSequenceFrame = (sequenceId, frameIndex, shiftAmount) ->
-    elementToShift = removeSequenceFrame(sequenceId, frameIndex)
-    sequence = findSequence(sequenceId)
-
-    sequence.frameArray.splice((frameIndex + shiftAmount).mod(sequences.length), 0, elementToShift)
+    sequences.push({id: id, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
+    animationEditor.trigger event for event in ['updateSequence', 'enableExport']
 
   removeSequenceFrame = (sequenceId, frameIndex) ->
     sequence = findSequence(sequenceId)
     sequence.frameArray.splice(frameIndex, 1).first()
 
-  createSequence = ->
-    if animation.frames.length
-      pushSequence(animation.frames.copy())
-      animation.clearFrames()
+  createSequence = (frames) ->
+    unless animationFrames.empty()
+      pushSequence(frames)
+      animationFrame.clear()
 
   controls = Controls(animationEditor)
-  animation = Animation(tileset, controls, animationEditor, sequences)
-  ui = AnimationUI(animationEditor, animation, tileset, sequences)
+  animationFrame = AnimationFrame(tileset, controls, animationEditor, sequences)
+  ui = AnimationUI(animationEditor, animationFrame, tileset, sequences)
 
   $(document).bind 'keydown', (e) ->
     return unless e.which == 37 || e.which == 39
 
-    index = animation.currentFrameIndex()
-    framesLength = animation.frames.length
+    index = animationFrame.currentIndex()
+    framesLength = animationFrame.length()
 
     keyMapping =
       "37": -1
       "39": 1
 
-    controls.scrubber((index + keyMapping[e.which]).mod(framesLength))
+    controls.scrubberVal((index + keyMapping[e.which]).mod(framesLength))
 
   changeEvents =
     '.fps input': (e) ->
@@ -189,8 +182,8 @@ $.fn.animationEditor = ->
     '.scrubber': (e) ->
       newValue = $(this).val()
 
-      controls.scrubber(newValue)
-      animation.currentFrameIndex(newValue)
+      controls.scrubberVal(newValue)
+      animationFrame.currentIndex(newValue)
 
   for key, value of changeEvents
     animationEditor.find(key).change(value)
@@ -242,7 +235,7 @@ $.fn.animationEditor = ->
       else
         index = animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').index($(this))
 
-        controls.scrubber(index)
+        controls.scrubberVal(index)
 
         lastSelectedFrame = $(this)
     '.right .sequence.edit': (e) ->
@@ -263,7 +256,7 @@ $.fn.animationEditor = ->
 
       index = $(this).index()
 
-      animation.addSequenceToFrames(index)
+      animationFrame.addSequence(index)
     '.right .x': (e) ->
       e.stopPropagation()
       removeSequence $(this).parent().index()
@@ -292,23 +285,19 @@ $.fn.animationEditor = ->
 
         lastClickedSprite = $this
 
-      index =
-        if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length
-          animationEditor.find('.frame_sprites img').index(lastSelected)
-        else
-          null
+      index = lastSelectedIndex()
 
-      animation.addFrame($(sprite).attr('src'), index) for sprite in sprites
+      animationFrame.addImage($(sprite).attr('src'), index) for sprite in sprites
 
   for key, value of liveMousedownEvents
     animationEditor.find(key).live
       mousedown: value
 
   clickEvents =
-    '.save_sequence': (e) ->
-      createSequence()
+    '.create_sequence': (e) ->
+      createSequence(animationFrames.frames.copy())
     '.clear_frames': (e) ->
-      animation.clearFrames()
+      animationFrame.clear()
       controls.stop()
 
   for key, value of clickEvents
@@ -346,23 +335,25 @@ $.fn.animationEditor = ->
       if selectedFrames.length
         for frame in selectedFrames
           index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-          animation.removeFrame(index)
+          animationFrame.remove(index)
       else if selectedSequenceFrames.length
         for frame in selectedSequenceFrames
           index = $('.edit_sequence_modal img').index(frame)
           sequenceId = $('.edit_sequence_modal').attr('data-id')
+          sequence = findSequence(sequenceId)
+
           removeSequenceFrame(sequenceId, index)
-          animationEditor.trigger "updateSequence", [sequenceId]
+          animationEditor.trigger "updateSequence", [sequence]
           $(frame).remove()
     "1 2 3 4 5 6 7 8 9": (e) ->
       return unless lastClickedSprite
 
       keyOffset = 48
 
-      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+      index = lastSelectedIndex()
 
       (e.which - keyOffset).times ->
-        animation.addFrame(lastClickedSprite.get(0).src, index)
+        animationFrame.addImage(lastClickedSprite.get(0).src, index)
     "ctrl+c, meta+c": (e) ->
       e.preventDefault()
 
@@ -376,15 +367,15 @@ $.fn.animationEditor = ->
 
       for frame in selectedSprites
         index = animationEditor.find('.frame_sprites img, .frame_sprites .placeholder').index(frame)
-        animation.removeFrame(index)
+        animationFrame.remove(index)
     "ctrl+v, meta+v": (e) ->
       e.preventDefault()
 
-      index = if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length then animationEditor.find('.frame_sprites img').index(lastSelected) else null
+      index = lastSelectedIndex()
 
       if clipboard.length
         for frame in clipboard
-          animation.addFrame($(frame).attr('src'), index + 1)
+          animationFrame.addImage($(frame).attr('src'), index + 1)
 
   for keybinding, handler of keybindings
     $(document).bind 'keydown', keybinding, handler

@@ -1,13 +1,13 @@
-(exports ? this)["Animation"] = (tileset, controls, animationEditor, sequences) ->
-  frames = []
+(exports ? this)["AnimationFrame"] = (tileset, controls, animationEditor, sequences) ->
   currentFrameIndex = 0
+  frames = []
 
   findUUID = (tileSrc) ->
     for uuid, src of tileset
       return uuid if src == tileSrc
 
   self =
-    addFrame: (imgSrc, index) ->
+    addImage: (imgSrc, index) ->
       index ||= frames.length
 
       uuid = findUUID(imgSrc)
@@ -18,7 +18,7 @@
 
       controls.scrubberMax(frames.length - 1)
 
-    addSequenceToFrames: (sequenceIndex) ->
+    addSequence: (sequenceIndex) ->
       sequence = sequences[sequenceIndex]
       {id, name, frameArray} = sequence
 
@@ -37,22 +37,28 @@
       animationEditor.trigger 'addSpriteToSequence', [spriteSrc, sequenceEl]
       animationEditor.trigger 'updateLastFrameSequence', [sequenceEl]
 
-    clearFrames: ->
+    clear: ->
       frames.clear()
       animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
 
-    currentFrameIndex: (val) ->
+    currentIndex: (val) ->
       if val?
         currentFrameIndex = val
-        animationEditor.trigger 'updateSelected', [currentFrameIndex, tileset[frames[currentFrameIndex]]]
+        animationEditor.trigger 'currentFrame', [currentFrameIndex, tileset[frames[currentFrameIndex]]]
 
         return self
       else
         return currentFrameIndex
 
+    empty: ->
+      frames.length == 0
+
     frames: frames
 
-    removeFrame: (frameIndex) ->
+    length: ->
+      frames.length
+
+    remove: (frameIndex) ->
       frames.splice(frameIndex, 1)
       controls.scrubberMax(controls.scrubberMax() - 1)
 
