@@ -65,6 +65,8 @@
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[uuid]
 
+      index = lastSelectedIndex() || index
+
       placeholderOrImage = frameSprites.find('.placeholder, img').eq(index)
 
       frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(placeholderOrImage.parent())

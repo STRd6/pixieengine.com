@@ -25,7 +25,7 @@ $.fn.animationEditor = ->
         {name: sequenceObject.name, frames: (tilemap[frame] for frame in sequenceObject.frameArray)}
     )
 
-  lastSelectedIndex = ->
+  window.lastSelectedIndex = ->
     if (lastSelected = animationEditor.find('.frame_sprites .selected:last')).length
       animationEditor.find('.frame_sprites img').index(lastSelected)
     else

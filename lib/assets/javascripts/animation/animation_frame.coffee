@@ -12,7 +12,7 @@
 
       uuid = findUUID(imgSrc)
 
-      frames.splice(index, 0, uuid)
+      frames.splice(index + 1, 0, uuid)
 
       if index == 0
         animationEditor.trigger 'appendFrameSprite', [uuid]
