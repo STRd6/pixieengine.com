@@ -98,13 +98,11 @@
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequence)
 
       if sequenceId
-        matches = animationEditor.find('.sequence').filter(->
+        matches = animationEditor.find('.sequence').filter ->
           return $(this).attr('data-id') == sequenceId
-        )
 
-        console.log matches
-
-        matches.replaceWith(sequence.clone())
+        for match in matches
+          $(match).replaceWith(sequence.clone())
       else
         sequence.appendTo(sequencesEl)
     updateScrubberMax: (e, newMax) ->

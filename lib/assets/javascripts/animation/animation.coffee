@@ -21,7 +21,8 @@
       controls.scrubberMax(frames.length - 1)
 
     addSequenceToFrames: (index) ->
-      sequence = $("<div class='sequence' data-id='#{sequences[index].id}' />")
+      sequenceName = sequences[index].name
+      sequence = $("<div class='sequence' data-id='#{sequences[index].id}' />").append($("<span class='name'>#{sequenceName}</span>"))
 
       (sequences[index].frameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequence)

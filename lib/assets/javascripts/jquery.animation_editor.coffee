@@ -142,6 +142,7 @@ $.fn.animationEditor = (options) ->
   removeSequence = (sequenceIndex) ->
     sequences.splice(sequenceIndex, 1)
     animationEditor.trigger 'removeSequence', [sequenceIndex]
+    animationEditor.trigger "checkExportStatus"
 
   pushSequence = (frameArray) ->
     sequenceId = Math.uuid(32, 16)
@@ -207,28 +208,6 @@ $.fn.animationEditor = (options) ->
     animationEditor.find(key).mousedown(value)
 
   liveMousedownEvents =
-    '.bottom .x': (e) ->
-      e.stopPropagation()
-      parent = $(this).parent()
-
-      if parent.hasClass('sequence')
-        animation.removeFrameSequence(parent.index())
-
-      if parent.hasClass('frame_sprite')
-        animation.removeFrame(parent.index())
-    '.edit_frames': (e) ->
-      $this = $(this)
-      text = $this.text()
-
-      $this.text(if text == "Edit" then "Done" else "Edit")
-
-      if text == "Edit"
-        img = $ '<div />'
-          class: 'x static-x'
-
-        $('.bottom .sequence, .bottom .frame_sprite').append(img)
-      else
-        $('.bottom .x').remove()
     '.edit_sequences': (e) ->
       $this = $(this)
       text = $this.text()
@@ -329,14 +308,14 @@ $.fn.animationEditor = (options) ->
   for key, value of clickEvents
     animationEditor.find(key).click(value)
 
-  animationEditor.find('.sequences .name').liveEdit()
-
-  animationEditor.find('.player .state_name').liveEdit().live
+  animationEditor.find('.sequences .name').liveEdit().live
     change: ->
       $this = $(this)
 
-      updatedStateName = $this.val()
-      animation.name(updatedStateName)
+      updatedName = $this.val()
+      sequenceId = $this.parent().attr('data-id')
+
+      findSequence(sequenceId).name = updatedName
 
   animationEditor.dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -399,7 +378,7 @@ $.fn.animationEditor = (options) ->
 
       if clipboard.length
         for frame in clipboard
-          animation.addFrame($(frame).attr('src'), index)
+          animation.addFrame($(frame).attr('src'), index + 1)
 
   for keybinding, handler of keybindings
     $(document).bind 'keydown', keybinding, handler
