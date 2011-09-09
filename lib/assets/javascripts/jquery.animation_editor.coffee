@@ -251,7 +251,11 @@ $.fn.animationEditor = ->
 
         lastSelectedFrame = $(this)
     '.help': (e) ->
-      $('.help_modal').modal()
+      $(this).addClass('active')
+      $('.help_modal').modal
+        onClose: ->
+          animationEditor.find('.help').removeClass('active')
+          $.modal.close()
     '.right .sequence.edit': (e) ->
       index = $(this).index()
       sequence = sequences[index]
