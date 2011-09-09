@@ -19,8 +19,14 @@
     ]
 
     animation_hotkeys = [
-      { description: "Open selected frame in pixel editor", key: "double click" }
-      { description: "Edit selected frame hitcircles", key: "h" }
+      { description: "Add multiple sprites to animation frame", key: "shift-click sprite" }
+      { description: "Remove selected frame(s)", key: "delete" }
+      { description: "Select multiple animation frames", key: "shift-click frame" }
+      { description: "Add n copies of the last sprite clicked to animation frame", key: "numbers 1 - 9" }
+      { description: "Cut selected sprites from animation frame", key: ["ctrl x","⌘ x"] }
+      { description: "Copy selected sprites from animation frame", key: ["ctrl c","⌘ c"] }
+      { description: "Paste selected sprites from animation frame", key: ["ctrl v","⌘ v"] }
+      { description: "Create new sequence with current animation frame", key: ["ctrl s","⌘ s"] }
     ]
 
     developer_hotkeys = [
@@ -61,9 +67,9 @@
         hotkey_markup(developer_hotkeys, "Developer Mode", template).appendTo(hotkeys)
       else if window.currentComponent
         switch window.currentComponent.attr('class')
-          when "tile_editor" then hotkey_markup(tilemap_hotkeys, "Tile Editor", template).appendTo(hotkeys)
-          when "animation_editor" then hotkey_markup(animation_hotkeys, "Animation Editor", template).appendTo(hotkeys)
-          when "pixie" then hotkey_markup(pixie_hotkeys, "Pixel Editor", template).appendTo(hotkeys)
+          when "editor tile_editor" then hotkey_markup(tilemap_hotkeys, "Tile Editor", template).appendTo(hotkeys)
+          when "editor animation_editor" then hotkey_markup(animation_hotkeys, "Animation Editor", template).appendTo(hotkeys)
+          when "editor pixie" then hotkey_markup(pixie_hotkeys, "Pixel Editor", template).appendTo(hotkeys)
 
       hotkeys.modal()
 
