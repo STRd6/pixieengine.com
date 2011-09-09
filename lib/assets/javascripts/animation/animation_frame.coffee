@@ -1,4 +1,4 @@
-(exports ? this)["AnimationFrame"] = (tileset, controls, animationEditor, sequences) ->
+(exports ? this)["AnimationFrame"] = (animationEditor, tileset, controls) ->
   currentIndex = 0
   frames = []
 
@@ -14,15 +14,16 @@
 
       frames.splice(index + 1, 0, uuid)
 
+      console.log frames
+
       if index == 0
-        animationEditor.trigger 'appendFrameSprite', [uuid]
+        animationEditor.trigger 'appendFrameSprite', [tileset[uuid]]
       else
-        animationEditor.trigger 'insertFrameSpriteAfter', [uuid, index - 1]
+        animationEditor.trigger 'insertFrameSpriteAfter', [tileset[uuid], index - 1]
 
       controls.scrubberMax(self.flatten().length - 1)
 
-    addSequence: (sequenceIndex) ->
-      sequence = sequences[sequenceIndex]
+    addSequence: (sequence) ->
       {id, name, frameArray} = sequence
 
       sequenceEl = $("<div class='sequence' data-id='#{id}' />").append($("<span class='name'>#{name}</span>"))
@@ -37,7 +38,7 @@
       spriteSrc = tileset[frameArray.last()]
 
       $("#animation_editor_templates").find('.sprite').tmpl(src: spriteSrc).appendTo(sequenceEl)
-      animationEditor.trigger 'updateLastFrameSequence', [sequenceEl]
+      animationEditor.trigger 'appendSequenceToFrames', [sequenceEl]
 
     clear: ->
       frames.clear()
@@ -55,13 +56,11 @@
       else
         return currentIndex
 
-    empty: ->
+    isEmpty: ->
       frames.length == 0
 
     flatten: ->
       (frame.frameArray || frame for frame in frames).flatten()
-
-    frames: frames
 
     remove: (frameIndex) ->
       frames.splice(frameIndex, 1)

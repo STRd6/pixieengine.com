@@ -1,4 +1,4 @@
-(exports ? this)["AnimationUI"] = (animationEditor, animation, tileset, sequences) ->
+(exports ? this)["AnimationUI"] = (animationEditor) ->
   templates = $("#animation_editor_templates")
   editorTemplate = templates.find('.editor.template')
   spriteTemplate = templates.find('.sprite')
@@ -8,20 +8,23 @@
   animationEditor.bind
     addFrameToSequenceEditModal: (e, spriteSrc) ->
       spriteTemplate.tmpl(src: spriteSrc).appendTo('.edit_sequence_modal')
-    appendFrameSprite: (e, uuid) ->
+    addTile: (e, src) ->
+      spritesEl = $(this).find('.sprites')
+      spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+    appendFrameSprite: (e, spriteSrc) ->
       frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[uuid]
 
       frameSprites.append(frameSpriteTemplate.tmpl(src: spriteSrc))
 
       animationEditor.trigger 'enableSave'
-    addTile: (e, src) ->
-      spritesEl = $(this).find('.sprites')
-      spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+    appendSequenceToFrames: (e, sequence) ->
+      frameSprites = $(this).find('.frame_sprites')
+      sequence.appendTo(frameSprites)
+
+      animationEditor.trigger 'enableSave'
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
-    createSequence: ->
-      sequence = sequences.last()
+    createSequence: (e, sequence, lastSpriteSrc) ->
       {frameArray, id, name} = sequence
 
       sequencesEl = $(this).find('.sequences')
@@ -30,10 +33,7 @@
       (frameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequenceEl)
 
-      spriteIndex = frameArray.last()
-      spriteSrc = tileset[spriteIndex]
-
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequenceEl)
+      spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
       sequenceEl.appendTo(sequencesEl)
 
     currentFrame: (e, frameIndex, tileSrc) ->
@@ -66,9 +66,8 @@
       $this.find('.clear_frames').removeAttr('disabled').attr('title', 'Clear frames')
     enableSequenceEdit: ->
       $(this).find('.edit_sequences').removeAttr('disabled').attr('title', 'Edit sequences')
-    insertFrameSpriteAfter: (e, uuid, index) ->
+    insertFrameSpriteAfter: (e, spriteSrc, index) ->
       frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[uuid]
 
       index = lastSelectedIndex() || index
 
@@ -86,17 +85,7 @@
       ).remove()
     fps: (e, newValue) ->
       animationEditor.find('.fps input').val(newValue)
-    updateFrame: (e, index) ->
-      frameSprites = $(this).find('.frame_sprites')
-      spriteSrc = tileset[index]
-
-      frameSpriteTemplate.tmpl(src: spriteSrc).appendTo(frameSprites)
-    updateLastFrameSequence: (e, sequence) ->
-      frameSprites = $(this).find('.frame_sprites')
-      sequence.appendTo(frameSprites)
-
-      animationEditor.trigger(event) for event in ['enableSave', 'checkExportStatus']
-    updateSequence: (e, sequence) ->
+    updateSequence: (e, sequence, lastSpriteSrc) ->
       {frameArray, id, name} = sequence
 
       sequencesEl = $(this).find('.sequences')
@@ -105,10 +94,7 @@
       (frameArray.length - 1).times ->
         $("<div class='placeholder' />").appendTo(sequenceEl)
 
-      spriteIndex = frameArray.last()
-      spriteSrc = tileset[spriteIndex]
-
-      spriteTemplate.tmpl(src: spriteSrc).appendTo(sequenceEl)
+      spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
 
       matches = animationEditor.find('.sequence').filter ->
         return $(this).attr('data-id') == id
