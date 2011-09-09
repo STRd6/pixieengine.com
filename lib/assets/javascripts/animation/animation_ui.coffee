@@ -76,11 +76,9 @@
     insertFrameSpriteAfter: (e, spriteSrc, index) ->
       frameSprites = $(this).find('.frame_sprites')
 
-      index = lastSelectedIndex() || index
+      elementAtIndex = frameSprites.find('.placeholder, img').eq(index)
 
-      placeholderOrImage = frameSprites.find('.placeholder, img').eq(index)
-
-      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(placeholderOrImage.parent())
+      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(elementAtIndex.parent())
 
       animationEditor.trigger 'enableSave'
     removeFrame: (e, frameIndex) ->

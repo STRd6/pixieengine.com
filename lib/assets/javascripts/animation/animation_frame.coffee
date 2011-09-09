@@ -7,19 +7,17 @@
       return uuid if src == tileSrc
 
   self =
-    addImage: (imgSrc, index) ->
-      index ||= self.flatten().length
-
+    addImageAfter: (imgSrc, index) ->
       uuid = findUUID(imgSrc)
 
-      frames.splice(index + 1, 0, uuid)
-
-      console.log frames
-
-      if index == 0
+      # if we are given the first index then the frames are empty and we must append
+      if frames.length == 0
+        frames.push(uuid)
         animationEditor.trigger 'appendFrameSprite', [tileset[uuid]]
+      # otherwise we want to insert this image after the previous index
       else
-        animationEditor.trigger 'insertFrameSpriteAfter', [tileset[uuid], index - 1]
+        frames.splice(index + 1, 0, uuid)
+        animationEditor.trigger 'insertFrameSpriteAfter', [tileset[uuid], index]
 
       controls.scrubberMax(self.flatten().length - 1)
 
@@ -61,6 +59,8 @@
 
     flatten: ->
       (frame.frameArray || frame for frame in frames).flatten()
+
+    frames: frames
 
     remove: (frameIndex) ->
       frames.splice(frameIndex, 1)

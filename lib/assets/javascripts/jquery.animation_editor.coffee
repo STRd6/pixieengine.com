@@ -6,7 +6,7 @@ $.fn.animationEditor = ->
   tileIndex = 0
   lastClickedSprite = null
   lastSelectedFrame = null
-  editedSequenceName = null
+  editedSequence = null
 
   tileset = {}
   tilemap = {}
@@ -28,7 +28,7 @@ $.fn.animationEditor = ->
 
   window.lastSelectedIndex = ->
     if (lastSelected = animationEditor.find('.frame_sprite .selected:last')).length
-      animationEditor.find('.frame_sprites img').index(lastSelected)
+      return animationEditor.find('.frame_sprites img').index(lastSelected)
     else
       null
 
@@ -149,9 +149,9 @@ $.fn.animationEditor = ->
   pushSequence = (frameArray) ->
     id = Math.uuid(32, 16)
 
-    sequences.push({id: id, name: editedSequenceName || "sequence#{sequenceNumber++}", frameArray: frameArray})
+    sequences.push({id: editedSequence?.id || id, name: editedSequence?.name || "sequence#{sequenceNumber++}", frameArray: frameArray})
 
-    editedSequenceName = null if editedSequenceName
+    editedSequence = null if editedSequence
     lastSequence = sequences.last()
     lastFrameId = lastSequence.frameArray.last()
 
@@ -257,14 +257,16 @@ $.fn.animationEditor = ->
     '.right .sequence.edit': (e) ->
       index = $(this).index()
       sequence = sequences[index]
-      editedSequenceName = sequence.name
+      editedSequence = {id: sequence.id, name: sequence.name}
 
       # crush the frames for now. In the
       # future keep track of their frames
       animationFrame.clear()
 
+      index = animationFrame.flatten().length - 1
+
       for uuid in sequence.frameArray
-        animationFrame.addImage(tileset[uuid])
+        animationFrame.addImageAfter(tileset[uuid], index)
 
       removeSequence(index)
 
@@ -287,15 +289,11 @@ $.fn.animationEditor = ->
         currentIndex = $this.index()
 
         if currentIndex > lastIndex
-          sprites = animationEditor.find('.sprites img').filter(->
-            imgIndex = $(this).index()
-            return lastIndex < imgIndex <= currentIndex
-          ).get()
-        else if currentIndex <= lastIndex
-          sprites = animationEditor.find('.sprites img').filter(->
-            imgIndex = $(this).index()
-            return currentIndex <= imgIndex < lastIndex
-          ).get().reverse()
+          # lastIndex + 1 because you've already added it
+          sprites = animationEditor.find('.sprites img').slice(lastIndex + 1, currentIndex + 1).get().reverse()
+        else if currentIndex < lastIndex
+          # you've already added the last index
+          sprites = animationEditor.find('.sprites img').slice(currentIndex, lastIndex).get()
 
         lastClickedSprite = null
       else
@@ -303,9 +301,9 @@ $.fn.animationEditor = ->
 
         lastClickedSprite = $this
 
-      index = lastSelectedIndex()
+      index = lastSelectedIndex() || animationFrame.flatten().length - 1
 
-      animationFrame.addImage($(sprite).attr('src'), index) for sprite in sprites
+      animationFrame.addImageAfter($(sprite).attr('src'), index) for sprite in sprites
 
   for key, value of liveMousedownEvents
     animationEditor.find(key).live
@@ -331,7 +329,7 @@ $.fn.animationEditor = ->
       sequence = findSequence(sequenceId)
       sequence.name = updatedName
 
-      lastFrameId = lastSequence.frameArray.last()
+      lastFrameId = sequence.frameArray.last()
 
       animationEditor.trigger 'updateSequence', [sequence, tileset[lastFrameId]]
 
@@ -365,10 +363,10 @@ $.fn.animationEditor = ->
 
       keyOffset = 48
 
-      index = lastSelectedIndex()
+      index = lastSelectedIndex() || animationFrame.flatten().length - 1
 
       (e.which - keyOffset).times ->
-        animationFrame.addImage(lastClickedSprite.get(0).src, index)
+        animationFrame.addImageAfter(lastClickedSprite.get(0).src, index)
     "ctrl+s, meta+s": (e) ->
       e.preventDefault()
 
@@ -396,16 +394,13 @@ $.fn.animationEditor = ->
     "ctrl+v, meta+v": (e) ->
       e.preventDefault()
 
-      index = lastSelectedIndex() || 0
-
       if clipboard.length
         for frame in clipboard
-          if index == 0
-            animationFrame.addImage($(frame).attr('src'))
-          else
-            animationFrame.addImage($(frame).attr('src'), index + 1)
+          index = animationEditor.find('.sprites img').index(frame)
+          console.log index
+          animationEditor.find('.sprites img').eq(index).mousedown()
 
   for keybinding, handler of keybindings
     $(document).bind 'keydown', keybinding, handler
 
-  animationEditor.trigger 'init'
+  return animationEditor
