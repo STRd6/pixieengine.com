@@ -6,6 +6,7 @@ $.fn.animationEditor = ->
   tileIndex = 0
   lastClickedSprite = null
   lastSelectedFrame = null
+  editedSequenceName = null
 
   tileset = {}
   tilemap = {}
@@ -136,7 +137,7 @@ $.fn.animationEditor = ->
     for sequence in sequences
       return sequence if sequence.id == id
 
-  removeSequence = (sequenceIndex) ->
+  window.removeSequence = (sequenceIndex) ->
     sequence = sequences.splice(sequenceIndex, 1).first()
     animationEditor.trigger 'removeSequence', [sequence]
 
@@ -148,7 +149,10 @@ $.fn.animationEditor = ->
   pushSequence = (frameArray) ->
     id = Math.uuid(32, 16)
 
-    sequences.push({id: id, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
+    sequences.push({id: id, name: editedSequenceName || "sequence#{sequenceNumber++}", frameArray: frameArray})
+
+    editedSequenceName = null if editedSequenceName
+
     animationEditor.trigger event for event in ['createSequence', 'enableExport', 'enableSequenceEdit']
 
   removeSequenceFrame = (sequenceId, frameIndex) ->
@@ -250,19 +254,18 @@ $.fn.animationEditor = ->
       $('.help_modal').modal()
     '.right .sequence.edit': (e) ->
       index = $(this).index()
-      sequenceId = $(this).attr('data-id')
       sequence = sequences[index]
+      editedSequenceName = sequence.name
 
-      $('.edit_sequence_modal img').remove()
+      # crush the frames for now. In the
+      # future keep track of their frames
+      animationFrame.clear()
 
       for uuid in sequence.frameArray
-        animationEditor.trigger "addFrameToSequenceEditModal", [tileset[uuid]]
+        animationFrame.addImage(tileset[uuid])
 
-      $('.edit_sequence_modal').attr('data-id', sequenceId)
-      $('.edit_sequence_modal').modal
-        onClose: ->
-          animationEditor.find('.edit_sequences').mousedown()
-          $.modal.close()
+      removeSequence(index)
+
     '.right .sequence': (e) ->
       return if $(e.target).is('.name')
       return if $(e.target).hasClass('edit') || $(e.target).parent().hasClass('edit')

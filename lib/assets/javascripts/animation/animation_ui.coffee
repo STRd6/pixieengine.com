@@ -35,6 +35,7 @@
 
       spriteTemplate.tmpl(src: spriteSrc).appendTo(sequenceEl)
       sequenceEl.appendTo(sequencesEl)
+
     currentFrame: (e, frameIndex, tileSrc) ->
       animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').removeClass('selected')
 

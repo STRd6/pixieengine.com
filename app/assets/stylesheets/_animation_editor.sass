@@ -14,6 +14,17 @@ $tileset_sprite_width: 60px
 .animation_editor
   +user-select
 
+  button[disabled]
+    .static-application, .static-pictures, .static-picture_edit
+      +opacity(0.5)
+
+  .static-application, .static-pictures, .static-picture_edit
+    +bounds(16px)
+    +opacity(1)
+
+    display: inline-block
+    vertical-align: middle
+
   img
     border: 1px solid transparent
 
