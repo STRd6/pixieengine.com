@@ -3,7 +3,21 @@
   editorTemplate = templates.find('.editor.template')
   spriteTemplate = templates.find('.sprite')
   frameSpriteTemplate = templates.find('.frame_sprite')
-  editSequenceModal = templates.find('.edit_sequence_modal')
+
+  constructSequenceEl = (id, name) ->
+    $ "<div class='sequence' data-id='#{id}'><span class='name'>#{name}</span></div>"
+
+  constructSequenceStack = (sequence, lastSpriteSrc) ->
+    {id, name, frameArray} = sequence
+
+    sequenceEl = constructSequenceEl(id, name)
+
+    (frameArray.length - 1).times ->
+      $("<div class='placeholder' />").appendTo(sequenceEl)
+
+    spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
+
+    return sequenceEl
 
   animationEditor.bind
     addFrameToSequenceEditModal: (e, spriteSrc) ->
@@ -25,17 +39,10 @@
     clearFrames: ->
       $(this).find('.frame_sprites').children().remove()
     createSequence: (e, sequence, lastSpriteSrc) ->
-      {frameArray, id, name} = sequence
-
       sequencesEl = $(this).find('.sequences')
-      sequenceEl = $("<div class='sequence' data-id='#{id}' />").append($("<span class='name'>#{name}</span>"))
+      sequenceEl = constructSequenceStack(sequence, lastSpriteSrc)
 
-      (frameArray.length - 1).times ->
-        $("<div class='placeholder' />").appendTo(sequenceEl)
-
-      spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
       sequenceEl.appendTo(sequencesEl)
-
     currentFrame: (e, frameIndex, tileSrc) ->
       animationEditor.find('.frame_sprites .placeholder, .frame_sprites img').removeClass('selected')
 
@@ -86,15 +93,7 @@
     fps: (e, newValue) ->
       animationEditor.find('.fps input').val(newValue)
     updateSequence: (e, sequence, lastSpriteSrc) ->
-      {frameArray, id, name} = sequence
-
-      sequencesEl = $(this).find('.sequences')
-      sequenceEl = $("<div class='sequence' data-id='#{id}' />").append($("<span class='name'>#{name}</span>"))
-
-      (frameArray.length - 1).times ->
-        $("<div class='placeholder' />").appendTo(sequenceEl)
-
-      spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
+      sequenceEl = constructSequenceStack(sequence, lastSpriteSrc)
 
       matches = animationEditor.find('.sequence').filter ->
         return $(this).attr('data-id') == id
