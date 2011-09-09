@@ -53,6 +53,8 @@
 
       $this.find('.create_sequence').attr({ disabled: true, title: "Add frames to create a sequence" })
       $this.find('.clear_frames').attr({ disabled: true, title: "There are no frames to clear" })
+    disableSequenceEdit: ->
+      $(this).find('.edit_sequences').attr({ disabled: "true", title: "Create a sequence before editing" }).removeClass('active')
     enableExport: ->
       exportButtons = $(this).find('.player button:not(.help)')
       exportButtons.removeAttr('disabled').attr('title', 'Export animation')
@@ -61,6 +63,8 @@
 
       $this.find('.create_sequence').removeAttr('disabled').attr('title', 'Create a sequence')
       $this.find('.clear_frames').removeAttr('disabled').attr('title', 'Clear frames')
+    enableSequenceEdit: ->
+      $(this).find('.edit_sequences').removeAttr('disabled').attr('title', 'Edit sequences')
     insertFrameSpriteAfter: (e, uuid, index) ->
       frameSprites = $(this).find('.frame_sprites')
       spriteSrc = tileset[uuid]

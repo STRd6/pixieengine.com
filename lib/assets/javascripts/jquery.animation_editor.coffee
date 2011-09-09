@@ -139,13 +139,17 @@ $.fn.animationEditor = ->
   removeSequence = (sequenceIndex) ->
     sequence = sequences.splice(sequenceIndex, 1).first()
     animationEditor.trigger 'removeSequence', [sequence]
-    animationEditor.trigger "disableExport" if sequences.length == 0
+
+    if sequences.length == 0
+      animationEditor.trigger "disableExport"
+      animationEditor.trigger "disableSequenceEdit"
+      animationEditor.find('.edit_sequences').mousedown()
 
   pushSequence = (frameArray) ->
     id = Math.uuid(32, 16)
 
     sequences.push({id: id, name: "sequence#{sequenceNumber++}", frameArray: frameArray})
-    animationEditor.trigger event for event in ['createSequence', 'enableExport']
+    animationEditor.trigger event for event in ['createSequence', 'enableExport', 'enableSequenceEdit']
 
   removeSequenceFrame = (sequenceId, frameIndex) ->
     sequence = findSequence(sequenceId)
@@ -205,9 +209,9 @@ $.fn.animationEditor = ->
       $this = $(this)
       text = $this.text()
 
-      $this.text(if text == "Edit" then "Done" else "Edit")
+      $this.toggleClass('active')
 
-      if text == "Edit"
+      if $this.hasClass('active')
         img = $ '<div />'
           class: 'x static-x'
 

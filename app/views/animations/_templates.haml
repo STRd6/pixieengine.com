@@ -31,7 +31,7 @@
         .background_color
           .module_header
             %h3> Sequences
-            %a.edit_sequences Edit
+            %button.edit_sequences(title="Create a sequence before editing" disabled="true")> Edit
           .sequences
 
       %nav.module.bottom
@@ -54,7 +54,8 @@
   .help_modal
     %h2.header Where do I begin?
     %ul
-      %li Start by dragging an image from your desktop to the editor. It will be added to your available sprites.
-      %li Next click on any available sprites to add them to the current animation frame.
-      %li Now you can start creating sequences, the building block of animations. A sequences is a colllection of one or more animation frames.
-      %li You can make sequences of sequences and really capture complex animation states.
+      %li Drag an image from your desktop to the editor. It will be added to your sprites.
+      %li Click on a sprite to add it to the current animation frame.
+      %li Click to create a sequence.
+      %li A sequences is a collection of one or more animation frames.
+      %li You can make sequences of sequences and capture complex animation states.
