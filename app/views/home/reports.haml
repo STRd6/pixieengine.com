@@ -1,5 +1,5 @@
 :ruby
-  funnel = ["landing", "registration"]
+  funnel = ["land", "register"]
 
   results = Hash.new(0)
   Event.select("name, count(DISTINCT(session_id)) as count").group("name").where(:name => funnel, :user_id => nil).each do |result|
@@ -17,9 +17,9 @@
           ON events.session_id = treatments.session_id
         INNER JOIN experiments
           ON treatments.experiment_id = experiments.id
-      WHERE events.name IN ('landing', 'registration', 'subscribe')
+      WHERE events.name IN ('land', 'register', 'subscribe')
         AND events.user_id IS NULL
-        AND experiments.name = 'test'
+        AND experiments.id = #{experiment.id}
       GROUP BY treatments.control, events.name
     eos
     ).each do |result|
@@ -47,4 +47,4 @@
             %td
               = "%1.2f%" % (current_total / prev_total * 100)
               %br
-              = current_total
+              = current_total.to_i
