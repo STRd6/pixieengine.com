@@ -1,3 +1,14 @@
+%style
+  :sass
+    td, th
+      padding: 0.25em 1em
+    td:first-child
+      font-weight: bold
+      text-align: right
+    th
+      font-weight: bold
+      text-align: center
+
 :ruby
   funnel = ["land", "register"]
 
@@ -27,15 +38,25 @@
       results[result.name][result.control] = result.count
     end
 
+  :ruby
+    if results[funnel.last]['t'].to_i > results[funnel.last]['f'].to_i
+      control_color = 'rgba(0, 255, 0, 0.3)'
+      experiment_color = 'rgba(255, 0, 0, 0.3)'
+    else
+      control_color = 'rgba(255, 0, 0, 0.3)'
+      experiment_color = 'rgba(0, 255, 0, 0.3)'
+    end
+
+  %h3= experiment.name
   %table
     %thead
       %tr
-        %th= experiment.name
+        %th
         - funnel.each do |name|
           %th= name
     %tbody
       - ["t", "f"].each do |control|
-        %tr
+        %tr(style="background-color:#{control == "t" ? control_color : experiment_color};")
           - funnel.each_with_index do |name, i|
             - if i == 0
               %td= control == "t" ? "control" : "experiment"
