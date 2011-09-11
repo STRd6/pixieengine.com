@@ -78,7 +78,10 @@
 
       elementAtIndex = frameSprites.find('.placeholder, img').eq(index)
 
-      frameSpriteTemplate.tmpl(src: spriteSrc).insertAfter(elementAtIndex.parent())
+      frameSprite = frameSpriteTemplate.tmpl(src: spriteSrc)
+      frameSprites.find('img').removeClass('selected')
+      frameSprite.find('img').addClass('selected')
+      frameSprite.insertAfter(elementAtIndex.parent())
 
       animationEditor.trigger 'enableSave'
     removeFrame: (e, frameIndex) ->
@@ -94,7 +97,7 @@
       sequenceEl = constructSequenceStack(sequence, lastSpriteSrc)
 
       matches = animationEditor.find('.sequence').filter ->
-        return $(this).attr('data-id') == id
+        return $(this).attr('data-id') == sequence.id
 
       for match in matches
         $(match).replaceWith(sequenceEl.clone())

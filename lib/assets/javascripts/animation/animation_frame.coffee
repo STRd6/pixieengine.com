@@ -2,7 +2,7 @@
   currentIndex = 0
   frames = []
 
-  findUUID = (tileSrc) ->
+  window.findUUID = (tileSrc) ->
     for uuid, src of tileset
       return uuid if src == tileSrc
 
@@ -10,14 +10,9 @@
     addImageAfter: (imgSrc, index) ->
       uuid = findUUID(imgSrc)
 
-      # if we are given the first index then the frames are empty and we must append
-      if frames.length == 0
-        frames.push(uuid)
-        animationEditor.trigger 'appendFrameSprite', [tileset[uuid]]
-      # otherwise we want to insert this image after the previous index
-      else
-        frames.splice(index + 1, 0, uuid)
-        animationEditor.trigger 'insertFrameSpriteAfter', [tileset[uuid], index]
+      frames.splice(index + 1, 0, uuid)
+
+      animationEditor.trigger 'insertFrameSpriteAfter', [tileset[uuid], index]
 
       controls.scrubberMax(self.flatten().length - 1)
 
@@ -37,7 +32,14 @@
 
       $("#animation_editor_templates").find('.sprite').tmpl(src: spriteSrc).appendTo(sequenceEl)
       animationEditor.trigger 'appendSequenceToFrames', [sequenceEl]
+    appendImage: (imgSrc) ->
+      uuid = findUUID(imgSrc)
 
+      frames.push(uuid)
+
+      animationEditor.trigger 'appendFrameSprite', [tileset[uuid]]
+
+      controls.scrubberMax(self.flatten().length - 1)
     clear: ->
       frames.clear()
       animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
