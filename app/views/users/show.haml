@@ -100,8 +100,11 @@
       margin-right: 6px
       margin-bottom: 3px
 
-      &.extras
+      &:nth-child(n + 71)
         display: none
+
+        .show_all &:nth-child(n + 71)
+          display: inline-block
 
       &:hover
         background-color: $hover
@@ -184,24 +187,11 @@
 
 - content_for :javascript do
   :coffeescript
-
     $ ->
       $('#show_projects').click ->
-        $this = $(this)
-
-        if $this.text() == "Show all"
-          $('.projects').addClass("show_all")
-          $this.text("Hide")
-        else
-          $('.projects').removeClass("show_all")
-          $this.text("Show all")
+        $(this).toggleClass('active')
+        $('.projects').toggleClass('show_all')
 
       $('#show_sprites').click ->
-        $this = $(this)
-
-        if $this.text() == "Show all"
-          $('.sprite_container.extras').css('display', 'inline-block')
-          $this.text('Hide')
-        else
-          $('.sprite_container.extras').hide()
-          $this.text('Show all')
+        $(this).toggleClass('active')
+        $('.sprites').toggleClass('show_all')
