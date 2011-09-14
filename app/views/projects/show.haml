@@ -102,14 +102,15 @@
 
 - content_for :javascript do
   :coffeescript
-    $('.member_name').autocomplete(
-      source: "#{find_member_users_project_path(project)}"
-      select: (e, ui) ->
-        $('#user_id').val(ui.item.id)
-    ).data( "autocomplete" )._renderItem = (ul, item) ->
-      $( "<li></li>" ).data("item.autocomplete", item)
-        .append("<a><img src='\#{item.icon}'></img>\#{item.label}</a>")
-        .appendTo(ul)
+    if $('.member_name').length
+      $('.member_name').autocomplete(
+        source: "#{find_member_users_project_path(project)}"
+        select: (e, ui) ->
+          $('#user_id').val(ui.item.id)
+      ).data( "autocomplete" )._renderItem = (ul, item) ->
+        $( "<li></li>" ).data("item.autocomplete", item)
+          .append("<a><img src='\#{item.icon}'></img>\#{item.label}</a>")
+          .appendTo(ul)
 
     $('button.add_member').click (e) ->
       e.preventDefault()
