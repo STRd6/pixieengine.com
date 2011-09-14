@@ -11,16 +11,19 @@ PixieStrd6Com::Application.routes.draw do
     member do
       get :debug
       get :download
+      get :find_member_users
       get :fullscreen
       get :ide
       get :widget
 
       post :add_to_arcade
+      post :add_member
       post :add_to_tutorial
       post :feature
       post :fork
       post :generate_docs
       post :remove_file
+      post :remove_member
       post :save_file
       post :tag_version
       post :update_libs

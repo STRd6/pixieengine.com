@@ -11,9 +11,33 @@
         overflow: auto
         width: 100%
 
-    .static-application_edit, .static-pencil, .static-application_delete, .static-star, .static-sport_shuttlecock, .static-book
+    .static-application_edit, .static-pencil, .static-application_delete, .static-star, .static-sport_shuttlecock, .static-book, .static-delete
       display: inline-block
       vertical-align: bottom
+    form
+      h3, input, button, label
+        display: inline-block
+        vertical-align: middle
+
+    .member_name
+      width: 200px
+
+    ul.ui-autocomplete
+      .ui-menu-item
+        img
+          margin-right: 0.5em
+          vertical-align: bottom
+
+    .project_members
+      width: 250px
+
+      p
+        position: relative
+
+        button
+          position: absolute
+          right: 0
+          top: -12px
 
 .project
   %h2= project.title
@@ -55,10 +79,64 @@
         .static-book
         Tutorial
 
+-if owner_or_admin?(project)
+  -if Membership.find_by_group_id(project.id)
+    .project_members
+      %h3 Current project members
+      -Membership.find_all_by_group_id(project.id).each do |member|
+        %p
+          =link_to member.user, member.user
+          %button.remove_member(action="#{remove_member_project_path(:user_id => member.user.id)}")
+            %span.static-delete(alt="Remove member")
+            Remove
+
+  = form_tag add_member_project_path do
+    = hidden_field_tag :user_id
+    %label
+      %h3 Add project members
+      %input.member_name(placeholder="Member display name")
+    %button.add_member Add
+
 - content_for :javascript do
   :coffeescript
-    $("#feature, #arcade, #tutorial").click (event) ->
-      event.preventDefault()
+    $('.member_name').autocomplete(
+      source: "#{find_member_users_project_path(project)}"
+      select: (e, ui) ->
+        $('#user_id').val(ui.item.id)
+    ).data( "autocomplete" )._renderItem = (ul, item) ->
+      $( "<li></li>" ).data("item.autocomplete", item)
+        .append("<a><img src='\#{item.icon}'></img>\#{item.label}</a>")
+        .appendTo(ul)
+
+    $('button.add_member').click (e) ->
+      e.preventDefault()
+      return unless member_name = ($('.member_name').val()).length
+      member_id = $('#user_id').val()
+
+      $.post $(this).parent().attr('action'), user_id: $('#user_id').val(), ->
+        notify("Added \#{$('.member_name').val()} to this project")
+        if $('.project_members').length == 0
+          project_members_el = $ "<div class='project_members'><h3>Current project members</h3></div>"
+          $('form').before(project_members_el)
+        user_element = $ "<p><a href='/people/\#{member_id}'>\#{member_name}</a></p>"
+        button_element = $ "<button action='/projects/#{project.id}/remove_member?user_id=\#{member_id}' class='remove_member'><span alt='Remove member' class='static-delete'></span>Remove</button>"
+        user_element.append(button_element)
+        $('.project_members').append(user_element)
+
+    $('button.remove_member').live 'click', (e) ->
+      e.preventDefault()
+
+      user_element = $(this).parent()
+      user_name = $(this).prev().text()
+
+      $.post $(this).attr('action'), ->
+        notify("Removed \#{user_name} from this project")
+        $(user_element).remove()
+        if $('.project_members p').length == 0
+          $('.project_members').remove()
+
+    $("#feature, #arcade, #tutorial").click (e) ->
+      e.preventDefault()
 
       if $(this).is(".active")
         $(this).removeClass("active")

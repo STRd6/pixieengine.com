@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   PUBLIC_ACTIONS = [:index, :show, :hook, :info, :ide, :github_integration, :fullscreen, :demo, :arcade, :landing1, :widget]
   before_filter :require_user, :except => PUBLIC_ACTIONS
   before_filter :require_access, :except => PUBLIC_ACTIONS + [:new, :create, :fork, :feature, :add_to_arcade, :add_to_tutorial]
-  before_filter :require_owner_or_admin, :only => :destroy
+  before_filter :require_owner_or_admin, :only => [:destroy, :add_member, :remove_member]
   before_filter :require_admin, :only => [:feature, :add_to_arcade, :add_to_tutorial]
 
   before_filter :filter_results, :only => [:index]
@@ -27,6 +27,39 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+  end
+
+  def add_member
+    user = User.find params[:user_id]
+
+    if project.user != user && !Membership.find_by_group_id_and_user_id(project.id, user.id)
+      Membership.create :group => project, :user => user
+    end
+
+    render :nothing => true
+  end
+
+  def remove_member
+    user = User.find params[:user_id]
+
+    if Membership.find_by_group_id_and_user_id(project.id, user.id)
+      Membership.find_by_group_id_and_user_id(project.id, user.id).destroy
+    end
+
+    render :nothing => true
+  end
+
+  def find_member_users
+    if params[:term]
+      like = "%#{params[:term]}%".downcase
+      users = User.where("lower(display_name) like ?", like)
+    else
+      users = User.all
+    end
+    list = users.map do |u|
+      { :id => u.id, :label => u.display_name, :name => u.display_name, :icon => u.avatar(:tiny) }
+    end
+    render :json => list
   end
 
   def index
