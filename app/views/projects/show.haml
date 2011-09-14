@@ -19,6 +19,9 @@
         display: inline-block
         vertical-align: middle
 
+      h3
+        margin-right: 0.5em
+
     .member_name
       width: 200px
 
@@ -95,7 +98,7 @@
     %label
       %h3 Add project members
       %input.member_name(placeholder="Member display name")
-    %button.add_member Add
+    %button.add_member(disabled="true") Add
 
 - content_for :javascript do
   :coffeescript
@@ -110,7 +113,8 @@
 
     $('button.add_member').click (e) ->
       e.preventDefault()
-      return unless member_name = ($('.member_name').val()).length
+      return unless $('#user_id[value]').length
+      return unless (member_name = $('.member_name').val()).length
       member_id = $('#user_id').val()
 
       $.post $(this).parent().attr('action'), user_id: $('#user_id').val(), ->
@@ -122,6 +126,13 @@
         button_element = $ "<button action='/projects/#{project.id}/remove_member?user_id=\#{member_id}' class='remove_member'><span alt='Remove member' class='static-delete'></span>Remove</button>"
         user_element.append(button_element)
         $('.project_members').append(user_element)
+
+    $('.member_name').keydown (e) ->
+      if $(this).val().length == 0 || $('#user_id').val().length == 0
+        $('.add_member').attr('disabled', true)
+        e.preventDefault() if e.which == 13
+      else
+        $('.add_member').removeAttr('disabled')
 
     $('button.remove_member').live 'click', (e) ->
       e.preventDefault()
