@@ -41,6 +41,7 @@
         %pre
           :preserve
             backgroundColor: Color.random()
+          %span.static-joystick(alt="Do it already!" title="Do it already!" data-args='["backgroundColor: Color.random()", "# color", "src", "main"]')>
         to spice things up and then run the game again.
     .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click();" }
       .text
@@ -52,6 +53,7 @@
         :preserve
           if keydown.left
             I.velocity = Point(-2, 0)
+        %span.static-joystick(alt="Do it already!" title="Do it already!" data-args='["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "src", "square"]')>
       Now you can press left to change the square's direction.
     .tip{ 'data-element_selector' => ".ui-tabs-selected" }
       .text
@@ -229,6 +231,36 @@
 
       $("#tooltip .close_tip").live "click", ->
         hideTooltip()
+
+      $('.static-joystick').tipsy
+        gravity: 'w'
+        live: true
+
+      findTutorialText = (text, file_directory, file_name) ->
+        $("#file_\#{file_directory}_\#{file_name}_coffee iframe").contents().find('span.comment').filter ->
+          return $(this).text() == text
+
+      doItNow = (text, tutorialComment, fileDirectory, fileName) ->
+        letters = text.split("")
+        lettersUsed = []
+
+        replacedSnippet = $(findTutorialText(tutorialComment, fileDirectory, fileName)).html("<span class='comment'></span>")
+        intervalId = setInterval ->
+          nextLetter = letters.shift()
+          lettersUsed.push nextLetter
+          $(replacedSnippet).html(lettersUsed.join(""))
+
+          if letters.length == 0
+            $("#file_\#{fileDirectory}_\#{fileName}_coffee iframe").contents().keyup()
+            clearInterval(intervalId)
+        , 75
+
+      $('[data-args]').live 'click', ->
+        args = $(this).data('args')
+
+        [text, tutorialComment, fileDirectory, fileName] = args
+
+        doItNow(text, tutorialComment, fileDirectory, fileName)
 
       tipIndex = -1
       nextTip = () ->

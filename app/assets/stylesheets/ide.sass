@@ -12,11 +12,21 @@ $inner_margin: 14px
 html.light
   background-image: url(/assets/textured_background.png)
 
-.static-help
+.static-help, .static-joystick
   +bounds(15px)
 
   display: inline-block
   vertical-align: bottom
+
+.static-joystick
+  bottom: 3px
+  cursor: pointer
+  position: absolute
+  right: 3px
+
+#tooltip
+  pre
+    position: relative
 
 #fullscreen.ide
   padding-top: 3.5em
