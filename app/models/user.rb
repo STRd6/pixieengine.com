@@ -70,7 +70,7 @@ class User < ActiveRecord::Base
 
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
-        Notifier.newsletter5(user, delivery_date).deliver unless user.email.blank?
+        Notifier.newsletter6(user, delivery_date).deliver unless user.email.blank?
       rescue
         failed_user_ids.push(user.id)
       end
