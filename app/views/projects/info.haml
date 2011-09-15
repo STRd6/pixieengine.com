@@ -82,13 +82,13 @@
           float: right
           padding: 6px 6px 3px
 
-      button.full
-        +bounds(100%, 70px)
+        a.button.full
+          +bounds(100%, 70px)
 
-        display: block
-        font-size: 190%
-        margin: 0
-        margin-top: 28px
+          font-size: 190%
+          line-height: 56px
+          margin: 0
+          margin-top: 28px
 
       .testimonial
         margin-bottom: 2em
@@ -109,11 +109,6 @@
 
           &.last
             margin-right: 0
-
-          button.full
-            font-size: 160%
-            height: 40px
-            margin: 0
 
       .featured_projects
         margin: 2em 0
@@ -186,9 +181,7 @@
         With Pixie there is no limit to what you can do. See for yourself with
         one of our demo applications.
 
-      %button.full.clickable.complement
-        Try Now for Free
-        = link_to "", ide_project_path("demo"), :style => "display: none;"
+      = link_to "Try Now for Free", ide_project_path("demo"), :class => "button complement full"
 
     .video
       <iframe width="560" height="345" src="http://www.youtube.com/embed/lCbXhNg8cUU" frameborder="0" allowfullscreen></iframe>
@@ -276,9 +269,7 @@
         The free plan allows you to create and maintain a single project. Pixie
         Premium is free for 30 days if you need more.
 
-      %button.full.clickable.complement
-        30 Day Free Trial
-        = link_to "", register_subscribe_path, :style => "display: none;"
+      = link_to "30 Day Free Trial", register_subscribe_path, :class => "button full complement"
 
   .featured_projects.module
     %h2 Amazing Games Created with Pixie
