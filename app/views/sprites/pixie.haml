@@ -11,13 +11,8 @@
 - data = @data
 - parent_data = sprite.parent_data
 
-.unsupported
-  %h3 Pixie requires a modern browser!
-  %p
-    Sorry to have to break this to you, but it appears that you're using
-    IE8 or below... If you're serious about being on the internet,
-    please come back with a better browser:
-    = link_to "Google Chrome", "http://www.google.com/chrome"
+-# Force chrome frame
+= render :partial => "/shared/chrome_frame"
 
 %section#pixie
 
