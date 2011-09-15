@@ -11,6 +11,10 @@ module NotifierHelper
     image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "left", :style => "display:inline-block;float:left;margin-right:1em;")
   end
 
+  def image_center(image_name)
+    "<center>" + image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "center", :style => "display:inline-block;margin-bottom:0.5em;") + "</center>"
+  end
+
   def project_link(project, options=nil)
     if options && options[:text]
       ide_project_url(project, @link_tracking)
