@@ -8,7 +8,7 @@ module NotifierHelper
   end
 
   def image_left(image_name)
-    image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "left", :style => "display:inline-block;float:left;margin-right:1em;width:96px;height:96px;")
+    image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "left", :style => "display:inline-block;float:left;margin-right:1em;")
   end
 
   def project_link(project, options=nil)
