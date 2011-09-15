@@ -1,3 +1,11 @@
+email_config_path = File.join(Rails.root, "config", "dev_email.yml")
+
+if File.exists? email_config_path
+  EMAIL_CONFIG = HashWithIndifferentAccess.new YAML.load_file(email_config_path) if File.exists? email_config_path
+else
+  EMAIL_CONFIG = { :user_name => "fake", :password => "abc123" }
+end
+
 PixieStrd6Com::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
@@ -18,18 +26,17 @@ PixieStrd6Com::Application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => "localhost:3000" }
 
-  # uncomment the next section to debug active mailer emails in development
-  # config.action_mailer.raise_delivery_errors = true
-  # config.action_mailer.delivery_method = :smtp
-  # config.action_mailer.smtp_settings = {
-  #   :address => "smtp.gmail.com",
-  #   :port => 587,
-  #   :domain => "pixieengine.com",
-  #   :user_name => "u_name",
-  #   :password => "secret",
-  #   :authentication => "plain",
-  #   :enable_starttls_auto => true
-  # }
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address => "smtp.gmail.com",
+    :port => 587,
+    :domain => "pixieengine.com",
+    :user_name => EMAIL_CONFIG[:user_name],
+    :password => EMAIL_CONFIG[:password],
+    :authentication => "plain",
+    :enable_starttls_auto => true
+  }
 
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log

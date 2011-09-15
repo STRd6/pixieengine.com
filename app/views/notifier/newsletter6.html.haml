@@ -1,0 +1,7 @@
+:ruby
+  kantchelian = Project.find 745
+
+  @paragraphs = ["#{image_left("memberships.png")} We're glad to announce an often requested feature: Memberships! Imagine you want to make a game. You're an excellent coder but haven't developed your drawing skills fully. However, you have a friend who makes awesome pixel art. Now you can team up with said friend on Pixie. The owner of the project can add different people on the project so they have permission to edit it too. This is great for making fast progress on your games in small teams. From your home page: #{user_link(@user)}, click on the 'Details' link to the right of a project to get started.","#{project_preview_right(kantchelian)} Next check out #{project_link(kantchelian)}, a puzzle game in the vein of Sudoku. The goal is to select each of the symbols 0-9 and A-F only once and have them all be connected to each other. Use the arrow keys to move the cursor around and space bar or enter to select each symbol. Compete against your friends for the fastest time or fewest moves.","We're keeping it short and sweet this week. Have fun making your games!"]
+
+= render :partial => "newsletter"
+
