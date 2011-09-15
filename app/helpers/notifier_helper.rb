@@ -12,7 +12,7 @@ module NotifierHelper
   end
 
   def image_center(image_name)
-    "<center>" + image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "center", :style => "display:inline-block;margin-bottom:0.5em;") + "</center>"
+    "<center>".concat(image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "center", :style => "display:inline-block;margin-bottom:0.5em;")).concat("</center>")
   end
 
   def project_link(project, options=nil)
