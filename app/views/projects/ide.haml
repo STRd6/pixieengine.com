@@ -18,9 +18,17 @@
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
 
-  %button#help>
-    %span.static-help(alt="Help")
-    Help
+  - if current_user
+    - if !current_user.help_tips
+    - else
+      %button#help>
+        %span.static-help(alt="Help")
+        Help
+  - else
+    %button#help>
+      %span.static-help(alt="Help")
+      Help
+
   .status
     %label.inline
       %h4 What are you working on?

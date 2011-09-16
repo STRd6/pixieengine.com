@@ -1,222 +1,156 @@
-#tips{:style => "display: none;"}
-  - if project.id == Project::ASTEROIDS_DEMO_ID
-    .tip
-      .text
-        Welcome to our Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_wrappable_coffee').prev().click()" }
-      .text
-        Here is the
-        %b wrappable
-        module. Modules make it easy to define behaviors concisely.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_base_coffee').prev().click()" }
-      .text
-        Define a base class if you notice repeated behavior across many classes.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_sounds_pew_sfs').prev().click()" }
-      .text
-        We use sfxr to make our sounds effects. Tweak the inputs to change the way the shot sounds.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_animations_ship_animation').prev().click()" }
-      .text
-        Select the
-        %b explode
-        action. Click on the last frame and you will see that it has the tag 'explode' to fire that event when the frame is reached.
-    .tip{ 'data-element_selector' => ".filetree > li[title='images']", 'data-code' => "$('.filetree > li[title=\"images\"]').effect('highlight', {}, 5000);" }
-      .text
-        The sprite assets in your game are stored here in images. Click
-        %b New -> Image
-        to make your own or
-        %b Import
-        to drag one from your computer.
-  - elsif project.id == Project::DEMO_ID
-    .tip
-      .text
-        Welcome to
-        = link_to "condor's", User.find(4)
-        three part platforming demo. Part one is going to cover keyboard input.
-    .tip{ 'data-element_selector' => "#run" }
-      .text
-        Click on the "Run" button. You'll see a red square moving slowly to the right.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# color' }).effect('highlight', {}, Infinity);" }
-      .text
+:ruby
+  condor = User.find 4
+  jump = Project.find Project::JUMP_DEMO_ID
+  shoot = Project.find Project::SHOOT_DEMO_ID
+
+  tips = {}
+
+  tips[Project::ASTEROIDS_DEMO_ID] = [{
+      :text => "Welcome to out Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools"
+    }, {
+      :file => "file_src_wrappable_coffee",
+      :text => "Here is the <b>wrappable</b> module. Modules make it easy to define behavior concisely."
+    }, {
+      :file => "file_src_base_coffee",
+      :text => "Define a base class if you notice repeated behavior across many classes"
+    }, {
+      :file => "file_sounds_pew_sfs",
+      :text => "We use sfxr to make our sound effects. Tweak the inputs to change the way the shot sounds."
+    }, {
+      :action => "highlight",
+      :target => ".filetree > li[title='images']",
+      :text => "The sprite assets in your game are stored here in images. Click <b>New -> Image</b> to make your own or <b>Import</b> to drag one from your computer."
+    }]
+
+  tips[Project::DEMO_ID] = [{
+      :text => "Welcome to #{user_link(condor)}'s three part platforming demo. Part one is going to cover keyboard input."
+    }, {
+      :action => "run",
+      :target => "#run",
+      :text => "Click on the 'Run' button. You'll see a red square moving slowly to the right."
+    }, {
+      :text => <<-eos
         That was fun but black is a really boring background color. Replace the highlighted line with
-        %pre
-          :preserve
-            backgroundColor: Color.random()
-          %span.static-joystick(alt="Do it already!" title="Do it already!" data-args='["backgroundColor: Color.random()", "# color", "src", "main"]')>
-        to spice things up and then run the game again.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click();" }
-      .text
-        Here's where we define how that red square behaves.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# key handling' }).effect('highlight', {}, Infinity);" }
-      .text
+        <pre>backgroundColor: Color.random()<span class='static-joystick' alt="Do it already!" title="Do it already!" data-args='["backgroundColor: Color.random()", "# color", "src", "main"]'></span></pre>to spice things up and then run the game again.
+      eos
+    }, {
+      :text => "Here's where we define how that red square behaves.",
+      :file => "file_src_square_coffee"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => <<-eos
         Okay, we're going to make you the boss now. Replace the highlighted line with
-      %pre
-        :preserve
-          if keydown.left
-            I.velocity = Point(-2, 0)
-        %span.static-joystick(alt="Do it already!" title="Do it already!" data-args='["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "src", "square"]')>
-      Now you can press left to change the square's direction.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
-      .text
-        Try to make him move to the right and stop too.
-    .tip
-      .text
-        When you are done here check out lesson two:
-        =link_to "Jumping", ide_project_path(Project.find(Project::JUMP_DEMO_ID))
-  - elsif project.id == Project::JUMP_DEMO_ID
-    .tip
-      .text
-        Hello fellow jumping enthusiasts. Today we're going to give our little guy hops like Jordan.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
-      .text
-        At the top of
-        %b src/square
-        we now have some constants:
-        %pre
-          :preserve
-            SPEED = 7
-            GRAVITY = 3
-            JUMP_POWER = 17
-            FLOAT_FACTOR = 0.4
-        Take a minute to play around with those values. See if you can find the 'Space Jam' setting.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
-      .text
-        This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look at the contents of
-        %b self.bind.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
-      .text
-        We're reducing the effect of gravity when jumping,
-        %pre
-          :preserve
-            if jumping
-              I.velocity = I.velocity.add(I.acceleration.scale(FLOAT_FACTOR))
-        applying it normally when falling,
-        %pre
-          :preserve
-            else if falling
-              I.velocity = I.velocity.add(Point(I.velocity.x, I.acceleration.y))
-        and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.
-        %pre
-          :preserve
-            else
-              if keydown.z
-                jumping = true
-                I.velocity = Point(I.velocity.x, -JUMP_POWER)
-    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
-      .text
-        Each step we also set jumping to false if the jump key isn't held.
-        %pre
-          :preserve
-            jumping = false unless keydown.z
-    .tip{ 'data-element_selector' => ".ui-tabs-selected" }
-      .text
-        Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.
-        %pre
-          :preserve
-            if I.y > FLOOR_HEIGHT - 25
-              I.y = FLOOR_HEIGHT - 25
-              falling = false
-            else
-              falling = true
-    .tip
-      .text
-        In the eagerly anticipated lesson three:
-        =link_to "Pew", ide_project_path(Project.find(Project::SHOOT_DEMO_ID))
-  - elsif project.id == Project::SHOOT_DEMO_ID
-    .tip
-      .text
-        At the NRA's request I've written this demo to show off how to make our square shoot.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_bullet_coffee').prev().click()" }
-      .text
-        Here is our bullet behavior. The most important thing is that in
-        %b self.bind
-        we check to make sure the bullet doesn't go through the floor.
-        %pre
-          :preserve
-            if I.y > FLOOR_HEIGHT + 5
-              self.destroy()
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee').prev().click()" }
-      .text
-        Take a look at the changes we made to this square.
-    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span.comment').filter(function() { return $(this).text() == '# facing' }).effect('highlight', {}, Infinity);" }
-      .text
-        Look below the highlighted line.
-        We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.
-        %pre
-          :preserve
-            facing = Point(1, 0)
-    .tip{'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_square_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'if justPressed.x' }).effect('highlight', {}, Infinity);" }
-      .text
-        Pressing the shoot key tells the engine that it should add an instance of our bullet class
-        %pre
-          :preserve
-            if justPressed.x
-              engine.add
-                class: 'Bullet'
-                x: I.x + I.width
-                y: I.y
-                width: 5
-                height: 5
-                velocity: facing.scale(BULLET_SPEED)
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_enemy_coffee').prev().click()" }
-      .text
-        Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee').prev().click()" }
-      .text
-        Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly.
-    .tip{ 'data-element_selector' => ".ui-tabs-selected", 'data-code' => "$('#file_src_main_coffee iframe').contents().find('span').filter(function() { return $(this).text() == 'for enemy in enemies' }).effect('highlight', {}, Infinity);" }
-      .text
-        We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.
-        %pre
-          :preserve
-            for enemy in enemies
-              for bullet in bullets
-                if Collision.rectangular(enemy.bounds(), bullet.bounds())
-                  enemy.destroy()
-                  bullet.destroy()
-    .tip
-      .text
-        That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa.
+        <pre>I.velocity = Point(-2, 0) if keydown.left<span class="static-joystick" alt="Do it already!" title="Do it already!" data-args='["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "src", "square"]'></span></pre>Now you can press left to change the square's direction.
+      eos
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "Try to make him move to the right and stop too."
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "When you are done here check out lesson two: #{link_to 'Jumping', ide_project_path(jump)}"
+    }]
+
+  tips[Project::JUMP_DEMO_ID] = [{
+      :text => "Hello fellow jumping enthusiasts. Today we're going to give our little guy hops like Jordan."
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "At the top of the file we have some constants: <pre>SPEED = 7<br/>GRAVITY = 3<br/>JUMP_POWER = 17<br/>FLOAT_FACTOR = 0.4</pre>Take a minute and play around with those values. See if you can find the 'Space Jam' setting."
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look below <pre>self.bind 'step', -></pre>"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "We're reducing the effect of gravity when jumping, <pre>if jumping<br/>  I.velocity.y += float_acc</pre> applying it normally when falling, <pre>else if falling<br/>  I.velocity.y += acc</pre> and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.<pre>else if keydown.z<br/>  jumping = true<br/>  I.velocity.y = -JUMP_POWER</pre>"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "Each step we also set jumping to false if the jump key isn't held.<pre>jumping = false unless keydown.z</pre>"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.<pre>if I.y > FLOOR_HEIGHT - 25<br/>  I.y = FLOOR_HEIGHT - 25<br/>  falling = false<br/>else<br/>  falling = true</pre>"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "We're going to teach the square to shoot in the eagerly anticipated lesson three: #{link_to "Pew", ide_project_path(shoot)}"
+    }]
+
+  tips[Project::SHOOT_DEMO_ID] = [{
+      :text => "At the NRA's request I've written this demo to show off how to make our square shoot."
+    }, {
+      :file => "file_src_bullet_coffee",
+      :text => "Here's our bullet. The most important thing is that in <pre>self.bind 'step', -></pre>we check to make sure the bullet isn't below the floor.<pre>self.destroy() if I.y > FLOOR_HEIGHT + 5</pre>"
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "Take a look at the changes we made to this square."
+    }, {
+      :file => "file_src_square_coffee",
+      :text => "Look below '# facing'. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.<pre>facing = Point(1, 0)</pre>"
+    }, {
+      :text => "Pressing the shoot key tells the engine that it should add an instance of our bullet class. <pre>if justPressed.x<br/>  engine.add<br/>    class: 'Bullet'<br/>    x: I.x + I.width<br/>    y: I.y<br/>    width: 5<br/>    height: 5<br/>    velocity: facing.scale(BULLET_SPEED)</pre>"
+    }, {
+      :file => "file_src_enemy_coffee",
+      :text => "Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy."
+    }, {
+      :text => "Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly."
+    }, {
+      :text => "We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.<pre>for enemy in enemies<br/>  for bullet in bullets<br/>    if overlap(enemy, bullet)<br/>      enemy.destroy()<br/>      bullet.destroy()</pre>"
+    }, {
+      :text => "That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa."
+    }]
+
+  tips["default"] = [{
+      :target => "nav.left",
+      :text => "This is the code editor where you can edit your applications in the CoffeeScript language."
+    }, {
+      :action => "highlight",
+      :target => "ul.filetree",
+      :text => "The files needed to create your game are here."
+    }, {
+      :target => "#run",
+      :text => "Click 'Run' to play through your game."
+    }, {
+      :action => "run",
+      :target => "#test_frame",
+      :text => "See the results, then make changes to your code as you wish."
+    }, {
+      :target => ".file.documentation",
+      :text => "Here you can read up on the provided classes."
+    }, {
+      :target => "#export",
+      :text => "Pixie is an open platform. Click 'Export' to download the last saved version of your project."
+    }, {
+      :action => "import",
+      :target => "#import",
+      :text => "Click 'Import' to add your own images, javascript, and coffeescript files."
+    }, {
+      :target => "#import_drag_zone",
+      :text => "Drag files from your desktop to the file importer to make them available in your game."
+    }, {
+      :target => "#test",
+      :text => "Click the 'Test' button to run unit-tests. These can come in handy if you're working with heavily algorithmic stuff or library code."
+    }, {
+      :target => "#save",
+      :text => "Click 'Save' to save changes to a file."
+    }, {
+      :target => ".actions .status",
+      :text => "All your changes are backed by version control. Your current status is saved as a commit message."
+    }, {
+      :text => "That's it for the tips. The IDE is a work in progress, so ask or leave #{link_to "feedback", "/survey", :target => "_blank"} if you have any questions!"
+    }]
+
+#tips{:style => "display: none;"}
+  - if current_user
+    - if current_user.help_tips
+      -tooltips = tips[project.id] || tips["default"]
+
+      -tooltips.each do |tip|
+        .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
+          .text= tip[:text].html_safe
   - else
-    .tip{ 'data-element_selector' => "nav.left"}
-      .text
-        This is the code editor where you can edit your applications in the CoffeeScript language.
-    .tip{ 'data-element_selector' => "ul.filetree", 'data-code' => "$('.filetree').effect('highlight', {}, 5000)" }
-      .text
-        The files needed to create your game are here.
-    .tip{ 'data-element_selector' => "#run" }
-      .text
-        Click "Run" button to play through your game!
-    .tip{ 'data-element_selector' => "#test_frame", 'data-code' => '$("#run").click();' }
-      .text
-        See the results, then make changes to your code as you wish.
-    .tip{ 'data-element_selector' => ".file.documentation", 'data-code' => "$('#documentation').prev().click()"}
-      .text
-        Here you can read up on the provided classes.
-    .tip{ 'data-element_selector' => "#export"}
-      .text
-        Pixie is an open platform. Click "Export" to download the last saved version of your project.
-    .tip{ 'data-element_selector' => "#import" }
-      .text
-        Click "Import" to add your own images, javascript, and coffeescript files.
-    .tip{ 'data-element_selector' => "#import_drop_zone", 'data-code' => '$("#import").mousedown();' }
-      .text
-        Drag files from your desktop to the file importer to make them available in your game.
-    .tip{ 'data-element_selector' => "#test"}
-      .text
-        Click the "Test" button to run unit-tests. These can come in handy if you're
-        working with heavily algorithmic stuff or library code.
-    .tip{ 'data-element_selector' => "#save"}
-      .text
-        Click "Save" to save changes to a file.
-    .tip{ 'data-element_selector' => ".actions .status"}
-      .text
-        All your changes are backed by version control. Your current status is
-        saved as a commit message.
-    .tip
-      .text
-        That's it for the tips. The IDE is a work in progress, so ask or leave
-        = link_to "feedback", "/survey", :target => "_blank"
-        if you have any questions!
+    -tooltips = tips[project.id] || tips["default"]
+
+    -tooltips.each do |tip|
+      .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
+        .text= tip[:text].html_safe
+
   .next
     .next_tip.next(title="next" alt="next")
     .next_arrow
@@ -226,15 +160,38 @@
 - content_for :javascript do
   :coffeescript
     $ ->
+      showTooltip = (element, html) ->
+        position = element.offset() || {top: 50, left: 50}
+
+        if element.offset()
+          $('#tooltip .icon').show()
+        else
+          $('#tooltip .icon').hide()
+
+        $('#tooltip .content').html(html)
+
+        position.left += element.width() + 30
+        position.top -= $('#tooltip').height() / 2
+
+        if position.top < 5
+          position.top = 5
+          $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
+          $('#tooltip .icon').hide()
+        else
+          $('#tooltip .icon').css('top', 0)
+
+        $('#tooltip').show().offset(position)
+
+      hideTooltip = ->
+        $("#tooltip").hide()
+
       $("#tooltip .next_tip, #tooltip .next_arrow, #help").live "click", ->
         nextTip()
 
       $("#tooltip .close_tip").live "click", ->
         hideTooltip()
 
-      $('.static-joystick').tipsy
-        gravity: 'w'
-        live: true
+      $('.static-joystick').tipsy({ gravity: 'w', live: true })
 
       findTutorialText = (text, file_directory, file_name) ->
         $("#file_\#{file_directory}_\#{file_name}_coffee iframe").contents().find('span.comment').filter ->
@@ -243,6 +200,8 @@
       doItNow = (text, tutorialComment, fileDirectory, fileName) ->
         letters = text.split("")
         lettersUsed = []
+
+        $("[data-id='#file_\#{fileDirectory}_\#{fileName}_coffee']").click()
 
         replacedSnippet = $(findTutorialText(tutorialComment, fileDirectory, fileName)).html("<span class='comment'></span>")
         intervalId = setInterval ->
@@ -256,24 +215,32 @@
         , 75
 
       $('[data-args]').live 'click', ->
-        args = $(this).data('args')
-
-        [text, tutorialComment, fileDirectory, fileName] = args
+        [text, tutorialComment, fileDirectory, fileName] = $(this).data('args')
 
         doItNow(text, tutorialComment, fileDirectory, fileName)
 
       tipIndex = -1
-      nextTip = () ->
+      nextTip = ->
         tipIndex += 1
         tips = $("#tips .tip")
         moreTips = tipIndex < tips.length - 1
 
         tip = tips.eq(tipIndex)
 
-        code = $(tip).attr("data-code")
-        eval(code) if code
+        action = tip.attr('data-action')
+        target = tip.attr('data-target')
+        fileName = tip.attr('data-file')
 
-        targetElement = $(tip.attr("data-element_selector"))
+        targetElement = $(target)
+
+        $("[data-id='#\#{fileName}']").click()
+
+        if action == 'highlight'
+          targetElement.effect('highlight', {}, Infinity)
+        else if action == 'run'
+          $('#run').click()
+        else if action == 'import'
+          $('#import').mousedown()
 
         hideTooltip()
 
@@ -281,13 +248,12 @@
           tipMessage = tip.html()
 
           tipMessage += $("#tips .close").html()
-          tipMessage += $("#tips .x").html()
 
           if moreTips
             tipMessage += $("#tips .next").html()
             tipMessage += $("#tips .next_arrow").html()
 
-          showTooltip(targetElement, tipMessage)
+          showTooltip($(tip.attr('data-target')), tipMessage)
         else
           tipIndex = -1
 
@@ -295,5 +261,3 @@
             nextTip()
 
       nextTip()
-
-      $('.help_tooltips').mousedown nextTip
