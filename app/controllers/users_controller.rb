@@ -103,6 +103,7 @@ class UsersController < ApplicationController
 
   def update
     user.update_attributes params[:user]
+    flash[:notice] = "Account information updated."
 
     respond_with user
   end
