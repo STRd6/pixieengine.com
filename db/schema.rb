@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110903222312) do
+ActiveRecord::Schema.define(:version => 20110916222313) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -509,12 +509,12 @@ ActiveRecord::Schema.define(:version => 20110903222312) do
   end
 
   create_table "treatments", :force => true do |t|
-    t.integer  "experiment_id",                                  :null => false
+    t.integer  "experiment_id",               :null => false
     t.integer  "user_id"
     t.string   "session_id",    :limit => 32
-    t.boolean  "control",                     :default => false
-    t.datetime "created_at",                                     :null => false
-    t.datetime "updated_at",                                     :null => false
+    t.boolean  "control",                     :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
   end
 
   add_index "treatments", ["experiment_id", "session_id"], :name => "index_treatments_on_experiment_id_and_session_id", :unique => true
@@ -564,6 +564,7 @@ ActiveRecord::Schema.define(:version => 20110903222312) do
     t.boolean  "forem_admin",         :default => false, :null => false
     t.boolean  "forum_notifications", :default => true,  :null => false
     t.boolean  "site_notifications",  :default => true,  :null => false
+    t.boolean  "help_tips",           :default => true,  :null => false
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
