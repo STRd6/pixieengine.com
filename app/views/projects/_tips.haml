@@ -26,6 +26,7 @@
       :text => "Welcome to #{user_link(condor)}'s three part platforming demo. Part one is going to cover keyboard input."
     }, {
       :action => "run",
+      :target => "#run",
       :text => "Click on the 'Run' button. You'll see a red square moving slowly to the right."
     }, {
       :text => <<-eos
@@ -36,13 +37,16 @@
       :text => "Here's where we define how that red square behaves.",
       :file => "file_src_square_coffee"
     }, {
+      :file => "file_src_square_coffee",
       :text => <<-eos
         Okay, we're going to make you the boss now. Replace the highlighted line with
         <pre>I.velocity = Point(-2, 0) if keydown.left<span class="static-joystick" alt="Do it already!" title="Do it already!" data-args='["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "src", "square"]'></span></pre>Now you can press left to change the square's direction.
       eos
     }, {
+      :file => "file_src_square_coffee",
       :text => "Try to make him move to the right and stop too."
     }, {
+      :file => "file_src_square_coffee",
       :text => "When you are done here check out lesson two: #{link_to 'Jumping', ide_project_path(jump)}"
     }]
 
@@ -50,41 +54,44 @@
       :text => "Hello fellow jumping enthusiasts. Today we're going to give our little guy hops like Jordan."
     }, {
       :file => "file_src_square_coffee",
-      :text => "At the top of the file we have some constants: <pre>SPEED = 7\nGRAVITY = 3\nJUMP_POWER = 17\nFLOAT_FACTOR = 0.4</pre>Take a minute and play around with those values. See if you can find the 'Space Jam' setting."
+      :text => "At the top of the file we have some constants: <pre>SPEED = 7<br/>GRAVITY = 3<br/>JUMP_POWER = 17<br/>FLOAT_FACTOR = 0.4</pre>Take a minute and play around with those values. See if you can find the 'Space Jam' setting."
     }, {
-      :text => "This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look at the contents of <pre>self.bind</pre>"
+      :file => "file_src_square_coffee",
+      :text => "This looks a bit complicated but bear with me. Getting the Mario-striving-for-the-top-of-his-jump effect is a bit trickier than you might think. Look below <pre>self.bind 'step', -></pre>"
     }, {
-      :text => "We're reducing the effect of gravity when jumping, <pre>if jumping I.velocity = I.velocity.add(I.acceleration.scale(FLOAT_FACTOR))</pre> applying it normally when falling, <pre>else if falling I.velocity = I.velocity.add(Point(I.velocity.x, I.acceleration.y))</pre> and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.<pre>else if keydown.z jumping = true I.velocity = Point(I.velocity.x, -JUMP_POWER)</pre>"
+      :file => "file_src_square_coffee",
+      :text => "We're reducing the effect of gravity when jumping, <pre>if jumping<br/>  I.velocity.y += float_acc</pre> applying it normally when falling, <pre>else if falling<br/>  I.velocity.y += acc</pre> and if you are neither jumping nor falling and pressing the jump key, we're telling the game that you are now jumping.<pre>else if keydown.z<br/>  jumping = true<br/>  I.velocity.y = -JUMP_POWER</pre>"
     }, {
+      :file => "file_src_square_coffee",
       :text => "Each step we also set jumping to false if the jump key isn't held.<pre>jumping = false unless keydown.z</pre>"
     }, {
-      :text => "Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.<pre>if I.y > FLOOR_HEIGHT - 25 I.y = FLOOR_HEIGHT - 25 falling = false else falling = true</pre>"
+      :file => "file_src_square_coffee",
+      :text => "Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.<pre>if I.y > FLOOR_HEIGHT - 25<br/>  I.y = FLOOR_HEIGHT - 25<br/>  falling = false<br/>else<br/>  falling = true</pre>"
     }, {
-      :text => "In the eagerly anticipated lesson three: #{link_to "Pew", ide_project_path(shoot)}"
+      :file => "file_src_square_coffee",
+      :text => "We're going to teach the square to shoot in the eagerly anticipated lesson three: #{link_to "Pew", ide_project_path(shoot)}"
     }]
 
   tips[Project::SHOOT_DEMO_ID] = [{
       :text => "At the NRA's request I've written this demo to show off how to make our square shoot."
     }, {
       :file => "file_src_bullet_coffee",
-      :text => "Here is our bullet behavior. The most important thing is that in <pre>self.bind</pre>we check to make sure the bullet doesn't go through the floor.<pre>self.destroy() if I.y > FLOOR_HEIGHT + 5</pre>"
+      :text => "Here's our bullet. The most important thing is that in <pre>self.bind 'step', -></pre>we check to make sure the bullet isn't below the floor.<pre>self.destroy() if I.y > FLOOR_HEIGHT + 5</pre>"
     }, {
       :file => "file_src_square_coffee",
       :text => "Take a look at the changes we made to this square."
     }, {
-      :action => "highlight",
       :file => "file_src_square_coffee",
-      :text => "Look below the highlighted line. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.<pre>facing = Point(1, 0)</pre>"
+      :text => "Look below '# facing'. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.<pre>facing = Point(1, 0)</pre>"
     }, {
-      :text => "Pressing the shoot key tells the engine that it should add an instance of our bullet class. <pre>if justPressed.x engine.add class: 'Bullet' x: I.x + I.width y: I.y width: 5 height: 5 velocity: facing.scale(BULLET_SPEED)</pre>"
+      :text => "Pressing the shoot key tells the engine that it should add an instance of our bullet class. <pre>if justPressed.x<br/>  engine.add<br/>    class: 'Bullet'<br/>    x: I.x + I.width<br/>    y: I.y<br/>    width: 5<br/>    height: 5<br/>    velocity: facing.scale(BULLET_SPEED)</pre>"
     }, {
       :file => "file_src_enemy_coffee",
       :text => "Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy."
     }, {
       :text => "Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly."
     }, {
-      :action => "highlight",
-      :text => "We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.<pre>for enemy in enemies for bullet in bullets if Collision.rectangular(enemy.bounds(), bullet.bounds()) enemy.destroy() bullet.destroy()</pre>"
+      :text => "We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.<pre>for enemy in enemies<br/>  for bullet in bullets<br/>    if overlap(enemy, bullet)<br/>      enemy.destroy()<br/>      bullet.destroy()</pre>"
     }, {
       :text => "That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa."
     }]
@@ -110,6 +117,7 @@
       :target => "#export",
       :text => "Pixie is an open platform. Click 'Export' to download the last saved version of your project."
     }, {
+      :action => "import",
       :target => "#import",
       :text => "Click 'Import' to add your own images, javascript, and coffeescript files."
     }, {
@@ -168,6 +176,7 @@
         if position.top < 5
           position.top = 5
           $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
+          $('#tooltip .icon').hide()
         else
           $('#tooltip .icon').css('top', 0)
 
@@ -230,6 +239,8 @@
           targetElement.effect('highlight', {}, Infinity)
         else if action == 'run'
           $('#run').click()
+        else if action == 'import'
+          $('#import').mousedown()
 
         hideTooltip()
 
@@ -242,7 +253,7 @@
             tipMessage += $("#tips .next").html()
             tipMessage += $("#tips .next_arrow").html()
 
-          showTooltip(targetElement, tipMessage)
+          showTooltip($(tip.attr('data-target')), tipMessage)
         else
           tipIndex = -1
 
