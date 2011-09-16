@@ -17,9 +17,6 @@
       :file => "file_sounds_pew_sfs",
       :text => "We use sfxr to make our sound effects. Tweak the inputs to change the way the shot sounds."
     }, {
-      :file => "file_animations_ship_animation",
-      :text => "Select the <b>explode</b> action. Click on the last frame and you will see that it has the tag 'explode' to fire that event when the frame is reached."
-    }, {
       :action => "highlight",
       :target => ".filetree > li[title='images']",
       :text => "The sprite assets in your game are stored here in images. Click <b>New -> Image</b> to make your own or <b>Import</b> to drag one from your computer."
@@ -137,13 +134,13 @@
       -tooltips = tips[project.id] || tips["default"]
 
       -tooltips.each do |tip|
-        .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-point_to" => tip[:target] || "selected" }
+        .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
           .text= tip[:text].html_safe
   - else
     -tooltips = tips[project.id] || tips["default"]
 
     -tooltips.each do |tip|
-      .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-point_to" => tip[:target] || "selected" }
+      .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
         .text= tip[:text].html_safe
 
   .next
@@ -155,6 +152,30 @@
 - content_for :javascript do
   :coffeescript
     $ ->
+      showTooltip = (element, html) ->
+        position = element.offset() || {top: 50, left: 50}
+
+        if element.offset()
+          $('#tooltip .icon').show()
+        else
+          $('#tooltip .icon').hide()
+
+        $('#tooltip .content').html(html)
+
+        position.left += element.width() + 30
+        position.top -= $('#tooltip').height() / 2
+
+        if position.top < 5
+          position.top = 5
+          $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
+        else
+          $('#tooltip .icon').css('top', 0)
+
+        $('#tooltip').show().offset(position)
+
+      hideTooltip = ->
+        $("#tooltip").hide()
+
       $("#tooltip .next_tip, #tooltip .next_arrow, #help").live "click", ->
         nextTip()
 
@@ -201,10 +222,14 @@
         target = tip.attr('data-target')
         fileName = tip.attr('data-file')
 
-        if action == 'open'
-          $("[data-id='#\#{fileName}']").click()
+        targetElement = $(target)
 
-        targetElement = $(".ui-tabs-selected")
+        $("[data-id='#\#{fileName}']").click()
+
+        if action == 'highlight'
+          targetElement.effect('highlight', {}, Infinity)
+        else if action == 'run'
+          $('#run').click()
 
         hideTooltip()
 
