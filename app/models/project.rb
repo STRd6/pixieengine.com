@@ -295,8 +295,10 @@ class Project < ActiveRecord::Base
 
   def type_for(extension)
     case extension
-    when "", "js", "json", "coffee", "html", "css", "lua", "cfg"
+    when "", "js", "coffee", "html", "css", "lua", "cfg"
       "text"
+    when "json"
+      "json"
     when "png", "jpg", "jpeg", "gif", "bmp"
       "image"
     when "sfs"

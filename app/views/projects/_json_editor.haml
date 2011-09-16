@@ -1,0 +1,44 @@
+%script#json_editor_template.template(type="text/x-jQuery-tmpl")
+  .editor.json_editor
+    %table
+
+  .actions.top
+    %button.save Save
+
+- content_for :javascript do
+  :coffeescript
+    window.createJsonEditor = (options) ->
+      {panel, path, projectConfig} = options
+
+      panel.find('form').hide()
+      panel.find('.editor').remove()
+
+      try
+        data = JSON.parse(panel.find("[name=contents]").val()) || {}
+      catch e
+        console?.warn? e
+        data = {}
+
+      jsonEditor = $("#json_editor_template").tmpl().appendTo(panel)
+
+      propertyEditor = jsonEditor.find('table').propertyEditor(data)
+
+      jsonEditor.find('button.save').click ->
+        jsonEditor.trigger('doSave')
+
+      jsonEditor.bind 'doSave', ->
+        jsonData = propertyEditor.getProps()
+
+        # Propagate changes back to IDE
+        if projectConfig
+          window.projectConfig = jsonData
+
+        dataString = JSON.stringify(jsonData)
+
+        panel.find("[name=contents]").val(dataString)
+
+        jsonEditor.trigger 'save',
+          contents: dataString
+          path: path
+
+      return jsonEditor
