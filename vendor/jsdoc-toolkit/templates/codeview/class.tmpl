@@ -307,9 +307,9 @@
                   </if>
 
                   <if test="data.returns.length">
-                    <dt class="heading">Returns:</dt>
                     <for each="item" in="data.returns">
-                        <dd>{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+                      <dt class="heading">Returns {+((item.type)?"<span class=\"light fixedFont\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}:</dt>
+                      <dd>{+resolveLinks(item.desc)+}</dd>
                     </for>
                   </if>
 
@@ -469,9 +469,9 @@
                     </if>
 
                     <if test="member.returns.length">
-                      <dt class="heading">Returns:</dt>
                       <for each="item" in="member.returns">
-                        <dd>{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+                        <dt class="heading">Returns {+((item.type)?"<span class=\"light fixedFont\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}:</dt>
+                        <dd>{+resolveLinks(item.desc)+}</dd>
                       </for>
                     </if>
 
@@ -567,9 +567,9 @@
                     </if>
 
                     <if test="member.returns.length">
-                      <dt class="heading">Returns:</dt>
                       <for each="item" in="member.returns">
-                        <dd>{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+                        <dt class="heading">Returns {+((item.type)?"<span class=\"light fixedFont\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}:</dt>
+                        <dd>{+resolveLinks(item.desc)+}</dd>
                       </for>
                     </if>
 
