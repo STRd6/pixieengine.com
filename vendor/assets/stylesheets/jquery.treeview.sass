@@ -14,7 +14,7 @@
   .hitarea
     +bounds(16px)
 
-    background: url(/assets/treeview/treeview-default-white.gif) -64px -25px no-repeat
+    background: url(/assets/treeview/treeview-default-white.gif) -64px -26px no-repeat
     margin-left: -16px
     float: left
     cursor: pointer
@@ -29,7 +29,8 @@
 .treeview
   li
     margin: 0
-    padding: 3px 0pt 3px 16px
+    overflow: hidden
+    padding: 1px 0 1px 16px
   a.selected
     background-color: #eee
 
@@ -46,7 +47,7 @@
     &.collapsable, &.expandable
       background-position: 0 -176px
   .expandable-hitarea
-    background-position: -80px -3px
+    background-position: -80px -4px
   li
     &.last
       background-position: 0 -1766px
@@ -104,7 +105,7 @@
 
 .filetree
   li
-    padding: 3px 0 3px 16px
+    padding: 1px 0 1px 16px
   span
     &.folder, &.file
       padding: 1px 0 1px 16px
