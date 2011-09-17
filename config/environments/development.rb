@@ -1,7 +1,7 @@
 email_config_path = File.join(Rails.root, "config", "dev_email.yml")
 
 if File.exists? email_config_path
-  EMAIL_CONFIG = HashWithIndifferentAccess.new YAML.load_file(email_config_path) if File.exists? email_config_path
+  EMAIL_CONFIG = HashWithIndifferentAccess.new YAML.load_file(email_config_path)
 else
   EMAIL_CONFIG = { :user_name => "fake", :password => "abc123" }
 end

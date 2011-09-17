@@ -18,9 +18,17 @@
       - if admin?
         %button#generate_docs(title="Build library documentation")> Doc
 
-  %button#help>
-    %span.static-help(alt="Help")
-    Help
+  - if current_user
+    - if !current_user.help_tips
+    - else
+      %button#help>
+        %span.static-help(alt="Help")
+        Help
+  - else
+    %button#help>
+      %span.static-help(alt="Help")
+      Help
+
   .status
     %label.inline
       %h4 What are you working on?
@@ -623,6 +631,8 @@
 
           window.currentPanel = ui.panel
 
+        event: "mousedown"
+
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
           $('.filetree').append(ui.panel)
@@ -652,6 +662,11 @@
         if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
           index = $('li', $tabs).index(parent)
           $tabs.tabs('remove', index)
+
+      $('#tabs span.ui-icon.lang').live 'mousedown', ->
+        parent = $(this).parent()
+        index = $('li', $tabs).index(parent)
+        $tabs.tabs('select', index)
 
       $(".window").draggable(
         handle: "h3"

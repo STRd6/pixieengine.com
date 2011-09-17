@@ -24,31 +24,6 @@ $(".clickable").live 'click', (event) ->
   unless $(event.target).is("a")
     document.location = $(this).find("a").eq(0).attr("href")
 
-# Tooltips
-window.showTooltip = (element, html) ->
-  position = element.offset() || {top: 50, left: 50}
-
-  if element.offset()
-    $('#tooltip .icon').show()
-  else
-    $('#tooltip .icon').hide()
-
-  $('#tooltip .content').html(html)
-
-  position.left += element.width() + 30
-  position.top -= $('#tooltip').height() / 2
-
-  if position.top < 5
-    position.top = 5
-    $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
-  else
-    $('#tooltip .icon').css('top', 0)
-
-  $('#tooltip').show().offset(position)
-
-window.hideTooltip = ->
-  $("#tooltip").hide()
-
 # Local Storage
 window.getVal = (key) ->
   if localStorage

@@ -4,7 +4,7 @@
       display: inline-block
       font-size: 120%
 
-    #user_forum_notifications, #user_site_notifications
+    #user_forum_notifications, #user_site_notifications, #user_help_tips
       margin-right: 5px
 
 = stylesheet_link_tag "branded"
@@ -36,6 +36,9 @@
   %label
     = form.check_box :site_notifications
     %h3.check_box Receive Notifications About Your Art?
+  %label
+    = form.check_box :help_tips
+    %h3.check_box Display Help Tips?
 
   %button.full Update Information
 
