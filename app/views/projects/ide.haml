@@ -615,6 +615,8 @@
 
           window.currentPanel = ui.panel
 
+        event: "mousedown"
+
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
           $('.filetree').append(ui.panel)
@@ -644,6 +646,11 @@
         if !parent.hasClass("unsaved") || confirm("You are about to close an unsaved file, continue?")
           index = $('li', $tabs).index(parent)
           $tabs.tabs('remove', index)
+
+      $('#tabs span.ui-icon.lang').live 'mousedown', ->
+        parent = $(this).parent()
+        index = $('li', $tabs).index(parent)
+        $tabs.tabs('select', index)
 
       $(".window").draggable(
         handle: "h3"
