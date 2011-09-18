@@ -615,8 +615,6 @@
 
           window.currentPanel = ui.panel
 
-        event: "mousedown"
-
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
           $('.filetree').append(ui.panel)
@@ -647,7 +645,7 @@
           index = $('li', $tabs).index(parent)
           $tabs.tabs('remove', index)
 
-      $('#tabs span.ui-icon.lang').live 'mousedown', ->
+      $('#tabs span.ui-icon.lang').live 'click', ->
         parent = $(this).parent()
         index = $('li', $tabs).index(parent)
         $tabs.tabs('select', index)
