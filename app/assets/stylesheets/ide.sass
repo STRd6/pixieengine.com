@@ -1,6 +1,7 @@
 @import util
 @import partials/base
 @import sprite_sheets
+@import properties_editor
 
 $sidebar_width: 220px
 $lower_sidebar_height: 210px
@@ -131,6 +132,8 @@ ul.filetree
       &.javascript, &.js
         height: 15px
         @extend .static-script
+      &.json
+        @extend .static-cog
       &.sprite, &.png, &.gif, &.jpg, &.jpeg, &.bmp
         height: 14px
         margin: 0
@@ -203,6 +206,8 @@ ul.filetree
             @extend .static-cup
           &.javascript
             @extend .static-script
+          &.json
+            @extend .static-cog
           &.sound
             @extend .static-sound
           &.sprite
