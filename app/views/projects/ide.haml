@@ -40,6 +40,7 @@
   .sidebar_container
     .relative
       .sidebar
+        %h3.project_name= project.display_name
         %ul.filetree
           - unless project.file_info.nil?
             - project.file_info[:files].each do |file|
