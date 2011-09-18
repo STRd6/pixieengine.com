@@ -5,10 +5,10 @@
 config/database.yml
 config/s3.yml
 config/settings.yml
+config/slurp.yml
 db/*.sqlite3
 db/sphinx
 dump.sql
-lib/tasks/local.rake
 log/*.log
 log/*.pid
 tmp/**/*
