@@ -295,7 +295,7 @@ class Project < ActiveRecord::Base
 
   def type_for(extension)
     case extension
-    when "", "js", "coffee", "html", "css", "lua", "cfg"
+    when "", "js", "coffee", "html", "css", "lua", "cfg", "md", "markdown"
       "text"
     when "json"
       "json"
