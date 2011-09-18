@@ -261,7 +261,7 @@ class Project < ActiveRecord::Base
         type = type_for(ext)
       end
 
-      if ["text", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
+      if ["text", "json", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
