@@ -438,14 +438,28 @@
       h: hotSwap
       #TODO Fix => n: newFileModal
 
+    fnKeys =
+      "f1": ->
+        $('#help').click()
+      "f5": runApp
+      "f6": testApp
+
     bindKeys = (scopeDocument, ctrlKeys) ->
       $.each ctrlKeys, (key, fn) ->
-        $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (event) ->
-          event.preventDefault()
+        $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (e) ->
+          e.preventDefault()
           fn()
         )
 
     bindKeys(document, ctrlKeys)
+
+    bindFnKeys = (scopeDocument, fnKeys) ->
+      $.each fnKeys, (key, fn) ->
+        $(scopeDocument).bind 'keydown', key, (e) ->
+          e.preventDefault()
+          fn()
+
+    bindFnKeys(document, fnKeys)
 
     window.createEditor = (ui) ->
       panel = $(ui.panel)
@@ -478,6 +492,7 @@
         $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
         bindKeys(editor.win.document, ctrlKeys)
+        bindFnKeys(editor.win.document, fnKeys)
 
         # Listen for keypresses and update contents.
         $(editor.win.document).keyup ->
