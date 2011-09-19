@@ -608,8 +608,7 @@
       else if type == "documentation" || type == "tutorial"
         cssClass: type
 
-    # Tree and Tabs setup
-    $ ->
+    window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
         window.projectConfig = JSON.parse($("[data-path='pixie.json']").find("[name=contents]").val())
@@ -619,6 +618,10 @@
       finally
         # Merge in default configs
         window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
+    # Tree and Tabs setup
+    $ ->
+      window.loadProjectConfig()
 
       window.entities = {}
       # Populate entities

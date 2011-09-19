@@ -26,10 +26,6 @@
       jsonEditor.bind 'doSave', ->
         jsonData = propertyEditor.getProps()
 
-        # Propagate changes back to IDE
-        if projectConfig
-          window.projectConfig = jsonData
-
         dataString = JSON.stringify(jsonData)
 
         panel.find("[name=contents]").val(dataString)
@@ -37,5 +33,9 @@
         jsonEditor.trigger 'save',
           contents: dataString
           path: path
+
+        # Propagate changes back to IDE
+        if projectConfig
+          window.loadProjectConfig()
 
       return jsonEditor
