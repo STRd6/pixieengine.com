@@ -73,6 +73,7 @@
 = render :partial => "file_upload"
 = render :partial => "tag_version_modal"
 = render :partial => "property_editor"
+= render :partial => "json_editor"
 = render :partial => "entity_editor"
 = render :partial => "tile_editor"
 = render :partial => "errors"
@@ -510,6 +511,21 @@
         cssClass: lang
         updateSaved: () ->
           savedCode = editor.getCode()
+      else if type == "json"
+        jsonEditor = createJsonEditor
+          panel: panel
+          path: path
+          projectConfig: path == "pixie.json"
+
+        jsonEditor.bind 'save', save
+        jsonEditor.bind 'change', ->
+          tab.parent().addClass("unsaved")
+
+        cssClass: "json"
+        updateSaved: ->
+          tab.parent().removeClass("unsaved")
+        doSave: ->
+          jsonEditor.trigger('doSave')
 
       else if type == "entity"
         entityEditor = createEntityEditor

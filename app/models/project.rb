@@ -261,7 +261,7 @@ class Project < ActiveRecord::Base
         type = type_for(ext)
       end
 
-      if ["text", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
+      if ["text", "json", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
         contents = File.read(file_path)
       elsif ext == "sfs"
         contents = open(file_path, "rb") do |file|
@@ -295,8 +295,10 @@ class Project < ActiveRecord::Base
 
   def type_for(extension)
     case extension
-    when "", "js", "json", "coffee", "html", "css", "lua", "cfg", "md", "markdown"
+    when "", "js", "coffee", "html", "css", "lua", "cfg", "md", "markdown"
       "text"
+    when "json"
+      "json"
     when "png", "jpg", "jpeg", "gif", "bmp"
       "image"
     when "sfs"

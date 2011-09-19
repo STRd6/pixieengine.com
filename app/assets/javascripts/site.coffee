@@ -1,3 +1,7 @@
+# DUCT TAPE
+Object.isObject = (object) ->
+  Object.prototype.toString.call(object) == '[object Object]'
+
 # Event tracking
 window.trackEvent = (category, action, label) ->
   _gaq.push(['_trackEvent', category, action, label])
