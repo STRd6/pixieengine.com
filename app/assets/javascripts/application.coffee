@@ -10,7 +10,8 @@
 #= require jquery.hotkeys
 #= require jquery.tmpl.min
 #= require jquery.live_edit
-#= require jquery.dropimagereader
+#= require jquery.drop_image_reader
+#= require jquery.paste_image_reader
 #= require jquery.pnotify.min
 #= require jquery.property_editor
 #= require jquery.pixie

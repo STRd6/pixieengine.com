@@ -30,7 +30,11 @@
 
 - content_for :javascript do
   :coffeescript
-    $("body").dropImageReader
+    $("html").dropImageReader
+      callback: (file, event) ->
+        canvas.fromDataURL(event.target.result)
+
+    $("html").pasteImageReader
       callback: (file, event) ->
         canvas.fromDataURL(event.target.result)
 
