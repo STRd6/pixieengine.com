@@ -16,8 +16,10 @@ for tag, type of clickTrackers
 # Notifications
 window.notify = (message, delay) ->
   $.pnotify
+    pnotify_animate_speed: 150
     pnotify_text: message
     pnotify_delay: delay
+    pnotify_history: false
 
 # Clickable
 $(".clickable").live 'click', (event) ->

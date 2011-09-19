@@ -1,8 +1,11 @@
 - content_for :javascript do
   :coffeescript
     window.displayErrors = (errors) ->
+      if $('.ui-pnotify').length
+        $.pnotify_remove_all()
       errors.each (error) ->
         $.pnotify
+          pnotify_animate_speed: 150
           pnotify_title: 'Compile Errors'
           pnotify_text: '<div class="file error" data-id=' + error.fileId + '>In file: <b>' + error.file + '</b>\n' + error.message + '</div>'
           pnotify_type: 'error'

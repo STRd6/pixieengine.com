@@ -675,6 +675,8 @@
 
       $('.window .ui-icon-close').live "click", ->
         $(this).parent().hide().children("iframe").remove()
+        if $('.ui-pnotify').length
+          $.pnotify_remove_all()
 
       # Hack to pre-load main file
       $("#file_src_main_coffee").prev().click()
