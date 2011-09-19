@@ -436,7 +436,9 @@
     ctrlKeys =
       s: save
       h: hotSwap
-      #TODO Fix => n: newFileModal
+      n: newFileModal
+      w: ->
+        $('.ui-tabs-selected .ui-icon-close').click()
 
     fnKeys =
       "f1": ->
