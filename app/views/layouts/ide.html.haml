@@ -20,7 +20,12 @@
     = yield
 
     #tooltip
-      .icon
       .content
+      %a.button.next_tip
+        %span.static-arrow_right
+        Next
+      %a.button.show_me
+        %span.static-joystick
+        Show me how!
 
     = render :partial => "/shared/footer"

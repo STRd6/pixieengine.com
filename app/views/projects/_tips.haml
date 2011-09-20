@@ -6,20 +6,21 @@
   tips = {}
 
   tips[Project::ASTEROIDS_DEMO_ID] = [{
-      :text => "Welcome to out Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools"
+      :text => "Welcome to out Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools."
     }, {
       :file => "file_src_wrappable_coffee",
-      :text => "Here is the <b>wrappable</b> module. Modules make it easy to define behavior concisely."
+      :text => "Here is the <i>wrappable</i> module. Modules make it easy to define behavior concisely."
     }, {
       :file => "file_src_base_coffee",
-      :text => "Define a base class if you notice repeated behavior across many classes"
+      :text => "Define a base class if you notice repeated behavior across many classes."
     }, {
       :file => "file_sounds_pew_sfs",
       :text => "We use sfxr to make our sound effects. Tweak the inputs to change the way the shot sounds."
     }, {
-      :action => "highlight",
+      :highlight => ".filetree > li[title='images']",
+      :highlight_duration => 3000,
       :target => ".filetree > li[title='images']",
-      :text => "The sprite assets in your game are stored here in images. Click <b>New -> Image</b> to make your own or <b>Import</b> to drag one from your computer."
+      :text => "The sprite assets in your game are stored here in images. Click <i>New -> Image</i> to make your own or <i>Import</i> to drag one from your computer."
     }]
 
   tips[Project::DEMO_ID] = [{
@@ -29,18 +30,22 @@
       :target => "#run",
       :text => "Click on the 'Run' button. You'll see a red square moving slowly to the right."
     }, {
+      :args => ["backgroundColor: Color.random()", "# color", "file_src_main_coffee"],
+      :highlight => '# color',
       :text => <<-eos
         That was fun but black is a really boring background color. Replace the highlighted line with
-        <pre>backgroundColor: Color.random()<span class='static-joystick' alt="Do it already!" title="Do it already!" data-args='["backgroundColor: Color.random()", "# color", "src", "main"]'></span></pre>to spice things up and then run the game again.
+        <pre>backgroundColor: Color.random()</pre>to spice things up and then run the game again.
       eos
     }, {
       :text => "Here's where we define how that red square behaves.",
       :file => "file_src_square_coffee"
     }, {
+      :args => ["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "file_src_square_coffee"],
       :file => "file_src_square_coffee",
+      :highlight => "# key handling",
       :text => <<-eos
         Okay, we're going to make you the boss now. Replace the highlighted line with
-        <pre>I.velocity = Point(-2, 0) if keydown.left<span class="static-joystick" alt="Do it already!" title="Do it already!" data-args='["I.velocity = Point(-2, 0) if keydown.left", "# key handling", "src", "square"]'></span></pre>Now you can press left to change the square's direction.
+        <pre>I.velocity = Point(-2, 0) if keydown.left</pre>Now you can press left to change the square's direction.
       eos
     }, {
       :file => "file_src_square_coffee",
@@ -82,25 +87,27 @@
       :text => "Take a look at the changes we made to this square."
     }, {
       :file => "file_src_square_coffee",
-      :text => "Look below '# facing'. We have added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.<pre>facing = Point(1, 0)</pre>"
+      :highlight => "# facing",
+      :text => "Look below the highlighted line. We've added a facing variable to keep track of where our hero is looking. We will use it to determine the direction to fire bullets.<pre>facing = Point(1, 0)</pre>"
     }, {
       :text => "Pressing the shoot key tells the engine that it should add an instance of our bullet class. <pre>if justPressed.x<br/>  engine.add<br/>    class: 'Bullet'<br/>    x: I.x + I.width<br/>    y: I.y<br/>    width: 5<br/>    height: 5<br/>    velocity: facing.scale(BULLET_SPEED)</pre>"
     }, {
       :file => "file_src_enemy_coffee",
-      :text => "Shooting bullets wouldn't be any fun without something to shoot at. We have created a very basic target and named it Enemy."
+      :text => "Shooting bullets wouldn't be any fun without something to shoot at. We've created a very basic target and named it Enemy."
     }, {
       :text => "Now in main we need to make sure that we detect when bullets hit enemies and respond accordingly."
     }, {
       :text => "We iterate through all the enemies and bullets, and check whether their bounds overlap. If they do then we destroy both the bullet and the enemy.<pre>for enemy in enemies<br/>  for bullet in bullets<br/>    if overlap(enemy, bullet)<br/>      enemy.destroy()<br/>      bullet.destroy()</pre>"
     }, {
-      :text => "That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we have given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa."
+      :text => "That's the end of this epic trilogy. Look back at all we accomplished. At the start all we had was a randomly generated background color and now we've given birth to this square who can jump and annihilate his foes. Take a moment to be the proud papa."
     }]
 
   tips["default"] = [{
       :target => "nav.left",
       :text => "This is the code editor where you can edit your applications in the CoffeeScript language."
     }, {
-      :action => "highlight",
+      :highlight => "ul.filetree",
+      :highlight_duration => 3000,
       :target => "ul.filetree",
       :text => "The files needed to create your game are here."
     }, {
@@ -111,7 +118,9 @@
       :target => "#test_frame",
       :text => "See the results, then make changes to your code as you wish."
     }, {
-      :target => ".file.documentation",
+      :highlight => "li[title='Documentation']",
+      :highlight_duration => 3000,
+      :target => "li[title='Documentation']",
       :text => "Here you can read up on the provided classes."
     }, {
       :target => "#export",
@@ -130,7 +139,7 @@
       :target => "#save",
       :text => "Click 'Save' to save changes to a file."
     }, {
-      :target => ".actions .status",
+      :target => ".actions .status h4",
       :text => "All your changes are backed by version control. Your current status is saved as a commit message."
     }, {
       :text => "That's it for the tips. The IDE is a work in progress, so ask or leave #{link_to "feedback", "/survey", :target => "_blank"} if you have any questions!"
@@ -142,18 +151,14 @@
       -tooltips = tips[project.id] || tips["default"]
 
       -tooltips.each do |tip|
-        .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
+        .tip{ "data-args" => tip[:args], "data-file" => tip[:file] || "file_src_main_coffee", "data-highlight" => tip[:highlight], "data-highlight_duration" => tip[:highlight_duration], "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
           .text= tip[:text].html_safe
   - else
     -tooltips = tips[project.id] || tips["default"]
 
     -tooltips.each do |tip|
-      .tip{ "data-file" => tip[:file] || "file_src_main_coffee", "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
+      .tip{ "data-args" => tip[:args], "data-file" => tip[:file] || "file_src_main_coffee", "data-highlight" => tip[:highlight], "data-highlight_duration" => tip[:highlight_duration], "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
         .text= tip[:text].html_safe
-
-  .next
-    .next_tip.next(title="next" alt="next")
-    .next_arrow
   .close
     .close_tip.x(title="close" alt="close")
 
@@ -163,11 +168,6 @@
       showTooltip = (element, html) ->
         position = element.offset() || {top: 50, left: 50}
 
-        if element.offset()
-          $('#tooltip .icon').show()
-        else
-          $('#tooltip .icon').hide()
-
         $('#tooltip .content').html(html)
 
         position.left += element.width() + 30
@@ -175,49 +175,40 @@
 
         if position.top < 5
           position.top = 5
-          $("#tooltip .icon").css('top', -$('#tooltip').height() + 7)
-          $('#tooltip .icon').hide()
-        else
-          $('#tooltip .icon').css('top', 0)
 
         $('#tooltip').show().offset(position)
 
       hideTooltip = ->
         $("#tooltip").hide()
 
-      $("#tooltip .next_tip, #tooltip .next_arrow, #help").live "click", ->
+      $("#tooltip").draggable()
+
+      $("#tooltip .next_tip, #help").live "click", ->
         nextTip()
 
       $("#tooltip .close_tip").live "click", ->
         hideTooltip()
 
-      $('.static-joystick').tipsy({ gravity: 'w', live: true })
-
-      findTutorialText = (text, file_directory, file_name) ->
-        $("#file_\#{file_directory}_\#{file_name}_coffee iframe").contents().find('span.comment').filter ->
+      findHighlightText = (text, fileName) ->
+        $("#\#{fileName} iframe").contents().find('span.comment').filter ->
           return $(this).text() == text
 
-      doItNow = (text, tutorialComment, fileDirectory, fileName) ->
+      doItNow = (text, tutorialComment, fileName) ->
         letters = text.split("")
         lettersUsed = []
 
-        $("[data-id='#file_\#{fileDirectory}_\#{fileName}_coffee']").click()
+        $("[data-id='#\#{fileName}']").click()
 
-        replacedSnippet = $(findTutorialText(tutorialComment, fileDirectory, fileName)).html("<span class='comment'></span>")
+        replacedSnippet = $(findHighlightText(tutorialComment, fileName)).html("<span class='comment'></span>")
         intervalId = setInterval ->
           nextLetter = letters.shift()
           lettersUsed.push nextLetter
           $(replacedSnippet).html(lettersUsed.join(""))
 
           if letters.length == 0
-            $("#file_\#{fileDirectory}_\#{fileName}_coffee iframe").contents().keyup()
+            $("#\#{fileName} iframe").contents().keyup()
             clearInterval(intervalId)
         , 75
-
-      $('[data-args]').live 'click', ->
-        [text, tutorialComment, fileDirectory, fileName] = $(this).data('args')
-
-        doItNow(text, tutorialComment, fileDirectory, fileName)
 
       tipIndex = -1
       nextTip = ->
@@ -228,19 +219,24 @@
         tip = tips.eq(tipIndex)
 
         action = tip.attr('data-action')
+        args = tip.data('args')
         target = tip.attr('data-target')
         fileName = tip.attr('data-file')
+        highlight = tip.attr('data-highlight')
 
         targetElement = $(target)
 
         $("[data-id='#\#{fileName}']").click()
 
-        if action == 'highlight'
-          targetElement.effect('highlight', {}, Infinity)
-        else if action == 'run'
+        if action == 'run'
           $('#run').click()
         else if action == 'import'
           $('#import').mousedown()
+
+        if highlight
+          comment = if (text = findHighlightText(highlight, fileName)).length then text else $(highlight)
+
+        $(comment).effect('highlight', {}, tip.data('highlight_duration') || Infinity)
 
         hideTooltip()
 
@@ -250,10 +246,26 @@
           tipMessage += $("#tips .close").html()
 
           if moreTips
-            tipMessage += $("#tips .next").html()
-            tipMessage += $("#tips .next_arrow").html()
+            $(".next_tip").show()
+          else
+            $(".next_tip").hide()
+
+          if tip.data('args')?.length
+            $(".show_me").show()
+
+            [text, tutorialComment, fileName] = args
+
+            $(".show_me").click ->
+              doItNow(text, tutorialComment, fileName)
+          else
+            $(".show_me").hide()
+            $(".show_me").unbind 'click'
 
           showTooltip($(tip.attr('data-target')), tipMessage)
+
+          if $(tip.data('target')).length == 0
+            nextTip()
+
         else
           tipIndex = -1
 
