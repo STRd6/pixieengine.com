@@ -1,6 +1,12 @@
 /* Element specific styles that apply throughout the site
 @import sprite_sheets
 
+$code_sample_background: #FFF9B3
+$tooltip_text: #2E7DB2
+
+.static-bulb
+  display: inline-block
+
 #feedback
   position: fixed
   left: -15px
@@ -12,63 +18,65 @@
 
 #tooltip
   +border-radius
-  +box-shadow
-  +text-shadow(black, 1px, 1px)
+  +box-shadow(rgba(0, 0, 0, 0.25), 0, 0, 10px, 0)
   +user-select
 
-  background-color: #444
-  border-left: 1px solid #595959
-  border-top: 1px solid #595959
-  color: $dark_text
-  cursor: default
+  background-color: #eeeeee
+  border: 1px solid rgba(0, 0, 0, 0.3)
+  cursor: move
   display: none
   min-height: 40px
-  min-width: 100px
-  max-width: 325px
-  padding: 1em
+  width: 320px
+  padding: 0.7em
   position: absolute
-  z-index: 10
+  z-index: 1000
+
+  .static-arrow_right, .static-joystick
+    display: inline-block
+    vertical-align: top
+
+  .next_tip
+    float: right
+    margin: 0
+    margin-top: 0.7em
+
+  .show_me
+    float: left
+    margin: 0
+    margin-top: 0.7em
 
   .avatar
     display: inline-block
     vertical-align: middle
 
-  b
-    font-weight: bold
+  i
+    font-style: italic
 
   pre
     +border-radius(4px)
     +box-shadow(rgba(0, 0, 0, 0.5), 1px, 1px, 3px, inset)
     +user-select(text)
 
-    background-color: rgba(255, 255, 255, 0.3)
+    background-color: $code_sample_background
+    border: 1px solid rgba(0, 0, 0, 0.15)
+    color: black
     cursor: text
     font-size: 90%
     margin-bottom: 1em
     margin-top: 1em
     padding: 3px
+    padding-left: 1em
+    padding-right: 1em
     position: relative
 
   .next_tip, .close_tip
     margin-right: 0
     width: 80px
 
-  .icon
-    +bounds(25px)
-
-    @extend .static-tip_pointer
-
-    bottom: 0
-    left: -12px
-    margin: auto
-    position: absolute
-    top: 0
-
   .content
-    color: $dark_text
-    min-height: 40px
-    min-width: 100px
+    color: $tooltip_text
     position: relative
+    width: 100%
 
   .next
     +bounds(40px, 50px)
@@ -103,9 +111,10 @@
 
     cursor: pointer
     display: inline-block
-    right: -21px
+    right: -9px
     position: absolute
-    top: -19px
+    top: -8px
+    z-index: 1001
 
 #logo
   +bounds(68px, 34px)
