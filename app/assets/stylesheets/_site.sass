@@ -4,6 +4,9 @@
 $code_sample_background: #FFF9B3
 $tooltip_text: #2E7DB2
 
+.static-bulb
+  display: inline-block
+
 #feedback
   position: fixed
   left: -15px
@@ -15,16 +18,15 @@ $tooltip_text: #2E7DB2
 
 #tooltip
   +border-radius
-  +box-shadow
+  +box-shadow(rgba(0, 0, 0, 0.25), 0, 0, 10px, 0)
   +user-select
 
   background-color: #eeeeee
   border: 1px solid rgba(0, 0, 0, 0.3)
-  cursor: default
+  cursor: move
   display: none
   min-height: 40px
-  min-width: 100px
-  max-width: 325px
+  width: 320px
   padding: 0.7em
   position: absolute
   z-index: 1000
@@ -109,9 +111,9 @@ $tooltip_text: #2E7DB2
 
     cursor: pointer
     display: inline-block
-    right: -20px
+    right: -9px
     position: absolute
-    top: -17px
+    top: -8px
     z-index: 1001
 
 #logo

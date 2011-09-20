@@ -62,6 +62,8 @@ $ ->
     setLightTheme active
   else if $('html').hasClass 'light'
     $('.bulb-sprite').attr('class', 'static-on')
+  else
+    $('.bulb-sprite').attr('class', 'static-off')
 
   # Display Flash Notice
   $("#flashes .notice").each ->

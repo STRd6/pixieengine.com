@@ -6,10 +6,10 @@
   tips = {}
 
   tips[Project::ASTEROIDS_DEMO_ID] = [{
-      :text => "Welcome to out Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools."
+      :text => "Welcome to our Asteroids tutorial! Click the 'next' arrow to the right to get familiar with the tools."
     }, {
       :file => "file_src_wrappable_coffee",
-      :text => "Here is the <i>wrappable</i> module. Modules make it easy to define behavior concisely."
+      :text => "Here is the <code>Wrappable</code> module. Modules make it easy to define behavior concisely."
     }, {
       :file => "file_src_base_coffee",
       :text => "Define a base class if you notice repeated behavior across many classes."
@@ -146,25 +146,35 @@
     }]
 
 #tips{:style => "display: none;"}
+  - hide_help_button = false
   - if current_user
     - if current_user.help_tips
-      -tooltips = tips[project.id] || tips["default"]
-
+      -if tips[project.id]
+        -tooltips = tips[project.id]
+      -elsif owner?(project)
+        -tooltips = tips["default"]
+      -else
+        -hide_help_button = true
+        -tooltips = []
       -tooltips.each do |tip|
         .tip{ "data-args" => tip[:args], "data-file" => tip[:file] || "file_src_main_coffee", "data-highlight" => tip[:highlight], "data-highlight_duration" => tip[:highlight_duration], "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
           .text= tip[:text].html_safe
   - else
-    -tooltips = tips[project.id] || tips["default"]
-
+    -if tips[project.id]
+      -tooltips = tips[project.id]
+    -else
+      -hide_help_button = true
+      -tooltips = []
     -tooltips.each do |tip|
       .tip{ "data-args" => tip[:args], "data-file" => tip[:file] || "file_src_main_coffee", "data-highlight" => tip[:highlight], "data-highlight_duration" => tip[:highlight_duration], "data-action" => tip[:action] || "open", "data-target" => tip[:target] || ".ui-tabs-selected" }
         .text= tip[:text].html_safe
-  .close
-    .close_tip.x(title="close" alt="close")
 
 - content_for :javascript do
   :coffeescript
     $ ->
+      if #{hide_help_button}
+        $('#help').hide()
+
       showTooltip = (element, html) ->
         position = element.offset() || {top: 50, left: 50}
 
@@ -178,16 +188,13 @@
 
         $('#tooltip').show().offset(position)
 
-      hideTooltip = ->
-        $("#tooltip").hide()
-
       $("#tooltip").draggable()
 
       $("#tooltip .next_tip, #help").live "click", ->
         nextTip()
 
       $("#tooltip .close_tip").live "click", ->
-        hideTooltip()
+        $("#tooltip").hide()
 
       findHighlightText = (text, fileName) ->
         $("#\#{fileName} iframe").contents().find('span.comment').filter ->
@@ -201,8 +208,7 @@
 
         replacedSnippet = $(findHighlightText(tutorialComment, fileName)).html("<span class='comment'></span>")
         intervalId = setInterval ->
-          nextLetter = letters.shift()
-          lettersUsed.push nextLetter
+          lettersUsed.push letters.shift()
           $(replacedSnippet).html(lettersUsed.join(""))
 
           if letters.length == 0
@@ -238,12 +244,8 @@
 
         $(comment).effect('highlight', {}, tip.data('highlight_duration') || Infinity)
 
-        hideTooltip()
-
         if tip.length
           tipMessage = tip.html()
-
-          tipMessage += $("#tips .close").html()
 
           if moreTips
             $(".next_tip").show()
@@ -262,9 +264,6 @@
             $(".show_me").unbind 'click'
 
           showTooltip($(tip.attr('data-target')), tipMessage)
-
-          if $(tip.data('target')).length == 0
-            nextTip()
 
         else
           tipIndex = -1
