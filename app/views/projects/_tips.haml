@@ -188,7 +188,17 @@
 
         $('#tooltip').show().offset(position)
 
-      $("#tooltip").draggable()
+      $("#tooltip").draggable
+        start: (e, ui) ->
+          return false if $(e.srcElement).is('pre')
+
+        drag: (e, ui) ->
+          if $(e.srcElement).is('pre')
+            ui.position.left = ui.position.left_old
+            ui.position.top = ui.position.top_old
+
+          ui.position.left_old = ui.position.left
+          ui.position.top_old = ui.position.top
 
       $("#tooltip .next_tip, #help").live "click", ->
         nextTip()
