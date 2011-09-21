@@ -34,7 +34,8 @@
         position: static
 
       .login_link a[title="Log in"]
-        margin-top: 39px
+        font-size: 1.25em
+        margin-top: 34px
 
     .thumb
       float: left
@@ -70,9 +71,17 @@
         width: 100%
 
         .info
+          +bounds(290px, 480px)
           +inline-block
           float: left
-          width: 320px
+          position: relative
+
+          h1
+            font-size: 3em
+
+          p
+            font-size: 1.3em
+            line-height: 1.6em
 
         .video
           +box-shadow($light_box_shadow, 0px, 10px, 10px, -10px)
@@ -85,10 +94,11 @@
         a.button.full
           +bounds(100%, 70px)
 
+          bottom: -15px
           font-size: 190%
           line-height: 56px
           margin: 0
-          margin-top: 28px
+          position: absolute
 
       .testimonial
         margin-bottom: 2em
@@ -184,7 +194,7 @@
       = link_to "Try Now for Free", ide_project_path("demo"), :class => "button complement full"
 
     .video
-      <iframe width="560" height="345" src="http://www.youtube.com/embed/lCbXhNg8cUU" frameborder="0" allowfullscreen></iframe>
+      <iframe width="640" height="480" src="#{widget_project_url(Project::ASTEROIDS_DEMO_ID)}" ></iframe>
 
   .testimonial.module
     %p
