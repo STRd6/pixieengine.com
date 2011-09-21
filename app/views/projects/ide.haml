@@ -697,10 +697,10 @@
         if $('.ui-pnotify').length
           $.pnotify_remove_all()
 
-      # Hack to pre-load main file
+      # Hack to pre-load main file, README and tutorials
       $("#file_src_main_coffee").prev().click()
-      if $("#tutorial").length
-        $("#tutorial").prev().click()
+      $("#file_README").prev().click()
+      $("#tutorial").prev().click()
 
       $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
         delayIn: 500
