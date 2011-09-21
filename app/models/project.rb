@@ -167,6 +167,7 @@ class Project < ActiveRecord::Base
       end
     end
 
+    set_config_author_data
     make_group_writable
   end
 
@@ -364,6 +365,19 @@ class Project < ActiveRecord::Base
       else
         {}.merge(DEFAULT_CONFIG)
       end
+  end
+
+  def set_config_author_data
+    if File.exist? config_path
+      current_config = HashWithIndifferentAccess.new(JSON.parse(File.read(config_path)))
+
+      current_config[:name] = title
+      current_config[:author] = user.display_name
+
+      File.open(config_path, 'w') do |file|
+        file.write(JSON.pretty_generate(current_config))
+      end
+    end
   end
 
   def manifest_path
