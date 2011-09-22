@@ -104,7 +104,8 @@
         value: key
       ).appendTo($("<td>").appendTo(row))
 
-      value = JSON.stringify(value) unless typeof value == "string"
+      unless typeof value == "string" || typeof value == "number"
+        value = JSON.stringify(value)
 
       valueInputType = options.valueInputType || "input"
 
