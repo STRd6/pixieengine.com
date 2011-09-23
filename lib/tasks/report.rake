@@ -255,9 +255,6 @@ namespace :report do
       eos
     )
 
-    #table = Table.new
-    #table.add_columns(%w[events 1 2 3 4 5 6 7 8 9 10 11 12], :default => '')
-
     previous_user = nil
     user_actions = []
     output = []
