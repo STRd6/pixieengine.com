@@ -8,5 +8,6 @@
 
   %script.active_user.template(type="text/x-jQuery-tmpl")
     %li{'data-id' => "${id}"}
-      %img(src="${avatar}")
-      %a(href='/people/${id}' target="_blank" style="color: #${color};") ${name}
+      %a(href='/people/${id}' target="_blank" style="color: #${color};")
+        %img(src="${avatar}")
+        ${name}
