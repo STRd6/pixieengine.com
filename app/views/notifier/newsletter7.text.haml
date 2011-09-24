@@ -1,0 +1,17 @@
+:ruby
+  platformer1 = Project.find(176)
+  platformer2 = Project.find(218)
+  platformer3 = Project.find(227)
+
+:plain
+  Greetings and welcome to this installment of the PixieEngine newsletter. This week we've added a visual properties editor for GameObjects. Games are often complex to make, but we strive to keep things as simple as possible, without sacrificing the power to do what you want. The table based properties editor is a great way to visualize and edit all the attributes and events that comprise a game object.
+
+  To use this editor, click `New -> Entity` in a project. You'll see a field with the color blue and another with the Pixie mascot. If you click on either of these you will be able to edit them directly using an embedded color picker and pixel editor respectively. Pretty cool, right?
+
+  We're always looking for ways to make Pixie's IDE more immersive. To that end we've added shortcut hotkeys to make the IDE behave more like one you might use on your desktop. Now pressing the F1 key pops up a help tip, F5 runs your project, and F6 runs your test suite.
+
+  Learning to make your first game can be really frustrating. Every day we're improving the site to remove as much frustration as possible. We've greatly improved the interactive tool tips that guide you through our platformer tutorials: #{project_link(platformer1, :text => true)}, #{project_link(platformer2, :text => true)}, and #{project_link(platformer3, :text => true)}. You can drag the tips around, easily pick out the code samples we're sharing, and now there is even a button on some of the tool tips to complete the current step for you so you can see where the code belongs. In addition to these tool tip improvements we've expanded the comments that explain the tutorials to be much more detailed.
+
+  Give it a try! Revisit the tutorials and learn to make your first game. As always, we love to hear from you. If you have any questions, comments, or suggestions send us feedback #{survey_url(@link_tracking)}.
+
+  #{unsubscribe_users_url(:id => @user.id)}
