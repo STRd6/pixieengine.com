@@ -81,34 +81,35 @@
   = javascript_include_tag "highcharts"
 
   :coffeescript
-    registrations_per_day = #{User.registrations_per_day.to_json}
+    $ ->
+      registrations_per_day = #{User.registrations_per_day.to_json}
 
-    window.data = registrations_per_day.map (datum) ->
-      [new Date(datum.user.date).getTime(), datum.user.count]
+      window.data = registrations_per_day.map (datum) ->
+        [new Date(datum.user.date).getTime(), datum.user.count]
 
-    new Highcharts.Chart
-      chart:
-        renderTo: $(".chart.registrations").get(0)
-      legend:
-        enabled: false
-      plotOptions:
-        series:
-          marker:
-            enabled: false
-      series: [
-        data: data
-      ]
-      title:
-        text: "Registrations Per Day"
-      xAxis:
-        type: 'datetime'
-        dateTimeLabelFormats:
-          day: '%b %e'
-          week: '%b %e'
-          month: '%b'
-          year: '%Y'
+      new Highcharts.Chart
+        chart:
+          renderTo: $(".chart.registrations").get(0)
+        legend:
+          enabled: false
+        plotOptions:
+          series:
+            marker:
+              enabled: false
+        series: [
+          data: data
+        ]
         title:
-          text: "Day"
-      yAxis:
-        title:
-          text: "Registrations"
+          text: "Registrations Per Day"
+        xAxis:
+          type: 'datetime'
+          dateTimeLabelFormats:
+            day: '%b %e'
+            week: '%b %e'
+            month: '%b'
+            year: '%Y'
+          title:
+            text: "Day"
+        yAxis:
+          title:
+            text: "Registrations"
