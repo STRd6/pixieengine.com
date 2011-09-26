@@ -236,6 +236,10 @@ class User < ActiveRecord::Base
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
   end
 
+  def self.registrations_per_day
+    self.select("COUNT(*) AS count, date_trunc('day', created_at) as date").group("date").order("date ASC").where("created_at > ?", 3.months.ago)
+  end
+
   def sanitize_profile
     self.profile = Sanitize.clean(self.profile, :elements => ['a', 'img'],
       :attributes => {
