@@ -68,7 +68,7 @@
               contents = Base64.decode(contentsBase64) if type == "text"
 
               newFileNode
-                name: file.name.replace(/\.[^\.]*$/, '')
+                name: name
                 type: type
                 ext: ext
                 lang: lang

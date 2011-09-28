@@ -24,6 +24,7 @@ PixieStrd6Com::Application.routes.draw do
       post :generate_docs
       post :remove_file
       post :remove_member
+      post :rename_file
       post :save_file
       post :tag_version
       post :update_libs
