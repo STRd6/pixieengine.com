@@ -26,6 +26,21 @@ class Notifier < ActionMailer::Base
       :from => "#{user.display_name} <#{user.email}>"
   end
 
+  def post_newsletter_to_forum(delivery_date)
+    email = Notifier.newsletter7(User.find(4), delivery_date)
+
+    topic = Forem::Topic.new(:user_id => 4, :forum_id => 1, :subject => "This week in Pixie: #{delivery_date}")
+
+    doc = Hpricot(email.html_part.body.to_s)
+
+    results = doc.search('div').map do |paragraph|
+      paragraph.html.strip
+    end.join("\n\n")
+
+    topic.posts.build(:text => results)
+    topic.save
+  end
+
   def newsletter7(user, delivery_date)
     @user = user
     @delivery_date = delivery_date
