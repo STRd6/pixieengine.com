@@ -21,7 +21,7 @@
       extractBase64Data = (dataUrl) ->
         dataUrl.substring(dataUrl.indexOf(',') + 1)
 
-      $("body").dropImageReader
+      $("html").dropImageReader
         matchType: /.*/
         callback: (file, event) ->
           if event.target.readyState == FileReader.DONE
