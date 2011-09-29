@@ -248,6 +248,34 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def remove_file
+    message = params[:message].presence
+
+    project.remove_file(params[:path], message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
+  def rename_file
+    message = params[:message].presence
+
+    project.rename_file(params[:path], params[:new_path], message)
+
+    respond_to do |format|
+      format.json do
+        render :json => {
+          :status => "ok"
+        }
+      end
+    end
+  end
+
   def save_file
     if params[:contents_base64]
       contents = Base64.decode64(params[:contents_base64])
@@ -260,20 +288,6 @@ class ProjectsController < ApplicationController
     project.save_file(params[:path], contents, message)
 
     project.touch if params[:touch]
-
-    respond_to do |format|
-      format.json do
-        render :json => {
-          :status => "ok"
-        }
-      end
-    end
-  end
-
-  def remove_file
-    message = params[:message].presence
-
-    project.remove_file(params[:path], message)
 
     respond_to do |format|
       format.json do

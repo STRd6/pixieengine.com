@@ -1,4 +1,5 @@
 #file_tree_context_menu.context_menu
+  %li= link_to "Rename", "#rename"
   %li= link_to "Delete", "#delete"
 
 - content_for :javascript do
@@ -8,3 +9,5 @@
         switch action
           when "delete"
             removeFile(node)
+          when "rename"
+            renameFile(node)

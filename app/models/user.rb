@@ -68,9 +68,11 @@ class User < ActiveRecord::Base
     failed_user_ids = []
     delivery_date = Time.now.strftime("%b %d %Y")
 
+    Notifier.post_newsletter_to_forum(delivery_date)
+
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
-        Notifier.newsletter6(user, delivery_date).deliver unless user.email.blank?
+        Notifier.newsletter7(user, delivery_date).deliver unless user.email.blank?
       rescue
         failed_user_ids.push(user.id)
       end
@@ -234,6 +236,10 @@ class User < ActiveRecord::Base
       END
     "
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
+  end
+
+  def self.registrations_per_day
+    self.select("COUNT(*) AS count, date_trunc('day', created_at) as date").group("date").order("date ASC").where("created_at > ?", 3.months.ago)
   end
 
   def sanitize_profile

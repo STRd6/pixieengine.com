@@ -1,7 +1,5 @@
 /* Generic context menu styles
 
-@import sprite_sheets
-
 .context_menu
   position: absolute
   width: 120px
@@ -26,12 +24,11 @@
 
   li
     list-style: none
-    padding: 0px
+    padding: 2px
     margin: 0px
 
     &.hover
-      color: #FFF
-      background-color: #3399FF
+      background-color: $hover
     &.disabled
       color: #AAA
       cursor: default
@@ -40,7 +37,9 @@
     &.separator
       border-top: solid 1px #CCC
 
-    a[href="#delete"]
-      +bounds(16px)
+    a
+      &[href="#delete"]
+        @extend .static-delete
 
-      @extend .static-delete
+      &[href="#rename"]
+        @extend .static-page_white_go

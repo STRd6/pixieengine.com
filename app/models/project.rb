@@ -222,6 +222,20 @@ class Project < ActiveRecord::Base
     git_commit_and_push(message)
   end
 
+  def rename_file(path, new_path, message=nil)
+    #TODO: Verify path is not sketch
+    return if path.index ".."
+    return if path.first == "/"
+
+    return if new_path.index ".."
+    return if new_path.first == "/"
+
+    FileUtils.mv File.join(self.path, path), File.join(self.path, new_path)
+    git_util "mv", path, new_path
+
+    git_commit_and_push(message)
+  end
+
   def file_info
     file_node_data path, path
   end

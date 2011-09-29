@@ -59,15 +59,16 @@
               ext = "png"
 
             if path?
+              name = file.name.replace(/\.[^\.]*$/, '')
               contentsBase64 = extractBase64Data(event.target.result)
               window.save event,
                 contents_base64: contentsBase64
-                path: "/" + path + "/" + file.name
+                path: "/\#{path}/\#{name}.\#{ext}"
 
               contents = Base64.decode(contentsBase64) if type == "text"
 
               newFileNode
-                name: file.name.replace(/\.[^\.]*$/, '')
+                name: name
                 type: type
                 ext: ext
                 lang: lang

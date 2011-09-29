@@ -245,8 +245,7 @@
       docSelector = node.remove().data("id")
 
       # Close file if open
-      if $('#tabs ul li a[href="' + docSelector + '"]').length
-        $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
 
       path = $(docSelector).remove().data("path")
       message = $(".actions .status .message").val()
@@ -260,6 +259,62 @@
         notify "Removed!"
 
       $.post "/projects/\#{projectId}/remove_file", postData, successCallback
+
+    window.renameFile = (node) ->
+      docSelector = node.data("id")
+      {path, ext, type, lang} = $(docSelector).data()
+
+      openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
+
+      # Abort if unsaved
+      if openedTab.is(".unsaved")
+        notify("Can't rename unsaved file")
+        return
+
+      pathParts = path.split("/")
+      name = pathParts.pop().replace(/\.[^\.]*$/, '')
+      path = pathParts.join("/")
+
+      newName = prompt("New Name", name)
+
+      return unless newName
+
+      newName = newName.replace(/[^A-Za-z0-9_-]/, "_")
+
+      if newName != name
+        notify("Renaming: \#{name} => \#{newName}")
+        # Close file if open
+        reopen = openedTab.length
+        openedTab.find(".ui-icon-close").click()
+
+        #TODO Maybe check for existing...
+
+        newPath = "\#{path}/\#{newName}.\#{ext}"
+        oldPath = "\#{path}/\#{name}.\#{ext}"
+        contents = $(docSelector).find("[name=contents]").val()
+
+        successCallback = (data) ->
+          $(docSelector).remove()
+          node.remove()
+
+          newFileNode
+            name: newName
+            type: type
+            ext: ext
+            lang: lang
+            path: path
+            noAutoOpen: !reopen
+            contents: contents
+
+          notify "Renamed: \#{name} => \#{newName}"
+
+        postData =
+          path: oldPath
+          new_path: newPath
+          format: 'json'
+          message: $(".actions .status .message").val()
+
+        $.post "/projects/\#{projectId}/rename_file", postData, successCallback
 
     # Commands
     window.save = (event, data) ->
@@ -663,8 +718,6 @@
 
       $('.filetree .file').live 'click', ->
         openFile($(this).data('id'))
-
-        $('.status .message').val($(this).text())
 
         trackEvent("IDE", "open file", $(this).data('id'))
 
