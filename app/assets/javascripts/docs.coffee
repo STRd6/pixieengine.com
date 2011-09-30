@@ -2,7 +2,6 @@
 #= require corelib
 #= require pixie_canvas
 
-#TODO require PixieCanvas
 $ ->
   $("code.run").each ->
     # Assume it's a PixieCanvas example
