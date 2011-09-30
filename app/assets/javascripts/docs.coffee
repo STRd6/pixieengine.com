@@ -8,7 +8,7 @@ $ ->
     # Assume it's a PixieCanvas example
     codeElement = $(this)
 
-    code = codeElement.text()
+    source = codeElement.text()
 
     compiledJs = CoffeeScript.compile source, bare: true
 
