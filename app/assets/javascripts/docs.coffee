@@ -1,5 +1,6 @@
 #= require coffee-script
 #= require corelib
+#= require pixie_canvas
 
 #TODO require PixieCanvas
 $ ->
