@@ -14,8 +14,7 @@
 (($) ->
   $.fn.colorPicker = (options) ->
     options ||= {}
-    # set field's background according selected color?
-    reflectOnBackground = if options.reflectOnBackground == false then false else true
+    reflectOnBackground = options.reflectOnBackground || true
 
     # prepend field's color code with #
     leadingHash = options.leadingHash || false
@@ -24,13 +23,11 @@
     allowEmpty = options.allowEmpty || false
 
     # spectrum's width and height
-    HVSize = [256, 256] # normal
+    HVSize = 256
 
     dir = options.dir || '/assets/jscolor/'
 
-    padding = 10
-    borderWidth = 1
-    HVCrossSize = [15, 15]
+    HVCrossSize = 12
     SSize = 22
     SArrowSize = [7, 11]
     SSampleSize = 4
@@ -42,29 +39,9 @@
 
     createDialog = ->
       # dialog
-      elements.dialog = document.createElement('div')
-      $(elements.dialog).css
-        zIndex: '1000'
-        clear: 'both'
-        position: 'absolute'
-        width: HVSize[0]+SSize+3*padding+'px'
-        height: HVSize[1]+2*padding+'px'
-        border: "#{borderWidth}px solid ThreeDHighlight"
-        borderRightColor: 'ThreeDShadow'
-        borderBottomColor: 'ThreeDShadow'
-        background: "url('#{dir}hv#{HVSize[0]}x#{HVSize[1]}.png') #{padding}px #{padding}px no-repeat ThreeDFace"
+      elements.dialog = $ '<div class="color_picker"/>'
 
-      elements.dialog.onmousedown = ->
-        instance.preserve = true
-
-      elements.dialog.onmousemove = (e) ->
-        if instance.holdHV
-          setHV(e)
-
-        if instance.holdS
-          setS(e)
-
-      elements.dialog.onmouseup = elements.dialog.onmouseout = ->
+      handleMouseup = ->
         if (instance.holdHV || instance.holdS)
           instance.holdHV = instance.holdS = false
           if (typeof instance.input.onchange == 'function')
@@ -72,72 +49,76 @@
 
         instance.input.focus()
 
+      $(elements.dialog).bind
+        mousedown: ->
+          instance.preserve = true
+        mousemove: (e) ->
+          if instance.holdHV
+            setHV(e)
+
+          if instance.holdS
+            setS(e)
+        mouseup: handleMouseup
+        mouseout: handleMouseup
+
       # hue/value spectrum
-      elements.hv = document.createElement('div')
-      $(elements.hv).css
-        position: 'absolute'
-        left: '0'
-        top: '0'
-        width: HVSize[0]+2*padding+'px'
-        height: HVSize[1]+2*padding+'px'
-        background: "url('#{dir}cursor.png') no-repeat"
-        cursor: 'crosshair'
+      elements.hv = $('<div class="color_overlay" />')
+      $(elements.hv).append('<div class="white_overlay" />', '<div class="black_overlay" />')
 
       setHV = (e) ->
         p = getMousePos(e)
-        relX = if p[0]<instance.posHV[0] then 0 else (if p[0]-instance.posHV[0]>HVSize[0]-1 then HVSize[0]-1 else p[0]-instance.posHV[0])
-        relY = if p[1]<instance.posHV[1] then 0 else (if p[1]-instance.posHV[1]>HVSize[1]-1 then HVSize[1]-1 else p[1]-instance.posHV[1])
-        instance.color.setHSV(6/HVSize[0]*relX, null, 1-1/(HVSize[1]-1)*relY)
+        relX = if p[0]<instance.posHV[0] then 0 else (if p[0]-instance.posHV[0]>HVSize-1 then HVSize-1 else p[0]-instance.posHV[0])
+        relY = if p[1]<instance.posHV[1] then 0 else (if p[1]-instance.posHV[1]>HVSize-1 then HVSize-1 else p[1]-instance.posHV[1])
+        instance.color.setHSV(6/HVSize*relX, null, 1-1/(HVSize-1)*relY)
         updateDialogPointers()
         updateDialogSaturation()
         updateInput(instance.input, instance.color, null)
 
-      elements.hv.onmousedown = (e) ->
+      elements.hv.mousedown = (e) ->
         instance.holdHV = true
         setHV(e)
 
-      elements.dialog.appendChild(elements.hv)
+      $(elements.dialog).append($(elements.hv))
 
       # saturation gradient
-      elements.grad = document.createElement('div')
-      $(elements.grad).css
-        position: 'absolute'
-        left: HVSize[0]+SArrowSize[0]+2*padding+'px'
-        top: padding+'px'
-        width: SSize-SArrowSize[0]+'px'
+      elements.grad = $ '<div class="slider" />'
 
       # saturation gradient's samples
-      `for(i=0 i+SSampleSize<=HVSize[1] i+=SSampleSize) {
-        g = document.createElement('div')
-        g.style.height = SSampleSize+'px'
-        g.style.fontSize = '1px'
-        g.style.lineHeight = '0'
-        elements.grad.appendChild(g)
-      }`
-      elements.dialog.appendChild(elements.grad)
+      for i in [0...HVSize] by SSampleSize
+        g = $ '<div/>'
+        g.css
+          height: "#{SSampleSize}px"
+          fontSize = '1px'
+          lineHeight = '0'
+
+        $(elements.grad).append(g)
+
+
+      #`for(i=0 i+SSampleSize<=HVSize i+=SSampleSize) {
+      #  g = document.createElement('div')
+      #  g.style.height = SSampleSize+'px'
+      #  g.style.fontSize = '1px'
+      #  g.style.lineHeight = '0'
+      #  elements.grad.appendChild(g)
+      #}`
+
+      $(elements.dialog).append($(elements.grad))
 
       # saturation slider
-      elements.s = document.createElement('div')
-      $(elements.s).css
-        position: 'absolute'
-        left: HVSize[0]+2*padding+'px'
-        top: '0'
-        width: SSize+padding+'px'
-        height: HVSize[1]+2*padding+'px'
-        background: "url('#{dir}s.gif') no-repeat"
+      elements.s = $ '<div class="hue_selector" />'
 
       setS = (e) ->
         p = getMousePos(e)
-        relY = if p[1]<instance.posS[1] then 0 else (if p[1]-instance.posS[1]>HVSize[1]-1 then HVSize[1]-1 else p[1]-instance.posS[1])
-        instance.color.setHSV(null, 1-1/(HVSize[1]-1)*relY, null)
+        relY = if p[1]<instance.posS[1] then 0 else (if p[1]-instance.posS[1]>HVSize-1 then HVSize-1 else p[1]-instance.posS[1])
+        instance.color.setHSV(null, 1-1/(HVSize-1)*relY, null)
         updateDialogPointers()
         updateInput(instance.input, instance.color, null)
 
-      elements.s.onmousedown = (e) ->
+      $(elements.s).mousedown (e) ->
         instance.holdS = true
         setS(e)
 
-      elements.dialog.appendChild(elements.s)
+      $(elements.dialog).append($(elements.s))
 
     showDialog = (input) ->
       IS = [input.offsetWidth, input.offsetHeight]
@@ -145,8 +126,8 @@
       sp = getScrollPos()
       ws = getWindowSize()
       ds = [
-        HVSize[0]+SSize+3*padding+2*borderWidth,
-        HVSize[1]+2*padding+2*borderWidth
+        HVSize+SSize,
+        HVSize
       ]
       dp = [
         if (-sp[0]+ip[0]+ds[0] > ws[0]-ClientSliderSize) then (if (-sp[0]+ip[0]+IS[0]/2 > ws[0]/2) then ip[0]+IS[0]-ds[0] else ip[0]) else ip[0],
@@ -160,40 +141,41 @@
         preserve: false
         holdHV: false
         holdS: false
-        posHV: [dp[0]+borderWidth+padding, dp[1]+borderWidth+padding]
-        posS: [dp[0]+borderWidth+HVSize[0]+2*padding, dp[1]+borderWidth+padding]
+        posHV: [dp[0], dp[1]]
+        posS: [dp[0] + HVSize, dp[1]]
 
       updateDialogPointers()
       updateDialogSaturation()
 
-      elements.dialog.style.left = dp[0] + 'px'
-      elements.dialog.style.top = dp[1] + 'px'
-      document.getElementsByTagName('body')[0].appendChild(elements.dialog)
+      $(elements.dialog).css
+        left: dp[0] + 'px'
+        top: dp[1] + 'px'
+
+      $('body').append($(elements.dialog))
 
     hideDialog = ->
-      b = document.getElementsByTagName('body')[0]
-      b.removeChild(elements.dialog)
+      $(elements.dialog).remove()
 
       instance = null
 
     updateDialogPointers = ->
       # update hue/value cross
-      x = Math.round(instance.color.hue/6*HVSize[0])
-      y = Math.round((1-instance.color.value)*(HVSize[1]-1))
-      elements.hv.style.backgroundPosition =
-        (padding-Math.floor(HVCrossSize[0]/2)+x)+'px '+
-        (padding-Math.floor(HVCrossSize[1]/2)+y)+'px'
+      x = Math.round(instance.color.hue/6*HVSize)
+      y = Math.round((1-instance.color.value)*(HVSize-1))
+      $(elements.hv).css
+        backgroundPosition: (x + (HVCrossSize / 2).floor()) + 'px ' + (y - (HVCrossSize / 2).floor()) + 'px'
 
       # update saturation arrow
-      y = Math.round((1-instance.color.saturation)*HVSize[1])
-      elements.s.style.backgroundPosition = "0 #{(padding-Math.floor(SArrowSize[1]/2)+y)}px"
+      y = Math.round((1-instance.color.saturation)*HVSize)
+      $(elements.s).css
+        backgroundPosition: "0 #{(y - (SArrowSize[1] / 2).floor())}px"
 
     updateDialogSaturation = ->
       # update saturation gradient
       [r, g, b] = instance.color.value
       [s, c] = [0, 0]
-      i = Math.floor(instance.color.hue)
-      f = if i%2 then instance.color.hue-i else 1-(instance.color.hue-i)
+      i = instance.color.hue.floor()
+      f = if i % 2 then instance.color.hue - i else 1 - (instance.color.hue - i)
       switch i
         when 6, 0
           r=0
@@ -220,31 +202,33 @@
           g=2
           b=1
 
-      gr = elements.grad.childNodes
+      gr = $(elements.grad).children()
       gr.length.times (i) ->
         s = 1 - 1/(gr.length-1)*i
         c[1] = c[0] * (1 - s*f)
         c[2] = c[0] * (1 - s)
-        gr[i].style.backgroundColor = "rgb(#{c[r]*100}%, #{c[g]*100}%, #{c[b]*100}%)"
+        $(gr[i]).css
+          backgroundColor: "rgb(#{c[r]*100}%, #{c[g]*100}%, #{c[b]*100}%)"
 
-    updateInput = (e, color, realValue) ->
+    updateInput = (el, color, realValue) ->
       if (allowEmpty && realValue != null && !/^\s*#?([0-9A-F]{3}([0-9A-F]{3})?)\s*$/i.test(realValue))
-        e.value = ''
+        $(el).val('')
         if reflectOnBackground
-          e.style.backgroundColor = e.originalStyle.backgroundColor
-          e.style.color = e.originalStyle.color
-
+          $(el).css
+            backgroundColor: el.originalStyle.backgroundColor
+            color: el.originalStyle.color
       else
-        e.value = (if leadingHash then '#' else '') + color
+        $(el).val((if leadingHash then '#' else '') + color)
+
         if reflectOnBackground
-          e.style.backgroundColor = '#'+color
-          e.style.color =
-            if (0.212671 * color.red + 0.715160 * color.green + 0.072169 * color.blue) < 0.5 then '#FFF' else '#000'
+          $(el).css
+            backgroundColor: '#' + color
+            color: if (0.212671 * color.red + 0.715160 * color.green + 0.072169 * color.blue) < 0.5 then '#FFF' else '#000'
 
     getElementPos = (e) ->
       x = 0
       y = 0
-      `if e.offsetParent) {
+      `if (e.offsetParent) {
         do {
           x += e.offsetLeft
           y += e.offsetTop
@@ -310,10 +294,11 @@
 
       @setRGB = (r, g, b) ->
         hsv = RGB_HSV(
-          if r==null then @red else (@red=r),
-          if g==null then @green else (@green=g),
-          if b==null then @blue else (@blue=b)
+          if (r == null) then @red else (@red = r),
+          if (g == null) then @green else (@green = g),
+          if (b == null) then @blue else (@blue = b)
         )
+
         if hsv[0] != null
           @hue = hsv[0]
 
@@ -324,24 +309,23 @@
 
       @setHSV = (h, s, v) ->
         rgb = HSV_RGB(
-          if h==null then @hue else (@hue=h),
-          if s==null then @saturation else (@saturation=s),
-          if v==null then @value else (@value=v)
+          if (h == null) then @hue else (@hue = h),
+          if (s == null) then @saturation else (@saturation = s),
+          if (v == null) then @value else (@value = v)
         )
         @red = rgb[0]
         @green = rgb[1]
         @blue = rgb[2]
 
       RGB_HSV = (r, g, b) ->
-        n = Math.min(Math.min(r,g),b)
-        v = Math.max(Math.max(r,g),b)
+        n = Math.min(r, g, b)
+        v = Math.max(r, g, b)
         m = v - n
         if m == 0
           return [null, 0, v]
 
         h = if r==n then 3+(b-g)/m else (if g==n then 5+(r-b)/m else 1+(g-r)/m)
         return [(if h==6 then 0 else h), m/v, v]
-
 
       HSV_RGB = (h, s, v) ->
         if h == null
@@ -385,13 +369,13 @@
           return false
 
       @toString = ->
-        r = Math.round(this.red * 255).toString(16)
-        g = Math.round(this.green * 255).toString(16)
-        b = Math.round(this.blue * 255).toString(16)
+        r = Math.round(@red * 255).toString(16)
+        g = Math.round(@green * 255).toString(16)
+        b = Math.round(@blue * 255).toString(16)
         return (
-          (if r.length==1 then '0'+r else r)+
-          (if g.length==1 then '0'+g else g)+
-          (if b.length==1 then '0'+b else b)
+          (if r.length == 1 then '0' + r else r) +
+          (if g.length == 1 then '0' + g else g) +
+          (if b.length == 1 then '0' + b else b)
         ).toUpperCase()
 
       if hex
@@ -404,14 +388,12 @@
         showDialog(this)
 
     onblur = ->
-      if (instance && instance.preserve)
-        return
+      return if (instance && instance.preserve)
 
       This = this
       Id = instanceId
       setTimeout ->
-        if (instance && instance.preserve)
-          return
+        return if (instance && instance.preserve)
 
         if (instance && instanceId == Id)
           hideDialog()
