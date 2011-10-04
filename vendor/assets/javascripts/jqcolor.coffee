@@ -16,22 +16,18 @@
     options ||= {}
     reflectOnBackground = options.reflectOnBackground || true
 
-    # prepend field's color code with #
     leadingHash = options.leadingHash || false
-
-    # allow an empty value in the field instead of setting it to #000000
     allowEmpty = options.allowEmpty || false
 
     # spectrum's width and height
-    HVSize = 256
+    colorOverlaySize = 256
 
     dir = options.dir || '/assets/jscolor/'
 
-    HVCrossSize = 12
-    SSize = 22
-    SArrowSize = [7, 11]
-    SSampleSize = 4
-    ClientSliderSize = 18
+    cursorSize = 12
+    sliderSelectorSize = [7, 11]
+    gradientStep = 4
+    sliderSize = 18
 
     instanceId = 0
     instance = null
@@ -65,10 +61,10 @@
 
       setHV = (e) ->
         p = getMousePos(e)
-        relX = if p[0]<instance.posHV[0] then 0 else (if p[0]-instance.posHV[0]>HVSize-1 then HVSize-1 else p[0]-instance.posHV[0])
-        relY = if p[1]<instance.posHV[1] then 0 else (if p[1]-instance.posHV[1]>HVSize-1 then HVSize-1 else p[1]-instance.posHV[1])
-        instance.color.hue(6 / HVSize * relX)
-        instance.color.lightness(1 - 1/(HVSize - 1) * relY)
+        relX = if p[0]<instance.posHV[0] then 0 else (if p[0]-instance.posHV[0]>colorOverlaySize-1 then colorOverlaySize-1 else p[0]-instance.posHV[0])
+        relY = if p[1]<instance.posHV[1] then 0 else (if p[1]-instance.posHV[1]>colorOverlaySize-1 then colorOverlaySize-1 else p[1]-instance.posHV[1])
+        instance.color.saturation(relX / colorOverlaySize)
+        instance.color.lightness(1 - (relY / colorOverlaySize))
 
         updateDialogPointers()
         updateDialogSaturation()
@@ -84,11 +80,11 @@
       elements.grad = $ '<div class="slider" />'
 
       # saturation gradient's samples
-      for i in [0...HVSize] by SSampleSize
+      for i in [0...colorOverlaySize] by gradientStep
         g = $ '<div/>'
         g.css
           backgroundColor: "hsl(#{i}, 1, 0.5)"
-          height: "#{SSampleSize}px"
+          height: "#{gradientStep}px"
           fontSize: '1px'
           lineHeight: '0'
 
@@ -101,8 +97,8 @@
 
       setS = (e) ->
         p = getMousePos(e)
-        relY = if p[1]<instance.posS[1] then 0 else (if p[1]-instance.posS[1]>HVSize-1 then HVSize-1 else p[1]-instance.posS[1])
-        instance.color.saturation(1 - 1/(HVSize - 1) * relY)
+        relY = if p[1]<instance.posS[1] then 0 else (if p[1]-instance.posS[1]>colorOverlaySize-1 then colorOverlaySize-1 else p[1]-instance.posS[1])
+        instance.color.saturation(1 - 1/(colorOverlaySize - 1) * relY)
 
         updateDialogPointers()
         updateInput(instance.input, instance.color, null)
@@ -118,10 +114,10 @@
       ip = getElementPos(input)
       sp = getScrollPos()
       ws = getWindowSize()
-      ds = [HVSize+SSize, HVSize]
+      ds = [colorOverlaySize+sliderSize, colorOverlaySize]
       dp = [
-        if (-sp[0]+ip[0]+ds[0] > ws[0]-ClientSliderSize) then (if (-sp[0]+ip[0]+IS[0]/2 > ws[0]/2) then ip[0]+IS[0]-ds[0] else ip[0]) else ip[0],
-        if (-sp[1]+ip[1]+IS[1]+ds[1] > ws[1]-ClientSliderSize) then (if (-sp[1]+ip[1]+IS[1]/2 > ws[1]/2) then ip[1]-ds[1] else ip[1]+IS[1]) else ip[1]+IS[1]
+        if (-sp[0]+ip[0]+ds[0] > ws[0]-sliderSize) then (if (-sp[0]+ip[0]+IS[0]/2 > ws[0]/2) then ip[0]+IS[0]-ds[0] else ip[0]) else ip[0],
+        if (-sp[1]+ip[1]+IS[1]+ds[1] > ws[1]-sliderSize) then (if (-sp[1]+ip[1]+IS[1]/2 > ws[1]/2) then ip[1]-ds[1] else ip[1]+IS[1]) else ip[1]+IS[1]
       ]
 
       instanceId++
@@ -132,7 +128,7 @@
         holdHV: false
         holdS: false
         posHV: [dp[0], dp[1]]
-        posS: [dp[0] + HVSize, dp[1]]
+        posS: [dp[0] + colorOverlaySize, dp[1]]
 
       updateDialogPointers()
       updateDialogSaturation()
@@ -152,22 +148,21 @@
       # update hue/value cross
       [hue, saturation, lightness] = instance.color.toHsl()
 
-      x = (hue / 6 * HVSize).round()
-      y = ((1 - lightness) * (HVSize-1)).round()
+      x = (hue / 6 * colorOverlaySize).round()
+      y = ((1 - lightness) * (colorOverlaySize-1)).round()
       $(elements.hv).css
-        backgroundPosition: (x + (HVCrossSize / 2).floor()) + 'px ' + (y - (HVCrossSize / 2).floor()) + 'px'
+        backgroundPosition: (x + (cursorSize / 2).floor()) + 'px ' + (y - (cursorSize / 2).floor()) + 'px'
 
       # update saturation arrow
-      y = ((1 - saturation) * HVSize).round()
+      y = ((1 - saturation) * colorOverlaySize).round()
       $(elements.s).css
-        backgroundPosition: "0 #{(y - (SArrowSize[1] / 2).floor())}px"
+        backgroundPosition: "0 #{(y - (sliderSelectorSize[1] / 2).floor())}px"
 
     updateDialogSaturation = ->
       # update saturation gradient
       [hue, saturation, lightness] = instance.color.toHsl()
+      r = g = b = s = c = [lightness, 0, 0 ]
 
-      r = g = b = lightness
-      [s, c] = [0, 0]
       i = hue.floor()
       f = if i % 2 then hue - i else 1 - (hue - i)
       switch i
@@ -196,14 +191,12 @@
           g=2
           b=1
 
-      gr_length = $(elements.grad).length
-      $(elements.grad).children().each (element, i) ->
-        console.log c
-        s = 1 - 1/(gr_length-1) * i
-        c[1] = c[0] * (1 - s*f)
-        c[2] = c[0] * (1 - s)
+      gr_length = $(elements.grad).children().length
+      $(elements.grad).children().each (i, element) ->
+        hue = ((i / gr_length) * 360).round()
+
         $(element).css
-          backgroundColor: "rgb(#{c[r]*100}%, #{c[g]*100}%, #{c[b]*100}%)"
+          backgroundColor: "hsl(#{hue}, 100%, 50%)"
 
     updateInput = (el, color, realValue) ->
       if (allowEmpty && realValue != null && !/^\s*#?([0-9A-F]{3}([0-9A-F]{3})?)\s*$/i.test(realValue))
@@ -218,7 +211,7 @@
         if reflectOnBackground
           $(el).css
             backgroundColor: '#' + color.toHex(false)
-            color: if (0.212671 * color.r + 0.715160 * color.g + 0.072169 * color.b) < 0.5 then '#FFF' else '#000'
+            color: if color.lightness() < 0.5 then '#FFF' else '#000'
 
     getElementPos = (e) ->
       x = $(e).offset().left
