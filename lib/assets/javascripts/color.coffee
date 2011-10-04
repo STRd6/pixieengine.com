@@ -57,8 +57,7 @@
     r = g = b = null
 
     hueToRgb = (p, q, hue) ->
-      hue += 360 if hue < 0
-      hue -= 360 if hue > 360
+      hue = hue.mod(360)
 
       return p + (q - p) * (hue / 60) if hue < 60
       return q if hue < 180
@@ -74,7 +73,7 @@
       g = hueToRgb(p, q, h)
       b = hueToRgb(p, q, h - 120)
 
-      rgbMap = ((channel * 255).round() for channel in [r, g, b])
+    rgbMap = ((channel * 255).round() for channel in [r, g, b])
 
     return rgbMap.concat(a)
 
@@ -292,7 +291,7 @@
           when g then hue = ((b - r) / chroma) + 2
           when b then hue = ((r - g) / chroma) + 4
 
-        hue *= 60
+        hue = (hue * 60).mod(360)
 
       return [hue, saturation, lightness, @a]
 

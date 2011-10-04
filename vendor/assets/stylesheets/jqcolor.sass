@@ -12,6 +12,25 @@
   border: 1px solid rgba(0, 0, 0, 0.15)
   z-index: 1000
 
+  .color_inputs
+    position: absolute
+    bottom: 2px
+
+  .red, .green, .blue, .alpha, .hex
+    +box-shadow(none)
+
+    display: inline-block
+    height: 25px
+    width: 35px
+    margin-left: 2px
+    margin-right: 2px
+
+  .alpha
+    width: 30px
+
+  .hex
+    width: 63px
+
   .color_overlay
     +bounds(256px)
 
@@ -26,7 +45,7 @@
 
     .white_overlay
       +bounds(256px)
-      +linear-gradient(color-stops(white, rgba(0, 0, 0, 0) 100%), left)
+      +linear-gradient(color-stops(white, rgba(0, 0, 0, 0) 100%), top left)
 
     .black_overlay
       +bounds(256px)
@@ -38,10 +57,8 @@
   .hue_selector
     position: absolute
     width: 25px
-    height: 276px
-    background: url(/assets/jscolor/s.gif) no-repeat 0px 76px
-    background-position: 0px 76px
-    background-repeat: no-repeat no-repeat
+    height: 258px
+    background: url(/assets/jscolor/s.gif) no-repeat
     right: 3px
 
   .slider
