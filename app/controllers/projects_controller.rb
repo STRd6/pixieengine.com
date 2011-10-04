@@ -153,6 +153,7 @@ class ProjectsController < ApplicationController
     @title = "PixieEngine - Create Games"
     @hide_chat = true
     @hide_dock = true
+    @hide_feedback = true
   end
 
   def update
