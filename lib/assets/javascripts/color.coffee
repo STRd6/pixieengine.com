@@ -1,207 +1,303 @@
-(->
+( ->
   rgbParser = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d?\.?\d*)?\)$/
+  hslParser = /^hsla?\((\d{1,3}),\s*(\d?\.?\d*),\s*(\d?\.?\d*),?\s*(\d?\.?\d*)?\)$/
+
+  parseRGB = (colorString) ->
+    return undefined unless channels = rgbParser.exec(colorString)
+
+    parsedColor = (parseFloat channel for channel in channels[1..3])
+    parsedColor[3] ||= 1
+
+    return parsedColor
 
   parseHex = (hexString) ->
     hexString = hexString.replace(/#/, '')
 
     switch hexString.length
       when 3, 4
-        return [
-          parseInt(hexString.substr(0, 1), 16) * 0x11
-          parseInt(hexString.substr(1, 1), 16) * 0x11
-          parseInt(hexString.substr(2, 1), 16) * 0x11
-          if hexString.substr(3, 1).length then (parseInt(hexString.substr(3, 1), 16) * 0x11) / 255.0 else 1.0
-        ]
+        if hexString.length == 4
+          alpha = ((parseInt(hexString.substr(3, 1), 16) * 0x11) / 255)
+        else
+          alpha = 1
+
+        rgb = (parseInt(hexString.substr(i, 1), 16) * 0x11 for i in [0..2])
+        rgb.push(alpha)
+
+        return rgb
+
       when 6, 8
-        return [
-          parseInt(hexString.substr(0, 2), 16)
-          parseInt(hexString.substr(2, 2), 16)
-          parseInt(hexString.substr(4, 2), 16)
-          if hexString.substr(6, 2).length then parseInt(hexString.substr(6, 2), 16) / 255.0 else 1.0
-        ]
+        if hexString.length == 8
+          alpha = (parseInt(hexString.substr(6, 2), 16) / 255)
+        else
+          alpha = 1
+
+        rgb = (parseInt(hexString.substr(2 * i, 2), 16) for i in [0..2])
+        rgb.push(alpha)
+
+        return rgb
+
       else
-        undefined
+        return undefined
 
-  parseRGB = (colorString) ->
-    return undefined unless bits = rgbParser.exec(colorString)
+  parseHSL = (colorString) ->
+    return undefined unless channels = hslParser.exec(colorString)
 
-    return [
-      parseInt(bits[1])
-      parseInt(bits[2])
-      parseInt(bits[3])
-      if bits[4]? then parseFloat(bits[4]) else 1.0
-    ]
+    parsedColor = (parseFloat channel for channel in channels[1..3])
+    parsedColor[0] = parsedColor[0]
+    parsedColor[3] ||= 1
+
+    return hslToRgb(parsedColor)
+
+  hslToRgb = (hsl) ->
+    [h, s, l, a] = hsl
+
+    h = h % 360
+    a ||= 1
+
+    r = g = b = null
+
+    hueToRgb = (p, q, hue) ->
+      hue += 360 if hue < 0
+      hue -= 360 if hue > 360
+
+      return p + (q - p) * (hue / 60) if hue < 60
+      return q if hue < 180
+      return p + (q - p) * ((240 - hue) / 60) if hue < 240
+      return p
+
+    if s == 0
+      r = g = b = l
+    else
+      q = (if l < 0.5 then l * (1 + s) else l + s - l * s)
+      p = 2 * l - q
+      r = hueToRgb(p, q, h + 120)
+      g = hueToRgb(p, q, h)
+      b = hueToRgb(p, q, h - 120)
+
+      rgbMap = ((channel * 255).round() for channel in [r, g, b])
+
+    return rgbMap.concat(a)
 
   normalizeKey = (key) ->
     key.toString().toLowerCase().split(' ').join('')
 
-  window.Color = (args...) ->
-    color = args.first()
-
-    # HAX: checking to see if we are passing in an instance of Color
-    return Color(color.channels()) if color?.channels
-
-    parsedColor = null
-
-    if arguments.length == 0
-      parsedColor = [0, 0, 0, 0]
-    else if arguments.length == 1 && Object.isArray(arguments[0])
-      alpha = if arguments[0][3]? then arguments[0][3] else 1
-      parsedColor = [
-        parseInt(arguments[0][0]),
-        parseInt(arguments[0][1]),
-        parseInt(arguments[0][2]),
-        parseFloat(alpha)
-      ]
-    else if arguments.length == 2
-      c = arguments[0]
-      a = arguments[1]
-      if Object.prototype.toString.call(c) == '[object Array]'
-        parsedColor = [parseInt(c[0]), parseInt(c[1]), parseInt(c[2]), parseFloat(a)]
+  channelize = (color, alpha) ->
+    return color.channels() if color.channels?
+    if Object.isArray color
+      if alpha?
+        alpha = parseFloat(alpha)
+      else if color[3]?
+        alpha = parseFloat(color[3])
       else
-        parsedColor = lookup[normalizeKey(c)] || parseHex(c) || parseRGB(c)
-        parsedColor[3] = a
-    else if arguments.length > 2
-      alpha = if arguments[3]? then arguments[3] else 1
-      parsedColor = [parseInt(arguments[0]), parseInt(arguments[1]), parseInt(arguments[2]), parseFloat(alpha)]
+        alpha = 1
+
+      result = (parseFloat(channel) for channel in color[0..2]).concat(alpha)
     else
-      c = arguments[0]
-      parsedColor = lookup[normalizeKey(c)] || parseHex(c) || parseRGB(c)
+      result = lookup[normalizeKey(color)] || parseHex(color) || parseRGB(color) || parseHSL(color)
+
+      if alpha?
+        result[3] = parseFloat(alpha)
+
+    return result
+
+  Color = (args...) ->
+    parsedColor =
+      switch args.length
+        when 0
+          [0, 0, 0, 0]
+        when 1
+          channelize(args.first())
+        when 2
+          channelize(args.first(), args.last())
+        else
+          channelize(args)
 
     throw "#{args.join(',')} is an unknown color" unless parsedColor
 
-    alpha = parsedColor[3] || 0
+    __proto__: Color::
+    r: parsedColor[0].round()
+    g: parsedColor[1].round()
+    b: parsedColor[2].round()
+    a: parsedColor[3]
 
-    channels = [
-      parsedColor[0]
-      parsedColor[1]
-      parsedColor[2]
-      if alpha? then parseFloat(alpha) else 0.0
-    ]
+  Color:: =
+    channels: ->
+      [@r, @g, @b, @a]
 
-    self =
-      channels: ->
-        channels.copy()
+    complement: ->
+      @copy().complement$()
 
-      r: (val) ->
-        if val?
-          channels[0] = val
-          return self
-        else
-          channels[0]
+    complement$: ->
+      @shiftHue$(180)
 
-      g: (val) ->
-        if val?
-          channels[1] = val
-          return self
-        else
-          channels[1]
+    copy: ->
+      Color(@r, @g, @b, @a)
 
-      b: (val) ->
-        if val?
-          channels[2] = val
-          return self
-        else
-          channels[2]
+    darken: (amount) ->
+      @copy().darken$(amount)
 
-      a: (val) ->
-        if val?
-          channels[3] = val
-          return self
-        else
-          channels[3]
+    darken$: (amount) ->
+      hsl = @toHsl()
+      hsl[2] -= amount
 
-      equals: (other) ->
-        return other.r() == self.r() &&
-          other.g() == self.g() &&
-          other.b() == self.b() &&
-          other.a() == self.a()
+      [@r, @g, @b, @a] = hslToRgb(hsl)
 
-      hslToRgb: (hsl) ->
-        h = hsl[0] / 360.0
-        s = hsl[1]
-        l = hsl[2]
+      return this
 
-        r = g = b = null
+    desaturate: (amount) ->
+      @copy().desaturate$(amount)
 
-        hueToRgb = (p, q, t) ->
-          t += 1 if t < 0
-          t -= 1 if t > 1
+    desaturate$: (amount) ->
+      hsl = @toHsl()
+      hsl[1] -= amount
 
-          return p + (q - p) * 6 * t if t < 1/6
-          return q if t < 1/2
-          return p + (q - p) * (2/3 - t) * 6 if t < 2/3
-          return p
+      [@r, @g, @b, @a] = hslToRgb(hsl)
 
-        if s == 0
-          r = g = b = l
-        else
-          q = (if l < 0.5 then l * (1 + s) else l + s - l * s)
-          p = 2 * l - q
-          r = hueToRgb(p, q, h + 1/3)
-          g = hueToRgb(p, q, h)
-          b = hueToRgb(p, q, h - 1/3)
+      return this
 
-        return Color([(r * 0xFF).round(), (g * 0xFF).round(), (b * 0xFF).round()])
+    equal: (other) ->
+      other.r == @r &&
+      other.g == @g &&
+      other.b == @b &&
+      other.a == @a
 
-      lighten: (amount) ->
-        hsl = self.toHsl()
-        hsl[0] = hsl[0].round()
-        hsl[2] = hsl[2] + amount
+    grayscale: ->
+      @copy().grayscale$()
 
-        return Color(self.hslToRgb(hsl))
+    grayscale$: ->
+      hsl = @toHsl()
 
-      darken: (amount) ->
-        hsl = self.toHsl()
-        hsl[0] = hsl[0].round()
-        hsl[2] = hsl[2] - amount
+      g = (hsl[2] * 255).round()
 
-        return Color(self.hslToRgb(hsl))
+      @r = @g = @b = g
 
-      rgba: -> "rgba(#{self.r()}, #{self.g()}, #{self.b()}, #{self.a()})"
+      return this
 
-      toHex: ->
-        hexString = (number) ->
-          number.toString(16)
-        padString = (hexString) ->
-          if hexString.length == 1
-            return hexString = "0" + hexString
+    hue: (newVal) ->
+      hsl = @toHsl()
+      if newVal?
+        hsl[0] = newVal
 
-          return hexString
+        [@r, @g, @b, @a] = hslToRgb(hsl)
 
-        hexFromNumber = (number) ->
-          return padString(hexString(number))
+        return this
+      else
+        return hsl[0]
 
-        "##{hexFromNumber(channels[0])}#{hexFromNumber(channels[1])}#{hexFromNumber(channels[2])}"
+    lightness: (newVal) ->
+      hsl = @toHsl()
+      if newVal?
+        hsl[2] = newVal
 
-      toHsl: ->
-        r = channels[0] / 255.0
-        g = channels[1] / 255.0
-        b = channels[2] / 255.0
+        [@r, @g, @b, @a] = hslToRgb(hsl)
 
-        min = Math.min(r, g, b)
-        max = Math.max(r, g, b)
+        return this
+      else
+        return hsl[2]
 
-        hue = saturation = lightness = (max + min) / 2.0
+    shiftHue: (degrees) ->
+      @copy().shiftHue$(degrees)
 
-        if max == min
-          hue = saturation = 0
-        else
-          delta = max - min
-          saturation = (if lightness > 0.5 then delta / (2 - max - min) else delta / (max + min))
+    shiftHue$: (degrees) ->
+      hsl = @toHsl()
 
-          switch max
-            when r then hue = (g - b) / delta + (if g < b then 6 else 0)
-            when g then hue = (b - r) / delta + 2
-            when b then hue = (r - g) / delta + 4
+      hsl[0] = (hsl[0] + degrees.round()).mod 360
 
-          hue *= 60
+      [@r, @g, @b, @a] = hslToRgb(hsl)
 
-        return [hue.round(), saturation, lightness, channels[3]]
+      return this
 
-      toString: -> self.rgba()
+    lighten: (amount) ->
+      @copy().lighten$(amount)
 
-    return self
+    lighten$: (amount) ->
+      hsl = @toHsl()
+      hsl[2] += amount
+
+      [@r, @g, @b, @a] = hslToRgb(hsl)
+
+      return this
+
+    mixWith: (other, amount) ->
+      @copy().mixWith$(other, amount)
+
+    mixWith$: (other, amount) ->
+      amount ||= 0.5
+
+      [@r, @g, @b, @a] = [@r, @g, @b, @a].zip([other.r, other.g, other.b, other.a]).map (array) ->
+        (array[0] * amount) + (array[1] * (1 - amount))
+
+      [@r, @g, @b] = [@r, @g, @b].map (color) ->
+        color.round()
+
+      return this
+
+    saturate: (amount) ->
+      @copy().saturate$(amount)
+
+    saturate$: (amount) ->
+      hsl = @toHsl()
+      hsl[1] += amount
+
+      [@r, @g, @b, @a] = hslToRgb(hsl)
+
+      return this
+
+    saturation: (newVal) ->
+      hsl = @toHsl()
+      if newVal?
+        hsl[1] = newVal
+
+        [@r, @g, @b, @a] = hslToRgb(hsl)
+
+        return this
+      else
+        return hsl[1]
+
+    toHex: (leadingHash) ->
+      padString = (hexString) ->
+        if hexString.length == 1 then pad = "0" else pad = ""
+
+        return pad + hexString
+
+      hexFromNumber = (number) ->
+        return padString(number.toString(16))
+
+      if leadingHash == false
+        "#{hexFromNumber(@r)}#{hexFromNumber(@g)}#{hexFromNumber(@b)}"
+      else
+        "##{hexFromNumber(@r)}#{hexFromNumber(@g)}#{hexFromNumber(@b)}"
+
+    toHsl: ->
+      [r, g, b] = (channel / 255 for channel in [@r, @g, @b])
+
+      {min, max} = [r, g, b].extremes()
+
+      hue = saturation = lightness = (max + min) / 2
+      chroma = max - min
+
+      if chroma.abs() < 0.00001
+        hue = saturation = 0
+      else
+        saturation =
+          if lightness > 0.5
+            chroma / (1 - lightness)
+          else
+            chroma / lightness
+
+        saturation /= 2
+
+        switch max
+          when r then hue = ((g - b) / chroma) + 0
+          when g then hue = ((b - r) / chroma) + 2
+          when b then hue = ((r - g) / chroma) + 4
+
+        hue *= 60
+
+      return [hue, saturation, lightness, @a]
+
+    toString: ->
+      "rgba(#{@r}, #{@g}, #{@b}, #{@a})"
 
   lookup = {}
 
@@ -2722,12 +2818,24 @@
     ["0343df", "blue"]
     ["15b01a", "green"]
     ["7e1e9c", "purple"]
+    ["FF5E99", "paul irish pink"]
     ["00000000", "transparent"]
   ]
 
   names.each (element) ->
     lookup[normalizeKey(element[1])] = parseHex(element[0])
 
-  window.Color.random = () ->
-    Color(rand(256), rand(256), rand(256), 1)
+  Color.random = ->
+    Color(rand(256), rand(256), rand(256))
+
+  Color.mix = (color1, color2, amount) ->
+    amount ||= 0.5
+
+    newColors = [color1.r, color1.g, color1.b, color1.a].zip([color2.r, color2.g, color2.b, color2.a]).map (array) ->
+      (array[0] * amount) + (array[1] * (1 - amount))
+
+    return Color(newColors)
+
+  (exports ? this)["Color"] = Color
 )()
+

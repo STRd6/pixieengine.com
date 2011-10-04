@@ -4,11 +4,11 @@
   border: 1px solid rgba(0, 0, 0, 0.2)
 
 .color_picker
+  +bounds(284px)
   background-color: white
   clear: both
+  padding: 3px
   position: absolute
-  width: 308px
-  height: 276px
   border: 1px solid rgba(0, 0, 0, 0.15)
   z-index: 1000
 
@@ -22,6 +22,7 @@
     cursor: crosshair
     background-position: 88px 126px
     background-repeat: no-repeat no-repeat
+    z-index: 300
 
     .white_overlay
       +bounds(256px)
@@ -36,14 +37,15 @@
 
   .hue_selector
     position: absolute
-    width: 32px
+    width: 25px
     height: 276px
-    background-image: url(/assets/jscolor/s.gif)
     background: url(/assets/jscolor/s.gif) no-repeat 0px 76px
     background-position: 0px 76px
     background-repeat: no-repeat no-repeat
-    right: 0
+    right: 3px
 
   .slider
+    border: 1px solid black
     position: absolute
     width: 15px
+    right: 3px
