@@ -77,6 +77,10 @@
 
 .chart.registrations
 
+%h2 Colors
+
+%canvas.color(width=480 height=480)
+
 - content_for :javascript do
   = javascript_include_tag "highcharts"
 
@@ -113,3 +117,28 @@
       yAxis:
         title:
           text: "Registrations"
+
+    colorCanvas = $("canvas.color").pixieCanvas()
+
+    colorData = #{User.select("favorite_color").where("favorite_color IS NOT NULL").map(&:favorite_color).to_json}
+
+    colorCanvas.fill("white")
+
+    colorCanvas.withTransform Matrix.translation(240, 240), ->
+      colorData.each (color) ->
+        try
+          color = Color(color)
+        catch error
+          console.warn(error)
+
+        if color
+          angle = color.hue() * Math.TAU / 360
+          saturation = color.saturation()
+
+          position = Point.fromAngle(angle).scale(235 * saturation)
+
+          colorCanvas.drawCircle
+            position: position
+            radius: 4
+            color: color
+
