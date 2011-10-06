@@ -76,3 +76,12 @@ $ ->
     fade: 50
     gravity: 'w'
     opacity: 1
+
+  # Draggable UI Windows
+  $(".window").draggable(
+    handle: "h3"
+    iframeFix: true
+  ).find("h3").disableSelection()
+
+  $('.window .ui-icon-close').live "click", ->
+    $(this).parent().hide().children("iframe").remove()

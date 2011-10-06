@@ -740,15 +740,9 @@
         index = $('li', $tabs).index(parent)
         $tabs.tabs('select', index)
 
-      $(".window").draggable(
-        handle: "h3"
-        iframeFix: true
-      ).find("h3").disableSelection()
-
-      $('.window .ui-icon-close').live "click", ->
-        $(this).parent().hide().children("iframe").remove()
-        if $('.ui-pnotify').length
-          $.pnotify_remove_all()
+      $('#test_zone .ui-icon-close').live "click", ->
+        # Clear any old error messages
+        $.pnotify_remove_all()
 
       # Hack to pre-load main file, README and tutorials
       $("#file_src_main_coffee").prev().click()
