@@ -127,7 +127,7 @@ class User < ActiveRecord::Base
 
   def display_name
     if super.blank?
-      "Anonymous#{id}"
+      email[0..((email.index('@') || 0) - 1)]
     else
       super
     end

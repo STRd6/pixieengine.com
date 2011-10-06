@@ -52,6 +52,7 @@ class UsersController < ApplicationController
 
   def create
     subscribe = params[:subscribe]
+
     @object = User.new(params[:user])
 
     @object.referrer_id = session[:referrer_id]
