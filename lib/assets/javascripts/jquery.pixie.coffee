@@ -285,15 +285,15 @@
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e', '4']
       mousedown: (e, color, pixel) ->
-        erase(pixel, color.a())
+        erase(pixel, color.a)
       mouseenter: (e, color, pixel) ->
-        erase(pixel, color.a())
+        erase(pixel, color.a)
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
       hotkeys: ['f', '5']
       mousedown: (e, newColor, pixel) ->
         originalColor = this.color()
-        return if newColor.equals(originalColor)
+        return if newColor.equal(originalColor)
 
         q = []
         pixel.color(newColor)
@@ -307,7 +307,7 @@
           neighbors = canvas.getNeighbors(pixel.x, pixel.y)
 
           $.each neighbors, (index, neighbor) ->
-            if neighbor?.color().equals(originalColor)
+            if neighbor?.color().equal(originalColor)
               neighbor.color(newColor)
               q.push(neighbor)
 
