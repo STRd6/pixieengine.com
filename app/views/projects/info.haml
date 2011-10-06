@@ -287,6 +287,12 @@
         = render :partial => project
 
 - content_for :javascript do
+  :coffeescript
+    $ ->
+      setTimeout ->
+        $('iframe')[0].contentWindow.focus()
+      , 100
+
   /[if IE]
     :coffeescript
       $(".feature a").attr("href", #{register_subscribe_path.to_json})
