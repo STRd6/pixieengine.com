@@ -1,6 +1,7 @@
 #= require coffee-script
 #= require corelib
 #= require pixie_canvas
+#= require color
 
 $ ->
   $("code.run").each ->
