@@ -18,6 +18,13 @@ class ApplicationController < ActionController::Base
       track_event('land')
     end
 
+    unless session['returned']
+      if current_user && current_user.created_at < 1.day.ago
+        session['returned'] = true
+        track_event('return')
+      end
+    end
+
     Visit.track(current_user, controller_name, action_name, request.session_options[:id])
   end
 
