@@ -5,15 +5,15 @@ class UserTest < ActiveSupport::TestCase
     @user = Factory :user
   end
 
-  # Replace this with your real tests.
-  test "the factory" do
-    assert @user
-  end
-
   should "send welcome email on create" do
     assert_difference 'ActionMailer::Base.deliveries.size', +1 do
       Factory :user
     end
+  end
+
+  should "set display_name based on email address if none is provided" do
+    @user.save!
+    assert @user.display_name == @user.email[0..((@user.email.index('@') || 0) - 1)]
   end
 
   context "collections" do
