@@ -35,6 +35,8 @@ class UsersController < ApplicationController
   end
 
   def register_subscribe
+    @hide_chat = true
+
     if current_user
       if current_user.paying
         redirect_back_or_default current_user
