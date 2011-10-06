@@ -700,6 +700,9 @@
 
           canvas
 
+        eval: (code) ->
+          eval(code)
+
         fromDataURL: (dataURL) ->
           context = document.createElement('canvas').getContext('2d')
 
