@@ -168,6 +168,9 @@
           .light &
             color: $light_text
 
+    #try_now
+      width: 95%
+
 - content_for :javascript do
   :coffeescript
     $ ->
@@ -190,7 +193,7 @@
         With Pixie there is no limit to what you can do. See for yourself with
         one of our demo applications.
 
-      = link_to "Try Now for Free", ide_project_path("demo"), :class => "button complement full"
+      = link_to "Try Now for Free", ide_project_path("demo"), :class => "button complement full", :id => "try_now"
 
     .video
       <iframe width="640" height="480" src="#{widget_project_url(Project::ASTEROIDS_DEMO_ID)}" ></iframe>
