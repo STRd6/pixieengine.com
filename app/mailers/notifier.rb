@@ -13,6 +13,13 @@ class Notifier < ActionMailer::Base
   end
 
   def welcome_email(user)
+    @delivery_date = Time.now.strftime("%b %d %Y")
+    @link_tracking = { :utm_source => 'welcome email', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
     @user = user
     mail :subject => "Welcome to Pixie",
       :to => user.email

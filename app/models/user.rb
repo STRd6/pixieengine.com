@@ -40,9 +40,7 @@ class User < ActiveRecord::Base
 
   scope :none
 
-  after_create do
-    Notifier.welcome_email(self).deliver unless email.blank?
-  end
+  after_create :send_welcome_email
 
   before_validation :sanitize_profile
 
@@ -260,4 +258,9 @@ class User < ActiveRecord::Base
   def no_connected_sites?
     authenticated_with.length == 0
   end
+
+  def send_welcome_email
+    Notifier.welcome_email(self).deliver unless email.blank?
+  end
+  handle_asynchronously :send_welcome_email
 end

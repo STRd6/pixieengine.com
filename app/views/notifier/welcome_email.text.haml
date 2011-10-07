@@ -1,31 +1,16 @@
 :plain
-  Greetings, and thanks for signing up for Pixie!
+  Greetings #{@user.display_name}, and welcome to Pixie!
 
-  On Pixie you can create amazing games for free, from anywhere, and share them
-  with the world.
+  On Pixie you'll create amazing games from anywhere with an internet connection and be able to instantly share them with the world.
 
-  How about giving it a try right now? #{ide_project_path("demo")}
-  Follow along with the tooltips, they'll help point you in the right
-  direction.
+  How about giving it a try right now? Follow along with the tooltips, they'll help point you in the right direction: #{ide_project_url("demo", @link_tracking)}. If you want to learn more, we have an entire section of tutorials: #{projects_url(@link_tracking.merge({:filter => 'tutorial'}))}. There's even a showcase of complete games you can play, explore, and learn from: #{projects_url(@link_tracking.merge({:filter => 'featured'}))}.
 
-  If you want to lear more we have an entire section of tutorials:
-  http://pixieengine.com/projects?filter=tutorial
+  You can also dig in to our vast gallery of pixel art: #{sprites_url(@link_tracking)}, as well as create your own: #{new_sprite_url(@link_tracking)}.
 
-  There is even a showcase of complete games you can play, explore and learn
-  from: http://pixieengine.com/projects?filter=featured
+  As the community grows our aim is to provide everyone the creative means to produce games: ideas, tools, and data. The more that we offer, the more that's returned to the community by way of new ideas and new creations.
 
-  You can also explore our vast gallery of pixel art: #{sprites_path}
-  As well as create your own: #{new_sprite_path}
-
-  As our community grows our aim is to grant all people access to the means of
-  production: ideas, tools, and data. The more that we offer, the more that is
-  returned to the community by way of new ideas and new creations.
-
-  Be sure to introduce yourself in the forums and see what everyone is up to:
-  http://pixieengine.com/community/forums/1/topics/1
-  And also please don't hesitate to ask if you have any questions, we'll help
-  you out as soon as we can.
-
+  Be sure to introduce yourself in the forums and see what everyone is up to. Please don't hesitate to ask or post in the forums if you have any questions, we'll help you out as soon as we can: #{"http://pixieengine.com/community/forums/1/topics/1?utm_source=#{@link_tracking[:utm_source]}&utm_medium=#{@link_tracking[:utm_medium]}&utm_campaign=#{@link_tracking[:utm_campaign]}"}.
 
   Veritably Yours,
   Pixie
+
