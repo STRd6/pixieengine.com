@@ -243,7 +243,7 @@
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
 
-    pixel.color(Color(pixelColor.toString(), pixelColor.a() * inverseOpacity), false, "replace")
+    pixel.color(Color(pixelColor.toString(), pixelColor.a * inverseOpacity), false, "replace")
 
   tools =
     pencil:
