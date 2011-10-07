@@ -224,6 +224,11 @@ class User < ActiveRecord::Base
     end
   end
 
+  def send_welcome_email
+    Notifier.welcome_email(self).deliver unless email.blank?
+  end
+  handle_asynchronously :send_welcome_email
+
   def self.visit_report
     esac = "
       CASE
@@ -258,9 +263,4 @@ class User < ActiveRecord::Base
   def no_connected_sites?
     authenticated_with.length == 0
   end
-
-  def send_welcome_email
-    Notifier.welcome_email(self).deliver unless email.blank?
-  end
-  handle_asynchronously :send_welcome_email
 end
