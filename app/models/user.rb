@@ -227,7 +227,6 @@ class User < ActiveRecord::Base
   def send_welcome_email
     Notifier.welcome_email(self).deliver unless email.blank?
   end
-  handle_asynchronously :send_welcome_email
 
   def self.visit_report
     esac = "

@@ -56,9 +56,11 @@ class ProjectsController < ApplicationController
     else
       users = User.all
     end
+
     list = users.map do |u|
       { :id => u.id, :label => u.display_name, :name => u.display_name, :icon => u.avatar(:tiny) }
     end
+
     render :json => list
   end
 

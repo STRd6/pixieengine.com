@@ -25,6 +25,19 @@ class Notifier < ActionMailer::Base
       :to => user.email
   end
 
+  def notify_member(membership)
+    @delivery_date = Time.now.strftime("%b %d %Y")
+    @link_tracking = { :utm_source => 'notify member', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    @membership = membership
+    mail :subject => "You've been added to a Pixie project",
+      :to => membership.user.email
+  end
+
   def invitation(invite)
     user = invite.user
     @invite = invite
