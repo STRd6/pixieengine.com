@@ -1,3 +1,6 @@
+#= require color_util
+#= require undo_stack
+
 (($) ->
   track = (action, label) ->
     trackEvent?("Pixel Editor", action, label)
@@ -8,25 +11,6 @@
   IMAGE_DIR = "/assets/pixie/"
   RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
   scale = 1
-
-  ColorUtil =
-    # http://stackoverflow.com/questions/726549/algorithm-for-additive-color-mixing-for-rgb-values/727339#727339
-    additive: (c1, c2) ->
-      [R, G, B, A] = c1.channels()
-      [r, g, b, a] = c2.channels()
-
-      return c1 if a == 0
-      return c2 if A == 0
-
-      ax = 1 - (1 - a) * (1 - A)
-      rx = (r * a / ax + R * A * (1 - a) / ax).round().clamp(0, 255)
-      gx = (g * a / ax + G * A * (1 - a) / ax).round().clamp(0, 255)
-      bx = (b * a / ax + B * A * (1 - a) / ax).round().clamp(0, 255)
-
-      return Color(rx, gx, bx, ax)
-
-    replace: (c1, c2) ->
-      c2
 
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
@@ -43,61 +27,6 @@
     $('<input/>',
       class: 'color'
     ).colorPicker()
-
-  UndoStack = ->
-    undos = []
-    redos = []
-    empty = true
-
-    last: -> undos[undos.length - 1]
-
-    popUndo: ->
-      undo = undos.pop()
-
-      redos.push(undo) if undo
-
-      return undo
-
-    popRedo: ->
-      redo = redos.pop()
-
-      undos.push(redo) if redo
-
-      return redo
-
-    next: ->
-      last = this.last()
-      if !last || !empty
-        undos.push({})
-        empty = true
-
-        redos = []
-
-    add: (object, data) ->
-      last = this.last()
-
-      if last[object]
-        last[object].newColor = data.newColor
-      else
-        last[object] = data
-        empty = false
-
-
-      return this
-
-    replayData: ->
-      replayData = []
-
-      $.each undos, (i, items) ->
-        replayData[i] = []
-        $.each items, (key, data) ->
-          pixel = data.pixel
-          replayData[i].push
-            x: pixel.x
-            y: pixel.y
-            color: data.newColor.toString()
-
-      return replayData
 
   actions =
     undo:
@@ -239,6 +168,53 @@
     $.each this.canvas.getNeighbors(this.x, this.y), (i, neighbor) ->
       neighbor?.color(color)
 
+  line = (canvas, color, p0, p1) ->
+    {x:x0, y:y0} = p0
+    {x:x1, y:y1} = p1
+
+    dx = (x1 - x0).abs()
+    dy = (y1 - y0).abs()
+    sx = (x1 - x0).sign()
+    sy = (y1 - y0).sign()
+    err = dx - dy
+
+    canvas.getPixel(x0, y0).color(color)
+
+    while !(x0 == x1 and y0 == y1)
+      canvas.getPixel(x0, y0).color(color)
+
+      e2 = 2 * err
+
+      if e2 > -dy
+        err -= dy
+        x0 += sx
+
+      if e2 < dx
+        err += dx
+        y0 += sy
+
+    canvas.getPixel(x0, y0).color(color)
+
+  pencilTool = ( ->
+    lastPosition = Point(0, 0)
+
+    cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
+    hotkeys: ['p', '1']
+    mousedown: (e, color) ->
+      currentPosition = Point(@x, @y)
+
+      if e.shiftKey
+        line(@canvas, color, lastPosition, currentPosition)
+      else
+        this.color(color)
+
+      lastPosition = currentPosition
+    mouseenter: (e, color) ->
+      currentPosition = Point(@x, @y)
+      line(@canvas, color, lastPosition, currentPosition)
+      lastPosition = currentPosition
+  )()
+
   erase = (pixel, opacity) ->
     inverseOpacity = (1 - opacity)
     pixelColor = pixel.color()
@@ -246,13 +222,8 @@
     pixel.color(Color(pixelColor.toString(), pixelColor.a * inverseOpacity), false, "replace")
 
   tools =
-    pencil:
-      cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
-      hotkeys: ['p', '1']
-      mousedown: (e, color) ->
-        this.color(color)
-      mouseenter: (e, color) ->
-        this.color(color)
+    pencil: pencilTool
+
     mirror_pencil:
       cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
       hotkeys: ['m']
