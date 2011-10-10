@@ -19,7 +19,7 @@
     leadingHash = options.leadingHash || true
     dir = options.dir || '/assets/jscolor/'
 
-    colorOverlaySize = 256
+    colorOverlaySize = 258
     cursorSize = 12
     sliderSelectorSize = 11
     gradientStep = 4
@@ -32,26 +32,25 @@
     createDialog = ->
       elements.dialog = $ '<div class="color_picker"/>'
 
-      handleMouseup = ->
+      elements.dialog.get(0).onmousedown = ->
+        instance.preserve = true
+
+      elements.dialog.get(0).onmousemove = (e) ->
+        if instance.holdHV
+          setHV(e)
+
+        if instance.holdS
+          setHue(e)
+
+      elements.dialog.get(0).onmouseup = elements.dialog.onmouseout = (e) ->
+        return if $(e.target).is('.red') || $(e.target).is('.green') ||  $(e.target).is('.blue') ||  $(e.target).is('.hex')
+
         if (instance.holdHV || instance.holdS)
           instance.holdHV = instance.holdS = false
           if(typeof instance.input.onchange == 'function')
-            instance.input.change()
+            instance.input.onchange()
 
         instance.input.focus()
-
-      $(elements.dialog).bind
-        mousedown: ->
-          instance.preserve = true
-        mousemove: (e) ->
-          console.log 'here'
-          if instance.holdHV
-            setHV(e)
-
-          if instance.holdS
-            setHue(e)
-        mouseup: handleMouseup
-        mouseout: handleMouseup
 
       # hue/value spectrum
       elements.hv = $('<div class="color_overlay" />')
@@ -66,9 +65,9 @@
         instance.color.value(1 - (relY / colorOverlaySize))
 
         updateDialogPointers()
-        updateInput(instance.input, instance.color, null)
+        updateInput(instance.input, instance.color)
 
-      $(elements.hv).mousedown (e) ->
+      elements.hv.get(0).onmousedown = (e) ->
         instance.holdHV = true
         setHV(e)
 
@@ -97,9 +96,9 @@
         instance.color.hue(((relY / colorOverlaySize) * 360).clamp(0, 359))
 
         updateDialogPointers()
-        updateInput(instance.input, instance.color, null)
+        updateInput(instance.input, instance.color)
 
-      $(elements.s).mousedown (e) ->
+      elements.s.get(0).onmousedown = (e) ->
         instance.holdS = true
         setHue(e)
 
@@ -108,20 +107,30 @@
 
     showDialog = (input) ->
       IS = [input.offsetWidth, input.offsetHeight]
+      halfInputWidth = IS[0] / 2
+      halfInputHeight = IS[1] / 2
+
       ip = getElementPos(input)
-      sp = getScrollPos()
       ws = getWindowSize()
-      ds = [colorOverlaySize+sliderSize, colorOverlaySize]
+      ds = {
+        width: colorOverlaySize + sliderSize
+        height: colorOverlaySize
+      }
+
+      sp = getScrollPos()
+      adjustedInputX = ip.x - sp.x
+      adjustedInputY = ip.y - sp.y
+
       dp = [
-        if (-sp.x+ip.x+ds[0] > ws[0]-sliderSize) then (if (-sp.x+ip.x+IS[0]/2 > ws[0]/2) then ip.x+IS[0]-ds[0] else ip.x) else ip.x,
-        if (-sp.y+ip.y+IS[1]+ds[1] > ws[1]-sliderSize) then (if (-sp.y+ip.y+IS[1]/2 > ws[1]/2) then ip.y-ds[1] else ip.y+IS[1]) else ip.y+IS[1]
+        if (adjustedInputX + ds.width > ws.width - sliderSize) then (if (adjustedInputX + halfInputWidth > ws.width / 2) then ip.x + IS[0] - ds.width else ip.x) else ip.x,
+        if (adjustedInputY + IS[1] + ds.height > ws.height - sliderSize) then (if (adjustedInputY + halfInputHeight > ws.height / 2) then ip.y - ds.height else ip.y + IS[1]) else ip.y + IS[1]
       ]
 
       instanceId++
       instance =
         input: input
         color: Color(input.value)
-        preserve: true
+        preserve: false
         holdHV: false
         holdS: false
         posHV: [dp[0], dp[1]]
@@ -147,21 +156,18 @@
 
       x = (saturation * colorOverlaySize).round()
       y = ((1 - value) * colorOverlaySize).round()
+      sliderY = ((hue / 360) * colorOverlaySize).round()
 
-      $(elements.hv).css
-        backgroundPosition: "#{((x - cursorSize).floor())}px #{((y - cursorSize).floor())}px"
+      elements.s.css
+        backgroundPosition: "0 #{(sliderY - sliderSelectorSize).floor()}px"
 
-      y = ((hue / 360) * colorOverlaySize).round()
-
-      $(elements.s).css
-        backgroundPosition: "0 #{(y - sliderSelectorSize).floor()}px"
-
-      $(elements.hv).css
+      elements.hv.css
         backgroundColor: "hsl(#{hue}, 100%, 50%)"
+        backgroundPosition: "#{((x - cursorSize).floor())}px #{((y - cursorSize).floor())}px"
 
     updateDialogSaturation = ->
       [hue, saturation, value] = instance.color.toHsv()
-      r = g = b = s = c = [value, 0, 0 ]
+      r = g = b = s = c = [value, 0, 0]
 
       gr_length = $(elements.grad).children().length
       $(elements.grad).children().each (i, element) ->
@@ -170,12 +176,17 @@
         $(element).css
           backgroundColor: "hsl(#{hue}, 100%, 50%)"
 
-    updateInput = (el, color, realValue) ->
+    updateInput = (el, color) ->
       $(el).val(color.toHex(leadingHash).toUpperCase())
-      $('input.red').val(color.r)
-      $('input.green').val(color.g)
-      $('input.blue').val(color.b)
-      $('input.hex').val(color.toHex(false).toUpperCase())
+
+      map =
+        red: color.r
+        green: color.g
+        blue: color.b
+        hex: color.toHex(false).toUpperCase()
+
+      for name, value of map
+        $("input.#{name}").val(value)
 
       if reflectOnBackground
         $(el).css
@@ -188,34 +199,23 @@
         y: $(e).offset().top
       }
 
-
     getMousePos = (e) ->
       return {
-        x: $(e).get(0).pageX
-        y: $(e).get(0).pageY
+        x: e.pageX
+        y: e.pageY
       }
 
     getScrollPos = ->
-      x = 0
-      y = 0
-
-      if typeof window.pageYOffset == 'number'
-        x = window.pageXOffset
-        y = window.pageYOffset
-      else if (document.body && (document.body.scrollLeft || document.body.scrollTop))
-        x = document.body.scrollLeft
-        y = document.body.scrollTop
-      else if (document.documentElement && (document.documentElement.scrollLeft || document.documentElement.scrollTop))
-        x = document.documentElement.scrollLeft
-        y = document.documentElement.scrollTop
-
       return {
-        x: x
-        y: y
+        x: $(document).scrollLeft()
+        y: $(document).scrollTop()
       }
 
     getWindowSize = ->
-      return [$(window).width(), $(window).height()]
+      return {
+        width: $(window).width()
+        height: $(window).height()
+      }
 
     focus = ->
       if instance?.preserve
@@ -236,12 +236,12 @@
         if (instance && instanceId == id)
           hideDialog()
 
-        updateInput(self, Color($(self).val()), $(self).val())
+        updateInput(self, Color($(self).val()))
       , 0
 
     setColor = (str) ->
       color = Color(str)
-      updateInput(this, color, str)
+      updateInput(this, color)
       if instance?.input == this
         instance.color = color
         updateDialogPointers()
@@ -254,11 +254,10 @@
         backgroundColor: @style.backgroundColor
 
       $(this).attr('autocomplete', 'off')
-      $(this).bind
-        focus: focus
-        blur: blur
+      this.onfocus = focus
+      this.onblur = blur
 
       @setColor = setColor
 
-      updateInput(this, Color(@value), @value)
+      updateInput(this, Color(@value))
 )(jQuery)
