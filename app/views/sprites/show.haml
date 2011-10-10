@@ -73,7 +73,7 @@
       %a.button(href="#" data-sprite_id="#{sprite.id}")
         .static-photo_add
         Add to Collection
-      %ul.round{:style => "display: none;"}
+      %ul.round{:style => "display:none;"}
         - current_user.collections.each do |collection|
           %li{ "data-collection_id" => collection.id }
             = check_box_tag "collection", "1", collection.sprites.include?(sprite), :id => nil, :name => nil
@@ -111,110 +111,76 @@
   = render :partial => "collections/form"
 
 - content_for :javascript do
-  :javascript
-    $(function() {
-      function ajaxifyForm(selector) {
-        var form = $(selector);
+  :coffeescript
+    $ ->
+      ajaxifyForm = (selector) ->
+        form = $(selector)
+        form.ajaxForm
+          dataType: "json"
+          beforeSerialize: ($form) ->
+            $form.find("input[name=sprite_id]").val spriteId
+          success: (data) ->
+            if data.status == "ok"
+              $.modal.close()
+              newCollectionCallback data.title, data.id
+            else
+              errorExplanation = form.find(".errorExplanation")
+              errorExplanation = $("<div class='errorExplanation' />") if errorExplanation.length == 0
+              errorList = $("<ul />")
+              $.each data.errors, (i, error) ->
+                errorList.append $("<li />").text(error)
 
-        form.ajaxForm({
-          dataType: 'json',
-          beforeSerialize: function($form) {
-            $form.find("input[name=sprite_id]").val(spriteId);
-          },
-          success: function(data) {
-            if(data.status == "ok") {
-              $.modal.close();
-              newCollectionCallback(data.title, data.id);
-            } else {
-              var errorExplanation = form.find(".errorExplanation");
-              if(errorExplanation.length == 0) {
-                errorExplanation = $("<div class='errorExplanation' />");
-              }
+              errorExplanation.html ""
+              errorExplanation.append errorList
+              form.prepend errorExplanation
 
-              var errorList = $("<ul />");
-              $.each(data.errors, function(i, error) {
-                errorList.append($("<li />").text(error));
-              });
+      newCollectionCallback = (title, id) ->
+        $(".listMenu ul li:last-child").each ->
+          parentSpriteId = $(this).parent().prev().attr("data-sprite_id")
+          newElem = $("<li />").attr("data-collection_id", id)
+          newElem.text title
 
-              errorExplanation.html('');
-              errorExplanation.append(errorList);
+          if parentSpriteId == spriteId
+            newElem.prepend "<input type='checkbox', value='1' checked='checked' />"
+          else
+            newElem.prepend "<input type='checkbox', value='1' />"
 
-              form.prepend(errorExplanation);
-            }
-          }
-        });
-      }
+          $(this).before newElem
 
-      function newCollectionCallback(title, id) {
-        $(".listMenu ul li:last-child").each(function() {
-          var parentSpriteId = $(this).parent().prev().attr("data-sprite_id");
-          var newElem = $("<li />").attr("data-collection_id", id);
-          newElem.text(title);
+      ajaxifyForm "#new_collection"
 
-          if(parentSpriteId == spriteId) {
-            newElem.prepend("<input type='checkbox', value='1' checked='checked' />");
-          } else {
-            newElem.prepend("<input type='checkbox', value='1' />");
-          }
+      displayedMenu = null
+      spriteId = null
 
-          $(this).before(newElem);
-        });
-      }
+      $(".listMenu .button").click ->
+        spriteId = $(this).attr("data-sprite_id")
+        displayedMenu = $(this).next("ul")
+        displayedMenu.show()
+        setTimeout ->
+          $(document).one "click", ->
+            displayedMenu.fadeOut()
+        , 0
 
-      ajaxifyForm("#new_collection");
+        return false
 
-      var displayedMenu;
-      var spriteId;
+      $(".menu li").live "click", (event) ->
+        collectionId = $(this).attr("data-collection_id")
+        checkbox = $(this).children("input")
+        boxClick = false
+        boxClick = true  if $(event.target).is("input")
+        if collectionId == "new"
+          $("#newCollectionModal").modal()
+        else
+          checked = not (checkbox.attr("checked") ^ boxClick)
+          checkbox.attr "checked", checked
+          if checked
+            $.post "/collections/\#{collectionId}/add", sprite_id: spriteId, "json"
+          else
+            $.post "/collections/\#{collectionId}/remove", sprite_id: spriteId, "json"
 
-      $(".listMenu .button").click(function() {
-        spriteId = $(this).attr("data-sprite_id");
-        displayedMenu = $(this).next("ul");
-        displayedMenu.show();
+      $(".avatar a").live "click", (event) ->
+        notify "Saving..."
+        spriteId = $(this).attr("data-sprite_id")
+        $.post "/people/#{(current_user) ? current_user.id : 0}/set_avatar", sprite_id: spriteId, (data) ->
+          notify "Avatar successfully changed."
 
-        setTimeout(function() {
-          $(document).one('click', function() {
-            displayedMenu.fadeOut();
-          });
-        }, 0);
-
-        return false;
-      });
-
-      $(".menu li").live("click", function(event) {
-        var collectionId = $(this).attr("data-collection_id");
-        var checkbox = $(this).children("input");
-        var boxClick = false;
-
-        if($(event.target).is("input")) {
-          boxClick = true;
-        }
-
-        if(collectionId == "new") {
-          $("#newCollectionModal").modal();
-        } else {
-          var checked = !(checkbox.attr("checked") ^ boxClick);
-          checkbox.attr("checked", checked);
-
-          if(checked) {
-            $.post("/collections/" + collectionId + "/add", {
-              sprite_id: spriteId
-            }, "json");
-          } else {
-            $.post("/collections/" + collectionId + "/remove", {
-              sprite_id: spriteId
-            }, "json");
-          }
-        }
-      });
-
-      $(".avatar a").live("click", function(event) {
-        notify("Saving...");
-
-        var spriteId = $(this).attr("data-sprite_id");
-
-        $.post("/people/#{(current_user) ? current_user.id : 0}/set_avatar",
-          { sprite_id: spriteId },
-          function(data) { notify("Avatar successfully changed."); }
-        );
-      });
-    });
