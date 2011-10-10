@@ -74,8 +74,14 @@
       .actions
         float: right
 
+    .membership
+      left: 3px
+      position: absolute
+      top: 3px
+
     .project
       overflow: auto
+      position: relative
       width: 100%
 
       &:nth-child(n + 7)
@@ -167,6 +173,8 @@
     %h2
       ="Your" if current_user?
       Projects
+    - user.memberships.each do |membership|
+      = render :partial => "users/project", :locals => { :project => membership.group, :membership => membership }
     - user.projects.order("updated_at DESC").each do |project|
       = render :partial => "users/project", :locals => { :project => project }
 
@@ -191,6 +199,9 @@
 - content_for :javascript do
   :coffeescript
     $ ->
+      $('.membership').tipsy
+        gravity: 'e'
+
       $('#show_projects').click ->
         $(this).toggleClass('active')
         $('.projects').toggleClass('show_all')

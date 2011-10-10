@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
+  has_many :memberships
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
 
