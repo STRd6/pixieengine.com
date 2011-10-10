@@ -1,16 +1,25 @@
-#user_favorite_color
+#user_favorite_color, .color
   +box-shadow(none)
 
   border: 1px solid rgba(0, 0, 0, 0.2)
 
+.color
+  background-image: url(/assets/jscolor/color_wheel.png)
+  background-position: right center
+  background-repeat: no-repeat
+
 .color_picker
-  +bounds(284px)
+  +bounds(284px, 278px)
   background-color: white
   clear: both
   padding: 3px
   position: absolute
   border: 1px solid rgba(0, 0, 0, 0.15)
   z-index: 1000
+
+  .hue_gradient
+    fontSize: '1px'
+    lineHeight: '0'
 
   .color_inputs
     position: absolute
@@ -20,7 +29,7 @@
     +box-shadow(none)
 
     display: inline-block
-    height: 25px
+    height: 19px
     width: 35px
     margin-left: 2px
     margin-right: 2px
@@ -29,7 +38,7 @@
     width: 30px
 
   .hex
-    width: 63px
+    width: 64px
 
   .color_overlay
     +bounds(256px)
@@ -45,7 +54,7 @@
 
     .white_overlay
       +bounds(256px)
-      +linear-gradient(color-stops(white, rgba(0, 0, 0, 0) 100%), top left)
+      +linear-gradient(color-stops(white, rgba(0, 0, 0, 0) 100%), left)
 
     .black_overlay
       +bounds(256px)
@@ -56,7 +65,7 @@
 
   .hue_selector
     position: absolute
-    width: 25px
+    width: 24px
     height: 258px
     background: url(/assets/jscolor/s.gif) no-repeat
     right: 3px

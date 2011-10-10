@@ -17,12 +17,9 @@
 
     reflectOnBackground = options.reflectOnBackground || true
     leadingHash = options.leadingHash || true
-
-    # spectrum's width and height
-    colorOverlaySize = 256
-
     dir = options.dir || '/assets/jscolor/'
 
+    colorOverlaySize = 256
     cursorSize = 12
     sliderSelectorSize = 11
     gradientStep = 4
@@ -38,6 +35,8 @@
       handleMouseup = ->
         if (instance.holdHV || instance.holdS)
           instance.holdHV = instance.holdS = false
+          if(typeof instance.input.onchange == 'function')
+            instance.input.change()
 
         instance.input.focus()
 
@@ -45,6 +44,7 @@
         mousedown: ->
           instance.preserve = true
         mousemove: (e) ->
+          console.log 'here'
           if instance.holdHV
             setHV(e)
 
@@ -59,10 +59,11 @@
 
       setHV = (e) ->
         p = getMousePos(e)
-        relX = if p.x<instance.posHV[0] then 0 else (if p.x-instance.posHV[0]>colorOverlaySize then colorOverlaySize else p.x-instance.posHV[0])
-        relY = if p.y<instance.posHV[1] then 0 else (if p.y-instance.posHV[1]>colorOverlaySize then colorOverlaySize else p.y-instance.posHV[1])
+        relX = (p.x - instance.posHV[0]).clamp(0, colorOverlaySize)
+        relY = (p.y - instance.posHV[1]).clamp(0, colorOverlaySize)
+
         instance.color.saturation(relX / colorOverlaySize)
-        instance.color.lightness(1 - (relY / colorOverlaySize))
+        instance.color.value(1 - (relY / colorOverlaySize))
 
         updateDialogPointers()
         updateInput(instance.input, instance.color, null)
@@ -78,12 +79,10 @@
 
       # saturation gradient's samples
       for i in [0...colorOverlaySize] by gradientStep
-        g = $ '<div/>'
+        g = $ '<div class="hue_gradient" />'
         g.css
           backgroundColor: "hsl(#{i}, 1, 0.5)"
           height: "#{gradientStep}px"
-          fontSize: '1px'
-          lineHeight: '0'
 
         $(elements.grad).append(g)
 
@@ -122,7 +121,7 @@
       instance =
         input: input
         color: Color(input.value)
-        preserve: false
+        preserve: true
         holdHV: false
         holdS: false
         posHV: [dp[0], dp[1]]
@@ -144,15 +143,14 @@
 
     updateDialogPointers = ->
       # update hue/value cross
-      [hue, saturation, lightness] = instance.color.toHsl()
+      [hue, saturation, value] = instance.color.toHsv()
 
       x = (saturation * colorOverlaySize).round()
-      y = ((1 - lightness) * colorOverlaySize).round()
+      y = ((1 - value) * colorOverlaySize).round()
 
       $(elements.hv).css
         backgroundPosition: "#{((x - cursorSize).floor())}px #{((y - cursorSize).floor())}px"
 
-      # update saturation arrow
       y = ((hue / 360) * colorOverlaySize).round()
 
       $(elements.s).css
@@ -162,8 +160,8 @@
         backgroundColor: "hsl(#{hue}, 100%, 50%)"
 
     updateDialogSaturation = ->
-      [hue, saturation, lightness] = instance.color.toHsl()
-      r = g = b = s = c = [lightness, 0, 0 ]
+      [hue, saturation, value] = instance.color.toHsv()
+      r = g = b = s = c = [value, 0, 0 ]
 
       gr_length = $(elements.grad).children().length
       $(elements.grad).children().each (i, element) ->
@@ -182,7 +180,7 @@
       if reflectOnBackground
         $(el).css
           backgroundColor: color.toHex()
-          color: if color.lightness() < 0.5 then '#FFF' else '#000'
+          color: if color.value() < 0.5 then '#FFF' else '#000'
 
     getElementPos = (e) ->
       return {
@@ -255,6 +253,7 @@
         color: @style.color
         backgroundColor: @style.backgroundColor
 
+      $(this).attr('autocomplete', 'off')
       $(this).bind
         focus: focus
         blur: blur
