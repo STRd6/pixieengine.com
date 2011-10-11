@@ -50,12 +50,6 @@
 
     border: 1px solid black
     position: absolute
-    background-image: url(/assets/jscolor/cross.gif)
-    background: url(/assets/jscolor/cross.gif) no-repeat 88px 126px
-    cursor: crosshair
-    background-position: 88px 126px
-    background-repeat: no-repeat no-repeat
-    z-index: 300
 
     .white_overlay
       +bounds(256px)
@@ -68,7 +62,18 @@
       position: absolute
       top: 0
 
+    .cursor_overlay
+      +bounds(256px)
+
+      background-image: url(/assets/jscolor/cross.png)
+      background: url(/assets/jscolor/cross.png) no-repeat
+      cursor: crosshair
+      background-repeat: no-repeat no-repeat
+      position: absolute
+      top: 0
+
   .hue_selector
+    cursor: pointer
     position: absolute
     width: 29px
     height: 258px

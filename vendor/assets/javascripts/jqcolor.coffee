@@ -9,6 +9,7 @@
  @link      http://jscolor.com
 
  @ported_by Daniel Moore http://strd6.com
+ @ported_by Matt Diebolt http://pixieengine.com
 ###
 
 #= require color
@@ -23,7 +24,7 @@
     dir = options.dir || '/assets/jscolor/'
 
     colorOverlaySize = 256
-    cursorSize = 11
+    cursorSize = 15
     sliderPointerHeight = 11
     gradientStep = 4
 
@@ -34,17 +35,34 @@
     slider = colorPicker.find '.hue_selector'
     overlay = colorPicker.find '.color_overlay'
     gradient = colorPicker.find '.slider'
+    cursorOverlay = colorPicker.find '.cursor_overlay'
+
+    red = colorPicker.find '.red'
+    green = colorPicker.find '.green'
+    blue = colorPicker.find '.blue'
+    hex = colorPicker.find '.hex'
 
     createDialog = ->
       colorPicker.get(0).onmousedown = (e) ->
         instance.preserve = true
 
+        cursorOverlay.css
+          cursor: 'none'
+
       colorPicker.get(0).onmousemove = (e) ->
         setHV(e) if instance.overlayActive
         setHue(e) if instance.sliderActive
 
+      colorPicker.get(0).onselectstart = (e) ->
+        e.preventDefault()
+
       colorPicker.get(0).onmouseup = colorPicker.onmouseout = (e) ->
-        return if $(e.target).is('.red') || $(e.target).is('.green') || $(e.target).is('.blue') || $(e.target).is('.hex') || $(e.target).is('label')
+        if $(e.target).is('.red') || $(e.target).is('.green') || $(e.target).is('.blue') || $(e.target).is('.hex') || $(e.target).is('label')
+          instance.preserve = false
+          return
+
+        cursorOverlay.css
+          cursor: 'crosshair'
 
         if (instance.overlayActive || instance.sliderActive)
           instance.overlayActive = instance.sliderActive = false
@@ -63,7 +81,7 @@
         instance.color.saturation(relX / colorOverlaySize, 'hsv')
         instance.color.value(1 - (relY / colorOverlaySize))
 
-        updateDialogPointers()
+        updateOverlayPosition(relX, relY)
         updateInput(instance.input, instance.color)
 
       overlay.get(0).onmousedown = (e) ->
@@ -83,14 +101,21 @@
         p = getMousePos(e)
         relY = (p.y - instance.sliderPosition).clamp(0, colorOverlaySize)
 
-        instance.color.hue(((relY / colorOverlaySize) * 360).clamp(0, 359))
+        instance.color.hue(((relY / colorOverlaySize) * 360).clamp(0, 359), 'hsv')
 
-        updateDialogPointers()
+        updateSliderPosition(relY)
         updateInput(instance.input, instance.color)
 
       slider.get(0).onmousedown = (e) ->
         instance.sliderActive = true
         setHue(e)
+
+        slider.css
+          cursor: 'none'
+
+      slider.get(0).onmouseup = ->
+        slider.css
+          cursor: 'pointer'
 
     showDialog = (input) ->
       inputHeight = input.offsetHeight
@@ -112,8 +137,9 @@
         cursor: {x: dp.x, y: dp.y}
         sliderPosition: dp.y
 
-      updateDialogPointers()
-      updateDialogSaturation()
+      updateOverlayPosition()
+      updateSliderPosition()
+      generateHueGradient()
 
       $(colorPicker).css
         left: "#{dp.x}px"
@@ -127,21 +153,27 @@
 
       instance = null
 
-    updateDialogPointers = ->
-      [hue, saturation, value] = instance.color.toHsv()
+    updateSliderPosition = (y) ->
+      hue = instance.color.toHsv()[0]
 
-      x = (saturation * colorOverlaySize).round()
-      y = ((1 - value) * colorOverlaySize).round()
-      sliderY = ((hue / 360) * colorOverlaySize).round()
+      y ||= ((hue / 360) * colorOverlaySize).round()
 
       slider.css
-        backgroundPosition: "0 #{(sliderY - sliderPointerHeight / 2).floor()}px"
+        backgroundPosition: "0 #{(y - (sliderPointerHeight / 2) + 1).floor()}px"
 
       overlay.css
         backgroundColor: "hsl(#{hue}, 100%, 50%)"
+
+    updateOverlayPosition = (x, y) ->
+      [hue, saturation, value] = instance.color.toHsv()
+
+      x ||= (saturation * colorOverlaySize).round()
+      y ||= ((1 - value) * colorOverlaySize).round()
+
+      cursorOverlay.css
         backgroundPosition: "#{((x - cursorSize / 2).floor())}px #{((y - cursorSize / 2).floor())}px"
 
-    updateDialogSaturation = ->
+    generateHueGradient = ->
       [hue, saturation, value] = instance.color.toHsv()
       r = g = b = s = c = [value, 0, 0]
 
@@ -167,7 +199,8 @@
       if reflectOnBackground
         $(el).css
           backgroundColor: color.toHex()
-          color: if color.value() < 0.5 then '#FFF' else '#000'
+          color: if color.value() < 0.6 then '#FFF' else '#000'
+          textShadow: if color.value() < 0.6 then 'rgba(255, 255, 255, 0.2) 1px 1px' else 'rgba(0, 0, 0, 0.2) 1px 1px'
 
     getElementPos = (e) ->
       return {
@@ -208,20 +241,37 @@
       updateInput(this, color)
       if instance?.input == this
         instance.color = color
-        updateDialogPointers()
+        updateOverlayPosition()
+        updateSliderPosition()
 
     createDialog()
 
     return @each ->
+      self = this
+
       @originalStyle =
         color: @style.color
         backgroundColor: @style.backgroundColor
 
       $(this).attr('autocomplete', 'off')
-      this.onfocus = focus
-      this.onblur = blur
+      @onfocus = focus
+      @onblur = blur
 
       @setColor = setColor
 
-      updateInput(this, Color(@value))
+      red.get(0).onblur = green.get(0).onblur = blue.get(0).onblur = hex.get(0).onblur = ->
+        return if instance?.preserve
+
+        id = instanceId
+
+        setTimeout ->
+          return if instance?.preserve
+
+          if (instance && instanceId == id)
+            hideDialog()
+
+          updateInput(self, Color(red.val(), green.val(), blue.val()))
+        , 0
+
+        updateInput(self, Color(red.val(), green.val(), blue.val()))
 )(jQuery)

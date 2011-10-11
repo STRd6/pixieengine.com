@@ -529,16 +529,27 @@
 
     @returns {Color|Number} returns the color object if you pass a new hue value and returns the hue otherwise
     ###
-    hue: (newVal) ->
-      hsl = @toHsl()
-      if newVal?
-        hsl[0] = newVal
+    hue: (newVal, mode) ->
+      if mode == 'hsv'
+        hsv = @toHsv()
+        if newVal?
+          hsv[0] = newVal
 
-        [@r, @g, @b, @a] = hslToRgb(hsl)
+          [@r, @g, @b, @a] = hsvToRgb(hsv)
 
-        return this
+          return this
+        else
+          return hsv[0]
       else
-        return hsl[0]
+        hsl = @toHsl()
+        if newVal?
+          hsl[0] = newVal
+
+          [@r, @g, @b, @a] = hslToRgb(hsl)
+
+          return this
+        else
+          return hsl[0]
 
     ###*
     A getter / setter for the lightness value of the color. Passing no argument returns the
