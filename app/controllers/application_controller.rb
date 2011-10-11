@@ -13,14 +13,16 @@ class ApplicationController < ActionController::Base
   after_filter :flash_to_headers
 
   def track_visits
-    unless session['landed']
-      session['landed'] = true
+    landed, returned = session.values_at(:landed, :returned)
+
+    unless landed
+      land = true
       track_event('land')
     end
 
-    unless session['returned']
-      if current_user && current_user.created_at < 1.day.ago
-        session['returned'] = true
+    unless returned
+      if current_user && current_user.created_at > 1.day.ago
+        returned = true
         track_event('return')
       end
     end
@@ -78,11 +80,9 @@ class ApplicationController < ActionController::Base
   end
 
   def owner?(specified_object = nil)
-    if specified_object
-      (current_user == specified_object.user) && current_user
-    else
-      (current_user == object.user) && current_user
-    end
+    owned_object = specified_object || object
+
+    return current_user && current_user == owned_object.user
   end
   helper_method :owner?
 
@@ -164,11 +164,14 @@ class ApplicationController < ActionController::Base
   end
 
   def filter
-    if params[:filter] && filters.include?(params[:filter])
-      params[:filter]
-    else
-      filters.first
+    filter = filters.first
+    filter_param = params[:filter]
+
+    if filter_param && filters.include?(filter_param)
+      filter = filter_param
     end
+
+    return filter
   end
   helper_method :filter
 
