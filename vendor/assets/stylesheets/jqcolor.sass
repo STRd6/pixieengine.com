@@ -9,13 +9,21 @@
   background-repeat: no-repeat
 
 .color_picker
+  +border-bottom-radius(4px)
   +bounds(284px, 278px)
+  +user-select
+
   background-color: white
   clear: both
   padding: 3px
   position: absolute
   border: 1px solid rgba(0, 0, 0, 0.15)
   z-index: 1000
+
+  label
+    display: inline-block
+    font-weight: normal
+    margin: 0
 
   .hue_gradient
     fontSize: '1px'
@@ -25,29 +33,26 @@
     position: absolute
     bottom: 2px
 
-  .red, .green, .blue, .alpha, .hex
+  .red, .green, .blue, .hex
     +box-shadow(none)
 
     display: inline-block
     height: 19px
-    width: 35px
+    width: 34px
     margin-left: 2px
     margin-right: 2px
 
-  .alpha
-    width: 30px
-
   .hex
-    width: 64px
+    width: 61px
 
   .color_overlay
     +bounds(256px)
 
     border: 1px solid black
     position: absolute
-    background-image: url(/assets/jscolor/cursor.png)
-    background: url(/assets/jscolor/cursor.png) no-repeat 88px 126px
-    cursor: url(/assets/jscolor/cursor.png)
+    background-image: url(/assets/jscolor/cross.gif)
+    background: url(/assets/jscolor/cross.gif) no-repeat 88px 126px
+    cursor: crosshair
     background-position: 88px 126px
     background-repeat: no-repeat no-repeat
     z-index: 300
@@ -65,14 +70,14 @@
 
   .hue_selector
     position: absolute
-    width: 24px
+    width: 29px
     height: 258px
     background: url(/assets/jscolor/s.gif) no-repeat
-    right: 3px
+    right: 0
 
   .slider
     background-color: rgba(255, 255, 255, 0.3)
     border: 1px solid black
     position: absolute
-    width: 15px
+    width: 17px
     right: 3px

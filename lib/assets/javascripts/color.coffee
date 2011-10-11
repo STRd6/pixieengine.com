@@ -886,16 +886,28 @@
 
     @returns {Color|Number} returns the color object if you pass a new saturation value and returns the saturation otherwise
     ###
-    saturation: (newVal) ->
-      hsl = @toHsl()
-      if newVal?
-        hsl[1] = newVal
+    saturation: (newVal, mode) ->
+      if mode == 'hsv'
+        hsv = @toHsv()
+        if newVal?
+          hsv[1] = newVal
 
-        [@r, @g, @b, @a] = hslToRgb(hsl)
+          [@r, @g, @b, @a] = hsvToRgb(hsv)
 
-        return this
+          return this
+        else
+          return hsv[1]
+
       else
-        return hsl[1]
+        hsl = @toHsl()
+        if newVal?
+          hsl[1] = newVal
+
+          [@r, @g, @b, @a] = hslToRgb(hsl)
+
+          return this
+        else
+          return hsl[1]
 
     ###*
     returns the Hex representation of the color. Exclude the leading `#` by passing false.
