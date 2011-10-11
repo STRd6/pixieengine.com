@@ -1,6 +1,5 @@
 #= require rails
 #= require corelib
-#= require application2
 #= require site
 #= require jquery.animation_editor
 #= require jquery.contextMenu
