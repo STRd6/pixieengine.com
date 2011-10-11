@@ -65,7 +65,7 @@ class Sprite < ActiveRecord::Base
   end
 
   def self.data_url_from_path(path, content_type)
-    "data:#{content_type};base64,#{Base64.encode64(open(path, 'rb') {|f| f.read}).gsub("\n", "")}"
+    "data:#{content_type};base64,#{Base64.encode64(open(path, 'rb') {|file| file.read}).gsub("\n", "")}"
   end
 
   def display_name
@@ -302,8 +302,8 @@ class Sprite < ActiveRecord::Base
 
   def save_replay_data
     if replay_data
-      File.open(replay_path, 'wb') do |f|
-        f << replay_data
+      File.open(replay_path, 'wb') do |file|
+        file << replay_data
       end
     end
   end

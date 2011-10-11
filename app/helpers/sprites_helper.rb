@@ -9,10 +9,12 @@ module SpritesHelper
 
   def image_url(sprite)
     if sprite
+      id = sprite.id
+
       if sprite.frames > 1
-        "/production/images/#{sprite.id}.gif"
+        "/production/images/#{id}.gif"
       else
-        "/production/images/#{sprite.id}.png"
+        "/production/images/#{id}.png"
       end
     else
       nil
@@ -20,10 +22,14 @@ module SpritesHelper
   end
 
   def author_link(sprite)
-    "By #{sprite.user ? link_to(sprite.user, sprite.user) : 'Anonymous'}".html_safe
+    user = sprite.user
+
+    "By #{user ? link_to(user, user) : 'Anonymous'}".html_safe
   end
 
   def image_link(sprite)
-    link_to image_tag(sprite.image.url(:thumb), :alt => sprite.display_name, :title => sprite.display_name), sprite
+    display_name = sprite.display_name
+
+    link_to image_tag(sprite.image.url(:thumb), :alt => display_name, :title => display_name), sprite
   end
 end

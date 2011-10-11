@@ -80,9 +80,10 @@ class Notifier < ActionMailer::Base
 
   def comment(comment)
     @comment = comment
+    commentee = comment.commentee
 
-    mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
-      :to => comment.commentee.email
+    mail :subject => "#{commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
+      :to => commentee.email
   end
 
   def analytics(user)
@@ -100,7 +101,8 @@ class Notifier < ActionMailer::Base
   def new_post(post, user)
     @post = post
     @user = user
+    topic = post.topic
 
-    mail :subject => "A new post has been created in #{post.topic.forum.title} >> #{post.topic.subject}", :to => user.email
+    mail :subject => "A new post has been created in #{topic.forum.title} >> #{topic.subject}", :to => user.email
   end
 end

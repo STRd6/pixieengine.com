@@ -29,8 +29,10 @@ class CollectionsController < ApplicationController
     @collection = Collection.new params[:collection]
     @collection.user = current_user
 
-    if params[:sprite_id]
-      @collection.collection_items.build(:item => Sprite.find(params[:sprite_id]))
+    sprite_id = params[:sprite_id]
+
+    if sprite_id
+      @collection.collection_items.build(:item => Sprite.find(sprite_id))
     end
 
     @collection.save
@@ -45,10 +47,12 @@ class CollectionsController < ApplicationController
   private
 
   def per_page
-    if params[:per_page].blank?
+    per_page = params[:per_page]
+
+    if per_page.blank?
       Collection.per_page
     else
-      params[:per_page].to_i
+      per_page.to_i
     end
   end
 

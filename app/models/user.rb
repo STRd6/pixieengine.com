@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
 
   def display_name
     if super.blank?
-      email[0..((email.index('@') || 0) - 1)]
+      email.split("@").first
     else
       super
     end
