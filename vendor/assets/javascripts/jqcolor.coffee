@@ -135,11 +135,11 @@
       sliderY = ((hue / 360) * colorOverlaySize).round()
 
       slider.css
-        backgroundPosition: "0 #{(sliderY - sliderPointerHeight).floor()}px"
+        backgroundPosition: "0 #{(sliderY - sliderPointerHeight / 2).floor()}px"
 
       overlay.css
         backgroundColor: "hsl(#{hue}, 100%, 50%)"
-        backgroundPosition: "#{((x - cursorSize).floor())}px #{((y - cursorSize).floor())}px"
+        backgroundPosition: "#{((x - cursorSize / 2).floor())}px #{((y - cursorSize / 2).floor())}px"
 
     updateDialogSaturation = ->
       [hue, saturation, value] = instance.color.toHsv()
