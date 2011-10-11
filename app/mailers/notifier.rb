@@ -61,7 +61,7 @@ class Notifier < ActionMailer::Base
     topic.save
   end
 
-  def newsletter7(user, delivery_date)
+  def newsletter8(user, delivery_date)
     @user = user
     @delivery_date = delivery_date
     @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }

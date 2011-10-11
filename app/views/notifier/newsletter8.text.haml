@@ -1,0 +1,16 @@
+:ruby
+  qfm = Project.find(81)
+  pixteroids = Project.find(123)
+
+:plain
+  Welcome back to this week in Pixie. We've got some exciting changes to share. First of all, we've revamped #{project_link pixteroids, :text => true}. Now it has a pause screen, a controls menu, particle effects, and even a leaderboard so you can finally prove to your friends who's the champion of blasting pixelated space rocks.
+
+  In our never ending quest to provide excellent documentation, we've greatly improved the PixieCanvas and Color library documentation. These are very visual libraries and sometime words don't cut it, so we've included live examples to show what happens when the code is executed: http://pixieengine.com/production/projects/34/docs/symbols/PixieCanvas.html?utm_campaign=Oct+11+2011&utm_medium=email&utm_source=newsletter#drawLine
+
+  We've added a much desired feature to the pixel editor: line drawing. Now draw straight lines by clicking one point, holding shift and then clicking another. Now you can draw those triangles and squares with much less effort. #{new_sprite_url(@link_tracking)}
+
+  Lastly, we're showing off an oldie but goodie. Check out #{project_link qfm, :text => true}, one of Daniel X. Moore's earliest Ludum Dare entries. It's a bleak game about mankind's greatest fear. Plus there's an awesome midi arrangement of Radiohead's 'Karma Police'.
+
+  That's it for now. Keep up the hard work on those games.
+
+  #{unsubscribe_users_url(:id => @user.id)}

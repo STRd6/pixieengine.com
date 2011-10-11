@@ -15,6 +15,10 @@ module NotifierHelper
     image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "left", :style => "display:inline-block;float:left;margin-right:1em;")
   end
 
+  def image_right(image_name)
+    image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :class => "right", :style => "display:inline-block;float:right;margin-left:1em;")
+  end
+
   def image_center(image_name)
     "<center>#{image_tag("#{root_url}assets/newsletters/#{image_name}.png", :alt => image_name, :style => "display:block;margin:auto;")}</center>"
   end
