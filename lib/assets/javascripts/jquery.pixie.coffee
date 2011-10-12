@@ -1,22 +1,29 @@
 #= require color_util
 #= require undo_stack
+#= require_tree ./pixie
 
 (($) ->
   track = (action, label) ->
     trackEvent?("Pixel Editor", action, label)
 
-  DEBUG = false
-
   DIV = "<div />"
-  IMAGE_DIR = "/assets/pixie/"
   RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
-  scale = 1
 
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
     "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
     "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"
   ]
+
+  # Import tools and actions from other files
+  {
+    tools
+    actions
+    config: {
+      IMAGE_DIR
+      DEBUG
+    }
+  } = Pixie.PixelEditor
 
   falseFn = -> return false
 
@@ -28,264 +35,6 @@
       class: 'color'
     ).colorPicker()
 
-  actions =
-    undo:
-      hotkeys: ['ctrl+z', 'meta+z']
-      perform: (canvas) ->
-        canvas.undo()
-      undoable: false
-    redo:
-      hotkeys: ["ctrl+y", "meta+z"]
-      perform: (canvas) ->
-        canvas.redo()
-      undoable: false
-    clear:
-      perform: (canvas) ->
-        canvas.eachPixel (pixel) ->
-          pixel.color(Color().toString(), false, "replace")
-    preview:
-      menu: false
-      perform: (canvas) ->
-        canvas.preview()
-      undoable: false
-    left:
-      hotkeys: ["left"]
-      menu: false
-      perform: `function(canvas) {
-        var deferredColors = [];
-
-        canvas.height.times(function(y) {
-          deferredColors[y] = canvas.getPixel(0, y).color();
-        });
-
-        canvas.eachPixel(function(pixel, x, y) {
-          var rightPixel = canvas.getPixel(x + 1, y);
-
-          if(rightPixel) {
-            pixel.color(rightPixel.color(), false, 'replace');
-          } else {
-            pixel.color(Color(), false, 'replace')
-          }
-        });
-
-        $.each(deferredColors, function(y, color) {
-          canvas.getPixel(canvas.width - 1, y).color(color);
-        });
-      }`
-    right:
-      hotkeys: ["right"]
-      menu: false
-      perform: `function(canvas) {
-        var width = canvas.width;
-        var height = canvas.height;
-
-        var deferredColors = [];
-
-        height.times(function(y) {
-          deferredColors[y] = canvas.getPixel(width - 1, y).color();
-        });
-
-        for(var x = width-1; x >= 0; x--) {
-          for(var y = 0; y < height; y++) {
-            var currentPixel = canvas.getPixel(x, y);
-            var leftPixel = canvas.getPixel(x - 1, y);
-
-            if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, 'replace');
-            } else {
-              currentPixel.color(Color(), false, 'replace');
-            }
-          }
-        }
-
-        $.each(deferredColors, function(y, color) {
-          canvas.getPixel(0, y).color(color);
-        });
-      }`
-    up:
-      hotkeys: ["up"]
-      menu: false
-      perform: `function(canvas) {
-        var deferredColors = [];
-
-        canvas.width.times(function(x) {
-          deferredColors[x] = canvas.getPixel(x, 0).color();
-        });
-
-        canvas.eachPixel(function(pixel, x, y) {
-          var lowerPixel = canvas.getPixel(x, y + 1);
-
-          if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, 'replace');
-          } else {
-            pixel.color(Color(), false, 'replace');
-          }
-        });
-
-        $.each(deferredColors, function(x, color) {
-          canvas.getPixel(x, canvas.height - 1).color(color);
-        });
-      }`
-    down:
-      hotkeys: ["down"]
-      menu: false
-      perform: `function(canvas) {
-        var width = canvas.width;
-        var height = canvas.height;
-
-        var deferredColors = [];
-
-        canvas.width.times(function(x) {
-          deferredColors[x] = canvas.getPixel(x, height - 1).color();
-        });
-
-        for(var x = 0; x < width; x++) {
-          for(var y = height-1; y >= 0; y--) {
-            var currentPixel = canvas.getPixel(x, y);
-            var upperPixel = canvas.getPixel(x, y-1);
-
-            if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, 'replace');
-            } else {
-              currentPixel.color(Color(), false, 'replace');
-            }
-          }
-        }
-
-        $.each(deferredColors, function(x, color) {
-          canvas.getPixel(x, 0).color(color);
-        });
-      }`
-    download:
-      hotkeys: ["ctrl+s"]
-      perform: (canvas) ->
-        w = window.open()
-        w.document.location = canvas.toDataURL()
-      undoable: false
-
-  colorNeighbors = (color) ->
-    this.color(color)
-    $.each this.canvas.getNeighbors(this.x, this.y), (i, neighbor) ->
-      neighbor?.color(color)
-
-  line = (canvas, color, p0, p1) ->
-    {x:x0, y:y0} = p0
-    {x:x1, y:y1} = p1
-
-    dx = (x1 - x0).abs()
-    dy = (y1 - y0).abs()
-    sx = (x1 - x0).sign()
-    sy = (y1 - y0).sign()
-    err = dx - dy
-
-    canvas.getPixel(x0, y0).color(color)
-
-    while !(x0 == x1 and y0 == y1)
-      canvas.getPixel(x0, y0).color(color)
-
-      e2 = 2 * err
-
-      if e2 > -dy
-        err -= dy
-        x0 += sx
-
-      if e2 < dx
-        err += dx
-        y0 += sy
-
-    canvas.getPixel(x0, y0).color(color)
-
-  pencilTool = ( ->
-    lastPosition = Point(0, 0)
-
-    cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
-    hotkeys: ['p', '1']
-    mousedown: (e, color) ->
-      currentPosition = Point(@x, @y)
-
-      if e.shiftKey
-        line(@canvas, color, lastPosition, currentPosition)
-      else
-        this.color(color)
-
-      lastPosition = currentPosition
-    mouseenter: (e, color) ->
-      currentPosition = Point(@x, @y)
-      line(@canvas, color, lastPosition, currentPosition)
-      lastPosition = currentPosition
-  )()
-
-  erase = (pixel, opacity) ->
-    inverseOpacity = (1 - opacity)
-    pixelColor = pixel.color()
-
-    pixel.color(Color(pixelColor.toString(), pixelColor.a * inverseOpacity), false, "replace")
-
-  tools =
-    pencil: pencilTool
-
-    mirror_pencil:
-      cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
-      hotkeys: ['m']
-      mousedown: (e, color) ->
-        canvas = this.canvas
-        mirrorCoordinate = canvas.width - this.x - 1
-        this.color(color)
-        this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
-      mouseenter: (e, color) ->
-        canvas = this.canvas
-        mirrorCoordinate = canvas.width - this.x - 1
-        this.color(color)
-        this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
-    brush:
-      cursor: "url(" + IMAGE_DIR + "brush.png) 4 14, default"
-      hotkeys: ['b', '2']
-      mousedown: (e, color) ->
-        colorNeighbors.call(this, color)
-      mouseenter: (e, color) ->
-        colorNeighbors.call(this, color)
-    dropper:
-      cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
-      hotkeys: ['i', '3']
-      mousedown: ->
-        this.canvas.color(this.color())
-        this.canvas.setTool(tools.pencil)
-      mouseup: ->
-        this.canvas.setTool(tools.pencil)
-    eraser:
-      cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
-      hotkeys: ['e', '4']
-      mousedown: (e, color, pixel) ->
-        erase(pixel, color.a)
-      mouseenter: (e, color, pixel) ->
-        erase(pixel, color.a)
-    fill:
-      cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
-      hotkeys: ['f', '5']
-      mousedown: (e, newColor, pixel) ->
-        originalColor = this.color()
-        return if newColor.equal(originalColor)
-
-        q = []
-        pixel.color(newColor)
-        q.push(pixel)
-
-        canvas = this.canvas
-
-        while(q.length)
-          pixel = q.pop()
-
-          neighbors = canvas.getNeighbors(pixel.x, pixel.y)
-
-          $.each neighbors, (index, neighbor) ->
-            if neighbor?.color().equal(originalColor)
-              neighbor.color(newColor)
-              q.push(neighbor)
-
-  debugTools =
-    inspector:
-      mousedown: ->
-        console.log(this.color())
 
   $.fn.pixie = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
@@ -586,8 +335,6 @@
 
           setMe = ->
             canvas.setTool(tool)
-            toolbar.children().removeClass("active")
-            toolDiv.addClass("active")
 
           if tool.hotkeys
             alt += " (" + tool.hotkeys + ")"
@@ -609,7 +356,7 @@
             alt: alt
             title: alt
 
-          toolDiv = $("<div class='tool'></div>")
+          tool.elementSet = toolDiv = $("<div class='tool'></div>")
             .append(img)
             .bind("mousedown touchstart", (e) ->
               setMe()
@@ -807,6 +554,7 @@
         setTool: (tool) ->
           currentTool = tool
           canvas.css('cursor', tool.cursor || "pointer")
+          tool.elementSet.takeClass("active")
 
         toBase64: (f) ->
           data = this.toDataURL(f)
@@ -841,11 +589,6 @@
       $.each tools, (key, tool) ->
         tool.name = key
         canvas.addTool(tool)
-
-      if DEBUG
-        $.each debugTools, (key, tool) ->
-          tool.name = key
-          canvas.addTool(tool)
 
       $.each actions, (key, action) ->
         action.name = key
