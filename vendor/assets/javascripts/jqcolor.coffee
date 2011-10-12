@@ -12,7 +12,6 @@
  @ported_by Matt Diebolt http://pixieengine.com
 ###
 
-#= require color
 #= require tmpls/color_picker
 
 (($) ->
@@ -36,6 +35,119 @@
     overlay = colorPicker.find '.color_overlay'
     gradient = colorPicker.find '.slider'
     cursorOverlay = colorPicker.find '.cursor_overlay'
+
+    `function color(hex) {
+      this.hue        = 0; // 0-6
+      this.saturation = 1; // 0-1
+      this.value      = 0; // 0-1
+
+      this.red   = 0; // 0-1
+      this.green = 0; // 0-1
+      this.blue  = 0; // 0-1
+
+      this.setRGB = function(r, g, b) { // null = don't change
+        var hsv = RGB_HSV(
+          r==null ? this.red : (this.red=r),
+          g==null ? this.green : (this.green=g),
+          b==null ? this.blue : (this.blue=b)
+        );
+        if(hsv[0] != null) {
+          this.hue = hsv[0];
+        }
+        if(hsv[2] != 0) {
+          this.saturation = hsv[1];
+        }
+        this.value = hsv[2];
+      };
+
+      this.setHSV = function(h, s, v) { // null = don't change
+        var rgb = HSV_RGB(
+          h==null ? this.hue : (this.hue=h),
+          s==null ? this.saturation : (this.saturation=s),
+          v==null ? this.value : (this.value=v)
+        );
+        this.red   = rgb[0];
+        this.green = rgb[1];
+        this.blue  = rgb[2];
+      };
+
+      function RGB_HSV(r, g, b) {
+        var n = Math.min(Math.min(r,g),b);
+        var v = Math.max(Math.max(r,g),b);
+        var m = v - n;
+        if(m == 0) {
+          return [ null, 0, v ];
+        }
+
+        var h = r==n ? 3+(b-g)/m : (g==n ? 5+(r-b)/m : 1+(g-r)/m);
+        return [ h==6?0:h, m/v, v ];
+      }
+
+      function HSV_RGB(h, s, v) {
+        if(h == null) {
+          return [ v, v, v ];
+        }
+
+        var i = Math.floor(h);
+        var f = i%2 ? h-i : 1-(h-i);
+        var m = v * (1 - s);
+        var n = v * (1 - s*f);
+
+        switch(i) {
+          case 6:
+          case 0:
+            return [ v, n, m ];
+          case 1:
+            return [ n, v, m ];
+          case 2:
+            return [ m, v, n ];
+          case 3:
+            return [ m, n, v ];
+          case 4:
+            return [ n, m, v ];
+          case 5:
+            return [ v, m, n ];
+        }
+      }
+
+      this.setString = function(hex) {
+        var m = hex.match(/^\s*#?([0-9A-F]{3}([0-9A-F]{3})?)\s*$/i);
+        if(m) {
+          if(m[1].length==6) { // 6x hex
+            this.setRGB(
+              parseInt(m[1].substr(0,2),16)/255,
+              parseInt(m[1].substr(2,2),16)/255,
+              parseInt(m[1].substr(4,2),16)/255
+            );
+          } else { // 3x hex
+            this.setRGB(
+              parseInt(m[1].charAt(0)+m[1].charAt(0),16)/255,
+              parseInt(m[1].charAt(1)+m[1].charAt(1),16)/255,
+              parseInt(m[1].charAt(2)+m[1].charAt(2),16)/255
+            );
+          }
+        } else {
+          this.setRGB(0,0,0);
+          return false;
+        }
+      };
+
+      this.toString = function() {
+        var r = Math.round(this.red * 255).toString(16);
+        var g = Math.round(this.green * 255).toString(16);
+        var b = Math.round(this.blue * 255).toString(16);
+        return (
+          (r.length==1 ? '0'+r : r)+
+          (g.length==1 ? '0'+g : g)+
+          (b.length==1 ? '0'+b : b)
+        ).toUpperCase();
+      };
+
+      if(hex) {
+        this.setString(hex);
+      }
+
+    }`
 
     createDialog = ->
       colorPicker.get(0).onmousedown = (e) ->
@@ -69,8 +181,9 @@
         relX = (p.x - instance.cursor.x).clamp(0, colorOverlaySize)
         relY = (p.y - instance.cursor.y).clamp(0, colorOverlaySize)
 
-        instance.color.saturation(relX / colorOverlaySize, 'hsv')
-        instance.color.value(1 - (relY / colorOverlaySize))
+        instance.color.saturation = relX / colorOverlaySize
+        instance.color.value = 1 - (relY / colorOverlaySize)
+        instance.color.setHSV()
 
         updateOverlayPosition(relX, relY)
         updateInput(instance.input, instance.color)
@@ -92,7 +205,8 @@
         p = getMousePos(e)
         relY = (p.y - instance.sliderPosition).clamp(0, colorOverlaySize)
 
-        instance.color.hue(((relY / colorOverlaySize) * 360).clamp(0, 359), 'hsv')
+        instance.color.hue = ((relY / colorOverlaySize) * 6).clamp(0, 5.99)
+        instance.color.setHSV()
 
         updateSliderPosition(relY)
         updateInput(instance.input, instance.color)
@@ -121,7 +235,7 @@
       instanceId++
       instance =
         input: input
-        color: Color(input.value)
+        color: new color(input.value)
         preserve: false
         overlayActive: false
         sliderActive: false
@@ -145,18 +259,18 @@
       instance = null
 
     updateSliderPosition = (y) ->
-      hue = instance.color.toHsv()[0]
+      hue = instance.color.hue
 
-      y ||= ((hue / 360) * colorOverlaySize).round()
+      y ||= ((hue / 6) * colorOverlaySize).round()
 
       slider.css
         backgroundPosition: "0 #{(y - (sliderPointerHeight / 2) + 1).floor()}px"
 
       overlay.css
-        backgroundColor: "hsl(#{hue}, 100%, 50%)"
+        backgroundColor: "hsl(#{hue * 60}, 100%, 50%)"
 
     updateOverlayPosition = (x, y) ->
-      [hue, saturation, value] = instance.color.toHsv()
+      [hue, saturation, value] = [instance.color.hue, instance.color. saturation, instance.color.value]
 
       x ||= (saturation * colorOverlaySize).round()
       y ||= ((1 - value) * colorOverlaySize).round()
@@ -165,7 +279,7 @@
         backgroundPosition: "#{((x - cursorSize / 2).floor())}px #{((y - cursorSize / 2).floor())}px"
 
     generateHueGradient = ->
-      [hue, saturation, value] = instance.color.toHsv()
+      [hue, saturation, value] = [instance.color.hue, instance.color.saturation, instance.color.value]
       r = g = b = s = c = [value, 0, 0]
 
       gr_length = $(gradient).children().length
@@ -176,13 +290,13 @@
           backgroundColor: "hsl(#{hue}, 100%, 50%)"
 
     updateInput = (el, color) ->
-      $(el).val(color.toHex(leadingHash).toUpperCase())
+      $(el).val((if leadingHash then '#' else '') + color)
 
       if reflectOnBackground
         $(el).css
-          backgroundColor: color.toHex()
-          color: if color.value() < 0.6 then '#FFF' else '#000'
-          textShadow: if color.value() < 0.6 then 'rgba(255, 255, 255, 0.2) 1px 1px' else 'rgba(0, 0, 0, 0.2) 1px 1px'
+          backgroundColor: '#' + color
+          color: if color.value < 0.6 then '#FFF' else '#000'
+          textShadow: if color.value < 0.6 then 'rgba(255, 255, 255, 0.2) 1px 1px' else 'rgba(0, 0, 0, 0.2) 1px 1px'
 
     getElementPos = (e) ->
       return {
@@ -215,29 +329,18 @@
         if (instance && instanceId == id)
           hideDialog()
 
-        updateInput(self, Color($(self).val()))
+        updateInput(self, new color($(self).val()))
       , 0
-
-    setColor = (str) ->
-      color = Color(str)
-      updateInput(this, color)
-      if instance?.input == this
-        instance.color = color
-        updateOverlayPosition()
-        updateSliderPosition()
 
     createDialog()
 
     return @each ->
       self = this
 
-      @originalStyle =
-        color: @style.color
-        backgroundColor: @style.backgroundColor
+      $(this).css
+        backgroundColor: @value
 
       $(this).attr('autocomplete', 'off')
       @onfocus = focus
       @onblur = blur
-
-      @setColor = setColor
 )(jQuery)
