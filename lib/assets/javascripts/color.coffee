@@ -207,7 +207,12 @@
         else
           channelize(args)
 
-    throw "#{args.join(',')} is an unknown color" unless parsedColor
+    unless parsedColor
+      console.warn "#{args.join(',')} is an unknown color"
+
+      parsedColor = [0, 0, 0, 0]
+
+    @h = null
 
     __proto__: Color::
     r: parsedColor[0].round()
@@ -1011,7 +1016,7 @@
       s = (if max == 0 then 0 else d / max)
 
       if max == min
-        h = 0
+        h = @h || 0
       else
         switch max
           when r
@@ -1022,6 +1027,9 @@
             h = (r - g) / d + 4
 
         h *= 60
+
+        if max != min
+          @h = h
 
       return [h, s, v]
 
