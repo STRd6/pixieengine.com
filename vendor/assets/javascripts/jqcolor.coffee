@@ -18,14 +18,13 @@
   $.fn.colorPicker = (options) ->
     options ||= {}
 
-    reflectOnBackground = options.reflectOnBackground || true
     leadingHash = options.leadingHash || true
     dir = options.dir || '/assets/jscolor/'
 
     colorOverlaySize = 256
     cursorSize = 15
     sliderPointerHeight = 11
-    gradientStep = 4
+    gradientStep = 2
 
     instanceId = 0
     instance = null
@@ -292,11 +291,10 @@
     updateInput = (el, color) ->
       $(el).val((if leadingHash then '#' else '') + color)
 
-      if reflectOnBackground
-        $(el).css
-          backgroundColor: '#' + color
-          color: if color.value < 0.6 then '#FFF' else '#000'
-          textShadow: if color.value < 0.6 then 'rgba(255, 255, 255, 0.2) 1px 1px' else 'rgba(0, 0, 0, 0.2) 1px 1px'
+      $(el).css
+        backgroundColor: '#' + color
+        color: if color.value < 0.6 then '#FFF' else '#000'
+        textShadow: if color.value < 0.6 then 'rgba(255, 255, 255, 0.2) 1px 1px' else 'rgba(0, 0, 0, 0.2) 1px 1px'
 
     getElementPos = (e) ->
       return {
