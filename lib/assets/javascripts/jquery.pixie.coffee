@@ -7,7 +7,6 @@
     trackEvent?("Pixel Editor", action, label)
 
   DIV = "<div />"
-  RGB_PARSER = /^rgba?\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),?\s*(\d\.?\d*)?\)$/
 
   palette = [
     "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
@@ -25,7 +24,8 @@
     }
   } = Pixie.PixelEditor
 
-  falseFn = -> return false
+  falseFn = ->
+    return false
 
   primaryButton = (event) ->
     !event.button? || event.button == 0
@@ -69,7 +69,8 @@
           else
             Color(color)
 
-        toString: -> "[Pixel: " + [this.x, this.y].join(",") + "]"
+        toString: ->
+          "[Pixel: " + [@x, @y].join(",") + "]"
         x: x
         y: y
 
@@ -79,7 +80,6 @@
       layer = $ "<canvas />",
         class: "layer"
 
-      gridColor = "#000"
       layerWidth = -> width * PIXEL_WIDTH
       layerHeight = -> height * PIXEL_HEIGHT
       layerElement = layer.get(0)
@@ -93,14 +93,6 @@
           context.clearRect(0, 0, layerWidth(), layerHeight())
 
         context: context
-
-        drawGuide: ->
-          context.fillStyle = gridColor
-          height.times (row) ->
-            context.fillRect(0, (row + 1) * PIXEL_HEIGHT, layerWidth(), 1)
-
-          width.times (col) ->
-            context.fillRect((col + 1) * PIXEL_WIDTH, 0, 1, layerHeight())
 
         resize: () ->
           layerElement.width = layerWidth()
@@ -389,7 +381,8 @@
 
           return this
 
-        clear: -> layer.clear()
+        clear: ->
+          layer.clear()
 
         dirty: (newDirty) ->
           if newDirty != undefined
@@ -400,7 +393,7 @@
             return lastClean != undoStack.last()
 
         displayInitialState: (stateData) ->
-          this.clear()
+          @clear()
 
           stateData ||= initialStateData
 
@@ -424,9 +417,11 @@
         fromDataURL: (dataURL) ->
           context = document.createElement('canvas').getContext('2d')
 
+          maxDimension = 256
+
           image = new Image()
           image.onload = ->
-            if image.width * image.height < 128 * 96
+            if image.width * image.height < maxDimension * maxDimension
               canvas.resize(image.width, image.height)
 
               context.drawImage(image, 0, 0)
@@ -440,44 +435,32 @@
               canvas.eachPixel (pixel, x, y) ->
                 pixel.color(getColor(x, y), true)
             else
-              alert("This image is too big for our editor to handle, try 96x96 and smaller")
+              alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
 
             return
 
           image.src = dataURL
 
-        getColor: (x, y) ->
-          context = layer.context
-          imageData = context.getImageData(x * PIXEL_WIDTH, y * PIXEL_HEIGHT, 1, 1)
-
-          return Color(imageData.data[0], imageData.data[1], imageData.data[2], imageData.data[3] / 255)
-
         getNeighbors: (x, y) ->
           return [
-            this.getPixel(x+1, y)
-            this.getPixel(x, y+1)
-            this.getPixel(x-1, y)
-            this.getPixel(x, y-1)
+            @getPixel(x+1, y)
+            @getPixel(x, y+1)
+            @getPixel(x-1, y)
+            @getPixel(x, y-1)
           ]
 
         getPixel: (x, y) ->
           return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
           return undefined
 
-        getReplayData: -> undoStack.replayData()
-
-        toHex: (bits) ->
-          s = parseInt(bits).toString(16)
-          if s.length == 1
-            s = '0' + s
-
-          return s
+        getReplayData: ->
+          undoStack.replayData()
 
         preview: ->
           tileCount = if tilePreview then 4 else 1
 
           preview.css
-            backgroundImage: this.toCSSImageURL()
+            backgroundImage: @toCSSImageURL()
             width: tileCount * width
             height: tileCount * height
 
@@ -523,8 +506,8 @@
             setTimeout(runStep, delay)
 
         resize: (newWidth, newHeight) ->
-          this.width = width = newWidth
-          this.height = height = newHeight
+          @width = width = newWidth
+          @height = height = newHeight
 
           pixels = pixels.slice(0, newHeight)
 
@@ -557,17 +540,18 @@
           tool.elementSet.takeClass("active")
 
         toBase64: (f) ->
-          data = this.toDataURL(f)
+          data = @toDataURL(f)
           return data.substr(data.indexOf(',') + 1)
 
-        toCSSImageURL: -> "url(#{this.toDataURL()})"
+        toCSSImageURL: ->
+          "url(#{@toDataURL()})"
 
         toDataURL: ->
           tempCanvas = $("<canvas width=#{width} height=#{height}></canvas>").get(0)
 
           context = tempCanvas.getContext('2d')
 
-          this.eachPixel (pixel, x, y) ->
+          @eachPixel (pixel, x, y) ->
             color = pixel.color()
             context.fillStyle = color.toString()
             context.fillRect(x, y, 1, 1)
