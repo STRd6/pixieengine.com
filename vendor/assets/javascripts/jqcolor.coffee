@@ -37,11 +37,6 @@
     gradient = colorPicker.find '.slider'
     cursorOverlay = colorPicker.find '.cursor_overlay'
 
-    red = colorPicker.find '.red'
-    green = colorPicker.find '.green'
-    blue = colorPicker.find '.blue'
-    hex = colorPicker.find '.hex'
-
     createDialog = ->
       colorPicker.get(0).onmousedown = (e) ->
         instance.preserve = true
@@ -50,19 +45,15 @@
           cursor: 'none'
 
       colorPicker.get(0).onmousemove = (e) ->
-        setHV(e) if instance.overlayActive
+        setSV(e) if instance.overlayActive
         setHue(e) if instance.sliderActive
 
       colorPicker.get(0).onselectstart = (e) ->
         e.preventDefault()
 
       colorPicker.get(0).onmouseup = colorPicker.onmouseout = (e) ->
-        if $(e.target).is('.red') || $(e.target).is('.green') || $(e.target).is('.blue') || $(e.target).is('.hex') || $(e.target).is('label')
-          instance.preserve = false
-          return
-
         cursorOverlay.css
-          cursor: 'crosshair'
+          cursor: "url(/assets/jscolor/cross.png) 3 4, default"
 
         if (instance.overlayActive || instance.sliderActive)
           instance.overlayActive = instance.sliderActive = false
@@ -72,7 +63,7 @@
 
         instance.input.focus()
 
-      setHV = (e) ->
+      setSV = (e) ->
         p = getMousePos(e)
 
         relX = (p.x - instance.cursor.x).clamp(0, colorOverlaySize)
@@ -86,7 +77,7 @@
 
       overlay.get(0).onmousedown = (e) ->
         instance.overlayActive = true
-        setHV(e)
+        setSV(e)
 
       # saturation gradient's samples
       for i in [0...colorOverlaySize] by gradientStep
@@ -187,15 +178,6 @@
     updateInput = (el, color) ->
       $(el).val(color.toHex(leadingHash).toUpperCase())
 
-      map =
-        red: color.r
-        green: color.g
-        blue: color.b
-        hex: color.toHex(false).toUpperCase()
-
-      for name, value of map
-        $("input.#{name}").val(value)
-
       if reflectOnBackground
         $(el).css
           backgroundColor: color.toHex()
@@ -258,20 +240,4 @@
       @onblur = blur
 
       @setColor = setColor
-
-      red.get(0).onblur = green.get(0).onblur = blue.get(0).onblur = hex.get(0).onblur = ->
-        return if instance?.preserve
-
-        id = instanceId
-
-        setTimeout ->
-          return if instance?.preserve
-
-          if (instance && instanceId == id)
-            hideDialog()
-
-          updateInput(self, Color(red.val(), green.val(), blue.val()))
-        , 0
-
-        updateInput(self, Color(red.val(), green.val(), blue.val()))
 )(jQuery)

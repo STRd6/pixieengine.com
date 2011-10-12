@@ -171,7 +171,7 @@
   # http://blog.xkcd.com/2010/05/03/color-survey-results/
   namedBrown = Color('Fuzzy Wuzzy Brown')
 
-  # Uutput color in Hex format
+  # Output color in Hex format
   namedBrown.toHex()
   # => '#c45655'
 
