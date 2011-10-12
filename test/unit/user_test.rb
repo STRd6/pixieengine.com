@@ -12,8 +12,17 @@ class UserTest < ActiveSupport::TestCase
   end
 
   should "set display_name based on email address if none is provided" do
-    @user.save!
-    assert @user.display_name == @user.email[0..((@user.email.index('@') || 0) - 1)]
+    assert @user.display_name == @user.email.split('@').first
+  end
+
+  should "use display_name based on email address if display_name is set to ''" do
+    @user.display_name = ""
+    assert @user.display_name == @user.email.split('@').first
+  end
+
+  should "use display_name attribute when present" do
+    @user.display_name = "condor"
+    assert @user.display_name == "condor"
   end
 
   context "collections" do
