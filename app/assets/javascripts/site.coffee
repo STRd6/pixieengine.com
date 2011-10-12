@@ -42,10 +42,10 @@ window.setVal = (key, value) ->
   if localStorage
     localStorage[key] = value
 
-trackPageview = (pageName) ->
+window.trackPageview = (pageName) ->
   _gaq.push ["_trackPageview", pageName]
 
-getCsrfData = ->
+window.getCsrfData = ->
   data = {}
   data[$("meta[name=csrf-param]").attr("content")] = $("meta[name=csrf-token]").attr("content")
   return data
