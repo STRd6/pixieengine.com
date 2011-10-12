@@ -1,55 +1,59 @@
-Factory.define :collection do |collection|
-  collection.user {Factory :user}
-  collection.name "TEST"
-end
+FactoryGirl.define do
+  factory :collection do
+    user
+    name "TEST"
+  end
 
-Factory.define :collection_item do |collection_item|
-  collection_item.collection {Factory :collection}
-  collection_item.item {Factory :sprite}
-end
+  factory :collection_item do
+    collection
+    association :item, :factory => :sprite
+  end
 
-Factory.sequence :email do |n|
-  "test_#{n}@example.com"
-end
+  factory :user do
+    sequence(:email) do |n|
+      "test_#{n}@example.com"
+    end
+    password "TEST123"
+  end
 
-Factory.define :user do |user|
-  user.email { Factory.next(:email) }
-  user.password "TEST123"
-end
+  factory :sprite do
+    width 16
+    height 16
+    title "CommentableSprite"
+    user
+  end
 
-Factory.define :sprite do |sprite|
-  sprite.width 16
-  sprite.height 16
-  sprite.title "CommentableSprite"
-  sprite.user {Factory :user}
-end
+  factory :link do
+    user
+    association :target, :factory => :user
+  end
 
-Factory.define :link do |link|
-  link.user {Factory :user}
-  link.target {Factory :user}
-end
+  factory :plugin do
+    user
+    code "{}"
+    title "Test"
+    plugin_type "tool"
+  end
 
-Factory.define :plugin do |plugin|
-  plugin.user {Factory :user}
-  plugin.code "{}"
-  plugin.title "Test"
-  plugin.plugin_type "tool"
-end
+  factory :sound do
+    wav File.new "#{Rails.root}/test/test.wav"
+    sfs File.new "#{Rails.root}/test/test.sfs"
+  end
 
-Factory.define :sound do |sound|
-  sound.wav File.new(File.join(Rails.root, "/test/test.wav"))
-  sound.sfs File.new(File.join(Rails.root, "/test/test.sfs"))
-end
+  factory :project do
+    user
+    title "TESTING"
+  end
 
-Factory.define :project do |project|
-  project.user {Factory :user}
-  project.title "TESTING"
-  project.description "this is a test project"
-end
+  factory :comment do
+    association :commenter, :factory => :user
+    association :commentee, :factory => :user
+    body "This is a test comment"
+    association :commentable, :factory => :sprite
+  end
 
-Factory.define :comment do |comment|
-  comment.commenter {Factory :user}
-  comment.commentee {Factory :user}
-  comment.body "This is a test comment"
-  comment.commentable {Factory :sprite}
+  factory :membership do
+    user
+    association :group, :factory => :project
+  end
 end

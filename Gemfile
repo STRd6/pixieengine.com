@@ -43,8 +43,8 @@ gem "whenever"
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
-group :test do
-  gem "factory_girl"
+group :test, :development do
+  gem "factory_girl", :git => "https://github.com/thoughtbot/factory_girl.git"
   gem "shoulda"
   gem "turn", :require => false
 end
