@@ -21,16 +21,10 @@ module Experimentable
   end
 
   def track_event(name)
-    if current_user
-      Event.create(
-        :name => name,
-        :user => current_user
-      )
-    else
-      Event.create(
-        :name => name,
-        :session_id => request.session_options[:id]
-      )
-    end
+    Event.create(
+      :name => name,
+      :user => current_user || nil,
+      :session_id => request.session_options[:id]
+    )
   end
 end
