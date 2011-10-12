@@ -95,9 +95,9 @@ Pixie.PixelEditor.tools = (($) ->
     dropper:
       cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
       hotkeys: ['i', '3']
-      mousedown: ->
+      mousedown: (e) ->
         this.canvas.color(this.color())
-        this.canvas.setTool(tools.pencil)
+        this.canvas.setTool(tools.pencil) unless e.shiftKey
     eraser:
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e', '4']
