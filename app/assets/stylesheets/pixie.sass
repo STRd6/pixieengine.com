@@ -90,40 +90,30 @@ body
       background-color: #fff
       border: 1px solid #AAA
       cursor: pointer
-      position: absolute
-      top: 375px
-      left: 0
-      right: 0
       margin: auto
 
     .swatches
-      +bounds(76px, 175px)
-
-      left: 0
-      margin: auto
-      position: absolute
-      right: 0
-      top: 95px
+      margin: 1em auto
+      width: 86px
 
     .swatch
       +border-radius(2px)
-      +bounds(30px)
+      +bounds(40px)
       +box-sizing(border-box)
+      +inline-block
 
       cursor: pointer
       border: 1px solid rgba(0, 0, 0, 0.15)
-      float: left
-      margin: 4px
+      margin-bottom: 6px
+      &:nth-child(even)
+        margin-left: 6px
 
     .color_picker_holder
       +bounds(74px, 76px)
 
-      margin-bottom: 7px
-      position: absolute
-      left: 0
-      right: 0
-      margin-left: auto
-      margin-right: auto
+      margin: auto
+      margin-bottom: 2em
+      position: relative
 
       input.color
         +border-radius(4px)
@@ -137,7 +127,7 @@ body
         &.primary
           left: 0
           top: 0
-          z-index: 10
+          z-index: 2
         &.secondary
           left: 20px
           top: 20px
@@ -208,6 +198,7 @@ body
     height: 73px
     position: absolute
     right: 1em
+    top: 1em
 
     .val
       cursor: pointer
