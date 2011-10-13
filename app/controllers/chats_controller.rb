@@ -48,6 +48,7 @@ class ChatsController < ApplicationController
       format.json do
         users = User.logged_in.map do |user|
           favorite_color = user.favorite_color || "000"
+          favorite_color = (favorite_color[0] == "#" ? favorite_color[1..-1] : favorite_color)
 
           {
             :avatar => user.avatar.url(:thumb),
