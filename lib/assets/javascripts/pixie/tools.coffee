@@ -24,6 +24,28 @@ Pixie.PixelEditor.tools = (($) ->
 
     pixel.color(Color(pixelColor.toString(), pixelColor.a * inverseOpacity), false, "replace")
 
+  floodFill = (e, newColor, pixel) ->
+    originalColor = this.color()
+    return if newColor.equal(originalColor)
+
+    q = []
+    pixel.color(newColor)
+    q.push(pixel)
+
+    canvas = this.canvas
+
+    while(q.length)
+      pixel = q.pop()
+
+      neighbors = canvas.getNeighbors(pixel.x, pixel.y)
+
+      $.each neighbors, (index, neighbor) ->
+        if neighbor?.color().equal(originalColor)
+          neighbor.color(newColor)
+          q.push(neighbor)
+
+    return
+
   line = (canvas, color, p0, p1) ->
     {x:x0, y:y0} = p0
     {x:x1, y:y1} = p1
@@ -108,25 +130,6 @@ Pixie.PixelEditor.tools = (($) ->
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
       hotkeys: ['f', '5']
-      mousedown: (e, newColor, pixel) ->
-        originalColor = this.color()
-        return if newColor.equal(originalColor)
-
-        q = []
-        pixel.color(newColor)
-        q.push(pixel)
-
-        canvas = this.canvas
-
-        while(q.length)
-          pixel = q.pop()
-
-          neighbors = canvas.getNeighbors(pixel.x, pixel.y)
-
-          $.each neighbors, (index, neighbor) ->
-            if neighbor?.color().equal(originalColor)
-              neighbor.color(newColor)
-              q.push(neighbor)
-
-        return
+      mousedown: floodFill
+      mouseenter: floodFill
 )(jQuery)
