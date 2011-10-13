@@ -1,6 +1,6 @@
 #= require color_util
 #= require undo_stack
-#= require_tree ./pixie
+#= require_tree .
 
 #= require tmpls/editors/pixel
 
@@ -24,7 +24,7 @@
       IMAGE_DIR
       DEBUG
     }
-  } = Pixie.PixelEditor
+  } = Pixie.Editor.Pixel
 
   falseFn = ->
     return false
@@ -37,7 +37,7 @@
       class: 'color'
     ).colorPicker({ leadingHash: false })
 
-  Pixie.PixelEditor.create = (options) ->
+  Pixie.Editor.Pixel.create = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color()
 

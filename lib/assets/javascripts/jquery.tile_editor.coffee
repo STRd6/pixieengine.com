@@ -45,12 +45,12 @@ $.fn.tileEditor = (options) ->
     width: tileWidth
     height: tileHeight
 
-  if Pixie?.PixelEditor?
+  if Pixie?.Editor?.Pixel?
     createPixelEditor = (options) ->
       url = options.url
       tileEditor = options.tileEditor
 
-      pixelEditor = Pixie.PixelEditor.create
+      pixelEditor = Pixie.Editor.Pixel.create
         width: options.width
         height: options.height
         initializer: (canvas) ->
