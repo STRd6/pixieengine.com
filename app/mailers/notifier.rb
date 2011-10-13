@@ -13,9 +13,29 @@ class Notifier < ActionMailer::Base
   end
 
   def welcome_email(user)
+    @delivery_date = Time.now.strftime("%b %d %Y")
+    @link_tracking = { :utm_source => 'welcome email', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
     @user = user
     mail :subject => "Welcome to Pixie",
       :to => user.email
+  end
+
+  def notify_member(membership)
+    @delivery_date = Time.now.strftime("%b %d %Y")
+    @link_tracking = { :utm_source => 'notify member', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    @membership = membership
+    mail :subject => "You've been added to a Pixie project",
+      :to => membership.user.email
   end
 
   def invitation(invite)
@@ -27,7 +47,7 @@ class Notifier < ActionMailer::Base
   end
 
   def post_newsletter_to_forum(delivery_date)
-    email = Notifier.newsletter7(User.find(4), delivery_date)
+    email = Notifier.newsletter8(User.find(4), delivery_date)
 
     topic = Forem::Topic.new(:user_id => 4, :forum_id => 1, :subject => "This week in Pixie: #{delivery_date}")
 
@@ -41,7 +61,7 @@ class Notifier < ActionMailer::Base
     topic.save
   end
 
-  def newsletter7(user, delivery_date)
+  def newsletter8(user, delivery_date)
     @user = user
     @delivery_date = delivery_date
     @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
@@ -60,9 +80,10 @@ class Notifier < ActionMailer::Base
 
   def comment(comment)
     @comment = comment
+    commentee = comment.commentee
 
-    mail :subject => "#{comment.commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
-      :to => comment.commentee.email
+    mail :subject => "#{commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
+      :to => commentee.email
   end
 
   def analytics(user)
@@ -80,7 +101,8 @@ class Notifier < ActionMailer::Base
   def new_post(post, user)
     @post = post
     @user = user
+    topic = post.topic
 
-    mail :subject => "A new post has been created in #{post.topic.forum.title} >> #{post.topic.subject}", :to => user.email
+    mail :subject => "A new post has been created in #{topic.forum.title} >> #{topic.subject}", :to => user.email
   end
 end

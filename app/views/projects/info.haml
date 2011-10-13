@@ -5,6 +5,9 @@
     @import util
     @import branded
 
+    body > .content
+      padding-top: 2em
+
     header
       height: 90px
       position: relative
@@ -34,7 +37,7 @@
         position: static
 
       .login_link a[title="Log in"]
-        margin-top: 40px
+        margin-top: 34px
 
     .thumb
       float: left
@@ -168,125 +171,23 @@
           .light &
             color: $light_text
 
+    #try_now
+      width: 95%
+
 - content_for :javascript do
   :coffeescript
     $ ->
       $('a.logo').attr('class', 'static-landing_logo')
 
-.content
-  .feature
-    .info
-      %h1
-        Create Games!
+      setTimeout ->
+        $('iframe')[0].contentWindow.focus()
+      , 100
 
-      %p
-        Pixie enables you to quickly and easily create your own games online.
-        There is nothing to install and no obligations. Pixie delivers a
-        collection of simple and beautiful tools that help you to create games
-        without hassles. It is so simple that anyone can get started within
-        minutes.
-
-      %p
-        With Pixie there is no limit to what you can do. See for yourself with
-        one of our demo applications.
-
-      = link_to "Try Now for Free", ide_project_path("demo"), :class => "button complement full"
-
-    .video
-      <iframe width="640" height="480" src="#{widget_project_url(Project::ASTEROIDS_DEMO_ID)}" ></iframe>
-
-  .testimonial.module
-    %p
-      %q
-        Pixie is the most wonderful web-based IDE I've ever seen!
-      %span.source
-        &mdash; Paul Hubans, Game Development Expert
-
-  .details
-    .detail
-      %h2 Creativity
-      %p
-        There is no limit to what you can create with Pixie.
-        Create pixel art, sound effects, game levels, maps and more!
-
-    .detail
-      %h2 Freedom
-      %p
-        Import and export your files and projects at any time.
-
-    .detail
-      %h2 Fame
-      %p
-        Your published games are playable on all modern desktop and mobile devices.
-
-    .detail.last
-      %h2 Fortune
-      %p
-        Deploy to online marketplaces with ease. Follow our walkthrough and deploy to Google Chrome Webstore in under four minutes!
-
-  .testimonial.module
-    .thumb.fancy
-      =image_tag('daniel_128.jpg')
-
-    %h2 A message from the creator of Pixie
-
-    %p
-      Hi! I'm Daniel X. Moore, the creator of Pixie. Pixie was born out of a
-      frustration with existing game creation tools, tools that had too much to install, didn't run
-      on Linux, Mac and Windows, and couldn't export to the web.
-    %p
-      I want a simple and
-      powerful toolkit that I can use to create games instantly, and have them be
-      available for all to experience just as fast as I can create them.
-    %p
-      Pixie is still a work in progress, but that's why I need your help. Try out the
-      game creation tools and let me know what you think. The Pixie team and I are
-      working hard to make Pixie the best game development platform in the world. It
-      is our dream and I hope you can share it with us.
-    %p
-      I'm glad you stopped by, please
-      = link_to "let me know if you have any questions or comments", "/survey", :target => "_blank"
-      regarding anything at all.
-      I'll try to get back to you as soon as I can.
-    %p
-      Have fun, and I hope you enjoy Pixie!
-    %p.source &mdash; Daniel X. Moore
-
-  .details
-    .detail
-      %h2 Simple
-      %p
-        Only the tools and features you need. No arduous installation or setup
-        process.
-
-    .detail
-      %h2 Intuitive
-      %p
-        Seamlessly transition from running the game to editing it. Edit sprites,
-        sounds, animations, and objects with ease.
-
-    .detail
-      %h2 Powerful
-      %p
-        A robust set of core game libraries gives you all the functionality you
-        need to get started fast. The built-in scripting language enables you to
-        accomplish anything.
-
-    .detail.last
-      %h2 Free
-      %p
-        The free plan allows you to create and maintain a single project. Pixie
-        Premium is free for 30 days if you need more.
-
-      = link_to "30 Day Free Trial", register_subscribe_path, :class => "button full complement"
-
-  .featured_projects.module
-    %h2 Amazing Games Created with Pixie
-    .games
-      - Project.featured.limit(4).each do |project|
-        = render :partial => project
-
-- content_for :javascript do
   /[if IE]
     :coffeescript
       $(".feature a").attr("href", #{register_subscribe_path.to_json})
+
+- if experiment "minimal_landing_page"
+  = render :partial => 'minimal_landing_page'
+- else
+  = render :partial => 'control_landing_page'

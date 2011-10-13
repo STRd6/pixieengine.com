@@ -1,6 +1,5 @@
 #= require rails
 #= require corelib
-#= require application2
 #= require site
 #= require jquery.animation_editor
 #= require jquery.contextMenu
@@ -27,5 +26,5 @@
 #= require uuid
 #= require jqcolor
 #= require color
-#= require matrix-1.2.0.min
+#= require pixie_canvas
 #= require coffee-script

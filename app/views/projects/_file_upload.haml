@@ -25,7 +25,7 @@
         matchType: /.*/
         callback: (file, event) ->
           if event.target.readyState == FileReader.DONE
-            if file.type == "application/javascript" || file.type == "application/x-javascript"
+            if file.type.match(/javascript/i)
               path = projectConfig.directories.lib
               type = "text"
               ext = "js"

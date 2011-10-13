@@ -1,0 +1,35 @@
+%html
+  %body(bgcolor=@pixie_blue leftmargin="0" marginheight="0" marginwidth="0" offset="0" topmargin="0")
+    %table(bgcolor=@pixie_blue cellpadding="10" cellspacing="0" width="100%")
+      %tr
+        %td(align="center" valign="top")
+          %table(cellpadding="0" cellspacing="0" width="550")
+            = render :partial => "newsletter_header"
+          %table(bgcolor=@content_bg cellpadding="20" cellspacing="0" width="550")
+            %tr
+              %td(bgcolor=@content_bg style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;" valign="top")
+                %h1(style="color:#{@text_color};font-size:1.5em;margin-top:0;")= "Greetings #{@user.display_name}, and welcome to Pixie!"
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  On Pixie you'll create amazing games from anywhere with an internet connection and be able to instantly share them with the world.
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  How about giving it a try right now? Follow along with the #{link_to "demo", ide_project_url("demo", @link_tracking)}
+                  tooltips, they'll help point you in the right direction. If you want to learn more, we have an entire section of #{link_to "tutorials", projects_url(@link_tracking.merge({:filter => 'tutorial'}))}. There's even a showcase of #{link_to "complete games", projects_url(@link_tracking.merge({:filter => 'featured'}))} you can play, explore, and learn from.
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  You can also dig in to our vast #{link_to "gallery", sprites_url(@link_tracking)} of pixel art,
+                  as well as #{link_to "create your own", new_sprite_url(@link_tracking)}.
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  As the community grows our aim is to provide everyone the creative means to produce games: ideas, tools, and data. The more that we offer, the more that's
+                  returned to the community by way of new ideas and new creations.
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  Be sure to introduce yourself in the #{link_to "forums", "http://pixieengine.com/community/forums/1/topics/1", @link_tracking} and see what everyone is up to.
+                  Please don't hesitate to ask or post in the forums if you have any questions, we'll help
+                  you out as soon as we can.
+                %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
+                  Veritably Yours,
+                  %br
+                  #{image_left('shadow_logo_small')}
+            %tr
+              %td(style="background-color:#{@content_bg};border-top:10px solid #{@content_bg};padding-top:0;" valign="top")
+                %span(style="font-size:10px;color:#{@text_color};line-height:100%;font-family:verdana;")
+                  %center(style="margin-bottom:2px;")
+                    Copyright (C) #{Time.now.year} STRd6 All rights reserved.

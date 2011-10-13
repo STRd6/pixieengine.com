@@ -50,6 +50,13 @@ GIT
   specs:
     exception_notification (1.0.0)
 
+GIT
+  remote: https://github.com/thoughtbot/factory_girl.git
+  revision: a50adda6c31b1b8fe929bb5be3e00e6125f577f0
+  specs:
+    factory_girl (2.1.2)
+      activesupport
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -118,7 +125,6 @@ GEM
     erubis (2.7.0)
     execjs (1.2.4)
       multi_json (~> 1.0)
-    factory_girl (2.0.4)
     fastercsv (1.5.4)
     fssm (0.2.7)
     haml (3.1.2)
@@ -250,7 +256,7 @@ DEPENDENCIES
   corelib!
   delayed_job (= 2.1.4)
   exception_notification!
-  factory_girl
+  factory_girl!
   forem!
   gratr!
   haml

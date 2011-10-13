@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
+  has_many :memberships
   has_many :user_plugins
   has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
 
@@ -40,9 +41,7 @@ class User < ActiveRecord::Base
 
   scope :none
 
-  after_create do
-    Notifier.welcome_email(self).deliver unless email.blank?
-  end
+  after_create :send_welcome_email
 
   before_validation :sanitize_profile
 
@@ -72,7 +71,7 @@ class User < ActiveRecord::Base
 
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
-        Notifier.newsletter7(user, delivery_date).deliver unless user.email.blank?
+        Notifier.newsletter8(user, delivery_date).deliver unless user.email.blank?
       rescue
         failed_user_ids.push(user.id)
       end
@@ -127,7 +126,7 @@ class User < ActiveRecord::Base
 
   def display_name
     if super.blank?
-      "Anonymous#{id}"
+      email.split("@").first
     else
       super
     end
@@ -224,6 +223,10 @@ class User < ActiveRecord::Base
     else
       #track_event('unsubscribe')
     end
+  end
+
+  def send_welcome_email
+    Notifier.welcome_email(self).deliver unless email.blank?
   end
 
   def self.visit_report

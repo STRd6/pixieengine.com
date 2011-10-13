@@ -42,7 +42,43 @@ window.setVal = (key, value) ->
   if localStorage
     localStorage[key] = value
 
+window.trackPageview = (pageName) ->
+  _gaq.push ["_trackPageview", pageName]
+
+window.getCsrfData = ->
+  data = {}
+  data[$("meta[name=csrf-param]").attr("content")] = $("meta[name=csrf-token]").attr("content")
+  return data
+
+$(".tag .remove").live "click", ->
+  $this = $(this)
+  spriteId = $this.parent().attr("data-sprite_id")
+  tag = $this.prev().text()
+  $this.parent().fadeOut()
+  $.post "/sprites/#{spriteId}/remove_tag",
+    tag: tag
+
 $ ->
+  $.modal.defaults.overlayClose = true
+
+  makeTag = (tag, spriteId) ->
+    tagElem = $("<div class='tag' />")
+    tagElem.attr "data-sprite_id", spriteId
+    link = $("<a href='/sprites/?tagged=#{escape(tag)}' />").text(tag)
+    tagElem.append link
+    tagElem.append $("<div class='remove' />").text("X")  if loggedIn
+    return tagElem
+
+  $(".tags form").ajaxForm beforeSubmit: (array, $form) ->
+    input = $form.find("input[name=tag]")
+    spriteId = $form.attr("data-sprite_id")
+    tag = input.val()
+    $form.before makeTag(tag, spriteId)
+    input.val ""
+
+  $("#flashes .close").live "mousedown", ->
+    $(this).parent().slideUp()
+
   # THEME
   setLightTheme = (active) ->
     $('html').toggleClass('light', active)
@@ -76,3 +112,13 @@ $ ->
     fade: 50
     gravity: 'w'
     opacity: 1
+
+  # Draggable UI Windows
+  $(".window").draggable(
+    handle: "h3"
+    iframeFix: true
+  ).find("h3").disableSelection()
+
+  $('.window .ui-icon-close').live "click", ->
+    $(this).parent().hide().children("iframe").remove()
+

@@ -35,7 +35,7 @@ class Project < ActiveRecord::Base
   }
 
   scope :featured, where(:featured => true)
-  scope :tutorial, where(:tutorial => true)
+  scope :tutorial, where(:tutorial => true).order('id ASC')
   scope :arcade, where(:arcade => true)
   scope :recently_edited, order('updated_at DESC').limit(20)
 

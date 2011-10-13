@@ -34,7 +34,6 @@ class ProjectsControllerTest < ActionController::TestCase
     end
   end
 
-  
   should "be able to view projects#info" do
     get :info
     assert_response :success

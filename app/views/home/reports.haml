@@ -13,16 +13,15 @@
       height: 400px
 
 :ruby
-  funnel = ["land", "register"]
-
-  results = Hash.new(0)
-  Event.select("name, count(DISTINCT(session_id)) as count").group("name").where(:name => funnel, :user_id => nil).each do |result|
-    results[result.name] = result.count
-  end
+  funnel = ["land", "register", "return", "subscribe"]
 
 - Experiment.all.each do |experiment|
   :ruby
     results = {}
+
+    funnel.each do |event|
+      results[event] = Hash.new(0)
+    end
 
     Event.find_by_sql(<<-eos
       SELECT events.name, treatments.control, COUNT(DISTINCT(events.session_id)) as count
@@ -31,13 +30,13 @@
           ON events.session_id = treatments.session_id
         INNER JOIN experiments
           ON treatments.experiment_id = experiments.id
-      WHERE events.name IN ('land', 'register', 'subscribe')
+      WHERE events.name IN ('#{funnel.join("','")}')
         AND events.user_id IS NULL
         AND experiments.id = #{experiment.id}
       GROUP BY treatments.control, events.name
     eos
     ).each do |result|
-      results[result.name] ||= {}
+      results[result.name] ||= Hash.new(0)
       results[result.name][result.control] = result.count
     end
 
@@ -77,6 +76,10 @@
 
 .chart.registrations
 
+%h2 Colors
+
+%canvas.color(width=480 height=480)
+
 - content_for :javascript do
   = javascript_include_tag "highcharts"
 
@@ -113,3 +116,28 @@
       yAxis:
         title:
           text: "Registrations"
+
+    colorCanvas = $("canvas.color").pixieCanvas()
+
+    colorData = #{User.select("favorite_color").where("favorite_color IS NOT NULL").map(&:favorite_color).to_json}
+
+    colorCanvas.fill("white")
+
+    colorCanvas.withTransform Matrix.translation(240, 240), ->
+      colorData.each (color) ->
+        try
+          color = Color(color)
+        catch error
+          console.warn(error)
+
+        if color
+          angle = color.hue() * Math.TAU / 360
+          saturation = color.saturation()
+
+          position = Point.fromAngle(angle).scale(235 * saturation)
+
+          colorCanvas.drawCircle
+            position: position
+            radius: 4
+            color: color
+

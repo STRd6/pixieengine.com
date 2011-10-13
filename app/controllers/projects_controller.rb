@@ -50,15 +50,19 @@ class ProjectsController < ApplicationController
   end
 
   def find_member_users
-    if params[:term]
-      like = "%#{params[:term]}%".downcase
+    term = params[:term]
+
+    if term
+      like = "%#{term}%".downcase
       users = User.where("lower(display_name) like ?", like)
     else
       users = User.all
     end
-    list = users.map do |u|
-      { :id => u.id, :label => u.display_name, :name => u.display_name, :icon => u.avatar(:tiny) }
+
+    list = users.map do |user|
+      { :id => user.id, :label => user.display_name, :name => user.display_name, :icon => user.avatar(:tiny) }
     end
+
     render :json => list
   end
 
@@ -153,6 +157,7 @@ class ProjectsController < ApplicationController
     @title = "PixieEngine - Create Games"
     @hide_chat = true
     @hide_dock = true
+    @hide_feedback = true
   end
 
   def update

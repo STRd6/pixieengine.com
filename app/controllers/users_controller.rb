@@ -35,6 +35,8 @@ class UsersController < ApplicationController
   end
 
   def register_subscribe
+    @hide_chat = true
+
     if current_user
       if current_user.paying
         redirect_back_or_default current_user
@@ -50,6 +52,7 @@ class UsersController < ApplicationController
 
   def create
     subscribe = params[:subscribe]
+
     @object = User.new(params[:user])
 
     @object.referrer_id = session[:referrer_id]

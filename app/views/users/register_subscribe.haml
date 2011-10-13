@@ -6,6 +6,11 @@
     body > form
       margin-top: 8em
 
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $('#user_email').focus()
+
 = form_for user, :html => {:class => "module"} do |form|
   = form.error_messages
   %h2 Subscribe to Pixie!

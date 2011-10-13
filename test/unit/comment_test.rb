@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class MembershipTest < ActiveSupport::TestCase
+class CommentTest < ActiveSupport::TestCase
   should "queue email with Delayed Job on create" do
     assert_difference 'Delayed::Job.count', +1 do
-      Factory :membership
+      Factory :comment
     end
   end
 end

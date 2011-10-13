@@ -49,49 +49,6 @@
 
     return hslToRgb(parsedColor)
 
-  hsvToRgb = (hsv) ->
-    r = g = b = null
-
-    [h, s, v, a] = hsv
-
-    a = 1 unless a?
-
-    i = (h / 60).floor()
-    f = h / 60 - i
-    p = v * (1 - s)
-    q = v * (1 - f * s)
-    t = v * (1 - (1 - f) * s)
-
-    switch (i % 6)
-      when 0
-        r = v
-        g = t
-        b = p
-      when 1
-        r = q
-        g = v
-        b = p
-      when 2
-        r = p
-        g = v
-        b = t
-      when 3
-        r = p
-        g = q
-        b = v
-      when 4
-        r = t
-        g = p
-        b = v
-      when 5
-        r = v
-        g = p
-        b = q
-
-    rgb = [(r * 255).round(), (g * 255).round(), (b * 255).round()]
-
-    return rgb.concat(a)
-
   hslToRgb = (hsl) ->
     [h, s, l, a] = hsl
 
@@ -149,16 +106,31 @@
   and even the named colors from the xkcd survey: http://blog.xkcd.com/2010/05/03/color-survey-results/.
   If no arguments are given, defaults to transparent.
 
-  <code class="run"><pre>
+  <code><pre>
   individualRgb = Color(23, 56, 49, 0.4)
+
+  individualRgb.toString()
+  # => 'rgba(23, 56, 49, 0.4)'
 
   arrayRgb = Color([59, 100, 230])
 
+  arrayRgb.toString()
+  # => 'rgba(59, 100, 230, 1)'
+
   hex = Color('#ff0000')
+
+  hex.toString()
+  # => 'rgba(255, 0, 0, 1)'
 
   rgb = Color('rgb(0, 255, 0)')
 
+  rgb.toString()
+  # => 'rgba(0, 255, 0, 1)'
+
   hsl = Color('hsl(180, 1, 0.5)')
+
+  hsl.toString()
+  # => 'rgba(0, 255, 255, 1)'
 
   anotherColor = Color('blue')
 
@@ -171,7 +143,6 @@
   # http://blog.xkcd.com/2010/05/03/color-survey-results/
   namedBrown = Color('Fuzzy Wuzzy Brown')
 
-  # Output color in Hex format
   namedBrown.toHex()
   # => '#c45655'
 
@@ -180,14 +151,6 @@
 
   transparent.toString()
   # => 'rgba(0, 0, 0, 0)'
-
-  # let's print out the colors on a canvas to see what they look like
-  canvas.font('14px Helvetica')
-  for color, index in ['individualRgb', 'arrayRgb', 'hex', 'rgb', 'hsl', 'anotherColor', 'namedBrown']
-    canvas.centerText
-      color: eval(color)
-      text: color
-      y: 20 * (index + 1)
   </pre></code>
 
   @name Color
@@ -207,12 +170,7 @@
         else
           channelize(args)
 
-    unless parsedColor
-      console.warn "#{args.join(',')} is an unknown color"
-
-      parsedColor = [0, 0, 0, 0]
-
-    @h = null
+    throw "#{args.join(',')} is an unknown color" unless parsedColor
 
     __proto__: Color::
     r: parsedColor[0].round()
@@ -252,19 +210,13 @@
     ###*
     A copy of the calling color that is its complementary color on the color wheel.
 
-    <code class="run"><pre>
+    <code><pre>
     red = Color(255, 0, 0)
 
     cyan = red.complement()
 
-    # to see what they look like
-    for color, index in [red, cyan]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    cyan.toString()
+    # => 'rgba(0, 255, 255, 1)'
     </pre></code>
 
     @name complement
@@ -322,19 +274,13 @@
     ###*
     Returns a copy of the calling color darkened by `amount` (Lightness of the color ranges from 0 to 1).
 
-    <code class="run"><pre>
+    <code><pre>
     green = Color(0, 255, 0)
 
     darkGreen = green.darken(0.3)
 
-    # to see what they look like
-    for color, index in [green, darkGreen]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    darkGreen.toString()
+    # => 'rgba(0, 102, 0, 1)'
     </pre></code>
 
     @name darken
@@ -376,24 +322,18 @@
     ###*
     A copy of the calling color with its saturation reduced by `amount`.
 
-    <code class="run"><pre>
+    <code><pre>
     blue = Color(0, 0, 255)
 
-    desaturatedBlue = blue.desaturate(0.4)
+    desaturatedBlue = blue.desaturate(0.3)
 
-    # to see what they look like
-    for color, index in [blue, desaturatedBlue]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    desaturatedBlue.toString()
+    # => 'rgba(38, 38, 217, 1)'
     </pre></code>
 
     @name desaturate
     @methodOf Color#
-    @param {Number} amount Amount to reduce color saturation by (between 0 and 1)
+    @param {Number} amount Amount to reduce color saturation by (between 0 - 1)
 
     @returns {Color} A copy of the color with the saturation value reduced by `amount`
     ###
@@ -407,7 +347,7 @@
     blue = Color(0, 0, 255)
 
     # modifies blue to be desaturatedBlue
-    blue.desaturate$(0.4)
+    blue.desaturate$(0.3)
 
     blue.toString()
     # => 'rgba(38, 38, 217, 1)'
@@ -415,7 +355,7 @@
 
     @name desaturate$
     @methodOf Color#
-    @param {Number} amount Amount to reduce color saturation by (between 0 and 1)
+    @param {Number} amount Amount to reduce color saturation by (between 0 - 1)
 
     @returns {Color} the color with the saturation value reduced by `amount`
     ###
@@ -456,19 +396,13 @@
     ###*
     A copy of the calling color converted to grayscale.
 
-    <code class="run"><pre>
-    yellow = Color(255, 255, 0)
+    <code><pre>
+    color = Color(255, 255, 0)
 
-    gray = yellow.grayscale()
+    gray = color.grayscale()
 
-    # to see what they look like
-    for color, index in [yellow, gray]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    gray.toString()
+    # => 'rgba(128, 128, 128, 1)'
     </pre></code>
 
     @name grayscale
@@ -510,22 +444,13 @@
     A getter / setter for the hue value of the color. Passing no argument returns the
     current hue value. Passing a value will set the hue to that value and return the color.
 
-    <code class="run"><pre>
+    <code><pre>
     magenta = Color(255, 0, 255)
 
-    magenta.hue()
-    # => 300
+    yellow = magenta.hue(60)
 
-    # modifies the color to be yellow
-    magenta.hue(60)
-
-    # to see what it looks like
-    canvas.drawRect
-      color: magenta
-      x: 50
-      y: 30
-      width: 80
-      height: 80
+    yellow.toString()
+    # => 'rgba(255, 255, 0, 1)'
     </pre></code>
 
     @name hue
@@ -534,48 +459,31 @@
 
     @returns {Color|Number} returns the color object if you pass a new hue value and returns the hue otherwise
     ###
-    hue: (newVal, mode) ->
-      if mode == 'hsv'
-        hsv = @toHsv()
-        if newVal?
-          hsv[0] = newVal
+    hue: (newVal) ->
+      hsl = @toHsl()
+      if newVal?
+        hsl[0] = newVal
 
-          [@r, @g, @b, @a] = hsvToRgb(hsv)
+        [@r, @g, @b, @a] = hslToRgb(hsl)
 
-          return this
-        else
-          return hsv[0]
+        return this
       else
-        hsl = @toHsl()
-        if newVal?
-          hsl[0] = newVal
-
-          [@r, @g, @b, @a] = hslToRgb(hsl)
-
-          return this
-        else
-          return hsl[0]
+        return hsl[0]
 
     ###*
     A getter / setter for the lightness value of the color. Passing no argument returns the
     current lightness value. Passing a value will set the lightness to that value and return the color.
 
-    <code class="run"><pre>
+    <code><pre>
     magenta = Color(255, 0, 255)
 
     magenta.lightness()
     # => 0.9
 
-    # modifies magenta in place to be lighter
-    magenta.lightness(0.75)
+    darkerMagenta = magenta.lightness(0.75)
 
-    # to see what it looks like
-    canvas.drawRect
-      color: magenta
-      x: 50
-      y: 30
-      width: 80
-      height: 80
+    darkerMagenta.lightness()
+    # => 0.75
     </pre></code>
 
     @name lightness
@@ -595,22 +503,10 @@
       else
         return hsl[2]
 
-    value: (newVal) ->
-      hsv = @toHsv()
-
-      if newVal?
-        hsv[2] = newVal
-
-        [@r, @g, @b, @a] = hsvToRgb(hsv)
-
-        return this
-      else
-        return hsv[2]
-
     ###*
     A copy of the calling color with its hue shifted by `degrees`. This differs from the hue setter in that it adds to the existing hue value and will wrap around 0 and 360.
 
-    <code class="run"><pre>
+    <code><pre>
     magenta = Color(255, 0, 255)
 
     magenta.hue()
@@ -623,14 +519,8 @@
     yellow.hue()
     # => 60
 
-    # to see what they look like
-    for color, index in [magenta, yellow]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    yellow.toString()
+    # => 'rgba(255, 255, 0, 1)'
     </pre></code>
 
     @name shiftHue
@@ -681,19 +571,13 @@
     ###*
     Returns a copy of the calling color lightened by `amount` (Lightness of the color ranges from 0 to 1).
 
-    <code class="run"><pre>
+    <code><pre>
     green = Color(0, 255, 0)
 
-    lightGreen = green.lighten(0.3)
+    lightGreen = green.lighten(0.2)
 
-    # to see what they look like
-    for color, index in [green, lightGreen]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    lightGreen.toString()
+    # => 'rgba(102, 255, 102, 1)'
     </pre></code>
 
     @name lighten
@@ -711,7 +595,7 @@
     <code><pre>
     green = Color(0, 255, 0)
 
-    green.lighten$(0.2)
+    green.lighten(0.2)
 
     # we have modified green in place
     # to become lightGreen
@@ -737,24 +621,21 @@
     A copy of the calling color mixed with `other` using `amount` as the
     mixing ratio. If amount is not passed, then the colors are mixed evenly.
 
-    <code class="run"><pre>
+    <code><pre>
     red = Color(255, 0, 0)
     yellow = Color(255, 255, 0)
 
     # With no amount argument the colors are mixed evenly
     orange = red.mixWith(yellow)
 
+    orange.toString()
+    # => 'rgba(255, 128, 0, 1)'
+
     # With an amount of 0.3 we are mixing the color 30% red and 70% yellow
     somethingCloseToOrange = red.mixWith(yellow, 0.3)
 
-    # to see what they look like
-    for color, index in [red, yellow, orange, somethingCloseToOrange]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * (index % 2))
-        y: 20 + (60 * (if index > 1 then 1 else 0))
-        width: 60
-        height: 60
+    somethingCloseToOrange.toString()
+    # => rgba(255, 179, 0, 1)
     </pre></code>
 
     @name mixWith
@@ -812,7 +693,7 @@
     ###*
     A copy of the calling color with its saturation increased by `amount`.
 
-    <code class="run"><pre>
+    <code><pre>
     color = Color(50, 50, 200)
 
     color.saturation()
@@ -823,14 +704,8 @@
     saturatedColor.saturation()
     # => 0.8
 
-    # to see what they look like
-    for color, index in [color, saturatedColor]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    saturatedColor.toString()
+    # => rgba(25, 25, 225, 1)
     </pre></code>
 
     @name saturate
@@ -879,21 +754,11 @@
     A getter / setter for the saturation value of the color. Passing no argument returns the
     current saturation value. Passing a value will set the saturation to that value and return the color.
 
-    <code class="run"><pre>
-    yellow = Color('hsl(60, 0.5, 0.5)')
+    <code><pre>
+    hslColor = Color('hsl(60, 0.5, 0.5)')
 
-    yellow.saturation()
+    hslColor.saturation()
     # => 0.5
-
-    yellow.saturation(0.8)
-
-    # to see what it looks like
-    canvas.drawRect
-      color: yellow
-      x: 50
-      y: 30
-      width: 80
-      height: 80
     </pre></code>
 
     @name saturation
@@ -902,28 +767,16 @@
 
     @returns {Color|Number} returns the color object if you pass a new saturation value and returns the saturation otherwise
     ###
-    saturation: (newVal, mode) ->
-      if mode == 'hsv'
-        hsv = @toHsv()
-        if newVal?
-          hsv[1] = newVal
+    saturation: (newVal) ->
+      hsl = @toHsl()
+      if newVal?
+        hsl[1] = newVal
 
-          [@r, @g, @b, @a] = hsvToRgb(hsv)
+        [@r, @g, @b, @a] = hslToRgb(hsl)
 
-          return this
-        else
-          return hsv[1]
-
+        return this
       else
-        hsl = @toHsl()
-        if newVal?
-          hsl[1] = newVal
-
-          [@r, @g, @b, @a] = hslToRgb(hsl)
-
-          return this
-        else
-          return hsl[1]
+        return hsl[1]
 
     ###*
     returns the Hex representation of the color. Exclude the leading `#` by passing false.
@@ -1003,36 +856,6 @@
 
       return [hue, saturation, lightness, @a]
 
-    toHsv: ->
-      r = @r / 255
-      g = @g / 255
-      b = @b / 255
-
-      {min, max} = [r, g, b].extremes()
-
-      h = s = v = max
-
-      d = max - min
-      s = (if max == 0 then 0 else d / max)
-
-      if max == min
-        h = @h || 0
-      else
-        switch max
-          when r
-            h = (g - b) / d + (if g < b then 6 else 0)
-          when g
-            h = (b - r) / d + 2
-          when b
-            h = (r - g) / d + 4
-
-        h *= 60
-
-        if max != min
-          @h = h
-
-      return [h, s, v]
-
     ###*
     returns string rgba representation of the color.
 
@@ -1054,7 +877,7 @@
     ###*
     A copy of the calling color with its alpha reduced by `amount`.
 
-    <code class="run"><pre>
+    <code><pre>
     color = Color(0, 0, 0, 1)
 
     color.a
@@ -1064,15 +887,6 @@
 
     transparentColor.a
     # => 0.5
-
-    # to see what they look like
-    for color, index in [color, transparentColor]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
     </pre></code>
 
     @name transparentize
@@ -1112,25 +926,16 @@
     ###*
     A copy of the calling color with its alpha increased by `amount`.
 
-    <code class="run"><pre>
-    color = Color(0, 0, 0, 0.25)
+    <code><pre>
+    color = Color(0, 0, 0, 0)
 
     color.a
-    # => 0.25
+    # => 1
 
-    opaqueColor = color.opacify(0.5)
+    opaqueColor = color.opacify(0.25)
 
     opaqueColor.a
-    # => 0.75
-
-    # to see what they look like
-    for color, index in [color, opaqueColor]
-      canvas.drawRect
-        color: color
-        x: 20 + (60 * index)
-        y: 20 + (60 * index)
-        width: 60
-        height: 60
+    # => 0.25
     </pre></code>
 
     @name opacify
@@ -1148,7 +953,7 @@
     color = Color(0, 0, 0, 0)
 
     color.a
-    # => 0
+    # => 1
 
     # We modify color in place
     color.opacify$(0.25)
@@ -1163,7 +968,7 @@
     @returns {Color} The calling color with its alpha increased by `amount`
     ###
     opacify$: (amount) ->
-      @a = (@a + amount).clamp(0, 1)
+      @a += amount
 
       return this
 
