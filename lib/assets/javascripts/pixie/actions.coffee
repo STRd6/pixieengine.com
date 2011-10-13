@@ -140,4 +140,4 @@ Pixie.PixelEditor.actions = (($) ->
         w = window.open()
         w.document.location = canvas.toDataURL()
       undoable: false
-)()
+)(jQuery)
