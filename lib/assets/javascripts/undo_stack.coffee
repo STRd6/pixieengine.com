@@ -1,5 +1,5 @@
 window.UndoStack = ->
-  undos = [{}]
+  undos = []
   redos = []
   empty = true
 
