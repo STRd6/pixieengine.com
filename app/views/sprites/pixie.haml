@@ -177,10 +177,7 @@
 
                 $('#chats').append(li)
 
-                # TODO: Use something like $("#chat").trigger('show')
-                # to keep this from getting brittle
-                $('#open_chat').toggleClass('straight')
-                $('#chat_zone').toggleClass('visible')
+                $("#chat_zone").trigger('show')
 
                 setTimeout ->
                   $('#chats').scrollTo
