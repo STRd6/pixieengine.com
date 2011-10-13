@@ -91,7 +91,7 @@
           $(".tool.button[title=Save]").removeAttr("disabled")
         , "json"
 
-      pixie = $('#pixie').pixie
+      pixie = Pixie.Editor.Pixel.create
         width: #{width}
         height: #{height}
         pixelSize: if #{facebook?} then 8 else 16
@@ -177,8 +177,7 @@
 
                 $('#chats').append(li)
 
-                $("#chatZone").fadeIn()
-                $("#openChat").addClass('straight')
+                $("#chat_zone").trigger('show')
 
                 setTimeout ->
                   $('#chats').scrollTo
@@ -197,5 +196,6 @@
             if canvas.dirty()
               "Your changes haven't yet been saved, if you leave now you will lose your work."
 
+      $("#pixie").replaceWith(pixie)
       window.currentComponent = pixie
     )(jQuery)

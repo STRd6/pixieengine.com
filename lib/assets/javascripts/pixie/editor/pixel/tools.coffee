@@ -2,16 +2,17 @@
 
 # Old school namespacing. Stuck with it until Sprockets supports exports
 window.Pixie ||= {}
-Pixie.PixelEditor ||= {}
+Pixie.Editor ||= {}
+Pixie.Editor.Pixel ||= {}
 
-Pixie.PixelEditor.tools = (($) ->
+Pixie.Editor.Pixel.tools = (($) ->
   # Import tools and actions from other files
   {
     config: {
       IMAGE_DIR
       DEBUG
     }
-  } = Pixie.PixelEditor
+  } = Pixie.Editor.Pixel
 
   colorNeighbors = (color) ->
     this.color(color)

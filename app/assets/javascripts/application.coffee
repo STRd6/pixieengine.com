@@ -1,6 +1,7 @@
 #= require rails
 #= require corelib
 #= require site
+
 #= require jquery.animation_editor
 #= require jquery.contextMenu
 #= require jquery.simplemodal-1.3.5.min
@@ -13,7 +14,6 @@
 #= require jquery.paste_image_reader
 #= require jquery.pnotify.min
 #= require jquery.property_editor
-#= require jquery.pixie
 #= require jquery.power_canvas
 #= require jquery.serialize_object
 #= require jquery.tagbox
@@ -21,6 +21,9 @@
 #= require jquery.tile_editor
 #= require jquery.tipsy
 #= require jquery.vector_picker
+
+#= require pixie/editor/pixel/create
+
 #= require base64
 #= require grid_gen
 #= require uuid

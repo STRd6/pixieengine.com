@@ -48,7 +48,7 @@
 
             undoable: false
 
-      pixelEditor = $('<div />').pixie(editorOptions)
+      pixelEditor = Pixie.Editor.Pixel.create(editorOptions)
 
       pixelEditor.bind 'doSave', ->
         # Update mtime to bust browser image caching

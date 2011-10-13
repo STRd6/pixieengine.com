@@ -157,6 +157,10 @@
           $('#open_chat').toggleClass('straight')
           $('#chat_zone').toggleClass('visible')
 
+        $("#chat_zone").bind "show", ->
+          $('#open_chat').addClass('straight')
+          $('#chat_zone').addClass('visible')
+
         $('#open_chat, #chat_zone').mousedown (e) ->
           $('#chat_zone .header, #open_chat').css('backgroundColor', '#1084CE')
 
