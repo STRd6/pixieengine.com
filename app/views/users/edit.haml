@@ -20,7 +20,7 @@
 
   %label
     %h3 Favorite Color
-    = form.text_field :favorite_color, :style => "border:none;"
+    = form.text_field :favorite_color, :class => "color", :style => "border:none;"
 
   %label
     %h3 Profile
@@ -45,4 +45,4 @@
 - content_for :javascript do
   :coffeescript
     $ ->
-      $("#user_favorite_color").colorPicker()
+      $(".color").colorPicker()
