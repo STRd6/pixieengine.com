@@ -18,7 +18,7 @@
   $.fn.colorPicker = (options) ->
     options ||= {}
 
-    leadingHash = options.leadingHash || true
+    leadingHash = if options.leadingHash? then options.leadingHash else true
     dir = options.dir || '/assets/jscolor/'
 
     colorOverlaySize = 256
@@ -72,7 +72,7 @@
         m = v - n
 
         if m == 0
-          return [null, 0, v]
+          return [0, 0, v]
 
         if r == n
           h = 3 + (b - g) / m

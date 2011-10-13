@@ -33,8 +33,7 @@
   ColorPicker = ->
     $('<input/>',
       class: 'color'
-    ).colorPicker()
-
+    ).colorPicker({ leadingHash: false })
 
   $.fn.pixie = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
