@@ -37,7 +37,7 @@
       class: 'color'
     ).colorPicker({ leadingHash: false })
 
-  $.fn.pixie = (options) ->
+  Pixie.PixelEditor.create = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color()
 
@@ -107,479 +107,482 @@
     PIXEL_WIDTH = parseInt(options.pixelWidth || options.pixelSize || 16, 10)
     PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10)
 
-    return this.each ->
-      pixie = $.tmpl("editors/pixel").appendTo(this)
+    pixie = $.tmpl("editors/pixel")
 
-      content = pixie.find(".content")
-      viewport = pixie.find(".viewport")
-      canvas = pixie.find(".canvas").css
-        width: width * PIXEL_WIDTH + 2
-        height: height * PIXEL_HEIGHT + 2
+    content = pixie.find(".content")
+    viewport = pixie.find(".viewport")
+    canvas = pixie.find(".canvas").css
+      width: width * PIXEL_WIDTH + 2
+      height: height * PIXEL_HEIGHT + 2
 
-      actionbar = pixie.find(".actions")
+    actionbar = pixie.find(".actions")
 
-      toolbar = pixie.find(".toolbar.left")
+    toolbar = pixie.find(".toolbar.left")
 
-      swatches = pixie.find(".swatches")
-      colorbar = pixie.find(".module.right .toolbar")
+    swatches = pixie.find(".swatches")
+    colorbar = pixie.find(".module.right .toolbar")
 
-      colorPickerHolder = pixie.find(".color_picker_holder")
+    colorPickerHolder = pixie.find(".color_picker_holder")
 
-      colorbar.append(colorPickerHolder, swatches)
+    colorbar.append(colorPickerHolder, swatches)
 
-      opacityVal = $ DIV,
-        class: "val"
-        text: 100
+    opacityVal = $ DIV,
+      class: "val"
+      text: 100
 
-      opacitySlider = pixie.find(".opacity").slider(
-        orientation: 'vertical'
-        value: 100
-        min: 5
-        max: 100
-        step: 5
-        slide: (event, ui) ->
-          opacityVal.text(ui.value)
-      ).append(opacityVal)
+    opacitySlider = pixie.find(".opacity").slider(
+      orientation: 'vertical'
+      value: 100
+      min: 5
+      max: 100
+      step: 5
+      slide: (event, ui) ->
+        opacityVal.text(ui.value)
+    ).append(opacityVal)
 
-      opacityVal.text(opacitySlider.slider('value'))
+    opacityVal.text(opacitySlider.slider('value'))
 
-      preview = pixie.find(".preview").css
-        width: width
-        height: height
+    preview = pixie.find(".preview").css
+      width: width
+      height: height
 
-      currentTool = undefined
-      active = false
-      mode = undefined
-      undoStack = UndoStack()
-      primaryColorPicker = ColorPicker().addClass('primary').appendTo(colorPickerHolder)
-      secondaryColorPicker = ColorPicker().addClass('secondary').appendTo(colorPickerHolder)
-      replaying = false
-      tilePreview = true
-      initialStateData = undefined
+    currentTool = undefined
+    active = false
+    mode = undefined
+    undoStack = UndoStack()
+    primaryColorPicker = ColorPicker().addClass('primary').appendTo(colorPickerHolder)
+    secondaryColorPicker = ColorPicker().addClass('secondary').appendTo(colorPickerHolder)
+    replaying = false
+    tilePreview = true
+    initialStateData = undefined
 
-      pixie
-        .bind('contextmenu', falseFn)
-        .bind('mouseup', (e) ->
-          active = false
-          mode = undefined
-
-          canvas.preview()
-        )
-
-      preview.mousedown ->
-        tilePreview = !tilePreview
+    pixie
+      .bind('contextmenu', falseFn)
+      .bind('mouseup', (e) ->
+        active = false
+        mode = undefined
 
         canvas.preview()
+      )
 
-        track('mousedown', 'preview')
+    preview.mousedown ->
+      tilePreview = !tilePreview
 
-      # TODO: This global event is bad, will cause lag when multiple editors are
-      # on the page
-      $(document).bind 'keyup', ->
-        canvas.preview()
+      canvas.preview()
 
-      swatches.bind 'mousedown touchstart', (e) ->
-        target = $(e.target)
+      track('mousedown', 'preview')
 
-        if target.is('.swatch')
-          color = Color(target.css('backgroundColor'))
-          canvas.color(color, !primaryButton(e))
+    # TODO: This global event is bad, will cause lag when multiple editors are
+    # on the page
+    $(document).bind 'keyup', ->
+      canvas.preview()
 
-          track(e.type, color.toString())
+    swatches.bind 'mousedown touchstart', (e) ->
+      target = $(e.target)
 
-      pixels = []
+      if target.is('.swatch')
+        color = Color(target.css('backgroundColor'))
+        canvas.color(color, !primaryButton(e))
 
-      lastPixel = undefined
+        track(e.type, color.toString())
 
-      handleEvent = (event, element) ->
-        opacity = opacityVal.text() / 100
+    pixels = []
 
-        offset = element.offset()
+    lastPixel = undefined
 
-        local =
-          y: event.pageY - offset.top
-          x: event.pageX - offset.left
+    handleEvent = (event, element) ->
+      opacity = opacityVal.text() / 100
 
-        row = Math.floor(local.y / PIXEL_HEIGHT)
-        col = Math.floor(local.x / PIXEL_WIDTH)
+      offset = element.offset()
 
-        pixel = canvas.getPixel(col, row)
-        eventType = undefined
+      local =
+        y: event.pageY - offset.top
+        x: event.pageX - offset.left
 
-        if (event.type == "mousedown") || (event.type == "touchstart")
-          eventType = "mousedown"
-        else if pixel && pixel != lastPixel && (event.type == "mousemove" || event.type == "touchmove")
-          eventType = "mouseenter"
+      row = Math.floor(local.y / PIXEL_HEIGHT)
+      col = Math.floor(local.x / PIXEL_WIDTH)
 
-        if pixel && active && currentTool && currentTool[eventType]
-          c = canvas.color().toString()
+      pixel = canvas.getPixel(col, row)
+      eventType = undefined
 
-          currentTool[eventType].call(pixel, event, Color(c, opacity), pixel)
+      if (event.type == "mousedown") || (event.type == "touchstart")
+        eventType = "mousedown"
+      else if pixel && pixel != lastPixel && (event.type == "mousemove" || event.type == "touchmove")
+        eventType = "mouseenter"
 
-        lastPixel = pixel
+      if pixel && active && currentTool && currentTool[eventType]
+        c = canvas.color().toString()
 
-      layer = Layer()
-      guideLayer = Layer()
-        .bind("mousedown touchstart", (e) ->
-          #TODO These triggers aren't perfect like the `dirty` method that queries.
-          pixie.trigger('dirty')
-          undoStack.next()
-          active = true
-          if primaryButton(e)
-            mode = "P"
+        currentTool[eventType].call(pixel, event, Color(c, opacity), pixel)
+
+      lastPixel = pixel
+
+    layer = Layer()
+    guideLayer = Layer()
+      .bind("mousedown touchstart", (e) ->
+        #TODO These triggers aren't perfect like the `dirty` method that queries.
+        pixie.trigger('dirty')
+        undoStack.next()
+        active = true
+        if primaryButton(e)
+          mode = "P"
+        else
+          mode = "S"
+
+        e.preventDefault()
+      )
+      .bind("mousedown mousemove", (event) ->
+        handleEvent event, $(this)
+      )
+      .bind("touchstart touchmove", (e) ->
+        # NOTE: global event object
+        Array::each.call event.touches, (touch) =>
+          touch.type = e.type
+          handleEvent touch, $(this)
+      )
+
+    layers = [layer, guideLayer]
+
+    height.times (row) ->
+      pixels[row] = []
+
+      width.times (col) ->
+        pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack)
+        pixels[row][col] = pixel
+
+    canvas.append(layer, guideLayer)
+
+    #TODO: These methods should be on the top-level editor, or modularized into
+    # sensible components
+    $.extend canvas,
+      addAction: (action) ->
+        name = action.name
+        titleText = name.capitalize()
+        undoable = action.undoable
+
+        doIt = ->
+          if undoable != false
+            pixie.trigger('dirty')
+            undoStack.next()
+
+          action.perform(canvas)
+
+        if action.hotkeys
+          titleText += " (#{action.hotkeys}) "
+
+          $.each action.hotkeys, (i, hotkey) ->
+            #TODO Add action hokey json data
+
+            $(document).bind 'keydown', hotkey, (e) ->
+              if currentComponent == pixie
+                e.preventDefault()
+                doIt()
+
+                track('hotkey', action.name)
+
+                return false
+
+        if action.menu != false
+          iconImg = $ "<img />",
+            src: action.icon || IMAGE_DIR + name + '.png'
+
+          actionButton = $("<a />",
+            class: 'tool button'
+            title: titleText
+            text: name.capitalize()
+          )
+          .prepend(iconImg)
+          .bind "mousedown touchstart", (e) ->
+            doIt() unless $(this).attr('disabled')
+
+            # These currently get covered by the global link click tracking
+            # track(e.type, action.name)
+
+            return false
+
+          actionButton.appendTo(actionbar)
+
+      addSwatch: (color) ->
+        swatches.append $ DIV,
+          class: 'swatch'
+          style: "background-color: #{color.toString()}"
+
+      addTool: (tool) ->
+        name = tool.name
+        alt = name.capitalize()
+
+        tool.icon ||= IMAGE_DIR + name + '.png'
+
+        setMe = ->
+          canvas.setTool(tool)
+
+        if tool.hotkeys
+          alt += " (" + tool.hotkeys + ")"
+
+          $.each tool.hotkeys, (i, hotkey) ->
+            $(document).bind 'keydown', hotkey, (e) ->
+              #TODO Generate tool hotkeys json data
+
+              if currentComponent == pixie
+                e.preventDefault()
+                setMe()
+
+                track("hotkey", tool.name)
+
+                return false
+
+        img = $ "<img />",
+          src: tool.icon
+          alt: alt
+          title: alt
+
+        tool.elementSet = toolDiv = $("<div class='tool'></div>")
+          .append(img)
+          .bind("mousedown touchstart", (e) ->
+            setMe()
+
+            track(e.type, tool.name)
+
+            return false
+          )
+
+        toolbar.append(toolDiv)
+
+      color: (color, alternate) ->
+        if (arguments.length == 0 || color == false)
+          if mode == "S"
+            return Color(secondaryColorPicker.css('backgroundColor'))
           else
-            mode = "S"
-
-          e.preventDefault()
-        )
-        .bind("mousedown mousemove", (event) ->
-          handleEvent event, $(this)
-        )
-        .bind("touchstart touchmove", (e) ->
-          # NOTE: global event object
-          Array::each.call event.touches, (touch) =>
-            touch.type = e.type
-            handleEvent touch, $(this)
-        )
-
-      layers = [layer, guideLayer]
-
-      height.times (row) ->
-        pixels[row] = []
-
-        width.times (col) ->
-          pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack)
-          pixels[row][col] = pixel
-
-      canvas.append(layer, guideLayer)
-
-      $.extend canvas,
-        addAction: (action) ->
-          name = action.name
-          titleText = name.capitalize()
-          undoable = action.undoable
-
-          doIt = ->
-            if undoable != false
-              pixie.trigger('dirty')
-              undoStack.next()
-
-            action.perform(canvas)
-
-          if action.hotkeys
-            titleText += " (#{action.hotkeys}) "
-
-            $.each action.hotkeys, (i, hotkey) ->
-              #TODO Add action hokey json data
-
-              $(document).bind 'keydown', hotkey, (e) ->
-                if currentComponent == pixie
-                  e.preventDefault()
-                  doIt()
-
-                  track('hotkey', action.name)
-
-                  return false
-
-          if action.menu != false
-            iconImg = $ "<img />",
-              src: action.icon || IMAGE_DIR + name + '.png'
-
-            actionButton = $("<a />",
-              class: 'tool button'
-              title: titleText
-              text: name.capitalize()
-            )
-            .prepend(iconImg)
-            .bind "mousedown touchstart", (e) ->
-              doIt() unless $(this).attr('disabled')
-
-              # These currently get covered by the global link click tracking
-              # track(e.type, action.name)
-
-              return false
-
-            actionButton.appendTo(actionbar)
-
-        addSwatch: (color) ->
-          swatches.append $ DIV,
-            class: 'swatch'
-            style: "background-color: #{color.toString()}"
-
-        addTool: (tool) ->
-          name = tool.name
-          alt = name.capitalize()
-
-          tool.icon ||= IMAGE_DIR + name + '.png'
-
-          setMe = ->
-            canvas.setTool(tool)
-
-          if tool.hotkeys
-            alt += " (" + tool.hotkeys + ")"
-
-            $.each tool.hotkeys, (i, hotkey) ->
-              $(document).bind 'keydown', hotkey, (e) ->
-                #TODO Generate tool hotkeys json data
-
-                if currentComponent == pixie
-                  e.preventDefault()
-                  setMe()
-
-                  track("hotkey", tool.name)
-
-                  return false
-
-          img = $ "<img />",
-            src: tool.icon
-            alt: alt
-            title: alt
-
-          tool.elementSet = toolDiv = $("<div class='tool'></div>")
-            .append(img)
-            .bind("mousedown touchstart", (e) ->
-              setMe()
-
-              track(e.type, tool.name)
-
-              return false
-            )
-
-          toolbar.append(toolDiv)
-
-        color: (color, alternate) ->
-          if (arguments.length == 0 || color == false)
-            if mode == "S"
-              return Color(secondaryColorPicker.css('backgroundColor'))
-            else
-              return Color(primaryColorPicker.css('backgroundColor'))
-          else if color == true
-            if mode == "S"
-              Color(primaryColorPicker.css('backgroundColor'))
-            else
-              Color(secondaryColorPicker.css('backgroundColor'))
-
-          if (mode == "S") ^ alternate
-            secondaryColorPicker.val(color.toHex().substr(1))
-            secondaryColorPicker[0].onblur()
+            return Color(primaryColorPicker.css('backgroundColor'))
+        else if color == true
+          if mode == "S"
+            Color(primaryColorPicker.css('backgroundColor'))
           else
-            primaryColorPicker.val(color.toHex().substr(1))
-            primaryColorPicker[0].onblur()
+            Color(secondaryColorPicker.css('backgroundColor'))
 
+        if (mode == "S") ^ alternate
+          secondaryColorPicker.val(color.toHex().substr(1))
+          secondaryColorPicker[0].onblur()
+        else
+          primaryColorPicker.val(color.toHex().substr(1))
+          primaryColorPicker[0].onblur()
+
+        return this
+
+      clear: ->
+        layer.clear()
+
+      dirty: (newDirty) ->
+        if newDirty != undefined
+          if newDirty == false
+            lastClean = undoStack.last()
           return this
+        else
+          return lastClean != undoStack.last()
 
-        clear: ->
-          layer.clear()
+      displayInitialState: (stateData) ->
+        @clear()
 
-        dirty: (newDirty) ->
-          if newDirty != undefined
-            if newDirty == false
-              lastClean = undoStack.last()
-            return this
+        stateData ||= initialStateData
+
+        if stateData
+          $.each stateData, (f, data) ->
+            canvas.eachPixel (pixel, x, y) ->
+              pos = x + y*canvas.width
+              pixel.color(Color(data[pos]), true, "replace")
+
+      eachPixel: (fn) ->
+        height.times (row) ->
+          width.times (col) ->
+            pixel = pixels[row][col]
+            fn.call(pixel, pixel, col, row)
+
+        canvas
+
+      eval: (code) ->
+        eval(code)
+
+      fromDataURL: (dataURL) ->
+        context = document.createElement('canvas').getContext('2d')
+
+        maxDimension = 256
+
+        image = new Image()
+        image.onload = ->
+          if image.width * image.height < maxDimension * maxDimension
+            canvas.resize(image.width, image.height)
+
+            context.drawImage(image, 0, 0)
+            imageData = context.getImageData(0, 0, image.width, image.height)
+
+            getColor = (x, y) ->
+              index = (x + y * imageData.width) * 4
+
+              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
+
+            canvas.eachPixel (pixel, x, y) ->
+              pixel.color(getColor(x, y), true)
           else
-            return lastClean != undoStack.last()
+            alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
 
-        displayInitialState: (stateData) ->
-          @clear()
+          return
 
-          stateData ||= initialStateData
+        image.src = dataURL
 
-          if stateData
-            $.each stateData, (f, data) ->
-              canvas.eachPixel (pixel, x, y) ->
-                pos = x + y*canvas.width
-                pixel.color(Color(data[pos]), true, "replace")
+      getNeighbors: (x, y) ->
+        return [
+          @getPixel(x+1, y)
+          @getPixel(x, y+1)
+          @getPixel(x-1, y)
+          @getPixel(x, y-1)
+        ]
 
-        eachPixel: (fn) ->
-          height.times (row) ->
-            width.times (col) ->
-              pixel = pixels[row][col]
-              fn.call(pixel, pixel, col, row)
+      getPixel: (x, y) ->
+        return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
+        return undefined
 
-          canvas
+      getReplayData: ->
+        undoStack.replayData()
 
-        eval: (code) ->
-          eval(code)
+      preview: ->
+        tileCount = if tilePreview then 4 else 1
 
-        fromDataURL: (dataURL) ->
-          context = document.createElement('canvas').getContext('2d')
+        preview.css
+          backgroundImage: @toCSSImageURL()
+          width: tileCount * width
+          height: tileCount * height
 
-          maxDimension = 256
+      redo: ->
+        data = undoStack.popRedo()
 
-          image = new Image()
-          image.onload = ->
-            if image.width * image.height < maxDimension * maxDimension
-              canvas.resize(image.width, image.height)
+        if data
+          pixie.trigger("dirty")
 
-              context.drawImage(image, 0, 0)
-              imageData = context.getImageData(0, 0, image.width, image.height)
+          $.each data, ->
+            this.pixel.color(this.newColor, true, "replace")
 
-              getColor = (x, y) ->
-                index = (x + y * imageData.width) * 4
+      replay: (steps, parentData) ->
+        unless replaying
+          replaying = true
+          canvas = this
 
-                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
-
-              canvas.eachPixel (pixel, x, y) ->
-                pixel.color(getColor(x, y), true)
+          if !steps
+            steps = canvas.getReplayData()
+            canvas.displayInitialState()
+          else
+            if parentData
+              canvas.displayInitialState(parentData)
             else
-              alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
+              canvas.clear()
 
-            return
+          i = 0
+          delay = (5000 / steps.length).clamp(1, 200)
 
-          image.src = dataURL
+          runStep = ->
+            step = steps[i]
 
-        getNeighbors: (x, y) ->
-          return [
-            @getPixel(x+1, y)
-            @getPixel(x, y+1)
-            @getPixel(x-1, y)
-            @getPixel(x, y-1)
-          ]
+            if step
+              $.each step, (j, p) ->
+                canvas.getPixel(p.x, p.y).color(p.color, true, "replace")
 
-        getPixel: (x, y) ->
-          return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
-          return undefined
+              i++
 
-        getReplayData: ->
-          undoStack.replayData()
-
-        preview: ->
-          tileCount = if tilePreview then 4 else 1
-
-          preview.css
-            backgroundImage: @toCSSImageURL()
-            width: tileCount * width
-            height: tileCount * height
-
-        redo: ->
-          data = undoStack.popRedo()
-
-          if data
-            pixie.trigger("dirty")
-
-            $.each data, ->
-              this.pixel.color(this.newColor, true, "replace")
-
-        replay: (steps, parentData) ->
-          unless replaying
-            replaying = true
-            canvas = this
-
-            if !steps
-              steps = canvas.getReplayData()
-              canvas.displayInitialState()
+              setTimeout(runStep, delay)
             else
-              if parentData
-                canvas.displayInitialState(parentData)
-              else
-                canvas.clear()
+              replaying = false
 
-            i = 0
-            delay = (5000 / steps.length).clamp(1, 200)
+          setTimeout(runStep, delay)
 
-            runStep = ->
-              step = steps[i]
+      resize: (newWidth, newHeight) ->
+        @width = width = newWidth
+        @height = height = newHeight
 
-              if step
-                $.each step, (j, p) ->
-                  canvas.getPixel(p.x, p.y).color(p.color, true, "replace")
+        pixels = pixels.slice(0, newHeight)
 
-                i++
+        pixels.push [] while pixels.length < newHeight
 
-                setTimeout(runStep, delay)
-              else
-                replaying = false
+        pixels.each (row, y) ->
+          row.pop() while row.length > newWidth
+          row.push Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack) while row.length < newWidth
 
-            setTimeout(runStep, delay)
+        layers.each (layer) ->
+          layer.clear()
+          layer.resize()
 
-        resize: (newWidth, newHeight) ->
-          @width = width = newWidth
-          @height = height = newHeight
+        canvas.css
+          width: width * PIXEL_WIDTH + 2
+          height: height * PIXEL_HEIGHT + 2
 
-          pixels = pixels.slice(0, newHeight)
+        pixels.each (row) ->
+          row.each (pixel) ->
+            pixel.redraw()
 
-          pixels.push [] while pixels.length < newHeight
+      setInitialState: (frameData) ->
+        initialStateData = frameData
 
-          pixels.each (row, y) ->
-            row.pop() while row.length > newWidth
-            row.push Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack) while row.length < newWidth
+        this.displayInitialState()
 
-          layers.each (layer) ->
-            layer.clear()
-            layer.resize()
+      setTool: (tool) ->
+        currentTool = tool
+        canvas.css('cursor', tool.cursor || "pointer")
+        tool.elementSet.takeClass("active")
 
-          canvas.css
-            width: width * PIXEL_WIDTH + 2
-            height: height * PIXEL_HEIGHT + 2
+      toBase64: (f) ->
+        data = @toDataURL(f)
+        return data.substr(data.indexOf(',') + 1)
 
-          pixels.each (row) ->
-            row.each (pixel) ->
-              pixel.redraw()
+      toCSSImageURL: ->
+        "url(#{@toDataURL()})"
 
-        setInitialState: (frameData) ->
-          initialStateData = frameData
+      toDataURL: ->
+        tempCanvas = $("<canvas width=#{width} height=#{height}></canvas>").get(0)
 
-          this.displayInitialState()
+        context = tempCanvas.getContext('2d')
 
-        setTool: (tool) ->
-          currentTool = tool
-          canvas.css('cursor', tool.cursor || "pointer")
-          tool.elementSet.takeClass("active")
+        @eachPixel (pixel, x, y) ->
+          color = pixel.color()
+          context.fillStyle = color.toString()
+          context.fillRect(x, y, 1, 1)
 
-        toBase64: (f) ->
-          data = @toDataURL(f)
-          return data.substr(data.indexOf(',') + 1)
+        return tempCanvas.toDataURL("image/png")
 
-        toCSSImageURL: ->
-          "url(#{@toDataURL()})"
+      undo: ->
+        data = undoStack.popUndo()
 
-        toDataURL: ->
-          tempCanvas = $("<canvas width=#{width} height=#{height}></canvas>").get(0)
+        if data
+          pixie.trigger("dirty")
 
-          context = tempCanvas.getContext('2d')
+          $.each data, ->
+            this.pixel.color(this.oldColor, true, "replace")
 
-          @eachPixel (pixel, x, y) ->
-            color = pixel.color()
-            context.fillStyle = color.toString()
-            context.fillRect(x, y, 1, 1)
+      width: width
+      height: height
 
-          return tempCanvas.toDataURL("image/png")
+    $.each tools, (key, tool) ->
+      tool.name = key
+      canvas.addTool(tool)
 
-        undo: ->
-          data = undoStack.popUndo()
+    $.each actions, (key, action) ->
+      action.name = key
+      canvas.addAction(action)
 
-          if data
-            pixie.trigger("dirty")
+    $.each palette, (i, color) ->
+      canvas.addSwatch(Color(color))
 
-            $.each data, ->
-              this.pixel.color(this.oldColor, true, "replace")
+    canvas.setTool(tools.pencil)
 
-        width: width
-        height: height
-
-      $.each tools, (key, tool) ->
-        tool.name = key
-        canvas.addTool(tool)
-
-      $.each actions, (key, action) ->
-        action.name = key
-        canvas.addAction(action)
-
-      $.each palette, (i, color) ->
-        canvas.addSwatch(Color(color))
-
-      canvas.setTool(tools.pencil)
-
-      pixie.bind 'mouseenter', ->
-        window.currentComponent = pixie
-
-      pixie.bind 'touchstart touchmove touchend', ->
-        event.preventDefault()
-
+    pixie.bind 'mouseenter', ->
       window.currentComponent = pixie
 
-      if initializer
-        initializer(canvas)
+    pixie.bind 'touchstart touchmove touchend', ->
+      event.preventDefault()
 
-      lastClean = undoStack.last()
+    window.currentComponent = pixie
+
+    if initializer
+      initializer(canvas)
+
+    lastClean = undoStack.last()
+
+    return pixie
 )(jQuery)

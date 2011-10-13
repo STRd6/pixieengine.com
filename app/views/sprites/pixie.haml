@@ -91,7 +91,7 @@
           $(".tool.button[title=Save]").removeAttr("disabled")
         , "json"
 
-      pixie = $('#pixie').pixie
+      pixie = Pixie.PixelEditor.create
         width: #{width}
         height: #{height}
         pixelSize: if #{facebook?} then 8 else 16
@@ -196,5 +196,6 @@
             if canvas.dirty()
               "Your changes haven't yet been saved, if you leave now you will lose your work."
 
+      $("#pixie").replaceWith(pixie)
       window.currentComponent = pixie
     )(jQuery)
