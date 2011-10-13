@@ -6,7 +6,6 @@ Pixie.Editor ||= {}
 Pixie.Editor.Pixel ||= {}
 
 Pixie.Editor.Pixel.actions = (($) ->
-
   return actions =
     undo:
       hotkeys: ['ctrl+z', 'meta+z']

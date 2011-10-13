@@ -577,6 +577,9 @@
     pixie.bind 'touchstart touchmove touchend', ->
       event.preventDefault()
 
+    # TODO: Refactor this to be a real self.include
+    # Pixie.Editor.Pixel.Console(options, canvas)
+
     window.currentComponent = pixie
 
     if initializer
