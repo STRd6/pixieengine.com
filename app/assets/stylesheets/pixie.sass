@@ -1,29 +1,23 @@
 @import partials/base
 @import util
 
-.editor.pixie
-  background-image: url(/assets/editor_textured_background.png)
-
-html.light
-  background-image: url(/assets/editor_textured_background.png)
-
-  body .content
-    background: none
-
+/* TODO: Move these global styles out and include pixie.sass in screen.sass
 body#fullscreen
   padding: 2.5em 1em 0
 
   & > .content
     +box-sizing(border-box)
 
-    padding: 1em 0 0 0
-
-body
-  .content
     background: none
     border: none
-    padding-left: 0
-    padding-right: 0
+    padding: 1em 0 0 0
+
+.editor.pixie
+  background-image: none
+
+html.light
+  &, & .editor.pixie
+    background-image: url(/assets/editor_textured_background.png)
 
 .pixie
   $sidebar_left: 50px
@@ -44,17 +38,7 @@ body
 
     position: relative
 
-  .light &
-    nav.left, nav.right, nav.top
-      background-color: $light_background
-
-  nav.left, nav.right
-    +border-radius
-    +box-sizing(border-box)
-
-    background-color: $dark_highlight
-
-  nav.left
+  .module.left
     +bounds($sidebar_left, 100%)
     padding: 0
 
@@ -79,7 +63,7 @@ body
       img
         border: none
 
-  nav.right
+  .module.right
     +bounds($sidebar_right, 100%)
 
     padding: 1em
