@@ -59,7 +59,7 @@
 
             oldColor = Color(color)
 
-            color = ColorUtil[blendMode](Color(oldColor), Color(newColor))
+            color = ColorUtil[blendMode](oldColor, Color(newColor))
 
             redraw()
 
@@ -67,7 +67,7 @@
 
             return self
           else
-            Color(color)
+            color
 
         toString: ->
           "[Pixel: " + [@x, @y].join(",") + "]"
