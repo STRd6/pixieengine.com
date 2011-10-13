@@ -1,7 +1,10 @@
+#= require undo_stack
 #= require animation/animation_frame
 #= require animation/animation_ui
 
-$.fn.animationEditor = ->
+#= require tmpls/editors/lebenmeister
+
+(($) ->
   sequenceNumber = 1
   tileIndex = 0
   lastClickedSprite = null
@@ -416,3 +419,4 @@ $.fn.animationEditor = ->
     $(document).bind 'keydown', keybinding, handler
 
   return animationEditor
+)(jQuery)
