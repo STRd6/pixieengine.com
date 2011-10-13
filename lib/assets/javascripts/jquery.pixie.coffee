@@ -2,6 +2,8 @@
 #= require undo_stack
 #= require_tree ./pixie
 
+#= require tmpls/editors/pixel
+
 (($) ->
   track = (action, label) ->
     trackEvent?("Pixel Editor", action, label)
@@ -34,7 +36,6 @@
     $('<input/>',
       class: 'color'
     ).colorPicker()
-
 
   $.fn.pixie = (options) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
@@ -107,39 +108,30 @@
     PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10)
 
     return this.each ->
-      pixie = $(this).addClass("editor pixie")
+      pixie = $.tmpl("editors/pixel").appendTo(this)
 
-      content = $ DIV,
-        class: 'content'
-
-      viewport = $ DIV,
-        class: 'viewport'
-
-      canvas = $ DIV,
-        class: 'canvas'
+      content = pixie.find(".content")
+      viewport = pixie.find(".viewport")
+      canvas = pixie.find(".canvas").css
         width: width * PIXEL_WIDTH + 2
         height: height * PIXEL_HEIGHT + 2
 
-      toolbar = $ DIV,
-        class: 'toolbar'
+      actionbar = pixie.find(".actions")
 
-      swatches = $ DIV,
-        class: 'swatches'
+      toolbar = pixie.find(".toolbar.left")
 
-      colorbar = $ DIV,
-        class: 'toolbar'
+      swatches = pixie.find(".swatches")
+      colorbar = pixie.find(".module.right .toolbar")
 
-      actionbar = $ DIV,
-        class: 'actions'
+      colorPickerHolder = pixie.find(".color_picker_holder")
 
-      navRight = $("<nav class='right module'></nav>")
-      navLeft = $("<nav class='left module'></nav>")
+      colorbar.append(colorPickerHolder, swatches)
 
       opacityVal = $ DIV,
         class: "val"
         text: 100
 
-      opacitySlider = $(DIV, class: "opacity").slider(
+      opacitySlider = pixie.find(".opacity").slider(
         orientation: 'vertical'
         value: 100
         min: 5
@@ -151,33 +143,19 @@
 
       opacityVal.text(opacitySlider.slider('value'))
 
-      tilePreview = true
-
-      preview = $ DIV,
-        class: 'preview'
-        style: "width: #{width}px; height: #{height}px"
-
-      preview.mousedown ->
-        tilePreview = !tilePreview
-
-        canvas.preview()
-
-        track('mousedown', 'preview')
+      preview = pixie.find(".preview").css
+        width: width
+        height: height
 
       currentTool = undefined
       active = false
       mode = undefined
       undoStack = UndoStack()
-      primaryColorPicker = ColorPicker().addClass('primary')
-      secondaryColorPicker = ColorPicker().addClass('secondary')
+      primaryColorPicker = ColorPicker().addClass('primary').appendTo(colorPickerHolder)
+      secondaryColorPicker = ColorPicker().addClass('secondary').appendTo(colorPickerHolder)
       replaying = false
+      tilePreview = true
       initialStateData = undefined
-
-      colorPickerHolder = $(DIV,
-        class: 'color_picker_holder'
-      ).append(primaryColorPicker, secondaryColorPicker)
-
-      colorbar.append(colorPickerHolder, swatches)
 
       pixie
         .bind('contextmenu', falseFn)
@@ -188,10 +166,19 @@
           canvas.preview()
         )
 
+      preview.mousedown ->
+        tilePreview = !tilePreview
+
+        canvas.preview()
+
+        track('mousedown', 'preview')
+
+      # TODO: This global event is bad, will cause lag when multiple editors are
+      # on the page
       $(document).bind 'keyup', ->
         canvas.preview()
 
-      $(navRight).bind 'mousedown touchstart', (e) ->
+      swatches.bind 'mousedown touchstart', (e) ->
         target = $(e.target)
 
         if target.is('.swatch')
@@ -582,13 +569,6 @@
         canvas.addSwatch(Color(color))
 
       canvas.setTool(tools.pencil)
-
-      viewport.append(canvas)
-
-      $(navLeft).append(toolbar)
-      $(navRight).append(colorbar, preview, opacitySlider)
-      content.append(actionbar, viewport, navLeft, navRight)
-      pixie.append(content)
 
       pixie.bind 'mouseenter', ->
         window.currentComponent = pixie
