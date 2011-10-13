@@ -177,8 +177,10 @@
 
                 $('#chats').append(li)
 
-                $("#chatZone").fadeIn()
-                $("#openChat").addClass('straight')
+                # TODO: Use something like $("#chat").trigger('show')
+                # to keep this from getting brittle
+                $('#open_chat').toggleClass('straight')
+                $('#chat_zone').toggleClass('visible')
 
                 setTimeout ->
                   $('#chats').scrollTo
