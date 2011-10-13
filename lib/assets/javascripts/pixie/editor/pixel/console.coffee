@@ -11,14 +11,13 @@ Pixie.Editor.Pixel.Console = (I, self) ->
     position: "absolute"
     top: "125px"
     left: "250px"
-    width: "300px"
 
   consoleWindow.find(".content").append(Pixie.Console(
     evalContext: self.eval
   ))
 
   self.addAction
-    name: "Console"
+    name: "console"
     perform: ->
       consoleWindow.toggle()
 

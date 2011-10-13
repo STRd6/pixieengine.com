@@ -35,9 +35,11 @@ window.Pixie ||= {}
       # Prevent the hilarity that is appending whole dom elements to the output
       message = message.toString() if message?.toString?
 
-      output.append(message)
+      output.append(message + "\n")
 
-    run = ->
+    run = (event) ->
+      event.preventDefault() if event
+
       return unless command = input.val()
 
       #TODO: Parse and process special commands
