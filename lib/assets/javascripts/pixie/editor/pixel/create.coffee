@@ -105,22 +105,22 @@
     PIXEL_WIDTH = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
     PIXEL_HEIGHT = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
-    pixie = $.tmpl("editors/pixel")
+    self = $.tmpl("editors/pixel")
 
-    content = pixie.find(".content")
-    viewport = pixie.find(".viewport")
-    canvas = pixie.find(".canvas").css
+    content = self.find(".content")
+    viewport = self.find(".viewport")
+    canvas = self.find(".canvas").css
       width: width * PIXEL_WIDTH + 2
       height: height * PIXEL_HEIGHT + 2
 
-    actionbar = pixie.find(".actions")
+    actionbar = self.find(".actions")
 
-    toolbar = pixie.find(".toolbar.left")
+    toolbar = self.find(".toolbar.left")
 
-    swatches = pixie.find(".swatches")
-    colorbar = pixie.find(".module.right .toolbar")
+    swatches = self.find(".swatches")
+    colorbar = self.find(".module.right .toolbar")
 
-    colorPickerHolder = pixie.find(".color_picker_holder")
+    colorPickerHolder = self.find(".color_picker_holder")
 
     colorbar.append(colorPickerHolder, swatches)
 
@@ -128,7 +128,7 @@
       class: "val"
       text: 100
 
-    opacitySlider = pixie.find(".opacity").slider(
+    opacitySlider = self.find(".opacity").slider(
       orientation: 'vertical'
       value: 100
       min: 5
@@ -140,7 +140,7 @@
 
     opacityVal.text(opacitySlider.slider('value'))
 
-    preview = pixie.find(".preview").css
+    preview = self.find(".preview").css
       width: width
       height: height
 
@@ -154,7 +154,7 @@
     tilePreview = true
     initialStateData = undefined
 
-    pixie
+    self
       .bind('contextmenu', falseFn)
       .bind('mouseup', (e) ->
         active = false
@@ -219,7 +219,7 @@
     guideLayer = Layer()
       .bind("mousedown touchstart", (e) ->
         #TODO These triggers aren't perfect like the `dirty` method that queries.
-        pixie.trigger('dirty')
+        self.trigger('dirty')
         undoStack.next()
         active = true
         if primaryButton(e)
@@ -260,7 +260,7 @@
 
         doIt = ->
           if undoable != false
-            pixie.trigger('dirty')
+            self.trigger('dirty')
             undoStack.next()
 
           action.perform(canvas)
@@ -272,7 +272,7 @@
             #TODO Add action hokey json data
 
             $(document).bind 'keydown', hotkey, (e) ->
-              if currentComponent == pixie
+              if currentComponent == self
                 e.preventDefault()
                 doIt()
 
@@ -321,7 +321,7 @@
             $(document).bind 'keydown', hotkey, (e) ->
               #TODO Generate tool hotkeys json data
 
-              if currentComponent == pixie
+              if currentComponent == self
                 e.preventDefault()
                 setMe()
 
@@ -454,7 +454,7 @@
         data = undoStack.popRedo()
 
         if data
-          pixie.trigger("dirty")
+          self.trigger("dirty")
 
           $.each data, ->
             this.pixel.color(this.newColor, true, "replace")
@@ -548,7 +548,7 @@
         data = undoStack.popUndo()
 
         if data
-          pixie.trigger("dirty")
+          self.trigger("dirty")
 
           $.each data, ->
             this.pixel.color(this.oldColor, true, "replace")
@@ -569,21 +569,21 @@
 
     canvas.setTool(tools.pencil)
 
-    pixie.bind 'mouseenter', ->
-      window.currentComponent = pixie
+    self.bind 'mouseenter', ->
+      window.currentComponent = self
 
-    pixie.bind 'touchstart touchmove touchend', ->
+    self.bind 'touchstart touchmove touchend', ->
       event.preventDefault()
 
     # TODO: Refactor this to be a real self.include
     Pixie.Editor.Pixel.Console(I, canvas)
 
-    window.currentComponent = pixie
+    window.currentComponent = self
 
     if initializer
       initializer(canvas)
 
     lastClean = undoStack.last()
 
-    return pixie
+    return self
 )(jQuery)
