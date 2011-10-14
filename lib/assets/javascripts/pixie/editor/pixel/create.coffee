@@ -37,7 +37,7 @@
       class: 'color'
     ).colorPicker({ leadingHash: false })
 
-  Pixie.Editor.Pixel.create = (options) ->
+  Pixie.Editor.Pixel.create = (I={}) ->
     Pixel = (x, y, layerCanvas, canvas, undoStack) ->
       color = Color()
 
@@ -99,13 +99,11 @@
           layerElement.width = layerWidth()
           layerElement.height = layerHeight()
 
-    options ||= {}
-
-    width = parseInt(options.width || 8, 10)
-    height = parseInt(options.height || 8, 10)
-    initializer = options.initializer
-    PIXEL_WIDTH = parseInt(options.pixelWidth || options.pixelSize || 16, 10)
-    PIXEL_HEIGHT = parseInt(options.pixelHeight || options.pixelSize || 16, 10)
+    width = parseInt(I.width || 8, 10)
+    height = parseInt(I.height || 8, 10)
+    initializer = I.initializer
+    PIXEL_WIDTH = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
+    PIXEL_HEIGHT = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
     pixie = $.tmpl("editors/pixel")
 
@@ -520,7 +518,7 @@
       setInitialState: (frameData) ->
         initialStateData = frameData
 
-        this.displayInitialState()
+        @displayInitialState()
 
       setTool: (tool) ->
         currentTool = tool
@@ -578,7 +576,7 @@
       event.preventDefault()
 
     # TODO: Refactor this to be a real self.include
-    Pixie.Editor.Pixel.Console(options, canvas)
+    Pixie.Editor.Pixel.Console(I, canvas)
 
     window.currentComponent = pixie
 
