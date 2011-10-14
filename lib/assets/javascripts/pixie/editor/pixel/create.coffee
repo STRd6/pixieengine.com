@@ -38,7 +38,7 @@
     ).colorPicker({ leadingHash: false })
 
   Pixie.Editor.Pixel.create = (I={}) ->
-    Pixel = (x, y, layerCanvas, canvas, undoStack) ->
+    Pixel = (x, y, layerCanvas, editor, undoStack) ->
       color = Color()
 
       redraw = () ->
@@ -50,7 +50,7 @@
         layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
       self =
-        canvas: canvas
+        canvas: editor
 
         redraw: redraw
 
@@ -160,27 +160,22 @@
         active = false
         mode = undefined
 
-        canvas.preview()
+        self.preview()
       )
 
     preview.mousedown ->
       tilePreview = !tilePreview
 
-      canvas.preview()
+      self.preview()
 
       track('mousedown', 'preview')
-
-    # TODO: This global event is bad, will cause lag when multiple editors are
-    # on the page
-    $(document).bind 'keyup', ->
-      canvas.preview()
 
     swatches.bind 'mousedown touchstart', (e) ->
       target = $(e.target)
 
       if target.is('.swatch')
         color = Color(target.css('backgroundColor'))
-        canvas.color(color, !primaryButton(e))
+        self.color(color, !primaryButton(e))
 
         track(e.type, color.toString())
 
@@ -200,7 +195,7 @@
       row = Math.floor(local.y / PIXEL_HEIGHT)
       col = Math.floor(local.x / PIXEL_WIDTH)
 
-      pixel = canvas.getPixel(col, row)
+      pixel = self.getPixel(col, row)
       eventType = undefined
 
       if (event.type == "mousedown") || (event.type == "touchstart")
@@ -209,7 +204,7 @@
         eventType = "mouseenter"
 
       if pixel && active && currentTool && currentTool[eventType]
-        c = canvas.color().toString()
+        c = self.color().toString()
 
         currentTool[eventType].call(pixel, event, Color(c, opacity), pixel)
 
@@ -245,14 +240,14 @@
       pixels[row] = []
 
       width.times (col) ->
-        pixel = Pixel(col, row, layer.get(0).getContext('2d'), canvas, undoStack)
+        pixel = Pixel(col, row, layer.get(0).getContext('2d'), self, undoStack)
         pixels[row][col] = pixel
 
     canvas.append(layer, guideLayer)
 
     #TODO: These methods should be on the top-level editor, or modularized into
     # sensible components
-    $.extend canvas,
+    $.extend self,
       addAction: (action) ->
         name = action.name
         titleText = name.capitalize()
@@ -263,7 +258,7 @@
             self.trigger('dirty')
             undoStack.next()
 
-          action.perform(canvas)
+          action.perform(self)
 
         if action.hotkeys
           titleText += " (#{action.hotkeys}) "
@@ -312,7 +307,7 @@
         tool.icon ||= IMAGE_DIR + name + '.png'
 
         setMe = ->
-          canvas.setTool(tool)
+          self.setTool(tool)
 
         if tool.hotkeys
           alt += " (" + tool.hotkeys + ")"
@@ -385,8 +380,8 @@
 
         if stateData
           $.each stateData, (f, data) ->
-            canvas.eachPixel (pixel, x, y) ->
-              pos = x + y*canvas.width
+            self.eachPixel (pixel, x, y) ->
+              pos = x + y * I.width
               pixel.color(Color(data[pos]), true, "replace")
 
       eachPixel: (fn) ->
@@ -395,7 +390,7 @@
             pixel = pixels[row][col]
             fn.call(pixel, pixel, col, row)
 
-        canvas
+        return self
 
       eval: (code) ->
         eval(code)
@@ -408,7 +403,7 @@
         image = new Image()
         image.onload = ->
           if image.width * image.height < maxDimension * maxDimension
-            canvas.resize(image.width, image.height)
+            self.resize(image.width, image.height)
 
             context.drawImage(image, 0, 0)
             imageData = context.getImageData(0, 0, image.width, image.height)
@@ -418,7 +413,7 @@
 
               return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
 
-            canvas.eachPixel (pixel, x, y) ->
+            self.eachPixel (pixel, x, y) ->
               pixel.color(getColor(x, y), true)
           else
             alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
@@ -462,16 +457,15 @@
       replay: (steps, parentData) ->
         unless replaying
           replaying = true
-          canvas = this
 
           if !steps
-            steps = canvas.getReplayData()
-            canvas.displayInitialState()
+            steps = self.getReplayData()
+            self.displayInitialState()
           else
             if parentData
-              canvas.displayInitialState(parentData)
+              self.displayInitialState(parentData)
             else
-              canvas.clear()
+              self.clear()
 
           i = 0
           delay = (5000 / steps.length).clamp(1, 200)
@@ -481,7 +475,7 @@
 
             if step
               $.each step, (j, p) ->
-                canvas.getPixel(p.x, p.y).color(p.color, true, "replace")
+                self.getPixel(p.x, p.y).color(p.color, true, "replace")
 
               i++
 
@@ -501,7 +495,7 @@
 
         pixels.each (row, y) ->
           row.pop() while row.length > newWidth
-          row.push Pixel(row.length, y, layer.get(0).getContext('2d'), canvas, undoStack) while row.length < newWidth
+          row.push Pixel(row.length, y, layer.get(0).getContext('2d'), self, undoStack) while row.length < newWidth
 
         layers.each (layer) ->
           layer.clear()
@@ -558,16 +552,16 @@
 
     $.each tools, (key, tool) ->
       tool.name = key
-      canvas.addTool(tool)
+      self.addTool(tool)
 
     $.each actions, (key, action) ->
       action.name = key
-      canvas.addAction(action)
+      self.addAction(action)
 
     $.each palette, (i, color) ->
-      canvas.addSwatch(Color(color))
+      self.addSwatch(Color(color))
 
-    canvas.setTool(tools.pencil)
+    self.setTool(tools.pencil)
 
     self.bind 'mouseenter', ->
       window.currentComponent = self
@@ -576,12 +570,12 @@
       event.preventDefault()
 
     # TODO: Refactor this to be a real self.include
-    Pixie.Editor.Pixel.Console(I, canvas)
+    Pixie.Editor.Pixel.Console(I, self)
 
     window.currentComponent = self
 
     if initializer
-      initializer(canvas)
+      initializer(self)
 
     lastClean = undoStack.last()
 
