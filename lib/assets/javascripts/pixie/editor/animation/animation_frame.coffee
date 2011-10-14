@@ -1,3 +1,5 @@
+#= require tmpls/lebenmeister/sprite
+
 (exports ? this)["AnimationFrame"] = (animationEditor, tileset, controls) ->
   currentIndex = 0
   frames = []
@@ -30,7 +32,7 @@
 
       spriteSrc = tileset[frameArray.last()]
 
-      $("#animation_editor_templates").find('.sprite').tmpl(src: spriteSrc).appendTo(sequenceEl)
+      $.tmpl("lebenmeister/sprite", {src: spriteSrc}).appendTo(sequenceEl)
       animationEditor.trigger 'appendSequenceToFrames', [sequenceEl]
     appendImage: (imgSrc) ->
       uuid = findUUID(imgSrc)

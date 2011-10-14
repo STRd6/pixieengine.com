@@ -2,7 +2,6 @@
 #= require corelib
 #= require site
 
-#= require jquery.animation_editor
 #= require jquery.contextMenu
 #= require jquery.simplemodal-1.3.5.min
 #= require jquery.form
@@ -23,6 +22,7 @@
 #= require jquery.vector_picker
 
 #= require pixie/editor/pixel/create
+#= require pixie/editor/animation/create
 
 #= require base64
 #= require grid_gen

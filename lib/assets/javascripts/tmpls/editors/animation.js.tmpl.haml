@@ -1,0 +1,48 @@
+.editor.lebenmeister
+  .content
+    %section
+      .relative
+        .player
+          .module_header
+            .button_group
+              %button.export_json(title="Create a sequence to export" disabled="true")> Export JSON
+              %button.export_csv(title="Create a sequence to export" disabled="true")> Export CSV
+            %button.help>
+              %span.static-help(alt="Help")
+              Help
+          %img
+          .controls.actions_bar
+            .play.static-play
+            .stop.static-stop
+            .scrubber_container
+              %input(type="range" min="0" max="0" value="0" class="scrubber")
+            %span.fps
+              fps
+              %input(type="number" min="0" max="60" value="30")
+
+    %nav.left
+      .background_color
+        .module_header
+          %h3 Sprites
+        .sprites
+
+    %nav.right
+      .background_color
+        .module_header
+          %h3> Sequences
+          %button.edit_sequences(title="Create a sequence before editing" disabled="true")>
+            %span.static-picture_edit
+            Edit
+        .sequences
+
+    %nav.module.bottom
+      .module_header
+        %h3 Frames
+        %button.create_sequence(title="Add frames to create a sequence" disabled="true")>
+          %span.static-pictures
+          Create Sequence
+        %button.clear_frames(title="There are no frames to clear" disabled="true")>
+          %span.static-application
+          Clear
+      .frame_sprites
+

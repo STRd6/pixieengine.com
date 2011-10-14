@@ -10,28 +10,29 @@
       border: none
       padding: 0
 
+%section#lebenmeister
+
 = form_tag download_animations_path, :class => "download_json" do
   = hidden_field_tag :export_json_data
 
 = form_tag download_animations_path, :class => "download_csv" do
   = hidden_field_tag :export_csv_data
 
-= render :partial => 'animation_editor'
-
 - content_for :javascript do
   :coffeescript
     $ ->
       $('body').attr('id', 'fullscreen')
-      editor = $("<div />").appendTo("body > .content").animationEditor()
+      lebenmeister = Pixie.Editor.Animation.create()
 
       $('#feedback').hide()
 
-      editor.find('.export_json').mousedown ->
+      lebenmeister.find('.export_json').mousedown ->
         $('#export_json_data').val(exportAnimationJSON())
         $('form.download_json').submit()
 
-      editor.find('.export_csv').mousedown ->
+      lebenmeister.find('.export_csv').mousedown ->
         $('#export_csv_data').val(exportAnimationCSV())
         $('form.download_csv').submit()
 
-      window.currentComponent = editor
+      window.currentComponent = lebenmeister
+      $('#lebenmeister').replaceWith(lebenmeister)
