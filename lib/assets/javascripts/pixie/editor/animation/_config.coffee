@@ -2,8 +2,9 @@
 
 # Old school namespacing. Stuck with it until Sprockets supports exports
 window.Pixie ||= {}
-Pixie.PixelEditor ||= {}
+Pixie.Editor ||= {}
+Pixie.Editor.Animation ||= {}
 
-Pixie.PixelEditor.config =
+Pixie.Editor.Animation.config =
   DEBUG: false
   IMAGE_DIR: "/assets/pixie/"

@@ -15,7 +15,7 @@
             .play.static-play
             .stop.static-stop
             .scrubber_container
-              %input(type="range" min="0" max="29" value="0" class="scrubber")
+              %input(type="range" min="0" max="0" value="0" class="scrubber")
             %span.fps
               fps
               %input(type="number" min="0" max="60" value="30")
@@ -46,18 +46,3 @@
           Clear
       .frame_sprites
 
-%script.sprite.template(type="text/x-jQuery-tmpl")
-  %img(src="${src}")
-
-%script.frame_sprite.template(type="text/x-jQuery-tmpl")
-  .frame_sprite
-    %img(src="${src}")
-
-.help_modal
-  %h2.header Where do I begin?
-  %ul
-    %li Drag an image from your desktop to the editor. It will be added to your sprites.
-    %li Click on a sprite to add it to the current animation frame.
-    %li Click the button to create a sequence.
-    %li A sequences is a collection of one or more animation frames.
-    %li Combine these sequences to create complex animation states.

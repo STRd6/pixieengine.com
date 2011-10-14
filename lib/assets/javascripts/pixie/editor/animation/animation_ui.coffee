@@ -1,9 +1,7 @@
-(exports ? this)["AnimationUI"] = (animationEditor) ->
-  templates = $("#animation_editor_templates")
-  editorTemplate = templates.find('.editor.template')
-  spriteTemplate = templates.find('.sprite')
-  frameSpriteTemplate = templates.find('.frame_sprite')
+#= require tmpls/lebenmeister/frame_sprite
+#= require tmpls/lebenmeister/sprite
 
+(exports ? this)["AnimationUI"] = (animationEditor) ->
   constructSequenceEl = (id, name) ->
     $ "<div class='sequence' data-id='#{id}'><span class='name'>#{name}</span></div>"
 
@@ -15,20 +13,19 @@
     (frameArray.length - 1).times ->
       $("<div class='placeholder' />").appendTo(sequenceEl)
 
-    spriteTemplate.tmpl(src: lastSpriteSrc).appendTo(sequenceEl)
+    $.tmpl("lebenmeister/sprite", {src: lastSpriteSrc}).appendTo(sequenceEl)
 
     return sequenceEl
 
   animationEditor.bind
-    addFrameToSequenceEditModal: (e, spriteSrc) ->
-      spriteTemplate.tmpl(src: spriteSrc).appendTo('.edit_sequence_modal')
     addTile: (e, src) ->
       spritesEl = $(this).find('.sprites')
-      spriteTemplate.tmpl(src: src).appendTo(spritesEl)
+      sprite = $.tmpl("lebenmeister/sprite", {src: src})
+      sprite.appendTo(spritesEl)
     appendFrameSprite: (e, spriteSrc) ->
       frameSprites = $(this).find('.frame_sprites')
 
-      frameSprites.append(frameSpriteTemplate.tmpl(src: spriteSrc))
+      frameSprites.append($.tmpl("lebenmeister/frame_sprite", {src: spriteSrc}))
 
       animationEditor.trigger 'enableSave'
     appendSequenceToFrames: (e, sequence) ->
@@ -78,7 +75,7 @@
 
       elementAtIndex = frameSprites.find('.placeholder, img').eq(index)
 
-      frameSprite = frameSpriteTemplate.tmpl(src: spriteSrc)
+      frameSprite = $.tmpl("lebenmeister/frame_sprite, {src: spriteSrc}")
       frameSprites.find('img').removeClass('selected')
       frameSprite.find('img').addClass('selected')
       frameSprite.insertAfter(elementAtIndex.parent())
@@ -108,4 +105,3 @@
       scrubberEl = animationEditor.find('.scrubber')
       scrubberEl.val(newValue)
 
-  editorTemplate.tmpl().appendTo(animationEditor)
