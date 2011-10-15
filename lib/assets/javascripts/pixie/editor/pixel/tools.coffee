@@ -83,7 +83,7 @@ Pixie.Editor.Pixel.tools = (($) ->
       if e.shiftKey
         line(@canvas, color, lastPosition, currentPosition)
       else
-        this.color(color)
+        @color(color)
 
       lastPosition = currentPosition
     mouseenter: (e, color) ->
@@ -99,15 +99,13 @@ Pixie.Editor.Pixel.tools = (($) ->
       cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
       hotkeys: ['m']
       mousedown: (e, color) ->
-        canvas = this.canvas
-        mirrorCoordinate = canvas.width - this.x - 1
-        this.color(color)
-        this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
+        mirrorCoordinate = @canvas.width() - @x - 1
+        @color(color)
+        @canvas.getPixel(mirrorCoordinate, @y).color(color)
       mouseenter: (e, color) ->
-        canvas = this.canvas
-        mirrorCoordinate = canvas.width - this.x - 1
-        this.color(color)
-        this.canvas.getPixel(mirrorCoordinate, this.y).color(color)
+        mirrorCoordinate = @canvas.width() - @x - 1
+        @color(color)
+        @canvas.getPixel(mirrorCoordinate, @y).color(color)
     brush:
       cursor: "url(" + IMAGE_DIR + "brush.png) 4 14, default"
       hotkeys: ['b', '2']
@@ -119,8 +117,8 @@ Pixie.Editor.Pixel.tools = (($) ->
       cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
       hotkeys: ['i', '3']
       mousedown: (e) ->
-        this.canvas.color(this.color())
-        this.canvas.setTool(tools.pencil) unless e.shiftKey
+        @canvas.color(@color())
+        @canvas.setTool(tools.pencil) unless e.shiftKey
     eraser:
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
       hotkeys: ['e', '4']

@@ -81,8 +81,8 @@
       layer = $ "<canvas />",
         class: "layer"
 
-      layerWidth = -> width * PIXEL_WIDTH
-      layerHeight = -> height * PIXEL_HEIGHT
+      layerWidth = -> I.width * PIXEL_WIDTH
+      layerHeight = -> I.height * PIXEL_HEIGHT
       layerElement = layer.get(0)
       layerElement.width = layerWidth()
       layerElement.height = layerHeight()
@@ -99,8 +99,8 @@
           layerElement.width = layerWidth()
           layerElement.height = layerHeight()
 
-    width = parseInt(I.width || 8, 10)
-    height = parseInt(I.height || 8, 10)
+    I.width = parseInt(I.width || 8, 10)
+    I.height = parseInt(I.height || 8, 10)
     initializer = I.initializer
     PIXEL_WIDTH = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
     PIXEL_HEIGHT = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
@@ -110,8 +110,8 @@
     content = self.find(".content")
     viewport = self.find(".viewport")
     canvas = self.find(".canvas").css
-      width: width * PIXEL_WIDTH + 2
-      height: height * PIXEL_HEIGHT + 2
+      width: I.width * PIXEL_WIDTH + 2
+      height: I.height * PIXEL_HEIGHT + 2
 
     actionbar = self.find(".actions")
 
@@ -141,8 +141,8 @@
     opacityVal.text(opacitySlider.slider('value'))
 
     preview = self.find(".preview").css
-      width: width
-      height: height
+      width: I.width
+      height: I.height
 
     currentTool = undefined
     active = false
@@ -236,10 +236,10 @@
 
     layers = [layer, guideLayer]
 
-    height.times (row) ->
+    I.height.times (row) ->
       pixels[row] = []
 
-      width.times (col) ->
+      I.width.times (col) ->
         pixel = Pixel(col, row, layer.get(0).getContext('2d'), self, undoStack)
         pixels[row][col] = pixel
 
@@ -385,8 +385,8 @@
               pixel.color(Color(data[pos]), true, "replace")
 
       eachPixel: (fn) ->
-        height.times (row) ->
-          width.times (col) ->
+        I.height.times (row) ->
+          I.width.times (col) ->
             pixel = pixels[row][col]
             fn.call(pixel, pixel, col, row)
 
@@ -431,7 +431,7 @@
         ]
 
       getPixel: (x, y) ->
-        return pixels[y][x] if (0 <= y < height) && (0 <= x < width)
+        return pixels[y][x] if (0 <= y < I.height) && (0 <= x < I.width)
         return undefined
 
       getReplayData: ->
@@ -442,8 +442,8 @@
 
         preview.css
           backgroundImage: @toCSSImageURL()
-          width: tileCount * width
-          height: tileCount * height
+          width: tileCount * I.width
+          height: tileCount * I.height
 
       redo: ->
         data = undoStack.popRedo()
@@ -486,8 +486,8 @@
           setTimeout(runStep, delay)
 
       resize: (newWidth, newHeight) ->
-        @width = width = newWidth
-        @height = height = newHeight
+        I.width = newWidth
+        I.height = newHeight
 
         pixels = pixels.slice(0, newHeight)
 
@@ -502,8 +502,8 @@
           layer.resize()
 
         canvas.css
-          width: width * PIXEL_WIDTH + 2
-          height: height * PIXEL_HEIGHT + 2
+          width: I.width * PIXEL_WIDTH + 2
+          height: I.height * PIXEL_HEIGHT + 2
 
         pixels.each (row) ->
           row.each (pixel) ->
@@ -527,7 +527,7 @@
         "url(#{@toDataURL()})"
 
       toDataURL: ->
-        tempCanvas = $("<canvas width=#{width} height=#{height}></canvas>").get(0)
+        tempCanvas = $("<canvas width=#{I.width} height=#{I.height}></canvas>").get(0)
 
         context = tempCanvas.getContext('2d')
 
@@ -547,8 +547,11 @@
           $.each data, ->
             this.pixel.color(this.oldColor, true, "replace")
 
-      width: width
-      height: height
+      width: ->
+        I.width
+
+      height: ->
+        I.height
 
     $.each tools, (key, tool) ->
       tool.name = key
