@@ -5,10 +5,6 @@ window.Pixie ||= {}
 Pixie.Chat ||= {}
 
 Pixie.Chat.create = (current_user) ->
-  templates = $("#chat_templates")
-  recentChatTemplate = templates.find('.recent_chat')
-  activeUserTemplate = templates.find('.active_user')
-
   chatSound = $("#chat_sound").get(0)
 
   if getVal('chatNotificationEnabled')
