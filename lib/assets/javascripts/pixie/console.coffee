@@ -35,7 +35,21 @@ window.Pixie ||= {}
       # Prevent the hilarity that is appending whole dom elements to the output
       message = message.toString() if message?.toString?
 
-      output.append(message + "\n")
+      output.text(message)
+
+    recipe = (event) ->
+      event.preventDefault() if event
+
+      gradient = """
+        # this makes a gradient
+        self.eachPixel (pixel, x, y) ->
+          r = x * 8
+          g = y * 8
+          b = 128
+          pixel.color(Color(r, g, b))
+      """
+
+      input.val(gradient)
 
     run = (event) ->
       event.preventDefault() if event
@@ -71,7 +85,8 @@ window.Pixie ||= {}
 
     output = self.find(".output")
 
-    self.find("button").click run
+    self.find("button.run").click run
+    self.find("button.recipe").click recipe
 
     return self
 
