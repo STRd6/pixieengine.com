@@ -76,6 +76,7 @@ header
     height: 40px
     overflow: visible
     padding: 0
+    white-space: nowrap
 
     #fullscreen &
       width: 100%
@@ -84,6 +85,8 @@ header
     display: none
 
   .login_link
+    +user-select
+
     display: inline-block
     float: right
     position: relative
