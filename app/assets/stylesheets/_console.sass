@@ -1,26 +1,17 @@
 .console
-  background-color: white
   font-size: 13px
   font-family: monospace
   padding: 2px
   width: 400px
 
-  textarea, .output
-    background-color: transparent
-    font-size: 13px
-    font-family: monospace
+  & >
+    .actions
 
-  .output
-    height: 60px
-    margin-bottom: 4px
-    overflow: auto
+    textarea, .output
+      font-size: 13px
+      font-family: monospace
 
-  .run
-    bottom: 0.25em
-    position: absolute
-    right: 1em
-
-  .recipe
-    bottom: 0.25em
-    position: absolute
-    left: 1em
+    .output
+      height: 20px
+      margin: 4px 0
+      overflow: auto

@@ -1,3 +1,6 @@
+#= require codemirror/codemirror
+#= require codemirror/mirrorframe
+
 #= require tmpls/pixie/console
 
 window.Pixie ||= {}
@@ -37,24 +40,10 @@ window.Pixie ||= {}
 
       output.text(message)
 
-    recipe = (event) ->
-      event.preventDefault() if event
-
-      gradient = """
-        # this makes a gradient
-        self.eachPixel (pixel, x, y) ->
-          r = x * 8
-          g = y * 8
-          b = 128
-          pixel.color(Color(r, g, b))
-      """
-
-      input.val(gradient)
-
     run = (event) ->
       event.preventDefault() if event
 
-      return unless command = input.val()
+      return unless command = editor.getCode()
 
       #TODO: Parse and process special commands
 
@@ -73,7 +62,26 @@ window.Pixie ||= {}
 
       return result
 
-    input = self.find "input, textarea"
+    input = self.find "textarea"
+
+    lang = "coffeescript"
+
+    editor = null
+
+    # HACK: Don't init the editor until it's been added to DOM :(
+    setTimeout ->
+      editor = new CodeMirror.fromTextArea input.get(0),
+        autoMatchParens: true
+        # height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/assets/codemirror/"
+        stylesheet: ["/assets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
+
+      $(editor.win.document).find('html').addClass("light")
+    , 10
 
     keyBindings =
       "shift+return": run
@@ -86,7 +94,13 @@ window.Pixie ||= {}
     output = self.find(".output")
 
     self.find("button.run").click run
-    self.find("button.recipe").click recipe
+
+    $.extend self,
+      val: (newVal) ->
+        if newVal?
+          editor.setCode(newVal)
+        else
+          editor.getCode()
 
     return self
 
