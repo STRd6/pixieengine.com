@@ -23,11 +23,11 @@ window.Pixie ||= {}
 
     prev = ->
       historyPosition += 1
-      input.val(history.wrap(historyPosition))
+      self.val(history.wrap(historyPosition))
 
     next = ->
       historyPosition -= 1
-      input.val(history.wrap(historyPosition))
+      self.val(history.wrap(historyPosition))
 
     record = (command) ->
       history.unshift(command)
@@ -40,9 +40,7 @@ window.Pixie ||= {}
 
       output.text(message)
 
-    run = (event) ->
-      event.preventDefault() if event
-
+    run = () ->
       return unless command = editor.getCode()
 
       #TODO: Parse and process special commands
@@ -52,7 +50,7 @@ window.Pixie ||= {}
 
         result = evalContext(compiledCommand)
 
-        input.val("")
+        self.val("")
 
         record command
       catch error
@@ -62,11 +60,24 @@ window.Pixie ||= {}
 
       return result
 
+    actions =
+      prev:
+        perform: prev
+      next:
+        perform: next
+      run:
+        perform: run
+
     input = self.find "textarea"
 
     lang = "coffeescript"
 
     editor = null
+
+    keyBindings =
+      "shift+return": run
+      "pageup": prev
+      "pagedown": next
 
     # HACK: Don't init the editor until it's been added to DOM :(
     setTimeout ->
@@ -81,19 +92,18 @@ window.Pixie ||= {}
         textWrapping: false
 
       $(editor.win.document).find('html').addClass("light")
+
+      for binding, handler of keyBindings
+        do (handler) ->
+          $(editor.win.document).bind "keydown", binding, (e) ->
+            e.preventDefault()
+
+            handler()
     , 10
-
-    keyBindings =
-      "shift+return": run
-      "pageup": prev
-      "pagedown": next
-
-    for binding, handler of keyBindings
-      input.bind "keydown", binding, handler
 
     output = self.find(".output")
 
-    self.find("button.run").click run
+    actionBar = self.find(".actions")
 
     $.extend self,
       val: (newVal) ->
@@ -101,6 +111,27 @@ window.Pixie ||= {}
           editor.setCode(newVal)
         else
           editor.getCode()
+
+      addAction: (action) ->
+        {name} = action
+
+        titleText = name.capitalize()
+
+        perform = () ->
+          action.perform(self)
+
+        actionElement = $ "<button />",
+          text: titleText
+          title: titleText
+        .bind "mousedown touchstart", (e) ->
+          perform() unless $(this).attr('disabled')
+
+        return actionElement.appendTo(actionBar)
+
+    $.each actions, (key, action) ->
+      action.name = key
+
+      self.addAction(action)
 
     return self
 

@@ -38,11 +38,11 @@ Pixie.Editor.Pixel.Console = (I, self) ->
       pixels[y][oppositePosition].color(currentColor)
   """]
 
-  console.find("button.recipe").click (event) ->
-    event.preventDefault() if event
-
-    console.val(recipes.wrap(recipeIndex))
-    recipeIndex += 1
+  console.addAction
+    name: "Recipes"
+    perform: ->
+      console.val(recipes.wrap(recipeIndex))
+      recipeIndex += 1
 
   self.addAction
     name: "console"

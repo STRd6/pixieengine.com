@@ -28,7 +28,11 @@ window.UndoStack = ->
       redos = []
 
   add: (object, data) ->
-    last = this.last()
+    last = @last()
+
+    unless last
+      @next()
+      last = @last()
 
     if last[object]
       last[object].newColor = data.newColor

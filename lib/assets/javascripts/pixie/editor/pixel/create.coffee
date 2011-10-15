@@ -49,7 +49,7 @@
         layerCanvas.fillStyle = color.toString()
         layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
 
-      self =
+      pixel =
         canvas: editor
 
         redraw: redraw
@@ -64,9 +64,9 @@
 
             redraw()
 
-            undoStack.add(self, {pixel: self, oldColor: oldColor, newColor: color}) unless skipUndo
+            undoStack.add(this, {pixel: this, oldColor: oldColor, newColor: color}) unless skipUndo
 
-            return self
+            return this
           else
             color
 
@@ -75,7 +75,7 @@
         x: x
         y: y
 
-      return self
+      return pixel
 
     Layer = ->
       layer = $ "<canvas />",
@@ -281,8 +281,8 @@
 
           actionButton = $("<a />",
             class: 'tool button'
-            title: titleText
             text: name.capitalize()
+            title: titleText
           )
           .prepend(iconImg)
           .bind "mousedown touchstart", (e) ->
