@@ -31,3 +31,5 @@
 #= require color
 #= require pixie_canvas
 #= require coffee-script
+#
+#= require chat
