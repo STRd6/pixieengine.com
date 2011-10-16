@@ -1,3 +1,6 @@
+#= require codemirror/codemirror
+#= require codemirror/mirrorframe
+
 #= require tmpls/pixie/console
 
 window.Pixie ||= {}
@@ -20,11 +23,11 @@ window.Pixie ||= {}
 
     prev = ->
       historyPosition += 1
-      input.val(history.wrap(historyPosition))
+      self.val(history.wrap(historyPosition))
 
     next = ->
       historyPosition -= 1
-      input.val(history.wrap(historyPosition))
+      self.val(history.wrap(historyPosition))
 
     record = (command) ->
       history.unshift(command)
@@ -37,24 +40,8 @@ window.Pixie ||= {}
 
       output.text(message)
 
-    recipe = (event) ->
-      event.preventDefault() if event
-
-      gradient = """
-        # this makes a gradient
-        self.eachPixel (pixel, x, y) ->
-          r = x * 8
-          g = y * 8
-          b = 128
-          pixel.color(Color(r, g, b))
-      """
-
-      input.val(gradient)
-
-    run = (event) ->
-      event.preventDefault() if event
-
-      return unless command = input.val()
+    run = () ->
+      return unless command = editor.getCode()
 
       #TODO: Parse and process special commands
 
@@ -63,7 +50,7 @@ window.Pixie ||= {}
 
         result = evalContext(compiledCommand)
 
-        input.val("")
+        self.val("")
 
         record command
       catch error
@@ -73,20 +60,78 @@ window.Pixie ||= {}
 
       return result
 
-    input = self.find "input, textarea"
+    actions =
+      prev:
+        perform: prev
+      next:
+        perform: next
+      run:
+        perform: run
+
+    input = self.find "textarea"
+
+    lang = "coffeescript"
+
+    editor = null
 
     keyBindings =
       "shift+return": run
       "pageup": prev
       "pagedown": next
 
-    for binding, handler of keyBindings
-      input.bind "keydown", binding, handler
+    # HACK: Don't init the editor until it's been added to DOM :(
+    setTimeout ->
+      editor = new CodeMirror.fromTextArea input.get(0),
+        autoMatchParens: true
+        # height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/assets/codemirror/"
+        stylesheet: ["/assets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
+
+      $(editor.win.document).find('html').addClass("light")
+
+      for binding, handler of keyBindings
+        do (handler) ->
+          $(editor.win.document).bind "keydown", binding, (e) ->
+            e.preventDefault()
+
+            handler()
+    , 10
 
     output = self.find(".output")
 
-    self.find("button.run").click run
-    self.find("button.recipe").click recipe
+    actionBar = self.find(".actions")
+
+    $.extend self,
+      val: (newVal) ->
+        if newVal?
+          editor.setCode(newVal)
+        else
+          editor.getCode()
+
+      addAction: (action) ->
+        {name} = action
+
+        titleText = name.capitalize()
+
+        perform = () ->
+          action.perform(self)
+
+        actionElement = $ "<button />",
+          text: titleText
+          title: titleText
+        .bind "mousedown touchstart", (e) ->
+          perform() unless $(this).attr('disabled')
+
+        return actionElement.appendTo(actionBar)
+
+    $.each actions, (key, action) ->
+      action.name = key
+
+      self.addAction(action)
 
     return self
 
