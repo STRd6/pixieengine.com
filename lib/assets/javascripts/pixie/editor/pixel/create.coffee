@@ -42,12 +42,12 @@
       color = Color()
 
       redraw = () ->
-        xPos = x * PIXEL_WIDTH
-        yPos = y * PIXEL_HEIGHT
+        xPos = x * I.pixelWidth
+        yPos = y * I.pixelHeight
 
-        layerCanvas.clearRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+        layerCanvas.clearRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
         layerCanvas.fillStyle = color.toString()
-        layerCanvas.fillRect(xPos, yPos, PIXEL_WIDTH, PIXEL_HEIGHT)
+        layerCanvas.fillRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
 
       pixel =
         canvas: editor
@@ -81,8 +81,8 @@
       layer = $ "<canvas />",
         class: "layer"
 
-      layerWidth = -> I.width * PIXEL_WIDTH
-      layerHeight = -> I.height * PIXEL_HEIGHT
+      layerWidth = -> I.width * I.pixelWidth
+      layerHeight = -> I.height * I.pixelHeight
       layerElement = layer.get(0)
       layerElement.width = layerWidth()
       layerElement.height = layerHeight()
@@ -102,16 +102,16 @@
     I.width = parseInt(I.width || 8, 10)
     I.height = parseInt(I.height || 8, 10)
     initializer = I.initializer
-    PIXEL_WIDTH = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
-    PIXEL_HEIGHT = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
+    I.pixelWidth = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
+    I.pixelHeight = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
     self = $.tmpl("editors/pixel")
 
     content = self.find(".content")
     viewport = self.find(".viewport")
     canvas = self.find(".canvas").css
-      width: I.width * PIXEL_WIDTH + 2
-      height: I.height * PIXEL_HEIGHT + 2
+      width: I.width * I.pixelWidth + 2
+      height: I.height * I.pixelHeight + 2
 
     actionbar = self.find(".actions")
 
@@ -192,8 +192,8 @@
         y: event.pageY - offset.top
         x: event.pageX - offset.left
 
-      row = Math.floor(local.y / PIXEL_HEIGHT)
-      col = Math.floor(local.x / PIXEL_WIDTH)
+      row = Math.floor(local.y / I.pixelHeight)
+      col = Math.floor(local.x / I.pixelWidth)
 
       pixel = self.getPixel(col, row)
       eventType = undefined
@@ -502,8 +502,8 @@
           layer.resize()
 
         canvas.css
-          width: I.width * PIXEL_WIDTH + 2
-          height: I.height * PIXEL_HEIGHT + 2
+          width: I.width * I.pixelWidth + 2
+          height: I.height * I.pixelHeight + 2
 
         pixels.each (row) ->
           row.each (pixel) ->
@@ -519,8 +519,8 @@
         canvas.css('cursor', tool.cursor || "pointer")
         tool.elementSet.takeClass("active")
 
-      toBase64: (f) ->
-        data = @toDataURL(f)
+      toBase64: ->
+        data = @toDataURL()
         return data.substr(data.indexOf(',') + 1)
 
       toCSSImageURL: ->

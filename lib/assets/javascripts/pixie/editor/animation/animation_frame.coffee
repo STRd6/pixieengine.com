@@ -4,7 +4,7 @@
   currentIndex = 0
   frames = []
 
-  window.findUUID = (tileSrc) ->
+  findUUID = (tileSrc) ->
     for uuid, src of tileset
       return uuid if src == tileSrc
 
@@ -34,6 +34,7 @@
 
       $.tmpl("lebenmeister/sprite", {src: spriteSrc}).appendTo(sequenceEl)
       animationEditor.trigger 'appendSequenceToFrames', [sequenceEl]
+
     appendImage: (imgSrc) ->
       uuid = findUUID(imgSrc)
 
@@ -42,6 +43,7 @@
       animationEditor.trigger 'appendFrameSprite', [tileset[uuid]]
 
       controls.scrubberMax(self.flatten().length - 1)
+
     clear: ->
       frames.clear()
       animationEditor.trigger(event) for event in ['clearFrames', 'disableSave']
@@ -71,4 +73,5 @@
       controls.scrubberMax(controls.scrubberMax() - 1)
 
       animationEditor.trigger 'removeFrame', [frameIndex]
+
   return self
