@@ -7,7 +7,7 @@ class ChatsController < ApplicationController
   def create
     text = auto_link(params[:body], :sanitize => false)
 
-    cleaned_text = Sanitize.clean(text, :elements => ['a', 'img'],
+    cleaned_text = Sanitize.clean(text, :elements => ['a', 'img', 'em', 'strong', 'pre', 'code', 'hr', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'u', 'p'],
       :attributes => {
         'a' => ['href', 'title'],
         'img' => ['src']

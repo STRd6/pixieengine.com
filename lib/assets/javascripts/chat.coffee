@@ -90,19 +90,23 @@ Pixie.Chat.create = (current_user) ->
   setInterval(refreshData, 30000)
 
   send = (field) ->
-    return unless field.val()
+    return unless message = field.val()
+
+    # TODO replace @user_name with link to user and avatar
+    #if message.match(/^@\w*/g)
+    #  console.log message.match(/@\w*/g)
 
     date = new Date()
     current_time = "#{date.getHours() % 12}:#{date.getMinutes()}#{if date.getHours() > 11 then 'pm' else 'am'}"
 
-    $.post '/chats', { body: field.val() }
+    $.post '/chats', { body: message }
 
     prevChatUser = $('#chats li span.name:last').text()
 
     newMessage =
       name: current_user.name
       time: current_time
-      message: field.val()
+      message: message
       user_id: current_user.id
 
     scroll = withinScrollBoundary()
@@ -111,7 +115,7 @@ Pixie.Chat.create = (current_user) ->
 
     scrollChat() if scroll
 
-    field.val("")
+    $('#chat_body').val("")
 
   $("#chat_zone").dropImageReader (file, event) ->
     if event.target.readyState == FileReader.DONE
@@ -127,9 +131,11 @@ Pixie.Chat.create = (current_user) ->
         refreshData()
 
   $('#chat_zone #chat_body').keypress (e) ->
-    textBox = $('#chat_body')
+    textBox = $('#chat_copy_html')
 
-    send(textBox) if e.keyCode == 13
+    if e.keyCode == 13 && !e.shiftKey
+      e.preventDefault()
+      send(textBox)
 
   $('#notification_toggle').change ->
     setVal('chatNotificationEnabled', $(this).attr('checked') == 'checked')

@@ -10,14 +10,25 @@
         %input#notification_toggle(type="checkbox" checked="checked")
     .left_content
       %ul#chats
-      = text_field_tag :chat_body, nil, :placeholder => 'chat with your friends here'
+      %div#chat_buttons(style="display:none")
+      %textarea#chat_body(placeholder="chat with your friends here")
+      %input#chat_copy_html(type="hidden")
 
     .users_wrapper
       %ul#active_users
 
   - content_for :javascript do
+    = javascript_include_tag "wmd.combined.min"
+
     :coffeescript
       $ ->
+        setup_wmd
+          input: "chat_body"
+          button_bar: "chat_buttons"
+          preview: "chat_buttons"
+          output: "chat_copy_html"
+          helpLink: "http://daringfireball.net/projects/markdown/syntax"
+
         user =
           name: "#{current_user ? current_user.display_name : 'Anonymous'}"
           id: #{current_user ? current_user.id : 0}
