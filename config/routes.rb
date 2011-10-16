@@ -1,5 +1,6 @@
 PixieStrd6Com::Application.routes.draw do
   mount Forem::Engine, :at => "community"
+  mount Resque::Server, :at => "resque"
 
   get "subscribe" => "subscriptions#subscribe", :as => :subscribe
   get "subscriptions/thanks"

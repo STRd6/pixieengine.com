@@ -11,5 +11,4 @@ class PostObserver < ActiveRecord::Observer
       Notifier.new_post(post, user).deliver if user.forum_notifications
     end
   end
-  handle_asynchronously :after_save
 end
