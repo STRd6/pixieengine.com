@@ -5,8 +5,8 @@
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
     = form.text_area :body, :placeholder => "type your comment here"
-    #comment_preview
     %input(id="comment_copy_html" type="hidden")
+  #comment_preview
 
   %button.full Post Comment
 
@@ -16,7 +16,7 @@
       = avatar_link current_user
     - else
       = image_tag "avatars/thumb/missing.png"
-    %p ${text}
+    %p {{html text}}
     %p.attribution
       - if current_user
         %span.name= link_to current_user.display_name, current_user
@@ -41,7 +41,7 @@
       commentForm = $("#new_comment")
 
       postComment = ->
-        text = $.trim(commentForm.find("textarea").val())
+        text = commentForm.find("textarea").val()
 
         if text.length
           commentForm.ajaxSubmit
@@ -49,11 +49,12 @@
             dataType: "json"
 
           newComment = $("#comment_template").tmpl
-            text: text
+            text: commentForm.find('#comment_copy_html').val()
 
           commentForm.siblings(".comments").prepend(newComment)
 
           commentForm.find("textarea").val("")
+          commentForm.find("#comment_preview").html("")
         else
           alert("Please enter a comment first")
 

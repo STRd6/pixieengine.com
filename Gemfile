@@ -17,6 +17,7 @@ end
 gem 'acts-as-taggable-on'
 gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "aws-s3", :require => "aws/s3"
+gem 'bluecloth'
 gem "capistrano"
 gem "coffee-filter"
 gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
