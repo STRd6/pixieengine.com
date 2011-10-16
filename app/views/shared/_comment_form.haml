@@ -1,9 +1,12 @@
 = form_for Comment.new(:commentable => commentable) do |form|
   %h3 Comments
   %label
+    #comment_button_bar
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
     = form.text_area :body, :placeholder => "type your comment here"
+    #comment_preview
+    %input(id="comment_copy_html" type="hidden")
 
   %button.full Post Comment
 
@@ -21,9 +24,20 @@
         %span.name You
       %span.time Just moments ago
 
+= stylesheet_link_tag "wmd.css"
+
 - content_for :javascript do
+  = javascript_include_tag "wmd.combined.min"
+
   :coffeescript
     $ ->
+      setup_wmd
+        input: "comment_body"
+        button_bar: "comment_button_bar"
+        preview: "comment_preview"
+        output: "comment_copy_html"
+        helpLink: "http://daringfireball.net/projects/markdown/syntax"
+
       commentForm = $("#new_comment")
 
       postComment = ->
