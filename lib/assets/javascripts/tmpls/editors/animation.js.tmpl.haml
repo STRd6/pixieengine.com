@@ -5,8 +5,12 @@
         .player
           .module_header
             .button_group
-              %button.export_json(title="Create a sequence to export" disabled="true")> Export JSON
-              %button.export_csv(title="Create a sequence to export" disabled="true")> Export CSV
+              %button.export_json(title="Create a sequence to export" disabled="true")>
+                %span.static-table_gear(alt="Export to JSON")
+                Export JSON
+              %button.export_csv(title="Create a sequence to export" disabled="true")>
+                %span.static-table(alt="Export to comma separated value")
+                Export CSV
             %button.help>
               %span.static-help(alt="Help")
               Help

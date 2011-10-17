@@ -2,7 +2,6 @@ $bottom_module: 200px
 $left_module: 210px
 $right_module: 350px
 
-$highlight: #FEF7CB
 $highlight_border: #FFE475
 
 $action_bar_height: 30px
@@ -12,16 +11,20 @@ $tileset_sprite_width: 60px
 .lebenmeister
   +user-select
 
+  img.selected, .placeholder.selected
+    background: $hover
+    border: 1px solid $highlight_border
+
   button[disabled]
-    .static-application, .static-pictures, .static-picture_edit
+    .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
       +opacity(0.5)
 
-  .static-application, .static-pictures, .static-picture_edit
+  .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
     +bounds(16px)
     +opacity(1)
 
     display: inline-block
-    vertical-align: middle
+    vertical-align: top
 
   img
     border: 1px solid transparent
@@ -48,7 +51,7 @@ $tileset_sprite_width: 60px
 
     &.edit:hover
       +border-radius(2px)
-      background-color: $highlight
+      background-color: $hover
 
     .placeholder
       +bounds(80px)
@@ -87,10 +90,6 @@ $tileset_sprite_width: 60px
         left: 150px
         top: 165px
         z-index: 100
-
-      &.selected
-        background: $highlight
-        border: 1px solid $highlight_border
 
   .content
     section
@@ -178,7 +177,7 @@ $tileset_sprite_width: 60px
 
         &:hover
           +border-radius(2px)
-          background-color: $highlight
+          background-color: $hover
 
     .right
       +bounds($right_module, 100%)
@@ -233,10 +232,6 @@ $tileset_sprite_width: 60px
       img
         +max-bounds(80px)
 
-        &.selected
-          background: $highlight
-          border: 1px solid $highlight_border
-
   .animation_name
     display: inline-block
     width: 150px
@@ -253,27 +248,7 @@ $tileset_sprite_width: 60px
       padding: 0 4px
       white-space: nowrap
 
-      &.selected
-        background: $highlight
-        border: 1px solid $highlight_border
-
-.edit_sequence_modal
-  height: 400px
-  width: 600px
-  overflow: auto
-
-.edit_sequence_modal img
-  +border-radius(2px)
-  +max-bounds(80px)
-
-  border: 2px solid transparent
-  margin: 2px
-
-  &.selected
-    background-color: $highlight
-    border: 2px solid $highlight
-
-.static-help
+.static-help, .static-table, .static-table_gear
   display: inline-block
   vertical-align: top
 
