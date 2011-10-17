@@ -3,15 +3,15 @@ class CommentsController < ApplicationController
   before_filter :require_user
 
   def create
-    params = params[:comment]
+    comment_params = params[:comment]
 
-    cleaned_text = sanitize(params[:body])
+    cleaned_text = sanitize(comment_params[:body])
 
     unless cleaned_text.blank?
-      @comment = Comment.new(params)
-      @comment.commenter = current_user
-      @comment.body = cleaned_text
-      @comment.save
+      comment_data = comment_params.merge({ :commenter => current_user })
+      comment_data[:body] = cleaned_text
+
+      @comment = Comment.create(comment_data)
     end
 
     respond_with(@comment) do |format|
