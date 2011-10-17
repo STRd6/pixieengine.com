@@ -20,7 +20,7 @@ Pixie.Editor.Pixel.actions = (($) ->
     clear:
       perform: (canvas) ->
         canvas.eachPixel (pixel) ->
-          pixel.color(Color().toString(), false, "replace")
+          pixel.color(Color().toString(), "replace")
     preview:
       menu: false
       perform: (canvas) ->
@@ -40,9 +40,9 @@ Pixie.Editor.Pixel.actions = (($) ->
           var rightPixel = canvas.getPixel(x + 1, y);
 
           if(rightPixel) {
-            pixel.color(rightPixel.color(), false, 'replace');
+            pixel.color(rightPixel.color(), 'replace');
           } else {
-            pixel.color(Color(), false, 'replace')
+            pixel.color(Color(), 'replace')
           }
         });
 
@@ -69,9 +69,9 @@ Pixie.Editor.Pixel.actions = (($) ->
             var leftPixel = canvas.getPixel(x - 1, y);
 
             if(leftPixel) {
-              currentPixel.color(leftPixel.color(), false, 'replace');
+              currentPixel.color(leftPixel.color(), 'replace');
             } else {
-              currentPixel.color(Color(), false, 'replace');
+              currentPixel.color(Color(), 'replace');
             }
           }
         }
@@ -94,9 +94,9 @@ Pixie.Editor.Pixel.actions = (($) ->
           var lowerPixel = canvas.getPixel(x, y + 1);
 
           if(lowerPixel) {
-            pixel.color(lowerPixel.color(), false, 'replace');
+            pixel.color(lowerPixel.color(), 'replace');
           } else {
-            pixel.color(Color(), false, 'replace');
+            pixel.color(Color(), 'replace');
           }
         });
 
@@ -123,9 +123,9 @@ Pixie.Editor.Pixel.actions = (($) ->
             var upperPixel = canvas.getPixel(x, y-1);
 
             if(upperPixel) {
-              currentPixel.color(upperPixel.color(), false, 'replace');
+              currentPixel.color(upperPixel.color(), 'replace');
             } else {
-              currentPixel.color(Color(), false, 'replace');
+              currentPixel.color(Color(), 'replace');
             }
           }
         }

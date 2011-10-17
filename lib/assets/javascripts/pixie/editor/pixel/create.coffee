@@ -4,28 +4,32 @@
 
 #= require tmpls/editors/pixel
 
+#= require pixie/ui
+
 (($) ->
   track = (action, label) ->
     trackEvent?("Pixel Editor", action, label)
 
-  DIV = "<div />"
-
-  palette = [
-    "#000000", "#FFFFFF", "#666666", "#DCDCDC", "#EB070E"
-    "#F69508", "#FFDE49", "#388326", "#0246E3", "#563495"
-    "#58C4F5", "#E5AC99", "#5B4635", "#FFFEE9"
-  ]
-
   # Import tools and actions from other files
   {
-    tools
     actions
     config: {
       IMAGE_DIR
       DEBUG
     }
+    palette
+    tools
+    Layer
     Pixel
   } = Pixie.Editor.Pixel
+
+  # Import UI helpers
+  {
+    Button
+    Div
+    Image
+    Input
+  } = Pixie.UI
 
   falseFn = ->
     return false
@@ -34,33 +38,12 @@
     !event.button? || event.button == 0
 
   ColorPicker = ->
-    $('<input/>',
+    Input
       class: 'color'
-    ).colorPicker({ leadingHash: false })
+    .colorPicker
+      leadingHash: false
 
   Pixie.Editor.Pixel.create = (I={}) ->
-    Layer = ->
-      layer = $ "<canvas />",
-        class: "layer"
-
-      layerWidth = -> I.width * I.pixelWidth
-      layerHeight = -> I.height * I.pixelHeight
-      layerElement = layer.get(0)
-      layerElement.width = layerWidth()
-      layerElement.height = layerHeight()
-
-      context = layerElement.getContext("2d")
-
-      return $.extend layer,
-        clear: ->
-          context.clearRect(0, 0, layerWidth(), layerHeight())
-
-        context: context
-
-        resize: () ->
-          layerElement.width = layerWidth()
-          layerElement.height = layerHeight()
-
     I.width = parseInt(I.width || 8, 10)
     I.height = parseInt(I.height || 8, 10)
     initializer = I.initializer
@@ -86,7 +69,7 @@
 
     colorbar.append(colorPickerHolder, swatches)
 
-    opacityVal = $ DIV,
+    opacityVal = Div
       class: "val"
       text: 100
 
@@ -203,8 +186,8 @@
 
       lastPixel = pixel
 
-    layer = Layer()
-    guideLayer = Layer()
+    layer = Layer(I)
+    guideLayer = Layer(I)
       .bind("mousedown touchstart", (e) ->
         #TODO These triggers aren't perfect like the `dirty` method that queries.
         self.trigger('dirty')
@@ -273,27 +256,25 @@
                 return false
 
         if action.menu != false
-          iconImg = $ "<img />",
+          iconImg = Image
             src: action.icon || IMAGE_DIR + name + '.png'
 
-          actionButton = $("<a />",
-            class: 'tool button'
+          actionButton = Button
+            class: 'tool'
             text: name.capitalize()
             title: titleText
-          )
           .prepend(iconImg)
           .bind "mousedown touchstart", (e) ->
             doIt() unless $(this).attr('disabled')
 
-            # These currently get covered by the global link click tracking
-            # track(e.type, action.name)
+            track(e.type, action.name)
 
             return false
 
           actionButton.appendTo(actionbar)
 
       addSwatch: (color) ->
-        swatches.append $ DIV,
+        swatches.append Div
           class: 'swatch'
           style: "background-color: #{color.toString()}"
 
@@ -321,20 +302,21 @@
 
                 return false
 
-        img = $ "<img />",
+        img = Image
           src: tool.icon
           alt: alt
           title: alt
 
-        tool.elementSet = toolDiv = $("<div class='tool'></div>")
-          .append(img)
-          .bind("mousedown touchstart", (e) ->
-            setMe()
+        tool.elementSet = toolDiv = Div
+          class: "tool"
+        .append(img)
+        .bind("mousedown touchstart", (e) ->
+          setMe()
 
-            track(e.type, tool.name)
+          track(e.type, tool.name)
 
-            return false
-          )
+          return false
+        )
 
         toolbar.append(toolDiv)
 
