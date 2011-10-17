@@ -359,10 +359,11 @@
         stateData ||= initialStateData
 
         if stateData
-          $.each stateData, (f, data) ->
-            self.eachPixel (pixel, x, y) ->
-              pos = x + y * I.width
-              pixel.color(Color(data[pos]), true, "replace")
+          withoutUndo ->
+            $.each stateData, (f, data) ->
+              self.eachPixel (pixel, x, y) ->
+                pos = x + y * I.width
+                pixel.color(Color(data[pos]), "replace")
 
       eachPixel: (fn) ->
         I.height.times (row) ->
