@@ -32,7 +32,7 @@ Pixie.Editor.Pixel.actions = (($) ->
       perform: `function(canvas) {
         var deferredColors = [];
 
-        canvas.height.times(function(y) {
+        canvas.height().times(function(y) {
           deferredColors[y] = canvas.getPixel(0, y).color();
         });
 
@@ -47,15 +47,15 @@ Pixie.Editor.Pixel.actions = (($) ->
         });
 
         $.each(deferredColors, function(y, color) {
-          canvas.getPixel(canvas.width - 1, y).color(color);
+          canvas.getPixel(canvas.width() - 1, y).color(color);
         });
       }`
     right:
       hotkeys: ["right"]
       menu: false
       perform: `function(canvas) {
-        var width = canvas.width;
-        var height = canvas.height;
+        var width = canvas.width();
+        var height = canvas.height();
 
         var deferredColors = [];
 
@@ -86,7 +86,7 @@ Pixie.Editor.Pixel.actions = (($) ->
       perform: `function(canvas) {
         var deferredColors = [];
 
-        canvas.width.times(function(x) {
+        canvas.width().times(function(x) {
           deferredColors[x] = canvas.getPixel(x, 0).color();
         });
 
@@ -101,19 +101,19 @@ Pixie.Editor.Pixel.actions = (($) ->
         });
 
         $.each(deferredColors, function(x, color) {
-          canvas.getPixel(x, canvas.height - 1).color(color);
+          canvas.getPixel(x, canvas.height() - 1).color(color);
         });
       }`
     down:
       hotkeys: ["down"]
       menu: false
       perform: `function(canvas) {
-        var width = canvas.width;
-        var height = canvas.height;
+        var width = canvas.width();
+        var height = canvas.height();
 
         var deferredColors = [];
 
-        canvas.width.times(function(x) {
+        canvas.width().times(function(x) {
           deferredColors[x] = canvas.getPixel(x, height - 1).color();
         });
 
