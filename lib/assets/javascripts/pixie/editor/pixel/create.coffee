@@ -342,7 +342,8 @@
         return self
 
       clear: ->
-        layer.clear()
+        @eachPixel (pixel) ->
+          pixel.color(Color(0, 0, 0, 0).toString(), "replace")
 
       dirty: (newDirty) ->
         if newDirty != undefined
@@ -379,27 +380,27 @@
 
         maxDimension = 256
 
-        image = new Image()
-        image.onload = ->
-          if image.width * image.height < maxDimension * maxDimension
-            self.resize(image.width, image.height)
+        Image
+          load: ->
+            if @width * @height < maxDimension * maxDimension
+              self.resize(@width, @height)
 
-            context.drawImage(image, 0, 0)
-            imageData = context.getImageData(0, 0, image.width, image.height)
+              context.drawImage(@, 0, 0)
+              imageData = context.getImageData(0, 0, @width, @height)
 
-            getColor = (x, y) ->
-              index = (x + y * imageData.width) * 4
+              getColor = (x, y) ->
+                index = (x + y * imageData.width) * 4
 
-              return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
+                return Color(imageData.data[index + 0], imageData.data[index + 1], imageData.data[index + 2], imageData.data[index + 3] / 255)
 
-            self.eachPixel (pixel, x, y) ->
-              pixel.color(getColor(x, y), true)
-          else
-            alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
+              self.clear()
+              self.eachPixel (pixel, x, y) ->
+                pixel.color(getColor(x, y))
+            else
+              alert("This image is too big for our editor to handle, try #{maxDimension}x#{maxDimension} and smaller")
 
-          return
-
-        image.src = dataURL
+            return
+          src: dataURL
 
       getNeighbors: (x, y) ->
         return [
@@ -484,16 +485,11 @@
           ) while row.length < newWidth
 
         layers.each (layer) ->
-          layer.clear()
           layer.resize()
 
         canvas.css
           width: I.width * I.pixelWidth + 2
           height: I.height * I.pixelHeight + 2
-
-        pixels.each (row) ->
-          row.each (pixel) ->
-            pixel.change(pixel)
 
       setInitialState: (frameData) ->
         initialStateData = frameData

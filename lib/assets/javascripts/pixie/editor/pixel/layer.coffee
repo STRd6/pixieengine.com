@@ -11,9 +11,6 @@ Pixie.Editor.Pixel.Layer = (I) ->
   context = layerElement.getContext("2d")
 
   return $.extend layer,
-    clear: ->
-      context.clearRect(0, 0, layerWidth(), layerHeight())
-
     context: context
 
     resize: () ->

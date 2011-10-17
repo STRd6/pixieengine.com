@@ -19,8 +19,7 @@ Pixie.Editor.Pixel.actions = (($) ->
       undoable: false
     clear:
       perform: (canvas) ->
-        canvas.eachPixel (pixel) ->
-          pixel.color(Color().toString(), "replace")
+        canvas.clear()
     preview:
       menu: false
       perform: (canvas) ->
