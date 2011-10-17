@@ -2,7 +2,6 @@ $bottom_module: 200px
 $left_module: 210px
 $right_module: 350px
 
-$highlight: #FEF7CB
 $highlight_border: #FFE475
 
 $action_bar_height: 30px
@@ -48,7 +47,7 @@ $tileset_sprite_width: 60px
 
     &.edit:hover
       +border-radius(2px)
-      background-color: $highlight
+      background-color: $hover
 
     .placeholder
       +bounds(80px)
@@ -89,7 +88,7 @@ $tileset_sprite_width: 60px
         z-index: 100
 
       &.selected
-        background: $highlight
+        background: $hover
         border: 1px solid $highlight_border
 
   .content
@@ -178,7 +177,7 @@ $tileset_sprite_width: 60px
 
         &:hover
           +border-radius(2px)
-          background-color: $highlight
+          background-color: $hover
 
     .right
       +bounds($right_module, 100%)
@@ -234,7 +233,7 @@ $tileset_sprite_width: 60px
         +max-bounds(80px)
 
         &.selected
-          background: $highlight
+          background: $hover
           border: 1px solid $highlight_border
 
   .animation_name
@@ -254,7 +253,7 @@ $tileset_sprite_width: 60px
       white-space: nowrap
 
       &.selected
-        background: $highlight
+        background: $hover
         border: 1px solid $highlight_border
 
 .edit_sequence_modal
@@ -270,8 +269,8 @@ $tileset_sprite_width: 60px
   margin: 2px
 
   &.selected
-    background-color: $highlight
-    border: 2px solid $highlight
+    background-color: $hover
+    border: 2px solid $hover
 
 .static-help, .static-table, .static-table_gear
   display: inline-block
