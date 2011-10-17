@@ -24,6 +24,7 @@
       IMAGE_DIR
       DEBUG
     }
+    Pixel
   } = Pixie.Editor.Pixel
 
   falseFn = ->
@@ -38,45 +39,6 @@
     ).colorPicker({ leadingHash: false })
 
   Pixie.Editor.Pixel.create = (I={}) ->
-    Pixel = (x, y, layerCanvas, editor, undoStack) ->
-      color = Color()
-
-      redraw = () ->
-        xPos = x * I.pixelWidth
-        yPos = y * I.pixelHeight
-
-        layerCanvas.clearRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
-        layerCanvas.fillStyle = color.toString()
-        layerCanvas.fillRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
-
-      pixel =
-        canvas: editor
-
-        redraw: redraw
-
-        color: (newColor, skipUndo, blendMode) ->
-          if arguments.length >= 1
-            blendMode ||= "additive"
-
-            oldColor = Color(color)
-
-            color = ColorUtil[blendMode](oldColor, Color(newColor))
-
-            redraw()
-
-            undoStack.add(this, {pixel: this, oldColor: oldColor, newColor: color}) unless skipUndo
-
-            return this
-          else
-            color
-
-        toString: ->
-          "[Pixel: " + [@x, @y].join(",") + "]"
-        x: x
-        y: y
-
-      return pixel
-
     Layer = ->
       layer = $ "<canvas />",
         class: "layer"
@@ -150,9 +112,34 @@
     undoStack = UndoStack()
     primaryColorPicker = ColorPicker().addClass('primary').appendTo(colorPickerHolder)
     secondaryColorPicker = ColorPicker().addClass('secondary').appendTo(colorPickerHolder)
+    noUndo = false
     replaying = false
     tilePreview = true
     initialStateData = undefined
+
+    withoutUndo = (fn) ->
+      prevUndo = noUndo
+      noUndo = true
+      fn()
+      noUndo = prevUndo
+
+    # These are the changed observers, move back into main editor
+    pixelChanged = (pixel) ->
+      {x, y} = pixel
+      color = pixel.color()
+      oldColor = pixel.oldColor()
+
+      xPos = x * I.pixelWidth
+      yPos = y * I.pixelHeight
+
+      layerCanvas = layer.context
+      layerCanvas.clearRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
+      layerCanvas.fillStyle = color.toString()
+      layerCanvas.fillRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
+
+      # TODO: Switch this to actions and command pattern
+      unless noUndo
+        undoStack.add(pixel, {pixel: pixel, oldColor: oldColor, newColor: color})
 
     self
       .bind('contextmenu', falseFn)
@@ -204,9 +191,15 @@
         eventType = "mouseenter"
 
       if pixel && active && currentTool && currentTool[eventType]
-        c = self.color().toString()
+        color = self.color().toString()
 
-        currentTool[eventType].call(pixel, event, Color(c, opacity), pixel)
+        # Call the tool with the appropriate local context
+        currentTool[eventType].call({
+          canvas: self
+          x: pixel.x
+          y: pixel.y
+          color: pixel.color
+        }, event, Color(color, opacity), pixel)
 
       lastPixel = pixel
 
@@ -240,7 +233,11 @@
       pixels[row] = []
 
       I.width.times (col) ->
-        pixel = Pixel(col, row, layer.get(0).getContext('2d'), self, undoStack)
+        pixel = Pixel(
+          changed: pixelChanged
+          x: col
+          y: row
+        )
         pixels[row][col] = pixel
 
     canvas.append(layer, guideLayer)
@@ -360,7 +357,7 @@
           primaryColorPicker.val(color.toHex().substr(1))
           primaryColorPicker[0].onblur()
 
-        return this
+        return self
 
       clear: ->
         layer.clear()
@@ -451,8 +448,9 @@
         if data
           self.trigger("dirty")
 
-          $.each data, ->
-            this.pixel.color(this.newColor, true, "replace")
+          withoutUndo ->
+            $.each data, ->
+              this.pixel.color(this.newColor, "replace")
 
       replay: (steps, parentData) ->
         unless replaying
@@ -474,8 +472,9 @@
             step = steps[i]
 
             if step
-              $.each step, (j, p) ->
-                self.getPixel(p.x, p.y).color(p.color, true, "replace")
+              withoutUndo ->
+                $.each step, (j, p) ->
+                  self.getPixel(p.x, p.y).color(p.color, "replace")
 
               i++
 
@@ -493,9 +492,14 @@
 
         pixels.push [] while pixels.length < newHeight
 
+        # TODO: Move this to some sort of initializer or something
         pixels.each (row, y) ->
           row.pop() while row.length > newWidth
-          row.push Pixel(row.length, y, layer.get(0).getContext('2d'), self, undoStack) while row.length < newWidth
+          row.push Pixel(
+            x: row.length
+            y
+            changed: pixelChanged
+          ) while row.length < newWidth
 
         layers.each (layer) ->
           layer.clear()
@@ -507,7 +511,7 @@
 
         pixels.each (row) ->
           row.each (pixel) ->
-            pixel.redraw()
+            pixel.change(pixel)
 
       setInitialState: (frameData) ->
         initialStateData = frameData
@@ -544,8 +548,9 @@
         if data
           self.trigger("dirty")
 
-          $.each data, ->
-            this.pixel.color(this.oldColor, true, "replace")
+          withoutUndo ->
+            $.each data, ->
+              this.pixel.color(this.oldColor, "replace")
 
       width: ->
         I.width
