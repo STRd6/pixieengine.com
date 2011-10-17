@@ -46,17 +46,21 @@ html.light
       +border-radius
       +bounds(40px)
       +box-sizing(border-box)
+      +box-shadow(rgba(255, 255, 255, 0.5) 0 1px 0 inset)
 
+      background-color: #99D8FF
+      border: 1px solid rgba(0, 0, 0, 0.2)
       cursor: pointer
       margin: 5px auto 0
       padding-top: 12px
       text-align: center
 
       &:hover
-        background-color: #fff
+        background-color: $hover
 
       &.active
         +border-radius
+        +box-shadow(rgba(0, 0, 0, 0.15) 1px 1px 0 inset)
 
         background-color: #1084CE
 
