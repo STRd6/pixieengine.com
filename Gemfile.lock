@@ -96,6 +96,7 @@ GEM
       builder
       mime-types
       xml-simple
+    bluecloth (2.1.0)
     builder (3.0.0)
     capistrano (2.8.0)
       highline
