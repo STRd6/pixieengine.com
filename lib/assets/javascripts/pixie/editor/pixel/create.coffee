@@ -354,12 +354,12 @@
           return lastClean != undoStack.last()
 
       displayInitialState: (stateData) ->
-        @clear()
+        withoutUndo ->
+          self.clear()
 
-        stateData ||= initialStateData
+          stateData ||= initialStateData
 
-        if stateData
-          withoutUndo ->
+          if stateData
             $.each stateData, (f, data) ->
               self.eachPixel (pixel, x, y) ->
                 pos = x + y * I.width
