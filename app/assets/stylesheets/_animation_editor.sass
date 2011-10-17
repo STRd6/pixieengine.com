@@ -11,6 +11,10 @@ $tileset_sprite_width: 60px
 .lebenmeister
   +user-select
 
+  img.selected, .placeholder.selected
+    background: $hover
+    border: 1px solid $highlight_border
+
   button[disabled]
     .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
       +opacity(0.5)
@@ -86,10 +90,6 @@ $tileset_sprite_width: 60px
         left: 150px
         top: 165px
         z-index: 100
-
-      &.selected
-        background: $hover
-        border: 1px solid $highlight_border
 
   .content
     section
@@ -232,10 +232,6 @@ $tileset_sprite_width: 60px
       img
         +max-bounds(80px)
 
-        &.selected
-          background: $hover
-          border: 1px solid $highlight_border
-
   .animation_name
     display: inline-block
     width: 150px
@@ -251,26 +247,6 @@ $tileset_sprite_width: 60px
       overflow-x: hidden
       padding: 0 4px
       white-space: nowrap
-
-      &.selected
-        background: $hover
-        border: 1px solid $highlight_border
-
-.edit_sequence_modal
-  height: 400px
-  width: 600px
-  overflow: auto
-
-.edit_sequence_modal img
-  +border-radius(2px)
-  +max-bounds(80px)
-
-  border: 2px solid transparent
-  margin: 2px
-
-  &.selected
-    background-color: $hover
-    border: 2px solid $hover
 
 .static-help, .static-table, .static-table_gear
   display: inline-block
