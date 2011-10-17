@@ -480,7 +480,7 @@
           row.pop() while row.length > newWidth
           row.push Pixel(
             x: row.length
-            y
+            y: y
             changed: pixelChanged
           ) while row.length < newWidth
 
