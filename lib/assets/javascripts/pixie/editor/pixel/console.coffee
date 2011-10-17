@@ -48,7 +48,6 @@ Pixie.Editor.Pixel.Console = (I, self) ->
     name: "console"
     perform: ->
       consoleWindow.toggle()
-      $('a.button[title="Console"]').toggleClass('active')
 
   return {}
 
