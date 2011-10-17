@@ -1,5 +1,8 @@
 class ApplicationController < ActionController::Base
   include Experimentable
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::TextHelper
+
   helper :all
   protect_from_forgery
   layout 'application'
@@ -11,6 +14,19 @@ class ApplicationController < ActionController::Base
   before_filter :track_visits
 
   after_filter :flash_to_headers
+
+  def sanitize(text)
+    Sanitize.clean(text, :elements => ['a', 'img', 'em', 'strong', 'pre', 'code', 'hr', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'u', 'p'],
+      :attributes => {
+        'a' => ['href', 'title'],
+        'img' => ['src']
+      },
+      :protocols => {
+        'a' => {'href' => ['http', 'https', 'mailto']},
+        'img' => {'src' => ['http', 'data']}
+      }
+    )
+  end
 
   def track_visits
     landed, returned = session.values_at(:landed, :returned)

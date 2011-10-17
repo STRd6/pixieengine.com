@@ -1,6 +1,6 @@
 .comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
   = avatar_link comment.commenter
-  %p= comment.body
+  %p= BlueCloth.new(comment.body).to_html.html_safe
   %p.attribution
     %span.name= link_to comment.commenter.display_name, comment.commenter
     %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable

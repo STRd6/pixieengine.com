@@ -1,9 +1,12 @@
 = form_for Comment.new(:commentable => commentable) do |form|
   %h3 Comments
   %label
+    #comment_button_bar
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
     = form.text_area :body, :placeholder => "type your comment here"
+    %input(id="comment_copy_html" type="hidden")
+  #comment_preview
 
   %button.full Post Comment
 
@@ -13,7 +16,7 @@
       = avatar_link current_user
     - else
       = image_tag "avatars/thumb/missing.png"
-    %p ${text}
+    %p {{html text}}
     %p.attribution
       - if current_user
         %span.name= link_to current_user.display_name, current_user
@@ -21,13 +24,24 @@
         %span.name You
       %span.time Just moments ago
 
+= stylesheet_link_tag "wmd.css"
+
 - content_for :javascript do
+  = javascript_include_tag "wmd.combined.min"
+
   :coffeescript
     $ ->
+      setup_wmd
+        input: "comment_body"
+        button_bar: "comment_button_bar"
+        preview: "comment_preview"
+        output: "comment_copy_html"
+        helpLink: "http://daringfireball.net/projects/markdown/syntax"
+
       commentForm = $("#new_comment")
 
       postComment = ->
-        text = $.trim(commentForm.find("textarea").val())
+        text = commentForm.find("textarea").val()
 
         if text.length
           commentForm.ajaxSubmit
@@ -35,11 +49,12 @@
             dataType: "json"
 
           newComment = $("#comment_template").tmpl
-            text: text
+            text: commentForm.find('#comment_copy_html').val()
 
           commentForm.siblings(".comments").prepend(newComment)
 
           commentForm.find("textarea").val("")
+          commentForm.find("#comment_preview").html("")
         else
           alert("Please enter a comment first")
 
