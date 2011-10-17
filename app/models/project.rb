@@ -205,7 +205,7 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(message) if Rails.env.production?
+    git_commit_and_push_without_send_later(message) if Rails.env.production?
   end
   handle_asynchronously :save_file if Rails.env.production?
 
