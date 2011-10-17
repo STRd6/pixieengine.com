@@ -3,21 +3,15 @@ class CommentsController < ApplicationController
   before_filter :require_user
 
   def create
-    comment_params = params[:comment]
+    params = params[:comment]
 
-    cleaned_text = Sanitize.clean(comment_params[:body], :elements => ['a', 'img', 'em', 'strong', 'pre', 'code', 'hr', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'u', 'p'],
-      :attributes => {
-        'a' => ['href', 'title'],
-        'img' => ['src']
-      },
-      :protocols => {
-        'a' => {'href' => ['http', 'https', 'mailto']},
-        'img' => {'src' => ['http', 'data']}
-      }
-    )
+    cleaned_text = sanitize(params[:body])
 
     unless cleaned_text.blank?
-      @comment = Comment.create({ :commentable_type => comment_params[:commentable_type], :commentable_id => comment_params[:commentable_id], :body => cleaned_text, :commenter => current_user })
+      @comment = Comment.new(params)
+      @comment.commenter = current_user
+      @comment.body = cleaned_text
+      @comment.save
     end
 
     respond_with(@comment) do |format|

@@ -1,22 +1,10 @@
 class ChatsController < ApplicationController
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-
   respond_to :html, :json
 
   def create
     text = auto_link(params[:body], :sanitize => false)
 
-    cleaned_text = Sanitize.clean(text, :elements => ['a', 'img', 'em', 'strong', 'pre', 'code', 'hr', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'u', 'p'],
-      :attributes => {
-        'a' => ['href', 'title'],
-        'img' => ['src']
-      },
-      :protocols => {
-        'a' => {'href' => ['http', 'https', 'mailto']},
-        'img' => {'src' => ['http', 'data']}
-      }
-    )
+    cleaned_text = sanitize(text)
 
     unless cleaned_text.blank?
       Chat.create({ :user => current_user, :text => cleaned_text })
