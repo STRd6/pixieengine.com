@@ -13,15 +13,15 @@ $tileset_sprite_width: 60px
   +user-select
 
   button[disabled]
-    .static-application, .static-pictures, .static-picture_edit
+    .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
       +opacity(0.5)
 
-  .static-application, .static-pictures, .static-picture_edit
+  .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
     +bounds(16px)
     +opacity(1)
 
     display: inline-block
-    vertical-align: middle
+    vertical-align: top
 
   img
     border: 1px solid transparent
@@ -273,7 +273,7 @@ $tileset_sprite_width: 60px
     background-color: $highlight
     border: 2px solid $highlight
 
-.static-help
+.static-help, .static-table, .static-table_gear
   display: inline-block
   vertical-align: top
 
