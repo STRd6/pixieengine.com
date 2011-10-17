@@ -21,6 +21,7 @@ gem 'bluecloth'
 gem "capistrano"
 gem "coffee-filter"
 gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
+gem "delayed_job", "2.1.4"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'forem', :git => "git://github.com/radar/forem.git"
 gem 'foreman'
@@ -41,8 +42,6 @@ gem "sanitize"
 gem 'therubyracer'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
-
-gem "resque", :require => "resque/server"
 
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
