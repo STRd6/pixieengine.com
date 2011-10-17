@@ -66,6 +66,14 @@ after "deploy:update_code" do
 end
 load 'deploy/assets' # This is loaded down here to have the above update code callback run first
 
+namespace :delayed_job do
+  desc "Restart the delayed_job process"
+  task :restart, :roles => :app do
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
+  end
+end
+after "deploy:symlink", "delayed_job:restart"
+
 # Unicorn start Tasks
 namespace :deploy do
   task :start, :roles => :app, :except => { :no_release => true } do
