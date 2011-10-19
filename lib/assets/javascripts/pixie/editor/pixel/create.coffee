@@ -31,9 +31,6 @@
     Input
   } = Pixie.UI
 
-  falseFn = ->
-    return false
-
   primaryButton = (event) ->
     !event.button? || event.button == 0
 
@@ -125,7 +122,7 @@
         undoStack.add(pixel, {pixel: pixel, oldColor: oldColor, newColor: color})
 
     self
-      .bind('contextmenu', falseFn)
+      .bind('contextmenu', -> false)
       .bind('mouseup', (e) ->
         active = false
         mode = undefined
