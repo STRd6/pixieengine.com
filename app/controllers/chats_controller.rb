@@ -2,7 +2,7 @@ class ChatsController < ApplicationController
   respond_to :html, :json
 
   def create
-    text = auto_link(params[:body], :sanitize => false)
+    text = auto_link(params[:body], :sanitize => false, :html => { :target => '_blank' })
 
     cleaned_text = sanitize(text)
 
