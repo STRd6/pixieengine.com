@@ -317,6 +317,7 @@
 
         toolbar.append(toolDiv)
 
+      # TODO Simplify
       color: (color, alternate) ->
         if (arguments.length == 0 || color == false)
           if mode == "S"
@@ -325,9 +326,9 @@
             return Color(primaryColorPicker.css('backgroundColor'))
         else if color == true
           if mode == "S"
-            Color(primaryColorPicker.css('backgroundColor'))
+            return Color(primaryColorPicker.css('backgroundColor'))
           else
-            Color(secondaryColorPicker.css('backgroundColor'))
+            return Color(secondaryColorPicker.css('backgroundColor'))
 
         if (mode == "S") ^ alternate
           secondaryColorPicker.val(color.toHex().substr(1))
