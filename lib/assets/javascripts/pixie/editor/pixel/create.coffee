@@ -1,5 +1,4 @@
 #= require color_util
-#= require undo_stack
 #= require_tree .
 
 #= require tmpls/editors/pixel
@@ -89,19 +88,12 @@
     currentTool = undefined
     active = false
     mode = undefined
-    undoStack = UndoStack()
     primaryColorPicker = ColorPicker().addClass('primary').appendTo(colorPickerHolder)
     secondaryColorPicker = ColorPicker().addClass('secondary').appendTo(colorPickerHolder)
     noUndo = false
     replaying = false
     tilePreview = true
     initialStateData = undefined
-
-    withoutUndo = (fn) ->
-      prevUndo = noUndo
-      noUndo = true
-      fn()
-      noUndo = prevUndo
 
     # These are the changed observers, move back into main editor
     pixelChanged = (pixel) ->
@@ -117,9 +109,7 @@
       layerCanvas.fillStyle = color.toString()
       layerCanvas.fillRect(xPos, yPos, I.pixelWidth, I.pixelHeight)
 
-      # TODO: Switch this to actions and command pattern
-      unless noUndo
-        undoStack.add(pixel, {pixel: pixel, oldColor: oldColor, newColor: color})
+      self.addUndoData(pixel, oldColor, color)
 
     self
       .bind('contextmenu', -> false)
@@ -186,9 +176,8 @@
     layer = Layer(I)
     guideLayer = Layer(I)
       .bind("mousedown touchstart", (e) ->
-        #TODO These triggers aren't perfect like the `dirty` method that queries.
-        self.trigger('dirty')
-        undoStack.next()
+        self.trigger("dirty")
+        self.nextUndo()
         active = true
         if primaryButton(e)
           mode = "P"
@@ -231,9 +220,9 @@
         undoable = action.undoable
 
         doIt = ->
-          if undoable != false
-            self.trigger('dirty')
-            undoStack.next()
+          if undoable
+            self.trigger("dirty")
+            self.nextUndo()
 
           action.perform(self)
 
@@ -340,19 +329,11 @@
         return self
 
       clear: ->
-        @eachPixel (pixel) ->
+        self.eachPixel (pixel) ->
           pixel.color(Color(0, 0, 0, 0).toString(), "replace")
 
-      dirty: (newDirty) ->
-        if newDirty != undefined
-          if newDirty == false
-            lastClean = undoStack.last()
-          return this
-        else
-          return lastClean != undoStack.last()
-
       displayInitialState: (stateData) ->
-        withoutUndo ->
+        self.withoutUndo ->
           self.clear()
 
           stateData ||= initialStateData
@@ -413,9 +394,6 @@
         return pixels[y][x] if (0 <= y < I.height) && (0 <= x < I.width)
         return undefined
 
-      getReplayData: ->
-        undoStack.replayData()
-
       preview: ->
         tileCount = if tilePreview then 4 else 1
 
@@ -423,16 +401,6 @@
           backgroundImage: @toCSSImageURL()
           width: tileCount * I.width
           height: tileCount * I.height
-
-      redo: ->
-        data = undoStack.popRedo()
-
-        if data
-          self.trigger("dirty")
-
-          withoutUndo ->
-            $.each data, ->
-              this.pixel.color(this.newColor, "replace")
 
       replay: (steps, parentData) ->
         unless replaying
@@ -454,7 +422,7 @@
             step = steps[i]
 
             if step
-              withoutUndo ->
+              self.withoutUndo ->
                 $.each step, (j, p) ->
                   self.getPixel(p.x, p.y).color(p.color, "replace")
 
@@ -519,16 +487,6 @@
 
         return tempCanvas.toDataURL("image/png")
 
-      undo: ->
-        data = undoStack.popUndo()
-
-        if data
-          self.trigger("dirty")
-
-          withoutUndo ->
-            $.each data, ->
-              this.pixel.color(this.oldColor, "replace")
-
       width: ->
         I.width
 
@@ -556,13 +514,14 @@
 
     # TODO: Refactor this to be a real self.include
     Pixie.Editor.Pixel.Console(I, self)
+    Pixie.Editor.Pixel.Undo(I, self)
 
     window.currentComponent = self
 
     if initializer
       initializer(self)
 
-    lastClean = undoStack.last()
+    self.trigger("initialized")
 
     return self
 )(jQuery)

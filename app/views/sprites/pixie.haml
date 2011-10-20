@@ -123,7 +123,6 @@
               name: "save"
               perform: (canvas) ->
                 $(".tool.button[title=Save]").attr("disabled", true)
-                window.onbeforeunload = undefined
                 postImage()
               undoable: false
 

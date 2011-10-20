@@ -4,7 +4,7 @@ Pixel = (I={}) ->
   color ||= Color(0, 0, 0, 0)
   oldColor ||= Color(0, 0, 0, 0)
 
-  pixel =
+  self =
     color: (newColor, blendMode="additive") ->
       if arguments.length >= 1
         oldColor = color
@@ -12,9 +12,9 @@ Pixel = (I={}) ->
 
         color = ColorUtil[blendMode](oldColor, newColor)
 
-        changed?(pixel)
+        changed?(self)
 
-        return pixel
+        return self
       else
         return color
     oldColor: ->
