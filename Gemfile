@@ -42,9 +42,7 @@ gem 'therubyracer'
 gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
 
-# Bundle gems for certain environments:
-# gem 'rspec', :group => :test
-group :test, :development do
+group :test do
   gem "factory_girl", :git => "https://github.com/thoughtbot/factory_girl.git"
   gem "shoulda"
   gem "turn", :require => false
