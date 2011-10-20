@@ -87,7 +87,7 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :comments, :password_resets, :tilemaps, :user_sessions
+  resources :comments, :password_resets, :user_sessions
   resources :invites
 
   match 'begin' => "projects#info"
