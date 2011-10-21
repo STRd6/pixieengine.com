@@ -16,7 +16,7 @@
     :preserve
       ${className} = (I={}) ->
         # Set some default properties
-        $.reverseMerge I,
+        Object.reverseMerge I,
           color: "blue"
           height: 32
           sprite: "placeholder"
