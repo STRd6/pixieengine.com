@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   def sanitize(text)
     Sanitize.clean(text, :elements => ['a', 'img', 'em', 'strong', 'pre', 'code', 'hr', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'u', 'p'],
       :attributes => {
-        'a' => ['href', 'title'],
+        'a' => ['href', 'title', 'target'],
         'img' => ['src']
       },
       :protocols => {

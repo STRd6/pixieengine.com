@@ -15,8 +15,6 @@
     .button_group
       %button#build(title="Publish the current version of your game")> Publish
       %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
-      - if admin?
-        %button#generate_docs(title="Build library documentation")> Doc
 
   - if current_user
     - if !current_user.help_tips
@@ -115,12 +113,6 @@
               window.location = "/projects/\#{data.project.id}/ide"
             , 15000
         )
-
-    $("#generate_docs").click ->
-      notify("Scheduling docs generation...")
-
-      $.post #{generate_docs_project_path(project).to_json}, ->
-        notify("Docs scheduled for generation", 4000)
 
     $("#update_libs").click ->
       notify("Scheduling library update...")
@@ -419,6 +411,8 @@
         path: (projectConfig.name || "project") + ".js"
         touch: true
 
+      $.post #{generate_docs_project_path(project).to_json}
+
     appConfigCode = ->
       if projectConfig.library
         ""
@@ -499,6 +493,7 @@
     fnKeys =
       "esc": ->
         $('#test_zone').hide()
+        $('#test_frame').remove()
       "f1": ->
         $('#help').click()
       "f5": runApp
