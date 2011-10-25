@@ -1,7 +1,7 @@
 module Memberships
   def self.included(model)
     model.class_eval do
-      has_many :memberships, :as => :group
+      has_many :memberships, :as => :group, :dependent => :destroy
     end
   end
 
