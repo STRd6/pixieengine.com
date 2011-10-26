@@ -2,6 +2,7 @@ PixieStrd6Com::Application.routes.draw do
   mount Forem::Engine, :at => "community"
 
   get "subscribe" => "subscriptions#subscribe", :as => :subscribe
+  get "subscriptions/:id/subscribe" => "subscriptions#subscribe"
   get "subscriptions/thanks"
   post "subscriptions/changed"
 

@@ -3,7 +3,11 @@ class SubscriptionsController < ApplicationController
   before_filter :require_user, :only => [:subscribe]
 
   def subscribe
-    @title = "Subscribe - PixieEngine Game Creation Toolset"
+    if params[:id]
+      redirect_to User.find(params[:id]).subscribe_url
+    else
+      @title = "Subscribe - PixieEngine Game Creation Toolset"
+    end
   end
 
   def changed

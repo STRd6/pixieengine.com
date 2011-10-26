@@ -19,6 +19,13 @@ class SubscriptionsControllerTest < ActionController::TestCase
 
       assert_response :success
     end
+
+    should "be redirected to spreedly when hitting subscriptions/:id/subscribe" do
+      get :subscribe, :id => @user.id
+
+      # TODO Verify host is spreedly
+      assert_response :redirect
+    end
   end
 
   should "have correct routes" do
