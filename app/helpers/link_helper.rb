@@ -1,10 +1,4 @@
 module LinkHelper
-  def subscription_link(user)
-    subscription_plan_id = 9356
-
-    link_to "Subscribe", "https://spreedly.com/STRd6-test/subscribers/#{user.id}/subscribe/#{subscription_plan_id}/#{user.email}"
-  end
-
   def avatar_link(user)
     link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :class => :avatar), user
   end

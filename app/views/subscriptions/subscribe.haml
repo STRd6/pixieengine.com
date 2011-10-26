@@ -49,5 +49,5 @@
     %li Free for 30 days!
 
   %center
-    %a.button{ :href => "https://spreedly.com/pixie/subscribers/#{current_user.id}/subscribe/10491/#{current_user.display_name}?email=#{current_user.email}" }
+    %a.button{ :href => current_user.subscribe_url }
       Subscribe Now

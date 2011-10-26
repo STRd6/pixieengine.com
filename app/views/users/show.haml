@@ -54,7 +54,7 @@
           float: right
           font-size: 12px
           letter-spacing: 0
-          margin: 1em 0 0
+          margin: 1em 0 0 1em
 
       label
         margin-bottom: 1em
@@ -156,6 +156,9 @@
       = user.display_name
       - if current_user?
         = link_to "Edit profile", [:edit, user], :class => "button complement"
+        - if current_user.spreedly_token
+          = link_to "Edit Subscription", user.edit_subscription_url, :class => "button complement"
+
     .info
       = image_tag user.avatar.url(:large), :class => :avatar
       - if user.profile

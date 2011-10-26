@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110916222313) do
+ActiveRecord::Schema.define(:version => 20111126222214) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -359,9 +360,8 @@ ActiveRecord::Schema.define(:version => 20110916222313) do
 
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "null_id"
-    t.integer  "group_id"
-    t.string   "group_type"
+    t.integer  "group_id",   :null => false
+    t.string   "group_type", :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -509,12 +509,12 @@ ActiveRecord::Schema.define(:version => 20110916222313) do
   end
 
   create_table "treatments", :force => true do |t|
-    t.integer  "experiment_id",               :null => false
+    t.integer  "experiment_id",                                  :null => false
     t.integer  "user_id"
     t.string   "session_id",    :limit => 32
-    t.boolean  "control",                     :null => false
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.boolean  "control",                     :default => false
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
   end
 
   add_index "treatments", ["experiment_id", "session_id"], :name => "index_treatments_on_experiment_id_and_session_id", :unique => true
@@ -565,6 +565,7 @@ ActiveRecord::Schema.define(:version => 20110916222313) do
     t.boolean  "forum_notifications", :default => true,  :null => false
     t.boolean  "site_notifications",  :default => true,  :null => false
     t.boolean  "help_tips",           :default => true,  :null => false
+    t.string   "spreedly_token"
   end
 
   add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"

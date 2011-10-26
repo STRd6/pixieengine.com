@@ -1,4 +1,12 @@
 class User < ActiveRecord::Base
+  if Rails.env.production?
+    SITE = "pixie"
+    PLAN_ID = 10491
+  else
+    SITE = "STRd6-test"
+    PLAN_ID = 9356
+  end
+
   acts_as_authentic do |config|
     config.validate_email_field :no_connected_sites?
     config.validate_password_field :no_connected_sites?
@@ -206,16 +214,23 @@ class User < ActiveRecord::Base
   end
 
   def subscribe_url
-    "https://spreedly.com/pixie/subscribers/#{id}/subscribe/10491/#{display_name.gsub(' ', '_')}?email=#{email}"
+    "https://spreedly.com/#{SITE}/subscribers/#{id}/subscribe/#{PLAN_ID}/#{display_name.gsub(' ', '_')}?email=#{email}"
+  end
+
+  def edit_subscription_url
+    "https://spreedly.com/#{SITE}/subscriber_accounts/#{spreedly_token}"
   end
 
   def refresh_from_spreedly
-    subscriber = Subscriber.find(self.id)
+    subscriber = Subscriber.find(id)
 
     if subscriber
-      self.update_attribute(:paying, subscriber.active)
+      self.paying = subscriber.active
+      self.spreedly_token = subscriber.token
+      # Subscription changes are not the time to deal with busted models
+      save(:validate => false)
     else
-      self.update_attribute(:paying, false)
+      update_attribute(:paying, false)
     end
 
     if paying
