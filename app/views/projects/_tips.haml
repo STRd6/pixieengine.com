@@ -189,17 +189,7 @@
         $('#tooltip').show().offset(position)
 
       $("#tooltip").draggable
-        start: (e, ui) ->
-          return false if $(e.srcElement).is('pre')
-
-        drag: (e, ui) ->
-          if $(e.srcElement).is('pre')
-            ui.position.left = ui.position.left_old
-            ui.position.top = ui.position.top_old
-
-          ui.position.left_old = ui.position.left
-          ui.position.top_old = ui.position.top
-
+        cancel: "pre, button, a.button"
         distance: 5
         iframeFix: true
 
