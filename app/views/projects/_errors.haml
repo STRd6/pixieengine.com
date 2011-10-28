@@ -11,3 +11,12 @@
           pnotify_type: 'error'
           pnotify_hide: false
           pnotify_history: false
+
+    window.displayRuntimeError = (message) ->
+      $.pnotify
+        pnotify_animation: 'none'
+        pnotify_title: 'Runtime Error'
+        pnotify_text: message
+        pnotify_type: 'error'
+        pnotify_hide: false
+        pnotify_history: false
