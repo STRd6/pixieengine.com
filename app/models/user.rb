@@ -134,7 +134,11 @@ class User < ActiveRecord::Base
 
   def display_name
     if super.blank?
-      email.split("@").first
+      if email
+        email.split("@").first
+      else
+        "Anonymous #{id}"
+      end
     else
       super
     end
