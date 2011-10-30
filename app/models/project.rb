@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
       :sounds => "sounds",
       :source => "src",
       :test => "test",
+      :test_lib => "test_lib",
       :tilemaps => "tilemaps",
     },
     :width => 480,
@@ -107,11 +108,22 @@ class Project < ActiveRecord::Base
 
   def update_libs
     lib_path = File.join path, config[:directories][:lib]
-
     FileUtils.mkdir_p lib_path
 
-    config[:libs].each do |filename, url|
+    (config[:libs] || []).each do |filename, url|
       file_path = File.join lib_path, filename
+
+      File.open(file_path, 'wb') do |file|
+        file.write(open(url) {|f| f.read})
+      end
+    end
+
+    # These libs are for testing only (aka non-bundled dependencies)
+    test_lib_path = File.join path, config[:directories][:test_lib]
+    FileUtils.mkdir_p test_lib_path
+
+    (config[:test_libs] || []).each do |filename, url|
+      file_path = File.join test_lib_path, filename
 
       File.open(file_path, 'wb') do |file|
         file.write(open(url) {|f| f.read})

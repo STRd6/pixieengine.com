@@ -461,11 +461,12 @@
       ).get().join(";\n")
 
       libCode = compileDirectory(projectConfig.directories.lib)
+      testLibCode = compileDirectory(projectConfig.directories.test_lib)
       testCode = compileDirectory(projectConfig.directories.test)
 
       displayErrors(errors)
 
-      crammedCode = [environmentVariables(), appConfigCode(), libCode, compiledCode].join(";\n")
+      crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join(";\n")
       crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
 
       $("#unit_test_frame").remove()
