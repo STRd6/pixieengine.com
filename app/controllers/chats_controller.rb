@@ -15,19 +15,7 @@ class ChatsController < ApplicationController
 
   def recent
     respond_to do |format|
-      format.json do
-        chats = Chat.recent.reverse.map do |chat|
-          {
-            :user_id => chat.user ? chat.user.id : 0,
-            :id => chat.id,
-            :name => chat.user_name,
-            :time => chat.time,
-            :message => chat.text.html_safe
-          }
-        end
-
-        render :json => { :chats => chats }
-      end
+      format.json { render :json => Chat.recent.reverse }
     end
   end
 
