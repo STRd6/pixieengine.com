@@ -35,6 +35,7 @@ after :deploy do
   run "chmod -R g+w #{release_path}/tmp"
   run "chmod -R g+w #{release_path}/.bundle"
 end
+after :deploy, "deploy:migrate"
 after :deploy, "deploy:cleanup"
 
 # Whenever task
