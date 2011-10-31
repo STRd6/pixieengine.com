@@ -38,10 +38,10 @@ Pixie.Chat.create = (current_user) ->
       for user in data.users
         $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
-    $.get '/chats/recent', (data) ->
+    $.get '/chats/recent', (chats) ->
       prevChatUser = null
 
-      for chat in data.chats
+      for chat in chats
         appendChat(chat, prevChatUser)
 
         prevChatUser = chat.name
@@ -60,7 +60,7 @@ Pixie.Chat.create = (current_user) ->
         if $.inArray(user.id, lastOnline) < 0
           $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
-    $.get '/chats/recent', (data) ->
+    $.get '/chats/recent', (chats) ->
       $('#chats li:not([data-id])').remove()
 
       prevChatId = null
@@ -69,7 +69,7 @@ Pixie.Chat.create = (current_user) ->
 
       scroll = withinScrollBoundary()
 
-      for chat in data.chats
+      for chat in chats
         if prevChatId && chat.id > prevChatId
           appendChat(chat, prevChatUser)
 
@@ -97,7 +97,8 @@ Pixie.Chat.create = (current_user) ->
     #  console.log message.match(/@\w*/g)
 
     date = new Date()
-    current_time = "#{date.getHours() % 12}:#{date.getMinutes()}#{if date.getHours() > 11 then 'pm' else 'am'}"
+    paddedMinutes = if date.getMinutes().length == 1 then "0#{date.getMinutes()}" else date.getMinutes()
+    current_time = "#{date.getHours() % 12}:#{paddedMinutes}#{if date.getHours() > 11 then 'pm' else 'am'}"
 
     $.post '/chats', { body: message }
 
