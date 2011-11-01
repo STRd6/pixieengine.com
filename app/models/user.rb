@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
     failed_user_ids = []
     delivery_date = Time.now.strftime("%b %d %Y")
 
-    Notifier.post_newsletter_to_forum(delivery_date)
+    #Notifier.post_newsletter_to_forum(delivery_date)
 
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
