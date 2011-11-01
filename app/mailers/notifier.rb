@@ -47,7 +47,7 @@ class Notifier < ActionMailer::Base
   end
 
   def post_newsletter_to_forum(delivery_date)
-    email = Notifier.newsletter8(User.find(4), delivery_date)
+    email = Notifier.newsletter9(User.find(4), delivery_date)
 
     topic = Forem::Topic.new(:user_id => 4, :forum_id => 1, :subject => "This week in Pixie: #{delivery_date}")
 
