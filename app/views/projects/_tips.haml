@@ -1,8 +1,4 @@
 :ruby
-  condor = User.find 4
-  jump = Project.find Project::JUMP_DEMO_ID
-  shoot = Project.find Project::SHOOT_DEMO_ID
-
   tips = {}
 
   tips[Project::ASTEROIDS_DEMO_ID] = [{
@@ -24,7 +20,7 @@
     }]
 
   tips[Project::DEMO_ID] = [{
-      :text => "Welcome to #{user_link(condor)}'s three part platforming demo. Part one is going to cover keyboard input."
+      :text => "Welcome to Condor's three part platforming demo. Part one is going to cover keyboard input."
     }, {
       :action => "run",
       :target => "#run",
@@ -52,7 +48,7 @@
       :text => "Try to make him move to the right and stop too."
     }, {
       :file => "file_src_square_coffee",
-      :text => "When you are done here check out lesson two: #{link_to 'Jumping', ide_project_path(jump)}"
+      :text => "When you are done here check out lesson two: #{link_to 'Jumping', ide_project_path(Project::JUMP_DEMO_ID)}"
     }]
 
   tips[Project::JUMP_DEMO_ID] = [{
@@ -74,7 +70,7 @@
       :text => "Finally, we do a simple check to make sure the player lands on the ground and we tell the game he isn't falling anymore.<pre>if I.y > FLOOR_HEIGHT - 25<br/>  I.y = FLOOR_HEIGHT - 25<br/>  falling = false<br/>else<br/>  falling = true</pre>"
     }, {
       :file => "file_src_square_coffee",
-      :text => "We're going to teach the square to shoot in the eagerly anticipated lesson three: #{link_to "Pew", ide_project_path(shoot)}"
+      :text => "We're going to teach the square to shoot in the eagerly anticipated lesson three: #{link_to "Pew", ide_project_path(Project::SHOOT_DEMO_ID)}"
     }]
 
   tips[Project::SHOOT_DEMO_ID] = [{

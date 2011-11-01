@@ -156,6 +156,9 @@ class Project < ActiveRecord::Base
   handle_asynchronously :tag_version
 
   def clone_repo
+    # Cloning repos in tests is way too scary
+    return if Rails.env.test?
+
     create_directory unless demo? || parent
 
     if remote_origin.present?
