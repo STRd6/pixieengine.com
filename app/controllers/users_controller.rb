@@ -52,6 +52,9 @@ class UsersController < ApplicationController
 
   def create
     subscribe = params[:subscribe]
+    
+    new_game_bonus = params[:new_game]
+    new_game_plan_id = 16362
 
     @object = User.new(params[:user])
 
@@ -68,7 +71,8 @@ class UsersController < ApplicationController
         format.html do
           @registered = true
           if subscribe
-            redirect_to user.subscribe_url
+            plan_id = new_game_plan_id if new_game_bonus
+            redirect_to user.subscribe_url(plan_id)
           else
             redirect_to user, :notice => REGISTERED_FLASH
           end

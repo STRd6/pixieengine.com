@@ -187,7 +187,9 @@
     :coffeescript
       $(".feature a").attr("href", #{register_subscribe_path.to_json})
 
-- if experiment "minimal_landing_page"
+- if params[:new_game]
+  = render :partial => 'new_game_landing_page'
+- elsif experiment "minimal_landing_page"
   = render :partial => 'minimal_landing_page'
 - else
   = render :partial => 'control_landing_page'

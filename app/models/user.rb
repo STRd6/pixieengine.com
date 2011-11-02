@@ -1,10 +1,10 @@
 class User < ActiveRecord::Base
   if Rails.env.production?
     SITE = "pixie"
-    PLAN_ID = 10491
+    DEFAULT_PLAN_ID = 10491
   else
     SITE = "STRd6-test"
-    PLAN_ID = 9356
+    DEFAULT_PLAN_ID = 9356
   end
 
   acts_as_authentic do |config|
@@ -217,8 +217,8 @@ class User < ActiveRecord::Base
     ]
   end
 
-  def subscribe_url
-    "https://spreedly.com/#{SITE}/subscribers/#{id}/subscribe/#{PLAN_ID}/#{display_name.gsub(' ', '_')}?email=#{email}"
+  def subscribe_url(plan_id=nil)
+    "https://spreedly.com/#{SITE}/subscribers/#{id}/subscribe/#{plan_id || DEFAULT_PLAN_ID}/#{display_name.gsub(' ', '_')}?email=#{email}"
   end
 
   def edit_subscription_url
