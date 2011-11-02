@@ -206,10 +206,7 @@
       $('.membership').tipsy
         gravity: 'e'
 
-      $('#show_projects').click ->
+      $('#show_projects, #show_sprites').click ->
         $(this).toggleClass('active')
-        $('.projects').toggleClass('show_all')
+               .parent().parent().toggleClass('show_all')
 
-      $('#show_sprites').click ->
-        $(this).toggleClass('active')
-        $('.sprites').toggleClass('show_all')
