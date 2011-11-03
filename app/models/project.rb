@@ -119,7 +119,7 @@ class Project < ActiveRecord::Base
     end
 
     # These libs are for testing only (aka non-bundled dependencies)
-    test_lib_path = File.join path, config[:directories][:test_lib]
+    test_lib_path = File.join path, (config[:directories][:test_lib] || DEFAULT_CONFIG[:directories][:test_lib])
     FileUtils.mkdir_p test_lib_path
 
     (config[:test_libs] || []).each do |filename, url|
@@ -199,6 +199,7 @@ class Project < ActiveRecord::Base
     #TODO: Maybe scope to specific files
     git_util "add", "."
 
+    #TODO: Tracking actual person who commits now that projects can have members
     git_util "commit", "-am", message, "--author", "#{user.display_name} <#{user.email}>"
 
     if push_enabled?
