@@ -22,4 +22,7 @@
     %h3 Password
     = form.password_field :password
 
+  - if params[:new_game]
+    = hidden_field_tag :new_game, true
+
   %button.full(type="submit" name="subscribe") Subscribe
