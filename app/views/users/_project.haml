@@ -1,6 +1,6 @@
 .project.clickable>
-  - if local_assigns[:membership]
-    .membership(title="Owned by #{membership.group.user.display_name}")
+  - if current_user != project.user
+    .membership(title="Owned by #{project.user.display_name}")
       = icon_image('group')
   - if project.has_access?(current_user)
     %ul.hover_actions.right
