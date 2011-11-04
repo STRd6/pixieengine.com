@@ -8,6 +8,6 @@
           %table(bgcolor=@content_bg cellpadding="20" cellspacing="0" width="550")
             %tr
               %td(bgcolor=@content_bg style="font-size:12px;color:#000000;line-height:150%;font-family:trebuchet ms;" valign="top")
-                /%h1(style="color:#{@text_color};margin-top:0;")= "This week in Pixie: #{@delivery_date}"
+                %h1(style="color:#{@text_color};margin-top:0;")= "This week in Pixie: #{@delivery_date}"
                 = render :partial => "paragraph", :collection => @paragraphs
             = render :partial => "newsletter_footer"
