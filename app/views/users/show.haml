@@ -177,7 +177,7 @@
     %h2
       ="Your" if current_user?
       Projects
-    - (user.memberships.map(&:group) + user.projects).sort_by{ |element| element.saved_at }.reverse.each do |project|
+    - (user.memberships.map(&:group) + user.projects).sort_by{ |element| element.updated_at }.reverse.each do |project|
       = render :partial => "users/project", :locals => { :project => project }
 
   .sprites

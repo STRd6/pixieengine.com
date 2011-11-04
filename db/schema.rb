@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111127222215) do
+ActiveRecord::Schema.define(:version => 20111126222214) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -402,7 +402,6 @@ ActiveRecord::Schema.define(:version => 20111127222215) do
     t.boolean  "featured",           :default => false, :null => false
     t.boolean  "arcade",             :default => false, :null => false
     t.integer  "memberships_count",  :default => 0,     :null => false
-    t.datetime "saved_at"
   end
 
   add_index "projects", ["url"], :name => "index_projects_on_url"

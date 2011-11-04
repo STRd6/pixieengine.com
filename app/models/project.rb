@@ -37,7 +37,7 @@ class Project < ActiveRecord::Base
   scope :featured, where(:featured => true)
   scope :tutorial, where(:tutorial => true).order('id ASC')
   scope :arcade, where(:arcade => true)
-  scope :recently_edited, order('saved_at DESC').limit(20)
+  scope :recently_edited, order('updated_at DESC').limit(20)
 
   scope :none
 
@@ -212,8 +212,7 @@ class Project < ActiveRecord::Base
     #TODO: Verify path is not sketch
     return if path.index ".."
 
-    update_attribute(:saved_at, Time.now)
-
+    touch
     file_path = File.join self.path, path
 
     dir_path = file_path.split("/")[0...-1].join("/")
