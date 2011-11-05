@@ -1,3 +1,23 @@
 = will_paginate js_errors
-%ul
-  = render :partial => js_errors
+%table.js_errors
+  %thead
+    %tr
+      %th
+        Error
+      %th
+        Line
+      %th
+        URL
+      %th
+        User Agent
+  %tbody
+    = render :partial => js_errors
+
+%style
+  :sass
+    table.js_errors
+      td, th
+        padding: 3px
+        &.line_number
+          font-weight: bold
+        &.message
