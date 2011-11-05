@@ -7,6 +7,7 @@ class JsErrorsControllerTest < ActionController::TestCase
         :message => "Test",
         :line_number => "1",
         :url => "/test",
+        :user_agent => "Grapple Wekbit (TEST, like Gecko)",
         :session_id => "TEST_SESSION_ID",
       }
     end
