@@ -11,4 +11,17 @@ class JsErrorsController < ApplicationController
 
     respond_with(js_error)
   end
+
+  def index
+    respond_with(js_errors) do |format|
+      format.json { render :json }
+    end
+  end
+
+  private
+
+  helper_method :js_errors
+  def js_errors
+    @collection ||= JsError.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
+  end
 end
