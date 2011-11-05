@@ -15,8 +15,8 @@ set :user, :rails
 set :unicorn_config, "#{current_path}/config/unicorn.rb"
 set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
 
-set :default_env, 'production'
-set :rails_env, ENV['rails_env'] || ENV['RAILS_ENV'] || default_env
+# We only have a production environment right now
+set :rails_env, 'production'
 
 # If you aren't deploying to /u/apps/#{application} on the target
 # servers (which is the default), you can specify the actual location
