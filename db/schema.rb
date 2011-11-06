@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111127222214) do
+ActiveRecord::Schema.define(:version => 20111127222215) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -321,7 +321,7 @@ ActiveRecord::Schema.define(:version => 20111127222214) do
     t.string   "url",                       :null => false
     t.integer  "line_number",               :null => false
     t.string   "message",                   :null => false
-    t.string   "user_agent",                :null => false
+    t.text     "user_agent",                :null => false
     t.integer  "user_id"
     t.string   "session_id",  :limit => 32
     t.datetime "created_at",                :null => false
