@@ -480,7 +480,7 @@ class Project < ActiveRecord::Base
       "0.0.1"
     end
 
-    manifest_json = {
+    manifest_json = current_manifest.merge({
       :name => title,
       # Truncate description to max of 132 characters for Chrome
       :description => description[0...132],
@@ -495,7 +495,7 @@ class Project < ActiveRecord::Base
         "96" => "webstore/images/icon_96.png",
         "16" => "webstore/images/icon_16.png",
       }
-    }
+    })
 
     File.open(manifest_path, 'wb') do |file|
       file.write(JSON.pretty_generate(manifest_json))
