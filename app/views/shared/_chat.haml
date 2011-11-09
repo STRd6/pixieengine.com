@@ -32,5 +32,6 @@
         user =
           name: "#{current_user ? current_user.display_name : 'Anonymous'}"
           id: #{current_user ? current_user.id : 0}
+          admin: #{current_user ? current_user.admin : false}
 
         Pixie.Chat.create(user)

@@ -13,6 +13,18 @@ class ChatsController < ApplicationController
     render :nothing => true
   end
 
+  def destroy
+    chat = Chat.find(params[:id])
+
+    if chat.destroy
+      respond_to do |format|
+        format.json do
+          render :json => { :status => "ok" }
+        end
+      end
+    end
+  end
+
   def recent
     respond_to do |format|
       format.json { render :json => Chat.recent.reverse }

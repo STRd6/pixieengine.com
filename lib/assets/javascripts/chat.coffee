@@ -92,12 +92,8 @@ Pixie.Chat.create = (current_user) ->
   send = (field) ->
     return unless message = field.val()
 
-    # TODO replace @user_name with link to user and avatar
-    #if message.match(/^@\w*/g)
-    #  console.log message.match(/@\w*/g)
-
     date = new Date()
-    paddedMinutes = if date.getMinutes().length == 1 then "0#{date.getMinutes()}" else date.getMinutes()
+    paddedMinutes = if date.getMinutes() < 10 then "0#{date.getMinutes()}" else date.getMinutes()
     current_time = "#{date.getHours() % 12}:#{paddedMinutes}#{if date.getHours() > 11 then 'pm' else 'am'}"
 
     $.post '/chats', { body: message }
@@ -158,8 +154,26 @@ Pixie.Chat.create = (current_user) ->
   $('#chats li').live
     mouseenter: ->
       $(this).find('.time').css('display', 'inline-block')
+      if current_user.admin
+        chat_id = $(this).data('id')
+        $('<a class="delete" href="/chats/' + chat_id + '" title="Delete">Delete</a>').appendTo $(this)
+
     mouseleave: ->
       $(this).find('.time').hide()
+      $(this).find('.delete').remove()
+
+  $('#chats .delete').live
+    click: (e) ->
+      e.preventDefault()
+
+      if confirm "Are you sure you want to change history?"
+        $(this).parent().remove()
+
+        $.ajax
+          type: "DELETE",
+          url: $(this).attr('href'),
+          data:
+            id: $(this).parent().data('id')
 
   $(document).bind 'keydown', 'c', (e) ->
     e.preventDefault()
