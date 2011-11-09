@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/akitaonrails/will_paginate.git
-  revision: f76db771a8adcc782b43222cc5fe523467a871ac
-  branch: rails3.1
-  specs:
-    will_paginate (3.0.pre3)
-
-GIT
   remote: git://github.com/chriseppstein/compass.git
   revision: 91a748a916360057b5caf6ea85cd38441d3b257a
   branch: rails31
@@ -242,6 +235,7 @@ GEM
     whenever (0.6.8)
       aaronh-chronic (>= 0.3.9)
       activesupport (>= 2.3.4)
+    will_paginate (3.0.2)
     xml-simple (1.1.0)
 
 PLATFORMS
@@ -284,4 +278,4 @@ DEPENDENCIES
   uglifier
   unicorn
   whenever
-  will_paginate!
+  will_paginate
