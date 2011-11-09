@@ -88,8 +88,7 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :comments, :password_resets, :user_sessions
-  resources :invites
+  resources :comments, :invites, :js_errors, :password_resets, :user_sessions
 
   match 'begin' => "projects#info"
   match 'create-games' => "projects#info"

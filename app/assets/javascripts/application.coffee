@@ -25,6 +25,7 @@
 #= require pixie/editor/animation/create
 
 #= require base64
+#= require error_tracker
 #= require grid_gen
 #= require uuid
 #= require jqcolor
