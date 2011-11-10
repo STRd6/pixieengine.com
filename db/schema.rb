@@ -520,12 +520,12 @@ ActiveRecord::Schema.define(:version => 20111127222215) do
   end
 
   create_table "treatments", :force => true do |t|
-    t.integer  "experiment_id",               :null => false
+    t.integer  "experiment_id",                                  :null => false
     t.integer  "user_id"
     t.string   "session_id",    :limit => 32
-    t.boolean  "control",                     :null => false
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
+    t.boolean  "control",                     :default => false
+    t.datetime "created_at",                                     :null => false
+    t.datetime "updated_at",                                     :null => false
   end
 
   add_index "treatments", ["experiment_id", "session_id"], :name => "index_treatments_on_experiment_id_and_session_id", :unique => true

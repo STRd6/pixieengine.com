@@ -39,7 +39,7 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
-gem "will_paginate"
+gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
 gem "whenever"
 
 group :test do
