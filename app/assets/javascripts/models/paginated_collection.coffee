@@ -28,6 +28,7 @@ class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
 
   pageInfo: =>
     info =
+      sprite_owner_id: @sprite_owner_id
       current_user_id: @current_user_id
       total: @total
       page: @page
