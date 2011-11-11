@@ -1,0 +1,9 @@
+.header
+  %h2
+    {{if current_user_id}} Your {{/if}}
+    Sprites
+  {{if current_user_id}}
+  %a.button.complement(href="/pixel-editor") New Sprite
+  {{/if}}
+  %img.spinner(src='/assets/ajax-loader.gif')
+.pagination

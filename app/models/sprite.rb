@@ -30,7 +30,7 @@ class Sprite < ActiveRecord::Base
   after_create :update_dimension_tags!, :save_replay_data, :associate_app
 
   cattr_reader :per_page
-  @@per_page = 40
+  @@per_page = 51
 
   scope :with_ids, lambda {|ids|
     {:conditions => {:id => ids}}
@@ -233,6 +233,20 @@ class Sprite < ActiveRecord::Base
 
       puts "imported row #{row}, #{tile_count} images"
     end
+  end
+
+  def as_json(options={})
+    {
+      :comments_count => comments_count,
+      :description => description,
+      :height => height,
+      :id => id,
+      :parent_id => parent_id,
+      :title => title,
+      :url => image.url(:thumb),
+      :user_id => user_id,
+      :width => width,
+    }
   end
 
   def file_path

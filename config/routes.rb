@@ -67,6 +67,7 @@ PixieStrd6Com::Application.routes.draw do
 
     collection do
       get :progress
+      get :sprites
       get :unsubscribe
 
       post :install_plugin
