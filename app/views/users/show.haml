@@ -69,11 +69,35 @@
     h2
       border-bottom: 1px solid rgba(8, 66, 103, 0.25)
 
+    .sprites
+      h2
+        border: none
+        display: inline-block
+        margin: 0
+
     .projects, .sprites
       margin-bottom: 1em
+      position: relative
+
+      .header
+        border-bottom: 1px solid rgba(8, 66, 103, 0.25)
+        margin-bottom: 1em
+
+        a.button
+          margin: 0
+          margin-bottom: 0.75em
+          margin-left: 1em
+
+        .spinner
+          margin-left: 1em
 
       .actions
         float: right
+
+      .pagination
+        position: absolute
+        right: 0
+        top: 6px
 
     .membership
       left: 3px
@@ -181,17 +205,6 @@
       = render :partial => "users/project", :locals => { :project => project }
 
   .sprites
-    .actions
-      - if current_user?
-        = link_to "New Sprite", new_sprite_path, :class => "button complement"
-      - if user.sprites.size > 68
-        %a#show_sprites.button.complement Show all
-
-    %h2
-      ="Your" if current_user?
-      Sprites
-    - user.sprites.each_with_index do |sprite, i|
-      = render :partial => "index_sprites", :locals => { :sprite => sprite, :i => i }
 
   - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
     .messages
@@ -199,8 +212,16 @@
       = render :partial => 'users/comment', :collection => messages
 
 - content_for :javascript do
+  = javascript_include_tag "views/sprites/gallery"
+
   :coffeescript
     $ ->
+      #{ActiveRecord::Base.include_root_in_json = false}
+      sprite_gallery = new window.Pixie.Backbone.Sprites.Gallery
+
+      console.log #{@user_sprites_data.to_json}
+      sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
+
       $('.membership').tipsy
         gravity: 'e'
 

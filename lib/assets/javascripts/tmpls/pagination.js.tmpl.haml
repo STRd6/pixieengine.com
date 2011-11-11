@@ -1,0 +1,19 @@
+{{if total > 1}}
+{{if prev}}
+%a.prev(href="#") « Previous
+{{else}}
+%span.disabled.previous_page « Previous
+{{/if}}
+{{each(index, value) range}}
+{{if page == value}}
+%em.current ${page}
+{{else}}
+%a.page(href='#' data-page='${value}') ${value}
+{{/if}}
+{{/each}}
+{{if next}}
+%a.next(href="#") Next »
+{{else}}
+%span.disabled.next_page Next »
+{{/if}}
+{{/if}}
