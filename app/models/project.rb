@@ -70,6 +70,16 @@ class Project < ActiveRecord::Base
   ASTEROIDS_DEMO_ID = 123
   MAX_EDITOR_FILE_SIZE = 100_000
 
+  def as_json(options={})
+    {
+      description: description,
+      id: id,
+      title: title,
+      updated_at: updated_at,
+      user_id: user_id
+    }
+  end
+
   def display_name
     title
   end

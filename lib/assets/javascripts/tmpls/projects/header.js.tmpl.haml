@@ -1,9 +1,11 @@
 .header
   %h2
     {{if current_user_id && current_user_id == owner_id}} Your {{/if}}
-    Sprites
+    Projects
   {{if current_user_id && current_user_id == owner_id}}
-  %a.button.complement(href="/pixel-editor") New Sprite
+  %a.button.complement(href='/projects/new') New Project
   {{/if}}
+  %a.button.complement(href='/projects?filter=tutorial') Tutorials
   %img.spinner(src='/assets/ajax-loader.gif')
 .pagination
+

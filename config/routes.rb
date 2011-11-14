@@ -67,6 +67,7 @@ PixieStrd6Com::Application.routes.draw do
 
     collection do
       get :progress
+      get :projects
       get :sprites
       get :unsubscribe
 

@@ -30,7 +30,7 @@ class Sprite < ActiveRecord::Base
   after_create :update_dimension_tags!, :save_replay_data, :associate_app
 
   cattr_reader :per_page
-  @@per_page = 51
+  @@per_page = 40
 
   scope :with_ids, lambda {|ids|
     {:conditions => {:id => ids}}

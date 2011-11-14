@@ -4,5 +4,5 @@
 window.Pixie ||= {}
 Pixie.Backbone ||= {}
 
-class Pixie.Backbone.Sprite extends Backbone.Model
+class Pixie.Backbone.Project extends Backbone.Model
 

@@ -35,13 +35,22 @@ class UsersController < ApplicationController
   end
 
   def sprites
-    per_page = Sprite.per_page
     user = User.find params[:id]
 
-    load_user_sprites(user, per_page)
+    load_user_sprites(user)
 
     respond_to do |format|
       format.json { render :json => @user_sprites_data }
+    end
+  end
+
+  def projects
+    user = User.find params[:id]
+
+    load_user_projects(user)
+
+    respond_to do |format|
+      format.json { render :json => @user_projects_data }
     end
   end
 
@@ -116,9 +125,8 @@ class UsersController < ApplicationController
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
     user = User.find params[:id]
 
-    per_page = Sprite.per_page
-
-    load_user_sprites(user, per_page)
+    load_user_sprites(user)
+    load_user_projects(user)
   end
 
   def edit
@@ -183,7 +191,9 @@ class UsersController < ApplicationController
     @collection ||= users.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
-  def load_user_sprites(user, per_page)
+  def load_user_sprites(user)
+    per_page = 51
+
     @user_sprites = user.sprites.paginate(
       :page => params[:page],
       :per_page => per_page,
@@ -194,12 +204,34 @@ class UsersController < ApplicationController
     current_user_id = current_user ? current_user.id : nil
 
     @user_sprites_data = {
-      :sprite_owner_id => user.id,
+      :owner_id => user.id,
       :current_user_id => current_user_id,
       :page => current_page,
       :per_page => per_page,
       :total => total,
       :models => @user_sprites
+    }
+  end
+
+  def load_user_projects(user)
+    per_page = 6
+
+    @user_projects = user.projects.paginate(
+      :page => params[:page],
+      :per_page => per_page,
+    )
+
+    current_page = @user_projects.current_page
+    total = @user_projects.total_pages
+    current_user_id = current_user ? current_user.id : nil
+
+    @user_projects_data = {
+      :owner_id => user.id,
+      :current_user_id => current_user_id,
+      :page => current_page,
+      :per_page => per_page,
+      :total => total,
+      :models => @user_projects
     }
   end
 

@@ -69,7 +69,7 @@
     h2
       border-bottom: 1px solid rgba(8, 66, 103, 0.25)
 
-    .sprites
+    .sprites, .projects
       h2
         border: none
         display: inline-block
@@ -109,12 +109,6 @@
       position: relative
       width: 100%
 
-      &:nth-child(n + 7)
-        display: none
-
-      .show_all &:nth-child(n + 7)
-        display: inline-block
-
       .thumb
         +border-radius
         +inline-block
@@ -133,12 +127,6 @@
       display: inline-block
       margin-right: 6px
       margin-bottom: 3px
-
-      &:nth-child(n + 71)
-        display: none
-
-        .show_all &:nth-child(n + 71)
-          display: inline-block
 
       &:hover
         background-color: $hover
@@ -171,7 +159,6 @@
         .time
           color: gray
 
-
 .feature
   .profile
     = render :partial => "tasks", :user => user
@@ -192,18 +179,6 @@
     .favorite_color(style="background: ##{user.favorite_color};")
 
   .projects
-    .actions
-      - if current_user?
-        = link_to "New Project", new_project_path, :class => "button complement"
-        = link_to "Tutorials", projects_path(:filter => "tutorial"), :class => "button complement"
-      - if user.projects.size > 6
-        %a#show_projects.button.complement Show all
-    %h2
-      ="Your" if current_user?
-      Projects
-    - (user.memberships.map(&:group) + user.projects).sort_by{ |element| element.updated_at }.reverse.each do |project|
-      = render :partial => "users/project", :locals => { :project => project }
-
   .sprites
 
   - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
@@ -213,19 +188,28 @@
 
 - content_for :javascript do
   = javascript_include_tag "views/sprites/gallery"
+  = javascript_include_tag "views/projects/gallery"
 
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
       sprite_gallery = new window.Pixie.Backbone.Sprites.Gallery
-
-      console.log #{@user_sprites_data.to_json}
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
+
+      project_gallery = new window.Pixie.Backbone.Projects.Gallery
+      project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
+
+      $('.project .delete').live 'click', (e) ->
+        if confirm "Are you sure you want to delete this project?"
+          $(this).parent().parent().remove()
+
+          $.ajax
+            dataType: "json"
+            type: "DELETE"
+            data:
+              id: $(this).data('id')
+            url: "/projects/\#{$(this).data('id')}"
 
       $('.membership').tipsy
         gravity: 'e'
-
-      $('#show_projects, #show_sprites').click ->
-        $(this).toggleClass('active')
-               .parent().parent().toggleClass('show_all')
 
