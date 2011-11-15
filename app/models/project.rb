@@ -70,13 +70,31 @@ class Project < ActiveRecord::Base
   ASTEROIDS_DEMO_ID = 123
   MAX_EDITOR_FILE_SIZE = 100_000
 
+  def self.editable(user)
+    Project.find_by_sql <<-eos
+      (
+      SELECT projects.*
+      FROM memberships
+      INNER JOIN projects
+        ON memberships.group_id = projects.id
+      WHERE memberships.user_id = #{user.id}
+      UNION
+      SELECT projects.*
+      FROM projects
+      WHERE projects.user_id = #{user.id}
+      )
+      ORDER BY updated_at DESC
+      eos
+  end
+
   def as_json(options={})
     {
-      description: description,
-      id: id,
-      title: title,
-      updated_at: updated_at,
-      user_id: user_id
+      :description => description,
+      :id => id,
+      :title => title,
+      :user_id => user_id,
+      :owner_name => user.display_name,
+      :img => image.url(:thumb)
     }
   end
 

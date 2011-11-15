@@ -216,7 +216,7 @@ class UsersController < ApplicationController
   def load_user_projects(user)
     per_page = 6
 
-    @user_projects = user.projects.paginate(
+    @user_projects = Project.editable(user).paginate(
       :page => params[:page],
       :per_page => per_page,
     )

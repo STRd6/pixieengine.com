@@ -1,3 +1,8 @@
+{{if owner_id != user_id}}
+.membership(title="Owned by ${owner_name}")
+  %img(src="/assets/icons/group.png")
+{{/if}}
+{{if current_user_id == user_id}}
 %ul.hover_actions.right
   %a(href='/projects/${id}' title='Details')
     .static-table
@@ -11,6 +16,7 @@
   %a.delete(title='Delete' data-id='${id}')
     .static-cross
     Delete
+{{/if}}
 .thumb.fancy
   %img(alt='${title}' class='show' height='96' width='96' src='${img}' title='${title}')
 %h3.title
