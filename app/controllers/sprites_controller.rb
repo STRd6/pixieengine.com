@@ -98,12 +98,7 @@ class SpritesController < ApplicationController
   end
 
   def load_sprites
-    per_page = 187
-
-    @sprites = Sprite.paginate(
-      :page => params[:page],
-      :per_page => per_page,
-    )
+    @sprites = collection
 
     current_page = @sprites.current_page
     total = @sprites.total_pages
@@ -128,6 +123,7 @@ class SpritesController < ApplicationController
 
     render :action => :pixie
   end
+
 
   def import
     @sprite = Sprite.new
@@ -169,7 +165,7 @@ class SpritesController < ApplicationController
 
   def per_page
     if params[:per_page].blank?
-      180
+      187
     else
       params[:per_page].to_i
     end

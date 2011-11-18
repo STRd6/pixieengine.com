@@ -246,6 +246,7 @@ class Sprite < ActiveRecord::Base
       :url => image.url(:thumb),
       :user_id => user_id,
       :width => width,
+      :tags => tag_counts
     }
   end
 

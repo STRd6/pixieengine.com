@@ -37,6 +37,7 @@ class Pixie.Backbone.Sprites.Gallery extends Pixie.Backbone.PaginatedView
       collection.each(self.addSprite)
 
       self.updatePagination()
+      self.updateTags(collection)
 
   addSprite: (sprite) =>
     view = new Pixie.Backbone.Sprites.SpriteView({ model: sprite })
@@ -44,4 +45,16 @@ class Pixie.Backbone.Sprites.Gallery extends Pixie.Backbone.PaginatedView
 
   updatePagination: =>
     $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
+
+  updateTags: (collection) =>
+    tags = []
+
+    $('.tags').empty()
+
+    for model in collection.models
+      for tag in model.attributes.tags
+        tags.push tag.name unless $.inArray(tag.name, tags) >= 0
+
+    for name in tags
+      $('.tags').append($("<div class='tag'><a href='/sprites?tagged=#{name}'>#{name}</a></div>"))
 
