@@ -35,9 +35,39 @@ class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
       prev: false
       next: false
 
+    outer_window = 1
+    inner_window = 4
+
     info.prev = @page - 1 if @page > 1
     info.next = @page + 1 if @page < info.total
-    info.range = [1..@total]
+
+    window_from = @page - inner_window
+    window_to = @page + inner_window
+
+    if window_to > @total
+      window_from -= window_to - @total
+      window_to = @total
+
+    if window_from < 1
+      window_to += 1 - window_from
+      window_from = 1
+      window_to = @total if window_to > @total
+
+    middle = [window_from..window_to]
+
+    if outer_window + 3 < middle.first()
+      left = [1..(outer_window + 1)]
+      left.push "..."
+    else
+      left = [1...middle.first()]
+
+    if @total - outer_window - 2 > middle.last()
+      right = [(@total - outer_window)..@total]
+      right.unshift "..."
+    else
+      right = [(middle.last() + 1)..@total]
+
+    info.range = left.concat(middle).concat(right)
 
     return info
 

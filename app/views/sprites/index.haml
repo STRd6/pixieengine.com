@@ -5,17 +5,22 @@
 - tags = Sprite.with_ids(sprites).tag_counts
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-= will_paginate sprites
-.sprite_gallery
-  .sprites
-    = render :partial => "index_sprite", :collection => sprites
+.sprites
+
 .tags
   - tags.each do |tag|
     = tag_link tag
 
 - content_for :javascript do
+  = javascript_include_tag "views/sprites/gallery"
+
   :coffeescript
     $ ->
+      #{ActiveRecord::Base.include_root_in_json = false}
+      sprite_gallery = new window.Pixie.Backbone.Sprites.Gallery
+      sprite_gallery.collection.url = '/sprites'
+      sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@sprites_data.to_json}))
+
       $(".sprite_gallery img").live 'dragstart', (event) ->
         $this = $(this)
         name = $this.data('name')
@@ -26,6 +31,15 @@
   :sass
     @import util
     @import partials/base
+
+    .header
+      h2
+        display: inline-block
+        margin: 0
+        margin-top: 0.5em
+
+    .spinner
+      margin-left: 1em
 
     .tags
       height: 29px

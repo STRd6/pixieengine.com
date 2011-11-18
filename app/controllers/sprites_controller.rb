@@ -55,8 +55,11 @@ class SpritesController < ApplicationController
   end
 
   def index
-    respond_with(sprites) do |format|
-      format.json { render :json }
+    load_sprites
+
+    respond_to do |format|
+      format.html { }
+      format.json { render :json => @sprites_data }
     end
   end
 
@@ -92,6 +95,28 @@ class SpritesController < ApplicationController
         }
       }
     end
+  end
+
+  def load_sprites
+    per_page = 187
+
+    @sprites = Sprite.paginate(
+      :page => params[:page],
+      :per_page => per_page,
+    )
+
+    current_page = @sprites.current_page
+    total = @sprites.total_pages
+    current_user_id = current_user ? current_user.id : nil
+
+    @sprites_data = {
+      :owner_id => nil,
+      :current_user_id => current_user_id,
+      :page => current_page,
+      :per_page => per_page,
+      :total => total,
+      :models => @sprites
+    }
   end
 
   def load

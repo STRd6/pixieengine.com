@@ -8,7 +8,11 @@
 {{if page == value}}
 %em.current ${page}
 {{else}}
+{{if value == '...'}}
+%span.gap ...
+{{else}}
 %a.page(href='#' data-page='${value}') ${value}
+{{/if}}
 {{/if}}
 {{/each}}
 {{if next}}
