@@ -12,7 +12,11 @@ class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
     @trigger "fetching"
     self = @
 
-    options.data = {page: @page, id: @owner_id}
+    if @tagged?.length > 0
+      options.data = {page: @page, id: @owner_id, tagged: @tagged}
+    else
+      options.data = {page: @page, id: @owner_id}
+
     success = options.success
 
     options.success = (resp) ->
@@ -22,7 +26,7 @@ class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
     Backbone.Collection.prototype.fetch.call(@, options)
 
   parse: (resp) =>
-    {@page, @per_page, @total, @current_user_id, @owner_id} = resp
+    {@page, @per_page, @total, @current_user_id, @owner_id, @tagged} = resp
     return resp.models
 
   pageInfo: =>
