@@ -4,14 +4,13 @@
 #= require models/sprite
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
-Pixie.Backbone.Sprites ||= {}
+Pixie.Models ||= {}
 
-class Pixie.Backbone.Sprites.Collection extends Pixie.Backbone.PaginatedCollection
-  model: Pixie.Backbone.Sprite
+class Pixie.Models.SpritesCollection extends Pixie.Models.PaginatedCollection
+  model: Pixie.Models.Sprite
 
   parse: (data) =>
-    Pixie.Backbone.PaginatedCollection.prototype.parse.call(@, data)
+    Pixie.Models.PaginatedCollection.prototype.parse.call(@, data)
 
   url: '/people/sprites'
 

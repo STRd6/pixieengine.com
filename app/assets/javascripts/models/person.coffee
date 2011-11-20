@@ -4,5 +4,4 @@
 window.Pixie ||= {}
 Pixie.Models ||= {}
 
-class Pixie.Models.Sprite extends Backbone.Model
-
+class Pixie.Models.Person extends Backbone.Model

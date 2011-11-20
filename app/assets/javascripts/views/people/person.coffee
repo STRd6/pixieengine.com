@@ -1,16 +1,17 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/projects/project
+#= require tmpls/people/person
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
-Pixie.Views.Projects ||= {}
+Pixie.Views.People ||= {}
 
-class Pixie.Views.Projects.Project extends Backbone.View
-  className: 'project clickable'
+class Pixie.Views.People.Person extends Backbone.View
+  className: 'person clickable'
 
   render: =>
     data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.owner_id})
-    $(@el).html $.tmpl('projects/project', data)
+    $(@el).html $.tmpl('people/person', data)
     return @
+

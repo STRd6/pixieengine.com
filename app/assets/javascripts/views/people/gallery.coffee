@@ -1,19 +1,19 @@
 #= require underscore
 #= require backbone
-#= require views/paginated
-#= require views/projects/project
-#= require models/projects_collection
+#= require views/paginated_view
+#= require views/people/person
+#= require models/people_collection
 #= require models/paginated_collection
 
-#= require tmpls/projects/header
+#= require tmpls/people/header
 #= require tmpls/pagination
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
-Pixie.Views.Projects ||= {}
+Pixie.Views.People ||= {}
 
-class Pixie.Views.Projects.Gallery extends Pixie.Views.Paginated
-  el: ".projects"
+class Pixie.Views.People.Gallery extends Pixie.Views.Paginated
+  el: ".people"
 
   initialize: ->
     self = @
@@ -22,7 +22,7 @@ class Pixie.Views.Projects.Gallery extends Pixie.Views.Paginated
     @events = _.extend(@pageEvents, @events)
     @delegateEvents()
 
-    @collection = new Pixie.Models.ProjectsCollection
+    @collection = new Pixie.Models.PeopleCollection
 
     @collection.bind 'fetching', ->
       $(self.el).find('.spinner').show()
@@ -30,19 +30,18 @@ class Pixie.Views.Projects.Gallery extends Pixie.Views.Paginated
     @collection.bind 'reset', (collection) ->
       $(self.el).find('.header').remove()
       $(self.el).find('.pagination').remove()
-      $(self.el).append $.tmpl("projects/header", self.collection.pageInfo())
+      $(self.el).append $.tmpl("people/header", self.collection.pageInfo())
 
-      $(self.el).find('.project').remove()
+      $(self.el).find('.people').remove()
       $(self.el).find('.spinner').hide()
-      collection.each(self.addProject)
+      collection.each(self.addPerson)
 
       self.updatePagination()
 
-  addProject: (project) =>
-    view = new Pixie.Views.Projects.Project({ model: project, collection: @collection })
+  addPerson: (person) =>
+    view = new Pixie.Views.People.PersonView({ model: person, collection: @collection })
     $(@el).append(view.render().el)
 
   updatePagination: =>
     $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
-
 

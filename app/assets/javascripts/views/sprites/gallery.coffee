@@ -1,6 +1,6 @@
 #= require underscore
 #= require backbone
-#= require views/paginated_view
+#= require views/paginated
 #= require views/sprites/sprite
 #= require models/sprites_collection
 #= require models/paginated_collection
@@ -9,10 +9,10 @@
 #= require tmpls/pagination
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
-Pixie.Backbone.Sprites ||= {}
+Pixie.Views ||= {}
+Pixie.Views.Sprites ||= {}
 
-class Pixie.Backbone.Sprites.Gallery extends Pixie.Backbone.PaginatedView
+class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
   el: ".sprites"
 
   initialize: ->
@@ -22,7 +22,7 @@ class Pixie.Backbone.Sprites.Gallery extends Pixie.Backbone.PaginatedView
     @events = _.extend(@pageEvents, @events)
     @delegateEvents()
 
-    @collection = new Pixie.Backbone.Sprites.Collection
+    @collection = new Pixie.Models.SpritesCollection
 
     @collection.bind 'fetching', ->
       $(self.el).find('.spinner').show()
@@ -40,7 +40,7 @@ class Pixie.Backbone.Sprites.Gallery extends Pixie.Backbone.PaginatedView
       self.updateTags(collection)
 
   addSprite: (sprite) =>
-    view = new Pixie.Backbone.Sprites.SpriteView({ model: sprite })
+    view = new Pixie.Views.Sprites.Sprite({ model: sprite })
     $(@el).append(view.render().el)
 
   updatePagination: =>

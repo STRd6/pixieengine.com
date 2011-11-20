@@ -2,7 +2,7 @@
 #= require backbone
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
+Pixie.Models ||= {}
 
-class Pixie.Backbone.Project extends Backbone.Model
+class Pixie.Models.Project extends Backbone.Model
 

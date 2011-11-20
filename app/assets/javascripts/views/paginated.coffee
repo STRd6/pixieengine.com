@@ -2,9 +2,9 @@
 #= require backbone
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
+Pixie.Views ||= {}
 
-class Pixie.Backbone.PaginatedView extends Backbone.View
+class Pixie.Views.Paginated extends Backbone.View
   pageEvents:
     'click a.prev': 'previous'
     'click a.next': 'next'

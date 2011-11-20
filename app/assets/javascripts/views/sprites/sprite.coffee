@@ -4,10 +4,10 @@
 #= require tmpls/sprites/sprite
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
-Pixie.Backbone.Sprites ||= {}
+Pixie.Views ||= {}
+Pixie.Views.Sprites ||= {}
 
-class Pixie.Backbone.Sprites.SpriteView extends Backbone.View
+class Pixie.Views.Sprites.Sprite extends Backbone.View
   className: 'sprite_container'
 
   render: =>

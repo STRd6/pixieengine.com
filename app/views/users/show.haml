@@ -193,10 +193,10 @@
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
-      sprite_gallery = new window.Pixie.Backbone.Sprites.Gallery
+      sprite_gallery = new window.Pixie.Views.Sprites.Gallery
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
 
-      project_gallery = new window.Pixie.Backbone.Projects.Gallery
+      project_gallery = new window.Pixie.Views.Projects.Gallery
       project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
 
       $('.project .delete').live 'click', (e) ->

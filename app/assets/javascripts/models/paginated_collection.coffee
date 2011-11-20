@@ -1,10 +1,11 @@
 #= require underscore
 #= require backbone
+#= require corelib
 
 window.Pixie ||= {}
-Pixie.Backbone ||= {}
+window.Pixie.Models ||= {}
 
-class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
+class Pixie.Models.PaginatedCollection extends Backbone.Collection
   initialize: ->
     @page = 1
 
@@ -79,14 +80,17 @@ class Pixie.Backbone.PaginatedCollection extends Backbone.Collection
     return info
 
   toPage: (pageNumber) =>
-    @page = pageNumber
-    @fetch()
+    if 1 <= pageNumber <= @total
+      @page = pageNumber
+      @fetch()
 
   nextPage: =>
-    @page += 1
-    @fetch()
+    unless @page == @total
+      @page += 1
+      @fetch()
 
   previousPage: =>
-    @page -= 1
-    @fetch()
+    unless @page == 1
+      @page -= 1
+      @fetch()
 
