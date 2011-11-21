@@ -6,3 +6,4 @@ beforeEach ->
 describe "People collection", ->
   it "should have correct url", ->
     expect(@collection.url()).toEqual("/people")
+
