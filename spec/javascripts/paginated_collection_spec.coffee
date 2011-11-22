@@ -1,6 +1,4 @@
-require '/assets/jquery/jquery.min.js'
 require '/assets/models/paginated_collection.js'
-require '/assets/sinon.js'
 
 beforeEach ->
   @server = sinon.fakeServer.create()
@@ -73,6 +71,54 @@ describe "Paginated collection", ->
 
       expect(fetchSpy.called).toBeFalsy()
       expect(@collection.pageInfo().page).toEqual(1)
+
+    it "should have the correct page range when current page is at the beginning", ->
+      @collection.total = 25
+      @collection.page = 2
+
+      range = @collection.pageInfo().range
+      rangeLength = @collection.pageInfo().range.length
+
+      expect(rangeLength).toEqual(12)
+
+      expect(range.first()).toEqual(1)
+      expect(range.last()).toEqual(25)
+
+      expect(range[rangeLength - 2]).toEqual(24)
+      expect(range[rangeLength - 3]).toEqual('...')
+
+    it "should have the correct page range when current page is in the middle", ->
+      @collection.total = 25
+      @collection.page = 13
+
+      range = @collection.pageInfo().range
+      rangeLength = @collection.pageInfo().range.length
+
+      expect(rangeLength).toEqual(15)
+
+      expect(range.first()).toEqual(1)
+      expect(range.last()).toEqual(25)
+
+      expect(range[1]).toEqual(2)
+      expect(range[2]).toEqual('...')
+
+      expect(range[rangeLength - 2]).toEqual(24)
+      expect(range[rangeLength - 3]).toEqual('...')
+
+    it "should have the correct page range when current page is at the end", ->
+      @collection.total = 25
+      @collection.page = 24
+
+      range = @collection.pageInfo().range
+      rangeLength = @collection.pageInfo().range.length
+
+      expect(rangeLength).toEqual(12)
+
+      expect(range.first()).toEqual(1)
+      expect(range.last()).toEqual(25)
+
+      expect(range[1]).toEqual(2)
+      expect(range[2]).toEqual('...')
 
   describe "server response", ->
     it "should make the correct request", ->

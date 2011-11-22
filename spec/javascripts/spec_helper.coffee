@@ -1,3 +1,6 @@
+require '/assets/jquery/jquery.min.js'
+require '/assets/sinon.js'
+
 # fixtures
 beforeEach ->
   @fixtures =
