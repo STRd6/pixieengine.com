@@ -17,7 +17,7 @@
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
-      sprite_gallery = new window.Pixie.Backbone.Sprites.Gallery
+      sprite_gallery = new window.Pixie.Views.Sprites.Gallery
       sprite_gallery.collection.url = '/sprites'
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@sprites_data.to_json}))
 
