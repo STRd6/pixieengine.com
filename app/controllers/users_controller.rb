@@ -20,6 +20,12 @@ class UsersController < ApplicationController
   end
 
   def index
+    load_people
+
+    respond_to do |format|
+      format.html { }
+      format.json { render :json => @people_data }
+    end
   end
 
   def remove_favorite
@@ -52,6 +58,24 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.json { render :json => @user_projects_data }
     end
+  end
+
+  def load_people
+    @people = collection
+
+    current_page = @people.current_page
+    total = @people.total_pages
+    current_user_id = current_user ? current_user.id : nil
+
+    @people_data = {
+      :tagged => params[:tagged] || "",
+      :owner_id => nil,
+      :current_user_id => current_user_id,
+      :page => current_page,
+      :per_page => per_page,
+      :total => total,
+      :models => @people
+    }
   end
 
   def register_subscribe
@@ -184,7 +208,7 @@ class UsersController < ApplicationController
   def collection
     users = User
 
-    if filter
+    if filter || params[:filter]
       users = users.send(filter)
     end
 

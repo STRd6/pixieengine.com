@@ -1,6 +1,6 @@
 #= require underscore
 #= require backbone
-#= require views/paginated_view
+#= require views/paginated
 #= require views/people/person
 #= require models/people_collection
 #= require models/paginated_collection
@@ -13,7 +13,10 @@ Pixie.Views ||= {}
 Pixie.Views.People ||= {}
 
 class Pixie.Views.People.Gallery extends Pixie.Views.Paginated
-  el: ".people"
+  el: ".gallery"
+
+  events:
+    'click .filter': 'filterResults'
 
   initialize: ->
     self = @
@@ -27,20 +30,26 @@ class Pixie.Views.People.Gallery extends Pixie.Views.Paginated
     @collection.bind 'fetching', ->
       $(self.el).find('.spinner').show()
 
-    @collection.bind 'reset', (collection) ->
-      $(self.el).find('.header').remove()
-      $(self.el).find('.pagination').remove()
-      $(self.el).append $.tmpl("people/header", self.collection.pageInfo())
+    @collection.bind 'reset', (people) ->
+      $(self.el).find('nav').remove()
+      $(self.el).find('.items').remove()
+      $(self.el).append $.tmpl("people/header", people.pageInfo())
+      $(self.el).find('.filter').filter( ->
+        $(this).text().toLowerCase() == self.filter
+      ).takeClass('active')
 
-      $(self.el).find('.people').remove()
-      $(self.el).find('.spinner').hide()
-      collection.each(self.addPerson)
+      people.each(self.addPerson)
 
       self.updatePagination()
 
   addPerson: (person) =>
-    view = new Pixie.Views.People.PersonView({ model: person, collection: @collection })
-    $(@el).append(view.render().el)
+    view = new Pixie.Views.People.Person({ model: person, collection: @collection })
+    $(@el).find('.items').append(view.render().el)
+
+  filterResults: (e) =>
+    @filter = $(e.target).text().toLowerCase()
+
+    @collection.filterPages(@filter)
 
   updatePagination: =>
     $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())

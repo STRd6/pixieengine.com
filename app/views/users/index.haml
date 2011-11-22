@@ -8,4 +8,19 @@
     .gallery
       padding-bottom: 1em
 
-= display_gallery(users, gallery_filters)
+    .spinner
+      display: inline-block
+      vertical-align: middle
+      margin-left: 1em
+
+- content_for :javascript do
+  = javascript_include_tag "views/people/gallery"
+
+  :coffeescript
+    $ ->
+      #{ActiveRecord::Base.include_root_in_json = false}
+      person_gallery = new window.Pixie.Views.People.Gallery
+      person_gallery.collection.reset(person_gallery.collection.parse(#{@people_data.to_json}))
+
+.gallery
+

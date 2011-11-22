@@ -53,6 +53,15 @@ class User < ActiveRecord::Base
 
   before_validation :sanitize_profile
 
+  def as_json(options={})
+    {
+      :display_name => display_name,
+      :id => id,
+      :avatar_src => avatar(:thumb),
+      :description => profile
+    }
+  end
+
   def to_s
     display_name
   end

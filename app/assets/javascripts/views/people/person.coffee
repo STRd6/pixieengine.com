@@ -8,7 +8,7 @@ Pixie.Views ||= {}
 Pixie.Views.People ||= {}
 
 class Pixie.Views.People.Person extends Backbone.View
-  className: 'person clickable'
+  className: 'user clickable'
 
   render: =>
     data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.owner_id})
