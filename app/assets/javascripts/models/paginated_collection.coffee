@@ -61,17 +61,14 @@ class Pixie.Models.PaginatedCollection extends Backbone.Collection
     Backbone.Collection.prototype.fetch.call(@, options)
 
   parse: (resp) =>
-    {@page, @per_page, @total, @current_user_id, @owner_id, @tagged} = resp
+    {@page, @per_page, @total, @current_user_id} = resp
 
     @params.page = @page
-    @params.id = @owner_id
-    @params.tagged = @tagged if @tagged?.length > 0
 
     return resp.models
 
   pageInfo: =>
     info =
-      owner_id: @owner_id
       current_user_id: @current_user_id
       total: @total
       page: @page

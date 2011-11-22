@@ -7,9 +7,9 @@
 
 .sprites
 
-.tags
-  - tags.each do |tag|
-    = tag_link tag
+  .tags
+    - tags.each do |tag|
+      = tag_link tag
 
 - content_for :javascript do
   = javascript_include_tag "views/sprites/gallery"
@@ -18,7 +18,6 @@
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
       sprite_gallery = new window.Pixie.Views.Sprites.Gallery
-      sprite_gallery.collection.url = '/sprites'
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@sprites_data.to_json}))
 
       $(".sprite_gallery img").live 'dragstart', (event) ->
@@ -45,8 +44,8 @@
       margin-left: 1em
 
     .tags
-      height: 29px
-      padding-top: 0.5em
+      bottom: -30px
+      position: absolute
 
       .tag
         margin-left: 0.25em

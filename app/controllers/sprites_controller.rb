@@ -106,7 +106,6 @@ class SpritesController < ApplicationController
 
     @sprites_data = {
       :tagged => params[:tagged] || "",
-      :owner_id => nil,
       :current_user_id => current_user_id,
       :page => current_page,
       :per_page => per_page,

@@ -15,6 +15,9 @@ Pixie.Views.Sprites ||= {}
 class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
   el: ".sprites"
 
+  events:
+    'click .tag': 'searchTags'
+
   initialize: ->
     self = @
 
@@ -43,6 +46,10 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
     view = new Pixie.Views.Sprites.Sprite({ model: sprite })
     $(@el).append(view.render().el)
 
+  searchTags: (e) =>
+    tag = $(e.target).text().toLowerCase()
+    @collection.filterTagged(tag)
+
   updatePagination: =>
     $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
 
@@ -56,5 +63,5 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
         tags.push tag.name unless $.inArray(tag.name, tags) >= 0
 
     for name in tags
-      $('.tags').append($("<div class='tag'><a href='/sprites?tagged=#{name}'>#{name}</a></div>"))
+      $('.tags').append($("<div class='tag'><a href='#'>#{name}</a></div>"))
 

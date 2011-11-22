@@ -194,6 +194,7 @@
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
       sprite_gallery = new window.Pixie.Views.Sprites.Gallery
+      sprite_gallery.collection.url = '/people/sprites'
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
 
       project_gallery = new window.Pixie.Views.Projects.Gallery
