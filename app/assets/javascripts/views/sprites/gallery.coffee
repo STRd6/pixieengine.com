@@ -17,6 +17,7 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
 
   events:
     'click .tag': 'searchTags'
+    'click .reset': 'resetSearch'
 
   initialize: ->
     self = @
@@ -34,6 +35,8 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
       $(self.el).find('.header').remove()
       $(self.el).find('.pagination').remove()
       $(self.el).append $.tmpl("sprites/header", self.collection.pageInfo())
+      $(self.el).find('.header h2').after $('<button class="reset complement">Reset Tags</button>')
+      $(self.el).find('.reset').show() if self.collection.params.tagged
 
       $(self.el).find('.sprite_container').remove()
       $(self.el).find('.spinner').hide()
@@ -46,7 +49,12 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
     view = new Pixie.Views.Sprites.Sprite({ model: sprite })
     $(@el).append(view.render().el)
 
+  resetSearch: =>
+    @collection.resetSearch()
+    $(@el).find('.reset').hide()
+
   searchTags: (e) =>
+    $(@el).find('.reset').show()
     tag = $(e.target).text().toLowerCase()
     @collection.filterTagged(tag)
 

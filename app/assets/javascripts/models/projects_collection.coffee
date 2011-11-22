@@ -11,14 +11,12 @@ class Pixie.Models.ProjectsCollection extends Pixie.Models.PaginatedCollection
 
   pageInfo: =>
     info = Pixie.Models.PaginatedCollection.prototype.pageInfo.call(@)
-    _.extend(info, {owner_id: @owner_id})
+    _.extend(info, {owner_id: @params.id})
 
     return info
 
   parse: (data) =>
-    {@owner_id} = data
-
-    @params.id = @owner_id
+    @params.id = data.owner_id || false
 
     Pixie.Models.PaginatedCollection.prototype.parse.call(@, data)
 
