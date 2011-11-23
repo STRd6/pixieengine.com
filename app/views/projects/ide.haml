@@ -714,6 +714,11 @@
 
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
+      $tabs
+      .find(".ui-tabs-nav")
+      .sortable
+        axis: "x"
+
       $('.filetree .file').live 'click', ->
         openFile($(this).data('id'))
 
