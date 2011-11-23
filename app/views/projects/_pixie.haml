@@ -96,7 +96,7 @@
             undoable: false
 
       showEditor = ->
-        pixelEditor = $('<div />').pixie(options)
+        pixelEditor = Pixie.Editor.Pixel.create(options)
 
         pixelEditor.modal
           containerCss:
