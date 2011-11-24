@@ -44,6 +44,7 @@
 = render :partial => "tile_editor"
 = render :partial => "errors"
 = render :partial => "shared/hotkeys"
+= render :partial => "create_editor"
 
 %script#qunit_template.template(type="text/x-jQuery-tmpl")
   %div
@@ -156,149 +157,6 @@
       if $("li.unsaved").length
         "You have some unsaved changes, if you leave now you will lose your work."
 
-    window.createEditor = (ui) ->
-      panel = $(ui.panel)
-      tab = $(ui.tab)
-      path = panel.attr('data-path')
-      lang = panel.attr('data-lang')
-      type = panel.attr('data-type')
-      mtime = panel.attr('data-mtime')
-
-      if type == "text"
-        textArea = panel.find('textarea').get(0)
-        savedCode = textArea.value
-
-        if lang == "html"
-          lang = "xml"
-
-        lang ||= "dummy"
-
-        editor = new CodeMirror.fromTextArea textArea,
-          autoMatchParens: true
-          content: savedCode
-          height: "100%"
-          lineNumbers: true
-          parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-          path: "/assets/codemirror/"
-          stylesheet: ["/assets/codemirror/main.css"]
-          tabMode: "shift"
-          textWrapping: false
-
-        $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
-
-        bindKeys(editor.win.document, hotKeys)
-
-        # Listen for keypresses and update contents.
-        $(editor.win.document).keyup ->
-          currentCode = editor.getCode()
-
-          if currentCode != savedCode
-            tab.parent().addClass("unsaved")
-          else
-            tab.parent().removeClass("unsaved")
-
-          textArea.value = currentCode
-
-        cssClass: lang
-        updateSaved: () ->
-          savedCode = editor.getCode()
-      else if type == "json"
-        jsonEditor = createJsonEditor
-          panel: panel
-          path: path
-          projectConfig: path == "pixie.json"
-
-        jsonEditor.bind 'save', save
-        jsonEditor.bind 'change', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: "json"
-        updateSaved: ->
-          tab.parent().removeClass("unsaved")
-        doSave: ->
-          jsonEditor.trigger('doSave')
-
-      else if type == "entity"
-        entityEditor = createEntityEditor
-          panel: panel
-          path: path
-          uuid: panel.attr('data-uuid')
-
-        entityEditor.bind 'save', save
-        entityEditor.bind 'change', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: "entity"
-        updateSaved: ->
-          tab.parent().removeClass("unsaved")
-        doSave: ->
-          entityEditor.trigger('doSave')
-
-      else if type == "image"
-        pixelEditor = createPixelEditor
-          dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
-          panel: panel
-          path: path
-
-        pixelEditor.bind('save', save)
-        pixelEditor.bind 'dirty', ->
-          tab.parent().addClass("unsaved")
-
-        panel.empty().append(pixelEditor)
-
-        cssClass: "sprite"
-        updateSaved: () -> #TODO
-        doSave: () ->
-          pixelEditor.trigger('doSave')
-
-      else if type == "animation"
-        animationEditor = createAnimationEditor
-          panel: panel
-          path: path
-
-        animationEditor.bind('save', save)
-
-        cssClass: type
-        updateSaved: -> #TODO
-        doSave: ->
-          animationEditor.trigger('doSave')
-
-      else if type == "tilemap"
-        tileEditor = createTileEditor
-          panel: panel
-          path: path
-
-        tileEditor.bind 'save', save
-        tileEditor.bind 'dirty', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: type
-        updateSaved: () -> #TODO
-        doSave: () ->
-          tileEditor.trigger('doSave')
-
-      else if type == "sound"
-        contentsField = panel.find('[name=contents]')
-        soundData = contentsField.val()
-        hiddenContentsField = $ "<input />",
-          name: "contents"
-          type: "hidden"
-          val: soundData
-
-        soundEditor = createSoundEditor
-          soundData: soundData
-          path: path
-
-        soundEditor.bind('save', save)
-
-        panel.empty().append(soundEditor, hiddenContentsField)
-
-        cssClass: type
-        doSave: () ->
-          soundEditor.trigger('doSave')
-      else if type == "documentation" || type == "tutorial"
-        cssClass: type
-
     window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
@@ -353,9 +211,9 @@
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
       $tabs
-      .find(".ui-tabs-nav")
-      .sortable
-        axis: "x"
+        .find(".ui-tabs-nav")
+        .sortable
+          axis: "x"
 
       $('.filetree .file').live 'click', ->
         openFile($(this).data('id'))
