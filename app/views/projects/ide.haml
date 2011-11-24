@@ -1,36 +1,4 @@
-%nav.top.actions
-  - if demo? || has_access?
-    %button#save Save
-    .button_group
-      %button#new> New
-      %button#import> Import
-      %button#export(title="Download your project files")> Export
-
-  %button#fork Clone
-
-  .button_group
-    %button#run> Run
-    %button#test> Test
-  - if demo? || has_access?
-    .button_group
-      %button#build(title="Publish the current version of your game")> Publish
-      %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
-
-  - if current_user
-    - if !current_user.help_tips
-    - else
-      %button#help>
-        %span.static-help(alt="Help")
-        Help
-  - else
-    %button#help>
-      %span.static-help(alt="Help")
-      Help
-
-  .status
-    %label.inline
-      %h4 What are you working on?
-      %input.message(placeholder="message" type="text")
+= render :partial => "actions"
 
 #content
   #error
@@ -99,32 +67,6 @@
 
     window.projectId = #{project_id.to_json}
 
-    $("#fork").click ->
-      requireLogin ->
-        notify("Sending fork request...")
-        $.post(
-          #{fork_project_path(project).to_json},
-          format: 'json',
-          (data) ->
-            notify("Hardcore Forking Action...", 15000)
-
-            setTimeout ->
-              notify("<a href='/projects/\#{data.project.id}/ide'>Your carriage awaits!</a>")
-              window.location = "/projects/\#{data.project.id}/ide"
-            , 15000
-        )
-
-    $("#update_libs").click ->
-      notify("Scheduling library update...")
-
-      $.post #{update_libs_project_path(project).to_json}, ->
-        notify("Library update scheduled", 4000)
-
-    $(".actions .status .message").live "click", ->
-      $(this).select()
-
-    errors = []
-
     window.compileDirectory = (directoryPath) ->
       findDirectory(directoryPath).find("span.file").map((index, span) ->
         compileFileNode($(span))
@@ -145,12 +87,12 @@
           compiledCode = CoffeeScript.compile src, bare: true
         catch error
           if $element
-            errors.push
+            displayError
               file: $element.data("path")
               fileId: "#" + $element.attr("id")
               message: error.message
           else
-            errors.push
+            displayError
               message: error.message
 
         compiledCode
@@ -214,309 +156,6 @@
       if $("li.unsaved").length
         "You have some unsaved changes, if you leave now you will lose your work."
 
-    hotSwap = () ->
-      src = $(currentPanel).find("[name=contents]").val()
-      ext = $(currentPanel).data("ext")
-
-      code = compileCode(src, ext)
-
-      if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
-        try
-          runningGameFrame.eval(code)
-        catch error
-          warn? error.message
-
-        try
-          runningGameFrame.eval("engine.reload()")
-        catch error
-          warn? error.message
-
-    window.removeFile = (node) ->
-      notify "Removing..."
-
-      docSelector = node.remove().data("id")
-
-      # Close file if open
-      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
-
-      path = $(docSelector).remove().data("path")
-      message = $(".actions .status .message").val()
-
-      postData =
-        path: path
-        format: 'json'
-        message: message
-
-      successCallback = (data) ->
-        notify "Removed!"
-
-      $.post "/projects/\#{projectId}/remove_file", postData, successCallback
-
-    window.renameFile = (node) ->
-      docSelector = node.data("id")
-      {path, ext, type, lang} = $(docSelector).data()
-
-      openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
-
-      # Abort if unsaved
-      if openedTab.is(".unsaved")
-        notify("Can't rename unsaved file")
-        return
-
-      pathParts = path.split("/")
-      name = pathParts.pop().replace(/\.[^\.]*$/, '')
-      path = pathParts.join("/")
-
-      newName = prompt("New Name", name)
-
-      return unless newName
-
-      newName = newName.replace(/[^A-Za-z0-9_-]/, "_")
-
-      if newName != name
-        notify("Renaming: \#{name} => \#{newName}")
-        # Close file if open
-        reopen = openedTab.length
-        openedTab.find(".ui-icon-close").click()
-
-        #TODO Maybe check for existing...
-
-        newPath = "\#{path}/\#{newName}.\#{ext}"
-        oldPath = "\#{path}/\#{name}.\#{ext}"
-        contents = $(docSelector).find("[name=contents]").val()
-
-        successCallback = (data) ->
-          $(docSelector).remove()
-          node.remove()
-
-          newFileNode
-            name: newName
-            type: type
-            ext: ext
-            lang: lang
-            path: path
-            noAutoOpen: !reopen
-            contents: contents
-
-          notify "Renamed: \#{name} => \#{newName}"
-
-        postData =
-          path: oldPath
-          new_path: newPath
-          format: 'json'
-          message: $(".actions .status .message").val()
-
-        $.post "/projects/\#{projectId}/rename_file", postData, successCallback
-
-    # Commands
-    window.save = (event, data) ->
-      requireLogin ->
-        activeTab = $("#tabs ul li.ui-state-active")
-        message = $(".actions .status .message").val()
-
-        successCallback = (data) ->
-          notify "Saved!" unless noNotify
-
-          # Check for update saved method
-          activeTab.find('a').data('updateSaved')?()
-
-          activeTab.removeClass("unsaved")
-
-        if data
-          noNotify = data.noNotify
-
-          notify "Saving..." unless noNotify
-
-          postData = $.extend(
-            format: 'json'
-            message: message
-          , data)
-
-          $.post "/projects/\#{projectId}/save_file", postData, successCallback
-
-        else
-          saveMethod = activeTab.find('a').data('doSave')
-
-          if saveMethod
-            saveMethod()
-          else
-            notify "Saving..."
-
-            form = $(currentPanel).find('form')
-
-            if form.length
-              form.ajaxSubmit
-                type: 'POST'
-                data:
-                  message: message
-                dataType: "json"
-                success: successCallback
-
-              # Hot swap: inject code
-              if projectConfig.hotSwap
-                hotSwap()
-
-    $('#save').live 'click', save
-
-    newFileModal = () ->
-      $("#new_file_modal").modal
-        onShow: (modal) ->
-          $(modal.container).css
-            height: 'auto'
-            width: '425px'
-
-    $("#new").live 'click', newFileModal
-
-    buildProjectCode = () ->
-      errors = []
-
-      srcDir = findDirectory(projectConfig.directories.source)
-
-      compiledCode = srcDir.find("span.file").map((index, span) ->
-        $span = $(span)
-
-        # Save main for last
-        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
-
-        compileFileNode($span)
-      ).get().join(";\n")
-
-      libCode = compileDirectory(projectConfig.directories.lib)
-
-      if projectConfig.library
-        #TODO Clean up all these special library cases into a singe solid
-        # app config / entities bootstrapper
-        entitiesCode = ''
-      else
-        entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
-
-      if projectConfig.main
-        mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
-
-        if projectConfig.wrapMain
-          mainCode = ";$(function(){ \#{mainCode} });"
-
-      else
-        mainCode = ""
-
-      displayErrors(errors)
-
-      crammedCode = [appConfigCode(), libCode, compiledCode, entitiesCode, mainCode].join(";\n")
-
-    $("#build").live 'click', (event) ->
-      projectCode = buildProjectCode()
-
-      save event,
-        contents: projectCode
-        path: (projectConfig.name || "project") + ".js"
-        touch: true
-
-      $.post #{generate_docs_project_path(project).to_json}
-
-    appConfigCode = ->
-      if projectConfig.library
-        ""
-      else
-        conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
-
-        [conf].join("\n")
-
-    environmentVariables = ->
-      "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
-
-    runApp = () ->
-      width = projectConfig.width
-      height = projectConfig.height
-
-      $("#test_frame").remove()
-
-      iframe = $ '<iframe />'
-        height: height
-        id: "test_frame"
-        width: width
-
-      $("#test_zone").append(iframe).show()
-
-      crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
-
-      if runPath = projectConfig.runPath
-        iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
-      else
-        runCodeInIframe(crammedCode, iframe)
-
-    $("#run").live 'click', runApp
-
-    testApp = () ->
-      errors = []
-
-      srcDir = findDirectory(projectConfig.directories.source)
-
-      compiledCode = srcDir.find("span.file").map((index, span) ->
-        $span = $(span)
-
-        # Skip main
-        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
-
-        compileFileNode($span)
-      ).get().join(";\n")
-
-      libCode = compileDirectory(projectConfig.directories.lib)
-      testLibCode = compileDirectory(projectConfig.directories.test_lib)
-      testCode = compileDirectory(projectConfig.directories.test)
-
-      displayErrors(errors)
-
-      crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join(";\n")
-      crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
-
-      $("#unit_test_frame").remove()
-
-      iframe = $ '<iframe />'
-        height: 480
-        id: "unit_test_frame"
-        width: 640
-
-      $("#unit_test_window").append(iframe).show()
-
-      # Cram compiled code in iframe
-      testCodeInIframe(crammedCode, iframe)
-
-    $("#test").click testApp
-
-    # key combos like ctrl+s
-    ctrlKeys =
-      s: save
-      h: hotSwap
-      n: newFileModal
-      w: ->
-        $('.ui-tabs-selected .ui-icon-close').click()
-
-    fnKeys =
-      "esc": ->
-        $('#test_zone').hide()
-        $('#test_frame').remove()
-      "f1": ->
-        $('#help').click()
-      "f5": runApp
-      "f6": testApp
-
-    bindKeys = (scopeDocument, ctrlKeys) ->
-      $.each ctrlKeys, (key, fn) ->
-        $(scopeDocument).bind('keydown', "ctrl+\#{key} meta+\#{key}", (e) ->
-          e.preventDefault()
-          fn()
-        )
-
-    bindKeys(document, ctrlKeys)
-
-    bindFnKeys = (scopeDocument, fnKeys) ->
-      $.each fnKeys, (key, fn) ->
-        $(scopeDocument).bind 'keydown', key, (e) ->
-          e.preventDefault()
-          fn()
-
-    bindFnKeys(document, fnKeys)
-
     window.createEditor = (ui) ->
       panel = $(ui.panel)
       tab = $(ui.tab)
@@ -547,8 +186,7 @@
 
         $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
 
-        bindKeys(editor.win.document, ctrlKeys)
-        bindFnKeys(editor.win.document, fnKeys)
+        bindKeys(editor.win.document, hotKeys)
 
         # Listen for keypresses and update contents.
         $(editor.win.document).keyup ->
@@ -744,8 +382,7 @@
         $tabs.tabs('select', index)
 
       $('#test_zone .ui-icon-close').live "click", ->
-        # Clear any old error messages
-        $.pnotify_remove_all()
+        clearErrorMessages()
 
       # Hack to pre-load main file, README and tutorials
       $("#file_src_main_coffee").prev().click()

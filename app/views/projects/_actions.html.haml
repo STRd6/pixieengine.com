@@ -1,0 +1,274 @@
+%nav.top.actions
+  - if demo? || has_access?
+    %button#save Save
+    .button_group
+      %button#new> New
+      %button#import> Import
+      %button#export(title="Download your project files")> Export
+
+  %button#fork Clone
+
+  .button_group
+    %button#run> Run
+    %button#test> Test
+  - if demo? || has_access?
+    .button_group
+      %button#build(title="Publish the current version of your game")> Publish
+      %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
+
+  - if current_user
+    - if !current_user.help_tips
+    - else
+      %button#help>
+        %span.static-help(alt="Help")
+        Help
+  - else
+    %button#help>
+      %span.static-help(alt="Help")
+      Help
+
+  .status
+    %label.inline
+      %h4 What are you working on?
+      %input.message(placeholder="message" type="text")
+
+- content_for :javascript do
+  :coffeescript
+
+    newFileModal = () ->
+      $("#new_file_modal").modal
+        onShow: (modal) ->
+          $(modal.container).css
+            height: 'auto'
+            width: '425px'
+
+    buildProjectCode = () ->
+      clearErrorMessages()
+
+      srcDir = findDirectory(projectConfig.directories.source)
+
+      compiledCode = srcDir.find("span.file").map((index, span) ->
+        $span = $(span)
+
+        # Save main for last
+        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+        compileFileNode($span)
+      ).get().join(";\n")
+
+      libCode = compileDirectory(projectConfig.directories.lib)
+
+      if projectConfig.library
+        #TODO Clean up all these special library cases into a singe solid
+        # app config / entities bootstrapper
+        entitiesCode = ''
+      else
+        entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
+
+      if projectConfig.main
+        mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
+
+        if projectConfig.wrapMain
+          mainCode = ";$(function(){ \#{mainCode} });"
+
+      else
+        mainCode = ""
+
+      crammedCode = [appConfigCode(), libCode, compiledCode, entitiesCode, mainCode].join(";\n")
+
+    appConfigCode = ->
+      if projectConfig.library
+        ""
+      else
+        conf = CoffeeScript.compile "App = \#{JSON.stringify(projectConfig)}", bare: true
+
+        [conf].join("\n")
+
+    environmentVariables = ->
+      "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
+
+    runApp = () ->
+      width = projectConfig.width
+      height = projectConfig.height
+
+      $("#test_frame").remove()
+
+      iframe = $ '<iframe />'
+        height: height
+        id: "test_frame"
+        width: width
+
+      $("#test_zone").append(iframe).show()
+
+      crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
+
+      if runPath = projectConfig.runPath
+        iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
+      else
+        runCodeInIframe(crammedCode, iframe)
+
+    testApp = () ->
+      clearErrorMessages()
+
+      srcDir = findDirectory(projectConfig.directories.source)
+
+      compiledCode = srcDir.find("span.file").map((index, span) ->
+        $span = $(span)
+
+        # Skip main
+        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+
+        compileFileNode($span)
+      ).get().join(";\n")
+
+      libCode = compileDirectory(projectConfig.directories.lib)
+      testLibCode = compileDirectory(projectConfig.directories.test_lib)
+      testCode = compileDirectory(projectConfig.directories.test)
+
+      crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join(";\n")
+      crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
+
+      $("#unit_test_frame").remove()
+
+      iframe = $ '<iframe />'
+        height: 480
+        id: "unit_test_frame"
+        width: 640
+
+      $("#unit_test_window").append(iframe).show()
+
+      # Cram compiled code in iframe
+      testCodeInIframe(crammedCode, iframe)
+
+
+
+    hotSwap = () ->
+      src = $(currentPanel).find("[name=contents]").val()
+      ext = $(currentPanel).data("ext")
+
+      code = compileCode(src, ext)
+
+      if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+        try
+          runningGameFrame.eval(code)
+        catch error
+          warn? error.message
+
+        try
+          runningGameFrame.eval("engine.reload()")
+        catch error
+          warn? error.message
+
+    # Commands
+    window.save = (event, data) ->
+      requireLogin ->
+        activeTab = $("#tabs ul li.ui-state-active")
+        message = $(".actions .status .message").val()
+
+        successCallback = (data) ->
+          notify "Saved!" unless noNotify
+
+          # Check for update saved method
+          activeTab.find('a').data('updateSaved')?()
+
+          activeTab.removeClass("unsaved")
+
+        if data
+          noNotify = data.noNotify
+
+          notify "Saving..." unless noNotify
+
+          postData = $.extend(
+            format: 'json'
+            message: message
+          , data)
+
+          $.post "/projects/\#{projectId}/save_file", postData, successCallback
+
+        else
+          saveMethod = activeTab.find('a').data('doSave')
+
+          if saveMethod
+            saveMethod()
+          else
+            notify "Saving..."
+
+            form = $(currentPanel).find('form')
+
+            if form.length
+              form.ajaxSubmit
+                type: 'POST'
+                data:
+                  message: message
+                dataType: "json"
+                success: successCallback
+
+              # Hot swap: inject code
+              if projectConfig.hotSwap
+                hotSwap()
+
+    window.hotKeys =
+      esc: ->
+        $('#test_zone').hide()
+        $('#test_frame').remove()
+      f1: ->
+        $('#help').click()
+      f5: runApp
+      f6: testApp
+
+    ctrlKeys =
+      s: save
+      h: hotSwap
+      n: newFileModal
+      w: ->
+        $('.ui-tabs-selected .ui-icon-close').click()
+
+    $.each ctrlKeys, (key, fn) ->
+      hotKeys["ctrl+\#{key} meta+\#{key}"] = fn
+
+    window.bindKeys = (scopeDocument, keys) ->
+      $.each keys, (key, fn) ->
+        $(scopeDocument).bind "keydown", key, (e) ->
+          e.preventDefault()
+          fn()
+
+    bindKeys(document, hotKeys)
+
+    $("#build").live 'click', (event) ->
+      projectCode = buildProjectCode()
+
+      save event,
+        contents: projectCode
+        path: (projectConfig.name || "project") + ".js"
+        touch: true
+
+      $.post #{generate_docs_project_path(project).to_json}
+
+    $("#fork").click ->
+      requireLogin ->
+        notify("Sending fork request...")
+        $.post(
+          #{fork_project_path(project).to_json},
+          format: 'json',
+          (data) ->
+            notify("Hardcore Forking Action...", 15000)
+
+            setTimeout ->
+              notify("<a href='/projects/\#{data.project.id}/ide'>Your carriage awaits!</a>")
+              window.location = "/projects/\#{data.project.id}/ide"
+            , 15000
+        )
+
+    $("#update_libs").click ->
+      notify("Scheduling library update...")
+
+      $.post #{update_libs_project_path(project).to_json}, ->
+        notify("Library update scheduled", 4000)
+
+    $(".actions .status .message").live "click", ->
+      $(this).select()
+
+    $("#test").click testApp
+    $("#run").live 'click', runApp
+    $("#new").live 'click', newFileModal
+    $('#save').live 'click', save

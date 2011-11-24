@@ -4,6 +4,83 @@
 
 - content_for :javascript do
   :coffeescript
+    removeFile = (node) ->
+      notify "Removing..."
+
+      docSelector = node.remove().data("id")
+
+      # Close file if open
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+      path = $(docSelector).remove().data("path")
+      message = $(".actions .status .message").val()
+
+      postData =
+        path: path
+        format: 'json'
+        message: message
+
+      successCallback = (data) ->
+        notify "Removed!"
+
+      $.post "/projects/\#{projectId}/remove_file", postData, successCallback
+
+    renameFile = (node) ->
+      docSelector = node.data("id")
+      {path, ext, type, lang} = $(docSelector).data()
+
+      openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
+
+      # Abort if unsaved
+      if openedTab.is(".unsaved")
+        notify("Can't rename unsaved file")
+        return
+
+      pathParts = path.split("/")
+      name = pathParts.pop().replace(/\.[^\.]*$/, '')
+      path = pathParts.join("/")
+
+      newName = prompt("New Name", name)
+
+      return unless newName
+
+      newName = newName.replace(/[^A-Za-z0-9_-]/, "_")
+
+      if newName != name
+        notify("Renaming: \#{name} => \#{newName}")
+        # Close file if open
+        reopen = openedTab.length
+        openedTab.find(".ui-icon-close").click()
+
+        #TODO Maybe check for existing...
+
+        newPath = "\#{path}/\#{newName}.\#{ext}"
+        oldPath = "\#{path}/\#{name}.\#{ext}"
+        contents = $(docSelector).find("[name=contents]").val()
+
+        successCallback = (data) ->
+          $(docSelector).remove()
+          node.remove()
+
+          newFileNode
+            name: newName
+            type: type
+            ext: ext
+            lang: lang
+            path: path
+            noAutoOpen: !reopen
+            contents: contents
+
+          notify "Renamed: \#{name} => \#{newName}"
+
+        postData =
+          path: oldPath
+          new_path: newPath
+          format: 'json'
+          message: $(".actions .status .message").val()
+
+        $.post "/projects/\#{projectId}/rename_file", postData, successCallback
+
     $ ->
       $('.filetree .file:not(.documentation)').contextMenu menu: "file_tree_context_menu", (action, node) ->
         switch action
