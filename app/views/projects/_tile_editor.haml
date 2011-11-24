@@ -53,7 +53,7 @@
         removeEntity: (uuid) ->
           console.log "TODO remove entity \#{uuid}"
         save: ->
-          tileEditor.trigger 'doSave'
+          tileEditor.trigger 'save'
 
       tileEditor = $('<div />').appendTo(panel).tileEditor(editorOptions)
 
@@ -75,20 +75,21 @@
               path: filePath
               contents: dataString
 
-            tileEditor.trigger 'save',
+            saveFile
               contents: dataString
               path: filePath + "/" + title + "." + extension
+              success: ->
+                ;# TODO: Maybe close this one and open the saved as one
 
-      tileEditor.bind 'doSave', ->
+      tileEditor.bind 'save', ->
         dataString = JSON.stringify(tileEditor.mapData())
 
         panel.find("[name=contents]").val(dataString)
 
-        tileEditor.trigger 'save',
+        saveFile
           contents: dataString
           path: options.path
-
-        #TODO: This may not be the exact time it is saved
-        tileEditor.trigger('clean')
+          success: ->
+            tileEditor.trigger('clean')
 
       return tileEditor

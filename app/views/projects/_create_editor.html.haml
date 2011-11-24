@@ -1,127 +1,101 @@
 - content_for :javascript do
   :coffeescript
+    # TODO: Move this into it's own file like the other IDE/Editor components
+    createTextEditor = (options) ->
+      {path, panel, lang, tab} = options
+
+      textArea = panel.find('textarea').get(0)
+      savedCode = textArea.value
+
+      if lang == "html"
+        lang = "xml"
+
+      lang ||= "dummy"
+
+      editor = new CodeMirror.fromTextArea textArea,
+        autoMatchParens: true
+        content: savedCode
+        height: "100%"
+        lineNumbers: true
+        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+        path: "/assets/codemirror/"
+        stylesheet: ["/assets/codemirror/main.css"]
+        tabMode: "shift"
+        textWrapping: false
+
+      $editor = $(editor)
+
+      # Match the current theme
+      $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
+
+      # Bind all the page hotkeys to work when triggered from the editor iframe
+      bindKeys(editor.win.document, hotKeys)
+
+      # Listen for keypresses and update contents.
+      $(editor.win.document).keyup ->
+        currentCode = editor.getCode()
+
+        if currentCode != savedCode
+          $editor.trigger('dirty')
+        else
+          $editor.trigger('clean')
+
+        textArea.value = currentCode
+
+      $editor.bind "save", ->
+        codeToSave = editor.getCode()
+
+        saveFile
+          contents: savedCode
+          path: path
+          success: ->
+            # Editor's state may have changed during ajax call
+            if editor.getCode() == codeToSave
+              $editor.trigger "clean"
+            else
+              $editor.trigger "dirty"
+
+            savedCode = codeToSave
+
+      return $editor
+
     window.createEditor = (ui) ->
       panel = $(ui.panel)
       tab = $(ui.tab)
-      path = panel.attr('data-path')
-      lang = panel.attr('data-lang')
-      type = panel.attr('data-type')
-      mtime = panel.attr('data-mtime')
+      {path, lang, type, mtime} = panel.data()
 
       if type == "text"
-        textArea = panel.find('textarea').get(0)
-        savedCode = textArea.value
+        editor = createTextEditor {path, panel, lang, tab}
 
-        if lang == "html"
-          lang = "xml"
-
-        lang ||= "dummy"
-
-        editor = new CodeMirror.fromTextArea textArea,
-          autoMatchParens: true
-          content: savedCode
-          height: "100%"
-          lineNumbers: true
-          parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-          path: "/assets/codemirror/"
-          stylesheet: ["/assets/codemirror/main.css"]
-          tabMode: "shift"
-          textWrapping: false
-
-        $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
-
-        bindKeys(editor.win.document, hotKeys)
-
-        # Listen for keypresses and update contents.
-        $(editor.win.document).keyup ->
-          currentCode = editor.getCode()
-
-          if currentCode != savedCode
-            tab.parent().addClass("unsaved")
-          else
-            tab.parent().removeClass("unsaved")
-
-          textArea.value = currentCode
-
-        cssClass: lang
-        updateSaved: () ->
-          savedCode = editor.getCode()
       else if type == "json"
-        jsonEditor = createJsonEditor
+        editor = createJsonEditor
           panel: panel
           path: path
-          projectConfig: path == "pixie.json"
-
-        jsonEditor.bind 'save', save
-        jsonEditor.bind 'change', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: "json"
-        updateSaved: ->
-          tab.parent().removeClass("unsaved")
-        doSave: ->
-          jsonEditor.trigger('doSave')
 
       else if type == "entity"
-        entityEditor = createEntityEditor
+        editor = createEntityEditor
           panel: panel
           path: path
           uuid: panel.attr('data-uuid')
 
-        entityEditor.bind 'save', save
-        entityEditor.bind 'change', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: "entity"
-        updateSaved: ->
-          tab.parent().removeClass("unsaved")
-        doSave: ->
-          entityEditor.trigger('doSave')
-
       else if type == "image"
-        pixelEditor = createPixelEditor
+        editor = createPixelEditor
           dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
           panel: panel
           path: path
 
-        pixelEditor.bind('save', save)
-        pixelEditor.bind 'dirty', ->
-          tab.parent().addClass("unsaved")
-
-        panel.empty().append(pixelEditor)
-
-        cssClass: "sprite"
-        updateSaved: () -> #TODO
-        doSave: () ->
-          pixelEditor.trigger('doSave')
-
       else if type == "animation"
-        animationEditor = createAnimationEditor
+        editor = createAnimationEditor
           panel: panel
           path: path
-
-        animationEditor.bind('save', save)
-
-        cssClass: type
-        updateSaved: -> #TODO
-        doSave: ->
-          animationEditor.trigger('doSave')
 
       else if type == "tilemap"
-        tileEditor = createTileEditor
+        editor = createTileEditor
           panel: panel
           path: path
 
-        tileEditor.bind 'save', save
-        tileEditor.bind 'dirty', ->
-          tab.parent().addClass("unsaved")
-
-        cssClass: type
-        updateSaved: () -> #TODO
-        doSave: () ->
-          tileEditor.trigger('doSave')
-
       else if type == "sound"
+        #TODO Push the special stuff here into the _sfxr partial
         contentsField = panel.find('[name=contents]')
         soundData = contentsField.val()
         hiddenContentsField = $ "<input />",
@@ -129,16 +103,25 @@
           type: "hidden"
           val: soundData
 
-        soundEditor = createSoundEditor
+        editor = createSoundEditor
           soundData: soundData
           path: path
 
-        soundEditor.bind('save', save)
+        # Need to clear out any old stuff
+        panel.empty().append(editor, hiddenContentsField)
 
-        panel.empty().append(soundEditor, hiddenContentsField)
-
-        cssClass: type
-        doSave: () ->
-          soundEditor.trigger('doSave')
       else if type == "documentation" || type == "tutorial"
-        cssClass: type
+        # These just open up info tabs
+        return {
+          cssClass: type
+        }
+
+      if editor
+        editor.bind 'clean', ->
+          tab.parent().removeClass("unsaved")
+        editor.bind 'change dirty', ->
+          tab.parent().addClass("unsaved")
+
+        cssClass: lang
+        doSave: () ->
+          editor.trigger('save')

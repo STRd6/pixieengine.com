@@ -140,8 +140,6 @@
       # Cram compiled code in iframe
       testCodeInIframe(crammedCode, iframe)
 
-
-
     hotSwap = () ->
       src = $(currentPanel).find("[name=contents]").val()
       ext = $(currentPanel).data("ext")
@@ -159,53 +157,35 @@
         catch error
           warn? error.message
 
-    # Commands
-    window.save = (event, data) ->
+    window.saveFile = (data) ->
       requireLogin ->
-        activeTab = $("#tabs ul li.ui-state-active")
         message = $(".actions .status .message").val()
 
-        successCallback = (data) ->
-          notify "Saved!" unless noNotify
+        postData = $.extend(
+          format: 'json'
+          message: message
+        , data)
 
-          # Check for update saved method
-          activeTab.find('a').data('updateSaved')?()
+        $.post("/projects/\#{projectId}/save_file", postData)
+          .success ->
+            data.success?()
+          .error ->
+            data.error?()
 
-          activeTab.removeClass("unsaved")
+    # Commands
+    window.save = (event, data) ->
+      unsavedTabs = $("#tabs ul li.unsaved")
 
-        if data
-          noNotify = data.noNotify
-
-          notify "Saving..." unless noNotify
-
-          postData = $.extend(
-            format: 'json'
-            message: message
-          , data)
-
-          $.post "/projects/\#{projectId}/save_file", postData, successCallback
-
-        else
-          saveMethod = activeTab.find('a').data('doSave')
-
-          if saveMethod
-            saveMethod()
-          else
-            notify "Saving..."
-
-            form = $(currentPanel).find('form')
-
-            if form.length
-              form.ajaxSubmit
-                type: 'POST'
-                data:
-                  message: message
-                dataType: "json"
-                success: successCallback
-
-              # Hot swap: inject code
-              if projectConfig.hotSwap
-                hotSwap()
+      if unsavedTabs.length
+        # Save each unsaved tab
+        unsavedTabs.each ->
+          $(this).find('a').data('doSave')?()
+      else
+        # No unsaved tabs...
+        # Force Save of active tab
+        # This can work around buggy dirty states in editors
+        activeTab = $("#tabs ul li.ui-state-active")
+        activeTab.find('a').data('doSave')?()
 
     window.hotKeys =
       esc: ->
@@ -223,6 +203,7 @@
       w: ->
         $('.ui-tabs-selected .ui-icon-close').click()
 
+    # Merge in control keys with ctrl and meta modifiers for OSX
     $.each ctrlKeys, (key, fn) ->
       hotKeys["ctrl+\#{key} meta+\#{key}"] = fn
 
