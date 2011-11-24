@@ -1,9 +1,9 @@
 - content_for :javascript do
   :coffeescript
     window.createPixelEditor = (options) ->
-      dataUrl = options.dataUrl
-      path = options.path
-      panel = options.panel
+      {panel, path, mtime} = options
+
+      dataUrl = "/production/projects/#{project.id}/\#{path}?\#{mtime}"
       _canvas = null
 
       editorOptions = $.extend panel.data("options"),

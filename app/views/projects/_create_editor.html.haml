@@ -46,7 +46,7 @@
         codeToSave = editor.getCode()
 
         saveFile
-          contents: savedCode
+          contents: codeToSave
           path: path
           success: ->
             # Editor's state may have changed during ajax call
@@ -62,53 +62,30 @@
     window.createEditor = (ui) ->
       panel = $(ui.panel)
       tab = $(ui.tab)
-      {path, lang, type, mtime} = panel.data()
+      data = panel.data()
+      data.panel = panel
+      {type, lang} = data
 
       if type == "text"
-        editor = createTextEditor {path, panel, lang, tab}
+        editor = createTextEditor data
 
       else if type == "json"
-        editor = createJsonEditor
-          panel: panel
-          path: path
+        editor = createJsonEditor data
 
       else if type == "entity"
-        editor = createEntityEditor
-          panel: panel
-          path: path
-          uuid: panel.attr('data-uuid')
+        editor = createEntityEditor data
 
       else if type == "image"
-        editor = createPixelEditor
-          dataUrl: "/production/projects/#{project.id}/\#{path}?\#{mtime}"
-          panel: panel
-          path: path
+        editor = createPixelEditor data
 
       else if type == "animation"
-        editor = createAnimationEditor
-          panel: panel
-          path: path
+        editor = createAnimationEditor data
 
       else if type == "tilemap"
-        editor = createTileEditor
-          panel: panel
-          path: path
+        editor = createTileEditor data
 
       else if type == "sound"
-        #TODO Push the special stuff here into the _sfxr partial
-        contentsField = panel.find('[name=contents]')
-        soundData = contentsField.val()
-        hiddenContentsField = $ "<input />",
-          name: "contents"
-          type: "hidden"
-          val: soundData
-
-        editor = createSoundEditor
-          soundData: soundData
-          path: path
-
-        # Need to clear out any old stuff
-        panel.empty().append(editor, hiddenContentsField)
+        editor = createSoundEditor data
 
       else if type == "documentation" || type == "tutorial"
         # These just open up info tabs

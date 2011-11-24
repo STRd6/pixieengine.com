@@ -166,11 +166,16 @@
           message: message
         , data)
 
+        delete postData.success
+        delete postData.error
+
+        {success:successMethod, error:errorMethod} = data
+
         $.post("/projects/\#{projectId}/save_file", postData)
           .success ->
-            data.success?()
+            successMethod?()
           .error ->
-            data.error?()
+            errorMethod?()
 
     # Commands
     window.save = (event, data) ->
