@@ -2355,7 +2355,7 @@ sinon.fakeServer = (function () {
                 if (request.readyState != 4) {
                     request.respond(response[0], response[1], response[2]);
                 }
-            } catch (e) {}
+            } catch (e) { }
         },
 
         restore: function restore() {

@@ -1,23 +1,20 @@
 require '/assets/jquery/jquery.min.js'
 require '/assets/sinon.js'
+require '/assets/jasmine-jquery.js'
 
 # fixtures
 beforeEach ->
   @fixtures =
     PaginatedCollection:
       valid:
-        status: "OK"
-        version: "1.0"
-        response:
-          owner_id: 1
-          current_user_id: 4
-          page: 1
-          per_page: 5
-          total: 20
-          models: [
-            { id: 1, title: "Quest for Meaning" },
-            { id: 2, title: "Pixteroids" }
-          ]
+        current_user_id: 4
+        page: 1
+        per_page: 5
+        total: 20
+        models: [
+          { id: 1, title: "Quest for Meaning" },
+          { id: 2, title: "Pixteroids" }
+        ]
 
 # server response helper
 beforeEach ->

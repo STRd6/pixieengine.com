@@ -1,14 +1,9 @@
 require '/assets/models/paginated_collection.js'
 
 beforeEach ->
-  @server = sinon.fakeServer.create()
-
   @collection = new Pixie.Models.PaginatedCollection
   @collection.url = '/tests'
   expect(@collection.pageInfo().page).toEqual(1)
-
-afterEach ->
-  @server.restore()
 
 describe "Paginated collection", ->
   describe "page navigation", ->
@@ -121,6 +116,18 @@ describe "Paginated collection", ->
       expect(range[2]).toEqual('...')
 
   describe "server response", ->
+    beforeEach ->
+      @fixture = @fixtures.PaginatedCollection.valid
+      @server = sinon.fakeServer.create()
+      @server.respondWith(
+        "GET",
+        "/tests?page=1",
+        @validResponse(@fixture)
+      )
+
+    afterEach ->
+      @server.restore()
+
     it "should make the correct request", ->
       @collection.fetch()
 
@@ -128,3 +135,20 @@ describe "Paginated collection", ->
       expect(@server.requests[0].method).toEqual("GET")
       expect(@server.requests[0].url).toEqual("/tests?page=1")
 
+    it "should pull off and assign instance variables from the server data", ->
+      @collection.fetch()
+      @server.respond()
+
+      expect(@collection.length).toEqual(@fixture.models.length)
+
+      expect(@collection.page).toEqual(@fixture.page)
+      expect(@collection.per_page).toEqual(@fixture.per_page)
+      expect(@collection.total).toEqual(@fixture.total)
+      expect(@collection.current_user_id).toEqual(@fixture.current_user_id)
+
+    it "should make requests to the server based on params passed in", ->
+      @collection.params.testing = "true"
+
+      @collection.fetch()
+
+      expect(@server.requests[0].url).toEqual("/tests?page=1&testing=true")
