@@ -61,7 +61,7 @@
             if path?
               name = file.name.replace(/\.[^\.]*$/, '')
               contentsBase64 = extractBase64Data(event.target.result)
-              window.save event,
+              saveFile
                 contents_base64: contentsBase64
                 path: "/\#{path}/\#{name}.\#{ext}"
 
