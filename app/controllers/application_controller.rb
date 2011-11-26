@@ -180,12 +180,8 @@ class ApplicationController < ActionController::Base
   end
 
   def filter
-    filter = filters.first
-    filter_param = params[:filter]
-
-    if filter_param && filters.include?(filter_param)
-      filter = filter_param
-    end
+    filter = params[:filter] || filters.first
+    filter = filter.gsub(' ', '_')
 
     return filter
   end

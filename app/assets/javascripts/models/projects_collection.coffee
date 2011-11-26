@@ -14,6 +14,7 @@ class Pixie.Models.ProjectsCollection extends Pixie.Models.PaginatedCollection
     @page = 1
     @params.page = @page
     @params.filter = filter
+
     @fetch()
 
   model: Pixie.Models.Project

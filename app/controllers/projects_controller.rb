@@ -76,7 +76,7 @@ class ProjectsController < ApplicationController
   end
 
   def load_projects
-    @projects = projects
+    @projects = filter_results
 
     current_page = @projects.current_page
     total = @projects.total_pages
@@ -327,7 +327,7 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if filter == "own"
+    @projects ||= if (filter == "own" || filter == "my_projects")
       if current_user
         Project.for_user(current_user)
       else
