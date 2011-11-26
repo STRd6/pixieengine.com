@@ -1,9 +1,9 @@
 - content_for :javascript do
   :coffeescript
     window.createPixelEditor = (options) ->
-      dataUrl = options.dataUrl
-      path = options.path
-      panel = options.panel
+      {panel, path, mtime} = options
+
+      dataUrl = "/production/projects/#{project.id}/\#{path}?\#{mtime}"
       _canvas = null
 
       editorOptions = $.extend panel.data("options"),
@@ -20,7 +20,7 @@
             name: "Save"
             icon: "/assets/icons/database_save.png"
             perform: (canvas) ->
-              pixelEditor.trigger('doSave')
+              pixelEditor.trigger('save')
 
             undoable: false
 
@@ -50,15 +50,19 @@
 
       pixelEditor = Pixie.Editor.Pixel.create(editorOptions)
 
-      pixelEditor.bind 'doSave', ->
+      pixelEditor.bind 'save', ->
         # Update mtime to bust browser image caching
         pixelEditor.parent().attr("data-mtime", new Date().getTime())
 
-        pixelEditor.trigger 'save',
+        saveFile
           contents_base64: _canvas.toBase64()
           path: path
+          success: ->
+            pixelEditor.trigger "clean"
 
       window.currentComponent = pixelEditor
+
+      panel.empty().append(pixelEditor)
 
       return pixelEditor
 
@@ -96,7 +100,7 @@
             undoable: false
 
       showEditor = ->
-        pixelEditor = $('<div />').pixie(options)
+        pixelEditor = Pixie.Editor.Pixel.create(options)
 
         pixelEditor.modal
           containerCss:

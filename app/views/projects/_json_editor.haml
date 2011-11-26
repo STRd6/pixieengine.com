@@ -5,7 +5,10 @@
 - content_for :javascript do
   :coffeescript
     window.createJsonEditor = (options) ->
-      {panel, path, projectConfig} = options
+      {panel, path} = options
+
+      # See if this is the special config file
+      projectConfig = path == "pixie.json"
 
       panel.find('form').hide()
       panel.find('.editor').remove()
@@ -20,19 +23,18 @@
 
       propertyEditor = jsonEditor.find('table').propertyEditor(data)
 
-      jsonEditor.find('button.save').click ->
-        jsonEditor.trigger('doSave')
-
-      jsonEditor.bind 'doSave', ->
+      jsonEditor.bind 'save', ->
         jsonData = propertyEditor.getProps()
 
         dataString = JSON.stringify(jsonData)
 
         panel.find("[name=contents]").val(dataString)
 
-        jsonEditor.trigger 'save',
+        saveFile
           contents: dataString
           path: path
+          success: ->
+            jsonEditor.trigger "clean"
 
         # Propagate changes back to IDE
         if projectConfig
