@@ -68,7 +68,6 @@ class UsersController < ApplicationController
     current_user_id = current_user ? current_user.id : nil
 
     @people_data = {
-      :tagged => params[:tagged] || "",
       :owner_id => nil,
       :current_user_id => current_user_id,
       :page => current_page,

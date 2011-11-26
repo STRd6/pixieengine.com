@@ -8,6 +8,20 @@
     .gallery
       padding-bottom: 1em
 
+    .spinner
+      display: inline-block
+      vertical-align: middle
+      margin-left: 1em
+
 - @title = "Project Gallery"
 
-= display_gallery(projects, gallery_filters)
+- content_for :javascript do
+  = javascript_include_tag "views/projects/filtered_gallery"
+
+  :coffeescript
+    $ ->
+      #{ActiveRecord::Base.include_root_in_json = false}
+      projects_gallery = new window.Pixie.Views.Projects.FilteredGallery
+      projects_gallery.collection.reset(projects_gallery.collection.parse(#{@projects_data.to_json}))
+
+.gallery

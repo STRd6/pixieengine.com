@@ -67,6 +67,29 @@ class ProjectsController < ApplicationController
   end
 
   def index
+    load_projects
+
+    respond_to do |format|
+      format.html { }
+      format.json { render :json => @projects_data }
+    end
+  end
+
+  def load_projects
+    @projects = projects
+
+    current_page = @projects.current_page
+    total = @projects.total_pages
+    current_user_id = current_user ? current_user.id : nil
+
+    @projects_data = {
+      :owner_id => nil,
+      :current_user_id => current_user_id,
+      :page => current_page,
+      :per_page => per_page,
+      :total => total,
+      :models => @projects
+    }
   end
 
   def destroy

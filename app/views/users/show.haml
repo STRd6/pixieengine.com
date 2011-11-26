@@ -202,6 +202,8 @@
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
 
       project_gallery = new window.Pixie.Views.Projects.Gallery
+      project_gallery.collection.url = ->
+        '/people/projects'
       project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
 
       $('.project .delete').live 'click', (e) ->
