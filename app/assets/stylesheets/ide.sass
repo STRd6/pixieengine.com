@@ -2,6 +2,7 @@
 @import partials/base
 @import sprite_sheets
 @import properties_editor
+@import editors/tile
 
 $sidebar_width: 220px
 $lower_sidebar_height: 210px
@@ -343,3 +344,7 @@ ul.filetree
 
     .wrap
       height: 60px
+
+.editor.entity_editor
+  .content
+    +boxed_content(0, 0, 0, 333px)

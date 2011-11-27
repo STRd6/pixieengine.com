@@ -17,12 +17,12 @@
 #= require jquery.serialize_object
 #= require jquery.tagbox
 #= require jquery.take_class
-#= require jquery.tile_editor
 #= require jquery.tipsy
 #= require jquery.vector_picker
 
 #= require pixie/editor/pixel/create
 #= require pixie/editor/animation/create
+#= require pixie/editor/tile/create
 
 #= require base64
 #= require error_tracker

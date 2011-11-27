@@ -1,23 +1,26 @@
-$.fn.tileEditor = (options) ->
+#= require tmpls/editors/tile/editor
+#= require tmpls/editors/tile/layer_select
+#= require tmpls/editors/tile/saved_selection
+
+Pixie.Editor.Tile ||= {}
+
+Pixie.Editor.Tile.create = (options) ->
   options = $.extend(
     layers: [
       "Background"
       "Entities"
     ]
-    eachEntity: $.noop
-    editEntity: $.noop
-    loadEntity: $.noop
-    removeEntity: $.noop
+    eachEntity: ->
+    editEntity: ->
+    loadEntity: ->
+    removeEntity: ->
     tilesWide: 20
     tilesTall: 15
     tileWidth: 32
     tileHeight: 32
   , options)
 
-  tileEditor = $(this.get(0)).addClass("editor tile_editor")
-
-  templates = $("#tile_editor_templates")
-  templates.find(".editor.template").tmpl().appendTo(tileEditor)
+  tileEditor = $.tmpl("editors/tile/editor")
 
   debugMode = false
   dirty = false
@@ -159,7 +162,7 @@ $.fn.tileEditor = (options) ->
 
   addNewLayer = (layerName) ->
     layerName ||= "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
-    templates.find(".layer_select.template").tmpl(
+    $.tmpl("editors/tile/layer_select",
       name: layerName
     ).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
 
@@ -314,7 +317,7 @@ $.fn.tileEditor = (options) ->
     rowY = undefined
     row = undefined
 
-    savedSelection = templates.find(".saved_selection.template").tmpl(
+    savedSelection = $.tmpl("editors/tile/saved_selection",
       text: "Selection" + (++savedSelectionCount)
     ).appendTo(tileEditor.find(".saved_selections"))
 
@@ -676,7 +679,7 @@ $.fn.tileEditor = (options) ->
 
       addScreenLayer()
 
-      templates.find(".layer_select.template").tmpl(
+      $.tmpl("editors/tile/layer_select",
         name: layer.name
       ).appendTo(tileEditor.find(layerSelect))
 
