@@ -32,7 +32,6 @@
 
 = render :partial => "context_menu"
 = render :partial => "tips"
-= render :partial => "sfxr"
 = render :partial => "export_modal"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
@@ -53,6 +52,8 @@
 
 - content_for :javascript do
   :coffeescript
+    window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
+
     $("#content .sidebar_container .bottom").click ->
       requireSubscription ->
         notify("Exporting Chrome Web Store Package ...")
