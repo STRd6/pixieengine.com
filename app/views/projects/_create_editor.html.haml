@@ -2,7 +2,7 @@
   :coffeescript
     # TODO: Move this into it's own file like the other IDE/Editor components
     createTextEditor = (options) ->
-      {path, panel, lang, tab} = options
+      {path, panel, lang} = options
 
       textArea = panel.find('textarea').get(0)
       savedCode = textArea.value
