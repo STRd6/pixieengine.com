@@ -13,14 +13,14 @@ Pixie.Views ||= {}
 Pixie.Views.Sprites ||= {}
 
 class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
-  el: ".sprites"
-
   events:
     'click .tag': 'searchTags'
     'click .reset': 'resetSearch'
 
   initialize: ->
     self = @
+
+    @el = ".sprites"
 
     # merge the superclass paging related events
     @events = _.extend(@pageEvents, @events)
