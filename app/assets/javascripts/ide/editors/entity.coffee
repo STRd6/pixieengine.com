@@ -1,3 +1,5 @@
+#= require tmpls/ide/editors/entity
+
 createCodeMirrorEditor = (textArea) ->
   code = textArea.val()
   lang = "coffeescript"
@@ -39,7 +41,7 @@ window.createEntityEditor = (options) ->
   editorOptions = $.extend panel.data("options"),
     data: data
 
-  entityEditor = $("#entity_editor_template").tmpl().appendTo(panel)
+  entityEditor = $.tmpl("ide/editors/entity").appendTo(panel)
 
   entityEditor.find(".events").accordion
     collapsible: true
