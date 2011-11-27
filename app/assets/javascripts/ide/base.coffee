@@ -1,1 +1,1 @@
-#= require_tree ./editors
+#= require_tree .
