@@ -37,14 +37,6 @@
 = render :partial => "file_upload"
 = render :partial => "shared/hotkeys"
 
-%script#qunit_template.template(type="text/x-jQuery-tmpl")
-  %div
-    %h1#qunit-header ${header}
-    %h2#qunit-banner
-    %h2#qunit-userAgent
-    %ol#qunit-tests
-    #qunit-fixture
-
 - content_for :javascript do
   = javascript_include_tag "ide/base"
 
@@ -118,7 +110,7 @@
       sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
       sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
 
-      sandbox.write($("#qunit_template").tmpl(header: "Results").html())
+      sandbox.write($.tmpl("ide/qunit").html())
 
       sandbox.write("<script>\#{code}<\/script>")
 
