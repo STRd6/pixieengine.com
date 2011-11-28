@@ -29,7 +29,7 @@ window.createTextEditor = (options) ->
   bindKeys(editor.win.document, hotKeys)
 
   # Listen for keypresses and update contents.
-  $(editor.win.document).keyup ->
+  processEditorChanges = ->
     currentCode = editor.getCode()
 
     if currentCode != savedCode
@@ -38,6 +38,8 @@ window.createTextEditor = (options) ->
       $editor.trigger('clean')
 
     textArea.value = currentCode
+
+  $(editor.win.document).keyup processEditorChanges.debounce(500)
 
   $editor.bind "save", ->
     codeToSave = editor.getCode()
