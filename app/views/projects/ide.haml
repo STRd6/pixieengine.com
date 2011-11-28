@@ -45,6 +45,7 @@
 - content_for :javascript do
   :coffeescript
     window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
+    window.projectId = #{project_id.to_json}
 
     $("#content .sidebar_container .bottom").click ->
       requireSubscription ->
@@ -53,8 +54,6 @@
         window.location = #{download_project_path(project, :chrome => 1).to_json}
 
         $.modal.close()
-
-    window.projectId = #{project_id.to_json}
 
     window.compileDirectory = (directoryPath) ->
       findDirectory(directoryPath).find("span.file").map((index, span) ->
