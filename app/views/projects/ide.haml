@@ -20,11 +20,6 @@
     #tabs.module
       %ul
 
-  #test_zone.window(style="top: 125px; left: 300px;")
-    %span#close_app.ui-icon.ui-icon-close
-    %h3.ui-widget-header= project.title
-    %iframe#test_frame
-
   #unit_test_window.window(style="top: 100px; left: 200px;")
     %span.ui-icon.ui-icon-close
     %h3.ui-widget-header Test #{project.title}
@@ -223,9 +218,6 @@
         parent = $(this).parent()
         index = $('li', $tabs).index(parent)
         $tabs.tabs('select', index)
-
-      $('#test_zone .ui-icon-close').live "click", ->
-        clearErrorMessages()
 
       # Hack to pre-load main file, README and tutorials
       $("#file_src_main_coffee").prev().click()
