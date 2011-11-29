@@ -98,10 +98,7 @@
       #TODO Detect and halt on compile time errors
       crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
 
-      if runPath = projectConfig.runPath
-        iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
-      else
-        runCodeInWindow(crammedCode, runningAppWindow)
+      runCodeInWindow(crammedCode, runningAppWindow)
 
     testApp = () ->
       clearErrorMessages()
