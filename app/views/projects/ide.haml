@@ -85,8 +85,7 @@
 
         compiledCode
 
-    window.runCodeInIframe = (code, iframe) ->
-      contentWindow = iframe.get(0).contentWindow
+    window.runCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
       sandbox.open()
       sandbox.write(#{stylesheet_link_tag('project').to_json})
@@ -100,8 +99,7 @@
 
       contentWindow.focus()
 
-    window.testCodeInIframe = (code, iframe) ->
-      contentWindow = iframe.get(0).contentWindow
+    window.testCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
       sandbox.open()
       sandbox.write(#{stylesheet_link_tag('project').to_json})

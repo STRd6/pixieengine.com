@@ -105,7 +105,7 @@
       if runPath = projectConfig.runPath
         iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
       else
-        runCodeInIframe(crammedCode, iframe)
+        runCodeInWindow(crammedCode, iframe.get(0).contentWindow)
 
     testApp = () ->
       clearErrorMessages()
@@ -138,7 +138,7 @@
       $("#unit_test_window").append(iframe).show()
 
       # Cram compiled code in iframe
-      testCodeInIframe(crammedCode, iframe)
+      testCodeInWindow(crammedCode, iframe.get(0).contentWindow)
 
     hotSwap = () ->
       src = $(currentPanel).find("[name=contents]").val()
