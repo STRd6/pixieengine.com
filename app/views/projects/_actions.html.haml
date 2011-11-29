@@ -223,7 +223,7 @@
     $("#build").live 'click', (event) ->
       projectCode = buildProjectCode()
 
-      save event,
+      saveFile
         contents: projectCode
         path: (projectConfig.name || "project") + ".js"
         touch: true
