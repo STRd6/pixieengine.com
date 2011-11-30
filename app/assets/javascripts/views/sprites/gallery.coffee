@@ -1,6 +1,7 @@
 #= require underscore
 #= require backbone
 #= require views/paginated
+#= require views/tags/tags
 #= require views/sprites/sprite
 #= require models/sprites_collection
 
@@ -11,58 +12,35 @@ Pixie.Views ||= {}
 Pixie.Views.Sprites ||= {}
 
 class Pixie.Views.Sprites.Gallery extends Backbone.View
+  el: '.sprites'
+
   events:
-    'click .tag': 'searchTags'
     'click .reset': 'resetSearch'
 
   initialize: ->
-    self = @
-
-    @el = ".sprites"
-
     @collection = new Pixie.Models.SpritesCollection
 
-    @collection.bind 'reset', (collection) ->
-      view = new Pixie.Views.Paginated({ collection: collection })
+    pages = new Pixie.Views.Paginated({ collection: @collection })
+    tags = new Pixie.Views.Tags.Tags({ collection: @collection })
 
-      $(self.el).find('.header').remove()
-      $(self.el).append $.tmpl('sprites/header', self.collection.pageInfo())
+    $(@el).find('.header').remove()
+    $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
 
-      $(self.el).find('.header').append(view.render().el)
+    @collection.bind 'reset', (collection) =>
+      $(@el).find('.header').append(pages.render().el)
 
-      $(self.el).find('.reset').show() if self.collection.params.tagged
+      $(@el).find('.reset').show() if collection.params.tagged
 
-      $(self.el).find('.sprite_container').remove()
-      collection.each(self.addSprite)
+      $(@el).find('.sprite_container').remove()
+      collection.each(@addSprite)
 
       collection.trigger 'afterReset'
 
-      self.updateTags(collection)
-
-    @render()
-
   addSprite: (sprite) =>
-    view = new Pixie.Views.Sprites.Sprite({ model: sprite })
-    $(@el).append(view.render().el)
+    spriteView = new Pixie.Views.Sprites.Sprite({ model: sprite })
+    $(@el).append(spriteView.render().el)
 
   resetSearch: =>
     @collection.resetSearch()
     $(@el).find('.reset').hide()
-
-  searchTags: (e) =>
-    $(@el).find('.reset').show()
-    tag = $(e.target).text().toLowerCase()
-    @collection.filterTagged(tag)
-
-  updateTags: (collection) =>
-    tags = []
-
-    $('.tags').empty()
-
-    for model in collection.models
-      for tag in model.attributes.tags
-        tags.push tag.name unless $.inArray(tag.name, tags) >= 0
-
-    for name in tags
-      $('.tags').append($("<div class='tag'><a href='#'>#{name}</a></div>"))
 

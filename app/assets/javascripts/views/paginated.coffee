@@ -10,14 +10,12 @@ class Pixie.Views.Paginated extends Backbone.View
   tagName: 'nav'
 
   initialize: ->
-    self = @
+    @collection.bind 'fetching', =>
+      $(@el).find('.spinner').show()
 
-    @collection.bind 'fetching', ->
-      $(self.el).find('.spinner').show()
-
-    @collection.bind 'afterReset', ->
-      $(self.el).find('.spinner').hide()
-      self.updatePagination()
+    @collection.bind 'afterReset', =>
+      $(@el).find('.spinner').hide()
+      @updatePagination()
 
   events:
     'click a.prev': 'previous'
