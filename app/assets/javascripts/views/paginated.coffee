@@ -40,6 +40,7 @@ class Pixie.Views.Paginated extends Backbone.View
     return @
 
   updatePagination: =>
+    $(@el).empty()
     pages = $.tmpl('pagination', @collection.pageInfo())
 
     $(@el).html(pages)

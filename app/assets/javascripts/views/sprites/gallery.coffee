@@ -26,12 +26,10 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
       view = new Pixie.Views.Paginated({ collection: collection })
 
       $(self.el).find('.header').remove()
-      $(self.el).append $.tmpl("sprites/header", self.collection.pageInfo())
+      $(self.el).append $.tmpl('sprites/header', self.collection.pageInfo())
 
-      $('.pagination').remove()
       $(self.el).find('.header').append(view.render().el)
 
-      $(self.el).find('.header h2').after $('<button class="reset complement">Reset Tags</button>')
       $(self.el).find('.reset').show() if self.collection.params.tagged
 
       $(self.el).find('.sprite_container').remove()
