@@ -3,16 +3,14 @@
 #= require views/paginated
 #= require views/sprites/sprite
 #= require models/sprites_collection
-#= require models/paginated_collection
 
 #= require tmpls/sprites/header
-#= require tmpls/pagination
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
 Pixie.Views.Sprites ||= {}
 
-class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
+class Pixie.Views.Sprites.Gallery extends Backbone.View
   events:
     'click .tag': 'searchTags'
     'click .reset': 'resetSearch'
@@ -22,28 +20,28 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
 
     @el = ".sprites"
 
-    # merge the superclass paging related events
-    @events = _.extend(@pageEvents, @events)
-    @delegateEvents()
-
     @collection = new Pixie.Models.SpritesCollection
 
-    @collection.bind 'fetching', ->
-      $(self.el).find('.spinner').show()
-
     @collection.bind 'reset', (collection) ->
+      view = new Pixie.Views.Paginated({ collection: collection })
+
       $(self.el).find('.header').remove()
-      $(self.el).find('.pagination').remove()
       $(self.el).append $.tmpl("sprites/header", self.collection.pageInfo())
+
+      $('.pagination').remove()
+      $(self.el).find('.header').append(view.render().el)
+
       $(self.el).find('.header h2').after $('<button class="reset complement">Reset Tags</button>')
       $(self.el).find('.reset').show() if self.collection.params.tagged
 
       $(self.el).find('.sprite_container').remove()
-      $(self.el).find('.spinner').hide()
       collection.each(self.addSprite)
 
-      self.updatePagination()
+      collection.trigger 'afterReset'
+
       self.updateTags(collection)
+
+    @render()
 
   addSprite: (sprite) =>
     view = new Pixie.Views.Sprites.Sprite({ model: sprite })
@@ -57,9 +55,6 @@ class Pixie.Views.Sprites.Gallery extends Pixie.Views.Paginated
     $(@el).find('.reset').show()
     tag = $(e.target).text().toLowerCase()
     @collection.filterTagged(tag)
-
-  updatePagination: =>
-    $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
 
   updateTags: (collection) =>
     tags = []
