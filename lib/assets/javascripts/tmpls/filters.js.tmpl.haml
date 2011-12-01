@@ -1,0 +1,7 @@
+{{each filters}}
+{{if $value == activeFilter}}
+%a.filter.button.active(href='#')> ${$value}
+{{else}}
+%a.filter.button(href='#')> ${$value}
+{{/if}}
+{{/each}}
