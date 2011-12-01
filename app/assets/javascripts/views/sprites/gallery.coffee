@@ -21,15 +21,19 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
     @collection = new Pixie.Models.SpritesCollection
 
     pages = new Pixie.Views.Paginated({ collection: @collection })
-    tags = new Pixie.Views.Tags.Tags({ collection: @collection })
+    new Pixie.Views.Tags.Tags({ collection: @collection })
 
     $(@el).find('.header').remove()
     $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
 
+    @collection.bind 'showReset', =>
+      $(@el).find('.reset').show()
+
+    @collection.bind 'hideReset', =>
+      $(@el).find('.reset').hide()
+
     @collection.bind 'reset', (collection) =>
       $(@el).find('.header').append(pages.render().el)
-
-      $(@el).find('.reset').show() if collection.params.tagged
 
       $(@el).find('.sprite_container').remove()
       collection.each(@addSprite)
@@ -42,5 +46,4 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
 
   resetSearch: =>
     @collection.resetSearch()
-    $(@el).find('.reset').hide()
 

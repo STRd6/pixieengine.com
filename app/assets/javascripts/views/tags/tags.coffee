@@ -1,5 +1,6 @@
 #= require underscore
 #= require backbone
+#= require corelib
 
 #= require tmpls/tags/tag
 
@@ -18,7 +19,6 @@ class Pixie.Views.Tags.Tags extends Backbone.View
       @render()
 
   searchTags: (e) =>
-    $('.reset').show()
     tag = $(e.target).text().toLowerCase()
     @collection.filterTagged(tag)
 
@@ -29,7 +29,7 @@ class Pixie.Views.Tags.Tags extends Backbone.View
 
     for model in @collection.models
       for tag in model.attributes.tags
-        tags.push tag.name unless $.inArray(tag.name, tags) >= 0
+        tags.push tag.name unless tags.include(tag.name)
 
     for name in tags
       $(@el).append($.tmpl('tags/tag', {name: name}))

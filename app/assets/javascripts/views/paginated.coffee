@@ -15,7 +15,7 @@ class Pixie.Views.Paginated extends Backbone.View
 
     @collection.bind 'afterReset', =>
       $(@el).find('.spinner').hide()
-      @updatePagination()
+      @render()
 
   events:
     'click a.prev': 'previous'
@@ -35,10 +35,11 @@ class Pixie.Views.Paginated extends Backbone.View
     @collection.nextPage()
 
   render: =>
-    return @
-
-  updatePagination: =>
     $(@el).empty()
+
     pages = $.tmpl('pagination', @collection.pageInfo())
 
     $(@el).html(pages)
+
+    return @
+
