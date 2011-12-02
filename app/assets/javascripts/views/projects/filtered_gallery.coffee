@@ -38,6 +38,10 @@ class Pixie.Views.Projects.FilteredGallery extends Backbone.View
 
       projects.each(@addProject)
 
+      $(@el).find('.filter').filter( ->
+        return $(this).text().toLowerCase() == 'my projects'
+      ).hide() unless projects.pageInfo().current_user_id
+
       projects.trigger 'afterReset'
 
   addProject: (project) =>
