@@ -2,6 +2,21 @@
 Object.isObject = (object) ->
   Object.prototype.toString.call(object) == '[object Object]'
 
+Function::debounce = (wait) ->
+  timeout = null
+  func = this
+
+  return ->
+    context = this
+    args = arguments
+
+    later = ->
+      timeout = null
+      func.apply(context, args)
+
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+
 # Event tracking
 window.trackEvent = (category, action, label) ->
   _gaq.push(['_trackEvent', category, action, label])

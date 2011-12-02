@@ -87,25 +87,21 @@
     environmentVariables = ->
       "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
 
-    runApp = () ->
-      width = projectConfig.width
-      height = projectConfig.height
+    runApp = ->
+      runningAppWindow = window.open("", "runApp", "width=\#{projectConfig.width},height=\#{projectConfig.height}")
 
-      $("#test_frame").remove()
+      # Pass IDE functions to the running window
+      $.extend runningAppWindow, {
+        displayRuntimeError
+      }
 
-      iframe = $ '<iframe />'
-        height: height
-        id: "test_frame"
-        width: width
-
-      $("#test_zone").append(iframe).show()
-
+      #TODO Detect and halt on compile time errors
       crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
 
       if runPath = projectConfig.runPath
         iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
       else
-        runCodeInIframe(crammedCode, iframe)
+        runCodeInWindow(crammedCode, runningAppWindow)
 
     testApp = () ->
       clearErrorMessages()
@@ -138,7 +134,7 @@
       $("#unit_test_window").append(iframe).show()
 
       # Cram compiled code in iframe
-      testCodeInIframe(crammedCode, iframe)
+      testCodeInWindow(crammedCode, iframe.get(0).contentWindow)
 
     hotSwap = () ->
       src = $(currentPanel).find("[name=contents]").val()
@@ -194,7 +190,7 @@
 
     window.hotKeys =
       esc: ->
-        $('#test_zone').hide()
+        #TODO Close running app window
         $('#test_frame').remove()
       f1: ->
         $('#help').click()
@@ -223,7 +219,7 @@
     $("#build").live 'click', (event) ->
       projectCode = buildProjectCode()
 
-      save event,
+      saveFile
         contents: projectCode
         path: (projectConfig.name || "project") + ".js"
         touch: true

@@ -20,11 +20,6 @@
     #tabs.module
       %ul
 
-  #test_zone.window(style="top: 125px; left: 300px;")
-    %span#close_app.ui-icon.ui-icon-close
-    %h3.ui-widget-header= project.title
-    %iframe#test_frame
-
   #unit_test_window.window(style="top: 100px; left: 200px;")
     %span.ui-icon.ui-icon-close
     %h3.ui-widget-header Test #{project.title}
@@ -32,32 +27,21 @@
 
 = render :partial => "context_menu"
 = render :partial => "tips"
-= render :partial => "pixie"
-= render :partial => "sfxr"
 = render :partial => "export_modal"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
-= render :partial => "tag_version_modal"
-= render :partial => "property_editor"
-= render :partial => "json_editor"
-= render :partial => "entity_editor"
-= render :partial => "tile_editor"
-= render :partial => "errors"
 = render :partial => "shared/hotkeys"
-= render :partial => "create_editor"
 
-%script#qunit_template.template(type="text/x-jQuery-tmpl")
-  %div
-    %h1#qunit-header ${header}
-    %h2#qunit-banner
-    %h2#qunit-userAgent
-    %ol#qunit-tests
-    #qunit-fixture
+- content_for :javascript do
+  = javascript_include_tag "ide/base"
 
 - project_id = params[:id]
 
 - content_for :javascript do
   :coffeescript
+    window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
+    window.projectId = #{project_id.to_json}
+
     $("#content .sidebar_container .bottom").click ->
       requireSubscription ->
         notify("Exporting Chrome Web Store Package ...")
@@ -65,8 +49,6 @@
         window.location = #{download_project_path(project, :chrome => 1).to_json}
 
         $.modal.close()
-
-    window.projectId = #{project_id.to_json}
 
     window.compileDirectory = (directoryPath) ->
       findDirectory(directoryPath).find("span.file").map((index, span) ->
@@ -98,8 +80,7 @@
 
         compiledCode
 
-    window.runCodeInIframe = (code, iframe) ->
-      contentWindow = iframe.get(0).contentWindow
+    window.runCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
       sandbox.open()
       sandbox.write(#{stylesheet_link_tag('project').to_json})
@@ -113,8 +94,7 @@
 
       contentWindow.focus()
 
-    window.testCodeInIframe = (code, iframe) ->
-      contentWindow = iframe.get(0).contentWindow
+    window.testCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
       sandbox.open()
       sandbox.write(#{stylesheet_link_tag('project').to_json})
@@ -122,7 +102,7 @@
       sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js").to_json.gsub('/', '\\/')})
       sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
 
-      sandbox.write($("#qunit_template").tmpl(header: "Results").html())
+      sandbox.write($.tmpl("ide/qunit").html())
 
       sandbox.write("<script>\#{code}<\/script>")
 
@@ -238,9 +218,6 @@
         parent = $(this).parent()
         index = $('li', $tabs).index(parent)
         $tabs.tabs('select', index)
-
-      $('#test_zone .ui-icon-close').live "click", ->
-        clearErrorMessages()
 
       # Hack to pre-load main file, README and tutorials
       $("#file_src_main_coffee").prev().click()

@@ -132,6 +132,9 @@
 
       $("#new_file_modal .details input[name='name']").focus()
 
+      # Trigger a fake window resize event to re-center the modal
+      $(window).resize()
+
     $("#new_file_modal button.create").live 'click', (event) ->
       event.preventDefault()
 
