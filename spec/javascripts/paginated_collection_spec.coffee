@@ -151,4 +151,4 @@ describe "Paginated collection", ->
 
       @collection.fetch()
 
-      expect(@server.requests[0].url).toEqual("/tests?page=1&testing=true")
+      expect(@server.requests[0].url).toEqual("/tests?testing=true&page=1")

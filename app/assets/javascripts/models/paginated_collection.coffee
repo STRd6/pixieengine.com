@@ -3,11 +3,11 @@
 #= require corelib
 
 calculateRange = (page, total) ->
-  outer_window = Pixie.Models.PaginatedCollection.OUTER_WINDOW
-  inner_window = Pixie.Models.PaginatedCollection.INNER_WINDOW
+  outerWindow = Pixie.Models.PaginatedCollection.OUTER_WINDOW
+  innerWindow = Pixie.Models.PaginatedCollection.INNER_WINDOW
 
-  window_from = page - inner_window
-  window_to = page + inner_window
+  window_from = page - innerWindow
+  window_to = page + innerWindow
 
   if window_to > total
     window_from -= (window_to - total)
@@ -20,14 +20,14 @@ calculateRange = (page, total) ->
 
   middle = [window_from..window_to]
 
-  if outer_window + 3 < middle.first()
-    left = [1..(outer_window + 1)]
+  if outerWindow + 3 < middle.first()
+    left = [1..(outerWindow + 1)]
     left.push "..."
   else
     left = [1...middle.first()]
 
-  if total - outer_window - 2 > middle.last()
-    right = [(total - outer_window)..total]
+  if total - outerWindow - 2 > middle.last()
+    right = [(total - outerWindow)..total]
     right.unshift "..."
   else
     if middle.last() + 1 > total
@@ -44,26 +44,24 @@ class Pixie.Models.PaginatedCollection extends Backbone.Collection
   initialize: ->
     @page = 1
     @params ||= {}
-    @params.page = @page
 
   fetch: (options={}) ->
     @trigger "fetching"
-    self = @
+
+    @params.page = @page
 
     options.data = @params
 
     success = options.success
 
-    options.success = (resp) ->
-      self.trigger "fetched"
+    options.success = (resp) =>
+      @trigger "fetched"
       success(self, resp) if success
 
-    Backbone.Collection.prototype.fetch.call(@, options)
+    super(options)
 
   parse: (resp) =>
     {@page, @per_page, @total, @current_user_id} = resp
-
-    @params.page = @page
 
     return resp.models
 
@@ -87,23 +85,17 @@ class Pixie.Models.PaginatedCollection extends Backbone.Collection
     if 1 <= pageNumber <= @total
       @page = pageNumber
 
-      @params.page = @page
-
       @fetch()
 
   nextPage: =>
     unless @page == @total
       @page += 1
 
-      @params.page = @page
-
       @fetch()
 
   previousPage: =>
     unless @page == 1
       @page -= 1
-
-      @params.page = @page
 
       @fetch()
 

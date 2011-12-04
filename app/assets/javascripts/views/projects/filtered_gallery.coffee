@@ -2,6 +2,7 @@
 #= require backbone
 #= require views/paginated
 #= require views/projects/filtered_project
+#= require views/filtered
 #= require models/projects_collection
 #= require models/paginated_collection
 
@@ -12,46 +13,38 @@ window.Pixie ||= {}
 Pixie.Views ||= {}
 Pixie.Views.Projects ||= {}
 
-class Pixie.Views.Projects.FilteredGallery extends Pixie.Views.Paginated
+class Pixie.Views.Projects.FilteredGallery extends Backbone.View
   el: ".gallery"
 
-  events:
-    'click .filter': 'filterResults'
-
   initialize: ->
-    self = @
-
-    # merge the superclass paging related events
-    @events = _.extend(@pageEvents, @events)
-    @delegateEvents()
-
     @collection = new Pixie.Models.ProjectsCollection
 
-    @collection.bind 'fetching', ->
-      $(self.el).find('.spinner').show()
+    pages = new Pixie.Views.Paginated({ collection: @collection })
+    filters = new Pixie.Views.Filtered
+      collection: @collection
+      filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
+      activeFilter: 'Featured'
 
-    @collection.bind 'reset', (projects) ->
-      $(self.el).find('nav').remove()
-      $(self.el).find('.items').remove()
-      $(self.el).append $.tmpl("projects/filtered_header", projects.pageInfo())
-      $(self.el).find('.filter').filter( ->
-        $(this).text().toLowerCase() == self.filter
+    $(@el).append $ '<div class="items"></div>'
+    $(@el).find('.items').before(filters.render().el)
+
+    @collection.bind 'reset', (projects) =>
+      $(@el).find('.items').empty()
+      $(@el).find('.items').before(pages.render().el)
+
+      $(@el).find('.filter').filter( ->
+        $(this).text().toLowerCase() == @filter
       ).takeClass('active')
 
-      projects.each(self.addProject)
+      projects.each(@addProject)
 
-      self.updatePagination()
+      $(@el).find('.filter').filter( ->
+        return $(this).text().toLowerCase() == 'my projects'
+      ).hide() unless projects.pageInfo().current_user_id
+
+      projects.trigger 'afterReset'
 
   addProject: (project) =>
-    view = new Pixie.Views.Projects.FilteredProject({ model: project, collection: @collection })
-    $(@el).find('.items').append(view.render().el)
-
-  filterResults: (e) =>
-    @filter = $(e.target).text().toLowerCase()
-
-    @collection.filterPages(@filter)
-
-  updatePagination: =>
-    $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
-
+    projects = new Pixie.Views.Projects.FilteredProject({ model: project, collection: @collection })
+    $(@el).find('.items').append(projects.render().el)
 

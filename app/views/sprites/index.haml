@@ -6,10 +6,7 @@
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
 .sprites
-
   .tags
-    - tags.each do |tag|
-      = tag_link tag
 
 - content_for :javascript do
   = javascript_include_tag "views/sprites/gallery"
@@ -46,7 +43,9 @@
         margin-top: 0.5em
 
     .spinner
-      margin-left: 1em
+      display: none
+      float: left
+      margin-right: 1em
 
     .tags
       bottom: -30px

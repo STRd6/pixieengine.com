@@ -1,11 +1,23 @@
 #= require underscore
 #= require backbone
+#= require tmpls/pagination
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
 
 class Pixie.Views.Paginated extends Backbone.View
-  pageEvents:
+  className: 'pagination'
+  tagName: 'nav'
+
+  initialize: ->
+    @collection.bind 'fetching', =>
+      $(@el).find('.spinner').show()
+
+    @collection.bind 'afterReset', =>
+      $(@el).find('.spinner').hide()
+      @render()
+
+  events:
     'click a.prev': 'previous'
     'click a.next': 'next'
     'click a.page': 'toPage'
@@ -21,4 +33,13 @@ class Pixie.Views.Paginated extends Backbone.View
   next: (e) =>
     e.preventDefault()
     @collection.nextPage()
+
+  render: =>
+    $(@el).empty()
+
+    pages = $.tmpl('pagination', @collection.pageInfo())
+
+    $(@el).html(pages)
+
+    return @
 

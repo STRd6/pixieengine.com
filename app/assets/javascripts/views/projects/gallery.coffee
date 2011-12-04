@@ -12,31 +12,24 @@ window.Pixie ||= {}
 Pixie.Views ||= {}
 Pixie.Views.Projects ||= {}
 
-class Pixie.Views.Projects.Gallery extends Pixie.Views.Paginated
+class Pixie.Views.Projects.Gallery extends Backbone.View
   el: ".projects"
 
   initialize: ->
-    self = @
-
-    # merge the superclass paging related events
-    @events = _.extend(@pageEvents, @events)
-    @delegateEvents()
-
     @collection = new Pixie.Models.ProjectsCollection
 
-    @collection.bind 'fetching', ->
-      $(self.el).find('.spinner').show()
+    pages = new Pixie.Views.Paginated({ collection: @collection })
 
-    @collection.bind 'reset', (collection) ->
-      $(self.el).find('.header').remove()
-      $(self.el).find('.pagination').remove()
-      $(self.el).append $.tmpl("projects/header", self.collection.pageInfo())
+    $(@el).find('.header').remove()
+    $(@el).append $.tmpl("projects/header", @collection.pageInfo())
 
-      $(self.el).find('.project').remove()
-      $(self.el).find('.spinner').hide()
-      collection.each(self.addProject)
+    @collection.bind 'reset', (collection) =>
+      $(@el).find('.header').append(pages.render().el)
 
-      self.updatePagination()
+      $(@el).find('.project').remove()
+      collection.each(@addProject)
+
+      collection.trigger 'afterReset'
 
   addProject: (project) =>
     view = new Pixie.Views.Projects.Project({ model: project, collection: @collection })
@@ -44,5 +37,4 @@ class Pixie.Views.Projects.Gallery extends Pixie.Views.Paginated
 
   updatePagination: =>
     $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
-
 
