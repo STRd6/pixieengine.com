@@ -19,6 +19,7 @@
 #= require jquery.take_class
 #= require jquery.tipsy
 #= require jquery.vector_picker
+#= require jquery.timeago
 
 #= require pixie/editor/pixel/create
 #= require pixie/editor/animation/create

@@ -13,6 +13,18 @@ class Comment < ActiveRecord::Base
 
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
+  def as_json(options={})
+    {
+      :commenter_id => commenter_id,
+      :commenter_name => commenter.display_name,
+      :id => id,
+      :commentable_img_src => commentable.image.url(:thumb),
+      :avatar_src => commenter.avatar.url(:thumb),
+      :body => body,
+      :time => created_at.getutc.iso8601
+    }
+  end
+
   def notify_commentee
     if commentee && commentee.site_notifications
       Notifier.comment(self).deliver

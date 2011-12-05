@@ -72,13 +72,13 @@
     .reset
       display: none
 
-    .sprites, .projects
+    .sprites, .projects, .comments
       h2
         border: none
         display: inline-block
         margin: 0
 
-    .projects, .sprites
+    .projects, .sprites, .comments
       margin-bottom: 1em
       position: relative
 
@@ -161,7 +161,7 @@
           img
             margin-left: 1em
 
-        .time
+        .timeago
           color: gray
 
 .feature
@@ -187,17 +187,17 @@
   .sprites
 
   - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
-    .messages
-      %h2 Messages
-      = render :partial => 'users/comment', :collection => messages
+    .comments
 
 - content_for :javascript do
   = javascript_include_tag "views/sprites/gallery"
   = javascript_include_tag "views/projects/gallery"
+  = javascript_include_tag "views/comments/gallery"
 
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
+
       sprite_gallery = new window.Pixie.Views.Sprites.Gallery
       sprite_gallery.collection.url = ->
         '/people/sprites'
@@ -207,6 +207,11 @@
       project_gallery.collection.url = ->
         '/people/projects'
       project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
+
+      comments_gallery = new window.Pixie.Views.Comments.Gallery
+      comments_gallery.collection.url = ->
+        '/people/comments'
+      comments_gallery.collection.reset(comments_gallery.collection.parse(#{@user_comments_data.to_json}))
 
       $('.project .delete').live 'click', (e) ->
         if confirm "Are you sure you want to delete this project?"

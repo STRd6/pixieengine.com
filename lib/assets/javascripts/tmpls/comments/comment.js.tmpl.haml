@@ -1,0 +1,12 @@
+.comment(data-commentable_id="${commentable_id}")
+  .attribution
+    .name
+      %a(href="/people/${commenter_id}")
+        ${commenter_name}
+        %img(alt="Thumb" src="${avatar_src}")
+    %time.timeago(datetime="${time}") ${time}
+  .commentable
+    %a(href="/sprites/${commentable_id}")
+      %img(alt="${commentable_name}" src="${commentable_img_src}")
+  %p ${body}
+
