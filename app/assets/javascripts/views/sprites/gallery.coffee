@@ -23,9 +23,6 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
     pages = new Pixie.Views.Paginated({ collection: @collection })
     new Pixie.Views.Tags.Tags({ collection: @collection })
 
-    $(@el).find('.header').remove()
-    $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
-
     @collection.bind 'showReset', =>
       $(@el).find('.reset').show()
 
@@ -33,6 +30,9 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
       $(@el).find('.reset').hide()
 
     @collection.bind 'reset', (collection) =>
+      $(@el).find('.header').remove()
+      $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
+
       $(@el).find('.header').append(pages.render().el)
 
       $(@el).find('.sprite_container').remove()

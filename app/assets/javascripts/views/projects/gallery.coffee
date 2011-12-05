@@ -20,10 +20,10 @@ class Pixie.Views.Projects.Gallery extends Backbone.View
 
     pages = new Pixie.Views.Paginated({ collection: @collection })
 
-    $(@el).find('.header').remove()
-    $(@el).append $.tmpl("projects/header", @collection.pageInfo())
-
     @collection.bind 'reset', (collection) =>
+      $(@el).find('.header').remove()
+      $(@el).append $.tmpl("projects/header", @collection.pageInfo())
+
       $(@el).find('.header').append(pages.render().el)
 
       $(@el).find('.project').remove()
