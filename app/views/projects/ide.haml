@@ -194,6 +194,8 @@
         .find(".ui-tabs-nav")
         .sortable
           axis: "x"
+          distance: 20
+          tolerance: "pointer"
 
       $('.filetree .file').live 'click', ->
         openFile($(this).data('id'))

@@ -87,6 +87,7 @@
     environmentVariables = ->
       "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
 
+    runningAppWindow = null
     runApp = ->
       runningAppWindow = window.open("", "runApp", "width=\#{projectConfig.width},height=\#{projectConfig.height}")
 
@@ -98,10 +99,7 @@
       #TODO Detect and halt on compile time errors
       crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
 
-      if runPath = projectConfig.runPath
-        iframe.attr("src", "/production/projects/#{project.id}/\#{runPath}")
-      else
-        runCodeInWindow(crammedCode, runningAppWindow)
+      runCodeInWindow(crammedCode, runningAppWindow)
 
     testApp = () ->
       clearErrorMessages()
@@ -136,20 +134,20 @@
       # Cram compiled code in iframe
       testCodeInWindow(crammedCode, iframe.get(0).contentWindow)
 
-    hotSwap = () ->
+    window.hotSwap = ->
       src = $(currentPanel).find("[name=contents]").val()
       ext = $(currentPanel).data("ext")
 
       code = compileCode(src, ext)
 
-      if code && (runningGameFrame = $("#test_frame").get(0)?.contentWindow)
+      if code && runningAppWindow
         try
-          runningGameFrame.eval(code)
+          runningAppWindow.eval(code)
         catch error
           warn? error.message
 
         try
-          runningGameFrame.eval("engine.reload()")
+          runningAppWindow.eval("engine.reload()")
         catch error
           warn? error.message
 
