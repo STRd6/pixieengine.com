@@ -1,5 +1,6 @@
 #= require underscore
 #= require backbone
+#= require jquery.timeago
 #= require views/paginated
 #= require views/comments/comment
 #= require models/comments_collection
