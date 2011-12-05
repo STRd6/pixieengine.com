@@ -6,7 +6,7 @@
         %img(alt="Thumb" src="${avatar_src}")
     %time.timeago(datetime="${time}") ${time}
   .commentable
-    %a(href="/sprites/${commentable_id}")
+    %a(href="/${commentable_type}/${commentable_id}")
       %img(alt="${commentable_name}" src="${commentable_img_src}")
   %p ${body}
 

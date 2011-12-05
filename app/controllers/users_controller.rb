@@ -226,7 +226,7 @@ class UsersController < ApplicationController
   end
 
   def load_user_comments(user)
-    per_page = 4
+    per_page = 7
     comments = Comment.for_user(user).order("id DESC")
 
     @user_comments = comments.paginate(
