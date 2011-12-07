@@ -33,10 +33,10 @@ class Pixie.Views.Sprites.Gallery extends Backbone.View
       $(@el).find('.header').remove()
       $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
 
-      $(@el).find('.header').append(pages.render().el)
-
       $(@el).find('.sprite_container').remove()
       collection.each(@addSprite)
+
+      $(@el).find('.sprite_container:first').before(pages.render().el)
 
       collection.trigger 'afterReset'
 

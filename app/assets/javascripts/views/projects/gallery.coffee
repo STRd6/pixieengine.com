@@ -24,10 +24,10 @@ class Pixie.Views.Projects.Gallery extends Backbone.View
       $(@el).find('.header').remove()
       $(@el).append $.tmpl("projects/header", @collection.pageInfo())
 
-      $(@el).find('.header').append(pages.render().el)
-
       $(@el).find('.project').remove()
       collection.each(@addProject)
+
+      $(@el).find('.project:first').before(pages.render().el)
 
       collection.trigger 'afterReset'
 
