@@ -18,9 +18,9 @@ class Comment < ActiveRecord::Base
       :commenter_id => commenter_id,
       :commenter_name => commenter.display_name,
       :id => id,
-      :commentable_id => commentable.id,
+      :commentable_id => commentable ? commentable.id : -1,
       :commentable_type => commentable_type.downcase.pluralize,
-      :commentable_img_src => commentable.image.url(:thumb),
+      :commentable_img_src => commentable ? commentable.image.url(:thumb) : "",
       :avatar_src => commenter.avatar.url(:thumb),
       :body => body,
       :time => created_at.getutc.iso8601
