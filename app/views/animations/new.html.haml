@@ -10,7 +10,7 @@
       border: none
       padding: 0
 
-%section#lebenmeister
+%section.backbone_lebenmeister
 
 = form_tag download_animations_path, :class => "download_json" do
   = hidden_field_tag :export_json_data
@@ -19,8 +19,12 @@
   = hidden_field_tag :export_csv_data
 
 - content_for :javascript do
+  = javascript_include_tag "views/animations/editor"
+
   :coffeescript
     $ ->
+      new Pixie.Views.Animations.Editor
+
       $('body').attr('id', 'fullscreen')
       lebenmeister = Pixie.Editor.Animation.create()
 
@@ -34,5 +38,5 @@
         $('#export_csv_data').val(exportAnimationCSV())
         $('form.download_csv').submit()
 
-      window.currentComponent = lebenmeister
-      $('#lebenmeister').replaceWith(lebenmeister)
+      #window.currentComponent = lebenmeister
+      #$('#lebenmeister').replaceWith(lebenmeister)
