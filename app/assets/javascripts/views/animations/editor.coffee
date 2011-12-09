@@ -14,9 +14,9 @@ class Pixie.Views.Animations.Editor extends Backbone.View
 
   initialize: ->
     @render()
-    playerView = new Pixie.Views.Animations.Player
+    @playerView = new Pixie.Views.Animations.Player
 
-    $(@el).find('.content').append(playerView.el)
+    $(@el).find('.content').append(@playerView.el)
 
   render: =>
     $(@el).append($.tmpl('lebenmeister/editor_frame'))

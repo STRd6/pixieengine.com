@@ -2,8 +2,13 @@ require '/assets/views/animations/editor.js'
 
 describe "Animation Editor", ->
   beforeEach ->
+    @clock = sinon.useFakeTimers()
+
     $('#test').append('<section class="backbone_lebenmeister"></section>')
     @view = new Pixie.Views.Animations.Editor
+
+  afterEach ->
+    @clock.restore()
 
   describe "initialization", ->
     it "should set up the editor DOM with the correct toolbar areas", ->
@@ -36,3 +41,13 @@ describe "Animation Editor", ->
       expect($('.pause')).toBeHidden()
       expect($('.play')).toBeVisible()
 
+  describe "data binding", ->
+    it "should move the scrubber while playing", ->
+      @view.playerView.model.set
+        totalFrames: 2
+
+      $('.play').click()
+
+      @clock.tick(1000 / 30)
+
+      expect($('.scrubber')).toHaveValue(1)
