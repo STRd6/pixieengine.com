@@ -34,11 +34,14 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
       playbackId: @get('playbackId') || setInterval(@nextFrame, @get('fps') / 1000)
 
   stop: =>
+    clearInterval(@get('playbackId'))
+
     @set
       paused: false
       playing: false
       stopped: true
       playbackId: null
+      frame: 0
 
   nextFrame: =>
     unless @get('paused')
@@ -46,8 +49,9 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
         frame: (@get('frame') + 1).mod(@get('totalFrames'))
 
   previousFrame: =>
-    @set
-      frame: (@get('frame') - 1).mod(@get('totalFrames'))
+    unless @get('paused')
+      @set
+        frame: (@get('frame') - 1).mod(@get('totalFrames'))
 
   toFrame: (frame) =>
     if 0 <= frame < @get('totalFrames')

@@ -18,36 +18,41 @@ class Pixie.Views.Animations.Player extends Backbone.View
     'click .stop': 'stop'
 
   initialize: ->
-    @render()
-
     @model = new Pixie.Models.AnimationPlayer
 
-    @model.bind 'showPause', ->
-      $('.pause').show()
-      $('.play').hide()
+    @model.bind 'showPause', =>
+      $(@el).find('.pause').show()
+      $(@el).find('.play').hide()
 
-    @model.bind 'showPlay', ->
-      console.log $('.play')
-      $('.play').show()
-      $('.pause').hide()
+    @model.bind 'showPlay', =>
+      $(@el).find('.play').show()
+      $(@el).find('.pause').hide()
+
+    @model.bind 'change:frame', (model, frame) =>
+      $(@el).find('.scrubber').val(frame)
+
+    @render()
 
   pause: (e) =>
     e.preventDefault()
+
     @model.pause()
     @model.trigger 'showPlay'
 
   play: (e) =>
     e.preventDefault()
+
     @model.play()
     @model.trigger 'showPause'
 
   render: =>
-    $(@el).append($.tmpl('lebenmeister/player'))
+    $(@el).append($.tmpl('lebenmeister/player', @model.toJSON()))
 
     return @
 
   stop: (e) =>
     e.preventDefault()
+
     @model.stop()
     @model.trigger 'showPlay'
 
