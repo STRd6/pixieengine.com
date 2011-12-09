@@ -3,7 +3,7 @@
   .pause.static-pause(style="display:none;")
   .stop.static-stop
   .scrubber_container
-    %input.scrubber(max="0" min="0" type="range" value="0")
+    %input.scrubber(max="${totalFrames}" min="0" type="range" value="0")
   %span.fps
     fps
     %input(max="60" min="0" type="number" value="30")
