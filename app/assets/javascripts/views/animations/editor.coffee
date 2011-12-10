@@ -2,6 +2,7 @@
 #= require backbone
 
 #= require views/animations/player
+#= require views/animations/tileset
 
 #= require tmpls/lebenmeister/editor_frame
 
@@ -15,8 +16,9 @@ class Pixie.Views.Animations.Editor extends Backbone.View
   initialize: ->
     @render()
     @playerView = new Pixie.Views.Animations.Player
+    @tilesetView = new Pixie.Views.Animations.Tileset
 
-    $(@el).find('.content').append(@playerView.el)
+    $(@el).find('.content .relative').append(@playerView.el)
 
   render: =>
     $(@el).append($.tmpl('lebenmeister/editor_frame'))

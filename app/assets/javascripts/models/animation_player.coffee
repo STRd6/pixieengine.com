@@ -12,7 +12,7 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
     stopped: true
     frame: 0
     fps: 30
-    totalFrames: 10
+    totalFrames: 1
     playbackId: null
 
   fps: (fps) =>

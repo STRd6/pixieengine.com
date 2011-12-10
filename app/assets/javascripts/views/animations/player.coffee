@@ -10,7 +10,7 @@ Pixie.Views ||= {}
 Pixie.Views.Animations ||= {}
 
 class Pixie.Views.Animations.Player extends Backbone.View
-  className: 'player'
+  el: '.player'
 
   events:
     'click .pause': 'pause'
