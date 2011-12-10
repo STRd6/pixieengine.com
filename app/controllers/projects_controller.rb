@@ -279,7 +279,7 @@ class ProjectsController < ApplicationController
   def remove_file
     message = params[:message].presence
 
-    project.remove_file(params[:path], message)
+    project.remove_file(params[:path], current_user, message)
 
     respond_to do |format|
       format.json do
@@ -293,7 +293,7 @@ class ProjectsController < ApplicationController
   def rename_file
     message = params[:message].presence
 
-    project.rename_file(params[:path], params[:new_path], message)
+    project.rename_file(params[:path], params[:new_path], current_user, message)
 
     respond_to do |format|
       format.json do
@@ -313,7 +313,7 @@ class ProjectsController < ApplicationController
 
     message = params[:message].presence
 
-    project.save_file(params[:path], contents, message)
+    project.save_file(params[:path], contents, current_user, message)
 
     project.touch if params[:touch]
 
