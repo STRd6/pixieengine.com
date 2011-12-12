@@ -23,7 +23,6 @@ class Pixie.Views.Animations.Editor extends Backbone.View
       frames: @framesView.collection
 
     @framesView.collection.bind 'updateSelected', (model) =>
-      console.log model
       @playerView.refreshImage(model)
 
     @playerView.model.bind 'nextFrame', =>
@@ -31,6 +30,7 @@ class Pixie.Views.Animations.Editor extends Backbone.View
 
     @tilesetView.collection.bind 'addFrame', (model) =>
       @framesView.collection.add(model.clone())
+      $(@el).find('.scrubber').attr('max', @framesView.collection.length)
 
     $(@el).find('.content .relative').append(@playerView.el)
 

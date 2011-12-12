@@ -30,8 +30,8 @@ class Pixie.Views.Animations.Player extends Backbone.View
       $(@el).find('.play').show()
       $(@el).find('.pause').hide()
 
-    @model.bind 'change:frame', (model, frame) =>
-      $(@el).find('.scrubber').val(frame)
+    @frames.bind 'updateSelected', (model, index) =>
+      $(@el).find('.scrubber').val(index)
 
     @render()
 
