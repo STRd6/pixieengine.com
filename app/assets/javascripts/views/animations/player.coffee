@@ -20,6 +20,8 @@ class Pixie.Views.Animations.Player extends Backbone.View
   initialize: ->
     @model = new Pixie.Models.AnimationPlayer
 
+    @frames = @options.frames
+
     @model.bind 'showPause', =>
       $(@el).find('.pause').show()
       $(@el).find('.play').hide()
@@ -49,6 +51,9 @@ class Pixie.Views.Animations.Player extends Backbone.View
     $(@el).append($.tmpl('lebenmeister/player', @model.toJSON()))
 
     return @
+
+  refreshImage: (model) =>
+    $(@el).find('img').attr('src', model.toJSON().src)
 
   stop: (e) =>
     e.preventDefault()

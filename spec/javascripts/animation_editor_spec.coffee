@@ -20,6 +20,14 @@ describe "Animation Editor", ->
       expect($(@view.el).find('.player')).toExist()
       expect($(@view.el).find('.player .controls')).toExist()
 
+    it "should have a place for tiles", ->
+      expect($(@view.el).find('nav.left .sprites')).toExist()
+      expect($(@view.el).find('nav.left h3')).toHaveText('Sprites')
+
+    it "should have a place for frames", ->
+      expect($(@view.el).find('nav.bottom .sprites')).toExist()
+      expect($(@view.el).find('nav.bottom h3')).toHaveText('Frames')
+
   describe "interactions", ->
     it "should show the pause button after the play button is clicked", ->
       $('.play').click()
@@ -43,11 +51,11 @@ describe "Animation Editor", ->
 
   describe "data binding", ->
     it "should move the scrubber while playing", ->
-      @view.playerView.model.set
-        totalFrames: 2
+      @view.playerView.model.frames = @fixtures.TilesCollection.valid
 
       $('.play').click()
 
       @clock.tick(1000 / 30)
 
       expect($('.scrubber')).toHaveValue(1)
+

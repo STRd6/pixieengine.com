@@ -2,6 +2,8 @@
 #= require backbone
 #= require corelib
 
+#= require models/tile
+
 window.Pixie ||= {}
 Pixie.Models ||= {}
 

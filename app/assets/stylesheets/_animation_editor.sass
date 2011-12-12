@@ -206,7 +206,7 @@ $tileset_sprite_width: 60px
       .module_header
         position: fixed
 
-      .frame_sprites
+      .sprites
         margin-top: 3em
 
       .x
@@ -216,7 +216,7 @@ $tileset_sprite_width: 60px
         left: -10px
         z-index: 200
 
-    .frame_sprite, img
+    .frame, img
       +box-sizing(border-box)
 
       cursor: pointer
@@ -224,7 +224,7 @@ $tileset_sprite_width: 60px
       padding: 2px
       vertical-align: top
 
-    .frame_sprite
+    .frame
       +bounds($sequence_width)
 
       position: relative

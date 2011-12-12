@@ -10,15 +10,12 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
     paused: false
     playing: false
     stopped: true
-    frame: 0
     fps: 30
-    totalFrames: 1
     playbackId: null
 
   fps: (fps) =>
     if 0 < fps <= 60
-      @set
-        fps: fps
+      @set({fps: fps})
 
   pause: =>
     @set
@@ -45,15 +42,12 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
 
   nextFrame: =>
     unless @get('paused')
-      @set
-        frame: (@get('frame') + 1).mod(@get('totalFrames'))
+      @trigger 'nextFrame'
 
   previousFrame: =>
     unless @get('paused')
-      @set
-        frame: (@get('frame') - 1).mod(@get('totalFrames'))
+      @trigger 'previousFrame'
 
   toFrame: (frame) =>
     if 0 <= frame < @get('totalFrames')
-      @set
-        frame: frame
+      @set({frame: frame})
