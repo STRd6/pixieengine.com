@@ -341,6 +341,7 @@ class ProjectsController < ApplicationController
         Project.send(filter)
       else
         Project
+      end
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
