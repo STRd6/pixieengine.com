@@ -336,7 +336,11 @@ class ProjectsController < ApplicationController
     elsif filter == "for_user"
       Project.for_user(User.find(params[:user_id]))
     else
-      Project.send(filter)
+      if filters.include? filter
+        # Always use a whitelist before calling send
+        Project.send(filter)
+      else
+        Project
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
