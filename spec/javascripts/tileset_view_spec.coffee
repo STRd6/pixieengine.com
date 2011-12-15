@@ -7,7 +7,8 @@ beforeEach ->
 
   @model = new Backbone.Model
   @model.templateData = ->
-    {src: "http://fake.com/image.png", cid: "c3"}
+    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=="
+    cid: "c3"
 
   @framesCollectionStub = sinon.stub(Pixie.Models, "TilesCollection").returns(@collection)
 
@@ -19,7 +20,7 @@ describe "rendering", ->
     expect($('nav.left').children().length).toBeTruthy()
 
 describe "interactions", ->
-  it "should call ", ->
+  it "should be able to add tiles to the view", ->
     addFrameSpy = sinon.spy()
 
     #fake adding a tile

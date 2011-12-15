@@ -5,7 +5,8 @@ beforeEach ->
 
   @model = new Backbone.Model
   @model.templateData = ->
-    {src: "http://fake.com/image.png", cid: "c3"}
+    src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=="
+    cid: "c3"
 
 describe "Frames collection", ->
   it "should allow the frames to be cleared once there is a frame", ->

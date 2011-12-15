@@ -15,6 +15,7 @@ class Pixie.Views.Animations.Frames extends Backbone.View
 
   events:
     'click .frame': 'select'
+    'click .clear_frames': 'clear'
 
   collection: new Pixie.Models.FramesCollection
 
@@ -34,6 +35,11 @@ class Pixie.Views.Animations.Frames extends Backbone.View
 
   addFrame: (model) =>
     $(@el).find('.sprites').append($.tmpl('lebenmeister/frame', model.templateData()))
+
+  clear: =>
+    $(@el).find('.sprites').empty()
+    @collection.reset()
+    $(@el).find('button').attr('disabled', true)
 
   select: (e) =>
     $(e.target).toggleClass('selected')
