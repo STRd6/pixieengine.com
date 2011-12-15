@@ -24,6 +24,9 @@ class Pixie.Views.Animations.Frames extends Backbone.View
     @collection.bind 'add', (model) =>
       @addFrame(model)
 
+    @collection.bind 'enableFrameActions', =>
+      $(@el).find('button').removeAttr('disabled')
+
   render: =>
     $(@el).append($.tmpl('lebenmeister/frames'))
 

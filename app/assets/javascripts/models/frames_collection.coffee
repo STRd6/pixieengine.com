@@ -11,6 +11,9 @@ class Pixie.Models.FramesCollection extends Backbone.Collection
   initialize: ->
     @selected = 0
 
+    @bind 'add', =>
+      @trigger 'enableFrameActions'
+
   model: Pixie.Models.Tile
 
   nextFrame: =>
