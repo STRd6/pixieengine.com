@@ -75,3 +75,25 @@ describe "AnimationPlayer", ->
 
       expect(callCount).toEqual(30)
 
+    it "should advance the frame the correct number of times after changing the frame rate", ->
+      @model.fps(30)
+
+      callCount = 0
+
+      @model.bind 'nextFrame', ->
+        callCount++
+
+      @model.play()
+
+      @clock.tick(1001)
+
+      expect(callCount).toEqual(30)
+
+      @model.fps(60)
+
+      callCount = 0
+
+      @clock.tick(1001)
+
+      expect(callCount).toEqual(60)
+

@@ -20,9 +20,14 @@ class Pixie.Views.Animations.Player extends Backbone.View
     'click .stop': 'stop'
 
   initialize: ->
+    self = @
+
     @model = new Pixie.Models.AnimationPlayer
 
     @frames = @options.frames
+
+    $(@el).find('.fps input').change ->
+      @model.fps($(this).val().parse())
 
     @frames.bind 'updateSelected', (model, index) =>
       $(@el).find('.scrubber').val(index)

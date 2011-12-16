@@ -17,6 +17,10 @@ class Pixie.Models.AnimationPlayer extends Backbone.Model
     if 0 < fps <= 60
       @set({fps: fps})
 
+      if id = @get('playbackId')
+        @stop()
+        @play()
+
   pause: =>
     @set
       paused: true
