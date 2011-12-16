@@ -33,6 +33,16 @@ class Pixie.Views.Animations.Player extends Backbone.View
     @frames.bind 'updateSelected', (model, index) =>
       $(@el).find('.scrubber').val(index)
 
+      if model
+        @refreshImage(model)
+
+
+    @frames.bind 'add', =>
+      $(@el).find('.scrubber').attr('max', @frames.length)
+
+    @frames.bind 'reset', =>
+      $(@el).find('.scrubber').attr('max', @frames.length)
+
     @render()
 
   pause: (e) =>
@@ -55,9 +65,13 @@ class Pixie.Views.Animations.Player extends Backbone.View
   refreshImage: (model) =>
     $(@el).find('img').attr('src', model.toJSON().src)
 
+  resetScrubber: =>
+    $(@el).find('.scrubber').val(0)
+
   stop: (e) =>
     e.preventDefault()
 
     @model.stop()
+    @resetScrubber()
     @model.trigger 'showPlay'
 

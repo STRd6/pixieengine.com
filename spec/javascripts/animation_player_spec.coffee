@@ -2,6 +2,9 @@ require '/assets/models/animation_player.js'
 
 beforeEach ->
   @model = new Pixie.Models.AnimationPlayer
+  @clock = sinon.useFakeTimers()
+
+
 
 describe "AnimationPlayer", ->
   it "should set the correct default values", ->
@@ -59,4 +62,18 @@ describe "AnimationPlayer", ->
       @model.stop()
 
       expect(@model.get('playbackId')).toEqual(null)
+
+    it "should advance the frame the correct number of times according to the frame rate", ->
+      @model.fps(30)
+
+      callCount = 0
+
+      @model.bind 'nextFrame', ->
+        callCount++
+
+      @model.play()
+
+      @clock.tick(1001)
+
+      expect(callCount).toEqual(30)
 

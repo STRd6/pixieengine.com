@@ -40,4 +40,5 @@ class Pixie.Views.Animations.Tileset extends Backbone.View
     $(@el).find('.sprites').append($.tmpl('lebenmeister/tile', model.templateData()))
 
   enableSort: =>
-    $(@el).find('.sprites').sortable()
+    $(@el).find('.sprites').sortable
+      distance: 10

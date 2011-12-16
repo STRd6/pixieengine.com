@@ -45,3 +45,4 @@ describe "interactions", ->
     expect(@view.collection.length).toBeFalsy()
 
     expect($(@view.el).find('button')).toHaveAttr('disabled')
+

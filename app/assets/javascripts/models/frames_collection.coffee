@@ -16,6 +16,9 @@ class Pixie.Models.FramesCollection extends Backbone.Collection
 
   model: Pixie.Models.Tile
 
+  createSequence: =>
+    ;
+
   nextFrame: =>
     @selected = (@selected + 1).mod(@length)
     @trigger 'updateSelected', @at(@selected), @selected
