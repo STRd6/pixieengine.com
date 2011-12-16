@@ -4,8 +4,6 @@ beforeEach ->
   @model = new Pixie.Models.AnimationPlayer
   @clock = sinon.useFakeTimers()
 
-
-
 describe "AnimationPlayer", ->
   it "should set the correct default values", ->
     expect(@model.get('paused')).toBeFalsy()

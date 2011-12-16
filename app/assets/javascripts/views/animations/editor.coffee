@@ -15,6 +15,8 @@ class Pixie.Views.Animations.Editor extends Backbone.View
   el: '.backbone_lebenmeister'
 
   initialize: ->
+    self = @
+
     @render()
 
     @tilesetView = new Pixie.Views.Animations.Tileset
@@ -22,13 +24,25 @@ class Pixie.Views.Animations.Editor extends Backbone.View
     @playerView = new Pixie.Views.Animations.Player
       frames: @framesView.collection
 
+    @playerView.bind 'clearSelectedFrames', =>
+      @framesView.clearSelected()
+
     @playerView.model.bind 'nextFrame', =>
       @framesView.collection.nextFrame()
+
+    @framesView.collection.bind 'updateSelected', (model, index) =>
+      @framesView.highlight(index)
 
     @tilesetView.collection.bind 'addFrame', (model) =>
       @framesView.collection.add(model.clone())
 
     $(@el).find('.content .relative').append(@playerView.el)
+
+    $(@el).find('.scrubber').change ->
+      index = $(this).val().parse()
+
+      self.framesView.highlight(index)
+      self.framesView.collection.toFrame(index)
 
     $(@el).dropImageReader (file, event) =>
       if event.target.readyState == FileReader.DONE

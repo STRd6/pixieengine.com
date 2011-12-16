@@ -26,3 +26,7 @@ class Pixie.Models.FramesCollection extends Backbone.Collection
   previousFrame: =>
     @selected = (@selected - 1).mod(@length)
     @trigger 'updateSelected', @at(@selected), @selected
+
+  toFrame: (frame) =>
+    @selected = frame
+    @trigger 'updateSelected', @at(@selected), @selected

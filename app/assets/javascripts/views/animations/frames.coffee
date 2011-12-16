@@ -41,6 +41,16 @@ class Pixie.Views.Animations.Frames extends Backbone.View
     @collection.reset()
     $(@el).find('button').attr('disabled', true)
 
+  clearSelected: =>
+    $(@el).find('.frame').removeClass('selected')
+
+  highlight: (index) =>
+    $(@el).find('.frame').eq(index).takeClass('selected')
+
   select: (e) =>
-    $(e.target).toggleClass('selected')
+    frame = $(e.target).parent()
+
+    frame.takeClass('selected')
+
+    @collection.toFrame(frame.index())
 

@@ -9,6 +9,8 @@ window.Pixie ||= {}
 Pixie.Views ||= {}
 Pixie.Views.Animations ||= {}
 
+EMPTY_MODEL = new Backbone.Model
+
 class Pixie.Views.Animations.Player extends Backbone.View
   el: '.player'
 
@@ -22,26 +24,16 @@ class Pixie.Views.Animations.Player extends Backbone.View
 
     @frames = @options.frames
 
-    @model.bind 'showPause', =>
-      $(@el).find('.pause').show()
-      $(@el).find('.play').hide()
-
-    @model.bind 'showPlay', =>
-      $(@el).find('.play').show()
-      $(@el).find('.pause').hide()
-
     @frames.bind 'updateSelected', (model, index) =>
       $(@el).find('.scrubber').val(index)
 
-      if model
-        @refreshImage(model)
-
+      @refreshImage(model)
 
     @frames.bind 'add', =>
-      $(@el).find('.scrubber').attr('max', @frames.length)
+      $(@el).find('.scrubber').attr('max', Math.max(0, @frames.length - 1))
 
     @frames.bind 'reset', =>
-      $(@el).find('.scrubber').attr('max', @frames.length)
+      $(@el).find('.scrubber').attr('max', Math.max(0, @frames.length - 1))
 
     @render()
 
@@ -49,13 +41,13 @@ class Pixie.Views.Animations.Player extends Backbone.View
     e.preventDefault()
 
     @model.pause()
-    @model.trigger 'showPlay'
+    @showPlay()
 
   play: (e) =>
     e.preventDefault()
 
     @model.play()
-    @model.trigger 'showPause'
+    @showPause()
 
   render: =>
     $(@el).append($.tmpl('lebenmeister/player', @model.toJSON()))
@@ -63,15 +55,29 @@ class Pixie.Views.Animations.Player extends Backbone.View
     return @
 
   refreshImage: (model) =>
-    $(@el).find('img').attr('src', model.toJSON().src)
+    src = (model || EMPTY_MODEL).get('src')
+
+    $(@el).find('img').attr('src', src)
 
   resetScrubber: =>
     $(@el).find('.scrubber').val(0)
+
+  showPause: =>
+    $(@el).find('.pause').show()
+    $(@el).find('.play').hide()
+
+  showPlay: =>
+    $(@el).find('.play').show()
+    $(@el).find('.pause').hide()
 
   stop: (e) =>
     e.preventDefault()
 
     @model.stop()
     @resetScrubber()
-    @model.trigger 'showPlay'
+    @showPlay()
+    @trigger 'clearSelectedFrames'
+
+    # set the preview src to be a transparent 1 x 1 image
+    $(@el).find('img').attr 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
 

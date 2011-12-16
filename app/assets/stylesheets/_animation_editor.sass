@@ -11,9 +11,11 @@ $tileset_sprite_width: 60px
 .lebenmeister, .backbone_lebenmeister
   +user-select
 
-  img.selected, .placeholder.selected
-    background: $hover
-    border: 1px solid $highlight_border
+  .frame.selected
+
+    img, .placeholder
+      background: $hover
+      border: 1px solid $highlight_border
 
   button[disabled]
     .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
