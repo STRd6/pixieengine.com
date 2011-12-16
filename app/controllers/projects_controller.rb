@@ -228,6 +228,8 @@ class ProjectsController < ApplicationController
   end
 
   def ide
+    @show_bulb = true
+
     respond_with(project) do |format|
       format.html do
         @has_reg_popup = true
