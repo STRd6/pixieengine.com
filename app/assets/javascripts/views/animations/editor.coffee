@@ -4,6 +4,7 @@
 #= require views/animations/player
 #= require views/animations/tileset
 #= require views/animations/frames
+#= require views/animations/sequences
 
 #= require tmpls/lebenmeister/editor_frame
 
@@ -23,6 +24,7 @@ class Pixie.Views.Animations.Editor extends Backbone.View
     @framesView = new Pixie.Views.Animations.Frames
     @playerView = new Pixie.Views.Animations.Player
       frames: @framesView.collection
+    @sequencesView = new Pixie.Views.Animations.Sequences
 
     @playerView.bind 'clearSelectedFrames', =>
       @framesView.clearSelected()
