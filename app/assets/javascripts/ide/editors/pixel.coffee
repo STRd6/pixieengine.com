@@ -40,7 +40,7 @@ window.createPixelEditor = (options) ->
               path: filePath
               contents: "data:image/png;base64," + base64Contents
 
-            pixelEditor.trigger 'save',
+            saveFile
               contents_base64: base64Contents
               path: filePath + "/" + title + ".png"
 
