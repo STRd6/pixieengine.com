@@ -38,6 +38,6 @@ window.createEditor = (ui) ->
     editor.bind 'change dirty', ->
       tab.parent().addClass("unsaved")
 
-    cssClass: lang
+    cssClass: "#{lang} #{type}"
     doSave: () ->
       editor.trigger('save')
