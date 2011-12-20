@@ -1,4 +1,10 @@
 # DUCT TAPE
+window.namespace = (target, name, block) ->
+  [target, name, block] = [(if typeof exports isnt 'undefined' then exports else window), arguments...] if arguments.length < 3
+  top    = target
+  target = target[item] or= {} for item in name.split '.'
+  block target, top
+
 Object.isObject = (object) ->
   Object.prototype.toString.call(object) == '[object Object]'
 
@@ -16,6 +22,7 @@ Function::debounce = (wait) ->
 
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
+# END DUCT TAPE
 
 # Event tracking
 window.trackEvent = (category, action, label) ->

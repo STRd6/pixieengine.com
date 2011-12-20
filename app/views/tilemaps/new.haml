@@ -1,11 +1,18 @@
 - content_for :javascript do
-  = javascript_include_tag 'dreckmeister'
+  = javascript_include_tag 'pixie/editor/tile/new_tile'
 
 #testie
 
 %style
   :sass
-    #testie
-      input
-        &[type=text]
-          width: 40px
+    @import util
+
+    .layer.active
+      font-weight: bold
+
+    eye
+      +bounds(16px)
+      +inline-block
+
+      background-image: url(/assets/tools/show.png)
+      cursor: pointer
