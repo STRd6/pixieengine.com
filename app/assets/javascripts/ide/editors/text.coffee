@@ -44,6 +44,12 @@ window.createTextEditor = (options) ->
   $editor.bind "save", ->
     codeToSave = editor.getCode()
 
+    # Strip trailing whitespace
+    codeToSave = codeToSave.replace(/[ ]+(\n+)/g, "$1").replace(/[ ]+$/, '')
+
+    # Propagate back the whitespace stripping
+    editor.setCode(codeToSave)
+
     saveFile
       contents: codeToSave
       path: path
