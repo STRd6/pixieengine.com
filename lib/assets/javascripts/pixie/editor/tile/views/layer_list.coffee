@@ -3,7 +3,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
   UI = Pixie.UI
 
-  class exports.LayersView extends Backbone.View
+  class exports.LayerList extends Backbone.View
     initialize: ->
       @collection.bind 'add', @appendLayer
       @collection.bind "change:activeLayer", (model, collection) =>
@@ -11,14 +11,25 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @el.liveEdit(".name")
 
-      @render()
-
-    render: ->
+      # Set up HTML
       @el.append UI.Button
         class: "new"
         text: "New Layer"
 
-      @el.append '<ul></ul>'
+      @el.append "<ul />"
+
+      @$("ul").sortable
+        axis: "y"
+        update: (event, ui) =>
+          @$("ul li").each (i, li) =>
+            @collection.getByCid($(li).data("cid")).set zIndex: i
+
+          @collection.sort()
+
+      @render()
+
+    render: ->
+      @$('ul').empty()
 
       @collection.each (layer) =>
         @appendLayer layer
@@ -26,8 +37,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
     addLayer: ->
       layer = new Models.Layer
 
+      newIndex = @collection.length + 1
+
       layer.set
-        name: "Layer #{@collection.length + 1}"
+        name: "Layer #{newIndex}"
+        zIndex: newIndex
 
       @collection.add layer
 

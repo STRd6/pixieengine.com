@@ -6,14 +6,14 @@
 
 Models = Pixie.Editor.Tile.Models
 
-layerList = new Models.LayerList [
+window.layerList = new Models.LayerList [
   new Models.Layer
     name: "Background"
   new Models.Layer
     name: "Entities"
 ]
 
-new Pixie.Editor.Tile.Views.LayersView
+window.layerListView = new Pixie.Editor.Tile.Views.LayerList
   el: $ "#testie"
   collection: layerList
 

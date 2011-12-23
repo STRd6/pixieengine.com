@@ -7,6 +7,9 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
       @bind 'activate', (layer) =>
         @activeLayer(layer)
 
+    comparator: (model) ->
+      model.get "zIndex"
+
     model: exports.Layer
 
     activeLayer: (newLayer) ->

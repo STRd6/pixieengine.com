@@ -8,6 +8,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
     initialize: ->
       @el = $(@el)
 
+      @el.data
+        cid: @model.cid
+
       @model.bind 'change', @render
 
       @render()

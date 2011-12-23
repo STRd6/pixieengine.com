@@ -4,3 +4,4 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
     defaults:
       name: "Layer"
       visible: true
+      zIndex: 0
