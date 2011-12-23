@@ -1,28 +1,33 @@
 namespace "Pixie.Editor.Tile.Views", (exports) ->
   Models = Pixie.Editor.Tile.Models
 
-  class exports.LayersView extends Backbone.View
-    counter: 0
+  UI = Pixie.UI
 
+  class exports.LayersView extends Backbone.View
     initialize: ->
-      @collection = new Models.LayerList
       @collection.bind 'add', @appendLayer
       @collection.bind "change:activeLayer", (model, collection) =>
         @$('ul li.layer').eq(collection.indexOf(model)).takeClass 'active'
 
+      @el.liveEdit(".name")
+
       @render()
 
     render: ->
-      @el.append '<button>Add List Item</button>'
+      @el.append UI.Button
+        class: "new"
+        text: "New Layer"
+
       @el.append '<ul></ul>'
 
-    addLayer: ->
-      @counter += 1
+      @collection.each (layer) =>
+        @appendLayer layer
 
+    addLayer: ->
       layer = new Models.Layer
 
       layer.set
-        name: "Layer #{@counter}"
+        name: "Layer #{@collection.length + 1}"
 
       @collection.add layer
 
@@ -33,4 +38,4 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @$('ul').append layerView.render().el
 
     events:
-      'click button': 'addLayer'
+      'click button.new': 'addLayer'

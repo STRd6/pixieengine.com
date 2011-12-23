@@ -1,6 +1,6 @@
 (($) ->
-  $.fn.liveEdit = () ->
-    this.live 'dblclick', () ->
+  $.fn.liveEdit = (selector) ->
+    @on 'dblclick', selector, ->
       $this = $(this)
 
       return if $this.is("input")
@@ -17,7 +17,7 @@
 
       textInput.focus().select()
 
-    this.live 'blur keydown', (event) ->
+    @on 'blur keydown', selector, (event) ->
       if event.type == "keydown"
         return unless event.which == 13 || event.which == 9
 

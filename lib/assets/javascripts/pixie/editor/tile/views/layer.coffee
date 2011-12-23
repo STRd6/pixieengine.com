@@ -13,7 +13,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @render()
 
     render: =>
-      @el.html "#{@model.get 'name'} <eye />"
+      @el.html "<div class='name'>#{@model.get 'name'}</div> <eye />"
 
       if @model.get 'visible'
         @el.fadeTo 'fast', 1
