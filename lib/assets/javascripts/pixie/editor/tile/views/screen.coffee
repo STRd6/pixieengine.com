@@ -1,26 +1,40 @@
+#= require tmpls/pixie/editor/tile/screen
+
 namespace "Pixie.Editor.Tile.Views", (exports) ->
   Models = Pixie.Editor.Tile.Models
+  Views = exports
 
   UI = Pixie.UI
 
-  class exports.Screen extends Backbone.View
+  class Views.Screen extends Backbone.View
+    className: "screen"
+
     initialize: ->
       # Force jQuery Element
       @el = $(@el)
 
-      @collection.bind 'add', @appendLayer
+      # Set up HTML
+      @el.html $.tmpl("pixie/editor/tile/screen")
 
-      # @collection.bind "change:activeLayer"
-      # TODO Set zIndex of cursor
+      @settings = @options.settings
+
+      @collection.bind 'add', @appendLayer
 
       @collection.bind 'reset', @render
 
       @render()
 
     render: =>
+      @$('ul').empty().css
+        height: @settings.pixelHeight()
+        width: @settings.pixelWidth()
+
+      @collection.each (layer) =>
+        @appendLayer layer
 
     appendLayer: (layer) =>
-      layerView = new exports.Layer
+      layerView = new Views.ScreenLayer
         model: layer
+        settings: @settings
 
-      # @$('.viewport').append layerView.render().el
+      @$("ul.layers").append layerView.render().el

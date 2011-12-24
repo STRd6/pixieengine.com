@@ -16,6 +16,8 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       # Set up HTML
       @el.html $.tmpl("pixie/editor/tile/editor")
 
+      @settings = new Models.Settings
+
       layerList = new Models.LayerList [
         new Models.Layer
           name: "Background"
@@ -26,6 +28,12 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       layerList.activeLayer(layerList.at(0))
 
       # Add Sub-components
+      screen = new Views.Screen
+        collection: layerList
+        settings: @settings
+
+      @$(".content").prepend screen.el
+
       layerSelection = new Views.LayerSelection
         collection: layerList
 

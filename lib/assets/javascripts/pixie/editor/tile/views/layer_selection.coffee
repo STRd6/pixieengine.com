@@ -6,7 +6,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
   UI = Pixie.UI
 
   class exports.LayerSelection extends Backbone.View
-    className: 'component'
+    className: 'component layer_selection'
 
     initialize: ->
       # Force jQuery Element
