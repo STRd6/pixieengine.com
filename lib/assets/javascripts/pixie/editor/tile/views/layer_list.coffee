@@ -12,7 +12,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @collection.bind "change:activeLayer", (model, collection) =>
         @$('ul li.layer').eq(collection.indexOf(model)).takeClass 'active'
 
-      @el.liveEdit(".name")
+      @el.liveEdit ".name",
+        change: (element, value) =>
+          cid = element.parent().data("cid")
+
+          @collection.getByCid(cid).set name: value
 
       # Set up HTML
       @el.append UI.Button
