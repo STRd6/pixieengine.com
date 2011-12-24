@@ -73,6 +73,20 @@ class Notifier < ActionMailer::Base
     mail :subject => "Pixie Newsletter", :to => user.email
   end
 
+  def send_newsletter(user, newsletter, delivery_date)
+    @user = user
+    @delivery_date = delivery_date
+    @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    mail :subject => "Pixie Newsletter", :to => user.email do |format|
+      format.html { render newsletter }
+    end
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email

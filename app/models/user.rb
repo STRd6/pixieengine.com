@@ -80,7 +80,7 @@ class User < ActiveRecord::Base
     Notifier.forgot_password(self).deliver
   end
 
-  def self.send_newsletter_email
+  def self.send_newsletter_email(newsletter)
     failed_user_ids = []
     delivery_date = Time.now.strftime("%b %d %Y")
 
@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
 
     User.order('id').all(:conditions => {:subscribed => true}).each do |user|
       begin
-        Notifier.newsletter9(user, delivery_date).deliver unless user.email.blank?
+        Notifier.send_newsletter(user, newsletter, delivery_date).deliver unless user.email.blank?
       rescue
         failed_user_ids.push(user.id)
       end
