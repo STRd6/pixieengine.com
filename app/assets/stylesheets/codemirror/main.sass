@@ -1,39 +1,44 @@
 @import util
 
 html
-  background-color: $dark_background
+  background-color: #FFF
   cursor: text
-
-  &.light
-    background-color: #FFF
 
   +scrollbars
 
   span
-    &.keyword, &.punctuation, &.operator, &.tagname
-      color: #CDA869
-    &.variable, &.method, &.method-call, &.localvariable, &.property
-      color: #F8F8F8
+    &.punctuation, &.operator
+      color: darkRed
+    &.keyword
+      color: #770088
+    &.atom
+      color: #228811
+    &.variable, &.method-call
+      color: #222
     &.variabledef
-      color: #7587A6
+      color: #0000FF
+    &.localvariable
+      color: #004499
+    &.property
+      color: #222
     &.comment, &.long-comment
-      color: #5F5A60
+      color: #AEAEAE
     &.string, &.heredoc, &.exec
-      color: #8F9D6A
+      color: green
     &.method-parameter
       color: #8AA6C1
     &.symbol, &.ascii
       color: #6FB1FF
     &.hexnum, &.binary
       color: #DFC745
-    &.float, &.fixnum, &.numeric, &.atom
-      color: #CF6A4C
+    &.float, &.fixnum, &.numeric
+      color: red
     &.entity
       color: #89BDFF
     &.storage
       color: #99CF50
     &.class, &.constant, &.global-variable
-      color: #9B859D
+      color: #666666
       //font-style: italic
     &.instance-var
       color: #61B2DF
@@ -41,50 +46,8 @@ html
       color: #8BC9DF
     &.regexp
       color: #DF5045
-
-  &.light
-    span
-      &.punctuation, &.operator
-        color: darkRed
-      &.keyword
-        color: #770088
-      &.atom
-        color: #228811
-      &.variable, &.method-call
-        color: #222
-      &.variabledef
-        color: #0000FF
-      &.localvariable
-        color: #004499
-      &.property
-        color: #222
-      &.comment, &.long-comment
-        color: #AEAEAE
-      &.string, &.heredoc, &.exec
-        color: green
-      &.method-parameter
-        color: #8AA6C1
-      &.symbol, &.ascii
-        color: #6FB1FF
-      &.hexnum, &.binary
-        color: #DFC745
-      &.float, &.fixnum, &.numeric
-        color: red
-      &.entity
-        color: #89BDFF
-      &.storage
-        color: #99CF50
-      &.class, &.constant, &.global-variable
-        color: #666666
-        //font-style: italic
-      &.instance-var
-        color: #61B2DF
-      &.class-var
-        color: #8BC9DF
-      &.regexp
-        color: #DF5045
-      &.method
-        color: purple
+    &.method
+      color: purple
 
 .editbox
   color: #666

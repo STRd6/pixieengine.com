@@ -1,17 +1,9 @@
 =module
   +border-radius
-  +box-shadow(#333, 1px, 1px, 3px)
+  +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
   +box-sizing(border-box)
 
-  background-color: $dark_highlight
-  border: 1px solid lighten($dark_highlight, 5%)
+  background-color: $light_highlight
+  border: 1px solid lighten($light_highlight, 5%)
   border-bottom: none
   border-right: none
-
-  .light &
-    +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
-
-    background-color: $light_highlight
-    border: 1px solid lighten($light_highlight, 5%)
-    border-bottom: none
-    border-right: none
