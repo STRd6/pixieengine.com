@@ -31,8 +31,6 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
           @$("ul li").each (i, li) =>
             @collection.getByCid($(li).data("cid")).set zIndex: i
 
-          @collection.sort()
-
       @collection.bind 'reset', =>
         @render()
 
