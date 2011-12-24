@@ -33,12 +33,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
             debugger unless cid?
             @collection.getByCid(cid).set zIndex: i
 
-      @collection.bind 'reset', =>
-        @render()
+      @collection.bind 'reset', @render
 
       @render()
 
-    render: ->
+    render: =>
       @$('ul').empty()
 
       @collection.each (layer) =>
