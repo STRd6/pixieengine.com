@@ -5,6 +5,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
   class exports.LayerList extends Backbone.View
     initialize: ->
+      # Force jQuery Element
+      @el = $(@el)
+
       @collection.bind 'add', @appendLayer
       @collection.bind "change:activeLayer", (model, collection) =>
         @$('ul li.layer').eq(collection.indexOf(model)).takeClass 'active'
@@ -25,6 +28,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
             @collection.getByCid($(li).data("cid")).set zIndex: i
 
           @collection.sort()
+
+      @collection.bind 'reset', =>
+        @render()
 
       @render()
 

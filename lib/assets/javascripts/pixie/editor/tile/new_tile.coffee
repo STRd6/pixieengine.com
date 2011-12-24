@@ -18,3 +18,8 @@ window.layerListView = new Pixie.Editor.Tile.Views.LayerList
   collection: layerList
 
 layerList.activeLayer(layerList.at(0))
+
+layerListView2 = new Pixie.Editor.Tile.Views.LayerList
+  collection: layerList
+
+$("#testie").after(layerListView2.el)
