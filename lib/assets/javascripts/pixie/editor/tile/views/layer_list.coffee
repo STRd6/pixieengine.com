@@ -29,7 +29,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
         axis: "y"
         update: (event, ui) =>
           @$("ul li").each (i, li) =>
-            @collection.getByCid($(li).data("cid")).set zIndex: i
+            cid = $(li).data("cid")
+            debugger unless cid?
+            @collection.getByCid(cid).set zIndex: i
 
       @collection.bind 'reset', =>
         @render()
@@ -41,6 +43,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @collection.each (layer) =>
         @appendLayer layer
+
+      # Hack to display the active layer
+      @collection.trigger "change:activeLayer", @collection._activeLayer, @collection
 
     addLayer: ->
       layer = new Models.Layer
