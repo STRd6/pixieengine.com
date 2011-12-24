@@ -1,9 +1,13 @@
+#= require tmpls/pixie/editor/tile/layer_selection
+
 namespace "Pixie.Editor.Tile.Views", (exports) ->
   Models = Pixie.Editor.Tile.Models
 
   UI = Pixie.UI
 
-  class exports.LayerList extends Backbone.View
+  class exports.LayerSelection extends Backbone.View
+    className: 'component'
+
     initialize: ->
       # Force jQuery Element
       @el = $(@el)
@@ -19,11 +23,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
           @collection.getByCid(cid).set name: value
 
       # Set up HTML
-      @el.append UI.Button
-        class: "new"
-        text: "New Layer"
-
-      @el.append "<ul />"
+      @el.html $.tmpl("pixie/editor/tile/layer_selection")
 
       @$("ul").sortable
         axis: "y"

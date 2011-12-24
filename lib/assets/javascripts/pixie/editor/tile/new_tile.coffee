@@ -4,22 +4,8 @@
 #= require_tree ./models
 #= require_tree ./views
 
-Models = Pixie.Editor.Tile.Models
+{Models, Views} = Pixie.Editor.Tile
 
-window.layerList = new Models.LayerList [
-  new Models.Layer
-    name: "Background"
-  new Models.Layer
-    name: "Entities"
-]
+editor = new Views.Editor
 
-window.layerListView = new Pixie.Editor.Tile.Views.LayerList
-  el: $ "#testie"
-  collection: layerList
-
-layerList.activeLayer(layerList.at(0))
-
-layerListView2 = new Pixie.Editor.Tile.Views.LayerList
-  collection: layerList
-
-$("#testie").after(layerListView2.el)
+$("#testie").append(editor.el)
