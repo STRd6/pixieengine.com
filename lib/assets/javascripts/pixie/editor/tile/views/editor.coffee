@@ -39,6 +39,10 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @$(".module.right").append layerSelection.el
 
+      toolbar = new Views.Toolbar
+
+      @$(".module.left").append toolbar.el
+
       @render()
 
     render: =>
