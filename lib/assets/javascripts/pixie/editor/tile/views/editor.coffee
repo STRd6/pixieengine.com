@@ -1,10 +1,12 @@
 #= require tmpls/pixie/editor/tile/editor
 
+#= require ../console
+
 namespace "Pixie.Editor.Tile.Views", (exports) ->
   Models = Pixie.Editor.Tile.Models
   Views = exports
 
-  UI = Pixie.UI
+  {Button} = Pixie.UI
 
   class Views.Editor extends Backbone.View
     className: 'editor tile_editor'
@@ -45,7 +47,43 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       toolbar = new Views.Toolbar
       @$(".module.left").append toolbar.el
+      
+      # Set Eval Context
+      @eval = (code) =>
+        eval(code)
+
+      # TODO: Refactor this to be a real self.include
+      # TODO: Reconcile Backbone Views and Super-System
+      Pixie.Editor.Tile.Console(this, this)
 
       @render()
+
+    addAction: (action) =>
+      name = action.name
+      titleText = name.capitalize()
+      undoable = action.undoable
+      self = this
+
+      doIt = ->
+        if undoable
+          self.trigger("dirty")
+          self.nextUndo()
+
+        action.perform(self)
+
+      # TODO: Action Hotkeys
+
+      if action.menu != false
+        # TODO: Action Image Icons
+
+        actionButton = Button
+          text: name.capitalize()
+          title: titleText
+        .on "mousedown touchstart", ->
+          doIt() unless $(this).attr('disabled')
+
+          return false
+
+        actionButton.appendTo(@$(".content .actions.top"))
 
     render: =>
