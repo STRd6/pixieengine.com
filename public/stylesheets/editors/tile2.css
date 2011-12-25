@@ -1,0 +1,441 @@
+/* line 12, ../../../app/assets/stylesheets/partials/_contents_centered.sass */
+.contents_centered {
+  position: relative;
+}
+/* line 4, ../../../app/assets/stylesheets/partials/_contents_centered.sass */
+.contents_centered > * {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+/* Generic context menu styles */
+/* line 3, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu {
+  position: absolute;
+  width: 120px;
+  z-index: 99999;
+  border: solid 1px #cccccc;
+  background: #eeeeee;
+  padding: 0px;
+  margin: 0px;
+  display: none;
+}
+/* line 13, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu a {
+  color: #333333;
+  text-decoration: none;
+  display: block;
+  line-height: 20px;
+  height: 20px;
+  background-position: 6px center;
+  background-repeat: no-repeat;
+  outline: none;
+  padding: 1px 5px;
+  padding-left: 28px;
+}
+/* line 25, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu li {
+  list-style: none;
+  padding: 2px;
+  margin: 0px;
+}
+/* line 30, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu li.hover {
+  background-color: #fff6bf;
+}
+/* line 32, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu li.disabled {
+  color: #aaaaaa;
+  cursor: default;
+}
+/* line 35, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu li.hover.disabled {
+  background-color: transparent;
+}
+/* line 37, ../../../app/assets/stylesheets/partials/_context_menu.sass */
+.context_menu li.separator {
+  border-top: solid 1px #cccccc;
+}
+
+/* line 8, ../../../app/assets/stylesheets/partials/_ellipsis.sass */
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  -moz-binding: url('/assets/xml/ellipsis.xml#ellipsis');
+}
+
+/* line 9, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  cursor: default;
+  position: relative;
+}
+/* line 15, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content {
+  padding-bottom: 0px;
+  padding-left: 72px;
+  padding-right: 232px;
+  padding-top: 33px;
+}
+/* line 21, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content > .module {
+  padding: 10px;
+}
+/* line 24, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content > .module.left, .tile_editor .content > .module.right {
+  height: 100%;
+}
+/* line 27, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content > .module.left .component:first-child, .tile_editor .content > .module.right .component:first-child {
+  padding-top: 0;
+}
+/* line 30, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content > .module.left {
+  width: 60px;
+}
+/* line 33, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content > .module.right {
+  width: 220px;
+}
+/* line 36, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content .actions.top {
+  left: 72px;
+  position: absolute;
+  top: 0;
+}
+/* line 41, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .content .actions.top button {
+  margin: 1px;
+}
+/* line 44, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor table.properties {
+  background-color: transparent;
+  border-spacing: 0;
+}
+/* line 48, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor table.properties tr td {
+  width: 50%;
+}
+/* line 50, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor table.properties tr td input {
+  width: 96%;
+}
+/* line 54, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .prop_editor input {
+  border: 1px solid #aaaaaa;
+  margin-right: -2px;
+  padding: 2px;
+}
+/* line 59, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .prop_editor tr {
+  display: block;
+}
+/* line 62, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .prop_editor tr.child_property {
+  margin-left: 10px;
+}
+/* line 65, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .prop_editor tr.child_property td:first-child input {
+  width: 86px;
+}
+/* line 68, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .prop_editor tr.child_property input[placeholder="value"] {
+  margin-left: -5px;
+  width: 102%;
+}
+/* line 72, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor input {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  color: black;
+  margin: 0;
+  max-width: 120px;
+  padding: 2px;
+}
+/* line 80, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .filename {
+  font-size: 1.5em;
+  font-weight: bold;
+  height: 27px;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5em;
+}
+/* line 88, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .module.left .component {
+  position: relative;
+}
+/* line 91, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .module.left .component h3 {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  margin-bottom: 10px;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .module.left .component h3 {
+  *display: inline;
+}
+/* line 96, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .module.left .component button.new {
+  margin-top: auto;
+  margin-bottom: auto;
+  position: absolute;
+  right: 0;
+}
+/* line 102, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .module.bottom {
+  height: 0px;
+  padding-left: 60px;
+  padding-right: 220px;
+}
+/* line 107, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .module.bottom .tiles {
+  height: 70px;
+  overflow: auto;
+}
+/* line 111, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  width: 100%;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .layer_selection ul.layers {
+  *display: inline;
+}
+/* line 116, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers input {
+  -moz-user-select: text;
+  -khtml-user-select: text;
+  -webkit-user-select: text;
+  -o-user-select: text;
+  user-select: text;
+}
+/* line 119, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  cursor: pointer;
+  width: 100%;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .layer_selection ul.layers .layer {
+  *display: inline;
+}
+/* line 124, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer .name {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  padding: 3px;
+  width: 90px;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .layer_selection ul.layers .layer .name {
+  *display: inline;
+}
+/* line 131, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer input.name {
+  padding: 2px;
+}
+/* line 134, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer.active {
+  font-weight: bold;
+}
+/* line 137, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer eye {
+  display: none;
+}
+/* line 141, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .layer_selection ul.layers .layer:hover eye {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  background-image: url(/assets/tools/show.png);
+  cursor: pointer;
+  float: right;
+  height: 16px;
+  width: 16px;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .layer_selection ul.layers .layer:hover eye {
+  *display: inline;
+}
+/* line 150, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .component {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+}
+/* line 155, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection {
+  padding: 1px;
+}
+/* line 158, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection.primary, .tile_editor .saved_selections .selection.secondary {
+  border: 1px solid;
+  font-weight: bold;
+  padding: 0px;
+}
+/* line 163, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection.primary {
+  border-color: green;
+}
+/* line 165, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection.secondary {
+  border-color: blue;
+}
+/* line 168, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection .name {
+  padding: 3px;
+}
+/* line 171, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection input.name {
+  padding: 2px;
+}
+/* line 174, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection .preview {
+  display: none;
+  position: relative;
+}
+/* line 179, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .saved_selections .selection:hover .preview {
+  display: block;
+}
+/* line 182, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .tools {
+  width: 60px;
+  height: auto;
+}
+/* line 2, ../../../app/assets/stylesheets/partials/_tile_tool.sass */
+.tile_editor .tools [data-tool=eraser] {
+  background-image: url(/assets/tools/eraser.png);
+}
+/* line 2, ../../../app/assets/stylesheets/partials/_tile_tool.sass */
+.tile_editor .tools [data-tool=fill] {
+  background-image: url(/assets/tools/fill.png);
+}
+/* line 2, ../../../app/assets/stylesheets/partials/_tile_tool.sass */
+.tile_editor .tools [data-tool=selection] {
+  background-image: url(/assets/tools/selection.png);
+}
+/* line 2, ../../../app/assets/stylesheets/partials/_tile_tool.sass */
+.tile_editor .tools [data-tool=stamp] {
+  background-image: url(/assets/tools/stamp.png);
+}
+/* line 189, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .tools .tool {
+  width: 32px;
+  height: 32px;
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: middle;
+  *vertical-align: auto;
+  background-repeat: no-repeat;
+  border: 1px solid transparent;
+  cursor: pointer;
+  margin: 1px;
+}
+/* line 7, ../../../../../.rvm/gems/ruby-1.9.2-p290/bundler/gems/compass-91a748a91636/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
+.tile_editor .tools .tool {
+  *display: inline;
+}
+/* line 198, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .tools .tool.primary, .tile_editor .tools .tool.secondary {
+  border: 1px solid;
+  padding: 0px;
+}
+/* line 202, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .tools .tool.primary {
+  border-color: green;
+}
+/* line 204, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .tools .tool.secondary {
+  border-color: blue;
+}
+/* line 208, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .canvas {
+  border-bottom: 1px solid #414141;
+  border-right: 1px solid #414141;
+}
+/* line 212, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .layers {
+  width: 100%;
+  height: 100%;
+}
+/* line 215, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .layer {
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+/* line 220, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .cursor {
+  border: 2px solid green;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+/* line 226, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .selection {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 0px solid red;
+  position: absolute;
+}
+/* line 231, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor .screen .selection.active {
+  border-width: 2px;
+}
+/* line 234, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor img {
+  margin-bottom: 2px;
+}
+/* line 237, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor img.primary, .tile_editor img.secondary {
+  border: 1px solid;
+  padding: 0px;
+}
+/* line 241, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor img.primary {
+  border-color: green;
+}
+/* line 243, ../../../app/assets/stylesheets/editors/tile2.sass */
+.tile_editor img.secondary {
+  border-color: blue;
+}
