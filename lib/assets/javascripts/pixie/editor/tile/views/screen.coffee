@@ -29,10 +29,16 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
         width: @settings.get "tileWidth"
         height: @settings.get "tileHeight"
 
-      @$('ul').empty().css
+      @$('.canvas').css
         height: @settings.pixelHeight()
         width: @settings.pixelWidth()
         backgroundImage: grid.backgroundImage()
+
+      @$(".cursor").css
+        width: @settings.get("tileWidth") - 1
+        height: @settings.get("tileHeight") - 1
+
+      @$(".canvas ul.layers").empty()
 
       @collection.each (layer) =>
         @appendLayer layer
@@ -43,3 +49,18 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
         settings: @settings
 
       @$("ul.layers").append layerView.render().el
+
+    adjustCursor: (event) =>
+      {currentTarget} = event
+
+      offset = $(currentTarget).offset()
+
+      left = event.pageX - offset.left
+      top = event.pageY - offset.top
+
+      @$(".cursor").css
+        top: top.snap(@settings.get "tileHeight")
+        left: left.snap(@settings.get "tileWidth")
+
+    events:
+      "mousemove .canvas": "adjustCursor"
