@@ -25,9 +25,14 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @render()
 
     render: =>
+      grid = GridGen
+        width: @settings.get "tileWidth"
+        height: @settings.get "tileHeight"
+
       @$('ul').empty().css
         height: @settings.pixelHeight()
         width: @settings.pixelWidth()
+        backgroundImage: grid.backgroundImage()
 
       @collection.each (layer) =>
         @appendLayer layer
