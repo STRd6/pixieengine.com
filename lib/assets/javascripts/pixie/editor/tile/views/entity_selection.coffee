@@ -1,22 +1,22 @@
-#= require tmpls/pixie/editor/tile/tile_selection
+#= require tmpls/pixie/editor/tile/entity_selection
 
 namespace "Pixie.Editor.Tile.Views", (exports) ->
   Models = Pixie.Editor.Tile.Models
 
-  class exports.TileSelection extends Backbone.View
+  class exports.EntitySelection extends Backbone.View
     className: 'component'
 
     initialize: ->
       # Force jQuery Element
       @el = $(@el)
+      
+      # Set up HTML
+      @el.html $.tmpl("pixie/editor/tile/entity_selection")
 
-      # @collection.bind 'add', @appendLayer
+      @collection.bind 'add', @appendEntity
 
       @collection.bind "change:activeTile", (model, collection) =>
         @$('ul li.tile').eq(collection.indexOf(model)).takeClass 'active'
-
-      # Set up HTML
-      @el.html $.tmpl("pixie/editor/tile/tile_selection")
 
       @$("ul").sortable
         update: (event, ui) =>
@@ -28,6 +28,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @collection.bind 'reset', @render
 
       @render()
+      
+    appendEntity: (entity) =>
 
     render: =>
       @$('ul').empty()
+
+      @collection.each (entity) =>
+        @appendEntity entity

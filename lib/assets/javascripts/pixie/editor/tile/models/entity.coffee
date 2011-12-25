@@ -1,7 +1,7 @@
 namespace "Pixie.Editor.Tile.Models", (exports) ->
 
-  class exports.Tile extends Backbone.Model
+  class exports.Entity extends Backbone.Model
     defaults:
-      name: "Unnamed Tile"
+      name: "Unnamed Entity"
       width: 32
       heiht: 32

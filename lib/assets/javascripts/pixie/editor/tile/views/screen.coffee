@@ -52,15 +52,18 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
     adjustCursor: (event) =>
       {currentTarget} = event
+      
+      cursorWidth = @settings.get "tileWidth"
+      cursorHeight = @settings.get "tileHeight"
 
       offset = $(currentTarget).offset()
 
-      left = event.pageX - offset.left
-      top = event.pageY - offset.top
+      left = (event.pageX - offset.left).clamp(0, @settings.pixelWidth() - cursorWidth)
+      top = (event.pageY - offset.top).clamp(0, @settings.pixelHeight() - cursorHeight)
 
       @$(".cursor").css
-        top: top.snap(@settings.get "tileHeight")
-        left: left.snap(@settings.get "tileWidth")
+        left: left.snap(cursorWidth) - 1
+        top: top.snap(cursorHeight) - 1
 
     events:
       "mousemove .canvas": "adjustCursor"

@@ -26,21 +26,24 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       ]
 
       layerList.activeLayer(layerList.at(0))
+      
+      entityList = new Models.EntityList
 
       # Add Sub-components
       screen = new Views.Screen
         collection: layerList
         settings: @settings
-
       @$(".content").prepend screen.el
 
       layerSelection = new Views.LayerSelection
         collection: layerList
-
       @$(".module.right").append layerSelection.el
+      
+      entitySelection = new Views.EntitySelection
+        collection: entityList
+      @$(".module.right").append entitySelection.el
 
       toolbar = new Views.Toolbar
-
       @$(".module.left").append toolbar.el
 
       @render()
