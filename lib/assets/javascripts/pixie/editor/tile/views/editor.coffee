@@ -29,7 +29,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       layerList.activeLayer(layerList.at(0))
       
-      entityList = new Models.EntityList
+      entityList = new Models.EntityList [
+        new Models.Entity
+      ]
 
       # Add Sub-components
       screen = new Views.Screen

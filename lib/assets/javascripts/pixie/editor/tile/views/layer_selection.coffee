@@ -27,6 +27,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @$("ul").sortable
         axis: "y"
+        distance: 10
         update: (event, ui) =>
           @$("ul li").each (i, li) =>
             cid = $(li).data("cid")

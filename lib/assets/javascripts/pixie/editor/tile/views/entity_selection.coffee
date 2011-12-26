@@ -1,9 +1,9 @@
 #= require tmpls/pixie/editor/tile/entity_selection
 
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class exports.EntitySelection extends Backbone.View
+  class Views.EntitySelection extends Backbone.View
     className: 'component'
 
     initialize: ->
@@ -15,24 +15,32 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @collection.bind 'add', @appendEntity
 
-      @collection.bind "change:activeTile", (model, collection) =>
-        @$('ul li.tile').eq(collection.indexOf(model)).takeClass 'active'
-
-      @$("ul").sortable
+      @$(".entities").sortable
+        distance: 10
         update: (event, ui) =>
-          @$("ul li").each (i, li) =>
-            ;# cid = $(li).data("cid")
-            # debugger unless cid?
-            # @collection.getByCid(cid).set zIndex: i
+          @$(".entities .entity").each (i, element) =>
+            ;# TODO: Persist sort
 
       @collection.bind 'reset', @render
 
       @render()
       
     appendEntity: (entity) =>
+      entityView = new Views.Entity
+        model: entity
+
+      @$('.entities').append entityView.render().el
 
     render: =>
-      @$('ul').empty()
+      @$(".entities").empty()
 
       @collection.each (entity) =>
         @appendEntity entity
+
+    preventDefault: (event) ->
+      event.preventDefault()
+      
+      return
+
+    events:
+      mousedown: "preventDefault"
