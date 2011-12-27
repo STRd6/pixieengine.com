@@ -11,9 +11,6 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.attr "data-cid", @model.cid
 
       @model.bind 'change', @render
-      @options.settings.bind "change:activeLayer", (settings) =>
-        if @model == settings.get("activeLayer")
-          @el.takeClass "active"
 
       @render()
 
@@ -21,7 +18,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.html "<div class='name'>#{@model.get 'name'}</div> <eye />"
         
       if @model == @options.settings.get "activeLayer"
-        @el.takeClass "active"
+        @el.addClass "active"
 
       if @model.get 'visible'
         @el.fadeTo 'fast', 1
