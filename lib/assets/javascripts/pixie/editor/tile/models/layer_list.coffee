@@ -1,8 +1,8 @@
 # require ./layer
 
-namespace "Pixie.Editor.Tile.Models", (exports) ->
+namespace "Pixie.Editor.Tile.Models", (Models) ->
 
-  class exports.LayerList extends Backbone.Collection
+  class Models.LayerList extends Backbone.Collection
     initialize: ->
       @bind 'activate', (layer) =>
         @activeLayer(layer)
@@ -13,14 +13,4 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
     comparator: (model) ->
       model.get "zIndex"
 
-    model: exports.Layer
-
-    activeLayer: (newLayer) ->
-      if newLayer?
-        @_activeLayer = newLayer
-
-        @trigger "change:activeLayer", @_activeLayer, this
-
-        return this
-      else
-        return @_activeLayer
+    model: Models.Layer

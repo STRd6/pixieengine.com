@@ -11,3 +11,7 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
 
     addObjectInstance: (instance) ->
       @objectInstances.add instance
+
+    toJSON: ->
+      name: @get "name"
+      entities: @objectInstances.toJSON()

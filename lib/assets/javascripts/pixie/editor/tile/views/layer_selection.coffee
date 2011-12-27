@@ -1,11 +1,9 @@
 #= require tmpls/pixie/editor/tile/layer_selection
 
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  UI = Pixie.UI
-
-  class exports.LayerSelection extends Backbone.View
+  class Views.LayerSelection extends Backbone.View
     className: 'component layer_selection'
 
     initialize: ->
@@ -14,8 +12,6 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @collection.bind 'add', @appendLayer
       @collection.bind 'reset', @render
-      @collection.bind "change:activeLayer", (model, collection) =>
-        @$('ul li.layer').eq(collection.indexOf(model)).takeClass 'active'
 
       @el.liveEdit ".name",
         change: (element, value) =>
@@ -43,9 +39,6 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @collection.each (layer) =>
         @appendLayer layer
 
-      # Hack to display the active layer
-      @collection.trigger "change:activeLayer", @collection._activeLayer, @collection
-
     addLayer: ->
       layer = new Models.Layer
 
@@ -58,8 +51,9 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @collection.add layer
 
     appendLayer: (layer) =>
-      layerView = new exports.Layer
+      layerView = new Views.Layer
         model: layer
+        settings: @options.settings
 
       @$('ul').append layerView.render().el
 

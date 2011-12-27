@@ -27,8 +27,6 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
           name: "Entities"
       ]
 
-      layerList.activeLayer(layerList.at(0))
-
       entityList = new Models.EntityList [
         new Models.Entity
       ]
@@ -41,19 +39,24 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       layerSelection = new Views.LayerSelection
         collection: layerList
+        settings: @settings
       @$(".module.right").append layerSelection.el
       
       entitySelection = new Views.EntitySelection
         collection: entityList
+        settings: @settings
       @$(".module.right").append entitySelection.el
 
       toolbar = new Views.Toolbar
+        settings: @settings
       @$(".module.left").append toolbar.el
       
       @addAction
         name: "Save"
         perform: ->
-          console.log layerList.toJSON()
+          console.log 
+            layers: layerList.toJSON()
+            orientation: "orthogonal"
 
       # Set Eval Context
       @eval = (code) =>

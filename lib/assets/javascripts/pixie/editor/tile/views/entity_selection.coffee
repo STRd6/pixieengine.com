@@ -28,6 +28,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     appendEntity: (entity) =>
       entityView = new Views.Entity
         model: entity
+        settings: @options.settings
 
       @$('.entities').append entityView.render().el
 
@@ -48,8 +49,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       debugger unless cid
 
-      @activeEntity = @collection.getByCid(cid)
-      entityElement.takeClass("active")
+      @options.settings.set
+        activeEntity: @collection.getByCid(cid)
 
     events:
       mousedown: "preventDefault"

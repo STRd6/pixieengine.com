@@ -62,18 +62,21 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     adjustCursor: (event) =>
       {x, y} = @localPosition(event)
-      
+
       @$(".cursor").css
         left: x - 1
         top: y - 1
 
     addInstance: (event) =>
       {x, y} = @localPosition(event)
-      
-      if activeLayer = @collection.activeLayer()
+
+      if activeLayer = @settings.get "activeLayer"
+        activeEntity = @settings.get "activeEntity"
+
         activeLayer.addObjectInstance new Models.Instance
           x: x
           y: y
+          sourceEntity: activeEntity
 
     events:
       "mousemove .canvas": "adjustCursor"

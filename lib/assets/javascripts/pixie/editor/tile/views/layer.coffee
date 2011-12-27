@@ -1,7 +1,7 @@
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class exports.Layer extends Backbone.View
+  class Views.Layer extends Backbone.View
     tagName: 'li'
     className: 'layer'
 
@@ -11,11 +11,17 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @el.attr "data-cid", @model.cid
 
       @model.bind 'change', @render
+      @options.settings.bind "change:activeLayer", (settings) =>
+        if @model == settings.get("activeLayer")
+          @el.takeClass "active"
 
       @render()
 
     render: =>
       @el.html "<div class='name'>#{@model.get 'name'}</div> <eye />"
+        
+      if @model == @options.settings.get "activeLayer"
+        @el.takeClass "active"
 
       if @model.get 'visible'
         @el.fadeTo 'fast', 1
@@ -25,7 +31,8 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       return this
 
     activate: ->
-      @model.trigger "activate", @model
+      @options.settings.set 
+        activeLayer: @model
 
     toggleVisible: ->
       @model.set
