@@ -19,6 +19,7 @@ public/apps
 public/stylesheets/*.css
 public/stylesheets/codemirror/*.css
 public/stylesheets/pixie/*.css
+public/stylesheets/editors/*.css
 public/production
 public/system
 projects.zip
