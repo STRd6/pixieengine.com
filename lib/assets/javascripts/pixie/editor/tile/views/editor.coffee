@@ -18,13 +18,13 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       # Set up HTML
       @el.html $.tmpl("pixie/editor/tile/editor")
 
-      @settings = new Models.Settings
-
       layerList = new Models.LayerList [
         new Models.Layer
           name: "Background"
+          zIndex: 0
         new Models.Layer
           name: "Entities"
+          zIndex: 1
       ]
 
       entityList = new Models.EntityList [
@@ -33,6 +33,10 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
         new Models.Entity
           src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA5klEQVRYR2NkGGDAOMD2M4w6YDQERkOA6BD4NpXjP7WyLFf2D7i9RDkAZPnh2/8Y9H0rGS5ubieLBjme70Yn2A8kOQDZckpCAGQ5yBO2qkzEO4DaloNCEOQQokKAFpbDooGgA6iZ4GBpB2Q5KP0QFQUgB3zSKCc7wcESKizeQUEPA0RFAcwBlCQ6WHCDPAIDJIUActCR65DREBgNgdEQGA2BQRUC2EpBUAGHtUFCi5oQvQ6Ala44HYBchlNaFKPXgMjmEQwBcptgsCBHb4KhewanA8j1Nbo+5MYHNjOJapRSyzGD0gEAm/Y7MAMUHQMAAAAASUVORK5CYII="
       ]
+
+      @settings = new Models.Settings
+        activeLayer: layerList.at(0)
+        activeEntity: entityList.at(0)
 
       # Add Sub-components
       screen = new Views.Screen

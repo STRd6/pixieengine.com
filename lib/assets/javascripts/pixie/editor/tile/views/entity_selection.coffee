@@ -15,6 +15,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       @collection.bind 'add', @appendEntity
 
+      @options.settings.bind "change:activeEntity", (settings) =>
+        if entity = settings.get("activeEntity")
+          @$("[data-cid=#{entity.cid}]").takeClass "active"
+
       @$(".entities").sortable
         distance: 10
         update: (event, ui) =>
@@ -40,7 +44,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     preventDefault: (event) ->
       event.preventDefault()
-      
+
       return
 
     activateEntity: (event) =>
