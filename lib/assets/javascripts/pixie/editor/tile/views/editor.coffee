@@ -28,7 +28,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       ]
 
       layerList.activeLayer(layerList.at(0))
-      
+
       entityList = new Models.EntityList [
         new Models.Entity
       ]
@@ -50,6 +50,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       toolbar = new Views.Toolbar
       @$(".module.left").append toolbar.el
       
+      @addAction
+        name: "Save"
+        perform: ->
+          console.log layerList.toJSON()
+
       # Set Eval Context
       @eval = (code) =>
         eval(code)

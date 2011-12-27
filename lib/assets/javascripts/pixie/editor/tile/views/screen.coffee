@@ -48,10 +48,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         settings: @settings
 
       @$("ul.layers").append layerView.render().el
-      
+
     localPosition: (event) =>
       {currentTarget} = event
-      
+
       cursorWidth = @settings.get "tileWidth"
       cursorHeight = @settings.get "tileHeight"
 
