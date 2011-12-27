@@ -35,11 +35,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         if layer = settings.get("activeLayer")
           @$("[data-cid=#{layer.cid}]").takeClass "active"
 
+      # Cache for views so they won't constantly be recreated
+      @_layerViews = {}
+
       @render()
 
     render: =>
-      @$('ul').empty()
-
       @collection.each (layer) =>
         @appendLayer layer
 
@@ -55,9 +56,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @collection.add layer
 
     appendLayer: (layer) =>
-      layerView = new Views.Layer
-        model: layer
-        settings: @options.settings
+      unless layerView = @_layerViews[layer.cid]
+        layerView = @_layerViews[layer.cid] = new Views.Layer
+          model: layer
+          settings: @options.settings
 
       @$('ul').append layerView.render().el
 
