@@ -1,8 +1,7 @@
 #= require tmpls/pixie/editor/tile/screen
 
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
-  Views = exports
 
   UI = Pixie.UI
 
@@ -49,8 +48,8 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
         settings: @settings
 
       @$("ul.layers").append layerView.render().el
-
-    adjustCursor: (event) =>
+      
+    localPosition: (event) =>
       {currentTarget} = event
       
       cursorWidth = @settings.get "tileWidth"
@@ -58,12 +57,24 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       offset = $(currentTarget).offset()
 
-      left = (event.pageX - offset.left).clamp(0, @settings.pixelWidth() - cursorWidth)
-      top = (event.pageY - offset.top).clamp(0, @settings.pixelHeight() - cursorHeight)
+      x: (event.pageX - offset.left).clamp(0, @settings.pixelWidth() - cursorWidth).snap(cursorWidth)
+      y: (event.pageY - offset.top).clamp(0, @settings.pixelHeight() - cursorHeight).snap(cursorHeight)
 
+    adjustCursor: (event) =>
+      {x, y} = @localPosition(event)
+      
       @$(".cursor").css
-        left: left.snap(cursorWidth) - 1
-        top: top.snap(cursorHeight) - 1
+        left: x - 1
+        top: y - 1
+
+    addInstance: (event) =>
+      {x, y} = @localPosition(event)
+      
+      if activeLayer = @collection.activeLayer()
+        activeLayer.addObjectInstance new Models.Instance
+          x: x
+          y: y
 
     events:
       "mousemove .canvas": "adjustCursor"
+      "mousedown .canvas": "addInstance"

@@ -1,10 +1,10 @@
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class exports.ScreenLayer extends Backbone.View
+  class Views.ScreenLayer extends Backbone.View
     className: "layer"
 
-    tagName: "ul"
+    tagName: "li"
 
     initialize: ->
       # Force jQuery
@@ -15,8 +15,26 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @settings = @options.settings
 
       @model.bind 'change', @render
+      
+      @objectInstances = @model.objectInstances
+      @objectInstances.bind "add", @instanceAdded
+      @objectInstances.bind "reset", @resetInstances
+      
+      @resetInstances()
 
       @render()
+      
+    instanceAdded: (instance) =>
+      screenInstance = new Views.ScreenInstance
+        model: instance
+
+      @el.append screenInstance.el
+
+    resetInstances: =>
+      @$(".instance").remove()
+
+      @objectInstances.each (instance) =>
+        @instanceAdded(instance)
 
     render: =>
       @el.css

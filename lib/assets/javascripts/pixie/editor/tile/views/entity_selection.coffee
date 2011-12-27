@@ -42,5 +42,15 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       
       return
 
+    activateEntity: (event) =>
+      entityElement = $(event.currentTarget)
+      cid = entityElement.data("cid")
+
+      debugger unless cid
+
+      @activeEntity = @collection.getByCid(cid)
+      entityElement.takeClass("active")
+
     events:
       mousedown: "preventDefault"
+      "click .entity": "activateEntity"

@@ -13,6 +13,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       @el = $(@el)
 
       @collection.bind 'add', @appendLayer
+      @collection.bind 'reset', @render
       @collection.bind "change:activeLayer", (model, collection) =>
         @$('ul li.layer').eq(collection.indexOf(model)).takeClass 'active'
 
@@ -33,8 +34,6 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
             cid = $(li).data("cid")
             debugger unless cid?
             @collection.getByCid(cid).set zIndex: i
-
-      @collection.bind 'reset', @render
 
       @render()
 

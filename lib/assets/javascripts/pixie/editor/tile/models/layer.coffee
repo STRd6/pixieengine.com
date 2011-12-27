@@ -1,7 +1,13 @@
-namespace "Pixie.Editor.Tile.Models", (exports) ->
+namespace "Pixie.Editor.Tile.Models", (Models) ->
 
-  class exports.Layer extends Backbone.Model
+  class Models.Layer extends Backbone.Model
     defaults:
       name: "Layer"
       visible: true
       zIndex: 0
+
+    initialize: ->
+      @objectInstances = new Models.InstanceList
+
+    addObjectInstance: (instance) ->
+      @objectInstances.add instance

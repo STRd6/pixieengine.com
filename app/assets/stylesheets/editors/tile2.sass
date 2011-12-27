@@ -216,6 +216,9 @@ $module_margin: 12px
       left: 0
       position: absolute
       top: 0
+      
+      .instance
+        position: absolute
 
     .cursor
       border: 2px solid green
@@ -234,11 +237,11 @@ $module_margin: 12px
   img
     margin-bottom: 2px
 
-    &.primary, &.secondary
+    &.primary, &.secondary, &.active
       border: 1px solid
       padding: 0px
 
-    &.primary
+    &.primary, &.active
       border-color: green
     &.secondary
       border-color: blue
