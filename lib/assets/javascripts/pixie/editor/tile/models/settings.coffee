@@ -2,6 +2,7 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
 
   class exports.Settings extends Backbone.Model
     defaults:
+      title: ""
       tilesWide: 20
       tilesTall: 15
       tileWidth: 32
@@ -12,3 +13,10 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
 
     pixelHeight: =>
       @get("tilesTall") * @get("tileHeight")
+
+    toJSON: ->
+      width: @get "tilesWide"
+      height: @get "tilesTall"
+      tileWidth: @get "tileWidth"
+      tileHeight: @get "tileHeight"
+      title: @get "title"

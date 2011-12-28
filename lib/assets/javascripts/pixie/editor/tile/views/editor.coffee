@@ -60,8 +60,11 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       
       @addAction
         name: "Save"
-        perform: ->
-          console.log 
+        perform: =>
+          settingsJSON = @settings.toJSON()
+
+          console.log Object.extend settingsJSON,
+            entityCache: entityList.toJSON()
             layers: layerList.toJSON()
             orientation: "orthogonal"
 
