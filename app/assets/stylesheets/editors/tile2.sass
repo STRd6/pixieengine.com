@@ -219,12 +219,14 @@ $module_margin: 12px
     .cursor
       border: 2px solid green
       left: 0
+      pointer-events: none
       position: absolute
       top: 0
 
     .selection
       +box-sizing(border-box)
       border: 0px solid red
+      pointer-events: none
       position: absolute
 
       &.active
