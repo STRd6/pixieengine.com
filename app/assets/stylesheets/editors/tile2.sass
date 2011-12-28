@@ -195,11 +195,7 @@ $module_margin: 12px
       cursor: pointer
       margin: 1px
 
-      &.primary, &.secondary
-        border: 1px solid
-        padding: 0px
-
-      &.primary
+      &.primary, &.active
         border-color: green
       &.secondary
         border-color: blue
@@ -235,11 +231,8 @@ $module_margin: 12px
         border-width: 2px
 
   img
+    border: 1px solid transparent
     margin-bottom: 2px
-
-    &.primary, &.secondary, &.active
-      border: 1px solid
-      padding: 0px
 
     &.primary, &.active
       border-color: green

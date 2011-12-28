@@ -67,9 +67,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         left: x - 1
         top: y - 1
 
-    addInstance: (event) =>
-      {x, y} = @localPosition(event)
-
+    addInstance: (x, y) =>
       if activeLayer = @settings.get "activeLayer"
         if activeEntity = @settings.get "activeEntity"
           activeLayer.addObjectInstance new Models.Instance
@@ -77,6 +75,23 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
             y: y
             sourceEntity: activeEntity
 
+    removeInstance: (x, y) =>
+      if activeLayer = @settings.get "activeLayer"
+        activeLayer.removeObjectInstance(x, y)
+
+    actionStart: (event) =>
+      {x, y} = @localPosition(event)
+
+      switch @settings.get("activeTool")
+        when "stamp"
+          @addInstance(x, y)
+        when "eraser"
+          @removeInstance(x, y)
+        when "fill"
+          ;
+        when "selection"
+          ;
+
     events:
       "mousemove .canvas": "adjustCursor"
-      "mousedown .canvas": "addInstance"
+      "mousedown .canvas": "actionStart"
