@@ -1,7 +1,8 @@
 #= require tmpls/pixie/editor/tile/screen
+#= require ../command
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
-  Models = Pixie.Editor.Tile.Models
+  {Command, Models} = Pixie.Editor.Tile
 
   UI = Pixie.UI
 
@@ -16,6 +17,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.html $.tmpl("pixie/editor/tile/screen")
 
       @settings = @options.settings
+      @execute = @settings.execute
 
       @collection.bind 'add', @appendLayer
 
@@ -60,24 +62,41 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       x: (event.pageX - offset.left).clamp(0, @settings.pixelWidth() - cursorWidth).snap(cursorWidth)
       y: (event.pageY - offset.top).clamp(0, @settings.pixelHeight() - cursorHeight).snap(cursorHeight)
 
-    adjustCursor: (event) =>
-      {x, y} = @localPosition(event)
+    mousemove: (event) =>
+      {x, y} = @cursorPosition = @localPosition(event)
 
-      @$(".cursor").css
-        left: x - 1
-        top: y - 1
+      unless _.isEqual(@cursorPosition, @previousCursorPosition)
+        @entered(x, y)
+
+        @$(".cursor").css
+          left: x - 1
+          top: y - 1
+
+      @previousCursorPosition = @cursorPosition
+
+    entered: (x, y) =>
+      if @activeTool
+        @activeTool.enter(x, y)
 
     addInstance: (x, y) =>
       if activeLayer = @settings.get "activeLayer"
         if activeEntity = @settings.get "activeEntity"
-          activeLayer.addObjectInstance new Models.Instance
+          instance = new Models.Instance
             x: x
             y: y
             sourceEntity: activeEntity
 
+          @execute Command.AddInstance
+            instance: instance
+            layer: activeLayer
+
     removeInstance: (x, y) =>
       if activeLayer = @settings.get "activeLayer"
-        activeLayer.removeObjectInstance(x, y)
+        instance = activeLayer.instanceAt(x, y)
+
+        @execute Command.RemoveInstance
+          instance: instance
+          layer: activeLayer
 
     actionStart: (event) =>
       {x, y} = @localPosition(event)
@@ -93,5 +112,5 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           ;
 
     events:
-      "mousemove .canvas": "adjustCursor"
+      "mousemove .canvas": "mousemove"
       "mousedown .canvas": "actionStart"

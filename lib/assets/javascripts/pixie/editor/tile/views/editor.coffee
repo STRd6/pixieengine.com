@@ -68,6 +68,16 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
             layers: layerList.toJSON()
             orientation: "orthogonal"
 
+      @addAction
+        name: "Undo"
+        perform: =>
+          @settings.undo()
+
+      @addAction
+        name: "Redo"
+        perform: =>
+          @settings.redo()
+
       # Set Eval Context
       @eval = (code) =>
         eval(code)

@@ -15,14 +15,19 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
 
       key = "#{instance.get 'x'}x#{instance.get 'y'}"
       @instanceCache[key] = instance
-
-    removeObjectInstance: (x, y) ->
+      
+    instanceAt: (x, y) ->
       key = "#{x}x#{y}"
 
-      if instance = @instanceCache[key]
+      return @instanceCache[key]
+
+    removeObjectInstance: (instance) ->
+      key = "#{instance.get 'x'}x#{instance.get 'y'}"
+
+      if instance == @instanceCache[key]
         delete @instanceCache[key]
 
-        @objectInstances.remove instance
+      @objectInstances.remove instance
 
     toJSON: ->
       name: @get "name"

@@ -8,6 +8,17 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
       tileWidth: 32
       tileHeight: 32
 
+    initialize: ->
+      @commandStack = CommandStack()
+
+      @execute = @commandStack.execute
+
+    undo: ->
+      @commandStack.undo()
+
+    redo: ->
+      @commandStack.redo()
+
     pixelWidth: =>
       @get("tilesWide") * @get("tileWidth")
 
