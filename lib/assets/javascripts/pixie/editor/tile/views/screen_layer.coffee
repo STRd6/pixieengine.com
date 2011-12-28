@@ -18,6 +18,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       
       @objectInstances = @model.objectInstances
       @objectInstances.bind "add", @instanceAdded
+      @objectInstances.bind "remove", @instanceRemoved
       @objectInstances.bind "reset", @resetInstances
       
       @resetInstances()
@@ -29,6 +30,9 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         model: instance
 
       @el.append screenInstance.el
+
+    instanceRemoved: (instance) =>
+      @$(".instance[data-cid=#{instance.cid}]").remove()
 
     resetInstances: =>
       @$(".instance").remove()
