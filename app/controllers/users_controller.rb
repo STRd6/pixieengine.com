@@ -218,7 +218,8 @@ class UsersController < ApplicationController
   def collection
     users = User
 
-    if filter || params[:filter]
+    # Filter must be white listed, always use filter helper
+    if filter
       users = users.send(filter)
     end
 
