@@ -345,14 +345,14 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["featured", "own", "none", "for_user", "recently_edited", "tutorial", "arcade"]
+    ["featured", "own", "none", "for_user", "recently_edited", "tutorials", "arcade"]
   end
 
   def gallery_filters
     filters = [
       ["Arcade", :arcade],
       ["Featured", :featured],
-      ["Tutorials", :tutorial],
+      ["Tutorials", :tutorials],
       ["Recently Edited", :recently_edited],
       ["All", :none]
     ]
