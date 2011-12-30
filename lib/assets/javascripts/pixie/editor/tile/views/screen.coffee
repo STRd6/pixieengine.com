@@ -4,6 +4,32 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   {Command, Models} = Pixie.Editor.Tile
 
+  tools =
+    stamp:
+      start: ->
+      enter: ({x, y, layer, entity, execute}) ->
+        if layer and entity
+          instance = new Models.Instance
+            x: x
+            y: y
+            sourceEntity: entity
+
+          execute Command.AddInstance
+            instance: instance
+            layer: layer
+      end: ->
+
+    eraser:
+      start: ->
+      enter: ({x, y, layer, execute})->
+        if layer
+          instance = layer.instanceAt(x, y)
+
+          execute Command.RemoveInstance
+            instance: instance
+            layer: activeLayer
+      end: ->
+
   UI = Pixie.UI
 
   class Views.Screen extends Backbone.View
@@ -76,41 +102,35 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     entered: (x, y) =>
       if @activeTool
-        @activeTool.enter(x, y)
+        layer = @settings.get "activeLayer"
+        entity = @settings.get "activeEntity"
 
-    addInstance: (x, y) =>
-      if activeLayer = @settings.get "activeLayer"
-        if activeEntity = @settings.get "activeEntity"
-          instance = new Models.Instance
-            x: x
-            y: y
-            sourceEntity: activeEntity
-
-          @execute Command.AddInstance
-            instance: instance
-            layer: activeLayer
-
-    removeInstance: (x, y) =>
-      if activeLayer = @settings.get "activeLayer"
-        instance = activeLayer.instanceAt(x, y)
-
-        @execute Command.RemoveInstance
-          instance: instance
-          layer: activeLayer
+        @activeTool.enter({x, y, layer, entity, @execute})
 
     actionStart: (event) =>
-      {x, y} = @localPosition(event)
+      event.preventDefault()
 
-      switch @settings.get("activeTool")
-        when "stamp"
-          @addInstance(x, y)
-        when "eraser"
-          @removeInstance(x, y)
-        when "fill"
-          ;
-        when "selection"
-          ;
+      if tool = tools[@settings.get("activeTool")]
+        @activeTool = tool
+
+        {x, y} = @localPosition(event)
+        layer = @settings.get "activeLayer"
+        entity = @settings.get "activeEntity"
+
+        tool.start({x, y, layer, entity, @execute})
+        tool.enter({x, y, layer, entity, @execute})
+
+    actionEnd: (event) ->
+      if @activeTool
+        {x, y} = @localPosition(event)
+        layer = @settings.get "activeLayer"
+        entity = @settings.get "activeEntity"
+
+        @activeTool.end()
+
+      @activeTool = null
 
     events:
       "mousemove .canvas": "mousemove"
       "mousedown .canvas": "actionStart"
+      "mouseup": "actionEnd"
