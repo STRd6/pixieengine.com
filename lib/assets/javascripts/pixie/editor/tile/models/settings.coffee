@@ -1,6 +1,8 @@
-namespace "Pixie.Editor.Tile.Models", (exports) ->
+# require ./selection
 
-  class exports.Settings extends Backbone.Model
+namespace "Pixie.Editor.Tile.Models", (Models) ->
+
+  class Models.Settings extends Backbone.Model
     defaults:
       title: ""
       tilesWide: 20
@@ -10,8 +12,9 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
 
     initialize: ->
       @commandStack = CommandStack()
-
       @execute = @commandStack.execute
+
+      @selection = new Models.Selection
 
     undo: ->
       @commandStack.undo()

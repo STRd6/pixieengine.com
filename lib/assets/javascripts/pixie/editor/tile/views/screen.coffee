@@ -30,6 +30,40 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
             layer: activeLayer
       end: ->
 
+    selection:
+      start: ({x, y, selection}) ->
+        selection.set {
+          startX: x,
+          startY: y,
+          x,
+          y,
+          active: true
+        }
+
+      enter: ({x, y, selection, settings}) ->
+        tileWidth = settings.get "tileWidth"
+        tileHeight = settings.get "tileHeight"
+
+        startX = selection.get "startX"
+        startY = selection.get "startY"
+
+        deltaX = x - startX
+        deltaY = y - startY
+
+        selectionWidth = deltaX.abs() + tileWidth
+        selectionHeight = deltaY.abs() + tileHeight
+
+        selectionLeft = if deltaX < 0 then x else startX
+        selectionTop = if deltaY < 0 then y else startY
+
+        selection.set
+          width: selectionWidth
+          height: selectionHeight
+          x: selectionLeft
+          y: selectionTop
+
+      end: ->
+
   UI = Pixie.UI
 
   class Views.Screen extends Backbone.View
@@ -45,8 +79,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @settings = @options.settings
       @execute = @settings.execute
 
-      @collection.bind 'add', @appendLayer
+      @selection = @settings.selection
+      selectionView = new Views.ScreenSelection
+        model: @selection
+      @$(".canvas").append selectionView.el
 
+      @collection.bind 'add', @appendLayer
       @collection.bind 'reset', @render
 
       @render()
@@ -105,7 +143,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         layer = @settings.get "activeLayer"
         entity = @settings.get "activeEntity"
 
-        @activeTool.enter({x, y, layer, entity, @execute})
+        @activeTool.enter({x, y, layer, entity, @execute, @selection, @settings})
 
     actionStart: (event) =>
       event.preventDefault()
@@ -117,10 +155,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         layer = @settings.get "activeLayer"
         entity = @settings.get "activeEntity"
 
-        tool.start({x, y, layer, entity, @execute})
-        tool.enter({x, y, layer, entity, @execute})
+        tool.start({x, y, layer, entity, @execute, @selection, @settings})
+        tool.enter({x, y, layer, entity, @execute, @selection, @settings})
 
-    actionEnd: (event) ->
+    actionEnd: (event) =>
       if @activeTool
         {x, y} = @localPosition(event)
         layer = @settings.get "activeLayer"
