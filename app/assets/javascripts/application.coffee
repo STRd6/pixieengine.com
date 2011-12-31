@@ -26,6 +26,7 @@
 #= require pixie/editor/tile/create
 
 #= require base64
+#= require command_stack
 #= require error_tracker
 #= require grid_gen
 #= require uuid
@@ -33,5 +34,5 @@
 #= require color
 #= require pixie_canvas
 #= require coffee-script
-#
+
 #= require chat
