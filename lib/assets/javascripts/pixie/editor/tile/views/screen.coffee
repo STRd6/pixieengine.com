@@ -77,7 +77,6 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.html $.tmpl("pixie/editor/tile/screen")
 
       @settings = @options.settings
-      @execute = @settings.execute
 
       @selection = @settings.selection
       selectionView = new Views.ScreenSelection
@@ -115,6 +114,9 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       @$("ul.layers").append layerView.render().el
 
+    execute: (command) =>
+      @currentCompoundCommand.push command
+
     localPosition: (event) =>
       {currentTarget} = event
 
@@ -147,6 +149,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     actionStart: (event) =>
       event.preventDefault()
+
+      # Reuse an empty existing compound command if present
+      unless @currentCompoundCommand and @currentCompoundCommand.empty()
+        @currentCompoundCommand = Command.CompoundCommand()
+
+      @settings.execute @currentCompoundCommand
 
       if tool = tools[@settings.get("activeTool")]
         @activeTool = tool
