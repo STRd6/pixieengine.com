@@ -16,6 +16,7 @@ class Pixie.Views.Animations.Frames extends Backbone.View
   events:
     'click .frame': 'select'
     'click .clear_frames': 'clear'
+    'click .create_sequence': 'createSequence'
 
   collection: new Pixie.Models.FramesCollection
 
@@ -43,6 +44,10 @@ class Pixie.Views.Animations.Frames extends Backbone.View
 
   clearSelected: =>
     $(@el).find('.frame').removeClass('selected')
+
+  createSequence: =>
+    @collection.createSequence()
+    @clear()
 
   highlight: (index) =>
     $(@el).find('.frame').eq(index).takeClass('selected')

@@ -7,6 +7,11 @@ describe "Animation Editor", ->
     $('#test').append('<section class="backbone_lebenmeister"></section>')
     @view = new Pixie.Views.Animations.Editor
 
+    @model = new Backbone.Model
+    @model.templateData = ->
+      src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=="
+      cid: "c3"
+
   afterEach ->
     @clock.restore()
 
@@ -48,4 +53,12 @@ describe "Animation Editor", ->
 
       expect($('.pause')).toBeHidden()
       expect($('.play')).toBeVisible()
+
+    it "should add a sequence when create sequence is clicked", ->
+      #fake adding a frame
+      @view.framesView.collection.add(@model)
+
+      $('button.create_sequence').click()
+
+      expect($('.right .sequence')).toExist()
 

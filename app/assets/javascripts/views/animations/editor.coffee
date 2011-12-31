@@ -35,6 +35,10 @@ class Pixie.Views.Animations.Editor extends Backbone.View
     @framesView.collection.bind 'updateSelected', (model, index) =>
       @framesView.highlight(index)
 
+    @framesView.collection.bind 'createSequence', =>
+      @sequencesView.collection.add(new Pixie.Models.Sequence)
+      @sequencesView.render()
+
     @tilesetView.collection.bind 'addFrame', (model) =>
       @framesView.collection.add(model.clone())
 

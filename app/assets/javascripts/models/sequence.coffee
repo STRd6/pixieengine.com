@@ -8,5 +8,5 @@ window.Pixie ||= {}
 Pixie.Models ||= {}
 
 class Pixie.Models.Sequence extends Backbone.Collection
-  model: Pixie.Models.Tile
+  model: Pixie.Models.Frame
 

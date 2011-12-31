@@ -2,7 +2,7 @@
 #= require backbone
 #= require corelib
 
-#= require models/tile
+#= require models/frame
 
 window.Pixie ||= {}
 Pixie.Models ||= {}
@@ -14,10 +14,10 @@ class Pixie.Models.FramesCollection extends Backbone.Collection
     @bind 'add', =>
       @trigger 'enableFrameActions'
 
-  model: Pixie.Models.Tile
+  model: Pixie.Models.Frame
 
   createSequence: =>
-    ;
+    @trigger 'createSequence'
 
   nextFrame: =>
     @selected = (@selected + 1).mod(@length)

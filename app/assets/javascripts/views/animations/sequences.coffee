@@ -18,7 +18,11 @@ class Pixie.Views.Animations.Sequences extends Backbone.View
     @render()
 
   render: =>
+    $(@el).empty()
     $(@el).append($.tmpl('lebenmeister/sequences'))
+
+    @collection.each (sequence) =>
+      @$('.sprites').append('<div class="sequence"></div>')
 
     return @
 
