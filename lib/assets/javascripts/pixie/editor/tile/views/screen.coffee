@@ -23,11 +23,11 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       start: ->
       enter: ({x, y, layer, execute})->
         if layer
-          instance = layer.instanceAt(x, y)
+          if instance = layer.instanceAt(x, y)
 
-          execute Command.RemoveInstance
-            instance: instance
-            layer: activeLayer
+            execute Command.RemoveInstance
+              instance: instance
+              layer: layer
       end: ->
 
     selection:
@@ -154,7 +154,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       unless @currentCompoundCommand and @currentCompoundCommand.empty()
         @currentCompoundCommand = Command.CompoundCommand()
 
-      @settings.execute @currentCompoundCommand
+        @settings.execute @currentCompoundCommand
 
       if tool = tools[@settings.get("activeTool")]
         @activeTool = tool

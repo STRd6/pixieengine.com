@@ -1,12 +1,13 @@
 #= require tmpls/pixie/editor/tile/editor
 
+#= require pixie/editor/base
+
+#= require ../actions
 #= require ../console
 
-namespace "Pixie.Editor.Tile.Views", (exports) ->
+namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
-  Views = exports
-
-  {Button} = Pixie.UI
+  Tile = Pixie.Editor.Tile
 
   class Views.Editor extends Backbone.View
     className: 'editor tile_editor'
@@ -18,7 +19,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       # Set up HTML
       @el.html $.tmpl("pixie/editor/tile/editor")
 
-      layerList = new Models.LayerList [
+      @layerList = new Models.LayerList [
         new Models.Layer
           name: "Background"
           zIndex: 0
@@ -27,7 +28,7 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
           zIndex: 1
       ]
 
-      entityList = new Models.EntityList [
+      @entityList = new Models.EntityList [
         new Models.Entity
           src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABHUlEQVRYR+2WwQ3CMAxFW3HkxjzMgZgAMQUHpkBMgDoH83DjiEA+BJlg/3y7SBVSeyQl7+U7Tdx3Ez/9xPzuvwW21/uzJHhZL1OLCf9JQ73yRWQoAQZqyTAiTYEsnC2NKzAWrBNBSXwJMODheHO/3s1hZY55EmEBBNdkS8SS+BBAq2fBUQlKIAMvInUSdQqjBB6n3XvBi/3ZrH2rFE0Bb/UaXsishE4BCkTgSAKlMAukEpC4rT0gv1v7IF0CmZDdB94GlDloAXm5PozQGSApIHALLuPUUZw9iJh7gRJApfBuJQZuJmCVQUOYNDy4zAOPYg2KXssIipoT2BExEm5jUA3Q/YA3YUbmJz2hJeTJMMB6vmZTykacfW8WmBN4AS/7qCEFLkXAAAAAAElFTkSuQmCC"
         new Models.Entity
@@ -35,48 +36,36 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
       ]
 
       @settings = new Models.Settings
-        activeLayer: layerList.at(0)
-        activeEntity: entityList.at(0)
+        activeLayer: @layerList.at(0)
+        activeEntity: @entityList.at(0)
 
       # Add Sub-components
       screen = new Views.Screen
-        collection: layerList
+        collection: @layerList
         settings: @settings
       @$(".content").prepend screen.el
 
       layerSelection = new Views.LayerSelection
-        collection: layerList
+        collection: @layerList
         settings: @settings
       @$(".module.right").append layerSelection.el
       
       entitySelection = new Views.EntitySelection
-        collection: entityList
+        collection: @entityList
         settings: @settings
       @$(".module.right").append entitySelection.el
 
       toolbar = new Views.Toolbar
         settings: @settings
       @$(".module.left").append toolbar.el
-      
-      @addAction
-        name: "Save"
-        perform: =>
-          settingsJSON = @settings.toJSON()
 
-          console.log Object.extend settingsJSON,
-            entityCache: entityList.toJSON()
-            layers: layerList.toJSON()
-            orientation: "orthogonal"
+      # TODO: We really need that self.include method
+      Object.extend this, Pixie.Editor.Base(this, this)
 
-      @addAction
-        name: "Undo"
-        perform: =>
-          @settings.undo()
+      $.each Tile.actions, (name, action) =>
+        action.name ||= name
 
-      @addAction
-        name: "Redo"
-        perform: =>
-          @settings.redo()
+        @addAction action
 
       # Set Eval Context
       @eval = (code) =>
@@ -88,32 +77,21 @@ namespace "Pixie.Editor.Tile.Views", (exports) ->
 
       @render()
 
-    addAction: (action) =>
-      name = action.name
-      titleText = name.capitalize()
-      undoable = action.undoable
-      self = this
-
-      doIt = ->
-        if undoable
-          self.trigger("dirty")
-          self.nextUndo()
-
-        action.perform(self)
-
-      # TODO: Action Hotkeys
-
-      if action.menu != false
-        # TODO: Action Image Icons
-
-        actionButton = Button
-          text: name.capitalize()
-          title: titleText
-        .on "mousedown touchstart", ->
-          doIt() unless $(this).attr('disabled')
-
-          return false
-
-        actionButton.appendTo(@$(".content .actions.top"))
+      @takeFocus()
 
     render: =>
+      return this
+
+    takeFocus: =>
+      window.currentComponent = this
+
+    toJSON: ->
+      settingsJSON = @settings.toJSON()
+
+      return Object.extend settingsJSON,
+        entityCache: @entityList.toJSON()
+        layers: @layerList.toJSON()
+        orientation: "orthogonal"
+
+    events:
+      mousemove: "takeFocus"

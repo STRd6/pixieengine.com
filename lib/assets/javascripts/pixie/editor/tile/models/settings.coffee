@@ -12,9 +12,11 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
 
     initialize: ->
       @commandStack = CommandStack()
-      @execute = @commandStack.execute
 
       @selection = new Models.Selection
+
+    execute: (command) ->
+      @commandStack.execute command
 
     undo: ->
       @commandStack.undo()
