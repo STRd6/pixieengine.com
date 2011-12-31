@@ -220,15 +220,17 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :git_pull
 
-  def git_commit_and_push(message)
+  def git_commit_and_push(authoring_user_id, message)
     message ||= "Modified in browser at pixie.strd6.com"
     git_util 'checkout', BRANCH_NAME
 
     #TODO: Maybe scope to specific files
     git_util "add", "."
 
+    authoring_user = User.find authoring_user_id
+
     #TODO: Tracking actual person who commits now that projects can have members
-    git_util "commit", "-am", message, "--author", "#{user.display_name} <#{user.email}>"
+    git_util "commit", "-am", message, "--author", "#{authoring_user.display_name} <#{authoring_user.email}>"
 
     if push_enabled?
       git_util "push", '-u', "origin", BRANCH_NAME
@@ -236,7 +238,7 @@ class Project < ActiveRecord::Base
   end
   handle_asynchronously :git_commit_and_push
 
-  def save_file(path, contents, message=nil)
+  def save_file(path, contents, authoring_user, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
 
@@ -250,11 +252,11 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(message) if Rails.env.production?
+    git_commit_and_push_without_delay(authoring_user.id, message) if Rails.env.production?
   end
   handle_asynchronously :save_file if Rails.env.production?
 
-  def remove_file(path, message=nil)
+  def remove_file(path, authoring_user, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
     return if path.first == "/"
@@ -264,10 +266,10 @@ class Project < ActiveRecord::Base
     FileUtils.rm File.join(self.path, path)
     git_util "rm", path
 
-    git_commit_and_push(message)
+    git_commit_and_push(authoring_user.id, message)
   end
 
-  def rename_file(path, new_path, message=nil)
+  def rename_file(path, new_path, authoring_user, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
     return if path.first == "/"
@@ -278,7 +280,7 @@ class Project < ActiveRecord::Base
     FileUtils.mv File.join(self.path, path), File.join(self.path, new_path)
     git_util "mv", path, new_path
 
-    git_commit_and_push(message)
+    git_commit_and_push(authoring_user.id, message)
   end
 
   def file_info

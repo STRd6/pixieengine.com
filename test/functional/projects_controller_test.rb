@@ -32,6 +32,24 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
       end
     end
+
+    context "that is deleted" do
+      setup do
+        @project.destroy
+      end
+
+      should "not be able to view" do
+        assert_raise(ActiveRecord::RecordNotFound) do
+          get :show, :id => @project.id
+        end
+      end
+
+      should "not be viewable in the IDE" do
+        assert_raise(ActiveRecord::RecordNotFound) do
+          get :ide, :id => @project.id
+        end
+      end
+    end
   end
 
   should "be able to view projects#info" do

@@ -183,7 +183,7 @@ class ApplicationController < ActionController::Base
     filter = params[:filter] || filters.first
     filter = filter.gsub(' ', '_')
 
-    return filter
+    return filter if filters.include? filter
   end
   helper_method :filter
 

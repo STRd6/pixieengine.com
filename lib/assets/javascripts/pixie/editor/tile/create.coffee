@@ -441,24 +441,23 @@ Pixie.Editor.Tile.create = (options) ->
     unless debugMode
       event.preventDefault()
 
-  $(".tools .tool", tileEditor).live 'mousedown', (event) ->
+  tileEditor.on "mousedown", ".tools .tool", (event) ->
     event.preventDefault()
 
     if mode = clickMode event
       $(this).takeClass(mode)
 
-  $(".tiles img, .saved_selections .selection", tileEditor).live
-    mousedown: (event) ->
-      event.preventDefault()
+  tileEditor.on "mousedown", ".tiles img, .saved_selections .selection", (event) ->
+    event.preventDefault()
 
-      if mode = clickMode event
-        selectTile($(this), mode)
+    if mode = clickMode event
+      selectTile($(this), mode)
 
-  $(".tiles img, .saved_selections .selection", tileEditor).live 'mouseup', (event) ->
+  tileEditor.on "mouseup", ".tiles img, .saved_selections .selection", (event) ->
     if event.which == 2
       $(this).remove()
 
-  $(".tiles img", tileEditor).live "dblclick", (event) ->
+  tileEditor.on "dblclick", ".tiles img", (event) ->
     editEntity($(this).data('uuid'))
 
   tileEditor.find("button.new_tile").click () ->
@@ -475,7 +474,7 @@ Pixie.Editor.Tile.create = (options) ->
   tileEditor.find(".layer_select").parent().find('.new').click () ->
     addNewLayer()
 
-  $(".layer_select .choice .name", tileEditor).live 'mousedown', (event) ->
+  tileEditor.on "mousedown", ".layer_select .choice .name", (event) ->
     $layer = $(this).parent()
     $layer.takeClass("active")
 

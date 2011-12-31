@@ -1,4 +1,10 @@
 # DUCT TAPE
+window.namespace = (target, name, block) ->
+  [target, name, block] = [(if typeof exports isnt 'undefined' then exports else window), arguments...] if arguments.length < 3
+  top    = target
+  target = target[item] or= {} for item in name.split '.'
+  block target, top
+
 Object.isObject = (object) ->
   Object.prototype.toString.call(object) == '[object Object]'
 
@@ -16,6 +22,7 @@ Function::debounce = (wait) ->
 
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
+# END DUCT TAPE
 
 # Event tracking
 window.trackEvent = (category, action, label) ->
@@ -93,28 +100,6 @@ $ ->
 
   $("#flashes .close").live "mousedown", ->
     $(this).parent().slideUp()
-
-  # THEME
-  setLightTheme = (active) ->
-    $('html').toggleClass('light', active)
-    $('iframe').contents().find('html').toggleClass("light", active)
-    $('.bulb-sprite').toggleClass('static-off', !active).toggleClass('static-on', active)
-
-    setVal('light', active)
-
-  $('.bulb-sprite').click ->
-    $this = $(this)
-    $this.toggleClass('static-off').toggleClass('static-on')
-
-    setLightTheme $this.hasClass('static-on')
-
-  active = if $('.bulb-sprite').length then getVal('light') else true
-  if active?
-    setLightTheme active
-  else if $('html').hasClass 'light'
-    $('.bulb-sprite').attr('class', 'static-on')
-  else
-    $('.bulb-sprite').attr('class', 'static-off')
 
   # Display Flash Notice
   $("#flashes .notice").each ->

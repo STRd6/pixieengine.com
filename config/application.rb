@@ -55,8 +55,6 @@ module PixieStrd6Com
     config.assets.enabled = true
     config.generators.stylesheet_engine = :sass
 
-    config.active_record.timestamped_migrations = true
-
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 

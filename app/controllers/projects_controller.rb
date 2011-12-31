@@ -224,11 +224,10 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    respond_with project
   end
 
   def ide
-    @show_bulb = true
-
     respond_with(project) do |format|
       format.html do
         @has_reg_popup = true
@@ -279,7 +278,7 @@ class ProjectsController < ApplicationController
   def remove_file
     message = params[:message].presence
 
-    project.remove_file(params[:path], message)
+    project.remove_file(params[:path], current_user, message)
 
     respond_to do |format|
       format.json do
@@ -293,7 +292,7 @@ class ProjectsController < ApplicationController
   def rename_file
     message = params[:message].presence
 
-    project.rename_file(params[:path], params[:new_path], message)
+    project.rename_file(params[:path], params[:new_path], current_user, message)
 
     respond_to do |format|
       format.json do
@@ -313,7 +312,7 @@ class ProjectsController < ApplicationController
 
     message = params[:message].presence
 
-    project.save_file(params[:path], contents, message)
+    project.save_file(params[:path], contents, current_user, message)
 
     project.touch if params[:touch]
 
@@ -336,19 +335,24 @@ class ProjectsController < ApplicationController
     elsif filter == "for_user"
       Project.for_user(User.find(params[:user_id]))
     else
-      Project.send(filter)
+      if filters.include? filter
+        # Always use a whitelist before calling send
+        Project.send(filter)
+      else
+        Project
+      end
     end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
   end
 
   def filters
-    ["featured", "own", "none", "for_user", "recently_edited", "tutorial", "arcade"]
+    ["featured", "own", "none", "for_user", "recently_edited", "tutorials", "arcade"]
   end
 
   def gallery_filters
     filters = [
       ["Arcade", :arcade],
       ["Featured", :featured],
-      ["Tutorials", :tutorial],
+      ["Tutorials", :tutorials],
       ["Recently Edited", :recently_edited],
       ["All", :none]
     ]

@@ -1006,7 +1006,6 @@ var Editor = (function(){
           self.options.markParen(node, ok);
         }
         else {
-          node.style.fontWeight = "bold";
           node.style.color = ok ? "#8F8" : "#F88";
         }
       }

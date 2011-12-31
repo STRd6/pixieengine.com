@@ -8,6 +8,8 @@ PixieStrd6Com::Application.routes.draw do
 
   get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
 
+  get "testie" => "tilemaps#new"
+
   resources :projects do
     member do
       get :debug

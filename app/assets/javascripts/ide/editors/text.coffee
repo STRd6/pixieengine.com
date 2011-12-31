@@ -39,7 +39,7 @@ window.createTextEditor = (options) ->
 
     textArea.value = currentCode
 
-  $(editor.win.document).keyup processEditorChanges.debounce(500)
+  $(editor.win.document).keyup processEditorChanges.debounce(100)
 
   $editor.bind "save", ->
     codeToSave = editor.getCode()

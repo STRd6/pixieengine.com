@@ -1,6 +1,6 @@
 (($) ->
-  $.fn.liveEdit = () ->
-    this.live 'dblclick', () ->
+  $.fn.liveEdit = (selector, options) ->
+    @on 'dblclick', selector, ->
       $this = $(this)
 
       return if $this.is("input")
@@ -17,7 +17,7 @@
 
       textInput.focus().select()
 
-    this.live 'blur keydown', (event) ->
+    @on 'blur keydown', selector, (event) ->
       if event.type == "keydown"
         return unless event.which == 13 || event.which == 9
 
@@ -27,12 +27,18 @@
       return unless $this.is("input")
 
       $this.attr("data-removed", true)
+      text = $this.val()
 
-      $this.replaceWith $("<" + $this.attr("data-origType") + " />",
+      newElement = $("<" + $this.attr("data-origType") + " />",
         class: $this.attr("class")
         id: $this.attr("id") || null
-        text: $this.val()
+        text: text
       )
+
+      $this.replaceWith newElement
+
+      if options.change
+        options.change(newElement, text)
 
     return this
 

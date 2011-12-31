@@ -29,11 +29,37 @@
 
       showGameKeys()
 
+    # THEME
+    setLightTheme = (active) ->
+      $('html').toggleClass('dark', !active)
+      $('.bulb-sprite').toggleClass('static-off', !active).toggleClass('static-on', active)
+
+    $('.bulb-sprite').click ->
+      $this = $(this)
+      $this.toggleClass('static-off').toggleClass('static-on')
+
+      setLightTheme $this.hasClass('static-on')
+
+    active = if $('.bulb-sprite').length then getVal('light') else true
+    if active?
+      setLightTheme active
+    else if $('html').hasClass 'light'
+      $('.bulb-sprite').attr('class', 'static-on')
+    else
+      $('.bulb-sprite').attr('class', 'static-off')
+
 %style
   :sass
     @import util
 
     $action_bar_height: 28px
+
+    html.dark
+      background-color: #00010D
+      background-image: none
+
+      body > .content
+        background-color: #00010D
 
     html.light body > .content
       background-color: transparent
@@ -51,10 +77,10 @@
 
     // Hide dealies when lights are out
     #feedback, footer, ul.actions_bar, header
-      display: none
+      display: block
 
-      .light &
-        display: block
+      .dark &
+        display: none
 
     ul.actions_bar
       +linear-gradient(color-stops(#7F7F7F, #666))

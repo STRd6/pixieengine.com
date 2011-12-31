@@ -8,20 +8,13 @@
 @import main/list
 
 html
-  background-color: $dark_background
-  color: $dark_text
+  background-color: $light_background
+  background-image: url(/assets/textured_background.png)
+  color: $light_text
   height: 100%
   overflow: auto
   margin: 0
   padding: 0
-
-  &.light
-    background-color: $light_background
-    background-image: url(/assets/textured_background.png)
-    color: $light_text
-
-    & body > .content
-      background-color: $light_background
 
 body
   +box-sizing(border-box)
@@ -32,6 +25,9 @@ body
   line-height: 1.5
   padding-bottom: 3em
   position: relative
+
+  > .content
+    background-color: $light_background
 
 #fullscreen
   /* It's strange this doesn't work exactly right when put in body
@@ -54,6 +50,10 @@ body > .content, header > .content, footer > .content
 
 #fullscreen > .content
   +bounds(100%)
+
+  background: none
+  border: none
+  padding: 0
 
 body > .content
   border-bottom: 1px solid rgba(0, 0, 0, 0.05)
