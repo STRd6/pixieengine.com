@@ -14,6 +14,7 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       @commandStack = CommandStack()
 
       @selection = new Models.Selection
+        settings: this
 
     execute: (command) ->
       @commandStack.execute command

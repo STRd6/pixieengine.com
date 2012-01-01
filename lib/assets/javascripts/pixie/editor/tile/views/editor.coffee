@@ -3,11 +3,12 @@
 #= require pixie/editor/base
 
 #= require ../actions
+#= require ../command
 #= require ../console
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
-  Models = Pixie.Editor.Tile.Models
-  Tile = Pixie.Editor.Tile
+  {Tile} = Pixie.Editor
+  {Command, Models} = Tile
 
   class Views.Editor extends Backbone.View
     className: 'editor tile_editor'
@@ -67,13 +68,21 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
         @addAction action
 
+      @addAction
+        name: "delete selection"
+        menu: false
+        hotkeys: "del"
+        perform: (editor) ->
+          console.log "Delete Selection"
+          editor.deleteSelection()
+
       # Set Eval Context
       @eval = (code) =>
         eval(code)
 
       # TODO: Refactor this to be a real self.include
       # TODO: Reconcile Backbone Views and Super-System
-      Pixie.Editor.Tile.Console(this, this)
+      Tile.Console(this, this)
 
       @render()
 
@@ -84,6 +93,21 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     takeFocus: =>
       window.currentComponent = this
+
+    deleteSelection: ->
+      layer = @settings.get "activeLayer"
+
+      compoundCommand = Command.CompoundCommand()
+
+      @settings.selection.eachPosition (x, y) ->
+        if instance = layer.instanceAt(x, y)
+
+          compoundCommand.push Command.RemoveInstance
+            instance: instance
+            layer: layer
+          , true
+
+      @settings.execute compoundCommand unless compoundCommand.empty()
 
     toJSON: ->
       settingsJSON = @settings.toJSON()
