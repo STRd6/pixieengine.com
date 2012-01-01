@@ -36,6 +36,93 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
               layer: layer
       end: ->
 
+    fill:
+      start: ->
+      enter: ({x, y, layer, entity, execute, selection, settings}) ->
+        return unless entity and layer
+
+        tileWidth = settings.get "tileWidth"
+        tileHeight = settings.get "tileHeight"
+        tilesWide = settings.get "tilesWide"
+        tilesTall = settings.get "tilesTall"
+
+        inBounds = (x, y) ->
+          (0 <= x < tileWidth * tilesWide) && (0 <= y < tileHeight * tilesTall)
+
+        entityAt = (position) ->
+          [x, y] = position
+
+          if instance = layer.instanceAt(x, y)
+            instance.get "sourceEntity"
+          else
+            null
+
+        getNeighborPositions = (position) ->
+          [x, y] = position
+
+          neighbors = [
+            [x - tileWidth, y]
+            [x + tileWidth, y]
+            [x, y - tileHeight]
+            [x, y + tileHeight]
+          ].select (neighborPos) ->
+            inBounds(neighborPos[0], neighborPos[1])
+
+        replaceInstance = (position, entity) ->
+          [x, y] = position
+          # Only allow a single instance per cell
+          if previousInstance = layer.instanceAt(x, y)
+            execute Command.RemoveInstance
+              instance: previousInstance
+              layer: layer
+
+          instance = new Models.Instance
+            x: x
+            y: y
+            sourceEntity: entity
+
+          execute Command.AddInstance
+            instance: instance
+            layer: layer
+
+        # Handle single tile
+        if entity
+          sourcePattern = [[entity]]
+        else if pattern
+          # TODO: Handle patterns
+          sourcePattern = null
+
+        if sourcePattern
+          inSelection = selection.containsPosition(x, y)
+
+          patternEntity = sourcePattern[0][0]
+
+          filledSet = {}
+          queue = []
+
+          position = [x, y]
+
+          targetEntity = entityAt(position)
+          replaceInstance(position, patternEntity)
+          queue.push(position)
+
+          while position = queue.pop()
+            filledSet[position] = true
+            neighbors = getNeighborPositions(position)
+
+            neighbors.each (neighbor, index) ->
+              if inSelection == selection.containsPosition(neighbor[0], neighbor[1])
+                currentEntity = entityAt(neighbor)
+
+                if currentEntity == targetEntity
+                  patternEntity = sourcePattern.wrap( (neighbor[1] - y) / tileHeight).wrap( (neighbor[0] - x) / tileWidth)
+                  replaceInstance(neighbor, patternEntity)
+
+                  queue.push(neighbor) unless filledSet[neighbor]
+
+        return # Just to keep coffeescript from constructing and returning a giant array
+      end: ->
+
     selection:
       start: ({x, y, selection}) ->
         selection.set {

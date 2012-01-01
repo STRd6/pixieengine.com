@@ -29,3 +29,13 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
             callback(curX, curY)
             curX += tileWidth
           curY += tileHeight
+
+    containsPosition: (x, y) ->
+      if @get 'active'
+        startX = @get 'x'
+        startY = @get 'y'
+        width = @get 'width'
+        height = @get 'height'
+
+        startY <= y < startY + height and
+        startX <= x < startX + width

@@ -73,7 +73,6 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         menu: false
         hotkeys: "del"
         perform: (editor) ->
-          console.log "Delete Selection"
           editor.deleteSelection()
 
       # Set Eval Context
