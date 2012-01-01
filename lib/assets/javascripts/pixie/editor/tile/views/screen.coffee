@@ -14,6 +14,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
             y: y
             sourceEntity: entity
 
+          # Only allow a single instance per cell
+          if previousInstance = layer.instanceAt(x, y)
+            execute Command.RemoveInstance
+              instance: previousInstance
+              layer: layer
+
           execute Command.AddInstance
             instance: instance
             layer: layer

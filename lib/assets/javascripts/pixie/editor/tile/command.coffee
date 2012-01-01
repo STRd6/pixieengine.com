@@ -25,7 +25,8 @@ namespace "Pixie.Editor.Tile.Command", (Command) ->
         execute: ->
           I.commands.invoke "execute"
         undo: ->
-          I.commands.invoke "undo"
+          # Undo last command first
+          I.commands.copy().reverse().invoke "undo"
         push: (command, noExecute) ->
           # We execute commands immediately when pushed in the compound
           # so that the effects of events during mousemove appear
