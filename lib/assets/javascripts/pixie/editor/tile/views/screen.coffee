@@ -37,8 +37,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       end: ->
 
     fill:
-      start: ->
-      enter: ({x, y, layer, entity, execute, selection, settings}) ->
+      start: ({x, y, layer, entity, execute, selection, settings}) ->
         return unless entity and layer
 
         tileWidth = settings.get "tileWidth"
@@ -121,6 +120,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
                   queue.push(neighbor) unless filledSet[neighbor]
 
         return # Just to keep coffeescript from constructing and returning a giant array
+      enter: ->
       end: ->
 
     selection:
