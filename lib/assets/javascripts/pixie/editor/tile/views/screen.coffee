@@ -25,6 +25,9 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         model: @selection
       @$(".canvas").append selectionView.el
 
+      # Cache for views so they won't constantly be recreated
+      @_layerViews = {}
+
       @collection.bind 'add', @appendLayer
       @collection.bind 'reset', @render
 
@@ -50,9 +53,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         @appendLayer layer
 
     appendLayer: (layer) =>
-      layerView = new Views.ScreenLayer
-        model: layer
-        settings: @settings
+      unless layerView = @_layerViews[layer.cid]
+        layerView = @_layerViews[layer.cid] = new Views.ScreenLayer
+          model: layer
+          settings: @settings
 
       @$("ul.layers").append layerView.render().el
 
