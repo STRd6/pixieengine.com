@@ -16,6 +16,9 @@ class Pixie.Views.Animations.Editor extends Backbone.View
   el: '.backbone_lebenmeister'
 
   initialize: ->
+    # force jQuery @el
+    @el = $(@el)
+
     self = @
 
     @render()
@@ -42,15 +45,15 @@ class Pixie.Views.Animations.Editor extends Backbone.View
     @tilesetView.collection.bind 'addFrame', (model) =>
       @framesView.collection.add(model.clone())
 
-    $(@el).find('.content .relative').append(@playerView.el)
+    @$('.content .relative').append(@playerView.el)
 
-    $(@el).find('.scrubber').change ->
+    @$('.scrubber').change ->
       index = $(this).val().parse()
 
       self.framesView.highlight(index)
       self.framesView.collection.toFrame(index)
 
-    $(@el).dropImageReader (file, event) =>
+    @el.dropImageReader (file, event) =>
       if event.target.readyState == FileReader.DONE
         src = event.target.result
         name = file.fileName
@@ -65,6 +68,6 @@ class Pixie.Views.Animations.Editor extends Backbone.View
         @tilesetView.collection.add({src: src})
 
   render: =>
-    $(@el).append($.tmpl('lebenmeister/editor_frame'))
+    @el.append($.tmpl('lebenmeister/editor_frame'))
 
     return @
