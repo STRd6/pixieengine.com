@@ -2,11 +2,11 @@
 #= require backbone
 #= require corelib
 
-#= require models/tile
+#= require models/frame
 
 window.Pixie ||= {}
 Pixie.Models ||= {}
 
 class Pixie.Models.Sequence extends Backbone.Collection
-  model: Pixie.Models.Frame
-
+  initialize: ->
+    @collection = new Pixie.Models.FramesCollection
