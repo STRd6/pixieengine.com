@@ -1,4 +1,4 @@
-CommandStack = ->
+window.CommandStack = ->
   stack = []
   index = 0
 
@@ -6,7 +6,8 @@ CommandStack = ->
     stack[index] = command
     command.execute()
 
-    index += 1
+    # Be sure to blast obsolete redos
+    stack.length = index += 1
 
   undo: ->
     if @canUndo()

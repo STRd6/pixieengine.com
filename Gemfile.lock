@@ -51,10 +51,10 @@ GIT
     exception_notification (1.0.0)
 
 GIT
-  remote: https://github.com/thoughtbot/factory_girl.git
-  revision: a50adda6c31b1b8fe929bb5be3e00e6125f577f0
+  remote: git://github.com/thoughtbot/factory_girl.git
+  revision: 4b6ada72cfe551becf13e9e707d1591833379075
   specs:
-    factory_girl (2.1.2)
+    factory_girl (2.3.2)
       activesupport
 
 GEM

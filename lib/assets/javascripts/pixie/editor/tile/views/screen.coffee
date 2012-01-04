@@ -1,34 +1,10 @@
 #= require tmpls/pixie/editor/tile/screen
 #= require ../command
+#= require ../tools
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
-  {Command, Models} = Pixie.Editor.Tile
-
-  tools =
-    stamp:
-      start: ->
-      enter: ({x, y, layer, entity, execute}) ->
-        if layer and entity
-          instance = new Models.Instance
-            x: x
-            y: y
-            sourceEntity: entity
-
-          execute Command.AddInstance
-            instance: instance
-            layer: layer
-      end: ->
-
-    eraser:
-      start: ->
-      enter: ({x, y, layer, execute})->
-        if layer
-          instance = layer.instanceAt(x, y)
-
-          execute Command.RemoveInstance
-            instance: instance
-            layer: activeLayer
-      end: ->
+  Tile = Pixie.Editor.Tile
+  {Command, Models} = Tile
 
   UI = Pixie.UI
 
@@ -43,10 +19,16 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.html $.tmpl("pixie/editor/tile/screen")
 
       @settings = @options.settings
-      @execute = @settings.execute
+
+      @selection = @settings.selection
+      selectionView = new Views.ScreenSelection
+        model: @selection
+      @$(".canvas").append selectionView.el
+
+      # Cache for views so they won't constantly be recreated
+      @_layerViews = {}
 
       @collection.bind 'add', @appendLayer
-
       @collection.bind 'reset', @render
 
       @render()
@@ -71,11 +53,15 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         @appendLayer layer
 
     appendLayer: (layer) =>
-      layerView = new Views.ScreenLayer
-        model: layer
-        settings: @settings
+      unless layerView = @_layerViews[layer.cid]
+        layerView = @_layerViews[layer.cid] = new Views.ScreenLayer
+          model: layer
+          settings: @settings
 
       @$("ul.layers").append layerView.render().el
+
+    execute: (command) =>
+      @currentCompoundCommand.push command
 
     localPosition: (event) =>
       {currentTarget} = event
@@ -105,22 +91,28 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         layer = @settings.get "activeLayer"
         entity = @settings.get "activeEntity"
 
-        @activeTool.enter({x, y, layer, entity, @execute})
+        @activeTool.enter({x, y, layer, entity, @execute, @selection, @settings})
 
     actionStart: (event) =>
       event.preventDefault()
 
-      if tool = tools[@settings.get("activeTool")]
+      # Reuse an empty existing compound command if present
+      unless @currentCompoundCommand and @currentCompoundCommand.empty()
+        @currentCompoundCommand = Command.CompoundCommand()
+
+        @settings.execute @currentCompoundCommand
+
+      if tool = Tile.tools[@settings.get("activeTool")]
         @activeTool = tool
 
         {x, y} = @localPosition(event)
         layer = @settings.get "activeLayer"
         entity = @settings.get "activeEntity"
 
-        tool.start({x, y, layer, entity, @execute})
-        tool.enter({x, y, layer, entity, @execute})
+        tool.start({x, y, layer, entity, @execute, @selection, @settings})
+        tool.enter({x, y, layer, entity, @execute, @selection, @settings})
 
-    actionEnd: (event) ->
+    actionEnd: (event) =>
       if @activeTool
         {x, y} = @localPosition(event)
         layer = @settings.get "activeLayer"

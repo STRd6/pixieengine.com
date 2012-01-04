@@ -44,7 +44,7 @@ gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", 
 gem "whenever"
 
 group :test do
-  gem "factory_girl", :git => "https://github.com/thoughtbot/factory_girl.git"
+  gem "factory_girl", :git => "git://github.com/thoughtbot/factory_girl.git"
   gem "shoulda"
   gem "turn", :require => false
 end
