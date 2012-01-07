@@ -62,3 +62,11 @@ describe "Animation Editor", ->
 
       expect($('.right .sequence')).toExist()
 
+    it "should change fps when user edits fps value", ->
+      expect(@view.playerView.model.get('fps')).toEqual(30)
+
+      # simulate user changing fps value
+      $('.fps input').val(10).change()
+
+      expect(@view.playerView.model.get('fps')).toEqual(10)
+
