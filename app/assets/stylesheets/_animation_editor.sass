@@ -59,14 +59,14 @@ $tileset_sprite_width: 60px
       +bounds(80px)
 
     .name
-      left: 25px
+      left: 5px
       position: absolute
       top: -1px
 
     input.name
-      +bounds(80px, 20px)
+      +bounds(90px, 20px)
 
-      left: 20px
+      left: 0px
       margin: 0
       padding: 3px
       top: -2px
@@ -154,6 +154,10 @@ $tileset_sprite_width: 60px
 
         input
           width: 30px
+
+    .left, .right, .bottom
+      box-sizing: border-box
+      padding: 3px 7px
 
     .left, .right
       background-color: $light_background
