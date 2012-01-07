@@ -4,7 +4,6 @@
 #= require models/frames_collection
 
 #= require tmpls/lebenmeister/frames
-#= require tmpls/lebenmeister/frame
 
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
@@ -36,8 +35,32 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       return @
 
-    addFrame: (model) =>
-      @$('.sprites').append $.tmpl('lebenmeister/frame', model.templateData())
+    addFrame: (sequence) =>
+      name = sequence.get('name')
+      cid = sequence.cid
+
+      sequenceEl = $ "<div class=sequence data-cid=#{cid}><span class=name>#{name}</span></div>"
+      lastFrame = sequence.get('frames').last()
+
+      width = null
+      height = null
+
+      sequence.get('frames').each (frame) ->
+        if frame == lastFrame
+          src = frame.get 'src'
+          img = $ "<img src=#{src}>"
+          height = img.get(0).height
+          width = img.get(0).width
+
+          sequenceEl.append img
+        else
+          sequenceEl.append '<div class="placeholder"></div>'
+
+      sequenceEl.find('.placeholder').css
+        width: width + 4
+        height: height + 4
+
+      @$('.sprites').append sequenceEl
 
     clear: =>
       @collection.reset()
