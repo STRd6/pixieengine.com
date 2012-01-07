@@ -39,7 +39,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
         sequence = new Models.Sequence
           frames: frameCollection.flattenFrames()
 
-        @sequencesView.addAndRender(sequence)
+        @sequencesView.collection.add(sequence)
 
       @$('.content .relative').append(@playerView.render().el)
 

@@ -1,7 +1,5 @@
 #= require models/tiles_collection
 
-#= require tmpls/lebenmeister/tile
-
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
@@ -29,7 +27,12 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @collection.trigger 'addFrame', model
 
     addTile: (model) =>
-      @$('.sprites').append $.tmpl('lebenmeister/tile', model.templateData())
+      src = model.get 'src'
+      cid = model.cid
+
+      img = "<img src=#{src} data-cid=#{cid}>"
+
+      @$('.sprites').append img
 
     bindDropImageReader: (editorEl) =>
       editorEl.dropImageReader (file, event) =>

@@ -4,6 +4,3 @@ namespace "Pixie.Models", (Models) ->
       name: "New Sequence"
       frames: []
 
-    templateData: =>
-      frame = @get('frames').first()
-      _.extend({}, {cid: frame.cid}, frame.attributes)
