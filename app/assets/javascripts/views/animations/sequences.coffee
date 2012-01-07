@@ -5,24 +5,66 @@
 
 #= require tmpls/lebenmeister/sequences
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Animations ||= {}
+namespace "Pixie.Views.Animations", (Animations) ->
+  {Models} = Pixie
 
-class Pixie.Views.Animations.Sequences extends Backbone.View
-  el: 'nav.right'
+  class Animations.Sequences extends Backbone.View
+    el: 'nav.right'
 
-  collection: new Pixie.Models.SequencesCollection
+    collection: new Models.SequencesCollection
 
-  initialize: ->
-    @render()
+    events:
+      'click .sequence': 'addToFrames'
 
-  render: =>
-    $(@el).empty()
-    $(@el).append($.tmpl('lebenmeister/sequences'))
+    initialize: ->
+      # force jQuery el
+      @el = $(@el)
 
-    @collection.each (sequence) =>
-      @$('.sprites').append('<div class="sequence"></div>')
+      @el.append $.tmpl('lebenmeister/sequences')
 
-    return @
+      @el.liveEdit ".name",
+        change: (element, value) =>
+          cid = element.parent().data("cid")
+
+          @collection.getByCid(cid).set name: value
+
+      @render()
+
+    addToFrames: (e) =>
+      cid = $(e.currentTarget).data('cid')
+      sequence = @collection.getByCid(cid)
+
+      @collection.trigger 'addSequenceToFrames', sequence.clone()
+
+    render: =>
+      @$('.sequence').remove()
+
+      @collection.each (sequence) =>
+        name = sequence.get('name')
+        cid = sequence.cid
+
+        sequenceEl = $ "<div class=sequence data-cid=#{cid}><span class=name>#{name}</span></div>"
+        lastFrame = sequence.get('frames').last()
+
+        width = null
+        height = null
+
+        sequence.get('frames').each (frame) ->
+          if frame == lastFrame
+            src = frame.get 'src'
+            img = $ "<img src=#{src}>"
+            height = img.get(0).height
+            width = img.get(0).width
+
+            sequenceEl.append img
+          else
+            sequenceEl.append '<div class="placeholder"></div>'
+
+        sequenceEl.find('.placeholder').css
+          width: width + 4
+          height: height + 4
+
+        @$('.sprites').append sequenceEl
+
+      return @
 
