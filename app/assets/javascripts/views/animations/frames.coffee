@@ -39,7 +39,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       name = sequence.get('name')
       cid = sequence.cid
 
-      sequenceEl = $ "<div class=sequence data-cid=#{cid}><span class=name>#{name}</span></div>"
+      sequenceEl = $ "<div class=sequence data-cid=#{cid}></div>"
       lastFrame = sequence.get('frames').last()
 
       width = null
