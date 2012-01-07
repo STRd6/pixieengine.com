@@ -9,11 +9,13 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     initialize: ->
       # Force jQuery Element
       @el = $(@el)
-      
+
       # Set up HTML
       @el.html $.tmpl("pixie/editor/tile/entity_selection")
 
       @collection.bind 'add', @appendEntity
+      @collection.bind 'remove', @removeEntityView
+      @collection.bind 'reset', @render
 
       @options.settings.bind "change:activeEntity", (settings) =>
         if entity = settings.get("activeEntity")
@@ -25,10 +27,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           @$(".entities .entity").each (i, element) =>
             ;# TODO: Persist sort
 
-      @collection.bind 'reset', @render
-
       @render()
-      
+
     appendEntity: (entity) =>
       entityView = new Views.Entity
         model: entity
@@ -56,6 +56,17 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @options.settings.set
         activeEntity: @collection.getByCid(cid)
 
+    removeEntity: =>
+      if entityToRemove = @options.settings.get "activeEntity"
+        @collection.remove entityToRemove
+
+        @options.settings.set
+          activeEntity: null
+
+    removeEntityView: (entity) =>
+      @$(".entities .entity[data-cid=#{entity.cid}]").remove()
+
     events:
       mousedown: "preventDefault"
       "click .entity": "activateEntity"
+      "click button.remove": "removeEntity"
