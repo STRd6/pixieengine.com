@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require models/sequences_collection
 
 #= require tmpls/lebenmeister/sequences

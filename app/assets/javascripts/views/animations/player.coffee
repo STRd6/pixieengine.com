@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require models/animation_player
 
 #= require tmpls/lebenmeister/player

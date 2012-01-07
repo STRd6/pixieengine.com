@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require models/frames_collection
 
 #= require tmpls/lebenmeister/frames
@@ -29,6 +26,13 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @collection.bind 'enableFrameActions', =>
         @$('button').removeAttr('disabled')
+        @$('.create_sequence').attr('title', 'Create a sequence')
+        @$('.clear_frames').attr('title', 'Clear frames')
+
+      @collection.bind 'disableFrameActions', =>
+        @$('button').attr('disabled', true)
+        @$('.create_sequence').attr('title', 'Add frames to create a sequence')
+        @$('.clear_frames').attr('title', 'There are no frames to clear')
 
     render: =>
       @el.append $.tmpl('lebenmeister/frames')
@@ -75,7 +79,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
     emptyFrameTray: =>
       @$('.sprites').empty()
-      @$('button').attr('disabled', true)
+      @collection.trigger 'disableFrameActions'
 
     highlight: (index) =>
       @$('.frame').eq(index).takeClass('selected')

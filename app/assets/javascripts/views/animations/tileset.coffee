@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require models/tiles_collection
 
 #= require tmpls/lebenmeister/tileset

@@ -1,7 +1,3 @@
-#= require underscore
-#= require backbone
-#= require corelib
-
 namespace "Pixie.Models", (Models) ->
   class Models.Sequence extends Backbone.Model
     defaults:
