@@ -4,8 +4,7 @@
 
 #= require models/sequence
 
-window.Pixie ||= {}
-Pixie.Models ||= {}
+namespace "Pixie.Models", (Models) ->
+  class Models.SequencesCollection extends Backbone.Collection
+    model: Models.Sequence
 
-class Pixie.Models.SequencesCollection extends Backbone.Collection
-  model: Pixie.Models.Sequence
