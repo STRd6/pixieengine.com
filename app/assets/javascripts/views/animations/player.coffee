@@ -5,84 +5,86 @@
 
 #= require tmpls/lebenmeister/player
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Animations ||= {}
-
 EMPTY_MODEL = new Backbone.Model
 
-class Pixie.Views.Animations.Player extends Backbone.View
-  el: '.player'
+namespace "Pixie.Views.Animations", (Animations) ->
+  {Models} = Pixie
 
-  events:
-    'click .pause': 'pause'
-    'click .play': 'play'
-    'click .stop': 'stop'
+  class Animations.Player extends Backbone.View
+    el: '.player'
 
-  initialize: ->
-    self = @
+    events:
+      'click .pause': 'pause'
+      'click .play': 'play'
+      'click .stop': 'stop'
 
-    @model = new Pixie.Models.AnimationPlayer
+    initialize: ->
+      # force jQuery el
+      @el = $(@el)
 
-    @frames = @options.frames
+      self = @
 
-    $(@el).find('.fps input').change ->
-      @model.fps($(this).val().parse())
+      @model = new Models.AnimationPlayer
 
-    @frames.bind 'updateSelected', (model, index) =>
-      $(@el).find('.scrubber').val(index)
+      @frames = @options.frames
 
-      @refreshImage(model)
+      @render()
 
-    @frames.bind 'add', =>
-      $(@el).find('.scrubber').attr('max', Math.max(0, @frames.length - 1))
+      @$('.fps input').change ->
+        self.model.fps($(this).val().parse())
 
-    @frames.bind 'reset', =>
-      $(@el).find('.scrubber').attr('max', Math.max(0, @frames.length - 1))
+      @frames.bind 'updateSelected', (model, index) =>
+        @$('.scrubber').val(index)
 
-    @render()
+        @refreshImage(model)
 
-  pause: (e) =>
-    e.preventDefault()
+      @frames.bind 'add', =>
+        @$('.scrubber').attr('max', Math.max(0, @frames.length - 1))
 
-    @model.pause()
-    @showPlay()
+      @frames.bind 'reset', =>
+        @$('.scrubber').attr('max', Math.max(0, @frames.length - 1))
 
-  play: (e) =>
-    e.preventDefault()
+    pause: (e) =>
+      e.preventDefault()
 
-    @model.play()
-    @showPause()
+      @model.pause()
+      @showPlay()
 
-  render: =>
-    $(@el).append($.tmpl('lebenmeister/player', @model.toJSON()))
+    play: (e) =>
+      e.preventDefault()
 
-    return @
+      @model.play()
+      @showPause()
 
-  refreshImage: (model) =>
-    src = (model || EMPTY_MODEL).get('src')
+    render: =>
+      @el.append $.tmpl('lebenmeister/player', @model.toJSON())
 
-    $(@el).find('img').attr('src', src)
+      return @
 
-  resetScrubber: =>
-    $(@el).find('.scrubber').val(0)
+    refreshImage: (model) =>
+      src = (model || EMPTY_MODEL).get('src')
 
-  showPause: =>
-    $(@el).find('.pause').show()
-    $(@el).find('.play').hide()
+      @$('img').attr('src', src)
 
-  showPlay: =>
-    $(@el).find('.play').show()
-    $(@el).find('.pause').hide()
+    resetScrubber: =>
+      @$('.scrubber').val(0)
 
-  stop: (e) =>
-    e.preventDefault()
+    showPause: =>
+      @$('.pause').show()
+      @$('.play').hide()
 
-    @model.stop()
-    @resetScrubber()
-    @showPlay()
-    @trigger 'clearSelectedFrames'
+    showPlay: =>
+      @$('.play').show()
+      @$('.pause').hide()
 
-    # set the preview src to be a transparent 1 x 1 image
-    $(@el).find('img').attr 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
+    stop: (e) =>
+      e.preventDefault()
+
+      @model.stop()
+      @resetScrubber()
+      @showPlay()
+      @trigger 'clearSelectedFrames'
+
+      # set the preview src to be a transparent 1 x 1 image
+      @$('img').attr 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
 
