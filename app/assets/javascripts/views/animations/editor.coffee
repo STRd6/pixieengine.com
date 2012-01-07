@@ -19,8 +19,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       # force jQuery @el
       @el = $(@el)
 
-      self = @
-
       @render()
 
       @tilesetView = new Animations.Tileset
@@ -54,11 +52,11 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('.content .relative').append(@playerView.el)
 
-      @$('.scrubber').change ->
-        index = $(this).val().parse()
+      @$('.scrubber').change (e) =>
+        index = $(e.currentTarget).get(0).valueAsNumber
 
-        self.framesView.highlight(index)
-        self.framesView.collection.toFrame(index)
+        @framesView.highlight(index)
+        @framesView.collection.toFrame(index)
 
       @el.dropImageReader (file, event) =>
         if event.target.readyState == FileReader.DONE

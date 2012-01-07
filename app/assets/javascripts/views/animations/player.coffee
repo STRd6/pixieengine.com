@@ -19,16 +19,17 @@ namespace "Pixie.Views.Animations", (Animations) ->
       # force jQuery el
       @el = $(@el)
 
-      self = @
-
       @model = new Models.AnimationPlayer
 
       @frames = @options.frames
 
       @render()
 
-      @$('.fps input').change ->
-        self.model.fps($(this).val().parse())
+      @$('.fps input').change (e) =>
+        oldValue = @model.get 'fps'
+        newValue = $(e.currentTarget).get(0).valueAsNumber
+
+        $(e.currentTarget).val(oldValue) unless @model.set({ fps: newValue })
 
       @frames.bind 'updateSelected', (model, index) =>
         @$('.scrubber').val(index)
