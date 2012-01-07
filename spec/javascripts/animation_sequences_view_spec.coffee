@@ -10,7 +10,3 @@ beforeEach ->
 afterEach ->
   Pixie.Models.SequencesCollection.restore()
 
-describe "rendering", ->
-  it "should append to the correct container", ->
-    expect($('nav.right').children().length).toBeTruthy()
-
