@@ -1,5 +1,6 @@
 #= require underscore
 #= require backbone
+#= require corelib
 
 #= require views/animations/player
 #= require views/animations/tileset
@@ -41,8 +42,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @framesView.collection.bind 'createSequence', (frameCollection) =>
         sequence = new Models.Sequence
-          frames: frameCollection.models.map (sequence) ->
-            return sequence.attributes.frames.first()
+          frames: frameCollection.flattenFrames()
 
         @sequencesView.collection.add(sequence)
         @sequencesView.render()
