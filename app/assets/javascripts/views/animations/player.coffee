@@ -20,8 +20,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @el = $(@el)
 
       @model = new Models.AnimationPlayer
-
-      @frames = @options.frames
+        frames: @options.frames
 
       @render()
 
@@ -31,16 +30,13 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
         $(e.currentTarget).val(oldValue) unless @model.set({ fps: newValue })
 
-      @frames.bind 'updateSelected', (model, index) =>
-        @$('.scrubber').val(index)
+      @model.bind 'change:scrubberPosition', (model, scrubberPosition) =>
+        @$('.scrubber').val(scrubberPosition)
 
         @refreshImage(model)
 
-      @frames.bind 'add', =>
-        @$('.scrubber').attr('max', Math.max(0, @frames.length - 1))
-
-      @frames.bind 'reset', =>
-        @$('.scrubber').attr('max', Math.max(0, @frames.length - 1))
+      @model.get('frames').bind 'add', (model, collection) =>
+        @$('.scrubber').attr('max', Math.max(0, collection.length - 1))
 
     pause: (e) =>
       e.preventDefault()
@@ -64,9 +60,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('img').attr('src', src)
 
-    resetScrubber: =>
-      @$('.scrubber').val(0)
-
     showPause: =>
       @$('.pause').show()
       @$('.play').hide()
@@ -79,7 +72,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       e.preventDefault()
 
       @model.stop()
-      @resetScrubber()
       @showPlay()
       @trigger 'clearSelectedFrames'
 

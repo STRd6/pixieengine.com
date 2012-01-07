@@ -1,3 +1,5 @@
+#= require models/frames_collection
+
 namespace "Pixie.Models", (Models) ->
   class Pixie.Models.AnimationPlayer extends Backbone.Model
     defaults:
@@ -6,12 +8,18 @@ namespace "Pixie.Models", (Models) ->
       stopped: true
       fps: 30
       playbackId: null
+      scrubberPosition: 0
+      frames: new Pixie.Models.FramesCollection
 
     initialize: ->
       @bind 'change:fps', =>
         if id = @get('playbackId')
           @stop()
           @play()
+
+      @get('frames').bind 'updateSelected', (model, index) =>
+        @set
+          scrubberPosition: index
 
     pause: =>
       @set
@@ -36,6 +44,7 @@ namespace "Pixie.Models", (Models) ->
         playing: false
         stopped: true
         playbackId: null
+        scrubberPosition: 0
 
     nextFrame: =>
       unless @get('paused')
