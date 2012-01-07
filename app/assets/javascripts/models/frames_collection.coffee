@@ -17,6 +17,11 @@ namespace "Pixie.Models", (Models) ->
     createSequence: =>
       @trigger 'createSequence', @
 
+    flattenFrames: =>
+      (@models.map (sequence) ->
+        sequence.get 'frames'
+      ).flatten()
+
     nextFrame: =>
       @shiftFrame(+1)
 
@@ -25,8 +30,14 @@ namespace "Pixie.Models", (Models) ->
 
     shiftFrame: (direction) =>
       @selected = (@selected + direction).mod(@length)
-      @trigger 'updateSelected', @at(@selected), @selected
+
+      flattenedFrames = @flattenFrames()
+
+      @trigger 'updateSelected', flattenedFrames[@selected], @selected
 
     toFrame: (frame) =>
       @selected = frame
-      @trigger 'updateSelected', @at(@selected), @selected
+
+      flattenedFrames = @flattenFrames()
+
+      @trigger 'updateSelected', flattenedFrames[@selected], @selected
