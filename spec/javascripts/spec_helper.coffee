@@ -5,6 +5,8 @@ require '/assets/jquery.tmpl.min.js'
 require '/assets/sinon.js'
 require '/assets/jasmine-jquery.js'
 require '/assets/jasmine-sinon.js'
+require '/assets/site.js'
+require '/assets/jquery.live_edit.js'
 
 # fixtures
 beforeEach ->

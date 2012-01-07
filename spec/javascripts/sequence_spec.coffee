@@ -5,4 +5,4 @@ describe "Sequence model", ->
   it "should contain a frames collection", ->
     sequence = new Pixie.Models.Sequence
 
-    expect(sequence.collection).toBeDefined()
+    expect(sequence.get 'frames').toBeDefined()
