@@ -7,10 +7,8 @@ namespace "Pixie.Models", (Models) ->
       fps: 30
       playbackId: null
 
-    fps: (fps) =>
-      if 0 < fps <= 60
-        @set({fps: fps})
-
+    initialize: ->
+      @bind 'change:fps', =>
         if id = @get('playbackId')
           @stop()
           @play()
@@ -50,3 +48,9 @@ namespace "Pixie.Models", (Models) ->
     toFrame: (frame) =>
       if 0 <= frame < @get('totalFrames')
         @set({frame: frame})
+
+    validate: (attrs) ->
+      if attrs.fps?
+        unless 0 < attrs.fps <= 60
+          return "fps must be between 0 and 60"
+
