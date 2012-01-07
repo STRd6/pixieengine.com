@@ -31,6 +31,8 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @render()
 
     addToFrames: (e) =>
+      return if $(e.target).is('.name')
+
       cid = $(e.currentTarget).data('cid')
       sequence = @collection.getByCid(cid)
 
