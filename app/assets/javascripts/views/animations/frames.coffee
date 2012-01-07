@@ -34,6 +34,9 @@ namespace "Pixie.Views.Animations", (Animations) ->
         @$('.create_sequence').attr('title', 'Add frames to create a sequence')
         @$('.clear_frames').attr('title', 'There are no frames to clear')
 
+      @collection.bind 'change:selected', (collection, selected) =>
+        @$('.frame').eq(selected).takeClass('selected')
+
     render: =>
       @el.append $.tmpl('lebenmeister/frames')
 
@@ -80,9 +83,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
     emptyFrameTray: =>
       @$('.sprites').empty()
       @collection.trigger 'disableFrameActions'
-
-    highlight: (index) =>
-      @$('.frame').eq(index).takeClass('selected')
 
     select: (e) =>
       frame = $(e.currentTarget)

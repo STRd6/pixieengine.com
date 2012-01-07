@@ -35,9 +35,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @playerView.model.bind 'nextFrame', =>
         @framesView.collection.nextFrame()
 
-      @framesView.collection.bind 'updateSelected', (model, index) =>
-        @framesView.highlight(index)
-
       @framesView.collection.bind 'createSequence', (frameCollection) =>
         sequence = new Models.Sequence
           frames: frameCollection.flattenFrames()
@@ -52,25 +49,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('.content .relative').append(@playerView.el)
 
-      @$('.scrubber').change (e) =>
-        index = $(e.currentTarget).get(0).valueAsNumber
-
-        @framesView.highlight(index)
-        @framesView.collection.toFrame(index)
-
-      @el.dropImageReader (file, event) =>
-        if event.target.readyState == FileReader.DONE
-          src = event.target.result
-          name = file.fileName
-
-          # TODO Add in support for sprite sheets
-          #[dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
-
-          #if tileWidth && tileHeight
-          #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
-          #    addTile(sprite)
-
-          @tilesetView.collection.add({src: src})
+      @tilesetView.bindDropImageReader(@el)
 
     render: =>
       @el.append $.tmpl('lebenmeister/editor_frame')

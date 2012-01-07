@@ -26,6 +26,7 @@ namespace "Pixie.Models", (Models) ->
 
     shiftFrame: (direction) =>
       @selected = (@selected + direction).mod(@length)
+      @trigger 'change:selected', @, @selected
 
       flattenedFrames = @flattenFrames()
 
@@ -33,6 +34,7 @@ namespace "Pixie.Models", (Models) ->
 
     toFrame: (frame) =>
       @selected = frame
+      @trigger 'change:selected', @, @selected
 
       flattenedFrames = @flattenFrames()
 

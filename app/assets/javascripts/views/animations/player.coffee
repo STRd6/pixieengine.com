@@ -30,6 +30,11 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
         $(e.currentTarget).val(oldValue) unless @model.set({ fps: newValue })
 
+      @$('.scrubber').change (e) =>
+        index = $(e.currentTarget).get(0).valueAsNumber
+
+        @model.set({ scrubberPosition: index })
+
       @model.bind 'change:scrubberPosition', (model, scrubberPosition) =>
         @$('.scrubber').val(scrubberPosition)
 

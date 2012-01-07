@@ -38,6 +38,22 @@ namespace "Pixie.Views.Animations", (Animations) ->
     addTile: (model) =>
       @$('.sprites').append $.tmpl('lebenmeister/tile', model.templateData())
 
+    bindDropImageReader: (editorEl) =>
+      console.log editorEl
+      editorEl.dropImageReader (file, event) =>
+        if event.target.readyState == FileReader.DONE
+          src = event.target.result
+          name = file.fileName
+
+          # TODO Add in support for sprite sheets
+          #[dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
+
+          #if tileWidth && tileHeight
+          #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
+          #    addTile(sprite)
+
+          @collection.add({src: src})
+
     enableSort: =>
       @$('.sprites').sortable
         distance: 10
