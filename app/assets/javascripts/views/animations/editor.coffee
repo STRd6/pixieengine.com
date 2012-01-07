@@ -8,66 +8,73 @@
 
 #= require tmpls/lebenmeister/editor_frame
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Animations ||= {}
+namespace "Pixie.Views.Animations", (Animations) ->
+  {Models} = Pixie
 
-class Pixie.Views.Animations.Editor extends Backbone.View
-  el: '.backbone_lebenmeister'
+  class Animations.Editor extends Backbone.View
+    el: '.backbone_lebenmeister'
 
-  initialize: ->
-    # force jQuery @el
-    @el = $(@el)
+    initialize: ->
+      # force jQuery @el
+      @el = $(@el)
 
-    self = @
+      self = @
 
-    @render()
+      @render()
 
-    @tilesetView = new Pixie.Views.Animations.Tileset
-    @framesView = new Pixie.Views.Animations.Frames
-    @playerView = new Pixie.Views.Animations.Player
-      frames: @framesView.collection
-    @sequencesView = new Pixie.Views.Animations.Sequences
+      @tilesetView = new Animations.Tileset
+      @framesView = new Animations.Frames
+      @playerView = new Animations.Player({ frames: @framesView.collection })
+      @sequencesView = new Animations.Sequences
 
-    @playerView.bind 'clearSelectedFrames', =>
-      @framesView.clearSelected()
+      @sequencesView.collection.bind 'addSequenceToFrames', (sequence) =>
+        @framesView.collection.add sequence
 
-    @playerView.model.bind 'nextFrame', =>
-      @framesView.collection.nextFrame()
+      @playerView.bind 'clearSelectedFrames', =>
+        @framesView.clearSelected()
 
-    @framesView.collection.bind 'updateSelected', (model, index) =>
-      @framesView.highlight(index)
+      @playerView.model.bind 'nextFrame', =>
+        @framesView.collection.nextFrame()
 
-    @framesView.collection.bind 'createSequence', =>
-      @sequencesView.collection.add(new Pixie.Models.Sequence)
-      @sequencesView.render()
+      @framesView.collection.bind 'updateSelected', (model, index) =>
+        @framesView.highlight(index)
 
-    @tilesetView.collection.bind 'addFrame', (model) =>
-      @framesView.collection.add(model.clone())
+      @framesView.collection.bind 'createSequence', (frameCollection) =>
+        sequence = new Models.Sequence
+          frames: frameCollection.models.map (sequence) ->
+            return sequence.attributes.frames.first()
 
-    @$('.content .relative').append(@playerView.el)
+        @sequencesView.collection.add(sequence)
+        @sequencesView.render()
 
-    @$('.scrubber').change ->
-      index = $(this).val().parse()
+      @tilesetView.collection.bind 'addFrame', (model) =>
+        sequence = new Models.Sequence({frames: [model]})
 
-      self.framesView.highlight(index)
-      self.framesView.collection.toFrame(index)
+        @framesView.collection.add sequence
 
-    @el.dropImageReader (file, event) =>
-      if event.target.readyState == FileReader.DONE
-        src = event.target.result
-        name = file.fileName
+      @$('.content .relative').append(@playerView.el)
 
-        # TODO Add in support for sprite sheets
-        #[dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
+      @$('.scrubber').change ->
+        index = $(this).val().parse()
 
-        #if tileWidth && tileHeight
-        #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
-        #    addTile(sprite)
+        self.framesView.highlight(index)
+        self.framesView.collection.toFrame(index)
 
-        @tilesetView.collection.add({src: src})
+      @el.dropImageReader (file, event) =>
+        if event.target.readyState == FileReader.DONE
+          src = event.target.result
+          name = file.fileName
 
-  render: =>
-    @el.append($.tmpl('lebenmeister/editor_frame'))
+          # TODO Add in support for sprite sheets
+          #[dimensions, tileWidth, tileHeight] = name.match(/x(\d*)y(\d*)/) || []
 
-    return @
+          #if tileWidth && tileHeight
+          #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
+          #    addTile(sprite)
+
+          @tilesetView.collection.add({src: src})
+
+    render: =>
+      @el.append $.tmpl('lebenmeister/editor_frame')
+
+      return @
