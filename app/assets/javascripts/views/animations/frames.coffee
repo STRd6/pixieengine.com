@@ -69,6 +69,12 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('.sprites').append sequenceEl
 
+    addSequence: (model) =>
+      if model.get('frames')
+        @collection.add(model)
+      else
+        @collection.add(new Pixie.Models.Sequence({frames: [model]}))
+
     clear: =>
       @collection.reset()
       @emptyFrameTray()

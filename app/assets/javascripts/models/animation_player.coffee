@@ -48,11 +48,11 @@ namespace "Pixie.Models", (Models) ->
 
     nextFrame: =>
       unless @get('paused')
-        @trigger 'nextFrame'
+        @get('frames').nextFrame()
 
     previousFrame: =>
       unless @get('paused')
-        @trigger 'previousFrame'
+        @get('frames').previousFrame()
 
     toFrame: (frame) =>
       if 0 <= frame < @get('totalFrames')

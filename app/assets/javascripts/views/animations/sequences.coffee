@@ -27,6 +27,10 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @render()
 
+    addAndRender: (sequence) =>
+      @collection.add(sequence)
+      @render()
+
     addToFrames: (e) =>
       return if $(e.target).is('.name')
 

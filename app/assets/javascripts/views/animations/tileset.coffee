@@ -39,7 +39,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @$('.sprites').append $.tmpl('lebenmeister/tile', model.templateData())
 
     bindDropImageReader: (editorEl) =>
-      console.log editorEl
       editorEl.dropImageReader (file, event) =>
         if event.target.readyState == FileReader.DONE
           src = event.target.result

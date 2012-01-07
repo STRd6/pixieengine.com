@@ -27,25 +27,19 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @sequencesView = new Animations.Sequences
 
       @sequencesView.collection.bind 'addSequenceToFrames', (sequence) =>
-        @framesView.collection.add sequence
+        @framesView.addSequence(sequence)
+
+      @tilesetView.collection.bind 'addFrame', (model) =>
+        @framesView.addSequence(model)
 
       @playerView.bind 'clearSelectedFrames', =>
         @framesView.clearSelected()
-
-      @playerView.model.bind 'nextFrame', =>
-        @framesView.collection.nextFrame()
 
       @framesView.collection.bind 'createSequence', (frameCollection) =>
         sequence = new Models.Sequence
           frames: frameCollection.flattenFrames()
 
-        @sequencesView.collection.add(sequence)
-        @sequencesView.render()
-
-      @tilesetView.collection.bind 'addFrame', (model) =>
-        sequence = new Models.Sequence({frames: [model]})
-
-        @framesView.collection.add sequence
+        @sequencesView.addAndRender(sequence)
 
       @$('.content .relative').append(@playerView.el)
 
