@@ -8,6 +8,8 @@ describe "Animation Editor", ->
     @view = new Pixie.Views.Animations.Editor
 
     @model = new Backbone.Model
+      frames: []
+
     @model.templateData = ->
       src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=="
       cid: "c3"
