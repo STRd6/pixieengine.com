@@ -2,7 +2,31 @@
   %section
     .relative
       .player
+        %img
+        .controls.actions_bar
+          .play.static-play
+          .pause.static-pause(style="display:none;")
+          .stop.static-stop
+          .scrubber_container
+            %input.scrubber(max="0" min="0" type="range" value="0")
+          %label.fps
+            fps
+            %input(max="60" min="0" type="number" value="30")
   %nav.left
+    %h3 Sprites
+    .sprites
   %nav.right
+    %h3 Sequences
+    .sprites
   %nav.bottom
+    .module_header
+      %h3 Frames
+      .button_group
+        %button.create_sequence{:disabled => "true", :title => "Add frames to create a sequence"}>
+          %span.static-pictures
+          Create Sequence
+        %button.clear_frames{:disabled => "true", :title => "There are no frames to clear"}
+          %span.static-application
+          Clear Frames
+    .sprites
 

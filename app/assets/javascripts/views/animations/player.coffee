@@ -1,7 +1,5 @@
 #= require models/animation_player
 
-#= require tmpls/lebenmeister/player
-
 EMPTY_MODEL = new Backbone.Model
 
 namespace "Pixie.Views.Animations", (Animations) ->
@@ -21,8 +19,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @model = new Models.AnimationPlayer
         frames: @options.frames
-
-      @render()
 
       @$('.fps input').change (e) =>
         oldValue = @model.get 'fps'
@@ -54,11 +50,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @model.play()
       @showPause()
-
-    render: =>
-      @el.append $.tmpl('lebenmeister/player', @model.toJSON())
-
-      return @
 
     refreshImage: (model) =>
       src = (model || EMPTY_MODEL).get('src')

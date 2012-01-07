@@ -1,6 +1,5 @@
 #= require models/tiles_collection
 
-#= require tmpls/lebenmeister/tileset
 #= require tmpls/lebenmeister/tile
 
 namespace "Pixie.Views.Animations", (Animations) ->
@@ -18,16 +17,10 @@ namespace "Pixie.Views.Animations", (Animations) ->
       # force jQuery el
       @el = $(@el)
 
-      @render()
       @enableSort()
 
       @collection.bind 'add', (model) =>
         @addTile(model)
-
-    render: =>
-      @el.append($.tmpl('lebenmeister/tileset'))
-
-      return @
 
     addFrame: (e) =>
       cid = $(e.currentTarget).data('cid')

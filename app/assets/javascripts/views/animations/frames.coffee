@@ -1,7 +1,5 @@
 #= require models/frames_collection
 
-#= require tmpls/lebenmeister/frames
-
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
@@ -19,8 +17,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       # force jQuery el
       @el = $(@el)
 
-      @render()
-
       @collection.bind 'add', (model) =>
         @addFrame(model)
 
@@ -36,11 +32,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @collection.bind 'change:selected', (collection, selected) =>
         @$('.frame').eq(selected).takeClass('selected')
-
-    render: =>
-      @el.append $.tmpl('lebenmeister/frames')
-
-      return @
 
     addFrame: (sequence) =>
       name = sequence.get('name')

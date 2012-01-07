@@ -1,7 +1,5 @@
 #= require models/sequences_collection
 
-#= require tmpls/lebenmeister/sequences
-
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
@@ -17,19 +15,17 @@ namespace "Pixie.Views.Animations", (Animations) ->
       # force jQuery el
       @el = $(@el)
 
-      @el.append $.tmpl('lebenmeister/sequences')
-
       @el.liveEdit ".name",
         change: (element, value) =>
           cid = element.parent().data("cid")
 
-          @collection.getByCid(cid).set name: value
+          @collection.getByCid(cid).set({ name: value })
 
-      @render()
+      @collection.bind 'add', (model) =>
+        @addSequence(model)
 
     addAndRender: (sequence) =>
       @collection.add(sequence)
-      @render()
 
     addToFrames: (e) =>
       return if $(e.target).is('.name')
@@ -39,35 +35,30 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @collection.trigger 'addSequenceToFrames', sequence.clone()
 
-    render: =>
-      @$('.sequence').remove()
+    addSequence: (sequence) =>
+      name = sequence.get('name')
+      cid = sequence.cid
 
-      @collection.each (sequence) =>
-        name = sequence.get('name')
-        cid = sequence.cid
+      sequenceEl = $ "<div class=sequence data-cid=#{cid}><span class=name>#{name}</span></div>"
+      lastFrame = sequence.get('frames').last()
 
-        sequenceEl = $ "<div class=sequence data-cid=#{cid}><span class=name>#{name}</span></div>"
-        lastFrame = sequence.get('frames').last()
+      width = null
+      height = null
 
-        width = null
-        height = null
+      sequence.get('frames').each (frame) ->
+        if frame == lastFrame
+          src = frame.get 'src'
+          img = $ "<img src=#{src}>"
+          height = img.get(0).height
+          width = img.get(0).width
 
-        sequence.get('frames').each (frame) ->
-          if frame == lastFrame
-            src = frame.get 'src'
-            img = $ "<img src=#{src}>"
-            height = img.get(0).height
-            width = img.get(0).width
+          sequenceEl.append img
+        else
+          sequenceEl.append '<div class="placeholder"></div>'
 
-            sequenceEl.append img
-          else
-            sequenceEl.append '<div class="placeholder"></div>'
+      sequenceEl.find('.placeholder').css
+        width: width + 4
+        height: height + 4
 
-        sequenceEl.find('.placeholder').css
-          width: width + 4
-          height: height + 4
-
-        @$('.sprites').append sequenceEl
-
-      return @
+      @$('.sprites').append sequenceEl
 

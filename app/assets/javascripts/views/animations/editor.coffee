@@ -41,7 +41,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
         @sequencesView.addAndRender(sequence)
 
-      @$('.content .relative').append(@playerView.el)
+      @$('.content .relative').append(@playerView.render().el)
 
       @tilesetView.bindDropImageReader(@el)
 
