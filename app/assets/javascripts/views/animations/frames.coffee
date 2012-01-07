@@ -6,56 +6,61 @@
 #= require tmpls/lebenmeister/frames
 #= require tmpls/lebenmeister/frame
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Animations ||= {}
+namespace "Pixie.Views.Animations", (Animations) ->
+  {Models} = Pixie
 
-class Pixie.Views.Animations.Frames extends Backbone.View
-  el: 'nav.bottom'
+  class Animations.Frames extends Backbone.View
+    el: 'nav.bottom'
 
-  events:
-    'click .frame': 'select'
-    'click .clear_frames': 'clear'
-    'click .create_sequence': 'createSequence'
+    events:
+      'click .frame': 'select'
+      'click .clear_frames': 'clear'
+      'click .create_sequence': 'createSequence'
 
-  collection: new Pixie.Models.FramesCollection
+    collection: new Models.FramesCollection
 
-  initialize: ->
-    @render()
+    initialize: ->
+      # force jQuery el
+      @el = $(@el)
 
-    @collection.bind 'add', (model) =>
-      @addFrame(model)
+      @render()
 
-    @collection.bind 'enableFrameActions', =>
-      $(@el).find('button').removeAttr('disabled')
+      @collection.bind 'add', (model) =>
+        @addFrame(model)
 
-  render: =>
-    $(@el).append($.tmpl('lebenmeister/frames'))
+      @collection.bind 'enableFrameActions', =>
+        @$('button').removeAttr('disabled')
 
-    return @
+    render: =>
+      @el.append $.tmpl('lebenmeister/frames')
 
-  addFrame: (model) =>
-    $(@el).find('.sprites').append($.tmpl('lebenmeister/frame', model.templateData()))
+      return @
 
-  clear: =>
-    $(@el).find('.sprites').empty()
-    @collection.reset()
-    $(@el).find('button').attr('disabled', true)
+    addFrame: (model) =>
+      @$('.sprites').append $.tmpl('lebenmeister/frame', model.templateData())
 
-  clearSelected: =>
-    $(@el).find('.frame').removeClass('selected')
+    clear: =>
+      @collection.reset()
+      @emptyFrameTray()
 
-  createSequence: =>
-    @collection.createSequence()
-    @clear()
+    clearSelected: =>
+      @$('.frame').removeClass('selected')
 
-  highlight: (index) =>
-    $(@el).find('.frame').eq(index).takeClass('selected')
+    createSequence: =>
+      @collection.createSequence()
+      @clear()
 
-  select: (e) =>
-    frame = $(e.target).parent()
+    emptyFrameTray: =>
+      @$('.sprites').empty()
+      @$('button').attr('disabled', true)
 
-    frame.takeClass('selected')
+    highlight: (index) =>
+      @$('.frame').eq(index).takeClass('selected')
 
-    @collection.toFrame(frame.index())
+    select: (e) =>
+      frame = $(e.currentTarget)
+
+      frame.takeClass('selected')
+
+      @collection.toFrame(frame.index())
 
