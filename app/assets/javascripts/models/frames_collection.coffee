@@ -2,31 +2,31 @@
 #= require backbone
 #= require corelib
 
-#= require models/frame
+#= require models/sequence
 
-window.Pixie ||= {}
-Pixie.Models ||= {}
+namespace "Pixie.Models", (Models) ->
+  class Models.FramesCollection extends Backbone.Collection
+    initialize: ->
+      @selected = 0
 
-class Pixie.Models.FramesCollection extends Backbone.Collection
-  initialize: ->
-    @selected = 0
+      @bind 'add', =>
+        @trigger 'enableFrameActions'
 
-    @bind 'add', =>
-      @trigger 'enableFrameActions'
+    model: Models.Sequence
 
-  model: Pixie.Models.Frame
+    createSequence: =>
+      @trigger 'createSequence', @
 
-  createSequence: =>
-    @trigger 'createSequence'
+    nextFrame: =>
+      @shiftFrame(+1)
 
-  nextFrame: =>
-    @selected = (@selected + 1).mod(@length)
-    @trigger 'updateSelected', @at(@selected), @selected
+    previousFrame: =>
+      @shiftFrame(-1)
 
-  previousFrame: =>
-    @selected = (@selected - 1).mod(@length)
-    @trigger 'updateSelected', @at(@selected), @selected
+    shiftFrame: (direction) =>
+      @selected = (@selected + direction).mod(@length)
+      @trigger 'updateSelected', @at(@selected), @selected
 
-  toFrame: (frame) =>
-    @selected = frame
-    @trigger 'updateSelected', @at(@selected), @selected
+    toFrame: (frame) =>
+      @selected = frame
+      @trigger 'updateSelected', @at(@selected), @selected
