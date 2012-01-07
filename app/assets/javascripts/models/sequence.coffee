@@ -2,11 +2,12 @@
 #= require backbone
 #= require corelib
 
-#= require models/frame
+namespace "Pixie.Models", (Models) ->
+  class Models.Sequence extends Backbone.Model
+    defaults:
+      name: "New Sequence"
+      frames: []
 
-window.Pixie ||= {}
-Pixie.Models ||= {}
-
-class Pixie.Models.Sequence extends Backbone.Collection
-  initialize: ->
-    @collection = new Pixie.Models.FramesCollection
+    templateData: =>
+      frame = @get('frames').first()
+      _.extend({}, {cid: frame.cid}, frame.attributes)
