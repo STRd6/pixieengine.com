@@ -6,39 +6,41 @@
 #= require tmpls/lebenmeister/tileset
 #= require tmpls/lebenmeister/tile
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Animations ||= {}
+namespace "Pixie.Views.Animations", (Animations) ->
+  {Models} = Pixie
 
-class Pixie.Views.Animations.Tileset extends Backbone.View
-  el: 'nav.left'
+  class Animations.Tileset extends Backbone.View
+    el: 'nav.left'
 
-  events:
-    'click img': 'addFrame'
+    events:
+      'click img': 'addFrame'
 
-  collection: new Pixie.Models.TilesCollection
+    collection: new Models.TilesCollection
 
-  initialize: ->
-    @render()
-    @enableSort()
+    initialize: ->
+      # force jQuery el
+      @el = $(@el)
 
-    @collection.bind 'add', (model) =>
-      @addTile(model)
+      @render()
+      @enableSort()
 
-  render: =>
-    $(@el).append($.tmpl('lebenmeister/tileset'))
+      @collection.bind 'add', (model) =>
+        @addTile(model)
 
-    return @
+    render: =>
+      @el.append($.tmpl('lebenmeister/tileset'))
 
-  addFrame: (e) =>
-    id = $(e.target).data('id')
-    model = @collection.getByCid(id)
+      return @
 
-    @collection.trigger 'addFrame', model
+    addFrame: (e) =>
+      cid = $(e.currentTarget).data('cid')
+      model = @collection.getByCid(cid)
 
-  addTile: (model) =>
-    $(@el).find('.sprites').append($.tmpl('lebenmeister/tile', model.templateData()))
+      @collection.trigger 'addFrame', model
 
-  enableSort: =>
-    $(@el).find('.sprites').sortable
-      distance: 10
+    addTile: (model) =>
+      @$('.sprites').append $.tmpl('lebenmeister/tile', model.templateData())
+
+    enableSort: =>
+      @$('.sprites').sortable
+        distance: 10
