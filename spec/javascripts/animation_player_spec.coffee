@@ -33,15 +33,18 @@ describe "AnimationPlayer", ->
       expect(@model.get('stopped')).toBeTruthy()
 
     it "should be able to adjust the fps", ->
-      @model.fps(40)
+      @model.set
+        fps: 40
 
       expect(@model.get('fps')).toEqual(40)
 
-      @model.fps(0)
+      @model.set
+        fps: 0
 
       expect(@model.get('fps')).toEqual(40)
 
-      @model.fps(100)
+      @model.set
+        fps: 100
 
       expect(@model.get('fps')).toEqual(40)
 
@@ -62,7 +65,8 @@ describe "AnimationPlayer", ->
       expect(@model.get('playbackId')).toEqual(null)
 
     it "should advance the frame the correct number of times according to the frame rate", ->
-      @model.fps(30)
+      @model.set
+        fps: 30
 
       callCount = 0
 
@@ -76,7 +80,8 @@ describe "AnimationPlayer", ->
       expect(callCount).toEqual(30)
 
     it "should advance the frame the correct number of times after changing the frame rate", ->
-      @model.fps(30)
+      @model.set
+        fps: 30
 
       callCount = 0
 
@@ -89,7 +94,8 @@ describe "AnimationPlayer", ->
 
       expect(callCount).toEqual(30)
 
-      @model.fps(60)
+      @model.set
+        fps: 60
 
       callCount = 0
 
