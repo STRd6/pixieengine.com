@@ -12,6 +12,8 @@ namespace "Pixie.Editor", (Editor) ->
           event.preventDefault()
           fn()
 
+          #TODO Be sure editors are scoped correctly so
+          # that bubbling will work as expected.
           return false
 
     addAction: (action) ->
@@ -23,7 +25,7 @@ namespace "Pixie.Editor", (Editor) ->
         action.perform(self)
 
       if action.hotkeys
-        # TODO: Auto-generate hotkey documentation for UI display 
+        # TODO: Auto-generate hotkey documentation for UI display
         ([].concat action.hotkeys).each (hotkey) ->
           self.addHotkey(hotkey, perform)
 
@@ -39,3 +41,6 @@ namespace "Pixie.Editor", (Editor) ->
           return false
 
         actionButton.appendTo(@$(".content .actions.top"))
+
+    takeFocus: ->
+      window.currentComponent = self

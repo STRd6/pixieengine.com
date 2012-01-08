@@ -1,17 +1,16 @@
+#= require pixie/view
 #= require tmpls/pixie/editor/tile/entity_selection
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.EntitySelection extends Backbone.View
+  class Views.EntitySelection extends Pixie.View
     className: 'component'
 
-    initialize: ->
-      # Force jQuery Element
-      @el = $(@el)
+    template: "pixie/editor/tile/entity_selection"
 
-      # Set up HTML
-      @el.html $.tmpl("pixie/editor/tile/entity_selection")
+    initialize: ->
+      super()
 
       @collection.bind 'add', @appendEntity
       @collection.bind 'remove', @removeEntityView
