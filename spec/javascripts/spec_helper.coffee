@@ -1,12 +1,21 @@
 require '/assets/jquery/jquery.min.js'
 require '/assets/jquery/jquery-ui.min.js'
+require '/assets/corelib.js'
+require '/assets/underscore.js'
+require '/assets/backbone.js'
 require '/assets/jquery.drop_image_reader.js'
 require '/assets/jquery.tmpl.min.js'
 require '/assets/sinon.js'
 require '/assets/jasmine-jquery.js'
 require '/assets/jasmine-sinon.js'
+require '/assets/jquery.simplemodal-1.3.5.min.js'
+require '/assets/jquery.form.js'
+require '/assets/jquery.tipsy.js'
 require '/assets/site.js'
 require '/assets/jquery.live_edit.js'
+require '/assets/pixie/ui.js'
+require '/assets/pixie/editor/base.js'
+require '/assets/pixie/view.js'
 
 # fixtures
 beforeEach ->
