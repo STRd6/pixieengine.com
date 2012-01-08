@@ -9,6 +9,7 @@
 
 #= require tmpls/lebenmeister/editor_frame
 
+#= require pixie/editor/base
 #= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
@@ -57,7 +58,17 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @tilesetView.bindDropImageReader(@el)
 
+      @include Pixie.Editor.Base
+
+      @takeFocus()
+
     render: =>
       @el.append $.tmpl('lebenmeister/editor_frame')
 
       return @
+
+   takeFocus: ->
+     super()
+
+    events:
+      mousemove: "takeFocus"
