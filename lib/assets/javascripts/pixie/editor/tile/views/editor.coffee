@@ -17,7 +17,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     template: "pixie/editor/tile/editor"
 
     initialize: ->
-      super()
+      super
 
       @layerList = new Models.LayerList [
         new Models.Layer
@@ -109,6 +109,9 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         entityCache: @entityList.toJSON()
         layers: @layerList.toJSON()
         orientation: "orthogonal"
+
+   takeFocus: ->
+     super()
 
     events:
       mousemove: "takeFocus"

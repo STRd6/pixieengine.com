@@ -3,12 +3,13 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.LayerSelection extends Backbone.View
+  class Views.LayerSelection extends Pixie.View
     className: 'component layer_selection'
 
+    template: "pixie/editor/tile/layer_selection"
+
     initialize: ->
-      # Force jQuery Element
-      @el = $(@el)
+      super
 
       @collection.bind 'add', @appendLayer
       @collection.bind 'reset', @render
@@ -18,9 +19,6 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           cid = element.parent().data("cid")
 
           @collection.getByCid(cid).set name: value
-
-      # Set up HTML
-      @el.html $.tmpl("pixie/editor/tile/layer_selection")
 
       @$("ul").sortable
         axis: "y"

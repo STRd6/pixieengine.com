@@ -1,16 +1,14 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.ScreenInstance extends Backbone.View
+  class Views.ScreenInstance extends Pixie.View
     className: "instance"
     tagName: "img"
 
     initialize: ->
-      # Force jQuery
-      @el = $(@el)
+      super
 
       @el.attr "data-cid", @model.cid
-
       @model.bind 'change', @render
 
       @render()

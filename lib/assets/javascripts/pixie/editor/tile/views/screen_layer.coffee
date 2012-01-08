@@ -1,18 +1,15 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.ScreenLayer extends Backbone.View
+  class Views.ScreenLayer extends Pixie.View
     className: "layer"
 
     tagName: "li"
 
     initialize: ->
-      # Force jQuery
-      @el = $(@el)
+      super
 
       @el.attr "data-cid", @model.cid
-
-      @settings = @options.settings
 
       @model.bind 'change', @render
       

@@ -8,17 +8,13 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
   UI = Pixie.UI
 
-  class Views.Screen extends Backbone.View
+  class Views.Screen extends Pixie.View
     className: "screen"
 
+    template: "pixie/editor/tile/screen"
+
     initialize: ->
-      # Force jQuery Element
-      @el = $(@el)
-
-      # Set up HTML
-      @el.html $.tmpl("pixie/editor/tile/screen")
-
-      @settings = @options.settings
+      super
 
       @selection = @settings.selection
       selectionView = new Views.ScreenSelection

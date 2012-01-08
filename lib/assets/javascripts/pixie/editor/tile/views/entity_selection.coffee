@@ -10,7 +10,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     template: "pixie/editor/tile/entity_selection"
 
     initialize: ->
-      super()
+      super
 
       @collection.bind 'add', @appendEntity
       @collection.bind 'remove', @removeEntityView
