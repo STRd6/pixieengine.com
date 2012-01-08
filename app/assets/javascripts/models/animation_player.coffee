@@ -27,6 +27,7 @@ namespace "Pixie.Models", (Models) ->
         playing: false
         stopped: false
 
+    # consider using chained setTimeouts to update fps live on user input
     play: =>
       playbackId = @get('playbackId') || setInterval(@nextFrame, 1000 / @get('fps'))
 

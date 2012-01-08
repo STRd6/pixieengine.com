@@ -9,13 +9,12 @@ namespace "Pixie.Views.Animations", (Animations) ->
     events:
       'click img': 'addFrame'
 
-    collection: new Models.TilesCollection
-
     initialize: ->
       # force jQuery el
       @el = $(@el)
 
-      @enableSort()
+      @$('.sprites').sortable
+        distance: 10
 
       @collection.bind 'add', (model) =>
         @addTile(model)
@@ -49,6 +48,3 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
           @collection.add({src: src})
 
-    enableSort: =>
-      @$('.sprites').sortable
-        distance: 10

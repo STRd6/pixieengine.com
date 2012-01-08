@@ -21,25 +21,36 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @render()
 
-      @tilesetView = new Animations.Tileset
-      @framesView = new Animations.Frames
-      @playerView = new Animations.Player({ frames: @framesView.collection })
-      @sequencesView = new Animations.Sequences
+      @sequencesCollection = new Pixie.Models.SequencesCollection
+      @framesCollection = new Pixie.Models.FramesCollection
+      @tilesCollection = new Pixie.Models.TilesCollection
 
-      @sequencesView.collection.bind 'addSequenceToFrames', (sequence) =>
+      @tilesetView = new Animations.Tileset
+        collection: @tilesCollection
+
+      @framesView = new Animations.Frames
+        collection: @framesCollection
+
+      @playerView = new Animations.Player
+        frames: @framesCollection
+
+      @sequencesView = new Animations.Sequences
+        collection: @sequencesCollection
+
+      @sequencesCollection.bind 'addSequenceToFrames', (sequence) =>
         @framesView.addSequence(sequence)
 
-      @tilesetView.collection.bind 'addFrame', (model) =>
+      @tilesCollection.bind 'addFrame', (model) =>
         @framesView.addSequence(model)
 
       @playerView.bind 'clearSelectedFrames', =>
         @framesView.clearSelected()
 
-      @framesView.collection.bind 'createSequence', (frameCollection) =>
+      @framesCollection.bind 'createSequence', (collection) =>
         sequence = new Models.Sequence
-          frames: frameCollection.flattenFrames()
+          frames: collection.flattenFrames()
 
-        @sequencesView.collection.add(sequence)
+        @sequencesCollection.add(sequence)
 
       @$('.content .relative').append(@playerView.render().el)
 

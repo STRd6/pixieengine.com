@@ -11,8 +11,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       'click .clear_frames': 'clear'
       'click .create_sequence': 'createSequence'
 
-    collection: new Models.FramesCollection
-
     initialize: ->
       # force jQuery el
       @el = $(@el)
@@ -20,18 +18,21 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @collection.bind 'add', (model) =>
         @addFrame(model)
 
+      # TODO consider binding on add and remove/reset instead of custom events
       @collection.bind 'enableFrameActions', =>
         @$('button').removeAttr('disabled')
         @$('.create_sequence').attr('title', 'Create a sequence')
         @$('.clear_frames').attr('title', 'Clear frames')
 
-      @collection.bind 'disableFrameActions', =>
+      @collection.bind 'reset', =>
+        @$('.sprites').empty()
         @$('button').attr('disabled', true)
         @$('.create_sequence').attr('title', 'Add frames to create a sequence')
         @$('.clear_frames').attr('title', 'There are no frames to clear')
 
+      # look into tilemaps settings object for different approach
       @collection.bind 'change:selected', (collection, selected) =>
-        @$('.frame').eq(selected).takeClass('selected')
+        @$('.sequence').eq(selected).takeClass('selected')
 
     addFrame: (sequence) =>
       name = sequence.get('name')
@@ -60,6 +61,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('.sprites').append sequenceEl
 
+    # TODO Try to make Tile object into a sequence of length one in order to eliminate that class and simplify
     addSequence: (model) =>
       if model.get('frames')
         @collection.add(model)
@@ -68,18 +70,13 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
     clear: =>
       @collection.reset()
-      @emptyFrameTray()
 
     clearSelected: =>
       @$('.frame').removeClass('selected')
 
     createSequence: =>
       @collection.createSequence()
-      @clear()
-
-    emptyFrameTray: =>
-      @$('.sprites').empty()
-      @collection.trigger 'disableFrameActions'
+      @collection.reset()
 
     select: (e) =>
       frame = $(e.currentTarget)

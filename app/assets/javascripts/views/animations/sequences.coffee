@@ -6,8 +6,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
   class Animations.Sequences extends Backbone.View
     el: 'nav.right'
 
-    collection: new Models.SequencesCollection
-
     events:
       'click .sequence': 'addToFrames'
 

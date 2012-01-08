@@ -22,19 +22,19 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @$('.fps input').change (e) =>
         oldValue = @model.get 'fps'
-        newValue = $(e.currentTarget).get(0).valueAsNumber
+        newValue = e.currentTarget.valueAsNumber
 
         $(e.currentTarget).val(oldValue) unless @model.set({ fps: newValue })
 
       @$('.scrubber').change (e) =>
-        index = $(e.currentTarget).get(0).valueAsNumber
+        index = e.currentTarget.valueAsNumber
 
         @model.set({ scrubberPosition: index })
 
       @model.bind 'change:scrubberPosition', (model, scrubberPosition) =>
         @$('.scrubber').val(scrubberPosition)
 
-        @refreshImage(model)
+        @refreshImage(model.get('frames').at(scrubberPosition))
 
       @model.get('frames').bind 'add', (model, collection) =>
         @$('.scrubber').attr('max', Math.max(0, collection.length - 1))
@@ -52,7 +52,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @showPause()
 
     refreshImage: (model) =>
-      src = (model || EMPTY_MODEL).get('src')
+      src = (model.get('frames').first() || EMPTY_MODEL).get('src')
 
       @$('img').attr('src', src)
 
