@@ -1,12 +1,11 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.ScreenSelection extends Backbone.View
+  class Views.ScreenSelection extends Pixie.View
     className: "selection"
 
     initialize: ->
-      # Force jQuery
-      @el = $(@el)
+      super
 
       @model.bind 'change', @render
 

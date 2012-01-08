@@ -1,12 +1,12 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.Layer extends Backbone.View
+  class Views.Layer extends Pixie.View
     tagName: 'li'
     className: 'layer'
 
     initialize: ->
-      @el = $(@el)
+      super
 
       @el.attr "data-cid", @model.cid
 

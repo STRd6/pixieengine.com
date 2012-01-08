@@ -3,25 +3,23 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.Toolbar extends Backbone.View
+  class Views.Toolbar extends Pixie.View
     className: "tools"
 
     tagName: "ul"
 
-    initialize: ->
-      # Force jQuery Element
-      @el = $(@el)
+    template: "pixie/editor/tile/toolbar"
 
-      # Set up HTML
-      @el.html $.tmpl("pixie/editor/tile/toolbar")
+    initialize: ->
+      super
 
       @render()
 
-      @options.settings.bind "change:activeTool", (settings) =>
+      @settings.bind "change:activeTool", (settings) =>
         activeTool = settings.get "activeTool"
         @$("[data-tool=#{activeTool}]").takeClass("active")
 
-      @options.settings.set
+      @settings.set
         activeTool: "stamp"
 
     render: =>
@@ -30,7 +28,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     selectTool: ({currentTarget}) =>
       selectedTool = $(currentTarget)
 
-      @options.settings.set
+      @settings.set
         activeTool: selectedTool.data "tool"
 
     events:

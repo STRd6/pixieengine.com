@@ -1,13 +1,12 @@
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
 
-  class Views.Entity extends Backbone.View
+  class Views.Entity extends Pixie.View
     tagName: 'img'
     className: 'entity'
 
     initialize: ->
-      # Force jQuery
-      @el = $(@el)
+      super
 
       # Add cid
       @el.attr "data-cid", @model.cid
