@@ -1,17 +1,17 @@
 #= require models/sequences_collection
+#= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
-  class Animations.Sequences extends Backbone.View
+  class Animations.Sequences extends Pixie.View
     el: 'nav.right'
 
     events:
       'click .sequence': 'addToFrames'
 
     initialize: ->
-      # force jQuery el
-      @el = $(@el)
+      super
 
       @el.liveEdit ".name",
         change: (element, value) =>

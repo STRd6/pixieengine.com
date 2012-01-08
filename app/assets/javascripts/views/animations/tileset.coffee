@@ -1,17 +1,17 @@
 #= require models/tiles_collection
+#= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
-  class Animations.Tileset extends Backbone.View
+  class Animations.Tileset extends Pixie.View
     el: 'nav.left'
 
     events:
       'click img': 'addFrame'
 
     initialize: ->
-      # force jQuery el
-      @el = $(@el)
+      super
 
       @$('.sprites').sortable
         distance: 10

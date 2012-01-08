@@ -9,15 +9,16 @@
 
 #= require tmpls/lebenmeister/editor_frame
 
+#= require pixie/view
+
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
-  class Animations.Editor extends Backbone.View
+  class Animations.Editor extends Pixie.View
     el: '.backbone_lebenmeister'
 
     initialize: ->
-      # force jQuery @el
-      @el = $(@el)
+      super
 
       @render()
 

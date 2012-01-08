@@ -1,11 +1,12 @@
 #= require models/animation_player
+#= require pixie/view
 
 EMPTY_MODEL = new Backbone.Model
 
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
-  class Animations.Player extends Backbone.View
+  class Animations.Player extends Pixie.View
     el: '.player'
 
     events:
@@ -14,8 +15,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       'click .stop': 'stop'
 
     initialize: ->
-      # force jQuery el
-      @el = $(@el)
+      super
 
       @model = new Models.AnimationPlayer
         frames: @options.frames

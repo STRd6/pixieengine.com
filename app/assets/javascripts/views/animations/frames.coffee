@@ -1,9 +1,10 @@
 #= require models/frames_collection
+#= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
-  class Animations.Frames extends Backbone.View
+  class Animations.Frames extends Pixie.View
     el: 'nav.bottom'
 
     events:
@@ -12,8 +13,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       'click .create_sequence': 'createSequence'
 
     initialize: ->
-      # force jQuery el
-      @el = $(@el)
+      super
 
       @collection.bind 'add', (model) =>
         @addFrame(model)
