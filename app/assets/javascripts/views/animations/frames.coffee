@@ -66,7 +66,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       if model.get('frames')
         @collection.add(model)
       else
-        @collection.add(new Pixie.Models.Sequence({frames: [model]}))
+        @collection.add(new Models.Sequence({frames: [model]}))
 
     clear: =>
       @collection.reset()

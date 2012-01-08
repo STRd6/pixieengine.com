@@ -1,7 +1,7 @@
 #= require models/frames_collection
 
 namespace "Pixie.Models", (Models) ->
-  class Pixie.Models.AnimationPlayer extends Backbone.Model
+  class Models.AnimationPlayer extends Backbone.Model
     defaults:
       paused: false
       playing: false
@@ -9,7 +9,7 @@ namespace "Pixie.Models", (Models) ->
       fps: 30
       playbackId: null
       scrubberPosition: 0
-      frames: new Pixie.Models.FramesCollection
+      frames: new Models.FramesCollection
 
     initialize: ->
       @bind 'change:fps', =>

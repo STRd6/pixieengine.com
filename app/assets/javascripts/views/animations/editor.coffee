@@ -22,9 +22,9 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       @render()
 
-      @sequencesCollection = new Pixie.Models.SequencesCollection
-      @framesCollection = new Pixie.Models.FramesCollection
-      @tilesCollection = new Pixie.Models.TilesCollection
+      @sequencesCollection = new Models.SequencesCollection
+      @framesCollection = new Models.FramesCollection
+      @tilesCollection = new Models.TilesCollection
 
       @tilesetView = new Animations.Tileset
         collection: @tilesCollection
