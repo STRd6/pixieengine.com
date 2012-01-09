@@ -4,8 +4,9 @@ describe "Animation Editor", ->
   beforeEach ->
     @clock = sinon.useFakeTimers()
 
-    $('#test').append('<section class="backbone_lebenmeister"></section>')
     @view = new Pixie.Views.Animations.Editor
+
+    $('#test').append(@view.el)
 
     @model = new Backbone.Model
       frames: []
