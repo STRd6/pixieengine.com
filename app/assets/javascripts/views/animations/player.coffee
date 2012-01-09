@@ -56,7 +56,7 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @showPause()
 
     refreshImage: (model) =>
-      src = (model.get('frames').first() || EMPTY_MODEL).get('src')
+      src = (model?.get('frames').first() || EMPTY_MODEL).get('src')
 
       @$('img').attr('src', src)
 
