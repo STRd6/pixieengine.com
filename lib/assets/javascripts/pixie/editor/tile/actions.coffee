@@ -9,9 +9,9 @@ namespace "Pixie.Editor.Tile", (Tile) ->
     undo:
       hotkeys: "ctrl+z"
       perform: (editor) ->
-        editor.settings.undo()
+        editor.undo()
 
     redo:
       hotkeys: "ctrl+y"
       perform: (editor) ->
-        editor.settings.redo()
+        editor.redo()

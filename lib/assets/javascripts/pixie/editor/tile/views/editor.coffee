@@ -1,6 +1,7 @@
 #= require tmpls/pixie/editor/tile/editor
 
 #= require pixie/editor/base
+#= require pixie/editor/undo
 #= require pixie/view
 
 #= require ../actions
@@ -43,24 +44,29 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       # Add Sub-components
       screen = new Views.Screen
         collection: @layerList
+        editor: this
         settings: @settings
       @$(".content").prepend screen.el
 
       layerSelection = new Views.LayerSelection
         collection: @layerList
+        editor: this
         settings: @settings
       @$(".module.right").append layerSelection.el
 
       entitySelection = new Views.EntitySelection
         collection: @entityList
+        editor: this
         settings: @settings
       @$(".module.right").append entitySelection.el
 
       toolbar = new Views.Toolbar
+        editor: this
         settings: @settings
       @$(".module.left").append toolbar.el
 
       @include Pixie.Editor.Base
+      @include Pixie.Editor.Undo
 
       $.each Tile.actions, (name, action) =>
         action.name ||= name

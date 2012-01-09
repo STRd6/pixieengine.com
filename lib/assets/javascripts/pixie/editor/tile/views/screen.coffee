@@ -96,7 +96,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       unless @currentCompoundCommand and @currentCompoundCommand.empty()
         @currentCompoundCommand = Command.CompoundCommand()
 
-        @settings.execute @currentCompoundCommand
+        @editor.execute @currentCompoundCommand
 
       if tool = Tile.tools[@settings.get("activeTool")]
         @activeTool = tool

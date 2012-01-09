@@ -12,8 +12,9 @@ namespace "Pixie", (Pixie) ->
       if @template?
         @el.html $.tmpl(@template)
 
-      # Settings is now backbone special too
+      # @settings and @editor now backbone special too
       @settings = @options.settings
+      @editor = @options.editor
 
     include: (module) ->
       Object.extend this, module(this, this)

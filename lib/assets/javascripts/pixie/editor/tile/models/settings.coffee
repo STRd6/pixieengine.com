@@ -11,19 +11,8 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       tileHeight: 32
 
     initialize: ->
-      @commandStack = CommandStack()
-
       @selection = new Models.Selection
         settings: this
-
-    execute: (command) ->
-      @commandStack.execute command
-
-    undo: ->
-      @commandStack.undo()
-
-    redo: ->
-      @commandStack.redo()
 
     pixelWidth: =>
       @get("tilesWide") * @get("tileWidth")
