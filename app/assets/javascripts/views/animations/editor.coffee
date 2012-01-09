@@ -16,28 +16,34 @@ namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
   class Animations.Editor extends Pixie.View
-    el: '.backbone_lebenmeister'
+    className: 'editor backbone_lebenmeister'
+
+    template: 'lebenmeister/editor_frame'
 
     initialize: ->
       super
-
-      @render()
 
       @sequencesCollection = new Models.SequencesCollection
       @framesCollection = new Models.FramesCollection
       @tilesCollection = new Models.TilesCollection
 
+      contentEl = @$('.content')
+
       @tilesetView = new Animations.Tileset
         collection: @tilesCollection
+      contentEl.append @tilesetView.el
 
       @framesView = new Animations.Frames
         collection: @framesCollection
+      contentEl.append @framesView.el
 
       @playerView = new Animations.Player
         frames: @framesCollection
+      @$('.content .relative').append @playerView.el
 
       @sequencesView = new Animations.Sequences
         collection: @sequencesCollection
+      contentEl.append @sequencesView.el
 
       @sequencesCollection.bind 'addSequenceToFrames', (sequence) =>
         @framesView.addSequence(sequence)
@@ -61,11 +67,6 @@ namespace "Pixie.Views.Animations", (Animations) ->
       @include Pixie.Editor.Base
 
       @takeFocus()
-
-    render: =>
-      @el.append $.tmpl('lebenmeister/editor_frame')
-
-      return @
 
    takeFocus: ->
      super()

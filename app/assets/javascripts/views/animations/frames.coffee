@@ -1,11 +1,16 @@
 #= require models/frames_collection
 #= require pixie/view
 
+#= require tmpls/lebenmeister/frames
+
 namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
   class Animations.Frames extends Pixie.View
-    el: 'nav.bottom'
+    tagName: 'nav'
+    className: 'module bottom'
+
+    template: 'lebenmeister/frames'
 
     events:
       'click .frame': 'select'

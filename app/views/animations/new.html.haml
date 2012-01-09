@@ -17,18 +17,14 @@
 
 .editor.backbone_lebenmeister
 
-= form_tag download_animations_path, :class => "download_json" do
-  = hidden_field_tag :export_json_data
-
-= form_tag download_animations_path, :class => "download_csv" do
-  = hidden_field_tag :export_csv_data
-
 - content_for :javascript do
   = javascript_include_tag "views/animations/editor"
 
   :coffeescript
     $ ->
-      new Pixie.Views.Animations.Editor
+      editor = new Pixie.Views.Animations.Editor
+
+      $('.backbone_lebenmeister').replaceWith(editor.el)
 
       $('body').attr('id', 'fullscreen')
 

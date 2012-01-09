@@ -5,13 +5,16 @@ namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
   class Animations.Tileset extends Pixie.View
-    el: 'nav.left'
+    tagName: 'nav'
+    className: 'left'
 
     events:
       'click img': 'addFrame'
 
     initialize: ->
       super
+
+      @el.append('<h3>Sprites</h3><div class="sprites"></div>')
 
       @$('.sprites').sortable
         distance: 10

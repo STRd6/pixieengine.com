@@ -5,13 +5,16 @@ namespace "Pixie.Views.Animations", (Animations) ->
   {Models} = Pixie
 
   class Animations.Sequences extends Pixie.View
-    el: 'nav.right'
+    tagName: 'nav'
+    className: 'right'
 
     events:
       'click .sequence': 'addToFrames'
 
     initialize: ->
       super
+
+      @el.append('<h3>Sequences</h3><div class="sprites"></div>')
 
       @el.liveEdit ".name",
         change: (element, value) =>
