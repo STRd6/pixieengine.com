@@ -26,7 +26,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @collection.trigger 'addFrame', model
 
     addTile: (model) =>
-      src = model.get 'src'
+      src = model.get('frames').first().src
       cid = model.cid
 
       img = "<img src=#{src} data-cid=#{cid}>"
@@ -46,6 +46,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
           #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
           #    addTile(sprite)
 
-          @collection.add({src: src})
+          @collection.add({frames: [{src: src}]})
 
 

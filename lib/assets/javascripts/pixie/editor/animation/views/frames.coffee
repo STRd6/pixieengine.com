@@ -14,7 +14,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     template: 'editors/animation/frames'
 
     events:
-      'click .frame': 'select'
+      'click .sequence': 'select'
       'click .clear_frames': 'clear'
       'click .create_sequence': 'createSequence'
 
@@ -52,7 +52,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       sequence.get('frames').each (frame) ->
         if frame == lastFrame
-          src = frame.get 'src'
+          src = frame.src
           img = $ "<img src=#{src}>"
           height = img.get(0).height
           width = img.get(0).width
@@ -66,13 +66,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         height: height + 4
 
       @$('.sprites').append sequenceEl
-
-    # TODO Try to make Tile object into a sequence of length one in order to eliminate that class and simplify
-    addSequence: (model) =>
-      if model.get('frames')
-        @collection.add(model)
-      else
-        @collection.add(new Models.Sequence({frames: [model]}))
 
     clear: =>
       @collection.reset()

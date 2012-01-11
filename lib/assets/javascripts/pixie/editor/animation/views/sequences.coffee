@@ -42,7 +42,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       sequence.get('frames').each (frame) ->
         if frame == lastFrame
-          src = frame.get 'src'
+          src = frame.src
           img = $ "<img src=#{src}>"
           height = img.get(0).height
           width = img.get(0).width

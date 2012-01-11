@@ -3,7 +3,8 @@
 
 #= require tmpls/editors/animation/player
 
-EMPTY_MODEL = new Backbone.Model
+EMPTY_MODEL =
+  src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   {Models} = Pixie.Editor.Animation
@@ -56,7 +57,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @showPause()
 
     refreshImage: (model) =>
-      src = (model?.get('frames').first() || EMPTY_MODEL).get('src')
+      src = (model?.get('frames').first() || EMPTY_MODEL).src
 
       @$('img').attr('src', src)
 
@@ -75,7 +76,4 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @showPlay()
       @trigger 'clearSelectedFrames'
 
-      # set the preview src to be a transparent 1 x 1 image
-      @$('img').attr 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
-
-
+      @$('img').attr 'src', EMPTY_MODEL.src
