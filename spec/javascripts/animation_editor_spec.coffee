@@ -1,10 +1,10 @@
-require '/assets/views/animations/editor.js'
+require '/assets/pixie/editor/animation/views/editor.js'
 
 describe "Animation Editor", ->
   beforeEach ->
     @clock = sinon.useFakeTimers()
 
-    @view = new Pixie.Views.Animations.Editor
+    @view = new Pixie.Editor.Animation.Views.Editor
 
     $('#test').append(@view.el)
 

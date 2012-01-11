@@ -1,7 +1,7 @@
-require '/assets/models/animation_player.js'
+require '/assets/pixie/editor/animation/models/player.js'
 
 beforeEach ->
-  @model = new Pixie.Models.AnimationPlayer
+  @model = new Pixie.Editor.Animation.Models.AnimationPlayer
   @clock = sinon.useFakeTimers()
 
 describe "AnimationPlayer", ->

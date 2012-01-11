@@ -1,17 +1,17 @@
-require '/assets/views/animations/tileset.js'
+require '/assets/pixie/editor/animation/views/tileset.js'
 
 beforeEach ->
   $('#test').append('<section class="backbone_lebenmeister"></section>')
-  @view = new Pixie.Views.Animations.Editor
+  @view = new Pixie.Editor.Animation.Views.Editor
 
   @collection = new Backbone.Collection
 
   @model = new Backbone.Model
 
-  @framesCollectionStub = sinon.stub(Pixie.Models, "TilesCollection").returns(@collection)
+  @framesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "TilesCollection").returns(@collection)
 
 afterEach ->
-  Pixie.Models.TilesCollection.restore()
+  Pixie.Editor.Animation.Models.TilesCollection.restore()
 
 describe "interactions", ->
   it "should be able to add tiles to the view", ->

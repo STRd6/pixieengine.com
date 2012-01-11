@@ -1,12 +1,12 @@
-require '/assets/views/animations/sequences.js'
+require '/assets/pixie/editor/animation/views/sequences.js'
 
 beforeEach ->
   $('#test').append($('<nav class="right"></nav>'))
-  @view = new Pixie.Views.Animations.Sequences
+  @view = new Pixie.Editor.Animation.Views.Sequences
   @collection = new Backbone.Collection
 
-  @sequencesCollectionStub = sinon.stub(Pixie.Models, "SequencesCollection").returns(@collection)
+  @sequencesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "SequencesCollection").returns(@collection)
 
 afterEach ->
-  Pixie.Models.SequencesCollection.restore()
+  Pixie.Editor.Animation.Models.SequencesCollection.restore()
 

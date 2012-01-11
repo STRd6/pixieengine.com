@@ -1,17 +1,17 @@
-require '/assets/views/animations/frames.js'
+require '/assets/pixie/editor/animation/views/frames.js'
 
 beforeEach ->
   $('#test').append('<section class="backbone_lebenmeister"></section>')
-  @view = new Pixie.Views.Animations.Editor
+  @view = new Pixie.Editor.Animation.Views.Editor
   @collection = new Backbone.Collection
 
   @model = new Backbone.Model
     frames: []
 
-  @framesCollectionStub = sinon.stub(Pixie.Models, "FramesCollection").returns(@collection)
+  @framesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "FramesCollection").returns(@collection)
 
 afterEach ->
-  Pixie.Models.FramesCollection.restore()
+  Pixie.Editor.Animation.Models.FramesCollection.restore()
 
 describe "interactions", ->
   it "should have actions enabled when a frame is added", ->

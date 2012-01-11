@@ -1,7 +1,7 @@
-require '/assets/models/frames_collection.js'
+require '/assets/pixie/editor/animation/models/frames_collection.js'
 
 beforeEach ->
-  @collection = new Pixie.Models.FramesCollection
+  @collection = new Pixie.Editor.Animation.Models.FramesCollection
 
   @model = new Backbone.Model
 
