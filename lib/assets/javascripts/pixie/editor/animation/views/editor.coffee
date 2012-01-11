@@ -43,11 +43,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         collection: @sequencesCollection
       contentEl.append @sequencesView.el
 
-      @sequencesCollection.bind 'addSequenceToFrames', (sequence) =>
-        @framesCollection.add sequence.clone()
-
-      @tilesCollection.bind 'addFrame', (model) =>
-        @framesCollection.add model.clone()
+      for collection in [@sequencesCollection, @tilesCollection]
+        collection.bind 'addToFrames', (model) =>
+          @framesCollection.add model.clone()
 
       @playerView.bind 'clearSelectedFrames', =>
         @framesView.clearSelected()

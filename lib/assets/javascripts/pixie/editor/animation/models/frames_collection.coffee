@@ -5,9 +5,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
     initialize: ->
       @selected = 0
 
-      @bind 'add', =>
-        @trigger 'enableFrameActions'
-
     model: Models.Sequence
 
     createSequence: =>

@@ -21,26 +21,16 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     initialize: ->
       super
 
-      @collection.bind 'add', (model) =>
-        @addFrame(model)
-
-      # TODO consider binding on add and remove/reset instead of custom events
-      @collection.bind 'enableFrameActions', =>
-        @$('button').removeAttr('disabled')
-        @$('.create_sequence').attr('title', 'Create a sequence')
-        @$('.clear_frames').attr('title', 'Clear frames')
-
-      @collection.bind 'reset', =>
-        @$('.sprites').empty()
-        @$('button').attr('disabled', true)
-        @$('.create_sequence').attr('title', 'Add frames to create a sequence')
-        @$('.clear_frames').attr('title', 'There are no frames to clear')
+      @collection.bind 'add', @appendFrame
+      @collection.bind 'reset', @render
 
       # look into tilemaps settings object for different approach
       @collection.bind 'change:selected', (collection, selected) =>
         @$('.sequence').eq(selected).takeClass('selected')
 
-    addFrame: (sequence) =>
+      @render()
+
+    appendFrame: (sequence) =>
       name = sequence.get('name')
       cid = sequence.cid
 
@@ -65,6 +55,10 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         width: width + 4
         height: height + 4
 
+      @$('button').removeAttr('disabled')
+      @$('.create_sequence').attr('title', 'Create a sequence')
+      @$('.clear_frames').attr('title', 'Clear frames')
+
       @$('.sprites').append sequenceEl
 
     clear: =>
@@ -76,6 +70,16 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     createSequence: =>
       @collection.createSequence()
       @collection.reset()
+
+    render: =>
+      @$(".sprites").empty()
+
+      @$('button').attr('disabled', true)
+      @$('.create_sequence').attr('title', 'Add frames to create a sequence')
+      @$('.clear_frames').attr('title', 'There are no frames to clear')
+
+      @collection.each (model) =>
+        @appendFrame model
 
     select: (e) =>
       frame = $(e.currentTarget)

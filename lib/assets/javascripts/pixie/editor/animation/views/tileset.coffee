@@ -23,7 +23,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       cid = $(e.currentTarget).data('cid')
       model = @collection.getByCid(cid)
 
-      @collection.trigger 'addFrame', model
+      @collection.trigger 'addToFrames', model
 
     addTile: (model) =>
       src = model.get('frames').first().src

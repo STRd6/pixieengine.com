@@ -28,7 +28,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       cid = $(e.currentTarget).data('cid')
       sequence = @collection.getByCid(cid)
 
-      @collection.trigger 'addSequenceToFrames', sequence.clone()
+      @collection.trigger 'addToFrames', sequence.clone()
 
     addSequence: (sequence) =>
       name = sequence.get('name')
