@@ -4,3 +4,4 @@ namespace "Pixie.Models", (Models) ->
       name: "New Sequence"
       frames: []
 
+

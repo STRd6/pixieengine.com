@@ -1,4 +1,4 @@
-#= require models/animation_player
+#= require pixie/editor/animation/models/player
 #= require pixie/view
 
 #= require tmpls/lebenmeister/player
@@ -77,4 +77,5 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       # set the preview src to be a transparent 1 x 1 image
       @$('img').attr 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='
+
 

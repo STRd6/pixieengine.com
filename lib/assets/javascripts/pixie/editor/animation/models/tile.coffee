@@ -3,3 +3,4 @@ namespace "Pixie.Models", (Models) ->
     defaults:
       active: false
 
+

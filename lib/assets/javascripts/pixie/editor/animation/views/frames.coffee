@@ -1,5 +1,6 @@
-#= require models/frames_collection
 #= require pixie/view
+
+#= require pixie/editor/animation/models/sequence
 
 #= require tmpls/lebenmeister/frames
 
@@ -89,4 +90,5 @@ namespace "Pixie.Views.Animations", (Animations) ->
       frame.takeClass('selected')
 
       @collection.toFrame(frame.index())
+
 

@@ -1,4 +1,4 @@
-#= require models/sequence
+#= require pixie/editor/animation/models/sequence
 
 namespace "Pixie.Models", (Models) ->
   class Models.FramesCollection extends Backbone.Collection
@@ -39,3 +39,4 @@ namespace "Pixie.Models", (Models) ->
       flattenedFrames = @flattenFrames()
 
       @trigger 'updateSelected', flattenedFrames[@selected], @selected
+

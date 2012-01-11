@@ -1,9 +1,6 @@
-#= require models/tiles_collection
 #= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
-  {Models} = Pixie
-
   class Animations.Tileset extends Pixie.View
     tagName: 'nav'
     className: 'left'
@@ -50,4 +47,5 @@ namespace "Pixie.Views.Animations", (Animations) ->
           #    addTile(sprite)
 
           @collection.add({src: src})
+
 

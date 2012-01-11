@@ -2,10 +2,8 @@
 #= require backbone
 #= require corelib
 
-#= require views/animations/player
-#= require views/animations/tileset
-#= require views/animations/frames
-#= require views/animations/sequences
+#= require_tree .
+#= require_tree ../models
 
 #= require tmpls/lebenmeister/editor_frame
 
@@ -73,3 +71,4 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
     events:
       mousemove: "takeFocus"
+

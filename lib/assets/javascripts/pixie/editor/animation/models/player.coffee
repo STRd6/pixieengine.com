@@ -1,4 +1,4 @@
-#= require models/frames_collection
+#= require pixie/editor/animation/models/frames_collection
 
 namespace "Pixie.Models", (Models) ->
   class Models.AnimationPlayer extends Backbone.Model
@@ -63,4 +63,5 @@ namespace "Pixie.Models", (Models) ->
       if attrs.fps?
         unless 0 < attrs.fps <= 60
           return "fps must be between 0 and 60"
+
 

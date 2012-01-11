@@ -1,9 +1,6 @@
-#= require models/sequences_collection
 #= require pixie/view
 
 namespace "Pixie.Views.Animations", (Animations) ->
-  {Models} = Pixie
-
   class Animations.Sequences extends Pixie.View
     tagName: 'nav'
     className: 'right'
@@ -59,4 +56,5 @@ namespace "Pixie.Views.Animations", (Animations) ->
         height: height + 4
 
       @$('.sprites').append sequenceEl
+
 

@@ -1,10 +1,7 @@
-#= require underscore
-#= require backbone
-#= require corelib
-
-#= require models/sequence
+#= require pixie/editor/animation/models/sequence
 
 namespace "Pixie.Models", (Models) ->
   class Models.SequencesCollection extends Backbone.Collection
     model: Models.Sequence
+
 
