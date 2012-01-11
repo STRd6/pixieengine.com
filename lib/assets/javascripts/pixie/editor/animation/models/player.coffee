@@ -1,6 +1,6 @@
 #= require pixie/editor/animation/models/frames_collection
 
-namespace "Pixie.Models", (Models) ->
+namespace "Pixie.Editor.Animation.Models", (Models) ->
   class Models.AnimationPlayer extends Backbone.Model
     defaults:
       paused: false

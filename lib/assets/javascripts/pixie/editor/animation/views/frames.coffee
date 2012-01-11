@@ -2,16 +2,16 @@
 
 #= require pixie/editor/animation/models/sequence
 
-#= require tmpls/lebenmeister/frames
+#= require tmpls/editors/animation/frames
 
-namespace "Pixie.Views.Animations", (Animations) ->
-  {Models} = Pixie
+namespace "Pixie.Editor.Animation.Views", (Views) ->
+  {Models} = Pixie.Editor.Animation
 
-  class Animations.Frames extends Pixie.View
+  class Views.Frames extends Pixie.View
     tagName: 'nav'
     className: 'module bottom'
 
-    template: 'lebenmeister/frames'
+    template: 'editors/animation/frames'
 
     events:
       'click .frame': 'select'

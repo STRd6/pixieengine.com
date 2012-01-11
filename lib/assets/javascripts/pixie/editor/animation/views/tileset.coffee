@@ -1,7 +1,7 @@
 #= require pixie/view
 
-namespace "Pixie.Views.Animations", (Animations) ->
-  class Animations.Tileset extends Pixie.View
+namespace "Pixie.Editor.Animation.Views", (Views) ->
+  class Views.Tileset extends Pixie.View
     tagName: 'nav'
     className: 'left'
 

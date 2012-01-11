@@ -5,18 +5,18 @@
 #= require_tree .
 #= require_tree ../models
 
-#= require tmpls/lebenmeister/editor_frame
+#= require tmpls/editors/animation/editor
 
 #= require pixie/editor/base
 #= require pixie/view
 
-namespace "Pixie.Views.Animations", (Animations) ->
-  {Models} = Pixie
+namespace "Pixie.Editor.Animation.Views", (Views) ->
+  {Models} = Pixie.Editor.Animation
 
-  class Animations.Editor extends Pixie.View
+  class Views.Editor extends Pixie.View
     className: 'editor backbone_lebenmeister'
 
-    template: 'lebenmeister/editor_frame'
+    template: 'editors/animation/editor'
 
     initialize: ->
       super
@@ -27,19 +27,19 @@ namespace "Pixie.Views.Animations", (Animations) ->
 
       contentEl = @$('.content')
 
-      @tilesetView = new Animations.Tileset
+      @tilesetView = new Views.Tileset
         collection: @tilesCollection
       contentEl.append @tilesetView.el
 
-      @framesView = new Animations.Frames
+      @framesView = new Views.Frames
         collection: @framesCollection
       contentEl.append @framesView.el
 
-      @playerView = new Animations.Player
+      @playerView = new Views.Player
         frames: @framesCollection
       @$('.content .relative').append @playerView.el
 
-      @sequencesView = new Animations.Sequences
+      @sequencesView = new Views.Sequences
         collection: @sequencesCollection
       contentEl.append @sequencesView.el
 

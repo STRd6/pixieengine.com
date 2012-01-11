@@ -1,17 +1,17 @@
 #= require pixie/editor/animation/models/player
 #= require pixie/view
 
-#= require tmpls/lebenmeister/player
+#= require tmpls/editors/animation/player
 
 EMPTY_MODEL = new Backbone.Model
 
-namespace "Pixie.Views.Animations", (Animations) ->
-  {Models} = Pixie
+namespace "Pixie.Editor.Animation.Views", (Views) ->
+  {Models} = Pixie.Editor.Animation
 
-  class Animations.Player extends Pixie.View
+  class Views.Player extends Pixie.View
     className: 'player'
 
-    template: 'lebenmeister/player'
+    template: 'editors/animation/player'
 
     events:
       'click .pause': 'pause'

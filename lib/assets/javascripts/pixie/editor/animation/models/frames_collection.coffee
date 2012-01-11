@@ -1,6 +1,6 @@
 #= require pixie/editor/animation/models/sequence
 
-namespace "Pixie.Models", (Models) ->
+namespace "Pixie.Editor.Animation.Models", (Models) ->
   class Models.FramesCollection extends Backbone.Collection
     initialize: ->
       @selected = 0
