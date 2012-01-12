@@ -9,7 +9,7 @@ describe "Frames collection", ->
   it "should allow the frames to be cleared once there is a frame", ->
     frameActionsSpy = sinon.spy()
 
-    @collection.bind 'enableFrameActions', frameActionsSpy
+    @collection.bind 'add', frameActionsSpy
 
     @collection.add(@model)
 

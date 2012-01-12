@@ -7,6 +7,7 @@ beforeEach ->
   @collection = new Backbone.Collection
 
   @model = new Backbone.Model
+    frames: [{src: ''}]
 
   @framesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "TilesCollection").returns(@collection)
 
