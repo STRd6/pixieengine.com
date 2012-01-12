@@ -54,14 +54,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
       unless @get('paused')
         @get('frames').nextFrame()
 
-    previousFrame: =>
-      unless @get('paused')
-        @get('frames').previousFrame()
-
-    toFrame: (frame) =>
-      if 0 <= frame < @get('totalFrames')
-        @set({frame: frame})
-
     validate: (attrs) ->
       if attrs.fps?
         unless 0 < attrs.fps <= 60

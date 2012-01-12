@@ -13,9 +13,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
     nextFrame: =>
       @shiftFrame(+1)
 
-    previousFrame: =>
-      @shiftFrame(-1)
-
     shiftFrame: (direction) =>
       @toFrame (@selected + direction).mod(@length)
 
