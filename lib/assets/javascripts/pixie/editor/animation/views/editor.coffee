@@ -4,6 +4,7 @@
 
 #= require_tree .
 #= require_tree ../models
+#= require ../actions
 
 #= require tmpls/editors/animation/editor
 
@@ -11,6 +12,7 @@
 #= require pixie/view
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
+  {Animation} = Pixie.Editor
   {Models} = Pixie.Editor.Animation
 
   class Views.Editor extends Pixie.View
@@ -21,7 +23,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     initialize: ->
       super
 
-      settings = new Models.Settings
+      @settings = new Models.Settings
 
       @sequencesCollection = new Models.SequencesCollection
       @framesCollection = new Models.FramesCollection
@@ -35,12 +37,12 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @framesView = new Views.Frames
         collection: @framesCollection
-        settings: settings
+        settings: @settings
       contentEl.append @framesView.el
 
       @playerView = new Views.Player
         frames: @framesCollection
-        settings: settings
+        settings: @settings
       contentEl.find('.relative').append @playerView.el
 
       @sequencesView = new Views.Sequences
@@ -62,6 +64,11 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @tilesetView.bindDropImageReader(@el)
 
       @include Pixie.Editor.Base
+
+      $.each Animation.actions, (name, action) =>
+        action.name ||= name
+
+        @addAction action
 
       @takeFocus()
 
