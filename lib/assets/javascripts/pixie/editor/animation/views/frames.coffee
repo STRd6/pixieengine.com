@@ -13,8 +13,11 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
     template: 'editors/animation/frames'
 
+    # TODO see if you can use comma separated selectors for this
+    # eg: 'click .sequence img, .sequence .placeholder': 'select'
     events:
-      'click .sequence': 'select'
+      'click .sequence img': 'select'
+      'click .sequence .placeholder': 'select'
       'click .clear_frames': 'clear'
       'click .create_sequence': 'createSequence'
 
@@ -25,7 +28,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @collection.bind 'reset', @render
 
       @settings.bind 'change:selected', (model, selected) =>
-        @$('.sequence').eq(selected).takeClass('selected')
+
+        @$('.sequence .placeholder, .sequence img').removeClass('selected').eq(selected).addClass('selected')
 
       @render()
 
@@ -41,9 +45,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     clear: =>
       @collection.reset()
 
-    clearSelected: =>
-      @$('.frame').removeClass('selected')
-
     createSequence: =>
       @collection.trigger 'createSequence', @collection
       @collection.reset()
@@ -55,14 +56,18 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$('.create_sequence').attr('title', 'Add frames to create a sequence')
       @$('.clear_frames').attr('title', 'There are no frames to clear')
 
+      @settings.set
+        selected: 0
+
       @collection.each (model) =>
         @appendFrame model
 
     select: (e) =>
       frame = $(e.currentTarget)
 
-      frame.takeClass('selected')
+      @$('.sequence .placeholder, .sequence img').removeClass('selected')
+      frame.addClass('selected')
 
       @settings.set
-        selected: frame.index()
+        selected: @$('.sequence .placeholder, .sequence img').index(frame)
 

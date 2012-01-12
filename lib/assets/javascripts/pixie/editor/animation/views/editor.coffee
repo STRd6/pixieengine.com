@@ -51,9 +51,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         collection.bind 'addToFrames', (model) =>
           @framesCollection.add model.clone()
 
-      @playerView.bind 'clearSelectedFrames', =>
-        @framesView.clearSelected()
-
       @framesCollection.bind 'createSequence', (collection) =>
         sequence = new Models.Sequence
           frames: collection.flattenFrames()

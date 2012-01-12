@@ -46,12 +46,13 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
         stopped: true
         playbackId: null
 
-      @trigger 'resetSelected'
-
     nextFrame: =>
       unless @get('paused')
-        @get('settings').set
-          selected: (@get('settings').get('selected') + 1).mod(@get('frames').length)
+        settings = @get 'settings'
+        frames = @get 'frames'
+
+        settings.set
+          selected: (settings.get('selected') + 1).mod(frames.flattenFrames().length)
 
     validate: (attrs) ->
       if attrs.fps?

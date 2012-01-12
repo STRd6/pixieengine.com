@@ -11,11 +11,6 @@ $tileset_sprite_width: 60px
 .lebenmeister, .backbone_lebenmeister
   +user-select
 
-  .frame.selected, .sequence.selected
-    img, .placeholder
-      background: $hover
-      border: 1px solid $highlight_border
-
   button[disabled]
     .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
       +opacity(0.5)
@@ -79,6 +74,10 @@ $tileset_sprite_width: 60px
       border: 1px solid rgba(0, 0, 0, 0.15)
       background: #efefef
       position: absolute
+
+      &.selected
+        background: $hover
+        border: 1px solid $highlight_border
 
       /* I <3 SASS */
       @for $n from 1 through 75
