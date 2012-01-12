@@ -71,7 +71,7 @@ describe "AnimationPlayer", ->
       callCount = 0
 
       # HAX: use spies to test this for real by checking to see that @model.get('frames').nextFrame has been called 30 times
-      @model.bind 'change:scrubberPosition', ->
+      @model.get('settings').bind 'change:selected', ->
         callCount++
 
       @model.play()
@@ -86,7 +86,7 @@ describe "AnimationPlayer", ->
 
       callCount = 0
 
-      @model.bind 'change:scrubberPosition', ->
+      @model.get('settings').bind 'change:selected', ->
         callCount++
 
       @model.play()
