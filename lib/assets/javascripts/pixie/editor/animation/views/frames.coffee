@@ -31,29 +31,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @render()
 
     appendFrame: (sequence) =>
-      name = sequence.get('name')
-      cid = sequence.cid
-
-      sequenceEl = $ "<div class=sequence data-cid=#{cid}></div>"
-      lastFrame = sequence.get('frames').last()
-
-      width = null
-      height = null
-
-      sequence.get('frames').each (frame) ->
-        if frame == lastFrame
-          src = frame.src
-          img = $ "<img src=#{src}>"
-          height = img.get(0).height
-          width = img.get(0).width
-
-          sequenceEl.append img
-        else
-          sequenceEl.append '<div class="placeholder"></div>'
-
-      sequenceEl.find('.placeholder').css
-        width: width + 4
-        height: height + 4
+      sequenceEl = sequence.constructStack(false)
 
       @$('button').removeAttr('disabled')
       @$('.create_sequence').attr('title', 'Create a sequence')
@@ -68,7 +46,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$('.frame').removeClass('selected')
 
     createSequence: =>
-      @collection.createSequence()
+      @collection.trigger 'createSequence', @collection
       @collection.reset()
 
     render: =>

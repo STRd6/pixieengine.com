@@ -7,13 +7,8 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
 
     model: Models.Sequence
 
-    createSequence: =>
-      @trigger 'createSequence', @
-
     flattenFrames: =>
-      (@models.map (sequence) ->
-        sequence.get 'frames'
-      ).flatten()
+      (sequence.get 'frames' for sequence in @models).flatten()
 
     nextFrame: =>
       @shiftFrame(+1)
@@ -22,12 +17,7 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
       @shiftFrame(-1)
 
     shiftFrame: (direction) =>
-      @selected = (@selected + direction).mod(@length)
-      @trigger 'change:selected', @, @selected
-
-      flattenedFrames = @flattenFrames()
-
-      @trigger 'updateSelected', flattenedFrames[@selected], @selected
+      @toFrame (@selected + direction).mod(@length)
 
     toFrame: (frame) =>
       @selected = frame
