@@ -39,6 +39,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @model.bind 'change:scrubberPosition', (model, scrubberPosition) =>
         @$('.scrubber').val(scrubberPosition)
 
+        @options.frames.toFrame(scrubberPosition)
+
         @refreshImage(model.get('frames').at(scrubberPosition))
 
       @model.get('frames').bind 'add', (model, collection) =>
