@@ -21,9 +21,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
 
     toFrame: (frame) =>
       @selected = frame
+
       @trigger 'change:selected', @, @selected
-
-      flattenedFrames = @flattenFrames()
-
-      @trigger 'updateSelected', flattenedFrames[@selected], @selected
 

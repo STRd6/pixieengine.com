@@ -17,7 +17,7 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
           @stop()
           @play()
 
-      @get('frames').bind 'updateSelected', (model, index) =>
+      @get('frames').bind 'change:selected', (collection, index) =>
         @set
           scrubberPosition: index
 
