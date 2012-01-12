@@ -24,8 +24,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @collection.bind 'add', @appendFrame
       @collection.bind 'reset', @render
 
-      # look into tilemaps settings object for different approach
-      @collection.bind 'change:selected', (collection, selected) =>
+      @settings.bind 'change:selected', (model, selected) =>
         @$('.sequence').eq(selected).takeClass('selected')
 
       @render()
@@ -64,6 +63,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       frame.takeClass('selected')
 
-      @collection.toFrame(frame.index())
-
+      @settings.set
+        selected: frame.index()
 

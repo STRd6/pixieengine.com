@@ -1,4 +1,5 @@
 #= require pixie/editor/animation/models/frames_collection
+#= require pixie/editor/animation/models/settings
 
 namespace "Pixie.Editor.Animation.Models", (Models) ->
   class Models.AnimationPlayer extends Backbone.Model
@@ -8,8 +9,8 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
       stopped: true
       fps: 30
       playbackId: null
-      scrubberPosition: 0
       frames: new Models.FramesCollection
+      settings: new Models.Settings
 
     initialize: ->
       @bind 'change:fps', =>
@@ -20,10 +21,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
             playbackId: null
 
           @play()
-
-      @get('frames').bind 'change:selected', (collection, index) =>
-        @set
-          scrubberPosition: index
 
     pause: =>
       @set
@@ -48,11 +45,13 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
         playing: false
         stopped: true
         playbackId: null
-        scrubberPosition: 0
+
+      @trigger 'resetSelected'
 
     nextFrame: =>
       unless @get('paused')
-        @get('frames').nextFrame()
+        @get('settings').set
+          selected: (@get('settings').get('selected') + 1).mod(@get('frames').length)
 
     validate: (attrs) ->
       if attrs.fps?

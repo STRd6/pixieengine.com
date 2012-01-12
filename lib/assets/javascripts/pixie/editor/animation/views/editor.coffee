@@ -21,6 +21,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     initialize: ->
       super
 
+      settings = new Models.Settings
+
       @sequencesCollection = new Models.SequencesCollection
       @framesCollection = new Models.FramesCollection
       @tilesCollection = new Models.TilesCollection
@@ -33,10 +35,12 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @framesView = new Views.Frames
         collection: @framesCollection
+        settings: settings
       contentEl.append @framesView.el
 
       @playerView = new Views.Player
         frames: @framesCollection
+        settings: settings
       contentEl.find('.relative').append @playerView.el
 
       @sequencesView = new Views.Sequences

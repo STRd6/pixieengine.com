@@ -24,6 +24,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @model = new Models.AnimationPlayer
         frames: @options.frames
+        settings: @settings
 
       @$('.fps input').change (e) =>
         oldValue = @model.get 'fps'
@@ -34,14 +35,15 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$('.scrubber').change (e) =>
         index = e.currentTarget.valueAsNumber
 
-        @model.set({ scrubberPosition: index })
+        @settings.set
+          selected: index
 
-      @model.bind 'change:scrubberPosition', (model, scrubberPosition) =>
-        @$('.scrubber').val(scrubberPosition)
+      @settings.bind 'change:selected', (model, selected) =>
+        @$('.scrubber').val(selected)
 
-        @options.frames.toFrame(scrubberPosition)
+        flattenedFrames = @options.frames.flattenFrames()
 
-        @refreshImage(model.get('frames').at(scrubberPosition))
+        @refreshImage(flattenedFrames[selected])
 
       @model.get('frames').bind 'add', (model, collection) =>
         @$('.scrubber').attr('max', Math.max(0, collection.length - 1))
@@ -58,8 +60,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @model.play()
       @showPause()
 
-    refreshImage: (model) =>
-      src = (model?.get('frames').first() || EMPTY_MODEL).src
+    refreshImage: (frame) =>
+      src = (frame || EMPTY_MODEL).src
 
       @$('img').attr('src', src)
 
