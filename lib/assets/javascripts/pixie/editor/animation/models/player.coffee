@@ -14,7 +14,11 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
     initialize: ->
       @bind 'change:fps', =>
         if id = @get('playbackId')
-          @stop()
+          clearInterval(id)
+
+          @set
+            playbackId: null
+
           @play()
 
       @get('frames').bind 'change:selected', (collection, index) =>
@@ -27,7 +31,6 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
         playing: false
         stopped: false
 
-    # consider using chained setTimeouts to update fps live on user input
     play: =>
       playbackId = @get('playbackId') || setInterval(@nextFrame, 1000 / @get('fps'))
 
