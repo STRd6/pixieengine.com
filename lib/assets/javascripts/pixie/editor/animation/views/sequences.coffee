@@ -19,8 +19,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
           @collection.getByCid(cid).set({ name: value })
 
-      @collection.bind 'add', (model) =>
-        @addSequence(model)
+      @collection.bind 'add', @addSequence
+      @collection.bind 'remove', @removeSequence
 
     addToFrames: (e) =>
       return if $(e.target).is('.name')
@@ -34,5 +34,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       sequenceEl = sequence.constructStack()
 
       @$('.sprites').append sequenceEl
+
+    removeSequence: (sequence) =>
+      @$(".sequence[data-cid=#{sequence.cid}]").remove()
 
 

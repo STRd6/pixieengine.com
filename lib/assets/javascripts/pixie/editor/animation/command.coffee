@@ -8,9 +8,21 @@ namespace "Pixie.Editor.Animation.Command", (Command) ->
       undo: ->
         I.framesCollection.remove I.frame
 
-    # TODO make sure to keep track of the index where the frame was deleted and add it back at the same position
     RemoveFrame: (I={}) ->
       execute: ->
         I.framesCollection.remove I.frame
       undo: ->
         I.framesCollection.add I.frame, {at: I.index}
+
+    AddSequence: (I={}) ->
+      execute: ->
+        I.sequencesCollection.add I.sequence
+      undo: ->
+        # TODO make sure to add the sequence's frames back to the bottom bar
+        I.sequencesCollection.remove I.sequence
+
+    RemoveSequence: (I={}) ->
+      execute: ->
+        I.sequencesCollection.remove I.sequence
+      undo: ->
+        I.sequencesCollection.add I.sequence, {at: I.index}

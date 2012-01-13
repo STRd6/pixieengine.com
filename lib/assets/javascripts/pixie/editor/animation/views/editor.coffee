@@ -60,7 +60,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         sequence = new Models.Sequence
           frames: collection.flattenFrames()
 
-        @sequencesCollection.add(sequence)
+        @settings.execute Command.AddSequence
+          sequencesCollection: @sequencesCollection
+          sequence: sequence
 
       @$('.content .relative').append(@playerView.render().el)
 
