@@ -5,6 +5,7 @@
 #= require_tree .
 #= require_tree ../models
 #= require ../actions
+#= require ../command
 
 #= require tmpls/editors/animation/editor
 
@@ -13,7 +14,7 @@
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   {Animation} = Pixie.Editor
-  {Models} = Pixie.Editor.Animation
+  {Command, Models} = Pixie.Editor.Animation
 
   class Views.Editor extends Pixie.View
     className: 'editor backbone_lebenmeister'
@@ -51,7 +52,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       for collection in [@sequencesCollection, @tilesCollection]
         collection.bind 'addToFrames', (model) =>
-          @framesCollection.add model.clone()
+          @settings.execute Command.AddFrame
+            framesCollection: @framesCollection
+            frame: model.clone()
 
       @framesCollection.bind 'createSequence', (collection) =>
         sequence = new Models.Sequence

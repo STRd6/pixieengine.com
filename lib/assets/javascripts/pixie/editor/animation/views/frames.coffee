@@ -1,5 +1,7 @@
 #= require pixie/view
 
+#= require ../command
+
 #= require pixie/editor/animation/models/sequence
 
 #= require tmpls/editors/animation/frames
@@ -79,5 +81,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       sequence = @collection.getByCid(cid)
 
-      @collection.remove sequence
+      @settings.execute Command.RemoveFrame
+        framesCollection: @collection
+        frame: sequence
 
