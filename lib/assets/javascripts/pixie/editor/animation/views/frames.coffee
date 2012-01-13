@@ -5,7 +5,7 @@
 #= require tmpls/editors/animation/frames
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
-  {Models} = Pixie.Editor.Animation
+  {Models, Command} = Pixie.Editor.Animation
 
   class Views.Frames extends Pixie.View
     tagName: 'nav'
@@ -26,9 +26,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @collection.bind 'add', @appendFrame
       @collection.bind 'reset', @render
+      @collection.bind 'remove', @removeFrame
 
       @settings.bind 'change:selected', (model, selected) =>
-
         @$('.sequence .placeholder, .sequence img').removeClass('selected').eq(selected).addClass('selected')
 
       @render()
@@ -70,4 +70,14 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @settings.set
         selected: @$('.sequence .placeholder, .sequence img').index(frame)
+
+    removeFrame: (frame) =>
+      @$(".sequence[data-cid=#{frame.cid}]").remove()
+
+    removeSelected: =>
+      cid = @$('.sequence .placeholder.selected, .sequence img.selected').parent().data('cid')
+
+      sequence = @collection.getByCid(cid)
+
+      @collection.remove sequence
 

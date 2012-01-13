@@ -48,17 +48,30 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @model.get('frames').bind 'add', (model, collection) =>
         @$('.scrubber').attr('max', Math.max(0, collection.flattenFrames().length - 1))
 
+      @model.get('frames').bind 'remove', (model, collection) =>
+        @$('.scrubber').attr('max', Math.max(0, collection.flattenFrames().length - 1))
+
+      @model.bind 'change', (model) =>
+        playing = model.get 'playing'
+        paused = model.get 'paused'
+        stopped = model.get 'stopped'
+
+        if playing
+          @showPause()
+        else if paused
+          @showPlay()
+        else if stopped
+          @showPlay()
+
     pause: (e) =>
       e.preventDefault()
 
       @model.pause()
-      @showPlay()
 
     play: (e) =>
       e.preventDefault()
 
       @model.play()
-      @showPause()
 
     refreshImage: (frame) =>
       src = (frame || EMPTY_MODEL).src
@@ -77,7 +90,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       e.preventDefault()
 
       @model.stop()
-      @showPlay()
       @settings.set
         selected: 0
 

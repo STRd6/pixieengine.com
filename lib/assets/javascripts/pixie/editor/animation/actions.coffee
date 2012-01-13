@@ -21,19 +21,23 @@ namespace "Pixie.Editor.Animation", (Animation) ->
     previous:
       hotkeys: "left"
       perform: (editor) ->
-        #editor.settings.previousFrame()
-        console.log 'previousFrame'
+        player = editor.playerView.model
+
+        player.pause()
+        player.previousFrame()
 
     next:
       hotkeys: "right"
       perform: (editor) ->
-        #editor.settings.nextFrame()
-        console.log 'nextFrame'
+        player = editor.playerView.model
+
+        player.pause()
+        player.nextFrame(true)
 
     deleteFrame:
       hotkeys: ["del", "backspace"]
       perform: (editor) ->
-        console.log 'delete'
+        editor.framesView.removeSelected()
 
     cut:
       hotkeys: ["ctrl+x", "meta+x"]

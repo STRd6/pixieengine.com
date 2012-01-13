@@ -65,7 +65,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
       @include Pixie.Editor.Base
 
-      $.each Animation.actions, (name, action) =>
+      for name, action of Animation.actions
         action.name ||= name
 
         @addAction action

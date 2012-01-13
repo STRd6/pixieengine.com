@@ -46,8 +46,15 @@ namespace "Pixie.Editor.Animation.Models", (Models) ->
         stopped: true
         playbackId: null
 
-    nextFrame: =>
-      unless @get('paused')
+    previousFrame: =>
+      settings = @get 'settings'
+      frames = @get 'frames'
+
+      settings.set
+        selected: (settings.get('selected') - 1).mod(frames.flattenFrames().length)
+
+    nextFrame: (forceNextFrame=false) =>
+      if not @get('paused') or forceNextFrame
         settings = @get 'settings'
         frames = @get 'frames'
 
