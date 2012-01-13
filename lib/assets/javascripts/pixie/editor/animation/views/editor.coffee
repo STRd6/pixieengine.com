@@ -61,8 +61,10 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
           frames: collection.flattenFrames()
 
         @settings.execute Command.AddSequence
+          framesCollection: collection
           sequencesCollection: @sequencesCollection
           sequence: sequence
+          previousModels: collection.models.copy()
 
       @$('.content .relative').append(@playerView.render().el)
 
@@ -76,6 +78,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         @addAction action
 
       @takeFocus()
+
+      # prevent context menu
+      @el.bind "contextmenu", -> false
 
    takeFocus: ->
      super()

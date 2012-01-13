@@ -44,11 +44,12 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$('.sprites').append sequenceEl
 
     clear: =>
-      @collection.reset()
+      @settings.execute Command.ClearFrames
+        framesCollection: @collection
+        previousModels: @collection.models.copy()
 
     createSequence: =>
       @collection.trigger 'createSequence', @collection
-      @collection.reset()
 
     # the index here isn't the flattened frames since we don't want
     # to be able to insert frames into sequences.

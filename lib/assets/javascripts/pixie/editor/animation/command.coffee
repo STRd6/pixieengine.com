@@ -1,3 +1,5 @@
+#= require ./models/sequence
+
 namespace "Pixie.Editor.Animation.Command", (Command) ->
   {Models} = Pixie.Editor.Animation
 
@@ -17,12 +19,20 @@ namespace "Pixie.Editor.Animation.Command", (Command) ->
     AddSequence: (I={}) ->
       execute: ->
         I.sequencesCollection.add I.sequence
+        I.framesCollection.reset()
       undo: ->
-        # TODO make sure to add the sequence's frames back to the bottom bar
         I.sequencesCollection.remove I.sequence
+
+        I.framesCollection.add I.previousModels
 
     RemoveSequence: (I={}) ->
       execute: ->
         I.sequencesCollection.remove I.sequence
       undo: ->
         I.sequencesCollection.add I.sequence, {at: I.index}
+
+    ClearFrames: (I={}) ->
+      execute: ->
+        I.framesCollection.reset()
+      undo: ->
+        I.framesCollection.add I.previousModels
