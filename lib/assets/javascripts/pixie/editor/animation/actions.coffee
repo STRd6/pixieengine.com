@@ -55,3 +55,4 @@ namespace "Pixie.Editor.Animation", (Animation) ->
       hotkeys: ["ctrl+a", "meta+a"]
       perform: (editor) ->
         console.log 'select all'
+

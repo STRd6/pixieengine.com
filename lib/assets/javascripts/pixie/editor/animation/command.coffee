@@ -13,4 +13,4 @@ namespace "Pixie.Editor.Animation.Command", (Command) ->
       execute: ->
         I.framesCollection.remove I.frame
       undo: ->
-        I.framesCollection.add I.frame
+        I.framesCollection.add I.frame, {at: I.index}

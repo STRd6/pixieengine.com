@@ -15,18 +15,17 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
     template: 'editors/animation/frames'
 
-    # TODO see if you can use comma separated selectors for this
-    # eg: 'click .sequence img, .sequence .placeholder': 'select'
     events:
-      'click .sequence img': 'select'
-      'click .sequence .placeholder': 'select'
+      'click .sequence img, .sequence .placeholder': 'select'
       'click .clear_frames': 'clear'
       'click .create_sequence': 'createSequence'
 
     initialize: ->
       super
 
-      @collection.bind 'add', @appendFrame
+      # TODO figure out a way to append frames when not inserting at a specific index
+      # and render them all again when you are trying to insert at an index
+      @collection.bind 'add', @render
       @collection.bind 'reset', @render
       @collection.bind 'remove', @removeFrame
 
@@ -50,6 +49,11 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
     createSequence: =>
       @collection.trigger 'createSequence', @collection
       @collection.reset()
+
+    # the index here isn't the flattened frames since we don't want
+    # to be able to insert frames into sequences.
+    insertFrame: (sequence, index) =>
+      @collection.add sequence, {at: index}
 
     render: =>
       @$(".sprites").empty()
@@ -77,11 +81,15 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$(".sequence[data-cid=#{frame.cid}]").remove()
 
     removeSelected: =>
-      cid = @$('.sequence .placeholder.selected, .sequence img.selected').parent().data('cid')
+      selectedElements = @$('.sequence .placeholder.selected, .sequence img.selected')
+
+      cid = selectedElements.parent().data('cid')
+      index = selectedElements.parent().index()
 
       sequence = @collection.getByCid(cid)
 
       @settings.execute Command.RemoveFrame
         framesCollection: @collection
         frame: sequence
+        index: index
 
