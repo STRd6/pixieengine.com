@@ -3,20 +3,17 @@ namespace "Pixie.Editor.Animation", (Animation) ->
     save:
       hotkeys: ["ctrl+s", "meta+s"]
       perform: (editor) ->
-        #console.log editor.toJSON()
-        console.log 'saving'
+        editor.toJSON()
 
     undo:
       hotkeys: ["ctrl+z", "meta+z"]
       perform: (editor) ->
-        #editor.settings.undo()
-        console.log 'undo'
+        editor.settings.undo()
 
     redo:
       hotkeys: ["ctrl+y", "meta+y"]
       perform: (editor) ->
-        #editor.settings.redo()
-        console.log 'redo'
+        editor.settings.redo()
 
     previous:
       hotkeys: "left"
