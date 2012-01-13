@@ -46,10 +46,10 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         @refreshImage(flattenedFrames[selected])
 
       @model.get('frames').bind 'add', (model, collection) =>
-        @$('.scrubber').attr('max', Math.max(0, collection.flattenFrames().length - 1))
+        @updateScrubberMax(collection)
 
       @model.get('frames').bind 'remove', (model, collection) =>
-        @$('.scrubber').attr('max', Math.max(0, collection.flattenFrames().length - 1))
+        @updateScrubberMax(collection)
 
       @model.bind 'change', (model) =>
         playing = model.get 'playing'
@@ -94,3 +94,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         selected: 0
 
       @$('img').attr 'src', EMPTY_MODEL.src
+
+    updateScrubberMax: (collection) =>
+      @$('.scrubber').attr('max', Math.max(0, collection.flattenFrames().length - 1))
