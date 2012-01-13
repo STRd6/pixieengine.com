@@ -46,6 +46,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
           #  loadSpriteSheet src, parseInt(tileWidth), parseInt(tileHeight), (sprite) ->
           #    addTile(sprite)
 
-          @collection.add({frames: [{src: src}]})
+          @collection.add
+            frames: [{src: src}]
 
 

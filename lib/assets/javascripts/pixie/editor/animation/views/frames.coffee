@@ -69,8 +69,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @collection.each (model) =>
         @appendFrame model
 
-    select: (e) =>
-      frame = $(e.currentTarget)
+    select: ({currentTarget}) =>
+      frame = $(currentTarget)
 
       @$('.sequence .placeholder, .sequence img').removeClass('selected')
       frame.addClass('selected')

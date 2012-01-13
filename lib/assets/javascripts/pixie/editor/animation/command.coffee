@@ -31,6 +31,8 @@ namespace "Pixie.Editor.Animation.Command", (Command) ->
       undo: ->
         I.sequencesCollection.add I.sequence, {at: I.index}
 
+    # TODO it would be cool to maintain
+    # selected state when you undo this
     ClearFrames: (I={}) ->
       execute: ->
         I.framesCollection.reset()
