@@ -71,5 +71,5 @@ namespace "Pixie.Editor.Animation", (Animation) ->
       hotkeys: ["ctrl+h", "meta+h"]
       icon: 'help'
       perform: (editor) ->
-        console.log 'show the modal help dialog'
+        editor.el.find('.help_modal').modal()
 
