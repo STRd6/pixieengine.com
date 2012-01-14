@@ -11,6 +11,11 @@ $tileset_sprite_width: 60px
 .lebenmeister, .backbone_lebenmeister
   +user-select
 
+  .static-undo, .static-redo, .static-save, .static-help
+    display: inline-block
+    float: left
+    padding-right: 5px
+
   button[disabled]
     .static-application, .static-pictures, .static-picture_edit, .static-table, .static-table_gear
       +opacity(0.5)
@@ -36,6 +41,11 @@ $tileset_sprite_width: 60px
     margin: 0 1em 0 0
     padding: 0
     vertical-align: middle
+
+  .actions.top
+    left: $left_module + 10px
+    position: absolute
+    top: 0
 
   .sequence
     +bounds($sequence_width)
