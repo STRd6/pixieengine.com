@@ -4,7 +4,8 @@ namespace "Pixie.Editor.Animation", (Animation) ->
       hotkeys: ["ctrl+s", "meta+s"]
       name: "Export as JSON"
       perform: (editor) ->
-        editor.toJSON()
+        #editor.toJSON()
+        console.log 'exporting'
       icon: 'save'
 
     undo:
@@ -71,5 +72,11 @@ namespace "Pixie.Editor.Animation", (Animation) ->
       hotkeys: ["ctrl+h", "meta+h"]
       icon: 'help'
       perform: (editor) ->
-        editor.el.find('.help_modal').modal()
+        helpButton = editor.el.find('button[title="Help"]')
 
+        helpButton.addClass('active')
+
+        editor.el.find('.help_modal').modal
+          onClose: ->
+            $.modal.close()
+            helpButton.removeClass('active')
