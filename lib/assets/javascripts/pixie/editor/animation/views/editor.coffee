@@ -61,6 +61,9 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
             frame: model.clone()
 
       @sequencesCollection.bind 'editSequence', (sequence) =>
+        # keep track of previous sequence name
+        @sequencesView.lastSequenceName = sequence.get 'name'
+
         @framesCollection.reset()
 
         for frame in sequence.get 'frames'
@@ -69,9 +72,17 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
 
         @sequencesCollection.remove sequence
 
+      @framesCollection.bind 'clearPreviousSequenceName', =>
+        delete @sequencesView.lastSequenceName
+
       @framesCollection.bind 'createSequence', (collection) =>
-        sequence = new Models.Sequence
-          frames: collection.flattenFrames()
+        if name = @sequencesView.lastSequenceName
+          sequence = new Models.Sequence
+            frames: collection.flattenFrames()
+            name: name
+        else
+          sequence = new Models.Sequence
+            frames: collection.flattenFrames()
 
         @settings.execute Command.AddSequence
           framesCollection: collection

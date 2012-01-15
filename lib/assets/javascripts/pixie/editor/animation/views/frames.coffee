@@ -48,6 +48,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
         framesCollection: @collection
         previousModels: @collection.models.copy()
 
+      @collection.trigger 'clearPreviousSequenceName'
+
     createSequence: =>
       @collection.trigger 'createSequence', @collection
 
