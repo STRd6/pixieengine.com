@@ -22,7 +22,6 @@
 #= require jquery.timeago
 
 #= require pixie/editor/pixel/create
-#= require pixie/editor/animation/create
 #= require pixie/editor/tile/create
 
 #= require base64

@@ -1,6 +1,6 @@
 window.GridGen = (options) ->
   options = $.extend {},
-    color: "#414141"
+    color: "rgba(0, 0, 0, 0.3)"
     height: 32
     width: 32
     guide: 5
@@ -20,8 +20,8 @@ window.GridGen = (options) ->
     context.fillRect(0, i * height, canvasWidth, 1)
 
   # Draw the strong line
-  context.fillRect(0, 0, 2, canvasHeight)
-  context.fillRect(0, 0, canvasWidth, 2)
+  context.fillRect(0, 0, 1, canvasHeight)
+  context.fillRect(0, 0, canvasWidth, 1)
 
   backgroundImage: ->
     "url(#{this.toDataURL()})"

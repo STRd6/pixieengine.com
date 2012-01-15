@@ -1,5 +1,10 @@
 %style
   :sass
+    @import util
+
+    header
+      +user-select
+
     html
       background-image: url(/assets/editor_textured_background.png)
 
@@ -10,29 +15,18 @@
       border: none
       padding: 0
 
-%section#lebenmeister
-
-= form_tag download_animations_path, :class => "download_json" do
-  = hidden_field_tag :export_json_data
-
-= form_tag download_animations_path, :class => "download_csv" do
-  = hidden_field_tag :export_csv_data
+.editor.backbone_lebenmeister
 
 - content_for :javascript do
+  = javascript_include_tag "pixie/editor/animation/views/editor"
+
   :coffeescript
     $ ->
+      editor = new Pixie.Editor.Animation.Views.Editor
+
+      $('.backbone_lebenmeister').replaceWith(editor.el)
+
       $('body').attr('id', 'fullscreen')
-      lebenmeister = Pixie.Editor.Animation.create()
 
       $('#feedback').hide()
 
-      lebenmeister.find('.export_json').mousedown ->
-        $('#export_json_data').val(exportAnimationJSON())
-        $('form.download_json').submit()
-
-      lebenmeister.find('.export_csv').mousedown ->
-        $('#export_csv_data').val(exportAnimationCSV())
-        $('form.download_csv').submit()
-
-      window.currentComponent = lebenmeister
-      $('#lebenmeister').replaceWith(lebenmeister)

@@ -30,8 +30,6 @@ namespace "Pixie.Editor", (Editor) ->
           self.addHotkey(hotkey, perform)
 
       if action.menu != false
-        # TODO: Action Image Icons
-
         actionButton = Button
           text: name.capitalize()
           title: titleText
@@ -39,6 +37,9 @@ namespace "Pixie.Editor", (Editor) ->
           perform() unless $(this).attr('disabled')
 
           return false
+
+        if action.icon
+          actionButton.append("<span class='static-#{action.icon}'></span>")
 
         actionButton.appendTo(@$(".content .actions.top"))
 
