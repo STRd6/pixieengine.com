@@ -131,7 +131,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         entity = new Models.Entity
           uuid: uuid
           src: object.src
-          entity: object.entity
+          properties: object.properties
 
         entityLookup[uuid] = entity
         @entityList.add entity
@@ -140,17 +140,18 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       data.layers.each (layerData, i) =>
         layer = new Models.Layer _.extend({zIndex: i}, layerData)
 
-        layerData.entities.each (entityData) =>
+        layerData.instances.each (instanceData) =>
           instance = new Models.Instance
-            x: entityData.x
-            y: entityData.y
-            sourceEntity: entityLookup[entityData.uuid]
-
-          #TODO: Instance properties
+            x: instanceData.x
+            y: instanceData.y
+            sourceEntity: entityLookup[instanceData.uuid]
+            properties: instanceData.properties
 
           layer.addObjectInstance instance
 
         @layerList.add(layer)
+
+      #TODO: Activate correct layer and entity
 
    takeFocus: ->
      super()

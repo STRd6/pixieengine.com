@@ -4,7 +4,8 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
     defaults:
       x: 0
       y: 0
-      
+      properties: {}
+
     initialize: ->
       @sourceEntity = @get "sourceEntity"
 
@@ -15,3 +16,4 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       uuid: @sourceEntity.get "uuid"
       x: @get "x"
       y: @get "y"
+      properties: @get "properties"

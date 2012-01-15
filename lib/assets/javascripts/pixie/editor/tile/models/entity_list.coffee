@@ -9,4 +9,4 @@ namespace "Pixie.Editor.Tile.Models", (exports) ->
       @models.eachWithObject {}, (entity, cache) ->
         cache[entity.get("uuid")] =
           src: entity.get "src" # Image to display in map
-          entity: {} # TODO All the entity props go here
+          properties: {} # TODO All the entity props go here

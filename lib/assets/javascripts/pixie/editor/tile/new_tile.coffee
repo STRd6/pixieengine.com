@@ -6,6 +6,6 @@
 
 {Models, Views} = Pixie.Editor.Tile
 
-editor = new Views.Editor
+window.editor = new Views.Editor
 
 $("#testie").append(editor.el)
