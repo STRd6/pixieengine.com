@@ -31,7 +31,11 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       cid = $(e.currentTarget).data('cid')
       sequence = @collection.getByCid(cid)
 
-      @collection.trigger 'addToFrames', sequence.clone()
+      if $(e.currentTarget).hasClass('edit')
+        @collection.trigger 'editSequence', sequence
+        @toggleEdit()
+      else
+        @collection.trigger 'addToFrames', sequence.clone()
 
     addSequence: (sequence) =>
       @$('button').removeAttr('disabled')

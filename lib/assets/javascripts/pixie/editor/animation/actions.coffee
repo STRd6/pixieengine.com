@@ -2,7 +2,7 @@ namespace "Pixie.Editor.Animation", (Animation) ->
   Animation.actions =
     save:
       hotkeys: ["ctrl+s", "meta+s"]
-      name: "Export as JSON"
+      name: "Export JSON"
       perform: (editor) ->
         #editor.toJSON()
         console.log 'exporting'
