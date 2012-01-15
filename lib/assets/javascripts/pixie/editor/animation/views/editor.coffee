@@ -61,6 +61,8 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
             frame: model.clone()
 
       @sequencesCollection.bind 'editSequence', (sequence) =>
+        @framesCollection.reset()
+
         for frame in sequence.get 'frames'
           @framesCollection.add
             frames: [{src: frame.src}]
