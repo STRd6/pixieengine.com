@@ -106,7 +106,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
             layer: layer
           , true
 
-      @settings.execute compoundCommand unless compoundCommand.empty()
+      @execute compoundCommand unless compoundCommand.empty()
 
     toJSON: ->
       settingsJSON = @settings.toJSON()
@@ -115,6 +115,42 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         entityCache: @entityList.toJSON()
         layers: @layerList.toJSON()
         orientation: "orthogonal"
+
+    fromJSON: (data) ->
+      @settings.set
+        title: data.title
+        width: data.tilesWide
+        height: data.tilesTall
+        tileWidth: data.tileWidth
+        tileHeight: data.tileHeight
+
+      entityLookup = {}
+      @entityList.reset()
+
+      $.each data.entityCache, (uuid, object) =>
+        entity = new Models.Entity
+          uuid: uuid
+          src: object.src
+          entity: object.entity
+
+        entityLookup[uuid] = entity
+        @entityList.add entity
+
+      @layerList.reset()
+      data.layers.each (layerData, i) =>
+        layer = new Models.Layer _.extend({zIndex: i}, layerData)
+
+        layerData.entities.each (entityData) =>
+          instance = new Models.Instance
+            x: entityData.x
+            y: entityData.y
+            sourceEntity: entityLookup[entityData.uuid]
+
+          #TODO: Instance properties
+
+          layer.addObjectInstance instance
+
+        @layerList.add(layer)
 
    takeFocus: ->
      super()

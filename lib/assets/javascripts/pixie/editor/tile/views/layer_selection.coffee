@@ -39,6 +39,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @render()
 
     render: =>
+      @$('ul').empty()
+
       @collection.each (layer) =>
         @appendLayer layer
 
