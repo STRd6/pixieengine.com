@@ -38,8 +38,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       ]
 
       @settings = new Models.Settings
-        activeLayer: @layerList.at(0)
-        activeEntity: @entityList.at(0)
+      @resetActiveObjects()
 
       # Add Sub-components
       screen = new Views.Screen
@@ -92,6 +91,11 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     render: =>
       return this
+
+    resetActiveObjects: ->
+      @settings.set
+        activeLayer: @layerList.at(0)
+        activeEntity: @entityList.at(0)
 
     deleteSelection: ->
       layer = @settings.get "activeLayer"
@@ -151,7 +155,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
         @layerList.add(layer)
 
-      #TODO: Activate correct layer and entity
+      @resetActiveObjects()
 
    takeFocus: ->
      super()
