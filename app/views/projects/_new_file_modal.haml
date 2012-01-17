@@ -85,7 +85,8 @@
           newDir
         ).children('ul')
 
-      inputData.path = "/\#{inputData.path}/\#{inputData.name}.\#{inputData.ext}"
+      # File is either named by uuid (for entities) or file name (for regular files)
+      inputData.path = "/\#{inputData.path}/\#{inputData.uuid || inputData.name}.\#{inputData.ext}"
       inputData.options = JSON.stringify(inputData.options)
       dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
@@ -138,6 +139,10 @@
       event.preventDefault()
 
       formData = $("#new_file_modal").serializeObject()
+
+      # Special case to make entities use UUIDs
+      if params.type == "entity"
+        formData.uuid = Math.uuid(32, 16)
 
       newNode = newFileNode($.extend(formData, params))
 
