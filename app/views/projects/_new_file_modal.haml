@@ -105,10 +105,9 @@
         treeNode.find(".file").click()
 
       if inputData.forceSave
-        window.save null,
+        window.saveFile
           contents: inputData.contents
           path: inputData.path
-          noNotify: true
 
       return treeNode
 

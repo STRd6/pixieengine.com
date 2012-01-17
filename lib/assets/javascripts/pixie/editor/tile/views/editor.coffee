@@ -32,13 +32,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           zIndex: 1
       ]
 
-      #TODO Allow external entities list to be passed in as options
-      @entityList = @options.entityList || new Models.EntityList([
-        new Models.Entity
-          src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABHUlEQVRYR+2WwQ3CMAxFW3HkxjzMgZgAMQUHpkBMgDoH83DjiEA+BJlg/3y7SBVSeyQl7+U7Tdx3Ez/9xPzuvwW21/uzJHhZL1OLCf9JQ73yRWQoAQZqyTAiTYEsnC2NKzAWrBNBSXwJMODheHO/3s1hZY55EmEBBNdkS8SS+BBAq2fBUQlKIAMvInUSdQqjBB6n3XvBi/3ZrH2rFE0Bb/UaXsishE4BCkTgSAKlMAukEpC4rT0gv1v7IF0CmZDdB94GlDloAXm5PozQGSApIHALLuPUUZw9iJh7gRJApfBuJQZuJmCVQUOYNDy4zAOPYg2KXssIipoT2BExEm5jUA3Q/YA3YUbmJz2hJeTJMMB6vmZTykacfW8WmBN4AS/7qCEFLkXAAAAAAElFTkSuQmCC"
-        new Models.Entity
-          src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA5klEQVRYR2NkGGDAOMD2M4w6YDQERkOA6BD4NpXjP7WyLFf2D7i9RDkAZPnh2/8Y9H0rGS5ubieLBjme70Yn2A8kOQDZckpCAGQ5yBO2qkzEO4DaloNCEOQQokKAFpbDooGgA6iZ4GBpB2Q5KP0QFQUgB3zSKCc7wcESKizeQUEPA0RFAcwBlCQ6WHCDPAIDJIUActCR65DREBgNgdEQGA2BQRUC2EpBUAGHtUFCi5oQvQ6Ala44HYBchlNaFKPXgMjmEQwBcptgsCBHb4KhewanA8j1Nbo+5MYHNjOJapRSyzGD0gEAm/Y7MAMUHQMAAAAASUVORK5CYII="
-      ])
+      # External entities list must be passed in as options
+      @entityList = @options.entityList
 
       @settings = new Models.Settings
 
@@ -123,6 +118,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     toJSON: ->
       settingsJSON = @settings.toJSON()
 
+      #TODO: Prune unused entities out of entity cache
+
       return Object.extend settingsJSON,
         entityCache: @entityList.toJSON()
         layers: @layerList.toJSON()
@@ -146,7 +143,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           # Add the entity from the map to the list
           entity = new Models.Entity
             uuid: uuid
-            src: object.src
+            sprite: object.sprite
             properties: object.properties
 
           entityLookup[uuid] = entity

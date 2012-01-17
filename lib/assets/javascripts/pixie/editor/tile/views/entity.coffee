@@ -12,12 +12,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @el.attr "data-cid", @model.cid
       @el.attr "data-uuid", @model.get("uuid")
 
-      @model.bind 'change:src', @render
+      @model.bind 'change:sprite', @render
 
       @render()
 
     render: =>
-      @el.attr "src", @model.get "src"
+      @el.attr "src", @model.src()
 
       if @model == @options.settings.get "activeEntity"
         @el.addClass "active"

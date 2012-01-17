@@ -10,7 +10,7 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       @sourceEntity = @get "sourceEntity"
 
       @set
-        src: @sourceEntity.get "src"
+        src: @sourceEntity.src()
 
     toJSON: ->
       uuid: @sourceEntity.get "uuid"

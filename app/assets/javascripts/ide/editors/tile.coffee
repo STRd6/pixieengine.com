@@ -1,24 +1,44 @@
 #= require pixie/editor/tile/views/editor
+$ ->
+  window.entities = new Pixie.Editor.Tile.Models.EntityList()
 
-window.loadEntity = (uuid, entity) ->
-  window.entities[uuid] = entity || {}
+  # Populate initial entities
+  $('ul.filetree [data-type=entity]').each ->
+    $this = $(this)
+    fileNode = $this.prev()
 
-  displayName = entity.name || uuid
-  dataString = JSON.stringify(entity)
+    uuid = fileNode.text().replace(/\.[^\.]*$/, '')
+    entityData = $this.find("[name=contents]").text().parse()
 
-  # Create entity file node
-  filePath = projectConfig.directories["entities"]
-  newNode = newFileNode
-    name: uuid
-    displayName: displayName
-    type: "entity"
-    ext: "entity"
-    path: filePath
-    contents: dataString
-    noAutoOpen: true
-    forceSave: true
+    entityData.uuid = uuid
 
-  notify("Added #{displayName} into entities.")
+    if name = entityData.name
+      fileNode.text(name)
+      $this.attr('data-name', name)
+      $this.attr('data-uuid', uuid)
+
+    window.entities.add entityData
+
+  # Bind a listener for new entities to create entity files
+  entities.bind "add", (entity) ->
+    uuid = entity.get "uuid"
+    displayName = entity.get("name") || uuid
+
+    dataString = JSON.stringify(entity)
+
+    # Create entity file node
+    filePath = projectConfig.directories["entities"]
+    newNode = newFileNode
+      name: uuid
+      displayName: displayName
+      type: "entity"
+      ext: "entity"
+      path: filePath
+      contents: dataString
+      noAutoOpen: true
+      forceSave: true
+
+    notify("Added #{displayName} into entities.")
 
 window.createTileEditor = (options) ->
   panel = options.panel
@@ -31,15 +51,13 @@ window.createTileEditor = (options) ->
   catch e
     ;
 
-  entityList = new Pixie.Editor.Tile.Models.EntityList()
-
   editorOptions = $.extend panel.data("options"),
     data: data
 
     editEntity: (uuid) ->
       $("ul.filetree [title=#{uuid}] span").click()
 
-    entityList: entityList
+    entityList: window.entities
 
   tileEditor = new Pixie.Editor.Tile.Views.Editor(editorOptions)
 

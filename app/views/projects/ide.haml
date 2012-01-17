@@ -152,22 +152,6 @@
     $ ->
       window.loadProjectConfig()
 
-      window.entities = {}
-      # Populate entities
-      $('ul.filetree [data-type=entity]').each ->
-        $this = $(this)
-        fileNode = $this.prev()
-
-        uuid = fileNode.text().replace(/\.[^\.]*$/, '')
-        entityData = $this.find("[name=contents]").text().parse()
-
-        if name = entityData.name
-          fileNode.text(name)
-          $this.attr('data-name', name)
-          $this.attr('data-uuid', uuid)
-
-        window.entities[uuid] = entityData
-
       $('ul.filetree').treeview()
 
       $tabs = $('#tabs').tabs
