@@ -1,4 +1,3 @@
-#= require pixie/editor/tile/views/editor
 $ ->
   window.entities = new Pixie.Editor.Tile.Models.EntityList()
 
