@@ -21,6 +21,9 @@
 #= require jquery.vector_picker
 #= require jquery.timeago
 
+#= require underscore
+#= require backbone
+
 #= require pixie/editor/pixel/create
 #= require pixie/editor/tile/create
 
