@@ -2,44 +2,46 @@
 #= require backbone
 #= require tmpls/pagination
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
+#= require pixie/view
 
-class Pixie.Views.Paginated extends Backbone.View
-  className: 'pagination'
-  tagName: 'nav'
+namespace "Pixie.Views", (Views) ->
+  class Views.Paginated extends Pixie.View
+    className: 'pagination'
+    tagName: 'nav'
 
-  initialize: ->
-    @collection.bind 'fetching', =>
-      $(@el).find('.spinner').show()
+    initialize: ->
+      super
 
-    @collection.bind 'afterReset', =>
-      $(@el).find('.spinner').hide()
-      @render()
+      @collection.bind 'fetching', =>
+        @$('.spinner').show()
 
-  events:
-    'click a.prev': 'previous'
-    'click a.next': 'next'
-    'click a.page': 'toPage'
+      @collection.bind 'afterReset', =>
+        @$('.spinner').hide()
+        @render()
 
-  toPage: (e) =>
-    e.preventDefault()
-    @collection.toPage($(e.target).data('page'))
+    events:
+      'click a.prev': 'previous'
+      'click a.next': 'next'
+      'click a.page': 'toPage'
 
-  previous: (e) =>
-    e.preventDefault()
-    @collection.previousPage()
+    toPage: (e) =>
+      e.preventDefault()
+      @collection.toPage($(e.target).data('page'))
 
-  next: (e) =>
-    e.preventDefault()
-    @collection.nextPage()
+    previous: (e) =>
+      e.preventDefault()
+      @collection.previousPage()
 
-  render: =>
-    $(@el).empty()
+    next: (e) =>
+      e.preventDefault()
+      @collection.nextPage()
 
-    pages = $.tmpl('pagination', @collection.pageInfo())
+    render: =>
+      @el.empty()
 
-    $(@el).html(pages)
+      pages = $.tmpl('pagination', @collection.pageInfo())
 
-    return @
+      @el.html(pages)
+
+      return @
 

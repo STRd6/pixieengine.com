@@ -18,9 +18,9 @@ describe "Paginated View", ->
 
   describe "initialization", ->
     it "should create a page link container", ->
-      expect(@view.el.nodeName).toEqual('NAV')
-      expect($(@view.el)).toHaveClass('pagination')
+      expect(@view.el.get(0).nodeName).toEqual('NAV')
+      expect(@view.el).toHaveClass('pagination')
 
     it "should have the correct number of page links", ->
       # +3 because prev, next, and spinner elements
-      expect($(@view.render().el).children().length).toEqual(@collection.pageInfo().range.length + 3)
+      expect(@view.render().el.children().length).toEqual(@collection.pageInfo().range.length + 3)
