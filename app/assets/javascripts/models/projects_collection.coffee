@@ -10,6 +10,7 @@ class Pixie.Models.ProjectsCollection extends Pixie.Models.PaginatedCollection
   filterPages: (filter) =>
     # gross
     filter = 'none' if filter == 'all'
+    filter = 'own' if filter == 'my projects'
 
     @page = 1
     @params.page = @page
