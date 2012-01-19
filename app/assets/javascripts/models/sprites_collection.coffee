@@ -26,17 +26,6 @@ class Pixie.Models.SpritesCollection extends Pixie.Models.PaginatedCollection
     @params.tagged = tag
 
     @fetch
-      success: =>
-        @trigger 'showReset'
-
-  resetTags: =>
-    @page = 1
-
-    delete @params.tagged
-
-    @fetch
-      success: =>
-        @trigger 'hideReset'
 
   url: ->
     '/sprites'

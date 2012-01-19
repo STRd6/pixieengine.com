@@ -33,12 +33,6 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       @el.before(pages.render().el)
       @el.before(searchable.render().el)
 
-      @collection.bind 'showReset', =>
-        @$('.reset').show()
-
-      @collection.bind 'hideReset', =>
-        @$('.reset').hide()
-
       @collection.bind 'reset', (collection) =>
         @$('.sprite_container').remove()
         collection.each(@addSprite)
