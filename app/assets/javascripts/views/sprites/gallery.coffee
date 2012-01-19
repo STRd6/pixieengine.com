@@ -16,9 +16,6 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
   class Sprites.Gallery extends Pixie.View
     el: '.sprites'
 
-    events:
-      'click .reset': 'resetTags'
-
     initialize: ->
       super
 
@@ -52,5 +49,3 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       spriteView = new Pixie.Views.Sprites.Sprite({ model: sprite })
       @el.append(spriteView.render().el)
 
-    resetTags: =>
-      @collection.resetTags()
