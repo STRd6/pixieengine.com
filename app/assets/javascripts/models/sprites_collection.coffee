@@ -23,7 +23,7 @@ namespace "Pixie.Models", (Models) ->
 
       @params.tagged = tag
 
-      @fetch
+      @fetch()
 
     url: ->
       '/sprites'
