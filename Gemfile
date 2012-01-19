@@ -37,6 +37,7 @@ gem "pg"
 gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
+gem 'ruby-debug19'
 gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
