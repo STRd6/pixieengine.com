@@ -7,8 +7,6 @@ class ProjectsController < ApplicationController
   before_filter :require_owner_or_admin, :only => [:destroy, :add_member, :remove_member]
   before_filter :require_admin, :only => [:feature, :add_to_arcade, :add_to_tutorial]
 
-  before_filter :filter_results, :only => [:index]
-
   before_filter :count_view, :only => [:fullscreen]
 
   before_filter :hide_dock, :only => [:github_integration, :info, :fullscreen]
@@ -78,8 +76,14 @@ class ProjectsController < ApplicationController
   def load_projects
     @projects = filter_results
 
-    current_page = @projects.current_page
-    total = @projects.total_pages
+    if params[:search]
+      projects_list = @projects.order("id DESC").search(params[:search]).paginate(:page => params[:page], :per_page => per_page)
+    else
+      projects_list = @projects.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
+    end
+
+    current_page = projects_list.current_page
+    total = projects_list.total_pages
     current_user_id = current_user ? current_user.id : nil
 
     @projects_data = {
@@ -88,7 +92,7 @@ class ProjectsController < ApplicationController
       :page => current_page,
       :per_page => per_page,
       :total => total,
-      :models => @projects
+      :models => projects_list
     }
   end
 
@@ -341,7 +345,7 @@ class ProjectsController < ApplicationController
       else
         Project
       end
-    end.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
+    end
   end
 
   def filters

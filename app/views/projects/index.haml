@@ -2,6 +2,8 @@
 
 %style
   :sass
+    @import util
+
     #fullscreen
       height: auto
 
@@ -13,10 +15,46 @@
 
     .filters
       float: right
+      padding: 0.7em 0.5em 0.7em 0
 
-    .spinner
+      .filter
+        margin: 0
+
+    div.search
+      width: 400px
+      display: inline-block
+      padding: 0.7em 0.5em 0.7em 0
+
+      button
+        margin: 0
+        margin-right: 0.5em
+
+      .search_field
+        display: inline-block
+        margin-right: 0.5em
+        width: 40%
+
+    .spinner_container
+      +border-radius
+
       display: none
-      margin-left: 1em
+      background-color: #EFEFEF
+      width: 100px
+      height: 35px
+      position: fixed
+      top: 100px
+      left: 0
+      right: 0
+      margin: auto
+      text-align: center
+      padding-top: 18px
+      z-index: 10
+      border: 1px solid rgba(0, 0, 0, 0.2)
+
+      .spinner
+        vertical-align: middle
+        margin-right: 1em
+        padding-bottom: 5px
 
 - @title = "Project Gallery"
 
@@ -26,7 +64,7 @@
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
-      projects_gallery = new window.Pixie.Views.Projects.FilteredGallery
+      projects_gallery = new Pixie.Views.Projects.FilteredGallery
       projects_gallery.collection.reset(projects_gallery.collection.parse(#{@projects_data.to_json}))
 
 .gallery

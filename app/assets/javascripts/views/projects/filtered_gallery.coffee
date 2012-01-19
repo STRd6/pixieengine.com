@@ -3,6 +3,7 @@
 #= require views/paginated
 #= require views/projects/filtered_project
 #= require views/filtered
+#= require views/searchable
 #= require models/projects_collection
 #= require models/paginated_collection
 
@@ -19,14 +20,21 @@ class Pixie.Views.Projects.FilteredGallery extends Backbone.View
   initialize: ->
     @collection = new Pixie.Models.ProjectsCollection
 
-    pages = new Pixie.Views.Paginated({ collection: @collection })
+    pages = new Pixie.Views.Paginated
+      collection: @collection
+
     filters = new Pixie.Views.Filtered
       collection: @collection
       filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
       activeFilter: 'Featured'
 
+    searchable = new Pixie.Views.Searchable
+      collection: @collection
+
     $(@el).append $ '<div class="items"></div>'
     $(@el).find('.items').before(filters.render().el)
+
+    $(@el).find('.items').before(searchable.render().el)
 
     @collection.bind 'reset', (projects) =>
       $(@el).find('.items').empty()

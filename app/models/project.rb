@@ -34,6 +34,14 @@ class Project < ActiveRecord::Base
     where :url => url
   }
 
+  scope :search, lambda{ |search|
+    return {} if search.blank?
+
+    like = "%#{search}%".downcase
+
+    where("lower(title) like ?", like)
+  }
+
   scope :featured, where(:featured => true)
   scope :tutorials, where(:tutorial => true).order('id ASC')
   scope :arcade, where(:arcade => true)

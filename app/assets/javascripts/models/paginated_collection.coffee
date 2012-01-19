@@ -99,5 +99,15 @@ class Pixie.Models.PaginatedCollection extends Backbone.Collection
 
       @fetch()
 
+  resetSearch: =>
+    @page = 1
+    delete @params.search
+    @fetch()
+
+  search: (query) =>
+    @page = 1
+    @params.search = query.trim()
+    @fetch()
+
 Pixie.Models.PaginatedCollection.INNER_WINDOW = 4
 Pixie.Models.PaginatedCollection.OUTER_WINDOW = 1

@@ -13,11 +13,17 @@ namespace "Pixie.Views", (Views) ->
       super
 
       @collection.bind 'fetching', =>
-        @$('.spinner').show()
+        @$('.spinner_container').fadeIn(150)
 
       @collection.bind 'afterReset', =>
-        @$('.spinner').hide()
+        @$('.spinner_container').fadeOut(150)
+
         @render()
+
+        if @collection.pageInfo().next
+          @el.css('visibility: visible')
+        else
+          @el.css('visibility: hidden')
 
     events:
       'click a.prev': 'previous'
