@@ -99,8 +99,7 @@ namespace "Pixie.Models", (Models) ->
 
     resetSearch: =>
       @page = 1
-      delete @params.search
-      delete @params.tagged
+      @params = {}
       @fetch()
 
     search: (query) =>
