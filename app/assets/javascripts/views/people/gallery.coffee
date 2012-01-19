@@ -2,45 +2,53 @@
 #= require backbone
 #= require views/paginated
 #= require views/filtered
+#= require views/searchable
 #= require views/people/person
 #= require models/people_collection
 #= require models/paginated_collection
 
+#= require pixie/view
+
 #= require tmpls/people/header
 #= require tmpls/pagination
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.People ||= {}
+namespace "Pixie.Views.People", (People) ->
+  {Models, Views} = Pixie
 
-class Pixie.Views.People.Gallery extends Backbone.View
-  el: ".gallery"
+  class People.Gallery extends Pixie.View
+    el: ".gallery"
 
-  initialize: ->
-    @collection = new Pixie.Models.PeopleCollection
+    initialize: ->
+      super
 
-    pages = new Pixie.Views.Paginated({ collection: @collection })
-    filters = new Pixie.Views.Filtered
-      collection: @collection
-      filters: ['Featured', 'All']
-      activeFilter: 'Featured'
+      @collection = new Models.PeopleCollection
 
-    $(@el).append $ '<div class="items"></div>'
-    $(@el).find('.items').before(filters.render().el)
+      pages = new Views.Paginated({ collection: @collection })
+      filters = new Views.Filtered
+        collection: @collection
+        filters: ['Featured', 'All']
+        activeFilter: 'Featured'
 
-    @collection.bind 'reset', (projects) =>
-      $(@el).find('.items').empty()
-      $(@el).find('.items').before(pages.render().el)
+      searchable = new Views.Searchable
+        collection: @collection
 
-      $(@el).find('.filter').filter( ->
-        $(this).text().toLowerCase() == @filter
-      ).takeClass('active')
+      @el.append $ '<div class="items"></div>'
+      @$('.items').before(filters.render().el)
+      @$('.items').before(searchable.render().el)
 
-      projects.each(@addPerson)
+      @collection.bind 'reset', (projects) =>
+        @$('.items').empty()
+        @$('.items').before(pages.render().el)
 
-      projects.trigger 'afterReset'
+        @$('.filter').filter( ->
+          $(this).text().toLowerCase() == @filter
+        ).takeClass('active')
 
-  addPerson: (person) =>
-    view = new Pixie.Views.People.Person({ model: person, collection: @collection })
-    $(@el).find('.items').append(view.render().el)
+        projects.each(@addPerson)
+
+        projects.trigger 'afterReset'
+
+    addPerson: (person) =>
+      view = new People.Person({ model: person, collection: @collection })
+      @$('.items').append(view.render().el)
 

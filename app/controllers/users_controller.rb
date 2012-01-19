@@ -223,7 +223,7 @@ class UsersController < ApplicationController
       users = users.send(filter)
     end
 
-    @collection ||= users.order("id DESC").paginate(:page => params[:page], :per_page => per_page)
+    @collection ||= users.order("id DESC").search(params[:search]).paginate(:page => params[:page], :per_page => per_page)
   end
 
   def load_user_comments(user)

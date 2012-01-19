@@ -40,6 +40,6 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
         collection.trigger 'afterReset'
 
     addSprite: (sprite) =>
-      spriteView = new Pixie.Views.Sprites.Sprite({ model: sprite })
+      spriteView = new Sprites.Sprite({ model: sprite })
       @el.append(spriteView.render().el)
 

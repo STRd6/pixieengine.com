@@ -45,6 +45,14 @@ class User < ActiveRecord::Base
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
   }
 
+  scope :search, lambda{ |search|
+    return {} if search.blank?
+
+    like = "%#{search}%".downcase
+
+    where("lower(display_name) like ?", like)
+  }
+
   scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
 
   scope :none
