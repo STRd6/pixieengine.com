@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
 
     like = "%#{search}%".downcase
 
-    where("lower(display_name) like ?", like)
+    where("lower(display_name) like ? OR lower(email) like ?", like, like)
   }
 
   scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
