@@ -36,6 +36,14 @@ class Sprite < ActiveRecord::Base
     {:conditions => {:id => ids}}
   }
 
+  scope :search, lambda{ |search|
+    return {} if search.blank?
+
+    like = "%#{search}%".downcase
+
+    where("lower(title) like ?", like)
+  }
+
   def self.data_from_path(path)
     image_list = Magick::Image.read(path)
     frame_data = []

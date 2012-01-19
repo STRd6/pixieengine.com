@@ -5,8 +5,9 @@
 - tags = Sprite.with_ids(sprites).tag_counts
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-.sprites
-  .tags
+.gallery
+  .sprites
+    .tags
 
 - content_for :javascript do
   = javascript_include_tag "views/sprites/gallery"
@@ -14,7 +15,7 @@
   :coffeescript
     $ ->
       #{ActiveRecord::Base.include_root_in_json = false}
-      sprite_gallery = new window.Pixie.Views.Sprites.Gallery
+      sprite_gallery = new Pixie.Views.Sprites.Gallery
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@sprites_data.to_json}))
 
       $(".sprite_gallery img").live 'dragstart', (event) ->
@@ -27,6 +28,9 @@
   :sass
     @import util
     @import partials/base
+
+    .gallery
+      position: relative
 
     .reset
       display: none
@@ -42,11 +46,6 @@
         margin: 0
         margin-top: 0.5em
 
-    .spinner
-      display: none
-      float: left
-      margin-right: 1em
-
     .tags
       bottom: -30px
       position: absolute
@@ -56,10 +55,7 @@
         margin-right: 0.25em
 
     .pagination
-      padding: 1em 0
-      position: absolute
-      top: 5px
-      right: 13px
+      float: right
 
     .sprite_container
       +border-radius

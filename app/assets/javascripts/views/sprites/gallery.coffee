@@ -1,49 +1,56 @@
 #= require underscore
 #= require backbone
 #= require views/paginated
+#= require views/searchable
 #= require views/tags/tags
 #= require views/sprites/sprite
 #= require models/sprites_collection
 
 #= require tmpls/sprites/header
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Sprites ||= {}
+#= require pixie/view
 
-class Pixie.Views.Sprites.Gallery extends Backbone.View
-  el: '.sprites'
+namespace "Pixie.Views.Sprites", (Sprites) ->
+  {Models, Views} = Pixie
 
-  events:
-    'click .reset': 'resetSearch'
+  class Sprites.Gallery extends Pixie.View
+    el: '.sprites'
 
-  initialize: ->
-    @collection = new Pixie.Models.SpritesCollection
+    events:
+      'click .reset': 'resetTags'
 
-    pages = new Pixie.Views.Paginated({ collection: @collection })
-    new Pixie.Views.Tags.Tags({ collection: @collection })
+    initialize: ->
+      super
 
-    @collection.bind 'showReset', =>
-      $(@el).find('.reset').show()
+      @collection = new Models.SpritesCollection
 
-    @collection.bind 'hideReset', =>
-      $(@el).find('.reset').hide()
+      pages = new Views.Paginated({ collection: @collection })
+      new Views.Tags.Tags({ collection: @collection })
 
-    @collection.bind 'reset', (collection) =>
-      $(@el).find('.header').remove()
-      $(@el).append $.tmpl('sprites/header', @collection.pageInfo())
+      searchable = new Views.Searchable
+        collection: @collection
 
-      $(@el).find('.sprite_container').remove()
-      collection.each(@addSprite)
+      @el.before($.tmpl('sprites/header', @collection.pageInfo()))
+      $('.header h2').remove()
 
-      $(@el).find('.sprite_container:first').before(pages.render().el)
+      @el.before(pages.render().el)
+      @el.before(searchable.render().el)
 
-      collection.trigger 'afterReset'
+      @collection.bind 'showReset', =>
+        @$('.reset').show()
 
-  addSprite: (sprite) =>
-    spriteView = new Pixie.Views.Sprites.Sprite({ model: sprite })
-    $(@el).append(spriteView.render().el)
+      @collection.bind 'hideReset', =>
+        @$('.reset').hide()
 
-  resetSearch: =>
-    @collection.resetSearch()
+      @collection.bind 'reset', (collection) =>
+        @$('.sprite_container').remove()
+        collection.each(@addSprite)
 
+        collection.trigger 'afterReset'
+
+    addSprite: (sprite) =>
+      spriteView = new Pixie.Views.Sprites.Sprite({ model: sprite })
+      @el.append(spriteView.render().el)
+
+    resetTags: =>
+      @collection.resetTags()

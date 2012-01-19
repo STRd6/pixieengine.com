@@ -29,7 +29,7 @@ class Pixie.Models.SpritesCollection extends Pixie.Models.PaginatedCollection
       success: =>
         @trigger 'showReset'
 
-  resetSearch: =>
+  resetTags: =>
     @page = 1
 
     delete @params.tagged
