@@ -91,10 +91,28 @@
           margin-bottom: 0.75em
           margin-left: 1em
 
-      .spinner
+      .spinner_container
+        +border-radius
+
         display: none
-        float: left
-        margin-right: 1em
+        background-color: rgba(255, 255, 255, 0.85)
+        width: 100px
+        height: 20px
+        position: fixed
+        top: 100px
+        left: 0
+        right: 0
+        margin: auto
+        text-align: center
+        padding-bottom: 7px
+        padding-top: 10px
+        z-index: 10
+        border: 1px solid rgba(0, 0, 0, 0.2)
+
+        .spinner
+          vertical-align: middle
+          margin-right: 1em
+          padding-bottom: 5px
 
       .actions
         float: right
@@ -199,6 +217,8 @@
       #{ActiveRecord::Base.include_root_in_json = false}
 
       sprite_gallery = new window.Pixie.Views.Sprites.Gallery
+        profile: true
+
       sprite_gallery.collection.url = ->
         '/people/sprites'
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))

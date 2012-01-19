@@ -21,19 +21,26 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
       @collection = new Models.SpritesCollection
 
-      pages = new Views.Paginated({ collection: @collection })
-      new Views.Tags.Tags({ collection: @collection })
+      pages = new Views.Paginated
+        collection: @collection
+
+      new Views.Tags.Tags
+        collection: @collection
 
       searchable = new Views.Searchable
         collection: @collection
 
-      @el.before($.tmpl('sprites/header', @collection.pageInfo()))
-      $('.header h2').remove()
+      @el.append($.tmpl('sprites/header', @collection.pageInfo()))
+      @el.append(pages.render().el)
 
-      @el.before(pages.render().el)
-      @el.before(searchable.render().el)
+      unless @options.profile
+        $('.header h2').remove()
+        @el.append(searchable.render().el)
 
       @collection.bind 'reset', (collection) =>
+        if @options.profile
+          @$('.header').replaceWith $.tmpl('sprites/header', @collection.pageInfo())
+
         @$('.sprite_container').remove()
         collection.each(@addSprite)
 
