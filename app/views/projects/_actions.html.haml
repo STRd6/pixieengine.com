@@ -216,12 +216,15 @@
     bindKeys(document, hotKeys)
 
     $("#build").live 'click', (event) ->
+      notify("Publishing...")
       projectCode = buildProjectCode()
 
       saveFile
         contents: projectCode
         path: (projectConfig.name || "project") + ".js"
         touch: true
+        success: ->
+          notify("Published!")
 
       $.post #{generate_docs_project_path(project).to_json}
 
