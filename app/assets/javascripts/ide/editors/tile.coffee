@@ -60,19 +60,22 @@ window.createTileEditor = (options) ->
 
   tileEditor = new Pixie.Editor.Tile.Views.Editor(editorOptions)
 
+  saveAction = ->
+    dataString = JSON.stringify(tileEditor)
+
+    panel.find("[name=contents]").val(dataString)
+
+    saveFile
+      contents: dataString
+      path: options.path
+
+  tileEditor.bind 'save', saveAction
+
   tileEditor.addAction
     name: 'Save'
-    hotkeys: "ctrl+s"
+    # Don't need hotkeys because the IDE ctrl+s triggers the save event
     perform: (editor) ->
-      dataString = JSON.stringify(editor)
-
-      panel.find("[name=contents]").val(dataString)
-
-      saveFile
-        contents: dataString
-        path: options.path
-        success: ->
-          editor.trigger('clean')
+      saveAction()
 
   tileEditor.addAction
     name: "Save As"

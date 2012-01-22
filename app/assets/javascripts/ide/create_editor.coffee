@@ -33,9 +33,14 @@ window.createEditor = (ui) ->
     }
 
   if editor
+    # Currently these events can be either backbone or jQuery events,
+    # so be sure to bind in a way that works with either.
+    # TODO: Only use backbone events
     editor.bind 'clean', ->
       tab.parent().removeClass("unsaved")
-    editor.bind 'change dirty', ->
+    editor.bind 'change', ->
+      tab.parent().addClass("unsaved")
+    editor.bind 'dirty', ->
       tab.parent().addClass("unsaved")
 
     cssClass: "#{lang} #{type}"
