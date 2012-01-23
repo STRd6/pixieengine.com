@@ -17,7 +17,9 @@ namespace :db do
     end
   end
 
-  task :slurp => [:download_from_s3, :drop, :create] do
+  task :import_from_dump do
     `gunzip -c #{FILE_NAME} | psql -U postgres -d #{DATABASE}`
   end
+
+  task :slurp => [:download_from_s3, :drop, :create, "schema:load", :import_from_dump]
 end
