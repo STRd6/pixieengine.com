@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111127222216) do
+ActiveRecord::Schema.define(:version => 20111127222217) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(:version => 20111127222216) do
   create_table "js_errors", :force => true do |t|
     t.string   "url",                       :null => false
     t.integer  "line_number",               :null => false
-    t.string   "message",                   :null => false
+    t.text     "message",                   :null => false
     t.text     "user_agent",                :null => false
     t.integer  "user_id"
     t.string   "session_id",  :limit => 32
