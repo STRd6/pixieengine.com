@@ -24,6 +24,9 @@
 #= require underscore
 #= require backbone
 
+#= require backbone_forms/backbone-forms
+#= require backbone_forms/jquery-ui-editors
+
 #= require pixie/editor/pixel/create
 #= require pixie/editor/tile/create
 
