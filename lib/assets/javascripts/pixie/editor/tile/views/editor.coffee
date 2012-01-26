@@ -143,14 +143,22 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
         # Old school data had tileset instead of entities cache
         if data.tileset
+          srcUuidMap = {}
+
+          @entityList.each (entity) ->
+            srcUuidMap[entity.src()] = entity.get('uuid')
+
           $.each data.tileset, (index, object) ->
-            # These tiles probably don't have UUIDs yet, the bad news
-            # is that it will keep adding duplicates if this map is
-            # opened multiple times
+            # These tiles probably don't have UUIDs yet
+
+            # First check for a matching sprite
+            existingSpriteUuid = srcUuidMap[object.sprite || object.src]
+            object.uuid ||= existingSpriteUuid
+
+            # Generate a uuid if none found
             object.uuid ||= Math.uuid(32, 16)
 
-            #TODO Match/meld with existing entities if tileset doesn't have uuids
-            # A simple hueristic would be based on src image property
+            #TODO Maybe match/meld with an existing entity
             entityCache[object.uuid] = object
 
       entityLookup = {}
