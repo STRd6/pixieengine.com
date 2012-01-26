@@ -27,6 +27,11 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @collection.bind 'add', @appendLayer
       @collection.bind 'reset', @render
 
+      @settings.bind 'change:tilesWide', @render
+      @settings.bind 'change:tilesTall', @render
+      @settings.bind 'change:tileWidth', @render
+      @settings.bind 'change:tileHeight', @render
+
       @render()
 
     render: =>

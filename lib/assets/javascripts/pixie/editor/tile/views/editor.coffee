@@ -126,16 +126,36 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         orientation: "orthogonal"
 
     fromJSON: (data) ->
+      tileWidth = data.tileWidth
+      tileHeight = data.tileHeight
+
       @settings.set
         title: data.title
-        width: data.tilesWide
-        height: data.tilesTall
-        tileWidth: data.tileWidth
-        tileHeight: data.tileHeight
+        tilesWide: data.tilesWide || data.width
+        tilesTall: data.tilesTall || data.height
+        tileWidth: tileWidth
+        tileHeight: tileHeight
+
+      entityCache = data.entityCache
+      # Backwards compatibility
+      unless entityCache
+        entityCache = {}
+
+        # Old school data had tileset instead of entities cache
+        if data.tileset
+          $.each data.tileset, (index, object) ->
+            # These tiles probably don't have UUIDs yet, the bad news
+            # is that it will keep adding duplicates if this map is
+            # opened multiple times
+            object.uuid ||= Math.uuid(32, 16)
+
+            #TODO Match/meld with existing entities if tileset doesn't have uuids
+            # A simple hueristic would be based on src image property
+            entityCache[object.uuid] = object
 
       entityLookup = {}
 
-      $.each data.entityCache, (uuid, object) =>
+      $.each entityCache, (uuid, object) =>
         if entity = @entityList.findByUUID(uuid)
           # Just add it to cache, entity list already has the entity
           entityLookup[uuid] = entity
@@ -143,7 +163,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           # Add the entity from the map to the list
           entity = new Models.Entity
             uuid: uuid
-            sprite: object.sprite
+            sprite: object.sprite || object.src
             properties: object.properties
 
           entityLookup[uuid] = entity
@@ -162,8 +182,19 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
               properties: instanceData.properties
 
             layer.addObjectInstance instance
+        else if tiles = layerData.tiles
+          # Older maps used a tiles property
+          tiles.each (row, y) ->
+            row.each (index, x) ->
+              if sourceEntity = data.tileset[index]
+                instance = new Models.Instance
+                  x: x * tileWidth
+                  y: y * tileHeight
+                  sourceEntity: entityLookup[sourceEntity.uuid]
+
+                layer.addObjectInstance instance
         else
-          ; #TODO Handle non-instance layers
+          ; #TODO Handle non-instance, non-tile layers
 
         @layerList.add(layer)
 
