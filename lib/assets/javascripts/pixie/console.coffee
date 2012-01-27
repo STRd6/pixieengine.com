@@ -13,7 +13,7 @@ window.Pixie ||= {}
   Pixie.Console = (options) ->
     self = $.tmpl("pixie/console")
 
-    config = $.extend {}, DEFAULTS, options
+    config = Object.extend {}, DEFAULTS, options
 
     {evalContext, maxHistoryLength} = config
 
@@ -36,6 +36,7 @@ window.Pixie ||= {}
 
     print = (message) ->
       # Prevent the hilarity that is appending whole dom elements to the output
+      # TODO: Maybe do a fancier printout than just standard toString
       message = message.toString() if message?.toString?
 
       output.text(message)
@@ -105,7 +106,7 @@ window.Pixie ||= {}
 
     actionBar = self.find(".actions")
 
-    $.extend self,
+    Object.extend self,
       val: (newVal) ->
         if newVal?
           editor.setCode(newVal)
