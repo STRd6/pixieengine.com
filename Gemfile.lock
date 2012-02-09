@@ -22,6 +22,12 @@ GIT
     gratr (0.5.1)
 
 GIT
+  remote: git://github.com/mdiebolt/bone_tree.git
+  revision: c2ace2af62859e05b87572f23e4b9a36be30f4d2
+  specs:
+    bone_tree (0.0.1)
+
+GIT
   remote: git://github.com/mdiebolt/corelib.git
   revision: 02a9e8b3f9cd2914d189393908cdb3548e2e2071
   specs:
@@ -285,6 +291,7 @@ DEPENDENCIES
   authlogic!
   aws-s3
   bluecloth
+  bone_tree!
   capistrano
   coffee-filter
   coffee-rails (~> 3.1.0)
