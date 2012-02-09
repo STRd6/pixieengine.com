@@ -110,6 +110,10 @@ class Project < ActiveRecord::Base
     title
   end
 
+  def embed_code
+    "<iframe src='http://pixieengine.com/projects/#{id}/widget' height=#{config[:height]} width=#{config[:width]}></iframe>"
+  end
+
   def base_url
     "/production/projects/#{id}/"
   end
