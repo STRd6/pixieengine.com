@@ -32,13 +32,23 @@
 = render :partial => "file_upload"
 = render :partial => "shared/hotkeys"
 
+= stylesheet_link_tag "bone_tree"
+
 - content_for :javascript do
   = javascript_include_tag "ide/base"
+  = javascript_include_tag "bone_tree"
 
 - project_id = params[:id]
 
 - content_for :javascript do
   :coffeescript
+    console.log #{project.file_info.to_json}
+
+    window.tree = new BoneTree.Views.Tree
+    tree.addFile('src/player.coffee')
+
+    $('.sidebar').append(tree.render().$el)
+
     window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
     window.projectId = #{project_id.to_json}
 
