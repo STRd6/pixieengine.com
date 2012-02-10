@@ -32,22 +32,6 @@ class ChatsController < ApplicationController
   end
 
   def active_users
-    respond_to do |format|
-      format.json do
-        users = User.logged_in.map do |user|
-          favorite_color = user.favorite_color || "000"
-          favorite_color = (favorite_color[0] == "#" ? favorite_color[1..-1] : favorite_color)
-
-          {
-            :avatar => user.avatar.url(:thumb),
-            :color => favorite_color != "FFFFFF" ? favorite_color : "000",
-            :name => user.display_name,
-            :id => user.id
-          }
-        end
-
-        render :json => { :users => users }
-      end
-    end
+    @active_users = User.logged_in
   end
 end
