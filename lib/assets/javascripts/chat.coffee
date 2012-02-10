@@ -32,8 +32,8 @@ namespace "Pixie.Chat", (Chat) ->
       $('#chats').append(chatData)
 
     initialize = ->
-      $.get '/chats/active_users.json', (active_users) ->
-        for user in active_users
+      $.get '/chats/active_users', (activeUsers) ->
+        for user in activeUsers
           $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
       $.get '/chats/recent', (chats) ->
@@ -47,14 +47,14 @@ namespace "Pixie.Chat", (Chat) ->
         scrollChat()
 
     refreshData = ->
-      $.get '/chats/active_users', (data) ->
+      $.get '/chats/active_users', (activeUsers) ->
         lastOnline = (parseInt($(userEl).attr('data-id')) for userEl in $('#active_users li'))
-        currentlyOnline = (user.id for user in data.users)
+        currentlyOnline = (user.id for user in activeUsers)
 
         for id in lastOnline
           if $.inArray(id, currentlyOnline) < 0
             $('#active_users li[data-id=' + id + ']').remove()
-        for user in data.users
+        for user in activeUsers
           if $.inArray(user.id, lastOnline) < 0
             $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
