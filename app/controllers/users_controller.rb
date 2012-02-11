@@ -45,9 +45,7 @@ class UsersController < ApplicationController
 
     load_user_comments(user)
 
-    respond_to do |format|
-      format.json { render :json => @user_comments_data }
-    end
+    respond_with @user_comments_data
   end
 
   def sprites
