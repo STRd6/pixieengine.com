@@ -220,9 +220,6 @@
     .comments
 
 - content_for :javascript do
-  = javascript_include_tag "views/sprites/gallery"
-  = javascript_include_tag "views/projects/gallery"
-  = javascript_include_tag "views/comments/gallery"
 
   :coffeescript
     $ ->
@@ -242,8 +239,8 @@
 
       comments_gallery = new window.Pixie.Views.Comments.Gallery
       comments_gallery.collection.url = ->
-        '/people/comments'
-      comments_gallery.collection.reset(comments_gallery.collection.parse(#{@user_comments_data.to_json}))
+        '/people/#{user.id}/comments'
+      comments_gallery.collection.fetch()
 
       $('.project .delete').live 'click', (e) ->
         if confirm "Are you sure you want to delete this project?"
