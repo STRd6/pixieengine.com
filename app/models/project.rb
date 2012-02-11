@@ -241,7 +241,7 @@ class Project < ActiveRecord::Base
 
     authoring_user = User.find authoring_user_id
 
-    #TODO: Tracking actual person who commits now that projects can have members
+    # Tracking actual person who commits now that projects can have members
     git_util "commit", "-am", message, "--author", "#{authoring_user.display_name} <#{authoring_user.email}>"
 
     if push_enabled?
