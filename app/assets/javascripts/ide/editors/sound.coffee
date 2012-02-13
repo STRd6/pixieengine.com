@@ -1,5 +1,6 @@
-window.createSoundEditor = (options) ->
-  {dataUrl, panel, path} = options
+window.createSoundEditor = (options, file) ->
+  {panel} = options
+  {path} = file.attributes
 
   contentsField = panel.find('[name=contents]')
   soundData = contentsField.val()

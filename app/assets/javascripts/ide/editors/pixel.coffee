@@ -1,5 +1,6 @@
-window.createImageEditor = (options) ->
-  {panel, path, mtime} = options
+window.createImageEditor = (options, file) ->
+  panel = options.panel
+  {path, mtime} = file.attributes
 
   dataUrl = "/production/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null

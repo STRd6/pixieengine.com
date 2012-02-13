@@ -2,16 +2,6 @@ window.createTextEditor = (options, file) ->
   panel = options.panel
   {contents, id, language, path} = file.attributes
 
-  form =
-    """
-      <form accept-charset="UTF-8" action="/projects/#{id}/save_file.json" method="post">
-        <input name="path" type="hidden" value="#{path}">
-        <textarea name="contents" style="display:none;">#{contents}</textarea>
-      </form>
-    """
-
-  panel.append(form)
-
   textArea = panel.find('textarea').get(0)
   savedCode = panel.find('textarea').value
 
