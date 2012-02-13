@@ -7,10 +7,6 @@
     .relative
       .sidebar
         %h3.project_name= project.display_name
-        %ul.filetree
-          - unless project.file_info.nil?
-            - project.file_info[:files].each do |file|
-              = render :partial => "file_tree_node", :locals => {:file_info => file}
       .bottom.actionable
         .featured_action
           %h3 Package App for Chrome Web Store
@@ -25,14 +21,11 @@
     %h3.ui-widget-header Test #{project.title}
     %iframe#unit_test_frame
 
-= render :partial => "context_menu"
 = render :partial => "tips"
 = render :partial => "export_modal"
 = render :partial => "new_file_modal"
 = render :partial => "file_upload"
 = render :partial => "shared/hotkeys"
-
-= stylesheet_link_tag "bone_tree"
 
 - content_for :javascript do
   = javascript_include_tag "ide/base"
@@ -42,10 +35,19 @@
 
 - content_for :javascript do
   :coffeescript
-    console.log #{project.file_info.to_json}
-
     window.tree = new BoneTree.Views.Tree
-    tree.addFile('src/player.coffee')
+
+    tree.addFromJSON #{project.file_info.to_json.gsub('/', '\\/')}
+
+    tree.root.collection.models.first().collection.each (directory) ->
+      directory.set
+        open: false
+
+    tree.bind 'openFile', (file) ->
+      console.log file
+      openFile(file)
+
+      trackEvent("IDE", "open file", file)
 
     $('.sidebar').append(tree.render().$el)
 
@@ -121,27 +123,33 @@
     window.log = (message) ->
       console.log message
 
-    window.openFile = (docSelector) ->
-      tabData = $(docSelector)
+    window.openFile = (file) ->
+      {name, nodeType, type, path, size} = file.attributes
+      selector = path.replace('.', '_').replace('/', '_')
 
-      if tabData.data("type") == "binary"
-        alert "Can't edit binary data... maybe there is a source file that can be edited?"
+      docSelector = '#' + nodeType + '_' + selector
+
+      if type is "binary"
+        alert "Can't edit binary data... maybe there is a source file that can be edited."
         return
-      if tabData.data("size") > #{Project::MAX_EDITOR_FILE_SIZE}
+      if size > #{Project::MAX_EDITOR_FILE_SIZE}
         alert "This file is too large for our editor!"
         return
 
+      # if the file is already open
       if $('#tabs ul li a[href="' + docSelector + '"]').length
         $('#tabs ul li a[href="' + docSelector + '"]').click()
       else
-        unless name = tabData.data("name")
-          path = tabData.data("path")
+        unless fileName = name
           if match = path.match /\/([^\/]*)$/
-            name = match[1]
+            fileName = match[1]
           else
-            name = path
+            fileName = path
 
-        $("#tabs").tabs 'add', docSelector, name.withoutExtension(), 0
+        # gross hax global variable to get a reference to current file object
+        window.currentFile = file
+
+        $("#tabs").tabs 'add', docSelector, fileName, 0
 
     window.onbeforeunload = ->
       if $("li.unsaved").length
@@ -162,8 +170,6 @@
     $ ->
       window.loadProjectConfig()
 
-      $('ul.filetree').treeview()
-
       $tabs = $('#tabs').tabs
         add: (event, ui) ->
           $tabs.tabs('select', '#' + ui.panel.id)
@@ -177,7 +183,6 @@
 
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
-          $('.filetree').append(ui.panel)
 
         select: (event, ui) ->
           window.currentPanel = ui.panel
@@ -190,11 +195,6 @@
           axis: "x"
           distance: 20
           tolerance: "pointer"
-
-      $('.filetree .file').live 'click', ->
-        openFile($(this).data('id'))
-
-        trackEvent("IDE", "open file", $(this).data('id'))
 
       $('.filetree .folder').live 'click', ->
         trackEvent("IDE", "click folder", $(this).text())

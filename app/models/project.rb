@@ -292,7 +292,7 @@ class Project < ActiveRecord::Base
   end
 
   def file_info
-    file_node_data path, path
+    file_node_data(path, path)
   end
 
   def file_node_data(file_path, project_root_path)
@@ -303,20 +303,17 @@ class Project < ActiveRecord::Base
       if filename == "docs"
         {
           :name => "Documentation",
-          :ext => "documentation",
+          :extension => "documentation",
           :path => path,
         }
       else
         {
           :name => filename,
-          :ext => "directory",
           :files => Dir.new(file_path).map do |filename|
             next if filename[0...1] == "."
 
             file_node_data(File.join(file_path, filename), project_root_path)
-          end.compact.sort_by do |file_data|
-            [file_data[:ext] == "directory" ? 0 : 1, file_data[:name]]
-          end
+          end.compact
         }
       end
     elsif File.file? file_path
@@ -342,8 +339,8 @@ class Project < ActiveRecord::Base
       {
         :name => name,
         :contents => contents,
-        :ext => ext,
-        :lang => lang,
+        :extension => ext,
+        :language => lang,
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,

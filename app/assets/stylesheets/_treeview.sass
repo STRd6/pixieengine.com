@@ -114,3 +114,47 @@
   span.file
     @extend .static-file
 
+.tree
+  .directory
+    .directory
+      padding-left: 20px
+
+  .menu
+    .rename
+      background-position: 4px 1px
+      padding-left: 24px
+
+    .delete
+      background-position: 4px 1px
+      padding-left: 24px
+
+  .file
+    background-position: 1px 1px
+    padding-left: 20px
+
+    &.coffee
+      background-position: 1px 1px
+      padding-left: 20px
+
+  .directory
+    background-position: 0 0
+    padding-left: 20px
+
+    &.open
+      background-position: 0 0
+
+  .json
+    background-position: 0 1px
+    padding-left: 20px
+
+  .png, .jpeg, .gif
+    background-position: 0 1px
+    padding-left: 20px
+
+  .js
+    background-position: 0 1px
+    padding-left: 20px
+
+  .wav, .sfs, .mp3, .ogg
+    background-position: 0 1px
+    padding-left: 20px
