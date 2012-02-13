@@ -39,7 +39,7 @@ $ ->
 
     notify("Added #{displayName} into entities.")
 
-window.createTileEditor = (options) ->
+window.createTilemapEditor = (options) ->
   panel = options.panel
 
   panel.find('form').hide()

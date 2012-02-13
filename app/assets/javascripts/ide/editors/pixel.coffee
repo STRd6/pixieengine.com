@@ -1,4 +1,4 @@
-window.createPixelEditor = (options) ->
+window.createImageEditor = (options) ->
   {panel, path, mtime} = options
 
   dataUrl = "/production/projects/#{projectId}/#{path}?#{mtime}"

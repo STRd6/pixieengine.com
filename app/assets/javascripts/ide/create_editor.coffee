@@ -3,34 +3,15 @@ window.createEditor = (ui) ->
   tab = $(ui.tab)
   data = panel.data()
   data.panel = panel
-  {type, lang} = data
+  {type, language} = window.currentFile.attributes
 
-  if type == "text"
-    editor = createTextEditor data
-
-  else if type == "json"
-    editor = createJsonEditor data
-
-  else if type == "entity"
-    editor = createEntityEditor data
-
-  else if type == "image"
-    editor = createPixelEditor data
-
-  else if type == "animation"
-    editor = createAnimationEditor data
-
-  else if type == "tilemap"
-    editor = createTileEditor data
-
-  else if type == "sound"
-    editor = createSoundEditor data
-
-  else if type == "documentation" || type == "tutorial"
+  if type is "documentation" or type is "tutorial"
     # These just open up info tabs
     return {
       cssClass: type
     }
+  else
+    editor = ("create#{type.capitalize()}Editor".constantize())(data, window.currentFile)
 
   if editor
     # Currently these events can be either backbone or jQuery events,
@@ -43,6 +24,6 @@ window.createEditor = (ui) ->
     editor.bind 'dirty', ->
       tab.parent().addClass("unsaved")
 
-    cssClass: "#{lang} #{type}"
+    cssClass: "#{language} #{type}"
     doSave: () ->
       editor.trigger('save')

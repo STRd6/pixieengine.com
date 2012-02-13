@@ -1,20 +1,31 @@
-window.createTextEditor = (options) ->
-  {path, panel, lang} = options
+window.createTextEditor = (options, file) ->
+  panel = options.panel
+  {contents, id, language, path} = file.attributes
+
+  form =
+    """
+      <form accept-charset="UTF-8" action="/projects/#{id}/save_file.json" method="post">
+        <input name="path" type="hidden" value="#{path}">
+        <textarea name="contents" style="display:none;">#{contents}</textarea>
+      </form>
+    """
+
+  panel.append(form)
 
   textArea = panel.find('textarea').get(0)
-  savedCode = textArea.value
+  savedCode = panel.find('textarea').value
 
-  if lang == "html"
-    lang = "xml"
+  if language is "html"
+    language = "xml"
 
-  lang ||= "dummy"
+  language ||= "dummy"
 
   editor = new CodeMirror.fromTextArea textArea,
     autoMatchParens: true
     content: savedCode
     height: "100%"
     lineNumbers: true
-    parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
+    parserfile: ["tokenize_" + language + ".js", "parse_" + language + ".js"]
     path: "/assets/codemirror/"
     stylesheet: ["/assets/codemirror/main.css"]
     tabMode: "shift"
@@ -32,7 +43,7 @@ window.createTextEditor = (options) ->
   processEditorChanges = ->
     currentCode = editor.getCode()
 
-    if currentCode != savedCode
+    if currentCode isnt savedCode
       $editor.trigger('dirty')
     else
       $editor.trigger('clean')
@@ -49,7 +60,7 @@ window.createTextEditor = (options) ->
       path: path
       success: ->
         # Editor's state may have changed during ajax call
-        if editor.getCode() == codeToSave
+        if editor.getCode() is codeToSave
           $editor.trigger "clean"
         else
           $editor.trigger "dirty"
