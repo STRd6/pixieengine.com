@@ -295,8 +295,16 @@ class Project < ActiveRecord::Base
     file_node_data(path, path)
   end
 
+  def doc_selector(path)
+    selector = path.gsub('.', '_').gsub('/', '_')
+
+    '#file_' + selector
+  end
+
   def file_node_data(file_path, project_root_path)
     filename = File.basename file_path
+    filename = "" if filename == id.to_s
+
     path = file_path.sub(project_root_path + File::SEPARATOR, '')
 
     if File.directory? file_path
@@ -339,6 +347,7 @@ class Project < ActiveRecord::Base
       {
         :name => name,
         :contents => contents,
+        :docSelector => doc_selector(path),
         :extension => ext,
         :language => lang,
         :type => type,

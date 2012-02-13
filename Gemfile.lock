@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: git://github.com/mdiebolt/bone_tree.git
-  revision: 7b868366a52664151affbbe54b6952f71d487627
+  revision: 502f32906a85fe4f86a2b39c406fb9da8eb5c990
   specs:
     bone_tree (0.0.1)
 

@@ -37,31 +37,84 @@
   :coffeescript
     window.tree = new BoneTree.Views.Tree
 
+    console.log #{project.file_info.to_json.gsub('/', '\\/')}
+
     tree.addFromJSON #{project.file_info.to_json.gsub('/', '\\/')}
 
-    tree.root.collection.models.first().collection.each (directory) ->
+    console.log tree
+
+    tree.root.collection.models.each (directory) ->
       directory.set
         open: false
 
     tree.bind 'openFile', (file) ->
-      console.log file
       openFile(file)
 
       trackEvent("IDE", "open file", file)
 
     tree.bind 'rename', (file, newName) ->
-      # don't respond to directory rename events
-      return unless file.get('nodeType') is 'file'
+      {docSelector, extension, language, name, nodeType, path, type} = file.attributes
 
-      path = file.get('path')
-      nodeType = file.get('nodeType')
+      openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
 
-      selector = path.replace('.', '_').replace('/', '_')
+      oldExtension = file.previous('extension')
+      oldExtension = "." + oldExtension if oldExtension isnt ""
 
-      docSelector = '#' + nodeType + '_' + selector
+      # this works because we are secretly inside a change event
+      oldName = file.previous('name') + oldExtension
+
+      # Abort if unsaved
+      if openedTab.is(".unsaved")
+        notify "Save \#{file.nameWithExtension()} before renaming"
+        return
 
       if $('#tabs ul li a[href="' + docSelector + '"]').length
-        $('#tabs ul li a[href="' + docSelector + '"]').text(file.get('name'))
+        $('#tabs ul li a[href="' + docSelector + '"]').text(name)
+
+      notify "Renaming \#{oldName} => \#{newName}"
+      # Close file if open
+      reopen = openedTab.length
+      openedTab.find(".ui-icon-close").click()
+
+      newPath = "\#{path.replace(oldName, newName)}"
+      oldPath = "\#{path}"
+      contents = $(docSelector).find("[name=contents]").val()
+
+      debugger
+
+      successCallback = (data) ->
+        $(docSelector).remove()
+
+        notify "Renamed: \#{oldName} => \#{newName}"
+
+      postData =
+        path: oldPath
+        new_path: newPath
+        format: 'json'
+        message: $(".actions .status .message").val()
+
+      $.post "/projects/\#{projectId}/rename_file", postData, successCallback
+
+    tree.bind 'remove', (file) ->
+      notify "Removing \#{file.nameWithExtension()}..."
+
+      docSelector = file.get('docSelector')
+
+      # Close the tab if open
+      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+      path = file.get('path')
+      message = $(".actions .status .message").val()
+
+      postData =
+        path: path
+        format: 'json'
+        message: message
+
+      successCallback = (data) ->
+        notify "\#{file.nameWithExtension()} removed!"
+
+      $.post "/projects/\#{projectId}/remove_file", postData, successCallback
 
     $('.sidebar').append(tree.render().$el)
 
