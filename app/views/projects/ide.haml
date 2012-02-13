@@ -49,6 +49,20 @@
 
       trackEvent("IDE", "open file", file)
 
+    tree.bind 'rename', (file, newName) ->
+      # don't respond to directory rename events
+      return unless file.get('nodeType') is 'file'
+
+      path = file.get('path')
+      nodeType = file.get('nodeType')
+
+      selector = path.replace('.', '_').replace('/', '_')
+
+      docSelector = '#' + nodeType + '_' + selector
+
+      if $('#tabs ul li a[href="' + docSelector + '"]').length
+        $('#tabs ul li a[href="' + docSelector + '"]').text(file.get('name'))
+
     $('.sidebar').append(tree.render().$el)
 
     window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
