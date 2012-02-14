@@ -2,8 +2,10 @@ window.createTextEditor = (options, file) ->
   panel = options.panel
   {contents, id, language, path} = file.attributes
 
+  panel.append "<textarea name='contents' style='display:none;'>#{contents}</textarea>"
+
   textArea = panel.find('textarea').get(0)
-  savedCode = panel.find('textarea').value
+  savedCode = file.get 'contents'
 
   if language is "html"
     language = "xml"
@@ -44,6 +46,9 @@ window.createTextEditor = (options, file) ->
 
   $editor.bind "save", ->
     codeToSave = editor.getCode()
+
+    file.set
+      contents: codeToSave
 
     saveFile
       contents: codeToSave

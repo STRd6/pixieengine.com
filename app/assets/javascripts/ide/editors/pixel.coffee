@@ -1,6 +1,6 @@
 window.createImageEditor = (options, file) ->
   panel = options.panel
-  {path, mtime} = file.attributes
+  {contents, mtime, path} = file.attributes
 
   dataUrl = "/production/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null
@@ -10,7 +10,7 @@ window.createImageEditor = (options, file) ->
     initializer: (canvas) ->
       _canvas = canvas
 
-      if contentsVal = panel.find("[name=contents]").val()
+      if contentsVal = contents
         canvas.fromDataURL(contentsVal)
       if dataUrl
         canvas.fromDataURL(dataUrl)
@@ -27,17 +27,19 @@ window.createImageEditor = (options, file) ->
         name: "Save As"
         icon: "/assets/icons/database_save.png"
         perform: (canvas) ->
-          title = prompt("Title")
-
           base64Contents = _canvas.toBase64()
 
-          if title
+          if title = prompt("Title")
             filePath = projectConfig.directories["images"]
 
-            newFileNode
+            # TODO remove global tree reference
+            tree.addFile "images/#{title}.png"
+
+            # this currentFileData stuff is gross too. Fix it in BoneTree
+            tree.currentFileData =
               name: title
               type: "image"
-              ext: "png"
+              extension: "png"
               path: filePath
               contents: "data:image/png;base64," + base64Contents
 
@@ -51,7 +53,9 @@ window.createImageEditor = (options, file) ->
 
   pixelEditor.bind 'save', ->
     # Update mtime to bust browser image caching
-    pixelEditor.parent().attr("data-mtime", new Date().getTime())
+    file.set
+      contents: _canvas.toBase64()
+      mtime: new Date().getTime()
 
     saveFile
       contents_base64: _canvas.toBase64()
