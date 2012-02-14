@@ -313,6 +313,7 @@ class Project < ActiveRecord::Base
           :name => "Documentation",
           :extension => "documentation",
           :path => path,
+          :type => "documentation"
         }
       else
         {
