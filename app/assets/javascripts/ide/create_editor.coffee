@@ -4,19 +4,7 @@ window.createEditor = (ui) ->
   data = panel.data()
   data.panel = panel
 
-  {contents, id, path} = window.currentFile.attributes
-
-  form =
-    """
-      <form accept-charset="UTF-8" action="/projects/#{id}/save_file.json" method="post">
-        <input name="path" type="hidden" value="#{path}">
-        <textarea name="contents" style="display:none;">#{contents}</textarea>
-      </form>
-    """
-
-  data.panel.append(form)
-
-  {type, language} = window.currentFile.attributes
+  {contents, id, language, path, type} = window.currentFile.attributes
 
   if type is "documentation" or type is "tutorial"
     # These just open up info tabs
