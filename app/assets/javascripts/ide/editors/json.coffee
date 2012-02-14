@@ -2,7 +2,7 @@
 
 window.createJsonEditor = (options, file) ->
   {panel} = options
-  {path} = file.attributes
+  {contents, path} = file.attributes
 
   # See if this is the special config file
   projectConfig = path is "pixie.json"
@@ -10,10 +10,8 @@ window.createJsonEditor = (options, file) ->
   panel.find('form').hide()
   panel.find('.editor').remove()
 
-  debugger
-
   try
-    data = JSON.parse(panel.find("[name=contents]").val()) || {}
+    data = JSON.parse(contents) || {}
   catch e
     console?.warn? e
     data = {}
@@ -27,7 +25,8 @@ window.createJsonEditor = (options, file) ->
 
     dataString = JSON.stringify(jsonData)
 
-    panel.find("[name=contents]").val(dataString)
+    file.set
+      contents: dataString
 
     saveFile
       contents: dataString
