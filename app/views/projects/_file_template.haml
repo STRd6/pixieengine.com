@@ -1,16 +1,3 @@
-%script#file_template.template(type="text/x-jQuery-tmpl")
-  %li(title="${displayName}")
-    %span.file(data-id="#${dataId}" class="${ext}") ${displayName}
-    .tab_data(id="${dataId}" data-ext="${ext}" data-path="${path}" data-lang="${lang}" data-type="${type}" data-mtime="${mtime}" data-options="${options}" data-name="${displayName}")
-      = form_tag({:action => :save_file, :format => :json}, :method => :post) do |form|
-        = hidden_field_tag :path, "${path}", { :id => nil }
-        = text_area_tag :contents, '${contents}', { :id => nil }
-
-%script#directory_template.template(type="text/x-jQuery-tmpl")
-  %li.closed(title="${name}")
-    %span.folder ${name}
-    %ul
-
 #file_templates
   %script.script.template(type="text/x-jQuery-tmpl")
     :preserve
