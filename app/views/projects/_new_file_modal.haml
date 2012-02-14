@@ -6,19 +6,19 @@
   :ruby
     choices = [
       ["Script",
-        {:type => "text", :directory => "source", :ext => "coffee", :lang => "coffeescript", :template => "script"},
+        {:type => "text", :directory => "source", :extension => "coffee", :language => "coffeescript", :template => "script"},
         {}
       ],
       ["Test",
-        {:type => "text", :directory => "test", :ext => "coffee", :lang => "coffeescript", :template => "test"},
+        {:type => "text", :directory => "test", :extension => "coffee", :language => "coffeescript", :template => "test"},
         {}
       ],
       ["Image",
-        {:type => "image", :directory => "images", :ext => "png"},
+        {:type => "image", :directory => "images", :extension => "png"},
         {:width => 32, :height => 32}
       ],
       ["Sound",
-        {:type => "sound", :directory => "sounds", :ext => "sfs"},
+        {:type => "sound", :directory => "sounds", :extension => "sfs"},
         {}
       ],
     ]
@@ -46,63 +46,39 @@
   :coffeescript
     params = null
 
-    window.findDirectory = (directoryPath) ->
-      folderPaths = directoryPath.split("/")
-
-      dirNode = $("ul.filetree")
-
-      folderPaths.each (dirName) ->
-        dirNode = dirNode.children("[title=\#{dirName}]").children("ul")
-
-      dirNode
-
     window.newFileNode = (inputData) ->
-      unless inputData.name
+      {extension, forceSave, language, name, options, path, template, type} = inputData
+
+      unless name
         alert "You need to enter a name!"
         return
 
-      # Create/traverse directories
-      path = inputData.path
-      folderPaths = path.split("/")
-      addedTreeRoot = null
-
-      dirNode = $("ul.filetree")
-      folderPaths.each (dirName) ->
-        dirNode = (if (dir = dirNode.children("[title=\#{dirName}]")).length
-          dir.eq(0)
-        else
-          newDir = $("#directory_template").tmpl(name: dirName).appendTo(dirNode)
-          addedTreeRoot ||= newDir
-
-          newDir
-        ).children('ul')
-
-      # File is either named by uuid (for entities) or file name (for regular files)
-      inputData.path = "/\#{inputData.path}/\#{inputData.uuid || inputData.name}.\#{inputData.ext}"
-      inputData.options = JSON.stringify(inputData.options)
-      dataId = "file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
+      options = JSON.stringify(options)
+      dataId = "file_" + path.replace(/[^A-Za-z0-9_-]/g, "_")
 
       data = $.extend({
         dataId: dataId
-        displayName: inputData.name
+        displayName: name
       }, inputData)
 
-      treeNode = $("#file_template").tmpl(data).appendTo(dirNode)
-
-      if template = inputData.template
+      if template
         className = data.name.camelize()
-        data.className = className.charAt(0).toUpperCase() + className.substring(1)
-        treeNode.find("[name=contents]").val $("#file_templates .\#{template}").tmpl(data).text()
+        data.className = className[0].toUpperCase() + className.substring(1)
 
-      unless inputData.noAutoOpen
-        treeNode.find(".file").click()
+        tree.currentFileData =
+          contents: $("#file_templates .\#{template}").tmpl(data).text()
+          path: "\#{path}/\#{name}.\#{extension}"
+          docSelector: "file_\#{path}_\#{name}_\#{extension}"
+          type: type
+          language: language
 
-      if inputData.forceSave
+      # TODO remove global file tree reference. Pass it to the function instead
+      tree.addFile "\#{path}/\#{name}.\#{extension}"
+
+      if forceSave
         window.saveFile
-          contents: inputData.contents
-          path: inputData.path
-
-      return treeNode
+          contents: contents
+          path: path
 
     $("#new_file_modal button.choice").live 'click', (event) ->
       event.preventDefault()
@@ -133,14 +109,13 @@
       formData = $("#new_file_modal").serializeObject()
 
       # Special case to make entities use UUIDs
-      if params.type == "entity"
+      if params.type is "entity"
         formData.uuid = Math.uuid(32, 16)
 
-      newNode = newFileNode($.extend(formData, params))
+      newFileNode($.extend(formData, params))
 
-      if newNode
-        $.modal.close()
+      $.modal.close()
 
     $("#new_file_modal input").live 'keydown', (event) ->
-      if event.which == 13
+      if event.which is 13
         $("#new_file_modal button.create").click()
