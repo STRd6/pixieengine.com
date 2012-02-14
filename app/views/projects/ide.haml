@@ -239,7 +239,7 @@
 
       $tabs = $('#tabs').tabs
         add: (event, ui) ->
-          $tabs.tabs('select', '#' + ui.panel.id)
+          $tabs.tabs('select', currentFile.get('docSelector'))
 
           if fileData = createEditor(ui)
             $(ui.tab).data('updateSaved', fileData.updateSaved)
