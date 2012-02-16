@@ -53,7 +53,8 @@
         alert "You need to enter a name!"
         return
 
-      options = JSON.stringify(options)
+      inputData.options = JSON.stringify(options)
+      inputData.path = "\#{path}/\#{name}.\#{extension}"
       dataId = "file_" + path.replace(/[^A-Za-z0-9_-]/g, "_")
 
       data = $.extend({
@@ -61,16 +62,11 @@
         displayName: name
       }, inputData)
 
-      tree.currentFileData =
-        path: "\#{path}/\#{name}.\#{extension}"
-        docSelector: "file_\#{path}_\#{name}_\#{extension}"
-        type: type
-        language: language
+      console.log data
+
+      tree.currentFileData = data
 
       if template
-        className = data.name.camelize()
-        data.className = className[0].toUpperCase() + className.substring(1)
-
         tree.currentFileData.contents = $("#file_templates .\#{template}").tmpl(data).text()
 
       # TODO remove global file tree reference. Pass it to the function instead
