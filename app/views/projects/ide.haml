@@ -37,11 +37,7 @@
   :coffeescript
     window.tree = new BoneTree.Views.Tree
 
-    console.log #{project.file_info.to_json.gsub('/', '\\/')}
-
     tree.addFromJSON #{project.file_info.to_json.gsub('/', '\\/')}
-
-    console.log tree
 
     tree.root.collection.models.each (directory) ->
       directory.set
@@ -241,7 +237,17 @@
         add: (event, ui) ->
           $tabs.tabs('select', currentFile.get('docSelector'))
 
-          if fileData = createEditor(ui)
+          fileType = window.currentFile.get 'type'
+          fileContents = window.currentFile.get 'contents'
+
+          if fileType is 'documentation'
+            #{doc_id = admin? ? project.id : Project::DOCS_ID}
+            $(ui.panel).append "<iframe class='no_border' src='/production/projects/#{doc_id}/docs/index.html' width='100%' height='100%'></iframe>"
+            $(ui.tab).parent().find('span.lang').addClass(fileType)
+          else if fileType is 'tutorial'
+            $(ui.panel).append "<iframe class='no_border' src='\#{fileContents}' width='100%' height='100%'></iframe>"
+            $(ui.tab).parent().find('span.lang').addClass(fileType)
+          else if fileData = createEditor(ui)
             $(ui.tab).data('updateSaved', fileData.updateSaved)
             $(ui.tab).data('doSave', fileData.doSave)
             $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
