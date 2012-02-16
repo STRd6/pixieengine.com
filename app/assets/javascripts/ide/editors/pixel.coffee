@@ -31,21 +31,20 @@ window.createImageEditor = (options, file) ->
 
           if title = prompt("Title")
             filePath = projectConfig.directories["images"]
-
-            # TODO remove global tree reference
-            tree.addFile "images/#{title}.png"
+            fullPath = filePath + "/" + title + ".png"
 
             # this currentFileData stuff is gross too. Fix it in BoneTree
             tree.currentFileData =
-              name: title
               type: "image"
-              extension: "png"
-              path: filePath
+              path: fullPath
               contents: "data:image/png;base64," + base64Contents
+
+            # TODO remove global tree reference
+            tree.addFile fullPath
 
             saveFile
               contents_base64: base64Contents
-              path: filePath + "/" + title + ".png"
+              path: fullPath
 
         undoable: false
 
