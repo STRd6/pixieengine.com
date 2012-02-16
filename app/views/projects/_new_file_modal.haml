@@ -61,16 +61,17 @@
         displayName: name
       }, inputData)
 
+      tree.currentFileData =
+        path: "\#{path}/\#{name}.\#{extension}"
+        docSelector: "file_\#{path}_\#{name}_\#{extension}"
+        type: type
+        language: language
+
       if template
         className = data.name.camelize()
         data.className = className[0].toUpperCase() + className.substring(1)
 
-        tree.currentFileData =
-          contents: $("#file_templates .\#{template}").tmpl(data).text()
-          path: "\#{path}/\#{name}.\#{extension}"
-          docSelector: "file_\#{path}_\#{name}_\#{extension}"
-          type: type
-          language: language
+        tree.currentFileData.contents = $("#file_templates .\#{template}").tmpl(data).text()
 
       # TODO remove global file tree reference. Pass it to the function instead
       tree.addFile "\#{path}/\#{name}.\#{extension}"
