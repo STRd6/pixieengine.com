@@ -42,19 +42,20 @@
             height: 'auto'
             width: '425px'
 
+    window.findDirectory = (directoryName) ->
+      tree.getFiles(directoryName)
+
     buildProjectCode = () ->
       clearErrorMessages()
 
-      srcDir = findDirectory(projectConfig.directories.source)
+      srcFiles = findDirectory(projectConfig.directories.source)
 
-      compiledCode = srcDir.find("span.file").map((index, span) ->
-        $span = $(span)
-
+      compiledCode = srcFiles.map((file) ->
         # Save main for last
-        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+        return if file is srcFiles.first() and file.get('name') is projectConfig.main
 
-        compileFileNode($span)
-      ).get().join(";\n")
+        compileFileNode(file)
+      ).join(";\n")
 
       libCode = compileDirectory(projectConfig.directories.lib)
 
@@ -65,8 +66,10 @@
       else
         entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
-      if projectConfig.main
-        mainCode = compileFileNode($(srcDir.children("[title=\#{projectConfig.main}]").find("span.file")))
+      if mainName = projectConfig.main
+        main = tree.getFile(mainName)
+
+        mainCode = compileFileNode(main)
 
         if projectConfig.wrapMain
           mainCode = ";$(function(){ \#{mainCode} });"
@@ -85,7 +88,7 @@
         [conf].join("\n")
 
     environmentVariables = ->
-      "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date().getTime());\n"
+      "BASE_URL = #{project.base_url.to_json.gsub('"', '\\"')}; MTIME = (+ new Date());\n"
 
     runningAppWindow = null
     runApp = ->
@@ -102,19 +105,17 @@
 
       runCodeInWindow(crammedCode, runningAppWindow)
 
-    testApp = () ->
+    testApp = ->
       clearErrorMessages()
 
-      srcDir = findDirectory(projectConfig.directories.source)
+      srcFiles = findDirectory(projectConfig.directories.source)
 
-      compiledCode = srcDir.find("span.file").map((index, span) ->
-        $span = $(span)
-
+      compiledCode = srcFiles.map((file) ->
         # Skip main
-        return if $span.parent().parent()[0] == srcDir[0] && $span.parent().attr("title") == projectConfig.main
+        return if file is srcFiles[0] and file.get('name') is projectConfig.main
 
-        compileFileNode($span)
-      ).get().join(";\n")
+        compileFileNode(file)
+      ).join(";\n")
 
       libCode = compileDirectory(projectConfig.directories.lib)
       testLibCode = compileDirectory(projectConfig.directories.test_lib)
