@@ -111,6 +111,11 @@
 
       newFileNode($.extend(formData, params))
 
+      # Open up the new file
+      ($('.tree .file').filter ->
+        $(this).text() is formData.name
+      ).click()
+
       $.modal.close()
 
     $("#new_file_modal input").live 'keydown', (event) ->
