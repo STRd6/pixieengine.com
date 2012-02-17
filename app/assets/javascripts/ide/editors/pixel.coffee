@@ -1,18 +1,20 @@
 window.createImageEditor = (options, file) ->
   panel = options.panel
-  {contents, mtime, path} = file.attributes
+  {contents, mtime, options:editorOptions, path} = file.attributes
+
+  mtime ||= +new Date()
 
   dataUrl = "/production/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null
 
-  editorOptions = $.extend panel.data("options"),
+  editorOptions = $.extend editorOptions,
     frames: 1
     initializer: (canvas) ->
       _canvas = canvas
 
       if contentsVal = contents
         canvas.fromDataURL(contentsVal)
-      if dataUrl
+      else if dataUrl
         canvas.fromDataURL(dataUrl)
 
       canvas.addAction
@@ -51,13 +53,14 @@ window.createImageEditor = (options, file) ->
   pixelEditor = Pixie.Editor.Pixel.create(editorOptions)
 
   pixelEditor.bind 'save', ->
+    base64Contents = _canvas.toBase64()
     # Update mtime to bust browser image caching
     file.set
-      contents: _canvas.toBase64()
+      contents: "data:image/png;base64," + base64Contents
       mtime: new Date().getTime()
 
     saveFile
-      contents_base64: _canvas.toBase64()
+      contents_base64: base64Contents
       path: path
       success: ->
         pixelEditor.trigger "clean"
