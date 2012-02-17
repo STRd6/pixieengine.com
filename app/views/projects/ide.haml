@@ -188,7 +188,7 @@
 
     window.openFile = (file) ->
       {name, nodeType, type, path, size} = file.attributes
-      selector = path.replace('.', '_').replace('/', '_')
+      selector = path.replace('.', '_').replace('/', '_').replace(' ', '_')
 
       docSelector = '#' + nodeType + '_' + selector
 
