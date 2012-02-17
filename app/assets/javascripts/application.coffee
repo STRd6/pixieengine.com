@@ -2,7 +2,6 @@
 #= require corelib
 #= require site
 
-#= require jquery.contextMenu
 #= require jquery.simplemodal-1.3.5.min
 #= require jquery.form
 #= require jquery.scrollTo-min
@@ -23,9 +22,6 @@
 
 #= require underscore
 #= require backbone
-
-#= require backbone_forms/backbone-forms
-#= require backbone_forms/jquery-ui-editors
 
 #= require pixie/editor/pixel/create
 #= require pixie/editor/tile/create
