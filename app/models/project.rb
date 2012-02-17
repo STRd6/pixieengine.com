@@ -296,7 +296,7 @@ class Project < ActiveRecord::Base
   end
 
   def doc_selector(path)
-    selector = path.gsub('.', '_').gsub('/', '_').gsub(' ', '_')
+    selector = path.gsub(/[^A-Za-z0-9_-]/, "_")
 
     '#file_' + selector
   end
