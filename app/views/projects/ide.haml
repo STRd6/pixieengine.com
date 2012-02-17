@@ -36,12 +36,14 @@
 - content_for :javascript do
   :coffeescript
     window.tree = new BoneTree.Views.Tree
+      beforeAddFilter: (fileData) ->
+        addFile = true
+        addFile = false if fileData?.type is 'binary'
+
+        return addFile
 
     tree.addFromJSON #{project.file_info.to_json.gsub('/', '\\/')}
-
-    tree.root.collection.models.each (directory) ->
-      directory.set
-        open: false
+    tree.closeDirectories()
 
     tree.bind 'openFile', (file) ->
       openFile(file)
@@ -124,21 +126,21 @@
         $.modal.close()
 
     window.compileDirectory = (directoryPath) ->
-      findDirectory(directoryPath).find("span.file").map((index, span) ->
-        compileFileNode($(span))
-      ).get().join(";\n")
+      findDirectory(directoryPath).map((file) ->
+        compileFileNode(file)
+      ).join(";\n")
 
-    window.compileFileNode = (node) ->
-      $element = $(node.attr("data-id"))
-      src = $element.find("[name=contents]").val()
-      ext = $element.data("ext")
+    window.compileFileNode = (file) ->
+      $element = $(file.get('docSelector'))
+      src = file.get('contents')
+      ext = file.get('extension')
 
       compileCode(src, ext, $element)
 
     window.compileCode = (src, ext, $element) ->
-      if ext == "js"
+      if ext is "js"
         src
-      else if ext == "coffee"
+      else if ext is "coffee"
         try
           compiledCode = CoffeeScript.compile src, bare: true
         catch error
@@ -186,7 +188,7 @@
 
     window.openFile = (file) ->
       {name, nodeType, type, path, size} = file.attributes
-      selector = path.replace('.', '_').replace('/', '_').replace(' ', '_')
+      selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
 
       docSelector = '#' + nodeType + '_' + selector
 
@@ -207,7 +209,6 @@
           else
             fileName = path
 
-        # gross hax global variable to get a reference to current file object
         window.currentFile = file
 
         $("#tabs").tabs 'add', docSelector, fileName, 0
@@ -219,7 +220,7 @@
     window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
-        window.projectConfig = JSON.parse($("[data-path='pixie.json']").find("[name=contents]").val())
+        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
       catch e
         console.warn?(e)
         window.projectConfig = {}
