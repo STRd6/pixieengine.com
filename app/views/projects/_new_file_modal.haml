@@ -70,12 +70,14 @@
         tree.currentFileData.contents = $("#file_templates .\#{template}").tmpl(data).text()
 
       # TODO remove global file tree reference. Pass it to the function instead
-      tree.addFile "\#{path}/\#{name}.\#{extension}"
+      file = tree.addFile "\#{path}/\#{name}.\#{extension}"
 
       if forceSave
         window.saveFile
           contents: contents
           path: path
+
+      return file
 
     $("#new_file_modal button.choice").live 'click', (event) ->
       event.preventDefault()
@@ -109,12 +111,9 @@
       if params.type is "entity"
         formData.uuid = Math.uuid(32, 16)
 
-      newFileNode($.extend(formData, params))
+      file = newFileNode($.extend(formData, params))
 
-      # Open up the new file
-      ($('.tree .file').filter ->
-        $(this).text() is formData.name
-      ).click()
+      openFile(file)
 
       $.modal.close()
 
