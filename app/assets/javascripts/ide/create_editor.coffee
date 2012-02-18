@@ -4,15 +4,9 @@ window.createEditor = (ui) ->
   data = panel.data()
   data.panel = panel
 
-  {contents, id, language, path, type} = window.currentFile.attributes
+  {language, type} = window.currentFile.attributes
 
-  if type is "documentation" or type is "tutorial"
-    # These just open up info tabs
-    return {
-      cssClass: type
-    }
-  else
-    editor = ("create#{type.capitalize()}Editor".constantize())(data, window.currentFile)
+  editor = ("create#{type.capitalize()}Editor".constantize())(data, window.currentFile)
 
   if editor
     tabParent = tab.parent()
