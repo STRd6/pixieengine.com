@@ -60,15 +60,12 @@
         dataId: dataId
       }, inputData)
 
-      tree.currentFileData = data
-
       if template
         data.className = name.capitalize().camelize()
-
-        tree.currentFileData.contents = $("#file_templates .\#{template}").tmpl(data).text()
+        data.contents = $("#file_templates .\#{template}").tmpl(data).text()
 
       # TODO remove global file tree reference. Pass it to the function instead
-      file = tree.addFile "\#{path}/\#{name}.\#{extension}"
+      file = tree.addFile "\#{path}/\#{name}.\#{extension}", data
 
       if forceSave
         window.saveFile
@@ -110,8 +107,6 @@
         formData.uuid = Math.uuid(32, 16)
 
       file = newFileNode($.extend(formData, params))
-
-      openFile(file)
 
       $.modal.close()
 
