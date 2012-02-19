@@ -45,7 +45,7 @@
     window.findDirectory = (directoryName) ->
       tree.getFiles(directoryName)
 
-    buildProjectCode = () ->
+    buildProjectCode = ->
       clearErrorMessages()
 
       srcFiles = findDirectory(projectConfig.directories.source)
@@ -67,7 +67,7 @@
         entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
       if mainName = projectConfig.main
-        main = tree.getFile(mainName)
+        [main] = tree.getFile(mainName)
 
         mainCode = compileFileNode(main)
 
@@ -217,7 +217,7 @@
     bindKeys(document, hotKeys)
 
     $("#build").live 'click', (event) ->
-      notify("Publishing...")
+      notify "Publishing..."
       projectCode = buildProjectCode()
 
       saveFile

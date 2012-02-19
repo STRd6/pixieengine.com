@@ -131,11 +131,11 @@
       ).join(";\n")
 
     window.compileFileNode = (file) ->
-      $element = $(file.get('docSelector'))
-      src = file.get('contents')
-      ext = file.get('extension')
+      {contents, extension} = file.attributes
 
-      compileCode(src, ext, $element)
+      $element = $(file.get('docSelector'))
+
+      compileCode(contents, extension, $element)
 
     window.compileCode = (src, ext, $element) ->
       if ext is "js"
@@ -246,6 +246,7 @@
 
           window.currentPanel = ui.panel
           $tabs.tabs('select', docSelector)
+          $('#tabs ul li a[href="' + docSelector + '"]').click()
 
         remove: (event, ui) ->
           $(ui.panel).find(".CodeMirror-wrapping").remove()
@@ -282,9 +283,9 @@
         $tabs.tabs('select', index)
 
       # Hack to pre-load main file, README and tutorials
-      tree.trigger 'openFile', tree.getFile('main').first()
-      tree.trigger 'openFile', tree.getFile('README').first()
-      tree.trigger 'openFile', tree.getFile('Tutorial').first()
+      for fileName in ['main', 'README', 'Tutorial']
+        if file = tree.getFile(fileName).first()
+          tree.trigger 'openFile', file
 
       $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
         delayIn: 500
