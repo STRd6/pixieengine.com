@@ -35,14 +35,11 @@ window.createImageEditor = (options, file) ->
             filePath = projectConfig.directories["images"]
             fullPath = filePath + "/" + title + ".png"
 
-            # this currentFileData stuff is gross too. Fix it in BoneTree
-            tree.currentFileData =
+            # TODO remove global tree reference
+            tree.addFile fullPath,
               type: "image"
               path: fullPath
               contents: "data:image/png;base64," + base64Contents
-
-            # TODO remove global tree reference
-            tree.addFile fullPath
 
             saveFile
               contents_base64: base64Contents
