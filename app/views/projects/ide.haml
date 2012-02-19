@@ -33,6 +33,8 @@
 
 - project_id = params[:id]
 
+%textarea#code_content(style="display:none;")= project.file_info.to_json
+
 - content_for :javascript do
   :coffeescript
     window.tree = new BoneTree.Views.Tree
@@ -42,13 +44,11 @@
 
         return addFile
 
-    tree.addFromJSON #{project.file_info.to_json.gsub('/', '\\/')}
+    tree.addFromJSON JSON.parse($('#code_content').val())
     tree.closeDirectories()
 
     tree.bind 'openFile', (file) ->
       openFile(file)
-
-      trackEvent("IDE", "open file", file)
 
     tree.bind 'rename', (file, newName) ->
       {docSelector, extension, language, name, nodeType, path, type} = file.attributes
@@ -187,6 +187,8 @@
       console.log message
 
     window.openFile = (file) ->
+      trackEvent("IDE", "open file", file)
+
       {name, nodeType, type, path, size} = file.attributes
       selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
 
@@ -216,7 +218,7 @@
     window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
-        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
+        window.projectConfig = JSON.parse(tree.getFile('pixie').first().get('contents'))
       catch e
         console.warn?(e)
         window.projectConfig = {}
