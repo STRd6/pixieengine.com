@@ -24,54 +24,53 @@
       $("html").dropImageReader
         matchType: /.*/
         callback: (file, event) ->
-          if event.target.readyState == FileReader.DONE
+          if event.target.readyState is FileReader.DONE
             if file.type.match(/javascript/i)
               path = projectConfig.directories.lib
               type = "text"
-              ext = "js"
-              lang = "javascript"
+              extension = "js"
+              language = "javascript"
 
             else if file.type.match "audio"
-              ext = file.name.match(/\.([^\.]*)$/, '')?[1]
+              extension = file.name.match(/\.([^\.]*)$/, '')?[1]
               path = projectConfig.directories.sounds
               type = "binary"
 
-            else if file.type == ""
-              ext = file.name.match(/\.([^\.]*)$/, '')?[1]
+            else if file.type is ""
+              extension = file.name.match(/\.([^\.]*)$/, '')?[1]
 
-              if ext == "coffee"
+              if extension is "coffee"
                 path = projectConfig.directories.source
                 type = "text"
-                lang = "coffeescript"
-              else if ext == "tilemap"
+                language = "coffeescript"
+              else if extension is "tilemap"
                 ;#TODO
-              else if ext == "tutorial"
+              else if extension is "tutorial"
                 path = ""
                 type = "text"
-              else if ext == "json"
+              else if extension is "json"
                 path = ""
                 type = "text"
-                lang = "json"
+                language = "json"
 
             else if file.type.match(/image.*/)
               path = projectConfig.directories.images
               type = "image"
-              ext = "png"
+              extension = "png"
 
             if path?
               name = file.name.replace(/\.[^\.]*$/, '')
               contentsBase64 = extractBase64Data(event.target.result)
               saveFile
                 contents_base64: contentsBase64
-                path: "/\#{path}/\#{name}.\#{ext}"
+                path: "/\#{path}/\#{name}.\#{extension}"
 
-              contents = Base64.decode(contentsBase64) if type == "text"
+              contents = Base64.decode(contentsBase64) if type is "text"
 
               newFileNode
                 name: name
                 type: type
-                ext: ext
-                lang: lang
+                extension: extension
+                language: language
                 path: path
-                noAutoOpen: true
                 contents: contents
