@@ -1,4 +1,6 @@
 class Comment < ActiveRecord::Base
+  include Sanitization
+
   belongs_to :commenter, :class_name => "User"
   belongs_to :commentee, :class_name => "User"
   belongs_to :commentable, :polymorphic => true, :counter_cache => true
@@ -9,7 +11,7 @@ class Comment < ActiveRecord::Base
 
   after_create :notify_commentee
 
-  validates_presence_of :commenter, :commentable, :body
+  validates :commenter, :commentable, :body, :presence => true
 
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
@@ -22,7 +24,7 @@ class Comment < ActiveRecord::Base
       :commentable_type => commentable_type.downcase.pluralize,
       :commentable_img_src => commentable ? commentable.image.url(:thumb) : "",
       :avatar_src => commenter.avatar.url(:thumb),
-      :body => body,
+      :body => sanitize(BlueCloth.new(body).to_html),
       :time => created_at.getutc.iso8601
     }
   end

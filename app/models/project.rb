@@ -110,6 +110,10 @@ class Project < ActiveRecord::Base
     title
   end
 
+  def embed_code
+    "<iframe src='http://pixieengine.com/projects/#{id}/widget' height=#{config[:height]} width=#{config[:width]}></iframe>"
+  end
+
   def base_url
     "/production/projects/#{id}/"
   end
@@ -237,7 +241,7 @@ class Project < ActiveRecord::Base
 
     authoring_user = User.find authoring_user_id
 
-    #TODO: Tracking actual person who commits now that projects can have members
+    # Tracking actual person who commits now that projects can have members
     git_util "commit", "-am", message, "--author", "#{authoring_user.display_name} <#{authoring_user.email}>"
 
     if push_enabled?

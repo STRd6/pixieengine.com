@@ -8,3 +8,12 @@
   %button.full= t("forem.post.buttons.reply")
 
 = render :partial => "forem/shared/wmd"
+
+#topic{ :class => ( @topic.locked? ? 'locked' : 'unlocked' ) }
+  - @posts = @topic.posts.limit(10).reverse
+
+  %h2= @topic.subject
+
+  %table#posts.subdued
+    %tbody
+      = render :partial => "forem/posts/post", :collection => @posts

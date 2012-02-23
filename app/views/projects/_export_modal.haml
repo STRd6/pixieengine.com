@@ -11,10 +11,16 @@
       %h3 Packaged for Chrome Web Store
     .static-chrome_webstore
 
+  .choice.embed
+    .wrap
+      %h3 Embed Code
+    .static-embed
+
 - content_for :javascript do
   :coffeescript
     $("#export").click ->
-      $("#export_modal").modal()
+      $("#export_modal").modal
+        maxWidth: "auto"
 
     $("#export_modal .choice.zip").click ->
       requireLogin ->
@@ -31,3 +37,14 @@
         window.location = #{download_project_path(project, :chrome => 1).to_json}
 
         $.modal.close()
+
+    $("#export_modal .choice.embed").click ->
+      $.modal.close()
+
+      $("<textarea>",
+        val: #{@project.embed_code.to_json}
+        click: ->
+          $(this).focus().select()
+      ).modal
+        onShow: ->
+          $(this.d.container).find("textarea").select()

@@ -1,6 +1,8 @@
 $header_gradient_start: lighten($branded_blue, 4%)
 $header_gradient_end: darken($branded_blue, 3%)
 
+$user_drop_down_width: 150px
+
 .static-landing_logo
   display: inline-block
 
@@ -11,10 +13,11 @@ $header_gradient_end: darken($branded_blue, 3%)
   background-color: $header_gradient_end
   display: none
   max-height: 350px
-  min-width: 98px
   position: absolute
+  text-align: right
   top: 40px
   right: 0
+  width: $user_drop_down_width
 
   &.active
     display: block
@@ -41,6 +44,7 @@ $header_gradient_end: darken($branded_blue, 3%)
         +border-bottom-radius
 
       a
+        +box-sizing(border-box)
         +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
 
         color: $dark_text
@@ -48,6 +52,7 @@ $header_gradient_end: darken($branded_blue, 3%)
         font-weight: normal
         padding: 6px 15px
         text-decoration: none
+        width: 100%
 
 footer
   +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
@@ -114,6 +119,7 @@ header
     img.user_info
       +bounds(20px)
 
+      margin-left: 10px
       margin-top: 11px
       vertical-align: bottom
 
@@ -121,14 +127,17 @@ header
       margin-right: 2px
 
     .log_out
+      +bounds($user_drop_down_width, 40px)
       +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
 
       color: $dark_text
-      height: 40px
-
       display: inline-block
-      padding: 0 1em
+      overflow: hidden
+      padding: 0
+      text-align: right
+      text-overflow: ellipsis
       vertical-align: top
+      white-space: nowrap
 
       &:hover
         background-color: rgba(255, 255, 255, 0.1)
@@ -143,6 +152,8 @@ header
       +inline-block
 
       @extend .static-login_arrow
+
+      margin-right: 15px
 
   nav.top_bar
     +inline-block

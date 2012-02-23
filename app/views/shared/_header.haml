@@ -16,11 +16,8 @@
           ['Forums', main_app.forem_path],
         ]
       - nav_links.each do |text, url|
-        - if text == 'Wiki'
-          = link_to(text, url, :target => "_blank")
-        - else
-          = link_to_unless_current(text, url) do |link|
-            %span.active #{link}
+        = link_to_unless_current(text, url) do |link|
+          %span.active #{link}
 
     %h2.blurb
       The online game development toolkit

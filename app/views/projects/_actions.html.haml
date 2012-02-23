@@ -231,17 +231,14 @@
 
     $("#fork").click ->
       requireLogin ->
-        notify("Sending fork request...")
+        notify("Hardcore Forking Action...")
+
         $.post(
           #{fork_project_path(project).to_json},
           format: 'json',
           (data) ->
-            notify("Hardcore Forking Action...", 15000)
-
-            setTimeout ->
-              notify("<a href='/projects/\#{data.project.id}/ide'>Your carriage awaits!</a>")
-              window.location = "/projects/\#{data.project.id}/ide"
-            , 15000
+            notify("<a href='/projects/\#{data.id}/ide'>Your carriage awaits!</a>")
+            window.location = "/projects/\#{data.id}/ide"
         )
 
     $("#update_libs").click ->

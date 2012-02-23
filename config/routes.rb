@@ -78,6 +78,8 @@ PixieStrd6Com::Application.routes.draw do
       post :uninstall_plugin
       post :do_unsubscribe
     end
+
+    resources :comments
   end
 
   resources :chats do

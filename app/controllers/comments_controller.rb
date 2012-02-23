@@ -26,4 +26,30 @@ class CommentsController < ApplicationController
       }}
     end
   end
+
+  def index
+    comments = Comment
+
+    if params[:user_id].present?
+      comments = comments.for_user(params[:user_id])
+    end
+
+    comments = comments.order("id DESC").paginate(
+      :page => page,
+      :per_page => per_page
+    )
+
+    # TODO: I wonder if there is a way to avoid adding this extra pagination stuff
+    respond_with(
+      page: page,
+      per_page: per_page,
+      total: comments.total_pages,
+      models: comments
+    )
+  end
+
+  private
+  def per_page
+    10
+  end
 end

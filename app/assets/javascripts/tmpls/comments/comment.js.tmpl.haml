@@ -9,5 +9,5 @@
   .commentable
     %a(href="/${commentable_type}/${commentable_id}")
       %img(alt="${commentable_name}" src="${commentable_img_src}")
-  %p ${body}
+  {{html body}}
 {{/if}}
