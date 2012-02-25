@@ -146,7 +146,6 @@ class UsersController < ApplicationController
 
   def show
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
-    user = User.find params[:id]
 
     load_user_sprites(user)
     load_user_projects(user)
@@ -275,6 +274,8 @@ class UsersController < ApplicationController
 
     if params[:id] == "current"
       @object = current_user
+    elsif params[:display_name]
+      @object = User.find_by_display_name(params[:display_name])
     else
       @object = User.find(params[:id])
     end
