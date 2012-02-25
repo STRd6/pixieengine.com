@@ -130,7 +130,7 @@ PixieStrd6Com::Application.routes.draw do
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
 
-  match ':display_name', :controller => 'users', :action => 'show'
+  match ':display_name', :controller => 'users', :action => 'show', :as => :user
 
   root :to => "projects#info"
 
