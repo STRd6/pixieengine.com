@@ -9,6 +9,12 @@ class MakeDisplayNameUnique < ActiveRecord::Migration
         GROUP BY u.display_name
         HAVING COUNT(*) > 1
       )
+      AND users.id NOT IN (
+        SELECT MIN(id) AS id
+        FROM users u
+        GROUP BY u.display_name
+        HAVING COUNT(*) > 1
+      )
     )
 
     ActiveRecord::Base.connection.execute(query)
