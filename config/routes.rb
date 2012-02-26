@@ -61,27 +61,6 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :people, :controller => :users, :as => :users do
-    member do
-      post :add_to_collection
-      post :set_avatar
-    end
-
-    collection do
-      get :progress
-      get :comments
-      get :projects
-      get :sprites
-      get :unsubscribe
-
-      post :install_plugin
-      post :uninstall_plugin
-      post :do_unsubscribe
-    end
-
-    resources :comments
-  end
-
   resources :chats do
     collection do
       get :active_users
@@ -130,7 +109,28 @@ PixieStrd6Com::Application.routes.draw do
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
 
-  match ':display_name', :controller => 'users', :action => 'show', :as => :user
+  # the people resource needs to go near the bottom because the
+  # vanity urls will crush a bunch of other normal routes, such as login
+  resources :people, :controller => :users, :as => :users, :path => '/' do
+    member do
+      post :add_to_collection
+      post :set_avatar
+    end
+
+    collection do
+      get :progress
+      get :comments
+      get :projects
+      get :sprites
+      get :unsubscribe
+
+      post :install_plugin
+      post :uninstall_plugin
+      post :do_unsubscribe
+    end
+
+    resources :comments
+  end
 
   root :to => "projects#info"
 
