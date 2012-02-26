@@ -3,10 +3,24 @@
 - content_for :javascript do
   :coffeescript
     $ ->
+      userEnteredDisplayName = false
+
       if $('#user_display_name').val().length && $('#user_email').val().length
         $('#user_password').focus()
       else
         $('#user_display_name').focus()
+
+      $('#user_display_name').keyup ->
+        if $(this).val().length
+          userEnteredDisplayName = true
+        else
+          userEnteredDisplayName = false
+
+      $('#user_email').keyup ->
+        unless userEnteredDisplayName
+          emailFragment = $('#user_email').val().split('@').first()
+
+          $('#user_display_name').val(emailFragment)
 
 = form_for user, :html => { :class => "module" } do |form|
   = form.error_messages
