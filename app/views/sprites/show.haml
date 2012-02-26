@@ -198,6 +198,6 @@
       $(".avatar a").live "click", (event) ->
         notify "Saving..."
         spriteId = $(this).attr("data-sprite_id")
-        $.post "/people/#{(current_user) ? current_user.id : 0}/set_avatar", sprite_id: spriteId, (data) ->
+        $.post "#{set_avatar_user_path(current_user)}", sprite_id: spriteId, (data) ->
           notify "Avatar successfully changed."
 
