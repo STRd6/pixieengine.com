@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     email = session.delete(:email) || ''
 
     object.email ||= email
-    object.display_name = email[0..((email.index('@') || 0) - 1)]
+    object.display_name = email.split("@").first
   end
 
   def new
@@ -274,10 +274,8 @@ class UsersController < ApplicationController
 
     if params[:id] == "current"
       @object = current_user
-    elsif params[:display_name]
-      @object = User.find_by_display_name(params[:display_name])
     else
-      @object = User.find(params[:id])
+      @object = User.find_by_display_name_or_email_fragment(params[:id]).first
     end
   end
 
