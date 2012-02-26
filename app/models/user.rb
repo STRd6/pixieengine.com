@@ -13,8 +13,7 @@ class User < ActiveRecord::Base
     config.require_password_confirmation = false
   end
 
-  validates :display_name,
-            :uniqueness => true
+  validates :display_name, :uniqueness => true
 
   has_attached_file :avatar, S3_OPTS.merge(
     :path => "avatars/:id/:style.:extension",
@@ -46,6 +45,10 @@ class User < ActiveRecord::Base
 
   scope :online_now, lambda {
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
+  }
+
+  scope :find_by_display_name_or_email_fragment, lambda { |display_name|
+    where "display_name = ? OR (split_part(email, '@', 1) = ? AND display_name IS NULL)", display_name, display_name
   }
 
   scope :search, lambda{ |search|
