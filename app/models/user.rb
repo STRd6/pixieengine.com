@@ -168,7 +168,7 @@ class User < ActiveRecord::Base
   end
 
   def to_param
-    "#{display_name.seo_url}"
+    display_name.seo_url
   end
 
   def install_plugin(plugin)
