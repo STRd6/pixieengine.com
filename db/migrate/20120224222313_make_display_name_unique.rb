@@ -1,6 +1,6 @@
 class MakeDisplayNameUnique < ActiveRecord::Migration
   def up
-    query = %Q(
+    make_unique = %Q(
       UPDATE users
         SET display_name = users.display_name || users.id
       WHERE users.display_name IN (
@@ -17,7 +17,13 @@ class MakeDisplayNameUnique < ActiveRecord::Migration
       )
     )
 
-    ActiveRecord::Base.connection.execute(query)
+    remove_periods = %Q(
+      UPDATE users
+        SET display_name = replace(display_name, '.', '-')
+    )
+
+    ActiveRecord::Base.connection.execute(make_unique)
+    ActiveRecord::Base.connection.execute(remove_periods)
 
     add_index :users, :display_name, :unique => true
   end

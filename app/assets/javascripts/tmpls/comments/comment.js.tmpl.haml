@@ -2,7 +2,7 @@
 .comment(data-commentable_id="${commentable_id}")
   .attribution
     .name
-      %a(href="/people/${commenter_id}")
+      %a(href="/${commenter_name}")
         ${commenter_name}
         %img(alt="Thumb" src="${avatar_src}")
     %time.timeago(datetime="${time}") ${time}

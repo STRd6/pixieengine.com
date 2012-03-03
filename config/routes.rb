@@ -108,29 +108,29 @@ PixieStrd6Com::Application.routes.draw do
   match "sign_up" => "users#new", :as => :signup
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
-  match 'people' => 'users#index', :as => :users
+
+  match 'people' => 'users#index', :as => :people_gallery
 
   # the people resource needs to go near the bottom because the
   # vanity urls will crush a bunch of other normal routes, such as login
   resources :people, :controller => :users, :as => :users, :except => :index, :path => '/' do
     member do
+      get :comments
+      get :projects
+      get :sprites
+
       post :add_to_collection
       post :set_avatar
     end
 
     collection do
       get :progress
-      get :comments
-      get :projects
-      get :sprites
       get :unsubscribe
 
       post :install_plugin
       post :uninstall_plugin
       post :do_unsubscribe
     end
-
-    resources :comments
   end
 
   root :to => "projects#info"

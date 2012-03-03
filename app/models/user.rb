@@ -7,13 +7,16 @@ class User < ActiveRecord::Base
     DEFAULT_PLAN_ID = 9356
   end
 
+  validates :display_name,
+    :format => { :with => /^\w+[^\.]$/ },
+    :presence => true,
+    :uniqueness => true
+
   acts_as_authentic do |config|
     config.validate_email_field :no_connected_sites?
     config.validate_password_field :no_connected_sites?
     config.require_password_confirmation = false
   end
-
-  validates :display_name, :uniqueness => true
 
   has_attached_file :avatar, S3_OPTS.merge(
     :path => "avatars/:id/:style.:extension",
@@ -168,7 +171,7 @@ class User < ActiveRecord::Base
   end
 
   def to_param
-    display_name.seo_url
+    display_name
   end
 
   def install_plugin(plugin)

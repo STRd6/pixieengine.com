@@ -214,7 +214,7 @@
         %p= user.profile.html_safe
 
     %h3.inline Favorite Color
-    .favorite_color(style="background: ##{user.favorite_color};")
+    .favorite_color(style="background: #{user.favorite_color};")
 
   .projects
   .sprites
@@ -232,17 +232,17 @@
         profile: true
 
       sprite_gallery.collection.url = ->
-        '/people/sprites'
+        "/#{user.display_name}/sprites"
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
 
       project_gallery = new window.Pixie.Views.Projects.Gallery
       project_gallery.collection.url = ->
-        '/people/projects'
+        "/#{user.display_name}/projects"
       project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
 
       comments_gallery = new window.Pixie.Views.Comments.Gallery
       comments_gallery.collection.url = ->
-        '/people/#{user.id}/comments'
+        "/#{user.display_name}/comments"
       comments_gallery.collection.fetch()
 
       $('.project .delete').live 'click', (e) ->

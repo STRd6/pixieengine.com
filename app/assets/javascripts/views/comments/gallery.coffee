@@ -1,4 +1,3 @@
-
 #= require jquery.timeago
 #= require views/paginated
 #= require views/comments/comment

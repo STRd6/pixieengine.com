@@ -40,9 +40,15 @@ class UsersController < ApplicationController
     render :nothing => true
   end
 
-  def sprites
-    user = User.find params[:id]
+  def comments
+    load_user_comments(user)
 
+    respond_to do |format|
+      format.json { render :json => @user_comments_data }
+    end
+  end
+
+  def sprites
     load_user_sprites(user)
 
     respond_to do |format|
@@ -51,8 +57,6 @@ class UsersController < ApplicationController
   end
 
   def projects
-    user = User.find params[:id]
-
     load_user_projects(user)
 
     respond_to do |format|
@@ -155,10 +159,17 @@ class UsersController < ApplicationController
   end
 
   def update
-    user.update_attributes params[:user]
-    flash[:notice] = "Account information updated."
-
-    respond_with user
+    respond_to do |format|
+      format.html do
+        if user.update_attributes(params[:user])
+          flash[:notice] = "Account information updated."
+          render user_path(user.display_name)
+        else
+          flash.now[:notice] = "Invalid Name"
+          render :action => :edit
+        end
+      end
+    end
   end
 
   def add_to_collection
@@ -212,6 +223,28 @@ class UsersController < ApplicationController
     end
 
     @collection ||= users.order("id DESC").search(params[:search]).paginate(:page => params[:page], :per_page => per_page)
+  end
+
+  def load_user_comments(user)
+    per_page = 10
+
+    @user_comments = Comment.for_user(user.id).paginate(
+      :page => params[:page],
+      :per_page => per_page,
+    )
+
+    current_page = @user_comments.current_page
+    total = @user_comments.total_pages
+    current_user_id = current_user ? current_user.id : nil
+
+    @user_comments_data = {
+      :owner_id => user.id,
+      :current_user_id => current_user_id,
+      :page => current_page,
+      :per_page => per_page,
+      :total => total,
+      :models => @user_comments
+    }
   end
 
   def load_user_sprites(user)

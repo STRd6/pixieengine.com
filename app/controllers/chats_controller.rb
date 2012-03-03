@@ -33,5 +33,7 @@ class ChatsController < ApplicationController
 
   def active_users
     @active_users = User.logged_in
+
+    render :nothing => true
   end
 end
