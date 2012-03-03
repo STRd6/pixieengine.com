@@ -19,11 +19,12 @@ class MakeDisplayNameUnique < ActiveRecord::Migration
 
     remove_periods = %Q(
       UPDATE users
-        SET display_name = replace(display_name, '.', '-')
+        SET display_name = regexp_replace(display_name, '[^A-Za-z0-9_-]', '', 'g')
     )
 
-    ActiveRecord::Base.connection.execute(make_unique)
+    # First remove periods, then make names unique
     ActiveRecord::Base.connection.execute(remove_periods)
+    ActiveRecord::Base.connection.execute(make_unique)
 
     add_index :users, :display_name, :unique => true
   end
