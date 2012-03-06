@@ -304,11 +304,7 @@ class UsersController < ApplicationController
   def object
     return @object if defined?(@object)
 
-    if params[:id] == "current"
-      @object = current_user
-    else
-      @object = User.find_by_display_name_or_email_fragment(params[:id]).first
-    end
+    @object = User.find_by_display_name! params[:id]
   end
 
   def user
