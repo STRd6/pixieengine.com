@@ -15,10 +15,6 @@
   %h2 Edit Profile
 
   %label
-    %h3 Display Name
-    = form.text_field :display_name, :title => '. is an invalid character'
-
-  %label
     %h3 Favorite Color
     = form.text_field :favorite_color, :class => "color", :style => "border:none;"
 
@@ -43,8 +39,6 @@
   %button.full Update Information
 
 - content_for :javascript do
-  = javascript_include_tag 'user_validations'
-
   :coffeescript
     $ ->
       $(".color").colorPicker()

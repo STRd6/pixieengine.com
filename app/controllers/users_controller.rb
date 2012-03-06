@@ -13,7 +13,14 @@ class UsersController < ApplicationController
     email = session.delete(:email) || ''
 
     object.email ||= email
-    object.display_name = email.split("@").first
+    display_name = object.display_name = email.split("@").first.gsub(/[^A-Za-z0-9_-]/, '')
+
+    # Gross uniqueness checking
+    suffix = 0
+    while User.where(:display_name => object.display_name).any?
+      suffix += 1
+      object.display_name = "#{display_name}-#{suffix}"
+    end
   end
 
   def new
@@ -159,17 +166,9 @@ class UsersController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      format.html do
-        if user.update_attributes(params[:user])
-          flash[:notice] = "Account information updated."
-          render user_path(user.display_name)
-        else
-          flash.now[:notice] = "Invalid Name"
-          render :action => :edit
-        end
-      end
-    end
+    user.update_attributes(params[:user])
+
+    respond_with user
   end
 
   def add_to_collection

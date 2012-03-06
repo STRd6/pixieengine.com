@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   end
 
   validates :display_name,
-    :format => { :with => /^\w+[^\.]$/ },
+    :format => { :with => /^[A-Za-z0-9_-]+$/ },
     :presence => true,
     :uniqueness => true
 
@@ -155,18 +155,6 @@ class User < ActiveRecord::Base
       twitter.post("/statuses/update.json",
         "status" => message
       )
-    end
-  end
-
-  def display_name
-    if super.blank?
-      if email
-        email.split("@").first
-      else
-        "Anonymous #{id}"
-      end
-    else
-      super
     end
   end
 

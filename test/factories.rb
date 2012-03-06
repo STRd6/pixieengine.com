@@ -13,6 +13,9 @@ FactoryGirl.define do
     sequence(:email) do |n|
       "test_#{n}@example.com"
     end
+    sequence(:display_name) do |n|
+      "teSt-user_#{n}"
+    end
     password "TEST123"
   end
 

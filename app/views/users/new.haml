@@ -1,7 +1,37 @@
 = stylesheet_link_tag "branded"
 
 - content_for :javascript do
-  = javascript_include_tag 'user_validations'
+  :coffeescript
+    $ ->
+      invalidChars = /[^A-Za-z0-9_-]/g
+
+      addWarnings = (element) ->
+        element.tipsy
+          gravity: 'w'
+          trigger: 'manual'
+          title: 'tip'
+
+        element.tipsy 'show'
+        element.css
+          border: '1px solid red'
+
+      removeWarnings = (element) ->
+        element.tipsy 'hide'
+        element.css
+          border: '1px solid rgb(170, 170, 170)'
+
+      $('#user_display_name').bind 'blur keyup paste', (e) ->
+        $this = $(this)
+
+        val = $this.val()
+
+        if val.match invalidChars
+          addWarnings $this
+
+        newVal = val.replace(invalidChars, '')
+
+        unless newVal is val
+          $this.val(newVal)
 
 = form_for user, :html => { :class => "module" } do |form|
   = form.error_messages
@@ -9,7 +39,7 @@
 
   %label
     %h3 Display Name
-    = form.text_field :display_name, :title => '. is an invalid character'
+    = form.text_field :display_name, :"tip" => 'Display name must only use upper and lower case letters, numbers, or hyphens and underscores.'
   %label
     %h3 Email Address
     = form.text_field :email
