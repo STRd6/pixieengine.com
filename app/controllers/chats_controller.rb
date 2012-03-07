@@ -26,9 +26,7 @@ class ChatsController < ApplicationController
   end
 
   def recent
-    respond_to do |format|
-      format.json { render :json => Chat.recent.reverse }
-    end
+    respond_with Chat.recent.reverse
   end
 
   def active_users
