@@ -20,6 +20,8 @@
 #= require jquery.vector_picker
 #= require jquery.timeago
 
+#= require wmd.combined.min
+
 #= require underscore
 #= require backbone
 

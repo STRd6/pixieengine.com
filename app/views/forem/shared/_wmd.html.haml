@@ -1,8 +1,6 @@
 = stylesheet_link_tag "wmd.css"
 
 - content_for :javascript do
-  = javascript_include_tag "wmd.combined.min"
-
   :coffeescript
     setup_wmd
       input: "post_text"
