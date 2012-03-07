@@ -26,7 +26,7 @@ namespace "Pixie.Chat", (Chat) ->
       if chat.name == prevChatUser
         $(chatData).find('hr, .name, .time').remove()
       else if chat.user_id > 0
-        $(chatData).find('.name').html('<a target="_blank" href="/people/' + chat.user_id + '">' + chat.name + '</a>')
+        $(chatData).find('.name').html('<a target="_blank" href="/' + chat.name + '">' + chat.name + '</a>')
 
       $(chatData).removeAttr('data-id') unless chat.id
       $('#chats').append(chatData)
