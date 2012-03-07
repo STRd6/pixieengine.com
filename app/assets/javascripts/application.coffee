@@ -36,6 +36,7 @@
 #= require command_stack
 #= require error_tracker
 #= require grid_gen
+#= require hotkeys
 #= require uuid
 #= require jqcolor
 #= require color
