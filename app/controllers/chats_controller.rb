@@ -32,6 +32,6 @@ class ChatsController < ApplicationController
   def active_users
     @active_users = User.logged_in
 
-    render :nothing => true
+    respond_with @active_users
   end
 end
