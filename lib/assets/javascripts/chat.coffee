@@ -32,11 +32,11 @@ namespace "Pixie.Chat", (Chat) ->
       $('#chats').append(chatData)
 
     initialize = ->
-      $.get '/chats/active_users', (activeUsers) ->
+      $.get '/chats/active_users.json', (activeUsers) ->
         for user in activeUsers
           $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
-      $.get '/chats/recent', (chats) ->
+      $.get '/chats/recent.json', (chats) ->
         prevChatUser = null
 
         for chat in chats
@@ -47,7 +47,7 @@ namespace "Pixie.Chat", (Chat) ->
         scrollChat()
 
     refreshData = ->
-      $.get '/chats/active_users', (activeUsers) ->
+      $.get '/chats/active_users.json', (activeUsers) ->
         lastOnline = (parseInt($(userEl).attr('data-id')) for userEl in $('#active_users li'))
         currentlyOnline = (user.id for user in activeUsers)
 
@@ -58,7 +58,7 @@ namespace "Pixie.Chat", (Chat) ->
           if $.inArray(user.id, lastOnline) < 0
             $.tmpl('chat/active_user', user).appendTo $('#active_users')
 
-      $.get '/chats/recent', (chats) ->
+      $.get '/chats/recent.json', (chats) ->
         $('#chats li:not([data-id])').remove()
 
         prevChatId = null
@@ -94,7 +94,7 @@ namespace "Pixie.Chat", (Chat) ->
       paddedMinutes = if date.getMinutes() < 10 then "0#{date.getMinutes()}" else date.getMinutes()
       current_time = "#{date.getHours() % 12}:#{paddedMinutes}#{if date.getHours() > 11 then 'pm' else 'am'}"
 
-      $.post '/chats', { body: message }
+      $.post '/chats.json', { body: message }
 
       prevChatUser = $('#chats li span.name:last').text()
 

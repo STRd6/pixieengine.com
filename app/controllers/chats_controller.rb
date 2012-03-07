@@ -7,10 +7,10 @@ class ChatsController < ApplicationController
     cleaned_text = sanitize(text)
 
     unless cleaned_text.blank?
-      Chat.create({ :user => current_user, :text => cleaned_text })
+      chat = Chat.create({ :user => current_user, :text => cleaned_text })
     end
 
-    render :nothing => true
+    respond_with chat
   end
 
   def destroy
