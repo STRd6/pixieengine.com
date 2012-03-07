@@ -54,10 +54,10 @@
         return
 
       inputData.path = "\#{path}/\#{name}.\#{extension}"
-      dataId = "file_" + path.replace(/[^A-Za-z0-9_-]/g, "_")
+      docSelector = "#file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
       data = $.extend({
-        dataId: dataId
+        docSelector: docSelector
       }, inputData)
 
       if template
