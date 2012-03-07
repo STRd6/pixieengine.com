@@ -211,6 +211,9 @@
 
         $("#tabs").tabs 'add', docSelector, fileName, 0
 
+        # Focus Newly Created Tab
+        $('#tabs ul li a[href="' + docSelector + '"]').click()
+
     window.onbeforeunload = ->
       if $("li.unsaved").length
         "You have some unsaved changes, if you leave now you will lose your work."
