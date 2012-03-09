@@ -1,7 +1,9 @@
 .CodeMirror
-  line-height: 1em
-  font-family: monospace
   background-color: white
+  color: #666
+  font-family: Monaco, monospace
+  font-size: 11px
+  line-height: 16px
 
 .CodeMirror-scroll
   height: auto
@@ -78,46 +80,50 @@ div.CodeMirror-selected
 .cm-s-default span
   color: black
 
-  &.cm-keyword
-    color: #708
   &.cm-atom
-    color: #219
-  &.cm-number
-    color: #164
-  &.cm-def
-    color: #00f
-  &.cm-variable
-    color: black
-  &.cm-variable-2
-    color: #05a
-  &.cm-variable-3
-    color: #085
-  &.cm-property, &.cm-operator
-    color: black
-  &.cm-comment
-    color: #a50
-  &.cm-string
-    color: #a11
-  &.cm-string-2
-    color: #f50
-  &.cm-meta
-    color: #555
-  &.cm-error
-    color: #f00
-  &.cm-qualifier
-    color: #555
-  &.cm-builtin
-    color: #30a
-  &.cm-bracket
-    color: #cc7
-  &.cm-tag
-    color: #170
+    color: #228811
   &.cm-attribute
     color: #00c
-  &.cm-header
-    color: #a0a
+  &.cm-bracket
+    color: #cc7
+  &.cm-builtin
+    color: #30a
+  &.cm-comment
+    color: #aeaeae
+  &.cm-def
+    color: #00f
+  &.cm-error
+    color: red
+  &.cm-keyword
+    color: #770088
+  &.cm-meta
+    color: #555
+  &.cm-number
+    color: red
+  &.cm-operator
+    color: darkRed
+  &.cm-property
+    color: #222
   &.cm-quote
     color: #090
+  &.cm-qualifier
+    color: #555
+  &.cm-string
+    color: green
+  &.cm-string-2
+    color: #f50
+  &.cm-variable
+    color: #222
+  &.cm-variable-2
+    color: #049
+  &.cm-variable-3
+    color: #61b2df
+
+  /* HTML
+  &.cm-tag
+    color: #170
+  &.cm-header
+    color: #a0a
   &.cm-hr
     color: #999
   &.cm-link
