@@ -15,21 +15,16 @@ window.createTextEditor = (options, file) ->
   editor = new CodeMirror.fromTextArea textArea,
     autoMatchParens: true
     content: savedCode
-    height: "100%"
     lineNumbers: true
-    parserfile: ["tokenize_" + language + ".js", "parse_" + language + ".js"]
-    path: "/assets/codemirror/"
-    stylesheet: ["/assets/codemirror/main.css"]
     tabMode: "shift"
     textWrapping: false
 
+  # Make sure that the editor doesn't get stuck at a small size by popping in too fast
+  setTimeout ->
+    editor.refresh()
+  , 100
+
   $editor = $(editor)
-
-  # Match the current theme
-  $(editor.win.document).find('html').toggleClass('light', $(".bulb-sprite").hasClass('static-on'))
-
-  # Bind all the page hotkeys to work when triggered from the editor iframe
-  bindKeys(editor.win.document, hotKeys)
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->
@@ -41,8 +36,6 @@ window.createTextEditor = (options, file) ->
       $editor.trigger('clean')
 
     textArea.value = currentCode
-
-  $(editor.win.document).keyup processEditorChanges.debounce(100)
 
   $editor.bind "save", ->
     codeToSave = editor.getCode()

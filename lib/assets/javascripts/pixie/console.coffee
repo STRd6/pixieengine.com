@@ -1,5 +1,5 @@
-#= require codemirror/codemirror
-#= require codemirror/mirrorframe
+#= require codemirror2/codemirror
+#= require codemirror2/coffeescript
 
 #= require tmpls/pixie/console
 
