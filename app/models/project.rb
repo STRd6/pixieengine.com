@@ -76,7 +76,7 @@ class Project < ActiveRecord::Base
   JUMP_DEMO_ID = 218
   SHOOT_DEMO_ID = 227
   ASTEROIDS_DEMO_ID = 123
-  MAX_EDITOR_FILE_SIZE = 100_000
+  MAX_EDITOR_FILE_SIZE = 200_000
 
   def self.editable(user)
     Project.find_by_sql <<-eos

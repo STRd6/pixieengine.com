@@ -7,9 +7,6 @@
     = stylesheet_link_tag 'pixie'
     = stylesheet_link_tag 'ide'
 
-    - content_for :javascript do
-      = javascript_include_tag 'codemirror/codemirror', 'codemirror/mirrorframe'
-
     = render :partial => "/shared/header"
 
     -# Force chrome frame
