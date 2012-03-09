@@ -18,6 +18,11 @@ window.createTextEditor = (options, file) ->
     lineNumbers: true
     tabMode: "shift"
     textWrapping: false
+    onKeyEvent: (editor, e) ->
+      if e.type == "keyup"
+        processEditorChanges()
+
+        return undefined
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
@@ -28,17 +33,17 @@ window.createTextEditor = (options, file) ->
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->
-    currentCode = editor.getCode()
+    currentCode = editor.getValue()
 
-    if currentCode isnt savedCode
-      $editor.trigger('dirty')
-    else
+    if currentCode is savedCode
       $editor.trigger('clean')
+    else
+      $editor.trigger('dirty')
 
     textArea.value = currentCode
 
   $editor.bind "save", ->
-    codeToSave = editor.getCode()
+    codeToSave = editor.getValue()
 
     file.set
       contents: codeToSave
@@ -48,7 +53,7 @@ window.createTextEditor = (options, file) ->
       path: path
       success: ->
         # Editor's state may have changed during ajax call
-        if editor.getCode() is codeToSave
+        if editor.getValue() is codeToSave
           $editor.trigger "clean"
         else
           $editor.trigger "dirty"

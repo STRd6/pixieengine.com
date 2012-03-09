@@ -41,8 +41,8 @@ window.Pixie ||= {}
 
       output.text(message)
 
-    run = () ->
-      return unless command = editor.getCode()
+    run = ->
+      return unless command = editor.getValue()
 
       #TODO: Parse and process special commands
 
@@ -76,30 +76,27 @@ window.Pixie ||= {}
     editor = null
 
     keyBindings =
-      "shift+return": run
-      "pageup": prev
-      "pagedown": next
+      "Shift-Enter": run
+      "PageUp": prev
+      "PageDown": next
+
+    for binding, handler of keyBindings
+      do (handler) ->
+        keyBindings[binding] = ->
+          # Don't set the state of the pending command
+          # when doing special key commands
+          keepState = false
+
+          handler()
 
     # HACK: Don't init the editor until it's been added to DOM :(
     setTimeout ->
       editor = new CodeMirror.fromTextArea input.get(0),
         autoMatchParens: true
-        # height: "100%"
         lineNumbers: true
-        parserfile: ["tokenize_" + lang + ".js", "parse_" + lang + ".js"]
-        path: "/assets/codemirror/"
-        stylesheet: ["/assets/codemirror/main.css"]
         tabMode: "shift"
         textWrapping: false
-
-      $(editor.win.document).find('html').addClass("light")
-
-      for binding, handler of keyBindings
-        do (handler) ->
-          $(editor.win.document).bind "keydown", binding, (e) ->
-            e.preventDefault()
-
-            handler()
+        extraKeys: keyBindings
     , 10
 
     output = self.find(".output")
@@ -109,9 +106,9 @@ window.Pixie ||= {}
     Object.extend self,
       val: (newVal) ->
         if newVal?
-          editor.setCode(newVal)
+          editor.setValue(newVal)
         else
-          editor.getCode()
+          editor.getValue()
 
       addAction: (action) ->
         {name} = action
