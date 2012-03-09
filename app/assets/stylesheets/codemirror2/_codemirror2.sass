@@ -1,0 +1,148 @@
+.CodeMirror
+  background-color: white
+  color: #666
+  font-family: Monaco, monospace
+  font-size: 11px
+  line-height: 16px
+
+.CodeMirror-scroll
+  height: auto
+  overflow-x: auto
+  overflow-y: hidden
+  width: 100%
+
+.CodeMirror-gutter
+  position: absolute
+  left: 0
+  top: 0
+  z-index: 10
+  background-color: #f7f7f7
+  border-right: 1px solid #eee
+  min-width: 2em
+  height: 100%
+
+.CodeMirror-gutter-text
+  color: #aaa
+  text-align: right
+  padding: .4em .2em .4em .4em
+  white-space: pre !important
+
+.CodeMirror-lines
+  padding: .4em
+
+.CodeMirror pre
+  -moz-border-radius: 0
+  -webkit-border-radius: 0
+  -o-border-radius: 0
+  border-radius: 0
+  border-width: 0
+  margin: 0
+  padding: 0
+  background: transparent
+  font-family: inherit
+  font-size: inherit
+  padding: 0
+  margin: 0
+  white-space: pre
+  word-wrap: normal
+
+.CodeMirror-wrap
+  pre
+    word-wrap: break-word
+    white-space: pre-wrap
+  .CodeMirror-scroll
+    overflow-x: hidden
+
+.CodeMirror
+  textarea
+    outline: none !important
+  pre.CodeMirror-cursor
+    z-index: 10
+    position: absolute
+    visibility: hidden
+    border-left: 1px solid black
+
+.CodeMirror-focused pre.CodeMirror-cursor
+  visibility: visible
+
+div.CodeMirror-selected
+  background: #d9d9d9
+
+.CodeMirror-focused div.CodeMirror-selected
+  background: #d7d4f0
+
+.CodeMirror-searching
+  background: #ffa
+  background: rgba(255, 255, 0, 0.4)
+
+/* Default theme
+
+.cm-s-default span
+  color: black
+
+  &.cm-atom
+    color: #228811
+  &.cm-attribute
+    color: #00c
+  &.cm-bracket
+    color: #cc7
+  &.cm-builtin
+    color: #30a
+  &.cm-comment
+    color: #aeaeae
+  &.cm-def
+    color: #00f
+  &.cm-error
+    color: red
+  &.cm-keyword
+    color: #770088
+  &.cm-meta
+    color: #555
+  &.cm-number
+    color: red
+  &.cm-operator
+    color: darkRed
+  &.cm-property
+    color: #222
+  &.cm-quote
+    color: #090
+  &.cm-qualifier
+    color: #555
+  &.cm-string
+    color: green
+  &.cm-string-2
+    color: #f50
+  &.cm-variable
+    color: #222
+  &.cm-variable-2
+    color: #049
+  &.cm-variable-3
+    color: #61b2df
+
+  /* HTML
+  &.cm-tag
+    color: #170
+  &.cm-header
+    color: #a0a
+  &.cm-hr
+    color: #999
+  &.cm-link
+    color: #00c
+
+span
+  &.cm-header, &.cm-strong
+    font-weight: bold
+  &.cm-em
+    font-style: italic
+  &.cm-emstrong
+    font-style: italic
+    font-weight: bold
+  &.cm-link
+    text-decoration: underline
+
+div.CodeMirror span
+  &.CodeMirror-matchingbracket
+    color: #0f0
+  &.CodeMirror-nonmatchingbracket
+    color: #f22
+
