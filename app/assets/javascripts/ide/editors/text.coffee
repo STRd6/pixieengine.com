@@ -14,6 +14,9 @@ window.createTextEditor = (options, file) ->
 
   autocompleteIndex = 0
 
+  window.autocomplete = new Pixie.Views.Autocomplete
+    model: new Pixie.Models.Autocomplete
+
   editor = new CodeMirror.fromTextArea textArea,
     autoMatchParens: true
     content: savedCode
@@ -57,9 +60,12 @@ window.createTextEditor = (options, file) ->
 
         currentToken = editor.getTokenAt(editor.coordsChar(cursorPos)).string
 
+        # Syde FX :-X
+        filterSuggestions(currentToken, $('.code_autocomplete li'))
+
         if (e.ctrlKey and e.keyCode is 32) or e.keyCode is 190
           $('.code_autocomplete').remove()
-          getAutocompleteOptions("someToken").css(
+          getAutocompleteSuggestions(currentToken).css(
             left: "#{cursorPos.x}px"
             top: "#{cursorPos.yBot}px"
           ).appendTo $('body')
@@ -69,6 +75,8 @@ window.createTextEditor = (options, file) ->
         processEditorChanges()
 
         return undefined
+
+  window.autocomplete.editor = editor
 
   # complete clicked value from autocomplete list
   $('.code_autocomplete li').live 'click', (e) ->
@@ -91,8 +99,12 @@ window.createTextEditor = (options, file) ->
   $(document).click (e) ->
     $('.code_autocomplete').remove() unless $(e.target).is('.code_autocomplete')
 
+  filterSuggestions = (currentToken, suggestions) ->
+    suggestions.each (index, suggestion) ->
+      $(suggestion).remove() if $(suggestion).text().toLowerCase().indexOf(currentToken.toLowerCase()) is -1
+
   # TODO get real autocomplete list from CoffeeScript parse tree
-  getAutocompleteOptions = (currentToken, context) ->
+  getAutocompleteSuggestions = (currentToken, context) ->
     output = $ '<ul class=code_autocomplete></ul>'
 
     for suggestion in ['$', 'PixieCanvas', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff']
