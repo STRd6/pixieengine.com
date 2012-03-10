@@ -8,6 +8,25 @@ $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
 
+.code_autocomplete
+  +border-radius(3px)
+  +border-top-left-radius(0)
+  +box-shadow(rgba(0, 0, 0, 0.1) 1px 1px 3px)
+
+  background-color: #f9f9f9
+  border: 1px solid rgba(0, 0, 0, 0.3)
+  color: black
+  cursor: pointer
+  font-family: Monaco, monospace
+  font-size: 11px
+  position: absolute
+
+  li
+    padding: 0 0.3em
+
+    &.selected
+      background-color: rgba(0, 0, 0, 0.1)
+
 .static-chrome_webstore, .static-zip, .static-embed
   margin: auto
 
