@@ -18,6 +18,8 @@ $inner_margin: 14px
   vertical-align: bottom
 
 #fullscreen.ide
+  padding-left: 0.25em
+  padding-right: 0.25em
   padding-top: 3.5em
 
   header
@@ -29,7 +31,7 @@ $inner_margin: 14px
 .ide
   #content
     padding-bottom: 0.5em
-    padding-left: $sidebar_width + $inner_margin
+    padding-left: $sidebar_width
     padding-top: 0.5em
     position: relative
 
@@ -47,18 +49,19 @@ nav.top.actions .status
 .sidebar_container
   +box-sizing(border-box)
 
-  height: 100%
+  height: 96%
   width: $sidebar_width
 
   left: 0
   padding-top: 0.5em
   padding-bottom: 0.5em
   position: absolute
-  top: 0
+  top: 2%
 
   .sidebar
     +bounds(100%)
     +module
+    +border-right-radius(0)
 
     overflow-y: auto
     padding: 0.5em
