@@ -22,51 +22,63 @@ window.createTextEditor = (options, file) ->
     textWrapping: false
     onKeyEvent: (editor, e) ->
       if e.type is "keydown"
+        # remove the autocomplete dialog on pressing escape
         if e.keyCode is 27
           $('.code_autocomplete').remove()
 
-        if $('.code_autocomplete').length and (e.keyCode is 13 or e.keyCode is 9)
-          e.preventDefault()
-          e.stopPropagation()
+        if $('.code_autocomplete').length
+          # update the autocomplete dialog on pressing up and down
+          autocompleteChoices = $('.code_autocomplete li').length
 
-          cursorPosition = editor.getCursor()
+          if e.keyCode is 40
+            e.preventDefault()
+            autocompleteIndex = (autocompleteIndex + 1) % autocompleteChoices
+          else if e.keyCode is 38
+            e.preventDefault()
+            autocompleteIndex = (autocompleteIndex - 1).mod(autocompleteChoices)
 
-          editor.replaceRange($('.code_autocomplete li.selected').text(), cursorPosition)
+          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected')
 
-          # TODO use this to get previous token to pass into `getAutocompleteOptions`
-          #editor.coordsChar(editor.cursorCoords())
+          # enter the autocomplete value
+          if e.keyCode is 13 or e.keyCode is 9
+            e.preventDefault()
+            e.stopPropagation()
 
-          $('.code_autocomplete').remove()
+            cursorPosition = editor.getCursor()
 
-          return false
+            editor.replaceRange($('.code_autocomplete li.selected').text(), cursorPosition)
+
+            $('.code_autocomplete').remove()
+
+            return false
 
       if e.type is "keyup"
         cursorPos = editor.cursorCoords()
 
-        if e.ctrlKey and e.keyCode is 32
+        currentToken = editor.getTokenAt(editor.coordsChar(cursorPos)).string
+
+        if (e.ctrlKey and e.keyCode is 32) or e.keyCode is 190
           $('.code_autocomplete').remove()
-          autocompleteMenu = getAutocompleteOptions("someToken")
-          autocompleteMenu.appendTo $('body')
-          autocompleteMenu.css
+          getAutocompleteOptions("someToken").css(
             left: "#{cursorPos.x}px"
             top: "#{cursorPos.yBot}px"
+          ).appendTo $('body')
 
           $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected')
-
-        autocompleteChoices = $('.code_autocomplete li').length
-
-        if e.keyCode is 40
-          e.preventDefault()
-          autocompleteIndex = (autocompleteIndex + 1) % autocompleteChoices
-        else if e.keyCode is 38
-          e.preventDefault()
-          autocompleteIndex = (autocompleteIndex - 1).mod(autocompleteChoices)
-
-        $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected')
 
         processEditorChanges()
 
         return undefined
+
+  # complete clicked value from autocomplete list
+  $('.code_autocomplete li').live 'click', (e) ->
+    target = $(e.target)
+
+    autocompleteValue = target.text()
+
+    cursorPosition = editor.getCursor()
+
+    editor.replaceRange(autocompleteValue, cursorPosition)
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
@@ -81,7 +93,7 @@ window.createTextEditor = (options, file) ->
 
   # TODO get real autocomplete list from CoffeeScript parse tree
   getAutocompleteOptions = (currentToken, context) ->
-    return $ '<ul class=code_autocomplete><li>$</li><li>PixieCanvas</li><li>window</li></ul>'
+    return $ '<ul class=code_autocomplete><li>$</li><li>PixieCanvas</li><li>window</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li></ul>'
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->
