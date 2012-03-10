@@ -16,24 +16,33 @@ $inner_margin: 14px
 
   background-color: #f9f9f9
   border: 1px solid rgba(0, 0, 0, 0.3)
-  color: black
+  color: #333
   cursor: pointer
   font-family: Monaco, monospace
   font-size: 11px
   max-height: 200px
+  overflow-x: hidden
   overflow-y: auto
-  padding-right: 1em
   position: absolute
 
-
   li
-    padding: 0 0.3em
+    border-bottom: 1px solid transparent
+    border-top: 1px solid transparent
+    padding-left: 0.3em
+    padding-right: 1.5em
 
     &.selected
-      background-color: rgba(0, 0, 0, 0.1)
+      background-color: #B9D0E4
 
     &:hover
-      border-bottom: rgba(0, 0, 0, 0.2)
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2)
+      border-top: 1px solid rgba(0, 0, 0, 0.2)
+
+      &:first-child
+        border-top: 1px solid transparent
+
+      &:last-child
+        border-bottom: 1px solid transparent
 
 .static-chrome_webstore, .static-zip, .static-embed
   margin: auto
