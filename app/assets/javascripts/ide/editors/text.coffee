@@ -22,6 +22,9 @@ window.createTextEditor = (options, file) ->
     textWrapping: false
     onKeyEvent: (editor, e) ->
       if e.type is "keydown"
+        if e.keyCode is 27
+          $('.code_autocomplete').remove()
+
         if $('.code_autocomplete').length and (e.keyCode is 13 or e.keyCode is 9)
           e.preventDefault()
           e.stopPropagation()
@@ -32,6 +35,8 @@ window.createTextEditor = (options, file) ->
 
           # TODO use this to get previous token to pass into `getAutocompleteOptions`
           #editor.coordsChar(editor.cursorCoords())
+
+          $('.code_autocomplete').remove()
 
           return false
 
