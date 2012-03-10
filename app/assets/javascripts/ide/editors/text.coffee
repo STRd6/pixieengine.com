@@ -37,7 +37,7 @@ window.createTextEditor = (options, file) ->
             e.preventDefault()
             autocompleteIndex = (autocompleteIndex - 1).mod(autocompleteChoices)
 
-          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected')
+          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected').get(0).scrollIntoView(false)
 
           # enter the autocomplete value
           if e.keyCode is 13 or e.keyCode is 9
@@ -64,7 +64,7 @@ window.createTextEditor = (options, file) ->
             top: "#{cursorPos.yBot}px"
           ).appendTo $('body')
 
-          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected')
+          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected').get(0).scrollIntoView(false)
 
         processEditorChanges()
 
@@ -93,7 +93,12 @@ window.createTextEditor = (options, file) ->
 
   # TODO get real autocomplete list from CoffeeScript parse tree
   getAutocompleteOptions = (currentToken, context) ->
-    return $ '<ul class=code_autocomplete><li>$</li><li>PixieCanvas</li><li>window</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li><li>Stuff</li></ul>'
+    output = $ '<ul class=code_autocomplete></ul>'
+
+    for suggestion in ['$', 'PixieCanvas', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff']
+      output.append "<li>#{suggestion}</li>"
+
+    return output
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->
