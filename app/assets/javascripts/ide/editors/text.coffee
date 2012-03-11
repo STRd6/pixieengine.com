@@ -29,13 +29,14 @@ window.createTextEditor = (options, file) ->
     textWrapping: false
     onKeyEvent: (editor, e) ->
       if e.type is "keydown"
-        # remove the autocomplete dialog on pressing escape
-        if e.keyCode is 27
+        if e.ctrlKey and e.keyCode is 32
+          autocomplete.show()
+
+        # hide the autocomplete dialog on pressing escape
+        if e.keyCode is 27 or e.keyCode is 37
           e.preventDefault()
 
           autocomplete.hide()
-
-          return true
 
         if $(autocomplete.el).is(':visible')
           # update the autocomplete dialog on pressing up and down
@@ -45,6 +46,7 @@ window.createTextEditor = (options, file) ->
             autocompleteModel.incrementSelected()
 
             return true
+
           else if e.keyCode is 38
             e.preventDefault()
 
@@ -60,14 +62,17 @@ window.createTextEditor = (options, file) ->
 
             return true
 
+        return false
+
       if e.type is "keyup"
         cursorPos = editor.cursorCoords()
 
         currentToken = editor.getTokenAt(editor.coordsChar(cursorPos)).string
 
-        autocompleteModel.filteredSuggestions(currentToken)
+        autocompleteModel.filterSuggestions(currentToken)
+        autocomplete.render()
 
-        if (e.ctrlKey and e.keyCode is 32) or e.keyCode is 190
+        if e.keyCode is 190
           autocomplete.show()
 
         processEditorChanges()

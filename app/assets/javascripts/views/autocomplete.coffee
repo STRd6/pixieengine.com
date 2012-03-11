@@ -41,18 +41,24 @@ namespace "Pixie.Views", (Views) ->
       @_insertSuggestion(autocompleteValue)
 
     render: =>
-      @$('li').remove()
+      if @editor
+        @$('li').remove()
 
-      {selectedOption, suggestions} = @model.attributes
+        {selectedOption, suggestions} = @model.attributes
 
-      for suggestion in suggestions.sort()
-        $(@el).append "<li>#{suggestion}</li>"
+        cursorPosition = @editor.getCursor()
+        currentToken = @editor.getTokenAt(@editor.coordsChar(cursorPosition)).string
 
-      @$('li').eq(selectedOption).takeClass('selected').get(0).scrollIntoView(false)
+        console.log @model.get('filteredSuggestions')
 
-      $(@el).css
-        left: @currentPosition.x
-        top: @currentPosition.yBot
+        for suggestion in @model.get('filteredSuggestions')
+          $(@el).append "<li>#{suggestion}</li>"
+
+        @$('li').eq(selectedOption).takeClass('selected').get(0).scrollIntoView(false)
+
+        $(@el).css
+          left: @currentPosition.x
+          top: @currentPosition.yBot
 
       return @
 

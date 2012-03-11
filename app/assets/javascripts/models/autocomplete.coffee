@@ -1,31 +1,36 @@
 namespace "Pixie.Models", (Models) ->
   class Models.Autocomplete extends Backbone.Model
     defaults:
-      suggestions: ["$", "_", "pixieCanvas", "times", "first", "last", "each", "map", "indexOf", "includes"]
+      suggestions: ["$", "_", "pixieCanvas", "times", "timer", "time",  "first", "last", "each", "map", "indexOf", "includes"]
+      filteredSuggestions: ["$", "_", "pixieCanvas", "times", "timer", "time", "first", "last", "each", "map", "indexOf", "includes"]
       selectedOption: 0
 
     decrementSelected: =>
       @_shiftSelected(-1)
 
-    filteredSuggestions: (currentToken) =>
+    filterSuggestions: (currentToken) =>
       {suggestions} = @attributes
-      loweredToken = currentToken.toLowerCase()
 
-      return suggestions.map (suggestion) ->
-        loweredSuggestion = suggestion.toLowerCase()
+      return suggestions.sort() if currentToken is '.'
 
-        suggestion unless loweredSuggestion.indexOf(loweredToken) is -1
+      currentToken = currentToken.replace('.', '')
+
+      matches = suggestions.map (suggestion) ->
+        suggestion if suggestion.indexOf(currentToken) is 0
+
+      @set
+        filteredSuggestions: matches.compact().sort()
 
     incrementSelected: =>
       @_shiftSelected(+1)
 
     _shiftSelected: (value) =>
-      {editor, selectedOption} = @attributes
+      {editor, filteredSuggestions, selectedOption} = @attributes
 
       cursorPosition = editor.getCursor()
 
       currentToken = editor.getTokenAt(editor.coordsChar(cursorPosition)).string
 
       @set
-        selectedOption: (selectedOption + value).mod(@filteredSuggestions(currentToken).length)
+        selectedOption: (selectedOption + value).mod(filteredSuggestions.length)
 
