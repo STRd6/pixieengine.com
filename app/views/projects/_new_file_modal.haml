@@ -34,11 +34,11 @@
   .details{:style => "display: none;"}
     %label
       Name
-      = text_field_tag :name, "", {:title => 'Name', :id => nil}
+      = text_field_tag :name, "", {:title => 'Name', :id => nil, :"tip" => 'There is already a file with this name. Files in the same directory must have different names.'}
 
     .fields
 
-    %button.create Create
+    %button.create(disabled='disabled') Create
 
 = render :partial => "file_template"
 
