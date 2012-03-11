@@ -65,7 +65,15 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     removeEntityView: (entity) =>
       @$(".entities .entity[data-cid=#{entity.cid}]").remove()
 
+    editEntity: (event) =>
+      @options.settings.editEntity?(@settings.get 'activeEntity')
+
+    newEntity: (event) =>
+      @options.settings.newEntity?()
+
     events:
       mousedown: "preventDefault"
       "click .entity": "activateEntity"
       "click button.remove": "removeEntity"
+      "dblclick .entity": "editEntity"
+      "click button.new": "newEntity"

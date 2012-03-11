@@ -76,7 +76,7 @@
           addWarnings target
           $('#new_file_modal .create').attr 'disabled', 'disabled'
 
-    newFileModal = ->
+    window.newFileModal = ->
       $("#new_file_modal").modal
         onClose: ->
           $('#new_file_modal input[name="name"]').tipsy 'hide'

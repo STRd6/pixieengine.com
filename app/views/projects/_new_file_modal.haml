@@ -21,6 +21,14 @@
         {:type => "sound", :directory => "sounds", :extension => "sfs"},
         {}
       ],
+      ["Entity",
+        {:type => "entity", :directory => "entities", :extension => "entity"},
+        {}
+      ],
+      ["Tilemap",
+        {:type => "tilemap", :directory => "tilemaps", :extension => "tilemap"},
+        {:tilesWide => 15, :tilesTall => 10, :tileWidth => 32, :tileHeight => 32}
+      ],
     ]
 
   - choices.each do |choice, params, fields|
