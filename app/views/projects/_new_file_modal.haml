@@ -108,7 +108,10 @@
 
       file = newFileNode($.extend(formData, params))
 
-      $.modal.close()
+      # Don't close the modal unless we've created a file.
+      # Fixes bug where the modal closes with a blank name.
+      if file
+        $.modal.close()
 
     $("#new_file_modal input").live 'keydown', (event) ->
       if event.which is 13
