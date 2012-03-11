@@ -14,8 +14,12 @@ window.createTextEditor = (options, file) ->
 
   autocompleteIndex = 0
 
-  window.autocomplete = new Pixie.Views.Autocomplete
-    model: new Pixie.Models.Autocomplete
+  autocompleteModel = new Pixie.Models.Autocomplete
+  autocomplete = new Pixie.Views.Autocomplete
+    model: autocompleteModel
+
+  unless $('.code_autocomplete').length
+    $(autocomplete.render().el).appendTo $('body')
 
   editor = new CodeMirror.fromTextArea textArea,
     autoMatchParens: true
@@ -27,66 +31,52 @@ window.createTextEditor = (options, file) ->
       if e.type is "keydown"
         # remove the autocomplete dialog on pressing escape
         if e.keyCode is 27
-          $('.code_autocomplete').remove()
+          e.preventDefault()
 
-        if $('.code_autocomplete').length
+          autocomplete.hide()
+
+          return true
+
+        if $(autocomplete.el).is(':visible')
           # update the autocomplete dialog on pressing up and down
-          autocompleteChoices = $('.code_autocomplete li').length
-
           if e.keyCode is 40
             e.preventDefault()
-            autocompleteIndex = (autocompleteIndex + 1) % autocompleteChoices
+
+            autocompleteModel.incrementSelected()
+
+            return true
           else if e.keyCode is 38
             e.preventDefault()
-            autocompleteIndex = (autocompleteIndex - 1).mod(autocompleteChoices)
 
-          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected').get(0).scrollIntoView(false)
+            autocompleteModel.decrementSelected()
+
+            return true
 
           # enter the autocomplete value
-          if e.keyCode is 13 or e.keyCode is 9
+          if e.keyCode is 13 or e.keyCode is 9 or e.keyCode is 39
             e.preventDefault()
-            e.stopPropagation()
 
-            cursorPosition = editor.getCursor()
+            autocomplete.returnSuggestion()
 
-            editor.replaceRange($('.code_autocomplete li.selected').text(), cursorPosition)
-
-            $('.code_autocomplete').remove()
-
-            return false
+            return true
 
       if e.type is "keyup"
         cursorPos = editor.cursorCoords()
 
         currentToken = editor.getTokenAt(editor.coordsChar(cursorPos)).string
 
-        # Syde FX :-X
-        filterSuggestions(currentToken, $('.code_autocomplete li'))
+        autocompleteModel.filteredSuggestions(currentToken)
 
         if (e.ctrlKey and e.keyCode is 32) or e.keyCode is 190
-          $('.code_autocomplete').remove()
-          getAutocompleteSuggestions(currentToken).css(
-            left: "#{cursorPos.x}px"
-            top: "#{cursorPos.yBot}px"
-          ).appendTo $('body')
-
-          $('.code_autocomplete li').eq(autocompleteIndex).takeClass('selected').get(0).scrollIntoView(false)
+          autocomplete.show()
 
         processEditorChanges()
 
         return undefined
 
-  window.autocomplete.editor = editor
-
-  # complete clicked value from autocomplete list
-  $('.code_autocomplete li').live 'click', (e) ->
-    target = $(e.target)
-
-    autocompleteValue = target.text()
-
-    cursorPosition = editor.getCursor()
-
-    editor.replaceRange(autocompleteValue, cursorPosition)
+  autocomplete.editor = editor
+  autocompleteModel.set
+    editor: editor
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
@@ -94,23 +84,6 @@ window.createTextEditor = (options, file) ->
   , 100
 
   $editor = $(editor)
-
-  # document click event to close autocomplete menu
-  $(document).click (e) ->
-    $('.code_autocomplete').remove() unless $(e.target).is('.code_autocomplete')
-
-  filterSuggestions = (currentToken, suggestions) ->
-    suggestions.each (index, suggestion) ->
-      $(suggestion).remove() if $(suggestion).text().toLowerCase().indexOf(currentToken.toLowerCase()) is -1
-
-  # TODO get real autocomplete list from CoffeeScript parse tree
-  getAutocompleteSuggestions = (currentToken, context) ->
-    output = $ '<ul class=code_autocomplete></ul>'
-
-    for suggestion in ['$', 'PixieCanvas', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff', 'Stuff']
-      output.append "<li>#{suggestion}</li>"
-
-    return output
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->
