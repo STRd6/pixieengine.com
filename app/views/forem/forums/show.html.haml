@@ -1,8 +1,3 @@
-%style
-  :sass
-    .pages
-      display: inline-block
-
 - @title = @forum.title
 - @meta_desc = @forum.description
 
@@ -10,7 +5,9 @@
 
 - if @topics.num_pages > 1
   .pages
-    = forem_paginate @topics
+    = t('forem.common.pages')
+    \:
+    = paginate @topics
 
 %table.topics.subdued(cellspacing=0)
   %thead

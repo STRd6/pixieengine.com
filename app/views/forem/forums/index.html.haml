@@ -1,9 +1,0 @@
-#forums_container
-  %h2= t('.title')
-
-  - @categories.each do |category|
-    = render "forem/forums/listing", :category => category
-
-%div#admin_link
-  - if forem_admin?
-    = link_to t("area", :scope => "forem.admin"), admin_root_path

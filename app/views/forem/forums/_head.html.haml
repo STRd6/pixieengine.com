@@ -1,10 +1,10 @@
 #forum
-  %h1(style='display: inline-block;margin: 0;vertical-align: middle;margin-right: 0.5em;')
+  %h1
     = link_to t('forem.forum.forums'), forums_path
     &raquo;
     = link_to forum.title, forum
 
-  %menu(style='display: inline-block;vertical-align: middle;')
+  %menu
     - unless @topic.try(:new_record?)
       = link_to t('forem.topic.links.new'), new_forum_topic_path(forum), :class => "button"
 

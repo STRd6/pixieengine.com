@@ -1,17 +1,10 @@
-%style
-  :sass
-    .pages
-      display: inline-block
-
 - @title = @topic.subject
 - @meta_desc = @posts.first.text
 
 #topic{ :class => ( @topic.locked? ? 'locked' : 'unlocked' ) }
   = render :partial => 'forem/topics/head', :locals => { :topic => @topic }
 
-  .pages
-    = forem_paginate @posts
-
+  = paginate @posts
   %table#posts.subdued
     %tbody
       = render :partial => "forem/posts/post", :collection => @posts
