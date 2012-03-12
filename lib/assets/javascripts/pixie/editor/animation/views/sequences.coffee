@@ -4,6 +4,8 @@
 
 #= require pixie/view
 
+#= require pixie/editor/animation/models/sequence
+
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   class Views.Sequences extends Pixie.View
     tagName: 'nav'
