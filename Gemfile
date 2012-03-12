@@ -25,7 +25,7 @@ gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
 gem "delayed_job", "2.1.4"
 gem 'evergreen', :require => 'evergreen/rails'
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
-gem 'forem', :git => "git://github.com/radar/forem.git"
+gem 'forem', :git => "git://github.com/radar/forem.git", :ref => "cd49c2926d3a7e2bf2b5b556f956584d4426a3d4"
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
