@@ -1,18 +1,14 @@
 require '/assets/pixie/editor/animation/views/editor.js'
+require '/assets/pixie/editor/animation/models/sequence.js'
 
 describe "Animation Editor", ->
   beforeEach ->
-    @clock = sinon.useFakeTimers()
-
     @view = new Pixie.Editor.Animation.Views.Editor
 
     $('#test').append(@view.el)
 
     @model = new Backbone.Model
       frames: []
-
-  afterEach ->
-    @clock.restore()
 
   describe "initialization", ->
     it "should set up the editor DOM with the correct toolbar areas", ->

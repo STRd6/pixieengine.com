@@ -1,3 +1,4 @@
+require '/assets/pixie/editor/animation/views/editor.js'
 require '/assets/pixie/editor/animation/views/tileset.js'
 
 beforeEach ->

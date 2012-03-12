@@ -7,11 +7,14 @@ namespace "Pixie.Views", (Views) ->
       'click li': 'clickSuggestion'
 
     initialize: ->
-      #$(document).click (e) =>
-      #  @hide() unless $(e.target).is('.code_autocomplete')
+      $(document).click (e) =>
+        @hide() unless $(e.target).is('.code_autocomplete')
 
       @model.bind 'change:selectedOption', (model, selectedOption) =>
-        @$('li').eq(selectedOption || 0).takeClass('selected').get(0).scrollIntoView(false)
+        @$('li').eq(selectedOption).takeClass('selected')
+
+        if (selected = @$('li.selected')).length
+          selected.get(0).scrollIntoView(false)
 
       @currentPosition =
         x: 0
@@ -27,6 +30,9 @@ namespace "Pixie.Views", (Views) ->
 
     hide: =>
       $(@el).hide()
+
+      @model.set
+        selectedOption: 0
 
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
@@ -55,13 +61,15 @@ namespace "Pixie.Views", (Views) ->
 
         {selectedOption, suggestions} = @model.attributes
 
-        cursorPosition = @editor.getCursor()
-        currentToken = @editor.getTokenAt(cursorPosition).string.replace('.', '')
+        currentToken = @model.getCurrentToken()
 
         for suggestion in @model.get('filteredSuggestions')
           $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
 
-        @$('li').eq(selectedOption || 0).takeClass('selected').get(0).scrollIntoView(false)
+        @$('li').eq(selectedOption).takeClass('selected')
+
+        if (selected = @$('li.selected')).length
+          selected.get(0).scrollIntoView(false)
 
         $(@el).css
           left: @currentPosition.x
@@ -70,6 +78,13 @@ namespace "Pixie.Views", (Views) ->
       return @
 
     show: =>
-      @currentPosition = @editor.cursorCoords()
+      currentToken = @model.getCurrentToken()
+
+      cursorPosition = @editor.getCursor()
+      cursorPosition.ch = cursorPosition.ch - currentToken.length
+
+      @currentPosition = @editor.charCoords(cursorPosition)
 
       $(@el).show()
+
+      @render()

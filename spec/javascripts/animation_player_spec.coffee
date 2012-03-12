@@ -1,8 +1,13 @@
 require '/assets/pixie/editor/animation/models/player.js'
+require '/assets/pixie/editor/animation/models/sequence.js'
+require '/assets/pixie/editor/animation/models/settings.js'
 
 beforeEach ->
   @model = new Pixie.Editor.Animation.Models.AnimationPlayer
   @clock = sinon.useFakeTimers()
+
+afterEach ->
+  @clock.restore()
 
 describe "AnimationPlayer", ->
   it "should set the correct default values", ->
@@ -68,39 +73,32 @@ describe "AnimationPlayer", ->
       @model.set
         fps: 30
 
-      callCount = 0
-
-      # HAX: use spies to test this for real by checking to see that @model.get('frames').nextFrame has been called 30 times
-      @model.get('settings').bind 'change:selected', ->
-        callCount++
+      nextFrameSpy = sinon.spy(@model, 'nextFrame')
 
       @model.play()
 
       @clock.tick(1001)
 
-      expect(callCount).toEqual(30)
+      expect(nextFrameSpy.callCount).toEqual(30)
 
     it "should advance the frame the correct number of times after changing the frame rate", ->
       @model.set
         fps: 30
 
-      callCount = 0
-
-      @model.get('settings').bind 'change:selected', ->
-        callCount++
+      nextFrameSpy = sinon.spy(@model, 'nextFrame')
 
       @model.play()
 
       @clock.tick(1001)
 
-      expect(callCount).toEqual(30)
+      expect(nextFrameSpy.callCount).toEqual(30)
 
       @model.set
         fps: 60
 
-      callCount = 0
+      nextFrameSpy.reset()
 
       @clock.tick(1001)
 
-      expect(callCount).toEqual(60)
+      expect(nextFrameSpy.callCount).toEqual(60)
 

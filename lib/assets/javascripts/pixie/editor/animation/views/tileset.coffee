@@ -34,7 +34,6 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @$('.sprites').append img
 
     loadSpriteSheet: (src, rows, columns, loadedCallback) ->
-      debugger
       canvas = $('<canvas>').get(0)
       context = canvas.getContext('2d')
 

@@ -5,6 +5,13 @@ namespace "Pixie.Models", (Models) ->
       filteredSuggestions: ["$", "_", "pixieCanvas", "times", "timer", "time", "first", "last", "each", "map", "indexOf", "includes"]
       selectedOption: 0
 
+    getCurrentToken: =>
+      {editor} = @attributes
+
+      cursorPosition = editor.getCursor()
+
+      return editor.getTokenAt(cursorPosition).string.replace('.', '')
+
     decrementSelected: =>
       @_shiftSelected(-1)
 

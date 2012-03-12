@@ -1,3 +1,5 @@
+#= require pixie/editor/animation/models/sequence
+
 #= require tmpls/editors/animation/sequences
 
 #= require pixie/view
