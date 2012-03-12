@@ -30,7 +30,12 @@ window.createTextEditor = (options, file) ->
     onKeyEvent: (editor, e) ->
       if e.type is "keydown"
         if e.ctrlKey and e.keyCode is 32
-          autocomplete.show()
+          filteredSuggestions = autocompleteModel.get('filteredSuggestions')
+
+          if filteredSuggestions.length is 1
+            autocomplete._insertSuggestion(filteredSuggestions.first())
+          else
+            autocomplete.show()
 
         # hide the autocomplete dialog on pressing escape
         if e.keyCode is 27 or e.keyCode is 37
