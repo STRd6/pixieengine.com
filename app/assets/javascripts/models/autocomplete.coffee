@@ -34,6 +34,8 @@ namespace "Pixie.Models", (Models) ->
         @set
           filteredSuggestions: suggestions.copy().sort()
 
+      return currentToken
+
     incrementSelected: =>
       @_shiftSelected(+1)
 
