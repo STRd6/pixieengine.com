@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.3'
+gem 'rails', '3.1.4'
 
 group :assets do
   gem 'sass-rails', "~> 3.1.4"
@@ -42,7 +42,7 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
 gem 'therubyracer'
-gem "will_paginate", :git => "git://github.com/akitaonrails/will_paginate.git", :branch => "rails3.1"
+gem "will_paginate", '3.0.3'
 gem "whenever"
 
 group :test do
