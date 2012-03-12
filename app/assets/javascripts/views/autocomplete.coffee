@@ -7,11 +7,11 @@ namespace "Pixie.Views", (Views) ->
       'click li': 'clickSuggestion'
 
     initialize: ->
-      $(document).click (e) =>
-        @hide() unless $(e.target).is('.code_autocomplete')
+      #$(document).click (e) =>
+      #  @hide() unless $(e.target).is('.code_autocomplete')
 
       @model.bind 'change:selectedOption', (model, selectedOption) =>
-        @$('li').eq(selectedOption).takeClass('selected').get(0).scrollIntoView(false)
+        @$('li').eq(selectedOption || 0).takeClass('selected').get(0).scrollIntoView(false)
 
       @currentPosition =
         x: 0
@@ -30,7 +30,16 @@ namespace "Pixie.Views", (Views) ->
 
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
+      currentToken = @editor.getTokenAt(cursorPosition).string.replace('.', '')
 
+      # Selecting the current token in order to delete it before inserting
+      # suggestion. There has to be a better way to do this.
+      @editor.setSelection(
+        line: cursorPosition.line
+        ch: cursorPosition.ch - currentToken.length
+      , cursorPosition)
+
+      @editor.replaceSelection('')
       @editor.replaceRange(suggestion, cursorPosition)
 
       @hide()
@@ -47,14 +56,12 @@ namespace "Pixie.Views", (Views) ->
         {selectedOption, suggestions} = @model.attributes
 
         cursorPosition = @editor.getCursor()
-        currentToken = @editor.getTokenAt(@editor.coordsChar(cursorPosition)).string
-
-        console.log @model.get('filteredSuggestions')
+        currentToken = @editor.getTokenAt(cursorPosition).string.replace('.', '')
 
         for suggestion in @model.get('filteredSuggestions')
-          $(@el).append "<li>#{suggestion}</li>"
+          $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
 
-        @$('li').eq(selectedOption).takeClass('selected').get(0).scrollIntoView(false)
+        @$('li').eq(selectedOption || 0).takeClass('selected').get(0).scrollIntoView(false)
 
         $(@el).css
           left: @currentPosition.x
@@ -65,4 +72,4 @@ namespace "Pixie.Views", (Views) ->
     show: =>
       @currentPosition = @editor.cursorCoords()
 
-      $(@render().el).show()
+      $(@el).show()

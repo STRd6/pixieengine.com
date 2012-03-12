@@ -11,15 +11,21 @@ namespace "Pixie.Models", (Models) ->
     filterSuggestions: (currentToken) =>
       {suggestions} = @attributes
 
-      return suggestions.sort() if currentToken is '.'
+      if currentToken is '.'
+        @set
+          filteredSuggestions: suggestions.sort()
 
       currentToken = currentToken.replace('.', '')
 
       matches = suggestions.map (suggestion) ->
         suggestion if suggestion.indexOf(currentToken) is 0
 
-      @set
-        filteredSuggestions: matches.compact().sort()
+      if matches.length
+        @set
+          filteredSuggestions: matches.compact().sort()
+      else
+        @set
+          filteredSuggestions: suggestions.copy().sort()
 
     incrementSelected: =>
       @_shiftSelected(+1)
