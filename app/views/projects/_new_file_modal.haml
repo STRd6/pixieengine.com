@@ -21,6 +21,14 @@
         {:type => "sound", :directory => "sounds", :extension => "sfs"},
         {}
       ],
+      ["Entity",
+        {:type => "entity", :directory => "entities", :extension => "entity"},
+        {}
+      ],
+      ["Tilemap",
+        {:type => "tilemap", :directory => "tilemaps", :extension => "tilemap"},
+        {:tilesWide => 15, :tilesTall => 10, :tileWidth => 32, :tileHeight => 32}
+      ],
     ]
 
   - choices.each do |choice, params, fields|
@@ -34,11 +42,11 @@
   .details{:style => "display: none;"}
     %label
       Name
-      = text_field_tag :name, "", {:title => 'Name', :id => nil}
+      = text_field_tag :name, "", {:title => 'Name', :id => nil, :"tip" => 'There is already a file with this name. Files in the same directory must have different names.'}
 
     .fields
 
-    %button.create Create
+    %button.create(disabled='disabled') Create
 
 = render :partial => "file_template"
 
@@ -108,7 +116,10 @@
 
       file = newFileNode($.extend(formData, params))
 
-      $.modal.close()
+      # Don't close the modal unless we've created a file.
+      # Fixes bug where the modal closes with a blank name.
+      if file
+        $.modal.close()
 
     $("#new_file_modal input").live 'keydown', (event) ->
       if event.which is 13

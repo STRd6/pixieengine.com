@@ -50,10 +50,6 @@ class User < ActiveRecord::Base
     where("last_request_at >= ?", Time.zone.now - 15.minutes)
   }
 
-  scope :find_by_display_name_or_email_fragment, lambda { |display_name|
-    where "display_name = ? OR (split_part(email, '@', 1) = ? AND display_name IS NULL)", display_name, display_name
-  }
-
   scope :search, lambda{ |search|
     return {} if search.blank?
 

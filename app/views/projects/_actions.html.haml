@@ -34,9 +34,53 @@
 
 - content_for :javascript do
   :coffeescript
+    normalizeFileName = (name) ->
+      return name.toLowerCase().replace(/\s/g, '').replace(/[^A-Za-z0-9\s]/g, '')
 
-    newFileModal = () ->
+    addWarnings = (element) ->
+      element.tipsy
+        gravity: 'w'
+        trigger: 'manual'
+        title: 'tip'
+
+      element.tipsy 'show'
+      element.css
+        border: '1px solid red'
+
+    removeWarnings = (element) ->
+      element.tipsy 'hide'
+      element.css
+        border: '1px solid rgb(170, 170, 170)'
+
+    # on keyup check to see if a file with the same name exists
+    $('#new_file_modal input[name="name"]').keyup (e) ->
+      target = $(e.currentTarget)
+      value = target.val()
+
+      directory = $('#new_file_modal button.active').data('params')['directory']
+
+      aliasedDirectory = projectConfig.directories[directory]
+
+      directory = tree.getDirectory(aliasedDirectory).first()
+
+      removeWarnings target
+      $('#new_file_modal .create').removeAttr 'disabled'
+
+      if directory
+        matchingFiles = directory.collection.select (file) ->
+          # make sure the file names are really different, they
+          # shouldn't be considered different if they only differ
+          # in capitalization, non alphanumeric characters, or whitespace
+          return normalizeFileName(file.get('name')) is normalizeFileName(value)
+        if matchingFiles.length
+          addWarnings target
+          $('#new_file_modal .create').attr 'disabled', 'disabled'
+
+    window.newFileModal = ->
       $("#new_file_modal").modal
+        onClose: ->
+          $('#new_file_modal input[name="name"]').tipsy 'hide'
+          $.modal.close()
         onShow: (modal) ->
           $(modal.container).css
             height: 'auto'

@@ -33,9 +33,12 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       ]
 
       # External entities list must be passed in as options
-      @entityList = @options.entityList
+      @entityList = @options.entityList || new Models.EntityList([])
 
       @settings = new Models.Settings
+
+      @settings.editEntity = @options.editEntity
+      @settings.newEntity = @options.newEntity
 
       @resetActiveObjects()
 

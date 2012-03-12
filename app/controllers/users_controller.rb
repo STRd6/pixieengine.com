@@ -1,4 +1,8 @@
 class UsersController < ApplicationController
+  # this is no longer included in will_paginate core and we need it since
+  # Project#editable is custom SQL rather than a scope and returns an array
+  # instead of an ActiveRecord Relation.
+  require 'will_paginate/array'
   respond_to :html, :json
 
   before_filter :require_user, :only => [:install_plugin]

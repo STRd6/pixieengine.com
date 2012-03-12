@@ -59,9 +59,4 @@ FactoryGirl.define do
     user
     association :group, :factory => :project
   end
-
-  factory :post, :class => Forem::Post do
-    user
-    text "A test post"
-  end
 end

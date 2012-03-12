@@ -2,59 +2,48 @@ $ ->
   window.entities = new Pixie.Editor.Tile.Models.EntityList()
 
   # Populate initial entities
-  $('ul.filetree [data-type=entity]').each ->
-    $this = $(this)
-    fileNode = $this.prev()
+  tree.flatten().each (file) ->
+    return unless file.get("extension") is "entity"
 
-    uuid = fileNode.text().replace(/\.[^\.]*$/, '')
-    entityData = $this.find("[name=contents]").text().parse()
+    entityData = file.get("contents").parse()
 
-    entityData.uuid = uuid
-
-    if name = entityData.name
-      fileNode.text(name)
-      $this.attr('data-name', name)
-      $this.attr('data-uuid', uuid)
+    # TODO: Make sure entities get created with uuids to prevent
+    # collisions from multiple people making the same file name
+    # and importing/merging projects
+    #
+    # In the meantime just treat the file name as the uuid
+    # because within a single project the file name must be
+    # unique
+    entityData.uuid ||= file.get("name")
 
     window.entities.add entityData
 
-  # Bind a listener for new entities to create entity files
-  entities.bind "add", (entity) ->
-    uuid = entity.get "uuid"
-    displayName = entity.get("name") || uuid
-
-    dataString = JSON.stringify(entity)
-
-    # Create entity file node
-    filePath = projectConfig.directories["entities"]
-    newNode = newFileNode
-      name: uuid
-      displayName: displayName
-      type: "entity"
-      ext: "entity"
-      path: filePath
-      contents: dataString
-      noAutoOpen: true
-      forceSave: true
-
-    notify("Added #{displayName} into entities.")
-
-window.createTilemapEditor = (options) ->
+window.createTilemapEditor = (options, file) ->
+  {path, contents} = file.attributes
   panel = options.panel
 
-  panel.find('form').hide()
   panel.find('.tile_editor, .pixie').remove()
 
   try
-    data = JSON.parse(panel.find("[name=contents]").val())
+    data = JSON.parse(contents)
   catch e
     ;
 
   editorOptions = $.extend panel.data("options"),
     data: data
 
-    editEntity: (uuid) ->
-      $("ul.filetree [title=#{uuid}] span").click()
+    editEntity: (entity) ->
+      # Assume uuid is file name
+      if entityFile = tree.getFile(entity.get('uuid')).filter (file) ->
+        file.get("extension") is "entity"
+      .first()
+        openFile(entityFile)
+
+    newEntity: ->
+      newFileModal()
+      setTimeout ->
+        $("#new_file_modal button:contains(Entity)").click()
+      , 15
 
     entityList: window.entities
 
@@ -63,11 +52,14 @@ window.createTilemapEditor = (options) ->
   saveAction = ->
     dataString = JSON.stringify(tileEditor)
 
-    panel.find("[name=contents]").val(dataString)
+    file.set
+      contents: dataString
 
     saveFile
       contents: dataString
-      path: options.path
+      path: path
+
+    tileEditor.trigger 'clean'
 
   tileEditor.bind 'save', saveAction
 
