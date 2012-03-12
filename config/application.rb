@@ -50,8 +50,6 @@ module PixieStrd6Com
       g.test_framework  :test_unit, :fixture => false
     end
 
-    config.active_record.observers = :post_observer
-
     config.assets.enabled = true
     config.generators.stylesheet_engine = :sass
 
