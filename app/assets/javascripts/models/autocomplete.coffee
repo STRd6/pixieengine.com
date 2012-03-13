@@ -8,8 +8,6 @@ namespace "Pixie.Models", (Models) ->
     getCurrentToken: =>
       {editor} = @attributes
 
-      debugger
-
       cursorPosition = editor.getCursor()
 
       return editor.getTokenAt(cursorPosition).string.replace('.', '')

@@ -70,9 +70,8 @@ window.createTextEditor = (options, file) ->
         return false
 
       if e.type is "keyup"
-        cursorPos = editor.cursorCoords()
-
-        currentToken = editor.getTokenAt(editor.coordsChar(cursorPos)).string
+        cursorPosition = editor.getCursor()
+        currentToken = editor.getTokenAt(cursorPosition).string
 
         autocompleteModel.filterSuggestions(currentToken)
         autocomplete.render()

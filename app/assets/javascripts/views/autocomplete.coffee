@@ -10,11 +10,8 @@ namespace "Pixie.Views", (Views) ->
       $(document).click (e) =>
         @hide() unless $(e.target).is('.code_autocomplete')
 
-      @model.bind 'change:selectedOption', (model, selectedOption) =>
-        @$('li').eq(selectedOption).takeClass('selected')
-
-        if (selected = @$('li.selected')).length
-          selected.get(0).scrollIntoView(false)
+      @model.bind 'change:selectedIndex', (model, selectedIndex) =>
+        @$('li').eq(selectedIndex).takeClass('selected')
 
       @currentPosition =
         x: 0
@@ -32,7 +29,7 @@ namespace "Pixie.Views", (Views) ->
       $(@el).hide()
 
       @model.set
-        selectedOption: 0
+        selectedIndex: 0
 
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
@@ -59,14 +56,14 @@ namespace "Pixie.Views", (Views) ->
       if @editor
         @$('li').remove()
 
-        {selectedOption, suggestions} = @model.attributes
+        {filteredSuggestions, selectedIndex, suggestions} = @model.attributes
 
         currentToken = @model.getCurrentToken()
 
-        for suggestion in @model.get('filteredSuggestions')
+        for suggestion in filteredSuggestions
           $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
 
-        @$('li').eq(selectedOption).takeClass('selected')
+        @$('li').eq(selectedIndex).takeClass('selected')
 
         if (selected = @$('li.selected')).length
           selected.get(0).scrollIntoView(false)
@@ -85,6 +82,7 @@ namespace "Pixie.Views", (Views) ->
 
       @currentPosition = @editor.charCoords(cursorPosition)
 
-      $(@el).show()
+      if @$('li').length
+        $(@el).show()
 
       @render()
