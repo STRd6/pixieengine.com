@@ -3,20 +3,25 @@ namespace "Pixie.Models", (Models) ->
     defaults:
       suggestions: ["$", "_", "pixieCanvas", "times", "timer", "time",  "first", "last", "each", "map", "indexOf", "includes"]
       filteredSuggestions: ["$", "_", "pixieCanvas", "times", "timer", "time", "first", "last", "each", "map", "indexOf", "includes"]
-      selectedOption: 0
+      selectedIndex: 0
 
     getCurrentToken: =>
       {editor} = @attributes
+
+      debugger
 
       cursorPosition = editor.getCursor()
 
       return editor.getTokenAt(cursorPosition).string.replace('.', '')
 
+    currentSuggestion: =>
+      @get('filteredSuggestions')[@get('selectedIndex')]
+
     decrementSelected: =>
       @_shiftSelected(-1)
 
     filterSuggestions: (currentToken) =>
-      {suggestions} = @attributes
+      {editor, suggestions} = @attributes
 
       if currentToken is '.'
         @set
@@ -34,18 +39,34 @@ namespace "Pixie.Models", (Models) ->
         @set
           filteredSuggestions: suggestions.copy().sort()
 
+      # ghosting currently selected suggestion
+      #currentSuggestion = @currentSuggestion()
+
+      #if currentSuggestion
+      #  cursorPosition = editor.getCursor()
+
+      #  editor.replaceRange(currentSuggestion.substring(currentToken.length - 1), cursorPosition)
+
+      #  cursorPosition = editor.getCursor()
+
+      #  editor.setSelection(
+      #    line: cursorPosition.line
+      #    ch: cursorPosition.ch - (currentSuggestion.length - currentToken.length)
+      #  , cursorPosition)
+      # end ghosting
+
       return currentToken
 
     incrementSelected: =>
       @_shiftSelected(+1)
 
     _shiftSelected: (value) =>
-      {editor, filteredSuggestions, selectedOption} = @attributes
+      {editor, filteredSuggestions, selectedIndex} = @attributes
 
       cursorPosition = editor.getCursor()
 
       currentToken = editor.getTokenAt(editor.coordsChar(cursorPosition)).string
 
       @set
-        selectedOption: (selectedOption + value).mod(filteredSuggestions.length)
+        selectedIndex: (selectedIndex + value).mod(filteredSuggestions.length)
 
