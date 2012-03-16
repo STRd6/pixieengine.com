@@ -27,6 +27,7 @@ window.createTextEditor = (options, file) ->
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
     editor.refresh()
+    editor.focus() # we also want to focus the editor
   , 100
 
   $editor = $(editor)
