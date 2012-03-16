@@ -224,6 +224,22 @@
         # Merge in default configs
         window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
 
+    # Autosave hack
+    setInterval ->
+      # Check project config autosave flag
+      if projectConfig?.autosave
+        unsavedTabs = $("#tabs ul li.unsaved")
+
+        # TODO: Possibly refactor into a 'save all unsaved tabs'
+        # this is slightly different than regular save because
+        # regular save has a hack to save the current tab if no unsaved tabs
+        # as a workaround for the sfx editor not setting dirty state correctly.
+        if unsavedTabs.length
+          # Save each unsaved tab
+          unsavedTabs.each ->
+            $(this).find('a').data('doSave')?()
+    , 2000
+
     # Tree and Tabs setup
     $ ->
       window.loadProjectConfig()
