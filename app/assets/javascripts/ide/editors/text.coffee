@@ -2,9 +2,6 @@ window.createTextEditor = (options, file) ->
   panel = options.panel
   {contents, id, language, path} = file.attributes
 
-  panel.append "<textarea name='contents' style='display:none;'>#{contents}</textarea>"
-
-  textArea = panel.find('textarea').get(0)
   savedCode = file.get 'contents'
 
   if language is "html"
@@ -12,9 +9,9 @@ window.createTextEditor = (options, file) ->
 
   language ||= "dummy"
 
-  editor = new CodeMirror.fromTextArea textArea,
+  editor = CodeMirror panel.get(0),
     autoMatchParens: true
-    content: savedCode
+    value: savedCode
     lineNumbers: true
     tabMode: "shift"
     textWrapping: false
@@ -40,8 +37,6 @@ window.createTextEditor = (options, file) ->
       $editor.trigger('clean')
     else
       $editor.trigger('dirty')
-
-    textArea.value = currentCode
 
   $editor.bind "save", ->
     codeToSave = editor.getValue()
