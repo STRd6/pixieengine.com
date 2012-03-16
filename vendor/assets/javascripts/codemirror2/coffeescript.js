@@ -274,7 +274,7 @@ CodeMirror.defineMode('coffeescript', function(conf) {
         }
         var delimiter_index = '[({'.indexOf(current);
         if (delimiter_index !== -1) {
-            indent(stream, state, '])}'.slice(delimiter_index, delimiter_index+1));
+            indent(stream, state);
         }
         if (indentKeywords.exec(current)){
             indent(stream, state);
