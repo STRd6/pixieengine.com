@@ -23,7 +23,7 @@ window.createTextEditor = (options, file) ->
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
-    editor.refresh()
+    editor.refresh(); editor.refresh() # Double refresh fixes the missing lines after 100
     editor.focus() # we also want to focus the editor
   , 100
 
