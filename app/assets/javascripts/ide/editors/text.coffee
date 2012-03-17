@@ -37,14 +37,14 @@ window.createTextEditor = (options, file) ->
           else
             autocomplete.show()
 
-        # hide the autocomplete dialog on pressing escape
+        # hide the autocomplete dialog by pressing escape
         if e.keyCode is 27 or e.keyCode is 37
           e.preventDefault()
 
           autocomplete.hide()
 
         if $(autocomplete.el).is(':visible')
-          # update the autocomplete dialog on pressing up and down
+          # update the autocomplete dialog by pressing up and down
           if e.keyCode is 40
             e.preventDefault()
 
@@ -70,10 +70,7 @@ window.createTextEditor = (options, file) ->
         return false
 
       if e.type is "keyup"
-        cursorPosition = editor.getCursor()
-        currentToken = editor.getTokenAt(cursorPosition).string
-
-        autocompleteModel.filterSuggestions(currentToken)
+        autocompleteModel.filterSuggestions()
         autocomplete.render()
 
         if e.keyCode is 190

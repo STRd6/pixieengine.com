@@ -10,7 +10,7 @@ namespace "Pixie.Models", (Models) ->
 
       cursorPosition = editor.getCursor()
 
-      return editor.getTokenAt(cursorPosition).string.replace('.', '')
+      return editor.getTokenAt(cursorPosition).string.replace(/[^\w]/g, '')
 
     currentSuggestion: =>
       @get('filteredSuggestions')[@get('selectedIndex')]
@@ -18,40 +18,30 @@ namespace "Pixie.Models", (Models) ->
     decrementSelected: =>
       @_shiftSelected(-1)
 
-    filterSuggestions: (currentToken) =>
+    filterSuggestions: =>
       {editor, suggestions} = @attributes
 
-      if currentToken is '.'
-        @set
-          filteredSuggestions: suggestions.sort()
+      currentToken = @getCurrentToken()
 
-      currentToken = currentToken.replace('.', '')
+      currentToken = currentToken.replace(/[^\w]/g, '')
+
+      debugger
+
+      if currentToken is ''
+        @set
+          filteredSuggestions: suggestions.copy().sort()
+
+        return currentToken
 
       matches = suggestions.map (suggestion) ->
         suggestion if suggestion.indexOf(currentToken) is 0
 
-      if matches.length
+      if matches.compact().length
         @set
           filteredSuggestions: matches.compact().sort()
       else
         @set
           filteredSuggestions: suggestions.copy().sort()
-
-      # ghosting currently selected suggestion
-      #currentSuggestion = @currentSuggestion()
-
-      #if currentSuggestion
-      #  cursorPosition = editor.getCursor()
-
-      #  editor.replaceRange(currentSuggestion.substring(currentToken.length - 1), cursorPosition)
-
-      #  cursorPosition = editor.getCursor()
-
-      #  editor.setSelection(
-      #    line: cursorPosition.line
-      #    ch: cursorPosition.ch - (currentSuggestion.length - currentToken.length)
-      #  , cursorPosition)
-      # end ghosting
 
       return currentToken
 

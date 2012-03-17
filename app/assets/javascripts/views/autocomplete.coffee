@@ -33,14 +33,14 @@ namespace "Pixie.Views", (Views) ->
 
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
-      currentToken = @editor.getTokenAt(cursorPosition).string.replace('.', '')
+      currentToken = @editor.getTokenAt(cursorPosition)
 
-      # Selecting the current token in order to delete it before inserting
-      # suggestion. There has to be a better way to do this.
-      @editor.setSelection(
-        line: cursorPosition.line
-        ch: cursorPosition.ch - currentToken.length
-      , cursorPosition)
+      if currentToken.string.length
+        offset = 1
+      else
+        offset = 0
+
+      @editor.setSelection({line: cursorPosition.line, ch: currentToken.start + offset}, {line: cursorPosition.line, ch: currentToken.end})
 
       @editor.replaceSelection('')
       @editor.replaceRange(suggestion, cursorPosition)
@@ -61,7 +61,10 @@ namespace "Pixie.Views", (Views) ->
         currentToken = @model.getCurrentToken()
 
         for suggestion in filteredSuggestions
-          $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
+          if suggestion.indexOf(currentToken) is 0
+            $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
+          else
+            $(@el).append "<li>#{suggestion}</li>"
 
         @$('li').eq(selectedIndex).takeClass('selected')
 
@@ -75,14 +78,13 @@ namespace "Pixie.Views", (Views) ->
       return @
 
     show: =>
-      currentToken = @model.getCurrentToken()
-
       cursorPosition = @editor.getCursor()
-      cursorPosition.ch = cursorPosition.ch - currentToken.length
+      currentToken = @editor.getTokenAt(@editor.getCursor())
 
-      @currentPosition = @editor.charCoords(cursorPosition)
+      @currentPosition = @editor.charCoords({line: cursorPosition.line, ch: currentToken.start + 1})
+
+      @render()
 
       if @$('li').length
         $(@el).show()
 
-      @render()
