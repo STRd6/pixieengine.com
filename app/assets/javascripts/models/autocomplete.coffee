@@ -18,23 +18,27 @@ namespace "Pixie.Models", (Models) ->
     decrementSelected: =>
       @_shiftSelected(-1)
 
+    # TODO fix autocomplete bug where going to a previous token doesn't filter propertly eg.
+    # `engine.start()` Right now, placing your cursor after engine. causes it to filter based on the token 'start'.
+    # The solution is to only use the substring between the start of the token (maybe +1 because of the period)
+    # and the cursor position. I think this should be usable across the board in the filter function.
     filterSuggestions: =>
       {editor, suggestions} = @attributes
 
-      currentToken = @getCurrentToken()
+      cursorPosition = editor.getCursor()
+      currentToken = editor.getTokenAt(cursorPosition)
+      line = cursorPosition.line
 
-      currentToken = currentToken.replace(/[^\w]/g, '')
+      currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/[^\w]/g, '')
 
-      debugger
-
-      if currentToken is ''
+      if currentString is ''
         @set
           filteredSuggestions: suggestions.copy().sort()
 
-        return currentToken
+        return currentString
 
       matches = suggestions.map (suggestion) ->
-        suggestion if suggestion.indexOf(currentToken) is 0
+        suggestion if suggestion.indexOf(currentString) is 0
 
       if matches.compact().length
         @set
@@ -43,7 +47,7 @@ namespace "Pixie.Models", (Models) ->
         @set
           filteredSuggestions: suggestions.copy().sort()
 
-      return currentToken
+      return currentString
 
     incrementSelected: =>
       @_shiftSelected(+1)

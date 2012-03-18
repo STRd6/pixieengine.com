@@ -29,6 +29,9 @@ window.createTextEditor = (options, file) ->
     textWrapping: false
     onKeyEvent: (editor, e) ->
       if e.type is "keydown"
+        cursorPosition = editor.getCursor()
+        line = cursorPosition.line
+
         if e.ctrlKey and e.keyCode is 32
           filteredSuggestions = autocompleteModel.get('filteredSuggestions')
 

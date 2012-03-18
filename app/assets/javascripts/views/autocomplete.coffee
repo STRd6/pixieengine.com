@@ -35,15 +35,25 @@ namespace "Pixie.Views", (Views) ->
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(cursorPosition)
 
-      if currentToken.string.length
+      line = cursorPosition.line
+
+      if currentToken.string[0] is '.'
         offset = 1
       else
         offset = 0
 
-      @editor.setSelection({line: cursorPosition.line, ch: currentToken.start + offset}, {line: cursorPosition.line, ch: currentToken.end})
+      if currentToken.string.replace(/[^\w]/g, '') is suggestion
+        selectionEnd = currentToken.end
+      else
+        selectionEnd = cursorPosition.ch
+
+      @editor.setSelection({line: line, ch: currentToken.start + offset}, {line: line, ch: selectionEnd})
 
       @editor.replaceSelection('')
-      @editor.replaceRange(suggestion, cursorPosition)
+
+      # need to get new cursor position since replacing
+      # the selection has moved it
+      @editor.replaceRange(suggestion, @editor.getCursor())
 
       @hide()
 
@@ -56,13 +66,17 @@ namespace "Pixie.Views", (Views) ->
       if @editor
         @$('li').remove()
 
-        {filteredSuggestions, selectedIndex, suggestions} = @model.attributes
+        {editor, filteredSuggestions, selectedIndex, suggestions} = @model.attributes
 
-        currentToken = @model.getCurrentToken()
+        cursorPosition = editor.getCursor()
+        line = cursorPosition.line
+
+        currentToken = editor.getTokenAt(cursorPosition)
+        currentString = editor.getRange({line: line, ch: currentToken.ch}, {line: line, ch: cursorPosition.ch})
 
         for suggestion in filteredSuggestions
           if suggestion.indexOf(currentToken) is 0
-            $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentToken.length)}</li>"
+            $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentString.length)}</li>"
           else
             $(@el).append "<li>#{suggestion}</li>"
 
@@ -81,7 +95,12 @@ namespace "Pixie.Views", (Views) ->
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(@editor.getCursor())
 
-      @currentPosition = @editor.charCoords({line: cursorPosition.line, ch: currentToken.start + 1})
+      if currentToken.string[0] is '.'
+        offset = 1
+      else
+        offset = 0
+
+      @currentPosition = @editor.charCoords({line: cursorPosition.line, ch: currentToken.start + offset})
 
       @render()
 
