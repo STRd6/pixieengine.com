@@ -55,14 +55,19 @@
       else # Or no rows
         addRow('', '')
 
-    fireChangedEvent = ->
+    fireChangedEvent = (e) ->
       try
         element.trigger("change", [object])
       catch error
         console?.error? error
 
+    processInputChanges = (e) ->
+      fireChangedEvent(e)
+
+      rowCheck()
+
     addBlurEvents = (keyInput, valueInput) ->
-      keyInput.blur ->
+      keyInput.bind 'blur keyup', (e) ->
         currentName = keyInput.val()
         previousName = keyInput.data("previousName")
 
@@ -74,13 +79,11 @@
 
           object[currentName] = valueInput.val()
 
-          fireChangedEvent()
+          processInputChanges(e)
 
-          rowCheck()
-
-      valueInput.blur ->
+      valueInput.bind 'blur keyup', (e) ->
         currentValue = valueInput.val().parse()
-        previousValue = valueInput.data("previousValue")
+        previousValue = valueInput.data("previousValue")?.parse()
 
         if currentValue != previousValue
           return unless key = keyInput.val()
@@ -88,9 +91,7 @@
           valueInput.data("previousValue", currentValue)
           object[key] = currentValue
 
-          fireChangedEvent()
-
-          rowCheck()
+          processInputChanges(e)
 
     addRow = (key, value, options={}) ->
       row = $ "<tr>"
@@ -138,6 +139,9 @@
       nestedEditor.bind "change", (event, changedNestedObject) ->
         event.stopPropagation()
         fireChangedEvent()
+
+      nestedEditor.delegate 'table', 'input', 'keyup', (event) ->
+        event.stopPropagation()
 
       return row.appendTo(element)
 
