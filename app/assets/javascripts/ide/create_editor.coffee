@@ -15,8 +15,16 @@ window.createEditor = (ui) ->
     # TODO: Only use backbone events
     editor.bind 'clean', ->
       tabParent.removeClass("unsaved")
-    editor.bind 'change', ->
-      tabParent.addClass("unsaved")
+
+    # big hack: In the json editor the browser fired a changed event when you
+    # tabbed out of a field after it had been saved. I'm not sure exactly why. Probably
+    # some internal state on the input element had changed. I hacked this in to prevent
+    # the browser from firing change events on the json editor. Instead the json editor
+    # only triggers 'dirty' events when it's state has changed.
+    unless type is 'json'
+      editor.bind 'change', (e) ->
+        tabParent.addClass("unsaved")
+
     editor.bind 'dirty', ->
       tabParent.addClass("unsaved")
 

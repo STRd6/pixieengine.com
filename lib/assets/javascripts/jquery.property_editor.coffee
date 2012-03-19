@@ -5,7 +5,7 @@
     array.push event, event + "Coffee"
 
   shouldHide = (key, value) ->
-    hiddenFields.include(key) || $.isFunction(value)
+    hiddenFields.include(key) or $.isFunction(value)
 
   $.fn.propertyEditor = (properties) ->
     properties ||= {}
@@ -14,7 +14,7 @@
     element = this.eq(0)
     element.addClass("properties")
 
-    element.getProps = () ->
+    element.getProps = ->
       object
 
     element.setProps = (properties) ->
@@ -55,43 +55,47 @@
       else # Or no rows
         addRow('', '')
 
-    fireChangedEvent = (e) ->
+    fireDirtyEvent = ->
       try
-        element.trigger("change", [object])
+        element.trigger("dirty", [object])
       catch error
         console?.error? error
 
-    processInputChanges = (e) ->
-      fireChangedEvent(e)
+    processInputChanges = ->
+      fireDirtyEvent()
 
       rowCheck()
 
-    addBlurEvents = (keyInput, valueInput) ->
+    addChangeEvents = (keyInput, valueInput) ->
       keyInput.bind 'blur keyup', (e) ->
-        currentName = keyInput.val()
-        previousName = keyInput.data("previousName")
+        $this = $(this)
 
-        if currentName != previousName
-          keyInput.data("previousName", currentName)
+        currentName = $this.val()
+        previousName = $this.data("previousName")
+
+        if currentName isnt previousName
+          $this.data("previousName", currentName)
           delete object[previousName]
 
           return if currentName.blank()
 
           object[currentName] = valueInput.val()
 
-          processInputChanges(e)
+          processInputChanges()
 
       valueInput.bind 'blur keyup', (e) ->
-        currentValue = valueInput.val().parse()
-        previousValue = valueInput.data("previousValue")?.parse()
+        $this = $(this)
 
-        if currentValue != previousValue
+        currentValue = $this.val().parse()
+        previousValue = $this.data("previousValue")
+
+        if currentValue isnt previousValue
           return unless key = keyInput.val()
 
-          valueInput.data("previousValue", currentValue)
+          $this.data("previousValue", currentValue)
           object[key] = currentValue
 
-          processInputChanges(e)
+          processInputChanges()
 
     addRow = (key, value, options={}) ->
       row = $ "<tr>"
@@ -119,7 +123,7 @@
         value: value
       ).appendTo($("<td>").appendTo(row))
 
-      addBlurEvents(keyInput, valueInput)
+      addChangeEvents(keyInput, valueInput)
 
       return row.appendTo(element)
 
@@ -138,10 +142,7 @@
       # Prevent event bubbling and retrigger with parent object
       nestedEditor.bind "change", (event, changedNestedObject) ->
         event.stopPropagation()
-        fireChangedEvent()
-
-      nestedEditor.delegate 'table', 'input', 'keyup', (event) ->
-        event.stopPropagation()
+        fireDirtyEvent()
 
       return row.appendTo(element)
 
