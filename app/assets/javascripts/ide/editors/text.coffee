@@ -2,9 +2,6 @@ window.createTextEditor = (options, file) ->
   panel = options.panel
   {contents, id, language, path} = file.attributes
 
-  panel.append "<textarea name='contents' style='display:none;'>#{contents}</textarea>"
-
-  textArea = panel.find('textarea').get(0)
   savedCode = file.get 'contents'
 
   if language is "html"
@@ -21,9 +18,9 @@ window.createTextEditor = (options, file) ->
   unless $('.code_autocomplete').length
     $(autocomplete.render().el).appendTo $('body')
 
-  editor = new CodeMirror.fromTextArea textArea,
+  editor = CodeMirror panel.get(0),
     autoMatchParens: true
-    content: savedCode
+    value: savedCode
     lineNumbers: true
     tabMode: "shift"
     textWrapping: false
@@ -89,7 +86,8 @@ window.createTextEditor = (options, file) ->
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->
-    editor.refresh()
+    editor.refresh(); editor.refresh() # Double refresh fixes the missing lines after 100
+    editor.focus() # we also want to focus the editor
   , 100
 
   $editor = $(editor)
@@ -102,8 +100,6 @@ window.createTextEditor = (options, file) ->
       $editor.trigger('clean')
     else
       $editor.trigger('dirty')
-
-    textArea.value = currentCode
 
   $editor.bind "save", ->
     codeToSave = editor.getValue()

@@ -75,15 +75,15 @@ window.createTilemapEditor = (options, file) ->
       title = prompt("Title")
 
       if title
-        filePath = projectConfig.directories["data"]
+        filePath = projectConfig.directories.tilemaps
 
         extension = "tilemap"
-        dataString = JSON.stringify(tileEditor.mapData())
+        dataString = JSON.stringify(tileEditor)
 
         newFileNode
           name: title
           type: "tilemap"
-          ext: extension
+          extension: extension
           path: filePath
           contents: dataString
 
