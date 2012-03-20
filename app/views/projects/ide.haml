@@ -34,17 +34,8 @@
   :coffeescript
     window.tree = new BoneTree.Views.Tree
       beforeAddFilter: (fileData) ->
-        return true unless fileData
-
         addFile = true
-
-        if fileData.type is 'binary'
-          addFile = false
-
-        # Hack to hide 'compiled' js file. Checks to make sure the
-        # file is at the top level and is a JavaScript file.
-        if fileData.path.match(/\//) is null and fileData.language is 'javascript'
-          addFile = false
+        addFile = false if fileData?.type is 'binary'
 
         return addFile
 
