@@ -270,6 +270,12 @@
         select: (event, ui) ->
           window.currentPanel = ui.panel
 
+          textEditor = $(ui.panel).data("textEditor")
+
+          setTimeout ->
+            textEditor.focus() if textEditor
+          , 0
+
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
       $tabs
