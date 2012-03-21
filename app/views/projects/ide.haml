@@ -275,13 +275,6 @@
 
         tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
-      $tabs
-        .find(".ui-tabs-nav")
-        .sortable
-          axis: "x"
-          distance: 20
-          tolerance: "pointer"
-
       $('.filetree .folder').live 'click', ->
         trackEvent("IDE", "click folder", $(this).text())
 
