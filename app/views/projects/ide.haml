@@ -264,9 +264,6 @@
           $tabs.tabs('select', docSelector)
           $('#tabs ul li a[href="' + docSelector + '"]').click()
 
-        remove: (event, ui) ->
-          $(ui.panel).find(".CodeMirror-wrapping").remove()
-
         select: (event, ui) ->
           window.currentPanel = ui.panel
 
