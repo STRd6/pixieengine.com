@@ -88,9 +88,12 @@ window.createTextEditor = (options, file) ->
   setTimeout ->
     editor.refresh(); editor.refresh() # Double refresh fixes the missing lines after 100
     editor.focus() # we also want to focus the editor
-  , 100
+  , 0
 
   $editor = $(editor)
+
+  # HACK: This is so that the editor can be focused when the tab is clicked
+  panel.data textEditor: editor
 
   # Listen for keypresses and update contents.
   processEditorChanges = ->

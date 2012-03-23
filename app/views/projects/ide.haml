@@ -264,20 +264,16 @@
           $tabs.tabs('select', docSelector)
           $('#tabs ul li a[href="' + docSelector + '"]').click()
 
-        remove: (event, ui) ->
-          $(ui.panel).find(".CodeMirror-wrapping").remove()
-
         select: (event, ui) ->
           window.currentPanel = ui.panel
 
-        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
+          textEditor = $(ui.panel).data("textEditor")
 
-      $tabs
-        .find(".ui-tabs-nav")
-        .sortable
-          axis: "x"
-          distance: 20
-          tolerance: "pointer"
+          setTimeout ->
+            textEditor.focus() if textEditor
+          , 0
+
+        tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
       $('.filetree .folder').live 'click', ->
         trackEvent("IDE", "click folder", $(this).text())

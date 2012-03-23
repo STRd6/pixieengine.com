@@ -19,7 +19,7 @@ $ ->
     window.entities.add entityData
 
 window.createTilemapEditor = (options, file) ->
-  {path, contents} = file.attributes
+  {path, contents, options:editorOptions} = file.attributes
   panel = options.panel
 
   panel.find('.tile_editor, .pixie').remove()
@@ -29,7 +29,7 @@ window.createTilemapEditor = (options, file) ->
   catch e
     ;
 
-  editorOptions = $.extend panel.data("options"),
+  editorOptions = $.extend editorOptions,
     data: data
 
     editEntity: (entity) ->

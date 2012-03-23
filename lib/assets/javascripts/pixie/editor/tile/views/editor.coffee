@@ -37,8 +37,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       @settings = new Models.Settings
 
-      @settings.editEntity = @options.editEntity
-      @settings.newEntity = @options.newEntity
+      @settings.loadFromOptions @options
 
       @resetActiveObjects()
 

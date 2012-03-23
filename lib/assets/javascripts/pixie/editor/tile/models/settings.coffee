@@ -20,6 +20,15 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
     pixelHeight: =>
       @get("tilesTall") * @get("tileHeight")
 
+    loadFromOptions: (options) =>
+      ["tilesTall", "tilesWide", "tileWidth", "tileHeight"].each (option) =>
+        @set option, parseInt(options[option], 10) if options[option]
+
+      @editEntity = options.editEntity
+      @newEntity = options.newEntity
+
+      return this
+
     toJSON: ->
       width: @get "tilesWide"
       height: @get "tilesTall"
