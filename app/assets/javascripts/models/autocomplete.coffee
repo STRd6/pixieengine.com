@@ -1,9 +1,60 @@
 namespace "Pixie.Models", (Models) ->
   class Models.Autocomplete extends Backbone.Model
     defaults:
-      suggestions: ["$", "_", "pixieCanvas", "times", "timer", "time",  "first", "last", "each", "map", "indexOf", "includes"]
-      filteredSuggestions: ["$", "_", "pixieCanvas", "times", "timer", "time", "first", "last", "each", "map", "indexOf", "includes"]
+      suggestions: {
+        self: []
+        I: []
+        global: []
+      }
+      filteredSuggestions: []
       selectedIndex: 0
+
+    # TODO have a hash table for different method contexts.
+    # 1. global
+    # 2. self.
+    # 3. I.
+
+    initialize: ->
+      {text} = @attributes
+
+      if (nodes = try CoffeeScript.nodes(text))
+        @set
+          suggestions: {
+            self: @generateInstanceMethods(nodes)
+            I: @generateInstanceProperties(nodes)
+          }
+
+    generateInstanceMethods: (nodes) ->
+      returnValue = []
+
+      nodes.traverseChildren true, (node) ->
+        # Find self methods
+        if node.variable?.base.value == "self" and (valueNode = node.value)
+          # We have assigned something to the self variable
+          if valueNode.variable?.properties.first()?.name.value == "extend"
+            # We're using extend on the parent class
+            if parentClassName = valueNode.variable?.base.variable.base.value
+              console.log "ParentClass: #{parentClassName}"
+
+            if keys = valueNode.args?.first()?.base.objects
+              returnValue = keys.map (keyNode) ->
+                keyNode.variable.base.value
+
+      return returnValue
+
+    generateInstanceProperties: (nodes) ->
+      returnValue = []
+
+      nodes.traverseChildren true, (node) ->
+        # Find 'I' properties
+        if node.variable?.properties?.first()?.name?.value is "reverseMerge"
+          if node.variable.base.value == "$" or node.variable.base.value == "Object"
+            if node.args.first()?.base.value is "I"
+              if keys = node.args[1]?.base.objects
+                returnValue = keys.map (keyNode) ->
+                  keyNode.variable.base.value
+
+      return returnValue
 
     getCurrentToken: =>
       {editor} = @attributes
@@ -18,10 +69,6 @@ namespace "Pixie.Models", (Models) ->
     decrementSelected: =>
       @_shiftSelected(-1)
 
-    # TODO fix autocomplete bug where going to a previous token doesn't filter propertly eg.
-    # `engine.start()` Right now, placing your cursor after engine. causes it to filter based on the token 'start'.
-    # The solution is to only use the substring between the start of the token (maybe +1 because of the period)
-    # and the cursor position. I think this should be usable across the board in the filter function.
     filterSuggestions: =>
       {editor, suggestions} = @attributes
 
@@ -33,11 +80,11 @@ namespace "Pixie.Models", (Models) ->
 
       if currentString is ''
         @set
-          filteredSuggestions: suggestions.copy().sort()
+          filteredSuggestions: suggestions['I'].copy().sort()
 
         return currentString
 
-      matches = suggestions.map (suggestion) ->
+      matches = suggestions['I'].map (suggestion) ->
         suggestion if suggestion.indexOf(currentString) is 0
 
       if matches.compact().length
@@ -45,7 +92,7 @@ namespace "Pixie.Models", (Models) ->
           filteredSuggestions: matches.compact().sort()
       else
         @set
-          filteredSuggestions: suggestions.copy().sort()
+          filteredSuggestions: suggestions['I'].copy().sort()
 
       return currentString
 

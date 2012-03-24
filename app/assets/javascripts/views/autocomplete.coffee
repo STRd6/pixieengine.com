@@ -66,7 +66,7 @@ namespace "Pixie.Views", (Views) ->
       if @editor
         @$('li').remove()
 
-        {editor, filteredSuggestions, selectedIndex, suggestions} = @model.attributes
+        {editor, filteredSuggestions, selectedIndex} = @model.attributes
 
         cursorPosition = editor.getCursor()
         line = cursorPosition.line
@@ -75,8 +75,8 @@ namespace "Pixie.Views", (Views) ->
         currentString = editor.getRange({line: line, ch: currentToken.ch}, {line: line, ch: cursorPosition.ch})
 
         for suggestion in filteredSuggestions
-          if suggestion.indexOf(currentToken) is 0
-            $(@el).append "<li><b>#{currentToken}</b>#{suggestion.substring(currentString.length)}</li>"
+          if suggestion.indexOf(currentString) is 0 and currentString isnt ''
+            $(@el).append "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
           else
             $(@el).append "<li>#{suggestion}</li>"
 
@@ -101,8 +101,6 @@ namespace "Pixie.Views", (Views) ->
         offset = 0
 
       @currentPosition = @editor.charCoords({line: cursorPosition.line, ch: currentToken.start + offset})
-
-      @render()
 
       if @$('li').length
         $(@el).show()

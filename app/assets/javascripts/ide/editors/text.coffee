@@ -9,14 +9,16 @@ window.createTextEditor = (options, file) ->
 
   language ||= "dummy"
 
-  autocompleteIndex = 0
-
   autocompleteModel = new Pixie.Models.Autocomplete
+    text: savedCode
+
   autocomplete = new Pixie.Views.Autocomplete
     model: autocompleteModel
 
-  unless $('.code_autocomplete').length
-    $(autocomplete.render().el).appendTo $('body')
+  if $('.code_autocomplete').length
+    $('.code_autocomplete').remove()
+
+  $(autocomplete.render().el).appendTo $('body')
 
   editor = CodeMirror panel.get(0),
     autoMatchParens: true
@@ -35,6 +37,7 @@ window.createTextEditor = (options, file) ->
           if filteredSuggestions.length is 1
             autocomplete._insertSuggestion(filteredSuggestions.first())
           else
+            autocomplete.render()
             autocomplete.show()
 
         # hide the autocomplete dialog by pressing escape
