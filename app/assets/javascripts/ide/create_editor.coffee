@@ -21,7 +21,7 @@ window.createEditor = (ui) ->
     # some internal state on the input element had changed. I hacked this in to prevent
     # the browser from firing change events on the json editor. Instead the json editor
     # only triggers 'dirty' events when its state has changed.
-    unless type is 'json'
+    unless (type is 'json' or type is 'entity')
       editor.bind 'change', (e) ->
         tabParent.addClass("unsaved")
 
