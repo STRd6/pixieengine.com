@@ -42,11 +42,11 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @resetActiveObjects()
 
       # Add Sub-components
-      screen = new Views.Screen
+      @screen = new Views.Screen
         collection: @layerList
         editor: this
         settings: @settings
-      @$(".content").prepend screen.el
+      @$(".content").prepend @screen.el
 
       layerSelection = new Views.LayerSelection
         collection: @layerList
@@ -80,11 +80,24 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
         perform: (editor) ->
           editor.deleteSelection()
 
+      @addAction
+        name: "edit instance properties"
+        menu: false
+        hotkeys: "i"
+        perform: (editor) ->
+          editor.editInstanceProperties()
+
       # Set Eval Context
       @eval = (code) =>
         eval(code)
 
       @include Tile.Console
+
+      # Initialize Properties Editor
+      @propEditor = @$(".prop_editor").propertyEditor()
+      # TODO: Figure out why this wasn't working in backbone events list
+      @$("button.prop_save").click @saveInstanceProperties
+      @$("button.prop_cancel").click @closeInstanceProperties
 
       # Load map data if it exists
       if @options.data
@@ -116,6 +129,30 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           , true
 
       @execute compoundCommand unless compoundCommand.empty()
+
+    editInstanceProperties: =>
+      if instance = @screen.instanceAtCursor()
+        @propEditor.instance = instance
+
+        # jQuery Deep Copy
+        props = $.extend(true, {}, instance.get("properties"))
+
+        @propEditor.setProps(props)
+        @propEditor.parent().show()
+
+    saveInstanceProperties: =>
+      if instance = @propEditor.instance
+        instance.set("properties", @propEditor.getProps())
+        @closeInstanceProperties()
+
+        #TODO Make this a command that heeds undo so we won't need to manually trigger dirty state
+        @trigger "dirty"
+
+    closeInstanceProperties: =>
+      @propEditor.parent().hide()
+      @propEditor.instance = null
+
+      @takeFocus()
 
     toJSON: ->
       settingsJSON = @settings.toJSON()
