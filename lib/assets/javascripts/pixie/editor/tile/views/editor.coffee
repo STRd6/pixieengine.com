@@ -139,6 +139,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
         @propEditor.setProps(props)
         @propEditor.parent().show()
+        @propEditor.find('input.key').focus()
 
     saveInstanceProperties: =>
       if instance = @propEditor.instance
