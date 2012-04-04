@@ -76,7 +76,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
       @addAction
         name: "delete selection"
         menu: false
-        hotkeys: "del"
+        hotkeys: "del backspace"
         perform: (editor) ->
           editor.deleteSelection()
 
