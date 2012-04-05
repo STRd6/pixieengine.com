@@ -266,7 +266,7 @@
 
       saveFile
         contents: projectCode
-        path: (projectConfig.name || "project") + ".js"
+        path: #{Project::COMPILED_FILE_NAME.to_json}
         touch: true
         success: ->
           notify("Published!")

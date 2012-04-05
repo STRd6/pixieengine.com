@@ -1,6 +1,10 @@
+require "pstore"
+
 class Project < ActiveRecord::Base
   include Commentable
   include Memberships
+
+  COMPILED_FILE_NAME = "game.js"
 
   acts_as_archive
 
@@ -334,7 +338,7 @@ class Project < ActiveRecord::Base
       name = filename.sub(/\.[^\.]*$/, '')
       lang = lang_for(ext)
 
-      if path == "#{config[:name]}.js" || file_path == "#{title}.js"
+      if path == COMPILED_FILE_NAME
         # This is a 'compiled' JavaScript file for the project
         type = "binary"
       else
@@ -428,7 +432,7 @@ class Project < ActiveRecord::Base
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
       doc_dir = File.join path, "docs"
 
-      FileUtils.cp File.join(path, "#{config[:name] || title}.js"), dir
+      FileUtils.cp File.join(path, COMPILED_FILE_NAME), dir
 
       FileUtils.mkdir_p(doc_dir)
 
@@ -504,7 +508,7 @@ class Project < ActiveRecord::Base
         <body class="contents_centered">
           <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>
           <script>BASE_URL = "../"; MTIME = "#{Time.now.to_i}";</script>
-          <script src="/#{config[:name]}.js"></script>
+          <script src="/#{COMPILED_FILE_NAME}"></script>
         </body>
         </html>
       eof
@@ -548,6 +552,23 @@ class Project < ActiveRecord::Base
 
     File.open(manifest_path, 'wb') do |file|
       file.write(JSON.pretty_generate(manifest_json))
+    end
+  end
+  
+  def update_old_compiled_js_file
+    old_name = config[:name] || title
+
+    old_path = File.join path, "#{old_name}.js"
+    new_path = File.join path, COMPILED_FILE_NAME
+
+    if File.exist? old_path
+      FileUtils.mv old_path, new_path 
+    end
+  end
+
+  def self.update_old_compiled_js_files
+    Project.find_each do |project|
+      project.update_old_compiled_js_file
     end
   end
 end

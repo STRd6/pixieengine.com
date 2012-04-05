@@ -13,4 +13,4 @@
     MTIME = #{project.updated_at.to_i};
 
   = javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
-  %script(src="/production/projects/#{project.id}/#{config[:name]}.js?#{project.updated_at.to_i}")
+  %script(src="/production/projects/#{project.id}/#{Project::COMPILED_FILE_NAME}?#{project.updated_at.to_i}")
