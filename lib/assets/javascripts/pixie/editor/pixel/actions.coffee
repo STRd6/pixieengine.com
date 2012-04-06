@@ -133,10 +133,4 @@ Pixie.Editor.Pixel.actions = (($) ->
           canvas.getPixel(x, 0).color(color);
         });
       }`
-    download:
-      hotkeys: ["ctrl+s"]
-      perform: (canvas) ->
-        w = window.open()
-        w.document.location = canvas.toDataURL()
-      undoable: false
 )(jQuery)

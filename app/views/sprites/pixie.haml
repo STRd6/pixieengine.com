@@ -120,6 +120,14 @@
               undoable: false
 
             canvas.addAction
+              name: "download"
+              hotkeys: ["ctrl+s"]
+              perform: (canvas) ->
+                w = window.open()
+                w.document.location = canvas.toDataURL()
+              undoable: false
+
+            canvas.addAction
               name: "save"
               perform: (canvas) ->
                 $(".tool.button[title=Save]").attr("disabled", true)

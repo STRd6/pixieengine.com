@@ -18,6 +18,13 @@ window.createImageEditor = (options, file) ->
         canvas.fromDataURL(dataUrl)
 
       canvas.addAction
+        name: "download"
+        perform: (canvas) ->
+          w = window.open()
+          w.document.location = canvas.toDataURL()
+        undoable: false
+
+      canvas.addAction
         name: "Save"
         icon: "/assets/icons/database_save.png"
         perform: (canvas) ->

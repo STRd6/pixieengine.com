@@ -18,7 +18,7 @@
       sprite_gallery = new Pixie.Views.Sprites.Gallery
       sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@sprites_data.to_json}))
 
-      $(".sprite_gallery img").live 'dragstart', (event) ->
+      $(document).on 'dragstart', "img", (event) ->
         $this = $(this)
         name = $this.data('name')
         fileURL = $this.attr('src').replace("/thumb.png?", "/original.png?")
