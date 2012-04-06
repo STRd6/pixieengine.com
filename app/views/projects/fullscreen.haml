@@ -83,7 +83,7 @@
         display: none
 
     ul.actions_bar
-      +linear-gradient(color-stops(#7F7F7F, #666))
+      +background(linear-gradient(color-stops(#7F7F7F, #666)))
       +bounds(100%, $action_bar_height)
       +box-sizing(border-box)
 
@@ -105,13 +105,13 @@
           +border-radius(2px)
 
         &.action
-          +linear-gradient(color-stops($light_gray, lighten($light_gray, 5%), darken($light_gray, 15%)))
+          +background(linear-gradient(color-stops($light_gray, lighten($light_gray, 5%), darken($light_gray, 15%))))
 
           &:hover
-            +linear-gradient(color-stops($hover, lighten($hover, 5%), darken($hover, 15%)))
+            +background(linear-gradient(color-stops($hover, lighten($hover, 5%), darken($hover, 15%))))
 
           &:active, &.active
-            +linear-gradient(color-stops(darken($hover, 35%), darken($hover, 15%)))
+            +background(linear-gradient(color-stops(darken($hover, 35%), darken($hover, 15%))))
 
         a
           color: $light_text
@@ -119,8 +119,8 @@
 
         &.stats
           +border-radius
-          +box-shadow(darken($dark_gray, 20%), 1px, 1px, 2px, 0, inset)
-          +linear-gradient(color-stops($dark_gray, darken($dark_gray, 15%)))
+          +box-shadow(darken($dark_gray, 20%) 1px 1px 2px 0 inset)
+          +background(linear-gradient(color-stops($dark_gray, darken($dark_gray, 15%))))
 
           color: $dark_text
           cursor: default

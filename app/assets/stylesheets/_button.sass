@@ -6,7 +6,7 @@ $button_gradient_end: #a0d5f8
 button, a.button
   +button-button
   +border-radius(4px)
-  +linear-gradient(color-stops($button_gradient_start, $button_gradient_end))
+  +background(linear-gradient(color-stops($button_gradient_start, $button_gradient_end)))
 
   border-color: $button_border
   box-sizing: border-box
@@ -14,7 +14,7 @@ button, a.button
   text-align: center
 
   &:hover
-    +linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%)))
+    +background(linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%))))
 
     color: $button_font
     text-decoration: none
@@ -25,14 +25,14 @@ button, a.button
   &.complement
     +button-colors(white, $complementary_orange, darken($complementary_orange, 20%))
     +button-hover-colors(white, $complementary_orange, darken($complementary_orange, 5%))
-    +linear-gradient(color-stops(lighten($complementary_orange, 15%), darken($complementary_orange, 5%)))
-    +text-shadow(darken($complementary_orange, 40%), 0, 0, 2px)
+    +text-shadow(darken($complementary_orange, 40%) 0 0 2px)
+    +background(linear-gradient(color-stops(lighten($complementary_orange, 15%), darken($complementary_orange, 5%))))
 
     &:active, &.active
-      +linear-gradient(color-stops(darken($complementary_orange, 10%), $complementary_orange 33%, lighten($complementary_orange, 15%)))
+      +background(linear-gradient(color-stops(darken($complementary_orange, 10%), $complementary_orange 33%, lighten($complementary_orange, 15%))))
 
   &:active, &.active
-    +text-shadow(rgba(0, 0, 0, 0.25), 0, 1px, 0)
+    +text-shadow(rgba(0, 0, 0, 0.25) 0 1px 0)
 
     background: $button_background_active
     color: white

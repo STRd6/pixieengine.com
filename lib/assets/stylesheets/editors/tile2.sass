@@ -26,19 +26,19 @@ $button_gradient_end: desaturate(#a0d5f8, 70%)
     margin-top: 1em
 
   button, a.button
-    +linear-gradient(color-stops($button_gradient_start, $button_gradient_end))
+    +background(linear-gradient(color-stops($button_gradient_start, $button_gradient_end)))
 
     border: 1px solid #ccc
     color: #333
 
     &:hover
-      +linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%)))
+      +background(linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%))))
 
       color: $button_font
       text-decoration: none
 
     &:active, &.active
-      +text-shadow(rgba(0, 0, 0, 0.25), 0, 1px, 0)
+      +text-shadow(rgba(0, 0, 0, 0.25) 0 1px 0)
 
       background: #999
       color: white

@@ -186,13 +186,13 @@ class User < ActiveRecord::Base
         :description => "Fill out your profile",
         :value => 10,
         :complete? => profile && profile.length > 0,
-        :link => {:action => :edit, :id => id, :controller => :users},
+        :link => [:edit, self],
       },
       {
         :description => "Upload an avatar",
         :value => 10,
         :complete? => avatar_file_size,
-        :link => {:action => :edit, :id => id, :controller => :users},
+        :link => [:edit, self],
       },
       {
         :description => "Find three favorites",
