@@ -62,8 +62,6 @@ window.createImageEditor = (options, file) ->
       success: ->
         pixelEditor.trigger "clean"
 
-  window.currentComponent = pixelEditor
-
   panel.empty().append(pixelEditor)
 
   return pixelEditor

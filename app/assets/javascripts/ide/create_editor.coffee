@@ -8,6 +8,9 @@ window.createEditor = (ui) ->
 
   editor = ("create#{type.capitalize()}Editor".constantize())(data, window.currentFile)
 
+  panel.data editor: editor
+  window.currentComponent = editor
+
   if editor
     tabParent = tab.parent()
     # Currently these events can be either backbone or jQuery events,

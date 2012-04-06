@@ -267,6 +267,9 @@
         select: (event, ui) ->
           window.currentPanel = ui.panel
 
+          if editor = $(ui.panel).data "editor"
+            window.currentComponent = editor
+
           textEditor = $(ui.panel).data("textEditor")
 
           setTimeout ->
