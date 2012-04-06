@@ -57,6 +57,7 @@
               path = projectConfig.directories.images
               type = "image"
               extension = "png"
+              autoOpen = false
 
             if path?
               name = file.name.replace(/\.[^\.]*$/, '')
@@ -74,5 +75,6 @@
                 language: language
                 path: path
                 contents: contents
+                autoOpen: autoOpen
 
               notify "'\#{name}.\#{extension}' successfully imported."
