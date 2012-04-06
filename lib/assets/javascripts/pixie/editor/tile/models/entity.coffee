@@ -4,7 +4,7 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
     defaults:
       name: "Unnamed Entity"
       width: 32
-      heiht: 32
+      height: 32
       sprite: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVRYR+3QwQ0AAAgCMdh/aHULPyW5P2mTzPW2OkCAAAECBAgQIECAAAECBAh8CyywJyABJlvz9gAAAABJRU5ErkJggg=="
 
     generateUuid: ->
