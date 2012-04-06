@@ -176,7 +176,6 @@ class Project < ActiveRecord::Base
 
     make_group_writable
   end
-  handle_asynchronously :update_libs
 
   def git_util(*args)
     system 'script/git_util', path, *args
@@ -197,7 +196,6 @@ class Project < ActiveRecord::Base
       git_util 'push', '--tags'
     end
   end
-  handle_asynchronously :tag_version
 
   def clone_repo
     # Cloning repos in tests is way too scary
@@ -234,7 +232,6 @@ class Project < ActiveRecord::Base
     git_util "pull"
     make_group_writable
   end
-  handle_asynchronously :git_pull
 
   def git_commit_and_push(authoring_user_id, message)
     message ||= "Modified in browser at pixie.strd6.com"
@@ -252,7 +249,6 @@ class Project < ActiveRecord::Base
       git_util "push", '-u', "origin", BRANCH_NAME
     end
   end
-  handle_asynchronously :git_commit_and_push
 
   def save_file(path, contents, authoring_user, message=nil)
     #TODO: Verify path is not sketch
@@ -268,9 +264,8 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(authoring_user.id, message) if Rails.env.production?
+    git_commit_and_push(authoring_user.id, message) if Rails.env.production?
   end
-  handle_asynchronously :save_file if Rails.env.production?
 
   def remove_file(path, authoring_user, message=nil)
     #TODO: Verify path is not sketch
@@ -440,7 +435,6 @@ class Project < ActiveRecord::Base
       system(cmd)
     end
   end
-  handle_asynchronously :generate_docs
 
   def config
     @config ||=

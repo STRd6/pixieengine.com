@@ -22,7 +22,6 @@ gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem "capistrano"
 gem "coffee-filter"
 gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
-gem "delayed_job", "2.1.4"
 gem 'evergreen', :require => 'evergreen/rails'
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"

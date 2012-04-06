@@ -34,5 +34,4 @@ class Comment < ActiveRecord::Base
       Notifier.comment(self).deliver
     end
   end
-  handle_asynchronously :notify_commentee
 end
