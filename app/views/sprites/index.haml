@@ -5,7 +5,7 @@
 - tags = Sprite.with_ids(sprites).tag_counts
 - @meta_desc = tags.join(' ') + sprites.map(&:title).compact.join(' ')
 
-.gallery
+.gallery.sprites_gallery
   .sprites
     .tags
 
@@ -24,58 +24,3 @@
         fileURL = $this.attr('src').replace("/thumb.png?", "/original.png?")
         event.dataTransfer.setData('DownloadURL', "image/png:\#{name}.png:\#{fileURL}")
 
-%style
-  :sass
-    @import util
-    @import partials/base
-
-    .sprites div.search
-      display: block
-
-    .gallery
-      position: relative
-
-    .reset
-      display: none
-      margin-bottom: 19px
-      margin-left: 1em
-
-    .sprites
-      position: relative
-
-    .header
-      h2
-        display: inline-block
-        margin: 0
-        margin-top: 0.5em
-
-    .tags
-      bottom: -30px
-      position: absolute
-
-      .tag
-        margin-left: 0.25em
-        margin-right: 0.25em
-
-    .pagination
-      float: right
-
-    .sprite_container
-      +border-radius
-      +bounds(48px)
-      +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
-
-      background-color: white
-      cursor: pointer
-      display: inline-block
-      margin-right: 8px
-      margin-bottom: 3px
-
-      &:hover
-        background-color: $hover
-
-      a
-        +bounds(100%)
-        +contents-centered
-
-        display: block

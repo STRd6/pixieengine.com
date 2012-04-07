@@ -1,14 +1,4 @@
 GIT
-  remote: git://github.com/chriseppstein/compass.git
-  revision: 91a748a916360057b5caf6ea85cd38441d3b257a
-  branch: rails31
-  specs:
-    compass (0.12.0.alpha.0.91a748a)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
-
-GIT
   remote: git://github.com/jdleesmiller/gratr.git
   revision: d96d658abd2466d7542b6aeb54f8c17250a4bbc2
   specs:
@@ -104,7 +94,7 @@ GEM
       xpath (~> 0.1.4)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
-    chunky_png (1.2.1)
+    chunky_png (1.2.5)
     cocaine (0.2.0)
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
@@ -117,6 +107,12 @@ GEM
       execjs
     coffee-script-source (1.1.2)
     color (1.4.1)
+    compass (0.12.1)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
+    compass-rails (1.0.1)
+      compass (~> 0.12.0)
     erubis (2.7.0)
     evergreen (1.0.0)
       capybara (~> 1.0)
@@ -128,7 +124,7 @@ GEM
       multi_json (~> 1.0)
     fastercsv (1.5.4)
     ffi (1.0.11)
-    fssm (0.2.7)
+    fssm (0.2.8.1)
     haml (3.1.2)
     highline (1.6.2)
     hike (1.2.1)
@@ -274,7 +270,7 @@ DEPENDENCIES
   capistrano
   coffee-filter
   coffee-rails (~> 3.1.0)
-  compass!
+  compass-rails
   corelib!
   evergreen
   exception_notification!

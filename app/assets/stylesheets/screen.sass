@@ -7,7 +7,7 @@
 @import fonts
 
 @import compass/reset
-@import compass/utilities/text/replacement
+@import compass/typography/text/replacement
 @import compass/utilities/general/clearfix
 @import util
 
@@ -19,7 +19,6 @@
 @import comments
 @import console
 @import editor_base
-@import forum
 @import gallery
 @import hotkeys
 @import main
@@ -37,3 +36,15 @@
 @import jqcolor
 
 @import sprite_sheets
+
+// hack: these spritesheets are pretty much just the inline
+// styles taken from views that required the util partial
+// since inline imports seem to be broken with compass-rails
+@import user_profile
+@import sprites_gallery
+@import landing_page
+@import github_integration
+@import sprite_show
+@import survey
+@import jukebox
+@import fullscreen_game

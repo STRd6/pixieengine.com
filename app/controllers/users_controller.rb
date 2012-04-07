@@ -17,7 +17,12 @@ class UsersController < ApplicationController
     email = session.delete(:email) || ''
 
     object.email ||= email
-    display_name = object.display_name = email.split("@").first.gsub(/[^A-Za-z0-9_-]/, '')
+
+    if email.split('@').length > 0
+      display_name = object.display_name = email.split("@").first.gsub(/[^A-Za-z0-9_-]/, '')
+    else
+      display_name = object.display_name = 'pixie_user'
+    end
 
     # Gross uniqueness checking
     suffix = 0
