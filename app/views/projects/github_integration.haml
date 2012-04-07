@@ -1,22 +1,12 @@
 %style
   :sass
-    @import util
-    @import branded
-
     ul.steps
       font-size: 14px
 
       li
         margin: 1em 0
 
-        &.tuts-pixie_user
-          +bounds(981px, 505px)
-
-        &.tuts-web_hooks
-          +bounds(960px, 400px)
-
-        &.tuts-new_project
-          +bounds(960px, 565px)
+=stylesheet_link_tag 'branded'
 
 %h2 How to Integrate With an Existing Github Project
 

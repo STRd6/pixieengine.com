@@ -35,11 +35,11 @@
 
     .white_overlay
       +bounds(256px)
-      +linear-gradient(color-stops(white, rgba(0, 0, 0, 0) 100%), left)
+      +background(linear-gradient(left, color-stops(white, rgba(0, 0, 0, 0) 100%)))
 
     .black_overlay
       +bounds(256px)
-      +linear-gradient(color-stops(rgba(0, 0, 0, 0), black 100%))
+      +background(linear-gradient(color-stops(rgba(0, 0, 0, 0), black 100%)))
 
       position: absolute
       top: 0

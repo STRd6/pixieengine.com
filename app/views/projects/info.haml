@@ -1,10 +1,5 @@
 %style
-  @import sprite_sheets
-
   :sass
-    @import util
-    @import branded
-
     strong
       font-weight: bold
 
@@ -19,10 +14,11 @@
         display: none
 
       .blurb
-        +inline-block
-
+        color: #B0D6EE
+        display: inline-block
         margin-left: 7em
         margin-top: -25px
+        vertical-align: middle
 
       .content
         height: 100%
@@ -32,8 +28,7 @@
         margin-top: 15px
 
       .logo
-        +inline-block
-
+        display: inline-block
         float: left
         margin: 0
         margin-top: 15px
@@ -41,16 +36,6 @@
 
       .login_link a[title="Log in"]
         margin-top: 34px
-
-    .thumb
-      float: left
-      margin-bottom: 1em
-      margin-right: 2em
-
-      &.fancy
-        img
-          +border-radius(17px)
-          +box-shadow(#8c8c8c, 0, 4px, 6px)
 
     .content
       margin: auto
@@ -63,45 +48,6 @@
         font-style: italic
         letter-spacing: 0.1em
 
-      .source
-        +opacity(0.75)
-
-      .feature
-        margin-bottom: 1em
-        overflow: auto
-        padding-bottom: 1em
-        width: 100%
-
-        .info
-          +bounds(290px, 480px)
-          +inline-block
-          float: left
-          position: relative
-
-          h1
-            font-size: 3em
-
-          p
-            font-size: 1.3em
-            line-height: 1.6em
-
-        .video
-          +box-shadow($light_box_shadow, 0px, 10px, 10px, -10px)
-
-          background-color: white
-          border: 1px solid #AAA
-          float: right
-          padding: 6px 6px 3px
-
-        a.button.full
-          +bounds(100%, 70px)
-
-          bottom: -15px
-          font-size: 190%
-          line-height: 56px
-          margin: 0
-          position: absolute
-
       .testimonial
         margin-bottom: 2em
         padding: 1em 2em
@@ -112,8 +58,7 @@
         width: 100%
 
         .detail
-          +inline-block
-
+          display: inline-block
           margin-right: 15px
 
           vertical-align: top
@@ -125,45 +70,6 @@
       .featured_projects
         margin: 2em 0
         padding: 1em 2em
-
-    .project
-      +bounds(430px, 172px)
-      +box-sizing(border-box)
-      +inline-block
-
-      margin-bottom: 0
-      margin-right: 2em
-      overflow: hidden
-      padding: 1em
-      position: relative
-
-      &:nth-child(2n)
-        margin-right: 0
-
-      .gloss
-        +gloss
-
-        display: inline-block
-        position: absolute
-        left: 1em
-
-      .thumb
-        float: left
-        margin-bottom: 1em
-        margin-right: 1em
-
-        &.fancy
-          img
-            +border-radius(17px)
-            +box-shadow(#8c8c8c, 0, 4px, 6px)
-
-      .title
-        a
-          color: $light_text
-          font-size: 20px
-          font-weight: 600
-          text-decoration: none
-          white-space: nowrap
 
     #try_now
       width: 95%
@@ -183,7 +89,5 @@
 
 - if params[:new_game]
   = render :partial => 'new_game_landing_page'
-- elsif experiment "minimal_landing_page"
-  = render :partial => 'minimal_landing_page'
 - else
   = render :partial => 'control_landing_page'

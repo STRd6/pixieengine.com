@@ -3,11 +3,11 @@ source 'http://rubygems.org'
 gem 'rails', '3.1.4'
 
 group :assets do
+  gem 'compass-rails'
+  gem 'jquery-tmpl-rails'
   gem 'sass-rails', "~> 3.1.4"
   gem 'coffee-rails', "~> 3.1.0"
-  gem "sprockets-jquery-tmpl"
   gem 'uglifier'
-  gem 'compass', :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
 end
 
 group :production do
@@ -48,4 +48,5 @@ group :test do
   gem "factory_girl", :git => "git://github.com/thoughtbot/factory_girl.git"
   gem "shoulda"
   gem "turn", :require => false
+  gem "ruby-prof"
 end
