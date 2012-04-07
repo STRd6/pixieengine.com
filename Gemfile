@@ -31,6 +31,7 @@ gem 'html5-boilerplate'
 gem 'json'
 gem 'mail'
 gem "mocha"
+gem "oink"
 gem 'paperclip'
 gem "pg"
 gem 'rabl'
