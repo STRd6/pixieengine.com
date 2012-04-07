@@ -206,6 +206,7 @@ GEM
       json (~> 1.4)
     require (0.2.7)
     rmagick (2.13.1)
+    ruby-prof (0.10.8)
     rubyzip (0.9.4)
     ruport (1.6.3)
       fastercsv
@@ -292,6 +293,7 @@ DEPENDENCIES
   rails_autolink
   require
   rmagick
+  ruby-prof
   ruport
   sanitize
   sass-rails (~> 3.1.4)

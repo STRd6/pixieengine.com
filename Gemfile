@@ -47,4 +47,5 @@ group :test do
   gem "factory_girl", :git => "git://github.com/thoughtbot/factory_girl.git"
   gem "shoulda"
   gem "turn", :require => false
+  gem "ruby-prof"
 end
