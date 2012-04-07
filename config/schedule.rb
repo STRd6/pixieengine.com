@@ -25,6 +25,10 @@ every 12.hours do
   rake "backup:database"
 end
 
+every 24.hours do
+  rake "projects:update_libs"
+end
+
 every :saturday, :at => '11pm' do
   rake "report:send"
 end
