@@ -29,6 +29,12 @@ every 24.hours do
   rake "projects:update_libs"
 end
 
+#TODO: This is a little scary
+every 2.hours do
+  # Restart all unicorn processes to combat memory bloat
+  command "pkill -QUIT -f 'unicorn worker'"
+end
+
 every :saturday, :at => '11pm' do
   rake "report:send"
 end
