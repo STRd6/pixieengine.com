@@ -46,7 +46,7 @@
     I.pixelWidth = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
     I.pixelHeight = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
-    self = $.tmpl("editors/pixel")
+    self = $.tmpl("tmpls/editors/pixel")
 
     content = self.find(".content")
     viewport = self.find(".viewport")

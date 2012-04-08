@@ -29,7 +29,7 @@
     instanceId = 0
     instance = null
 
-    colorPicker = $.tmpl "color_picker"
+    colorPicker = $.tmpl "tmpls/color_picker"
     slider = colorPicker.find '.hue_selector'
     overlay = colorPicker.find '.color_overlay'
     gradient = colorPicker.find '.slider'

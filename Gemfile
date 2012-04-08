@@ -1,12 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.4'
+gem 'rails', '3.2.3'
 
 group :assets do
   gem 'compass-rails'
-  gem 'sass-rails', "~> 3.1.4"
-  gem 'coffee-rails', "~> 3.1.0"
-  gem "sprockets-jquery-tmpl"
+  gem 'jquery-tmpl-rails'
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier'
 end
 
@@ -15,7 +15,7 @@ group :production do
 end
 
 gem 'acts-as-taggable-on'
-gem "authlogic", :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
+gem "authlogic" #, :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
 gem "aws-s3", :require => "aws/s3"
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"

@@ -5,7 +5,7 @@ window.Pixie ||= {}
 
 Pixie.Window = (I={}) ->
 
-  self = $.tmpl("pixie/window", I)
+  self = $.tmpl("tmpls/pixie/window", I)
 
   self.draggable(
     handle: "h3"

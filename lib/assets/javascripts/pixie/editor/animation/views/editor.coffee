@@ -31,7 +31,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @framesCollection = new Models.FramesCollection
       @tilesCollection = new Models.TilesCollection
 
-      helpDialog = $.tmpl 'editors/animation/help_tips'
+      helpDialog = $.tmpl 'tmpls/editors/animation/help_tips'
       @el.append helpDialog
 
       contentEl = @$('.content')
