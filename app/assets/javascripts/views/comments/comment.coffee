@@ -9,6 +9,6 @@ namespace "Pixie.Views.Comments", (Comments) ->
         current_user_id: @model.collection.current_user_id
         owner_id: @model.collection.owner_id
 
-      $(@el).html $.tmpl('comments/comment', data)
+      $(@el).html $.tmpl('tmpls/comments/comment', data)
 
       return this

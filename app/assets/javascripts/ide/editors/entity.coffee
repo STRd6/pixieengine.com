@@ -18,7 +18,7 @@ window.createEntityEditor = (options, file) ->
     console?.warn? e
     data = defaults
 
-  entityEditor = $.tmpl("ide/editors/entity").appendTo(panel)
+  entityEditor = $.tmpl("tmpls/ide/editors/entity").appendTo(panel)
 
   propertyEditor = entityEditor.find('table').propertyEditor(data)
 

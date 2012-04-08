@@ -172,7 +172,7 @@
       sandbox.write(#{javascript_include_tag("http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js").to_json.gsub('/', '\\/')})
       sandbox.write(#{javascript_include_tag("qunit").to_json.gsub('/', '\\/')})
 
-      sandbox.write($.tmpl("ide/qunit").html())
+      sandbox.write($.tmpl("tmpls/ide/qunit").html())
 
       sandbox.write("<script>\#{code}<\/script>")
 

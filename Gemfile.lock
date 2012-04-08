@@ -17,14 +17,6 @@ GIT
     corelib (0.0.1)
 
 GIT
-  remote: git://github.com/odorcicd/authlogic.git
-  revision: a087ad0cba3c165ba22fcf176c28b6f7517931e8
-  branch: rails3
-  specs:
-    authlogic (2.1.3)
-      activesupport
-
-GIT
   remote: git://github.com/rails/exception_notification.git
   revision: 192a49a02d63d28b23ed41cebadfedd490929cf1
   specs:
@@ -41,38 +33,41 @@ GEM
   remote: http://rubygems.org/
   specs:
     aaronh-chronic (0.3.9)
-    actionmailer (3.1.4)
-      actionpack (= 3.1.4)
-      mail (~> 2.3.0)
-    actionpack (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
+    actionmailer (3.2.3)
+      actionpack (= 3.2.3)
+      mail (~> 2.4.4)
+    actionpack (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
-      i18n (~> 0.6)
-      rack (~> 1.3.6)
-      rack-cache (~> 1.1)
-      rack-mount (~> 0.8.2)
+      journey (~> 1.0.1)
+      rack (~> 1.4.0)
+      rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
-      sprockets (~> 2.0.3)
-    activemodel (3.1.4)
-      activesupport (= 3.1.4)
+      sprockets (~> 2.1.2)
+    activemodel (3.2.3)
+      activesupport (= 3.2.3)
       builder (~> 3.0.0)
-      i18n (~> 0.6)
-    activerecord (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
-      arel (~> 2.2.3)
+    activerecord (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
+      arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
-    activesupport (3.1.4)
+    activeresource (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
+    activesupport (3.2.3)
+      i18n (~> 0.6)
       multi_json (~> 1.0)
-    acts-as-taggable-on (2.0.6)
+    acts-as-taggable-on (2.2.2)
+      rails (~> 3.0)
     addressable (2.2.6)
     ansi (1.3.0)
-    arel (2.2.3)
+    arel (3.0.2)
+    authlogic (3.1.0)
+      activerecord (>= 3.0.7)
+      activerecord (>= 3.0.7)
     aws-s3 (0.6.2)
       builder
       mime-types
@@ -99,9 +94,9 @@ GEM
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
       haml (>= 3.0.18)
-    coffee-rails (3.1.0)
+    coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
-      railties (~> 3.1.0.rc1)
+      railties (~> 3.2.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
@@ -125,7 +120,7 @@ GEM
     fastercsv (1.5.4)
     ffi (1.0.11)
     fssm (0.2.8.1)
-    haml (3.1.2)
+    haml (3.1.4)
     highline (1.6.2)
     hike (1.2.1)
     hodel_3000_compliant_logger (0.1.0)
@@ -135,17 +130,20 @@ GEM
     html5-boilerplate (1.0.0)
       compass (>= 0.11.1)
     i18n (0.6.0)
-    json (1.6.5)
+    journey (1.0.3)
+    jquery-tmpl-rails (1.1.0)
+      rails (>= 3.1.0)
+    json (1.6.6)
     json_pure (1.6.1)
     kgio (2.6.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
     libv8 (3.3.10.2)
-    mail (2.3.2)
+    mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.17.2)
+    mime-types (1.18)
     mocha (0.9.12)
     multi_json (1.0.4)
     net-scp (1.0.4)
@@ -172,30 +170,28 @@ GEM
     rabl (0.5.3)
       activesupport (>= 2.3.14)
       multi_json (~> 1.0.3)
-    rack (1.3.6)
+    rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-mount (0.8.3)
-      rack (>= 1.0.0)
     rack-protection (1.1.4)
       rack
     rack-ssl (1.3.2)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
-    rails (3.1.4)
-      actionmailer (= 3.1.4)
-      actionpack (= 3.1.4)
-      activerecord (= 3.1.4)
-      activeresource (= 3.1.4)
-      activesupport (= 3.1.4)
+    rails (3.2.3)
+      actionmailer (= 3.2.3)
+      actionpack (= 3.2.3)
+      activerecord (= 3.2.3)
+      activeresource (= 3.2.3)
+      activesupport (= 3.2.3)
       bundler (~> 1.0)
-      railties (= 3.1.4)
-    rails_autolink (1.0.2)
-      rails (~> 3.1.0.a)
-    railties (3.1.4)
-      actionpack (= 3.1.4)
-      activesupport (= 3.1.4)
+      railties (= 3.2.3)
+    rails_autolink (1.0.6)
+      rails (~> 3.1)
+    railties (3.2.3)
+      actionpack (= 3.2.3)
+      activesupport (= 3.2.3)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -214,11 +210,10 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.1.14)
-    sass-rails (3.1.5)
-      actionpack (~> 3.1.0)
-      railties (~> 3.1.0)
-      sass (~> 3.1.10)
-      tilt (~> 1.3.2)
+    sass-rails (3.2.5)
+      railties (~> 3.2.0)
+      sass (>= 3.1.10)
+      tilt (~> 1.3)
     selenium-webdriver (2.13.0)
       childprocess (>= 0.2.1)
       ffi (~> 1.0.9)
@@ -229,12 +224,10 @@ GEM
       rack (~> 1.3, >= 1.3.4)
       rack-protection (~> 1.1, >= 1.1.2)
       tilt (~> 1.3, >= 1.3.3)
-    sprockets (2.0.3)
+    sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-jquery-tmpl (0.1.0)
-      actionpack (~> 3.1.0)
     therubyracer (0.9.3)
       libv8 (~> 3.3.10)
     thor (0.14.6)
@@ -267,13 +260,13 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on
-  authlogic!
+  authlogic
   aws-s3
   bluecloth
   bone_tree!
   capistrano
   coffee-filter
-  coffee-rails (~> 3.1.0)
+  coffee-rails (~> 3.2.1)
   compass-rails
   corelib!
   evergreen
@@ -283,6 +276,7 @@ DEPENDENCIES
   haml
   hpricot
   html5-boilerplate
+  jquery-tmpl-rails
   json
   mail
   mocha
@@ -290,16 +284,15 @@ DEPENDENCIES
   paperclip
   pg
   rabl
-  rails (= 3.1.4)
+  rails (= 3.2.3)
   rails_autolink
   require
   rmagick
   ruby-prof
   ruport
   sanitize
-  sass-rails (~> 3.1.4)
+  sass-rails (~> 3.2.3)
   shoulda
-  sprockets-jquery-tmpl
   therubyracer
   turn
   uglifier
