@@ -40,5 +40,5 @@ namespace "Pixie.Views", (Views) ->
         @$('button.search').attr('disabled', 'disabled')
 
     render: =>
-      @el.html $.tmpl('search')
+      @el.html $.tmpl('tmpls/search')
       return @

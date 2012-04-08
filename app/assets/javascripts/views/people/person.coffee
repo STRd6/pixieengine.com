@@ -9,6 +9,6 @@ namespace "Pixie.Views.People", (People) ->
 
     render: =>
       data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.owner_id})
-      $(@el).html $.tmpl('people/person', data)
+      $(@el).html $.tmpl('tmpls/people/person', data)
       return @
 

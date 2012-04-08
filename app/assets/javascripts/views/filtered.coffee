@@ -29,7 +29,7 @@ class Pixie.Views.Filtered extends Backbone.View
     @collection.filterPages(@filter)
 
   render: =>
-    $(@el).append($.tmpl('filters', { filters: @filters, activeFilter: @activeFilter }))
+    $(@el).append($.tmpl('tmpls/filters', { filters: @filters, activeFilter: @activeFilter }))
 
     return @
 

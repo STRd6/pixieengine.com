@@ -16,7 +16,7 @@ window.createJsonEditor = (options, file) ->
     console?.warn? e
     data = {}
 
-  jsonEditor = $.tmpl("ide/editors/json").appendTo(panel)
+  jsonEditor = $.tmpl("tmpls/ide/editors/json").appendTo(panel)
 
   propertyEditor = jsonEditor.find('table').propertyEditor(data)
 

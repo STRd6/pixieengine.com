@@ -32,6 +32,6 @@ class Pixie.Views.Tags.Tags extends Backbone.View
         tags.push tag.name unless tags.include(tag.name)
 
     for name in tags
-      $(@el).append($.tmpl('tags/tag', {name: name}))
+      $(@el).append($.tmpl('tmpls/tags/tag', {name: name}))
 
     return @

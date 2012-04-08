@@ -30,7 +30,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       searchable = new Views.Searchable
         collection: @collection
 
-      @el.append($.tmpl('sprites/header', @collection.pageInfo()))
+      @el.append($.tmpl('tmpls/sprites/header', @collection.pageInfo()))
       @el.append(pages.render().el)
 
       unless @options.profile
@@ -39,7 +39,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
       @collection.bind 'reset', (collection) =>
         if @options.profile
-          @$('.header').replaceWith $.tmpl('sprites/header', @collection.pageInfo())
+          @$('.header').replaceWith $.tmpl('tmpls/sprites/header', @collection.pageInfo())
 
         @$('.sprite_container').remove()
         collection.each(@addSprite)
