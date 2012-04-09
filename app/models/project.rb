@@ -49,7 +49,7 @@ class Project < ActiveRecord::Base
   scope :featured, where(:featured => true)
   scope :tutorials, where(:tutorial => true).order('id ASC')
   scope :arcade, where(:arcade => true)
-  scope :recently_edited, order('updated_at DESC').limit(20)
+  scope :recently_edited, order('saved_at DESC').limit(20)
 
   scope :none
 
@@ -95,7 +95,7 @@ class Project < ActiveRecord::Base
       FROM projects
       WHERE projects.user_id = #{user.id}
       )
-      ORDER BY updated_at DESC
+      ORDER BY saved_at DESC
       eos
   end
 
@@ -254,7 +254,7 @@ class Project < ActiveRecord::Base
     #TODO: Verify path is not sketch
     return if path.index ".."
 
-    touch
+    touch :saved_at
     file_path = File.join self.path, path
 
     dir_path = file_path.split("/")[0...-1].join("/")
@@ -548,7 +548,7 @@ class Project < ActiveRecord::Base
       file.write(JSON.pretty_generate(manifest_json))
     end
   end
-  
+
   def update_old_compiled_js_file
     old_name = config[:name] || title
 
@@ -556,7 +556,7 @@ class Project < ActiveRecord::Base
     new_path = File.join path, COMPILED_FILE_NAME
 
     if File.exist? old_path
-      FileUtils.mv old_path, new_path 
+      FileUtils.mv old_path, new_path
     end
   end
 
