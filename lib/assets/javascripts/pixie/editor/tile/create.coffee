@@ -20,7 +20,7 @@ Pixie.Editor.Tile.create = (options) ->
     tileHeight: 32
   , options)
 
-  tileEditor = $.tmpl("editors/tile/editor")
+  tileEditor = $.tmpl("tmpls/editors/tile/editor")
 
   debugMode = false
   dirty = false
@@ -162,7 +162,7 @@ Pixie.Editor.Tile.create = (options) ->
 
   addNewLayer = (layerName) ->
     layerName ||= "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
-    $.tmpl("editors/tile/layer_select",
+    $.tmpl("tmpls/editors/tile/layer_select",
       name: layerName
     ).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
 
@@ -317,7 +317,7 @@ Pixie.Editor.Tile.create = (options) ->
     rowY = undefined
     row = undefined
 
-    savedSelection = $.tmpl("editors/tile/saved_selection",
+    savedSelection = $.tmpl("tmpls/editors/tile/saved_selection",
       text: "Selection" + (++savedSelectionCount)
     ).appendTo(tileEditor.find(".saved_selections"))
 
@@ -678,7 +678,7 @@ Pixie.Editor.Tile.create = (options) ->
 
       addScreenLayer()
 
-      $.tmpl("editors/tile/layer_select",
+      $.tmpl("tmpls/editors/tile/layer_select",
         name: layer.name
       ).appendTo(tileEditor.find(layerSelect))
 

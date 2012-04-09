@@ -43,7 +43,7 @@ key_join = (hotkey) ->
 hotkey_markup = (hotkeys, title, template) ->
   container = $('<div><h2 class="header">' + title + '</h2></div>')
   $.each hotkeys, (i, data) ->
-    template.tmpl(key_join(data)).appendTo(container)
+    template.tmpl("tmpls/#{key_join(data)}").appendTo(container)
 
   return container
 

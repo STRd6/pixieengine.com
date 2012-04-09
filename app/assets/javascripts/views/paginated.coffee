@@ -45,7 +45,7 @@ namespace "Pixie.Views", (Views) ->
     render: =>
       @el.empty()
 
-      pages = $.tmpl('pagination', @collection.pageInfo())
+      pages = $.tmpl('tmpls/pagination', @collection.pageInfo())
 
       @el.html(pages)
 

@@ -1,6 +1,8 @@
 @import util
 @import partials/base
 
+$font: #222
+
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, p, pre, form, fieldset, input, textarea, p, blockquote, th, td
   margin: 0
   padding: 0
@@ -35,11 +37,14 @@ caption, th
   text-align: left
 
 h1, h2, h3, h4, h5, h6
-  color: $light_text
+  color: $font
   font-size: 100%
   font-weight: normal
   margin: 0
   padding: 0
+
+h2
+  font-size: 1.6em
 
 q
   &:before, &:after
@@ -58,11 +63,11 @@ html
 body
   font-size: 0.75em !important
   padding: 15px 0
-  color: #000
+  color: $font
   font-family: 'Lucida Grande', 'Lucida Sans Unicode', sans-serif
 
 input, select, textarea
-  color: #000
+  color: $font
 
 a
   &:link, &:hover, &:active, &:visited
@@ -94,8 +99,8 @@ div
     min-width: 100px
     max-width: 250px
     div.menu
-      +border-radius(15px)
-      +box-shadow(#c4c4c4 0 0 10px)
+      +border-radius(5px)
+      +box-shadow(#c4c4c4 0 0 4px inset)
 
       height: 100%
       margin: 0 15px 0 -15px
@@ -115,7 +120,9 @@ div
         &:hover
           text-decoration: underline
     ul.classList a
-      font-family: Consolas, "Courier New", Courier, monospace
+      color: #555
+      font-family: 'Lucida Grande', Arial, sans-serif
+      font-size: 15px
 
   &.content
     min-width: 300px
@@ -138,21 +145,22 @@ div
       top: 0.5em
 
       span
-        font-family: Consolas, "Courier New", Courier, monospace
+        font-family: 'Lucida Grande', Arial, sans-serif
     p.summary
       font-size: 1.2em
     ul *
       &.classname a, &.filename a
-        font-family: Consolas, "Courier New", Courier, monospace
+        font-family: 'Lucida Grande', Arial, sans-serif
         text-decoration: none
         font-weight: bold
       &.classname a:hover, &.filename a:hover
         text-decoration: underline
     div
       &.props
-        +border-radius(5px)
-        +box-shadow(#bbb 0 0 5px)
+        +border-radius(3px)
+        +box-shadow(rgba(0, 0, 0, 0.25) 0 0 4px inset)
 
+        background-color: #efefef
         position: relative
         margin-bottom: 1em
         padding: 1em
@@ -191,12 +199,24 @@ table.summaryTable
   td
     &.attributes
       width: 1%
-      font-family: Consolas, "Courier New", Courier, monospace
+      font-family: 'Lucida Grande', Arial, sans-serif
       color: #666
     &.nameDescription
       width: 65%
       div.fixedFont
+        display: inline-block
         font-weight: bold
+
+      .description
+        display: inline-block
+
+        code
+          +border-radius(3px)
+          +box-shadow(rgba(0, 0, 0, 0.4) 0 0 5px inset)
+
+          background-color: rgba(255, 255, 255, 0.7)
+          display: inline-block
+          padding: 3px 5px
 
   div.description
     color: #333
@@ -233,17 +253,22 @@ ul.fileList li
   margin-bottom: 1.5em
 
 .fixedFont
-  font-family: Consolas, "Courier New", Courier, monospace
+  font-family: 'Lucida Grande', Arial, sans-serif
 
   &.heading
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1)
+    +box-shadow(rgba(0, 0, 0, 0.35) 0 -1px 0)
+
+    border-top: 1px solid rgba(0, 0, 0, 0.1)
     font-size: 1.5em
     line-height: 1.1em
     margin-bottom: 0.5em
     margin-top: 0.5em
-    padding-top: 1em
+    padding-top: 0.5em
 
     &:first-child
+      +box-shadow(none)
+
+      border-top: none
       margin-top: 0
       padding-top: 0
 
@@ -253,12 +278,17 @@ ul.fileList li
       font-weight: bold
 
 code
+  display: block
+
   pre
     background-color: #FFFDE8
     border: 1px solid rgba(0, 0, 0, 0.1)
+    display: inline-block
+    font-family: Monaco, "Courier New", Courier, monospace
+    font-size: 12px
     margin-bottom: 0.5em
     margin-top: 0.5em
-    padding: 0.5em
+    padding: 1em
 
 pre.code
   +border-radius(2px)
@@ -267,7 +297,7 @@ pre.code
   padding: 10px
   border: 1px solid #ccc
   overflow: auto
-  font-family: Consolas, "Courier New", Courier, monospace
+  font-family: Monaco, "Courier New", Courier, monospace
   background: #eee
 
 .light

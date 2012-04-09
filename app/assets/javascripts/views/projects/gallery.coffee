@@ -22,7 +22,7 @@ class Pixie.Views.Projects.Gallery extends Backbone.View
 
     @collection.bind 'reset', (collection) =>
       $(@el).find('.header').remove()
-      $(@el).append $.tmpl("projects/header", @collection.pageInfo())
+      $(@el).append $.tmpl("tmpls/projects/header", @collection.pageInfo())
 
       $(@el).find('.project').remove()
       collection.each(@addProject)
@@ -36,5 +36,5 @@ class Pixie.Views.Projects.Gallery extends Backbone.View
     $(@el).append(view.render().el)
 
   updatePagination: =>
-    $(@el).find('.pagination').html $.tmpl('pagination', @collection.pageInfo())
+    $(@el).find('.pagination').html $.tmpl('tmpls/pagination', @collection.pageInfo())
 
