@@ -4,7 +4,7 @@
 
 #= require pixie/editor/animation/models/sequence
 
-#= require tmpls/editors/animation/frames
+#= require tmpls/editors/animation/frames.js.tmpl.haml
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   {Models, Command} = Pixie.Editor.Animation

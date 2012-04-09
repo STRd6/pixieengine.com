@@ -12,7 +12,7 @@
  @ported_by Matt Diebolt http://pixieengine.com
 ###
 
-#= require tmpls/color_picker
+#= require tmpls/color_picker.js.tmpl.haml
 
 (($) ->
   $.fn.colorPicker = (options) ->

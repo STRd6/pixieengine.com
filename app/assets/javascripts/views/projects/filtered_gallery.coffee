@@ -7,8 +7,8 @@
 #= require models/projects_collection
 #= require models/paginated_collection
 
-#= require tmpls/projects/filtered_header
-#= require tmpls/pagination
+#= require tmpls/projects/filtered_header.js.tmpl.haml
+#= require tmpls/pagination.js.tmpl.haml
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

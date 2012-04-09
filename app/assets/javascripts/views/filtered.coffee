@@ -2,7 +2,7 @@
 #= require backbone
 #= require corelib
 
-#= require tmpls/filters
+#= require tmpls/filters.js.tmpl.haml
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

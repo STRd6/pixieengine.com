@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/views/editor.js'
+#= require pixie/editor/animation/views/editor
 
 describe "Animation Editor", ->
   beforeEach ->

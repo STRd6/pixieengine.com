@@ -1,4 +1,4 @@
-#= require tmpls/ide/editors/entity
+#= require tmpls/ide/editors/entity.js.tmpl.haml
 
 window.createEntityEditor = (options, file) ->
   {panel} = options

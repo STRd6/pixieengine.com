@@ -1,5 +1,5 @@
-require '/assets/pixie/editor/animation/models/frames_collection.js'
-require '/assets/pixie/editor/animation/models/sequence.js'
+#= require pixie/editor/animation/models/frames_collection
+#= require pixie/editor/animation/models/sequence
 
 describe "Sequence model", ->
   it "should contain a frames collection", ->

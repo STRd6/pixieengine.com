@@ -1,7 +1,7 @@
 #= require codemirror2/codemirror
 #= require codemirror2/coffeescript
 
-#= require tmpls/pixie/console
+#= require tmpls/pixie/console.js.tmpl.haml
 
 window.Pixie ||= {}
 

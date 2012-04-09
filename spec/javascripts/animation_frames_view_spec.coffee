@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/views/frames.js'
+#= require pixie/editor/animation/views/frames
 
 beforeEach ->
   $('#test').append('<section class="backbone_lebenmeister"></section>')

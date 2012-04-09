@@ -1,4 +1,4 @@
-#= require tmpls/editors/animation/sequences
+#= require tmpls/editors/animation/sequences.js.tmpl.haml
 
 #= require pixie/view
 

@@ -1,7 +1,7 @@
 #= require color_util
 #= require_tree .
 
-#= require tmpls/editors/pixel
+#= require tmpls/editors/pixel.js.tmpl.haml
 
 #= require pixie/ui
 

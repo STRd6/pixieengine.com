@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/color_slider
+#= require tmpls/color_slider.js.tmpl.haml
 
 class TestModel extends Backbone.Model
   defaults:

@@ -1,5 +1,5 @@
-require '/assets/models/people_collection.js'
-require '/assets/models/person.js'
+#= require models/people_collection
+#= require models/person
 
 describe "Person model", ->
   it "should have a URL based on the collection url", ->

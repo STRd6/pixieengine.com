@@ -1,5 +1,5 @@
 
-#= require tmpls/pixie/window
+#= require tmpls/pixie/window.js.tmpl.haml
 
 window.Pixie ||= {}
 

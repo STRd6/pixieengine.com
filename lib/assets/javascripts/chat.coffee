@@ -1,5 +1,5 @@
-#= require tmpls/chat/recent
-#= require tmpls/chat/active_user
+#= require tmpls/chat/recent.js.tmpl.haml
+#= require tmpls/chat/active_user.js.tmpl.haml
 
 namespace "Pixie.Chat", (Chat) ->
   Chat.create = (current_user) ->

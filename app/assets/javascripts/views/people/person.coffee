@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/people/person
+#= require tmpls/people/person.js.tmpl.haml
 
 namespace "Pixie.Views.People", (People) ->
   class People.Person extends Backbone.View

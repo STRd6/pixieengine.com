@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/views/tileset.js'
+#= require pixie/editor/animation/views/tileset
 
 beforeEach ->
   $('#test').append('<section class="backbone_lebenmeister"></section>')

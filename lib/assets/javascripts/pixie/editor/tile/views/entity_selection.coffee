@@ -1,5 +1,5 @@
 #= require pixie/view
-#= require tmpls/pixie/editor/tile/entity_selection
+#= require tmpls/pixie/editor/tile/entity_selection.js.tmpl.haml
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models

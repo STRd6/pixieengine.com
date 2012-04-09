@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/models/player.js'
+#= require pixie/editor/animation/models/player
 
 beforeEach ->
   @model = new Pixie.Editor.Animation.Models.AnimationPlayer

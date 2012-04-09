@@ -1,4 +1,4 @@
-require '/assets/models/paginated_collection.js'
+#= require models/paginated_collection
 
 beforeEach ->
   @collection = new Pixie.Models.PaginatedCollection

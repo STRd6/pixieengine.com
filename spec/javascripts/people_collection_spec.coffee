@@ -1,4 +1,4 @@
-require '/assets/models/people_collection.js'
+#= require models/people_collection
 
 beforeEach ->
   @collection = new Pixie.Models.PeopleCollection

@@ -6,7 +6,7 @@
 #= require views/sprites/sprite
 #= require models/sprites_collection
 
-#= require tmpls/sprites/header
+#= require tmpls/sprites/header.js.tmpl.haml
 
 #= require pixie/view
 

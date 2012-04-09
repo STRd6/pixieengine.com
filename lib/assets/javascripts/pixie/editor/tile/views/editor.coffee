@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/editor
+#= require tmpls/pixie/editor/tile/editor.js.tmpl.haml
 
 #= require pixie/editor/base
 #= require pixie/editor/undo

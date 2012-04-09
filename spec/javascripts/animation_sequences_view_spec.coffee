@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/views/sequences.js'
+#= require pixie/editor/animation/views/sequences
 
 beforeEach ->
   $('#test').append($('<nav class="right"></nav>'))

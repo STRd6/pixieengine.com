@@ -1,4 +1,4 @@
-require '/assets/models/sprites_collection.js'
+#= require models/sprites_collection
 
 beforeEach ->
   @collection = new Pixie.Models.SpritesCollection

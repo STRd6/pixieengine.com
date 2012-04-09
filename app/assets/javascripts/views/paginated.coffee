@@ -1,6 +1,6 @@
 #= require underscore
 #= require backbone
-#= require tmpls/pagination
+#= require tmpls/pagination.js.tmpl.haml
 
 #= require pixie/view
 
