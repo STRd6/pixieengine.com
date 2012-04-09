@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120408222314) do
+ActiveRecord::Schema.define(:version => 20120408222315) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20120408222314) do
     t.boolean  "arcade"
     t.datetime "deleted_at"
     t.integer  "memberships_count"
+    t.datetime "saved_at"
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|
