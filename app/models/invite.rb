@@ -14,7 +14,7 @@ class Invite < ActiveRecord::Base
   end
 
   before_validation :on => :create do
-    self.token = ActiveSupport::SecureRandom.hex(8)
+    self.token = SecureRandom.hex(8)
   end
 
   def url
