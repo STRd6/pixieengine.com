@@ -7,8 +7,8 @@
 #= require ../actions
 #= require ../command
 
-#= require tmpls/editors/animation/editor.js.tmpl.haml
-#= require tmpls/editors/animation/help_tips.js.tmpl.haml
+#= require templates/editors/animation/editor
+#= require templates/editors/animation/help_tips
 
 #= require pixie/editor/base
 #= require pixie/view

@@ -1,4 +1,4 @@
-#= require tmpls/ide/editors/json.js.tmpl.haml
+#= require templates/ide/editors/json
 
 window.createJsonEditor = (options, file) ->
   {panel} = options

@@ -25,6 +25,7 @@ gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
+gem "haml-sprockets", :git => "git://github.com/dharanasoft/haml-sprockets.git", :ref => '636a8bcf7aaae64481ae198b7981764592310786'
 gem 'hpricot'
 gem 'html5-boilerplate'
 gem 'json'

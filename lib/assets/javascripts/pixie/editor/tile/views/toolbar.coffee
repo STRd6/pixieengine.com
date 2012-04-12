@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/toolbar.js.tmpl.haml
+#= require templates/pixie/editor/tile/toolbar
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models

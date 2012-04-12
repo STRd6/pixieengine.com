@@ -1,4 +1,4 @@
-#= require tmpls/comments/comment.js.tmpl.haml
+#= require templates/comments/comment
 
 namespace "Pixie.Views.Comments", (Comments) ->
   class Comments.Comment extends Backbone.View

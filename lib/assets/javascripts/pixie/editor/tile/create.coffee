@@ -1,6 +1,6 @@
-#= require tmpls/editors/tile/editor.js.tmpl.haml
-#= require tmpls/editors/tile/layer_select.js.tmpl.haml
-#= require tmpls/editors/tile/saved_selection.js.tmpl.haml
+#= require templates/editors/tile/editor
+#= require templates/editors/tile/layer_select
+#= require templates/editors/tile/saved_selection
 
 Pixie.Editor.Tile ||= {}
 

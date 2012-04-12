@@ -1,0 +1,7 @@
+.header
+  %h2
+    - if(current_user_id && current_user_id == owner_id) { My }
+    Sprites
+  - if(current_user_id && current_user_id == owner_id) {
+  %a.button.complement(href="/pixel-editor") New Sprite
+  - }

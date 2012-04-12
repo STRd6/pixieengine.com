@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/sprites/sprite.js.tmpl.haml
+#= require templates/sprites/sprite
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

@@ -1,0 +1,6 @@
+%li{'data-id' => "${id}"}
+  %hr
+  %span.name= name
+  %span.time= time
+  %span.message= "!{html message}"
+

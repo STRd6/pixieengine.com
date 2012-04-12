@@ -2,7 +2,7 @@
 #= require backbone
 #= require corelib
 
-#= require tmpls/tags/tag.js.tmpl.haml
+#= require templates/tags/tag
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

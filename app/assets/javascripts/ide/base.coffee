@@ -2,4 +2,4 @@
 
 #= require_tree .
 
-#= require tmpls/ide/qunit.js.tmpl.haml
+#= require templates/ide/qunit

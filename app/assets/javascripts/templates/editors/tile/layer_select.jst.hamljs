@@ -1,0 +1,3 @@
+.choice
+  .name= name
+  .show.on

@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/search.js.tmpl.haml
+#= require templates/search
 
 #= require pixie/view
 

@@ -9,8 +9,8 @@
 
 #= require pixie/view
 
-#= require tmpls/people/header.js.tmpl.haml
-#= require tmpls/pagination.js.tmpl.haml
+#= require templates/people/header
+#= require templates/pagination
 
 namespace "Pixie.Views.People", (People) ->
   {Models, Views} = Pixie

@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/dharanasoft/haml-sprockets.git
+  revision: 636a8bcf7aaae64481ae198b7981764592310786
+  ref: 636a8bcf7aaae64481ae198b7981764592310786
+  specs:
+    haml-sprockets (0.0.5)
+      sprockets (~> 2.1.2)
+      tilt (~> 1.3)
+
+GIT
   remote: git://github.com/jdleesmiller/gratr.git
   revision: d96d658abd2466d7542b6aeb54f8c17250a4bbc2
   specs:
@@ -294,6 +303,7 @@ DEPENDENCIES
   growl
   guard-jasmine-headless-webkit!
   haml
+  haml-sprockets!
   hpricot
   html5-boilerplate
   jasmine

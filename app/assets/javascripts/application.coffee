@@ -1,5 +1,6 @@
 #= require rails
 #= require corelib
+#= require haml
 #= require site
 
 #= require codemirror2/codemirror

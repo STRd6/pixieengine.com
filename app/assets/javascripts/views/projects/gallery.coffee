@@ -5,8 +5,8 @@
 #= require models/projects_collection
 #= require models/paginated_collection
 
-#= require tmpls/projects/header.js.tmpl.haml
-#= require tmpls/pagination.js.tmpl.haml
+#= require templates/projects/header
+#= require templates/pagination
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

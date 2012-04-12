@@ -3,7 +3,7 @@
 #= require views/comments/comment
 #= require models/comment
 
-#= require tmpls/comments/header.js.tmpl.haml
+#= require templates/comments/header
 
 namespace "Pixie.Views.Comments", (Comments) ->
   class Comments.Gallery extends Backbone.View

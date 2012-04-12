@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/screen.js.tmpl.haml
+#= require templates/pixie/editor/tile/screen
 #= require ../command
 #= require ../tools
 

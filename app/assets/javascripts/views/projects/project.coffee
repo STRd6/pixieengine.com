@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/projects/project.js.tmpl.haml
+#= require templates/projects/project
 
 window.Pixie ||= {}
 Pixie.Views ||= {}

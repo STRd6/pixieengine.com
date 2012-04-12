@@ -1,0 +1,27 @@
+.spinner_container
+  %img.spinner(src='/assets/ajax-loader.gif')
+  Loading...
+- if(total > 1) {
+- if(prev) {
+%a.prev(href="#") « Previous
+- }
+- } else {
+%span.disabled.previous_page « Previous
+- }
+:each value in range
+- if(page == value) {
+%em.current= page
+- } else {
+- if(value == '...') {
+%span.gap ...
+- } else {
+%a.page(href='#' data-page='${value}') ${value}
+- }
+- }
+- if(next) {
+%a.next(href="#") Next »
+- } else {
+%span.disabled.next_page Next »
+- }
+- }
+

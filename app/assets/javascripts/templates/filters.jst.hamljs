@@ -1,0 +1,7 @@
+:each filter in filters
+- if(filter == activeFilter) {
+%a.filter.button.active(href='#')>= filter
+- } else {
+%a.filter.button(href='#')>= filter
+- }
+

@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/layer_selection.js.tmpl.haml
+#= require templates/pixie/editor/tile/layer_selection
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
