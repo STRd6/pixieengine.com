@@ -1,5 +1,7 @@
 src_files:
-  - "**/*"
+  - jquery/jquery.min.js
+  - jquery/jquery-ui.min.js
+  - application.js
 helpers:
   - helpers/**/*
 spec_files:

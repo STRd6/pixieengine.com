@@ -1,22 +1,5 @@
-# #= require jquery/jquery.min
-# #= require jquery/jquery-ui.min
-# #= require corelib
-# #= require underscore
-# #= require backbone
-# #= require jquery.drop_image_reader
-# #= require jquery.tmpl.min
-# #= require sinon
-# #= require jasmine-jquery
-# #= require jasmine-sinon
-# #= require jquery.simplemodal-1.3.5.min
-# #= require jquery.form
-# #= require jquery.tipsy
-# #= require site
-# #= require jquery.live_edit
-# #= require pixie/ui
-# #= require pixie/editor/base
-# #= require pixie/view
-#
+#= require application
+
 # # fixtures
 # beforeEach ->
 #   @fixtures =
