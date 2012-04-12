@@ -12,5 +12,5 @@ class Pixie.Views.Projects.Project extends Backbone.View
 
   render: =>
     data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.params.id})
-    $(@el).html $.tmpl('tmpls/projects/project', data)
+    $(@el).html $(JST['templates/projects/project'](data))
     return @

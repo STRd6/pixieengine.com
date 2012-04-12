@@ -15,7 +15,7 @@ namespace "Pixie.Views.Comments", (Comments) ->
       pages = new Pixie.Views.Paginated({ collection: @collection })
 
       $(@el).find('.header').remove()
-      $(@el).append $.tmpl('tmpls/comments/header', @collection.pageInfo())
+      $(@el).append $(JST['templates/comments/header'](@collection.pageInfo()))
 
       @collection.bind 'reset', (collection) =>
         $(@el).find('.header').append(pages.render().el)

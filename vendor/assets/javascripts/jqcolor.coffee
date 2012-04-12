@@ -29,7 +29,7 @@
     instanceId = 0
     instance = null
 
-    colorPicker = $.tmpl "tmpls/color_picker"
+    colorPicker = $(JST["templates/color_picker"]())
     slider = colorPicker.find '.hue_selector'
     overlay = colorPicker.find '.color_overlay'
     gradient = colorPicker.find '.slider'

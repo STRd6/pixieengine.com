@@ -11,7 +11,7 @@ window.Pixie ||= {}
     maxHistoryLength: 20
 
   Pixie.Console = (options) ->
-    self = $.tmpl("tmpls/pixie/console")
+    self = $(JST["templates/pixie/console"]())
 
     config = Object.extend {}, DEFAULTS, options
 

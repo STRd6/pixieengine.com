@@ -14,7 +14,7 @@
         %h3 Layers
         %button.new New Layer
         .layer_select
-      .component{ :style => "display: none"}
+      .component(style='display:none;')
         %h3 Properties
         %table.prop_editor
         %button.prop_save Save Properties
@@ -32,7 +32,7 @@
         .tiles
 
     .tools.module.left
-      .tool.primary.secondary{ :"data-tool" => "stamp"}
-      .tool{ :"data-tool" => "eraser"}
-      .tool{ :"data-tool" => "fill"}
-      .tool{ :"data-tool" => "selection"}
+      .tool.primary.secondary('data-tool'='stamp')
+      .tool('data-tool'='eraser')
+      .tool('data-tool'='fill')
+      .tool('data-tool'='selection')

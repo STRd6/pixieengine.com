@@ -4,7 +4,6 @@
 - if(total > 1) {
 - if(prev) {
 %a.prev(href="#") « Previous
-- }
 - } else {
 %span.disabled.previous_page « Previous
 - }

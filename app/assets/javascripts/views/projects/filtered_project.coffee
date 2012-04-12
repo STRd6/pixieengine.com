@@ -12,6 +12,6 @@ class Pixie.Views.Projects.FilteredProject extends Backbone.View
 
   render: =>
     data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.params.id})
-    $(@el).html $.tmpl('tmpls/projects/filtered_project', data)
+    $(@el).html $(JST['templates/projects/filtered_project'](data))
     return @
 

@@ -10,7 +10,7 @@ namespace "Pixie", (Pixie) ->
 
       # Set up HTML if template exists
       if @template?
-        @el.html $.tmpl("tmpls/#{@template}")
+        @el.html $(JST["templates/#{@template}"]())
 
       # @settings and @editor now backbone special too
       @settings = @options.settings
