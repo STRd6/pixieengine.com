@@ -15,7 +15,7 @@ group :production do
 end
 
 gem 'acts-as-taggable-on'
-gem "authlogic" #, :git => "git://github.com/odorcicd/authlogic.git", :branch => "rails3"
+gem "authlogic"
 gem "aws-s3", :require => "aws/s3"
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
@@ -27,8 +27,6 @@ gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'hpricot'
 gem 'html5-boilerplate'
-gem 'jasmine'
-gem 'jasmine-headless-webkit'
 gem 'json'
 gem 'mail'
 gem "mocha"
@@ -50,4 +48,11 @@ group :test do
   gem "shoulda"
   gem "turn", :require => false
   gem "ruby-prof"
+end
+
+group :development, :test do
+  gem 'growl'
+  gem 'guard-jasmine-headless-webkit', :git => 'git://github.com/johnbintz/guard-jasmine-headless-webkit.git'
+  gem "jasmine"
+  gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git', :ref => '724541a2cb3ee7d730dac4eb186b451a510bf11e'
 end
