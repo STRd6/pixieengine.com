@@ -31,7 +31,7 @@ class CommentsController < ApplicationController
     comments = Comment
 
     if params[:user_id].present?
-      comments = comments.for_user(params[:user_id])
+      comments = comments.for_user(User.find_by_display_name!(params[:user_id]))
     end
 
     comments = comments.order("id DESC").paginate(
