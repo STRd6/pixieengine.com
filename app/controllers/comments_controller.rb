@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   respond_to :html, :json
-  before_filter :require_user
+  before_filter :require_user, :except => :index
 
   def create
     comment_params = params[:comment]
