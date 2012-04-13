@@ -21,6 +21,7 @@ namespace "Pixie.Chat", (Chat) ->
       , 100
 
     appendChat = (chat, prevChatUser) ->
+      chat.id = "" unless chat.id?
       chatData = $(JST['templates/chat/recent'](chat))
 
       if chat.name == prevChatUser

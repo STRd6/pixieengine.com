@@ -32,7 +32,7 @@
         .tiles
 
     .tools.module.left
-      .tool.primary.secondary('data-tool'='stamp')
-      .tool('data-tool'='eraser')
-      .tool('data-tool'='fill')
-      .tool('data-tool'='selection')
+      .tool.primary.secondary(data-tool='stamp')
+      .tool(data-tool='eraser')
+      .tool(data-tool='fill')
+      .tool(data-tool='selection')
