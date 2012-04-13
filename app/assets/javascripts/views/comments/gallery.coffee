@@ -6,26 +6,30 @@
 #= require templates/comments/header
 
 namespace "Pixie.Views.Comments", (Comments) ->
+  {Models, Views} = Pixie
+
   class Comments.Gallery extends Backbone.View
     el: '.comments'
 
     initialize: ->
-      @collection = new Pixie.Models.CommentsCollection
+      @collection = new Models.CommentsCollection
 
-      pages = new Pixie.Views.Paginated({ collection: @collection })
+      pages = new Views.Paginated({ collection: @collection })
 
-      $(@el).find('.header').remove()
+      @$('.header').remove()
       $(@el).append $(JST['templates/comments/header'](@collection.pageInfo()))
 
       @collection.bind 'reset', (collection) =>
-        $(@el).find('.header').append(pages.render().el)
+        @$('.header').append(pages.render().el)
 
-        $(@el).find('.comment').remove()
+        @$('.comment').remove()
+
         collection.each(@addComment)
+
         $('.timeago').timeago()
 
         collection.trigger 'afterReset'
 
     addComment: (message) =>
-      commentView = new Pixie.Views.Comments.Comment({ model: message })
+      commentView = new Views.Comments.Comment({ model: message })
       $(@el).append(commentView.render().el)
