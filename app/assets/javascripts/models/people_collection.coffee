@@ -4,23 +4,21 @@
 #= require models/paginated_collection
 #= require models/person
 
-window.Pixie ||= {}
-Pixie.Models ||= {}
+namespace "Pixie.Models", (Models) ->
+  class Models.PeopleCollection extends Models.PaginatedCollection
+    filterPages: (filter) =>
+      # gross
+      filter = 'none' if filter == 'all'
 
-class Pixie.Models.PeopleCollection extends Pixie.Models.PaginatedCollection
-  filterPages: (filter) =>
-    # gross
-    filter = 'none' if filter == 'all'
+      @page = 1
+      @params.page = @page
+      @params.filter = filter
+      @fetch()
 
-    @page = 1
-    @params.page = @page
-    @params.filter = filter
-    @fetch()
+    model: Models.Person
 
-  model: Pixie.Models.Person
+    parse: (data) =>
+      super
 
-  parse: (data) =>
-    Pixie.Models.PaginatedCollection.prototype.parse.call(@, data)
-
-  url: ->
-    '/people'
+    url: ->
+      '/people'
