@@ -35,23 +35,24 @@
 
   :coffeescript
     $ ->
-      #{ActiveRecord::Base.include_root_in_json = false}
-
-      sprite_gallery = new window.Pixie.Views.Sprites.Gallery
+      sprite_gallery = new Pixie.Views.Sprites.Gallery
         profile: true
 
       sprite_gallery.collection.url = ->
-        "/#{user.display_name}/sprites"
-      sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
+        #{user_sprites_path(user).to_json}
+      sprite_gallery.collection.per_page = 51
+      sprite_gallery.collection.fetch()
 
-      project_gallery = new window.Pixie.Views.Projects.Gallery
+      project_gallery = new Pixie.Views.Projects.Gallery
+      project_gallery.collection.per_page = 6
       project_gallery.collection.url = ->
-        "/#{user.display_name}/projects"
-      project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
+        #{user_projects_path(user).to_json}
+      project_gallery.collection.fetch()
 
-      comments_gallery = new window.Pixie.Views.Comments.Gallery
+      comments_gallery = new Pixie.Views.Comments.Gallery
+      comments_gallery.collection.per_page = 10
       comments_gallery.collection.url = ->
-        "/#{user.display_name}/comments"
+        #{user_comments_path(user).to_json}
       comments_gallery.collection.fetch()
 
       $('.project .delete').live 'click', (e) ->

@@ -330,7 +330,9 @@ class ProjectsController < ApplicationController
   end
 
   def filter_results
-    @projects ||= if (filter == "own" || filter == "my_projects")
+    @projects ||= if params[:user_id].present?
+      Project.for_user(User.find_by_display_name!(params[:user_id]))
+    elsif (filter == "own" || filter == "my_projects")
       if current_user
         Project.for_user(current_user)
       else
@@ -412,7 +414,11 @@ class ProjectsController < ApplicationController
   helper_method :default_project_config
 
   def per_page
-    24
+    if params[:per_page].blank?
+      24
+    else
+      params[:per_page].to_i
+    end
   end
 
   def redirect_to_user_page_if_logged_in

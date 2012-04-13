@@ -60,9 +60,8 @@
     = link_to project.user.display_name, project.user
 
   .actions
-    %a.button(href="#{ide_project_path(project)}")
-      .static-application_edit
-      IDE
+    = button_link "Run", "application_go", fullscreen_project_path(project)
+    = button_link "IDE", "application_edit", ide_project_path(project)
     - if has_access?
       %a.button(href="#{edit_project_path(project)}")
         .static-pencil

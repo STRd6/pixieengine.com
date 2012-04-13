@@ -36,6 +36,8 @@ class Sprite < ActiveRecord::Base
     {:conditions => {:id => ids}}
   }
 
+  scope :for_user, lambda {|user| where(:user_id => user)}
+
   scope :search, lambda{ |search|
     return {} if search.blank?
 
@@ -253,8 +255,7 @@ class Sprite < ActiveRecord::Base
       :title => display_name,
       :url => image.url(:thumb),
       :user_id => user_id,
-      :width => width,
-      :tags => tag_counts
+      :width => width
     }
   end
 

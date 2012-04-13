@@ -112,11 +112,9 @@ PixieStrd6Com::Application.routes.draw do
   # the people resource needs to go near the bottom because the
   # vanity urls will crush a bunch of other normal routes, such as login
   resources :people, :controller => :users, :as => :users, :except => :index, :path => '/' do
-    member do
-      get :comments
-      get :projects
-      get :sprites
+    resources :comments, :projects, :sprites
 
+    member do
       post :add_to_collection
       post :set_avatar
     end

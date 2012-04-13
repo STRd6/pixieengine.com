@@ -44,6 +44,7 @@ namespace "Pixie.Models", (Models) ->
       @trigger "fetching"
 
       @params.page = @page
+      @params.per_page = @per_page
 
       options.data = @params
 
