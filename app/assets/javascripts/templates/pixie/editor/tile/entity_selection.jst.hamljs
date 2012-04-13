@@ -1,8 +1,8 @@
 %h3
   Entities
 .tile_actions.button_group
-  %button.new>
+  %button.new
     New
-  %button.remove>
+  %button.remove
     Delete
 .entities

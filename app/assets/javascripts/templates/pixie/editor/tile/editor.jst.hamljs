@@ -6,8 +6,8 @@
       %h3 Instance Properties
       %table.prop_editor
       .button_group
-        %button.prop_save> Save
-        %button.prop_cancel> Cancel
+        %button.prop_save Save
+        %button.prop_cancel Cancel
       %hr
 
   .module.left
