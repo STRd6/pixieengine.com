@@ -1,4 +1,4 @@
-%li{'data-id' => "#{id}"}
+%li('data-id'="#{id}")
   %a(href="#{user_path}" target="_blank" style="color: ##{color};")
     %img(src="#{avatar}")
     = display_name

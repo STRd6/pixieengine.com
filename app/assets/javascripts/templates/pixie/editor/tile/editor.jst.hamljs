@@ -2,7 +2,7 @@
   .actions.top
 
   .module.right
-    .component{ :style => "display: none"}
+    .component(style='display: none')
       %h3 Instance Properties
       %table.prop_editor
       .button_group
