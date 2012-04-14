@@ -5,6 +5,6 @@ end
 
 desc 'Run jasmine specs'
 task :jhw do
-  sh %[bundle exec jasmine-headless-webkit -q]
+  sh %[bundle exec jasmine-headless-webkit -cq]
 end
 
