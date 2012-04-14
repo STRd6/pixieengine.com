@@ -28,6 +28,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
     selectTool: ({currentTarget}) =>
       selectedTool = $(currentTarget)
 
+      @editor.$el.css('cursor', Pixie.Editor.Tile.tools[selectedTool.data('tool')]?.cursor || "pointer")
+
       @settings.set
         activeTool: selectedTool.data "tool"
 
