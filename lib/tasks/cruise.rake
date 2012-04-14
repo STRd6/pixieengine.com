@@ -1,5 +1,5 @@
 desc 'Continuous Deployment'
-task :cruise => ['db:migrate', :test] do
+task :cruise => ['db:migrate', :jhw, :test] do
   system 'cap deploy'
 end
 
