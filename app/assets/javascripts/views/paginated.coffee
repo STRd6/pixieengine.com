@@ -1,6 +1,6 @@
 #= require underscore
 #= require backbone
-#= require tmpls/pagination
+#= require templates/pagination
 
 #= require pixie/view
 
@@ -45,7 +45,7 @@ namespace "Pixie.Views", (Views) ->
     render: =>
       @el.empty()
 
-      pages = $.tmpl('tmpls/pagination', @collection.pageInfo())
+      pages = $(JST['templates/pagination'](@collection.pageInfo()))
 
       @el.html(pages)
 

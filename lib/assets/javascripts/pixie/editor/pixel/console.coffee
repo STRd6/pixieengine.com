@@ -49,5 +49,10 @@ Pixie.Editor.Pixel.Console = (I, self) ->
     perform: ->
       consoleWindow.toggle()
 
+      # hack: this text is here to ensure
+      # line numbers are visible when the console
+      # is opened for the first time.
+      console.val("# execute code using the editor's internal methods") if console.val() is ''
+
   return {}
 

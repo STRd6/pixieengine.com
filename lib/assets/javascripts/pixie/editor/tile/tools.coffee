@@ -2,9 +2,11 @@
 
 namespace "Pixie.Editor.Tile", (Tile) ->
   {Command, Models} = Tile
+  IMAGE_DIR = '/assets/tools/'
 
   Tile.tools =
     stamp:
+      cursor: "url(" + IMAGE_DIR + "stamp.png) 16 8, default"
       start: ->
       enter: ({x, y, layer, entity, execute}) ->
         if layer and entity
@@ -25,6 +27,7 @@ namespace "Pixie.Editor.Tile", (Tile) ->
       end: ->
 
     eraser:
+      cursor: "url(" + IMAGE_DIR + "eraser.png) 4 14, default"
       start: ->
       enter: ({x, y, layer, execute})->
         if layer
@@ -36,6 +39,7 @@ namespace "Pixie.Editor.Tile", (Tile) ->
       end: ->
 
     fill:
+      cursor: "url(" + IMAGE_DIR + "fill.png) 4 14, default"
       start: ({x, y, layer, entity, execute, selection, settings}) ->
         return unless entity and layer
 
@@ -123,6 +127,7 @@ namespace "Pixie.Editor.Tile", (Tile) ->
       end: ->
 
     selection:
+      cursor: "url(" + IMAGE_DIR + "selection.png) 4 14, default"
       start: ({x, y, selection}) ->
         selection.set {
           active: true

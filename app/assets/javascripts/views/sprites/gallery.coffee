@@ -6,7 +6,7 @@
 #= require views/sprites/sprite
 #= require models/sprites_collection
 
-#= require tmpls/sprites/header
+#= require templates/sprites/header
 
 #= require pixie/view
 
@@ -30,7 +30,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       searchable = new Views.Searchable
         collection: @collection
 
-      @el.append($.tmpl('tmpls/sprites/header', @collection.pageInfo()))
+      @el.append($(JST['templates/sprites/header'](@collection.pageInfo())))
       @el.append(pages.render().el)
 
       unless @options.profile
@@ -39,7 +39,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
       @collection.bind 'reset', (collection) =>
         if @options.profile
-          @$('.header').replaceWith $.tmpl('tmpls/sprites/header', @collection.pageInfo())
+          @$('.header').replaceWith $(JST['templates/sprites/header'](@collection.pageInfo()))
 
         @$('.sprite_container').remove()
         collection.each(@addSprite)

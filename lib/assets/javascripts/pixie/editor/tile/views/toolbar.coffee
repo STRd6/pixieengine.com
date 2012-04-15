@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/toolbar
+#= require templates/pixie/editor/tile/toolbar
 
 namespace "Pixie.Editor.Tile.Views", (Views) ->
   Models = Pixie.Editor.Tile.Models
@@ -27,6 +27,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     selectTool: ({currentTarget}) =>
       selectedTool = $(currentTarget)
+
+      @editor.$el.css('cursor', Pixie.Editor.Tile.tools[selectedTool.data('tool')]?.cursor || "pointer")
 
       @settings.set
         activeTool: selectedTool.data "tool"

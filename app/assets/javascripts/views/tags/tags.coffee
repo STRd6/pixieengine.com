@@ -2,7 +2,7 @@
 #= require backbone
 #= require corelib
 
-#= require tmpls/tags/tag
+#= require templates/tags/tag
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
@@ -33,6 +33,6 @@ class Pixie.Views.Tags.Tags extends Backbone.View
           tags.push tag.name unless tags.include(tag.name)
 
     for name in tags
-      $(@el).append($.tmpl('tmpls/tags/tag', {name: name}))
+      $(@el).append($(JST['templates/tags/tag']({name: name})))
 
     return @

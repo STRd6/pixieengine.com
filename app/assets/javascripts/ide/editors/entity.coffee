@@ -1,4 +1,4 @@
-#= require tmpls/ide/editors/entity
+#= require templates/editors/entity
 
 window.createEntityEditor = (options, file) ->
   {panel} = options
@@ -18,7 +18,7 @@ window.createEntityEditor = (options, file) ->
     console?.warn? e
     data = defaults
 
-  entityEditor = $.tmpl("tmpls/ide/editors/entity").appendTo(panel)
+  entityEditor = $(JST["templates/editors/entity"]()).appendTo(panel)
 
   propertyEditor = entityEditor.find('table').propertyEditor(data)
 

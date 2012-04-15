@@ -1,0 +1,4 @@
+%label
+  %h3= name.humanize()
+  %input(name="#{name}" type="text")
+  %input(name="#{name}" type="range" min="0" max="255")

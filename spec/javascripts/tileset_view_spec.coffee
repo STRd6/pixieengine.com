@@ -1,24 +1,25 @@
-require '/assets/pixie/editor/animation/views/tileset.js'
+#= require pixie/editor/animation/views/tileset
 
-beforeEach ->
-  $('#test').append('<section class="backbone_lebenmeister"></section>')
-  @view = new Pixie.Editor.Animation.Views.Editor
+describe 'Tileset View', ->
+  beforeEach ->
+    $('#test').append('<section class="backbone_lebenmeister"></section>')
+    @view = new Pixie.Editor.Animation.Views.Editor
 
-  @collection = new Backbone.Collection
+    @collection = new Backbone.Collection
 
-  @model = new Backbone.Model
-    frames: [{src: ''}]
+    @model = new Backbone.Model
+      frames: [{src: ''}]
 
-  @framesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "TilesCollection").returns(@collection)
+    @framesCollectionStub = sinon.stub(Pixie.Editor.Animation.Models, "TilesCollection").returns(@collection)
 
-afterEach ->
-  Pixie.Editor.Animation.Models.TilesCollection.restore()
+  afterEach ->
+    Pixie.Editor.Animation.Models.TilesCollection.restore()
 
-describe "interactions", ->
-  it "should be able to add tiles to the view", ->
-    addFrameSpy = sinon.spy()
+  describe "interactions", ->
+    it "should be able to add tiles to the view", ->
+      addFrameSpy = sinon.spy()
 
-    #fake adding a tile
-    @view.tilesetView.addTile(@model)
+      #fake adding a tile
+      @view.tilesetView.addTile(@model)
 
-    expect($(@view.el).find('.sprites').children().length).toBeTruthy()
+      expect($(@view.el).find('.sprites').children().length).toBeTruthy()

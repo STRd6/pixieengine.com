@@ -1,0 +1,38 @@
+.editor.tile_editor
+  .content
+    %section
+      .screen
+        .layers
+          .cursor
+          .selection
+
+    .actions.top
+      %button.save Save
+
+    .module.right
+      .component
+        %h3 Layers
+        %button.new New Layer
+        .layer_select
+      .component(style='display:none;')
+        %h3 Properties
+        %table.prop_editor
+        %button.prop_save Save Properties
+      .component
+        %h3 Saved Selections
+        .saved_selections
+      .component.tile_select
+        %h3
+          Entities
+        .tile_actions
+          %button.new_tile
+            New
+          %button.delete_tile
+            Delete
+        .tiles
+
+    .tools.module.left
+      .tool.primary.secondary(data-tool='stamp')
+      .tool(data-tool='eraser')
+      .tool(data-tool='fill')
+      .tool(data-tool='selection')

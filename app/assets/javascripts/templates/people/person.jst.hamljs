@@ -1,0 +1,7 @@
+%h2.title
+  %a(href="/#{display_name}")= display_name
+.thumb
+  %a(href="#{display_name}")
+    %img(alt="#{display_name}" src="#{avatar_src}" title="#{display_name}")
+%p.description= description
+

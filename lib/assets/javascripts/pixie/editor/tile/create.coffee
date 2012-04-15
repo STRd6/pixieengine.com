@@ -1,6 +1,6 @@
-#= require tmpls/editors/tile/editor
-#= require tmpls/editors/tile/layer_select
-#= require tmpls/editors/tile/saved_selection
+#= require templates/editors/tile/editor
+#= require templates/editors/tile/layer_select
+#= require templates/editors/tile/saved_selection
 
 Pixie.Editor.Tile ||= {}
 
@@ -20,7 +20,7 @@ Pixie.Editor.Tile.create = (options) ->
     tileHeight: 32
   , options)
 
-  tileEditor = $.tmpl("tmpls/editors/tile/editor")
+  tileEditor = $(JST["templates/editors/tile/editor"]())
 
   debugMode = false
   dirty = false
@@ -162,9 +162,9 @@ Pixie.Editor.Tile.create = (options) ->
 
   addNewLayer = (layerName) ->
     layerName ||= "Layer " + (tileEditor.find(".layer_select .choice").length + 1)
-    $.tmpl("tmpls/editors/tile/layer_select",
+    $(JST["templates/editors/tile/layer_select"]({
       name: layerName
-    ).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
+    })).appendTo(tileEditor.find(layerSelect)).find('.name').mousedown()
 
     addScreenLayer()
 
@@ -317,9 +317,9 @@ Pixie.Editor.Tile.create = (options) ->
     rowY = undefined
     row = undefined
 
-    savedSelection = $.tmpl("tmpls/editors/tile/saved_selection",
+    savedSelection = $(JST["templates/editors/tile/saved_selection"]({
       text: "Selection" + (++savedSelectionCount)
-    ).appendTo(tileEditor.find(".saved_selections"))
+    })).appendTo(tileEditor.find(".saved_selections"))
 
     preview = savedSelection.find(".preview")
 
@@ -678,9 +678,9 @@ Pixie.Editor.Tile.create = (options) ->
 
       addScreenLayer()
 
-      $.tmpl("tmpls/editors/tile/layer_select",
+      $(JST["templates/editors/tile/layer_select"]({
         name: layer.name
-      ).appendTo(tileEditor.find(layerSelect))
+      })).appendTo(tileEditor.find(layerSelect))
 
       if tiles = layer.tiles
         tiles.each (row, y) ->

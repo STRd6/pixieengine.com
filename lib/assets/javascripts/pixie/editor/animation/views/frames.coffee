@@ -4,7 +4,7 @@
 
 #= require pixie/editor/animation/models/sequence
 
-#= require tmpls/editors/animation/frames
+#= require templates/editors/animation/frames
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   {Models, Command} = Pixie.Editor.Animation

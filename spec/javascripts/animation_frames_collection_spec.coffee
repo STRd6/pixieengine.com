@@ -1,4 +1,4 @@
-require '/assets/pixie/editor/animation/models/frames_collection.js'
+#= require pixie/editor/animation/models/frames_collection
 
 beforeEach ->
   @collection = new Pixie.Editor.Animation.Models.FramesCollection

@@ -1,4 +1,4 @@
-#= require tmpls/ide/editors/json
+#= require templates/editors/json
 
 window.createJsonEditor = (options, file) ->
   {panel} = options
@@ -16,7 +16,7 @@ window.createJsonEditor = (options, file) ->
     console?.warn? e
     data = {}
 
-  jsonEditor = $.tmpl("tmpls/ide/editors/json").appendTo(panel)
+  jsonEditor = $(JST["templates/editors/json"]()).appendTo(panel)
 
   propertyEditor = jsonEditor.find('table').propertyEditor(data)
 

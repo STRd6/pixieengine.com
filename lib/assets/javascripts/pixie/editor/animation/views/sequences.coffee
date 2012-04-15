@@ -1,4 +1,4 @@
-#= require tmpls/editors/animation/sequences
+#= require templates/editors/animation/sequences
 
 #= require pixie/view
 

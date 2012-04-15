@@ -1,7 +1,7 @@
 #= require color_util
 #= require_tree .
 
-#= require tmpls/editors/pixel
+#= require templates/editors/pixel
 
 #= require pixie/ui
 
@@ -46,7 +46,7 @@
     I.pixelWidth = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
     I.pixelHeight = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
-    self = $.tmpl("tmpls/editors/pixel")
+    self = $(JST["templates/editors/pixel"]())
 
     content = self.find(".content")
     viewport = self.find(".viewport")

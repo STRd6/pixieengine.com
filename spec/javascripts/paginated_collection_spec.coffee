@@ -1,11 +1,11 @@
-require '/assets/models/paginated_collection.js'
-
-beforeEach ->
-  @collection = new Pixie.Models.PaginatedCollection
-  @collection.url = '/tests'
-  expect(@collection.pageInfo().page).toEqual(1)
+#= require models/paginated_collection
 
 describe "Paginated collection", ->
+  beforeEach ->
+    @collection = new Pixie.Models.PaginatedCollection
+    @collection.url = '/tests'
+    expect(@collection.pageInfo().page).toEqual(1)
+
   describe "page navigation", ->
     it "should move to the next page", ->
       fetchSpy = sinon.spy(@collection, 'fetch')
