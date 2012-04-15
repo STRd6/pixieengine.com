@@ -28,13 +28,13 @@ class CommentsController < ApplicationController
   end
 
   def index
-    comments = Comment
+    @comments = Comment
 
     if params[:user_id].present?
-      comments = comments.for_user(User.find_by_display_name!(params[:user_id]))
+      @comments = @comments.for_user(User.find_by_display_name!(params[:user_id]))
     end
 
-    comments = comments.order("id DESC").paginate(
+    @comments = @comments.order("id DESC").paginate(
       :page => page,
       :per_page => per_page
     )
@@ -43,8 +43,8 @@ class CommentsController < ApplicationController
     respond_with(
       page: page,
       per_page: per_page,
-      total: comments.total_pages,
-      models: comments
+      total: @comments.total_pages,
+      models: @comments
     )
   end
 
