@@ -111,7 +111,9 @@
         entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
 
       if mainName = projectConfig.main
-        [main] = tree.getFile(mainName)
+        srcDir = projectConfig.directories.source || 'src'
+
+        main = tree.getFile("\#{srcDir}/\#{mainName}.coffee") || tree.getFile("\#{srcDir}/\#{mainName}.js")
 
         mainCode = compileFileNode(main)
 
