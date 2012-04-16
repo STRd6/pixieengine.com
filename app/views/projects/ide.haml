@@ -216,7 +216,7 @@
     window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
-        window.projectConfig = JSON.parse(tree.getFile('pixie').first().get('contents'))
+        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
       catch e
         console.warn?(e)
         window.projectConfig = {}
@@ -298,8 +298,8 @@
         $tabs.tabs('select', index)
 
       # Hack to pre-load main file, README and tutorials
-      for fileName in ['main', 'README', 'Tutorial']
-        if file = tree.getFile(fileName).first()
+      for fileName in ['src/main.coffee', 'src/main.js', 'README', 'Tutorial.tutorial']
+        if file = tree.getFile(fileName)
           tree.trigger 'openFile', file
 
       $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
