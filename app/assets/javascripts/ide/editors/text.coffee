@@ -1,14 +1,4 @@
-window.createTextEditor = (options, file) ->
-  panel = options.panel
-  {contents, id, language, path} = file.attributes
-
-  savedCode = file.get 'contents'
-
-  if language is "html"
-    language = "xml"
-
-  language ||= "dummy"
-
+window.codeEditor = ({panel, code:savedCode, save}) ->
   editor = CodeMirror panel.get(0),
     autoMatchParens: true
     value: savedCode
@@ -29,9 +19,6 @@ window.createTextEditor = (options, file) ->
 
   $editor = $(editor)
 
-  # HACK: This is so that the editor can be focused when the tab is clicked
-  panel.data textEditor: editor
-
   # Listen for keypresses and update contents.
   processEditorChanges = ->
     currentCode = editor.getValue()
@@ -42,21 +29,35 @@ window.createTextEditor = (options, file) ->
       $editor.trigger('dirty')
 
   $editor.bind "save", ->
-    codeToSave = editor.getValue()
+    savedCode = editor.getValue()
 
-    file.set
-      contents: codeToSave
+    $editor.trigger "clean"
 
-    saveFile
-      contents: codeToSave
-      path: path
-      success: ->
-        # Editor's state may have changed during ajax call
-        if editor.getValue() is codeToSave
-          $editor.trigger "clean"
-        else
-          $editor.trigger "dirty"
+    save(savedCode)
 
-        savedCode = codeToSave
+  return $editor
+
+window.createTextEditor = (options, file) ->
+  panel = options.panel
+  {contents, id, path} = file.attributes
+
+  $editor = codeEditor
+    panel: panel
+    code: contents
+    save: (savedCode) ->
+      #TODO: Local storage
+
+      file.set
+        contents: savedCode
+
+      saveFile
+        contents: savedCode
+        path: path
+        success: -> # Assume always success
+
+  editor = $editor.get(0)
+
+  # HACK: This is so that the editor can be focused when the tab is clicked
+  panel.data textEditor: editor
 
   return $editor
