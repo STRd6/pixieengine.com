@@ -33,13 +33,11 @@
 - content_for :javascript do
   :coffeescript
     window.tree = new BoneTree.Views.Tree
-      beforeAddFilter: (fileData) ->
-        addFile = true
-        addFile = false if fileData?.type is 'binary'
 
-        return addFile
+    tree.addFromJSON JSON.parse($('#code_content').val()), '', (fileName, fileData) ->
+      return false if fileData?.type is 'binary' or fileData?.contents?.substr(0, 8) is 'var App;'
+      return true
 
-    tree.addFromJSON JSON.parse($('#code_content').val())
     tree.closeDirectories()
 
     tree.bind 'openFile', (file) ->

@@ -73,12 +73,9 @@
         data.contents = $("#file_templates .\#{template}").tmpl(data).text()
 
       # TODO remove global file tree reference. Pass it to the function instead
-      # TODO Update this to use a bone tree autoOpen option in the add file api
-      if autoOpen is false
-        tree.settings.set 'autoOpenFiles', false
-      file = tree.addFile "\#{path}/\#{name}.\#{extension}", data
-      if autoOpen is false
-        tree.settings.set 'autoOpenFiles', true
+      file = tree.addFile "\#{path}/\#{name}.\#{extension}", data, autoOpen, (fileName, fileData) ->
+        return false if fileData.type is 'binary'
+        return true
 
       if forceSave
         window.saveFile
