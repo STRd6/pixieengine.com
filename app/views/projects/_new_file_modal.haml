@@ -70,20 +70,23 @@
 
       if template
         data.className = name.capitalize().camelize()
-        data.contents = $("#file_templates .\#{template}").tmpl(data).text()
+        data.contents ||= $("#file_templates .\#{template}").tmpl(data).text()
+
+      fullName = "\#{path}/\#{name}.\#{extension}"
 
       # TODO remove global file tree reference. Pass it to the function instead
       # TODO Update this to use a bone tree autoOpen option in the add file api
       if autoOpen is false
         tree.settings.set 'autoOpenFiles', false
-      file = tree.addFile "\#{path}/\#{name}.\#{extension}", data
+      file = tree.addFile fullName, data
       if autoOpen is false
         tree.settings.set 'autoOpenFiles', true
 
+      # TODO Get a JS test for this
       if forceSave
         window.saveFile
-          contents: contents
-          path: path
+          contents: data.contents
+          path: fullName
 
       return file
 
