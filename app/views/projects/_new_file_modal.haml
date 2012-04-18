@@ -70,17 +70,20 @@
 
       if template
         data.className = name.capitalize().camelize()
-        data.contents = $("#file_templates .\#{template}").tmpl(data).text()
+        data.contents ||= $("#file_templates .\#{template}").tmpl(data).text()
+
+      fullName = "\#{path}/\#{name}.\#{extension}"
 
       # TODO remove global file tree reference. Pass it to the function instead
-      file = tree.addFile "\#{path}/\#{name}.\#{extension}", data, autoOpen, (fileName, fileData) ->
+      file = tree.addFile fullName, data, autoOpen, (fileName, fileData) ->
         return false if fileData.type is 'binary'
         return true
 
+      # TODO Get a JS test for this
       if forceSave
         window.saveFile
-          contents: contents
-          path: path
+          contents: data.contents
+          path: fullName
 
       return file
 

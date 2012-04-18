@@ -11,7 +11,13 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       Math.uuid(32, 16)
 
     src: =>
-      @get("sprite") || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVRYR+3QwQ0AAAgCMdh/aHULPyW5P2mTzPW2OkCAAAECBAgQIECAAAECBAh8CyywJyABJlvz9gAAAABJRU5ErkJggg=="
+      if sprite = @get("sprite")
+        if sprite.lastIndexOf("data:image/", 0) is 0
+          sprite
+        else
+          "/production/projects/#{projectId}/images/#{sprite}.png"
+      else
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVRYR+3QwQ0AAAgCMdh/aHULPyW5P2mTzPW2OkCAAAECBAgQIECAAAECBAh8CyywJyABJlvz9gAAAABJRU5ErkJggg=="
 
     initialize: ->
       # if spriteName has been set explicitly make sure
