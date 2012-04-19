@@ -75,7 +75,7 @@
       fullName = "\#{path}/\#{name}.\#{extension}"
 
       # TODO remove global file tree reference. Pass it to the function instead
-      file = tree.addFile fullName, data, autoOpen, (fileName, fileData) ->
+      file = tree.createOrUpdate fullName, data, autoOpen, (fileName, fileData) ->
         return false if fileData.type is 'binary'
         return true
 
