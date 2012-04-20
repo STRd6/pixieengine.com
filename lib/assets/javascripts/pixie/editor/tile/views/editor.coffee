@@ -25,11 +25,8 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       @layerList = new Models.LayerList [
         new Models.Layer
-          name: "Background"
-          zIndex: 0
-        new Models.Layer
           name: "Entities"
-          zIndex: 1
+          zIndex: 0
       ]
 
       # External entities list must be passed in as options
