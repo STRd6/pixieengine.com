@@ -11,6 +11,7 @@
   .button_group
     %button#run> Run
     %button#test> Test
+    %button#console> Console
   - if demo? || has_access?
     .button_group
       %button#build(title="Publish the current version of your game")> Publish
@@ -182,9 +183,17 @@
       # Cram compiled code in iframe
       testCodeInWindow(crammedCode, iframe.get(0).contentWindow)
 
-    window.hotSwap = ->
-      src = $(currentPanel).find("[name=contents]").val()
-      ext = $(currentPanel).data("ext")
+    runCoffeeInGameWindow = (src) ->
+      code = compileCode(src, "coffee")
+
+      if code and runningAppWindow
+        try
+          runningAppWindow.eval(code)
+        catch error
+          warn? error.message
+
+    window.hotSwap = (src, ext) ->
+      return unless projectConfig.hotSwap
 
       code = compileCode(src, ext)
 
@@ -262,7 +271,10 @@
 
     bindKeys(document, hotKeys)
 
-    $("#build").live 'click', (event) ->
+    $("#console").click ->
+      gameConsoleWindow.toggle()
+
+    $("#build").click (event) ->
       notify "Publishing..."
       projectCode = buildProjectCode()
 
@@ -300,3 +312,21 @@
     $("#run").live 'click', runApp
     $("#new").live 'click', newFileModal
     $('#save').live 'click', save
+
+
+    $ ->
+      window.gameConsoleWindow = Pixie.Window
+        title: "Game Console"
+      .hide()
+      .appendTo("body")
+      .css
+        position: "absolute"
+        top: "125px"
+        left: "250px"
+
+      console = Pixie.Console(
+        evalContext: (code) ->
+          runningAppWindow?.eval(code)
+      )
+
+      gameConsoleWindow.find(".content").append(console)
