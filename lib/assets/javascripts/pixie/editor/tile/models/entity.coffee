@@ -5,7 +5,6 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
       name: "Unnamed Entity"
       width: 32
       height: 32
-      sprite: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVRYR+3QwQ0AAAgCMdh/aHULPyW5P2mTzPW2OkCAAAECBAgQIECAAAECBAh8CyywJyABJlvz9gAAAABJRU5ErkJggg=="
 
     generateUuid: ->
       Math.uuid(32, 16)
@@ -17,6 +16,7 @@ namespace "Pixie.Editor.Tile.Models", (Models) ->
         else
           "/production/projects/#{projectId}/images/#{sprite}.png"
       else
+        #TODO Use width, height and color
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAMUlEQVRYR+3QwQ0AAAgCMdh/aHULPyW5P2mTzPW2OkCAAAECBAgQIECAAAECBAh8CyywJyABJlvz9gAAAABJRU5ErkJggg=="
 
     initialize: ->
