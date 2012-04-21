@@ -58,7 +58,7 @@ window.createEntityEditor = (options, file) ->
         code: indentedCode
       ).text()
 
-      console.log entitySrc
+      hotSwap(entitySrc, "coffee")
 
       # TODO Handle file move when renaming entity
       newFileNode
