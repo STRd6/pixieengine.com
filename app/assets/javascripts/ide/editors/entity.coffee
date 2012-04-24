@@ -10,6 +10,7 @@ window.createEntityEditor = (options, file) ->
     color: '#0000FF'
     height: 32
     width: 32
+    class: name.capitalize().camelize()
 
   try
     data = JSON.parse(contents) or defaults
