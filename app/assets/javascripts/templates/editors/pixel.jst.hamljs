@@ -1,6 +1,7 @@
 .editor.pixie
   .content
     .actions
+    .cursor_info 0, 0
     .viewport
       .canvas
     .toolbar.module.left
