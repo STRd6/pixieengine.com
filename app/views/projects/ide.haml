@@ -48,33 +48,28 @@
 
       openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
 
+      # Abort if unsaved
+      if openedTab.is(".unsaved")
+        notify "Save \#{file.nameWithExtension()} before renaming"
+        return
+      else
+        openedTab.find(".ui-icon-close").click()
+
       oldExtension = file.previous('extension')
       oldExtension = "." + oldExtension if oldExtension isnt ""
 
       # this works because we are secretly inside a change event
       oldName = file.previous('name') + oldExtension
 
-      # Abort if unsaved
-      if openedTab.is(".unsaved")
-        notify "Save \#{file.nameWithExtension()} before renaming"
-        return
+      # TODO: This is broken for files whose names are a subset of the prior path
+      # ex. boobaz/boo
+      newPath = path.replace(oldName, newName)
+      oldPath = path
 
-      if $('#tabs ul li a[href="' + docSelector + '"]').length
-        $('#tabs ul li a[href="' + docSelector + '"]').text(name)
-
-      notify "Renaming \#{oldName} => \#{newName}"
-      # Close file if open
-      reopen = openedTab.length
-      openedTab.find(".ui-icon-close").click()
-
-      newPath = "\#{path.replace(oldName, newName)}"
-      oldPath = "\#{path}"
-      contents = $(docSelector).find("[name=contents]").val()
-
-      successCallback = (data) ->
-        $(docSelector).remove()
-
-        notify "Renamed: \#{oldName} => \#{newName}"
+      # docSelector will be auto-updated when opening files, so I think no need to set here
+      file.set
+        path: newPath
+        _path: newPath # TODO: Find out why there is an _path
 
       postData =
         path: oldPath
@@ -82,7 +77,12 @@
         format: 'json'
         message: $(".actions .status .message").val()
 
-      $.post "/projects/\#{projectId}/rename_file", postData, successCallback
+      $.post "/projects/\#{projectId}/rename_file", postData, -> # Assuming success
+      notify "Renamed \#{oldName} => \#{newName}"
+
+      # Close and reopen file if open
+      if openedTab.length
+        openFile(file)
 
     tree.bind 'remove', (file) ->
       notify "Removing \#{file.nameWithExtension()}..."
@@ -185,7 +185,10 @@
       {name, nodeType, type, path, size} = file.attributes
       selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
 
-      docSelector = '#' + nodeType + '_' + selector
+      # TODO: Have docSelector be a generated attribute or method on files
+      # In the meantime reset it every time we open to keep it correct.
+      # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
+      docSelector = file.attributes.docSelector = '#' + nodeType + '_' + selector
 
       return alert "Can't edit binary data... maybe there is a source file that can be edited." if type is "binary"
       return alert "This file is too large for our editor!" if size > #{Project::MAX_EDITOR_FILE_SIZE}
