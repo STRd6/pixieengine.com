@@ -1,0 +1,23 @@
+:if owner_id != user_id
+  .membership(title="Owned by #{owner_name}")
+    %img(src="/assets/icons/group.png")
+:if current_user_id == user_id
+  %ul.hover_actions.right
+    %a(href="/projects/#{id}" title='Details')
+      .static-table
+      Details
+    %a(href="/projects/#{id}/fullscreen" title='Run')
+      .static-application_go
+      Run
+    %a(href="/projects/#{id}/edit" title='Edit Info')
+      .static-pencil
+      Edit Info
+    %a.delete(title='Delete' data-id="#{id}")
+      .static-cross
+      Delete
+.thumb.fancy
+  %img(alt="#{title}" class='show' height='96' width='96' src="#{img}" title="#{title}")
+%h3.title
+  %a(href="/projects/#{id}/ide")= title
+%p.description= description
+

@@ -1,7 +1,7 @@
 #= require codemirror2/codemirror
 #= require codemirror2/coffeescript
 
-#= require tmpls/pixie/console
+#= require templates/pixie/console
 
 window.Pixie ||= {}
 
@@ -11,7 +11,7 @@ window.Pixie ||= {}
     maxHistoryLength: 20
 
   Pixie.Console = (options) ->
-    self = $.tmpl("pixie/console")
+    self = $(JST["templates/pixie/console"]())
 
     config = Object.extend {}, DEFAULTS, options
 

@@ -17,7 +17,12 @@ class UsersController < ApplicationController
     email = session.delete(:email) || ''
 
     object.email ||= email
-    display_name = object.display_name = email.split("@").first.gsub(/[^A-Za-z0-9_-]/, '')
+
+    if email.split('@').length > 0
+      display_name = object.display_name = email.split("@").first.gsub(/[^A-Za-z0-9_-]/, '')
+    else
+      display_name = object.display_name = 'pixie_user'
+    end
 
     # Gross uniqueness checking
     suffix = 0
@@ -49,30 +54,6 @@ class UsersController < ApplicationController
     sprite = Sprite.find(params[:sprite_id])
     current_user.set_avatar(sprite)
     render :nothing => true
-  end
-
-  def comments
-    load_user_comments(user)
-
-    respond_to do |format|
-      format.json { render :json => @user_comments_data }
-    end
-  end
-
-  def sprites
-    load_user_sprites(user)
-
-    respond_to do |format|
-      format.json { render :json => @user_sprites_data }
-    end
-  end
-
-  def projects
-    load_user_projects(user)
-
-    respond_to do |format|
-      format.json { render :json => @user_projects_data }
-    end
   end
 
   def load_people
@@ -161,9 +142,6 @@ class UsersController < ApplicationController
 
   def show
     @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
-
-    load_user_sprites(user)
-    load_user_projects(user)
   end
 
   def edit
@@ -226,72 +204,6 @@ class UsersController < ApplicationController
     end
 
     @collection ||= users.order("id DESC").search(params[:search]).paginate(:page => params[:page], :per_page => per_page)
-  end
-
-  def load_user_comments(user)
-    per_page = 10
-
-    @user_comments = Comment.for_user(user.id).paginate(
-      :page => params[:page],
-      :per_page => per_page,
-    )
-
-    current_page = @user_comments.current_page
-    total = @user_comments.total_pages
-    current_user_id = current_user ? current_user.id : nil
-
-    @user_comments_data = {
-      :owner_id => user.id,
-      :current_user_id => current_user_id,
-      :page => current_page,
-      :per_page => per_page,
-      :total => total,
-      :models => @user_comments
-    }
-  end
-
-  def load_user_sprites(user)
-    per_page = 51
-
-    @user_sprites = user.sprites.paginate(
-      :page => params[:page],
-      :per_page => per_page,
-    )
-
-    current_page = @user_sprites.current_page
-    total = @user_sprites.total_pages
-    current_user_id = current_user ? current_user.id : nil
-
-    @user_sprites_data = {
-      :owner_id => user.id,
-      :current_user_id => current_user_id,
-      :page => current_page,
-      :per_page => per_page,
-      :total => total,
-      :models => @user_sprites
-    }
-  end
-
-  def load_user_projects(user)
-    per_page = 6
-
-    @user_projects = Project.editable(user).paginate(
-      :page => params[:page],
-      :per_page => per_page,
-    )
-
-    current_page = @user_projects.current_page
-    total = @user_projects.total_pages
-    current_user_id = current_user ? current_user.id : nil
-
-    @user_projects_data = {
-      :owner_id => user.id,
-      :current_user_id => current_user_id,
-      :page => current_page,
-      :per_page => per_page,
-      :total => total,
-      :models => @user_projects
-    }
   end
 
   def require_current_user

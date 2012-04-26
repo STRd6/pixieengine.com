@@ -1,12 +1,11 @@
 GIT
-  remote: git://github.com/chriseppstein/compass.git
-  revision: 91a748a916360057b5caf6ea85cd38441d3b257a
-  branch: rails31
+  remote: git://github.com/dharanasoft/haml-sprockets.git
+  revision: 636a8bcf7aaae64481ae198b7981764592310786
+  ref: 636a8bcf7aaae64481ae198b7981764592310786
   specs:
-    compass (0.12.0.alpha.0.91a748a)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
+    haml-sprockets (0.0.5)
+      sprockets (~> 2.1.2)
+      tilt (~> 1.3)
 
 GIT
   remote: git://github.com/jdleesmiller/gratr.git
@@ -15,8 +14,29 @@ GIT
     gratr (0.5.1)
 
 GIT
+  remote: git://github.com/johnbintz/guard-jasmine-headless-webkit.git
+  revision: 644f24cc4cba590c99572f6ea87335e24fb93264
+  specs:
+    guard-jasmine-headless-webkit (0.4.0.rc1)
+      guard (>= 0.4.0)
+      jasmine-headless-webkit (>= 0.7.0)
+
+GIT
+  remote: git://github.com/johnbintz/jasmine-headless-webkit.git
+  revision: 724541a2cb3ee7d730dac4eb186b451a510bf11e
+  ref: 724541a2cb3ee7d730dac4eb186b451a510bf11e
+  specs:
+    jasmine-headless-webkit (0.9.0.rc1)
+      coffee-script
+      jasmine-core
+      multi_json
+      rainbow
+      sprockets
+      sprockets-vendor_gems
+
+GIT
   remote: git://github.com/mdiebolt/bone_tree.git
-  revision: 71b88cfdd86b85eeaa4222184e6328cb1eb444b3
+  revision: 69f56246da12db2eafdd03c80edbac9b21dd344b
   specs:
     bone_tree (0.0.1)
 
@@ -25,14 +45,6 @@ GIT
   revision: 02a9e8b3f9cd2914d189393908cdb3548e2e2071
   specs:
     corelib (0.0.1)
-
-GIT
-  remote: git://github.com/odorcicd/authlogic.git
-  revision: a087ad0cba3c165ba22fcf176c28b6f7517931e8
-  branch: rails3
-  specs:
-    authlogic (2.1.3)
-      activesupport
 
 GIT
   remote: git://github.com/rails/exception_notification.git
@@ -51,38 +63,40 @@ GEM
   remote: http://rubygems.org/
   specs:
     aaronh-chronic (0.3.9)
-    actionmailer (3.1.4)
-      actionpack (= 3.1.4)
-      mail (~> 2.3.0)
-    actionpack (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
+    actionmailer (3.2.3)
+      actionpack (= 3.2.3)
+      mail (~> 2.4.4)
+    actionpack (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
-      i18n (~> 0.6)
-      rack (~> 1.3.6)
-      rack-cache (~> 1.1)
-      rack-mount (~> 0.8.2)
+      journey (~> 1.0.1)
+      rack (~> 1.4.0)
+      rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
-      sprockets (~> 2.0.3)
-    activemodel (3.1.4)
-      activesupport (= 3.1.4)
+      sprockets (~> 2.1.2)
+    activemodel (3.2.3)
+      activesupport (= 3.2.3)
       builder (~> 3.0.0)
-      i18n (~> 0.6)
-    activerecord (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
-      arel (~> 2.2.3)
+    activerecord (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
+      arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.1.4)
-      activemodel (= 3.1.4)
-      activesupport (= 3.1.4)
-    activesupport (3.1.4)
+    activeresource (3.2.3)
+      activemodel (= 3.2.3)
+      activesupport (= 3.2.3)
+    activesupport (3.2.3)
+      i18n (~> 0.6)
       multi_json (~> 1.0)
-    acts-as-taggable-on (2.0.6)
-    addressable (2.2.6)
+    acts-as-taggable-on (2.2.2)
+      rails (~> 3.0)
     ansi (1.3.0)
-    arel (2.2.3)
+    arel (3.0.2)
+    authlogic (3.1.0)
+      activerecord (>= 3.0.7)
+      activerecord (>= 3.0.7)
     aws-s3 (0.6.2)
       builder
       mime-types
@@ -95,64 +109,67 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    capybara (1.1.2)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      selenium-webdriver (~> 2.0)
-      xpath (~> 0.1.4)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
-    chunky_png (1.2.1)
+    chunky_png (1.2.5)
     cocaine (0.2.0)
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
       haml (>= 3.0.18)
-    coffee-rails (3.1.0)
+    coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
-      railties (~> 3.1.0.rc1)
+      railties (~> 3.2.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.1.2)
+    coffee-script-source (1.2.0)
     color (1.4.1)
-    daemons (1.1.4)
-    delayed_job (2.1.4)
-      activesupport (~> 3.0)
-      daemons
+    compass (0.12.1)
+      chunky_png (~> 1.2)
+      fssm (>= 0.2.7)
+      sass (~> 3.1)
+    compass-rails (1.0.1)
+      compass (~> 0.12.0)
+    diff-lcs (1.1.3)
     erubis (2.7.0)
-    evergreen (1.0.0)
-      capybara (~> 1.0)
-      coffee-script
-      json_pure
-      launchy
-      sinatra (~> 1.1)
-    execjs (1.2.4)
+    execjs (1.3.0)
       multi_json (~> 1.0)
     fastercsv (1.5.4)
     ffi (1.0.11)
-    fssm (0.2.7)
-    haml (3.1.2)
+    fssm (0.2.8.1)
+    growl (1.0.3)
+    guard (1.0.1)
+      ffi (>= 0.5.0)
+      thor (~> 0.14.6)
+    haml (3.1.4)
     highline (1.6.2)
     hike (1.2.1)
+    hodel_3000_compliant_logger (0.1.0)
     hoe (2.12.0)
       rake (~> 0.8)
     hpricot (0.8.4)
     html5-boilerplate (1.0.0)
       compass (>= 0.11.1)
     i18n (0.6.0)
-    json (1.6.5)
+    jasmine (1.1.2)
+      jasmine-core (>= 1.1.0)
+      rack (>= 1.1)
+      rspec (>= 1.3.1)
+      selenium-webdriver (>= 0.1.3)
+    jasmine-core (1.1.0)
+    jasmine-spec-extras (0.0.2)
+    journey (1.0.3)
+    jquery-tmpl-rails (1.1.0)
+      rails (>= 3.1.0)
+    json (1.6.6)
     json_pure (1.6.1)
     kgio (2.6.0)
-    launchy (2.0.5)
-      addressable (~> 2.2.6)
     libv8 (3.3.10.2)
-    mail (2.3.2)
+    mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.17.2)
+    mime-types (1.18)
     mocha (0.9.12)
     multi_json (1.0.4)
     net-scp (1.0.4)
@@ -163,6 +180,9 @@ GEM
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     nokogiri (1.5.0)
+    oink (0.9.3)
+      activerecord
+      hodel_3000_compliant_logger
     paperclip (2.3.16)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
@@ -176,40 +196,47 @@ GEM
     rabl (0.5.3)
       activesupport (>= 2.3.14)
       multi_json (~> 1.0.3)
-    rack (1.3.6)
+    rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-mount (0.8.3)
-      rack (>= 1.0.0)
-    rack-protection (1.1.4)
-      rack
     rack-ssl (1.3.2)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
-    rails (3.1.4)
-      actionmailer (= 3.1.4)
-      actionpack (= 3.1.4)
-      activerecord (= 3.1.4)
-      activeresource (= 3.1.4)
-      activesupport (= 3.1.4)
+    rails (3.2.3)
+      actionmailer (= 3.2.3)
+      actionpack (= 3.2.3)
+      activerecord (= 3.2.3)
+      activeresource (= 3.2.3)
+      activesupport (= 3.2.3)
       bundler (~> 1.0)
-      railties (= 3.1.4)
-    rails_autolink (1.0.2)
-      rails (~> 3.1.0.a)
-    railties (3.1.4)
-      actionpack (= 3.1.4)
-      activesupport (= 3.1.4)
+      railties (= 3.2.3)
+    rails_autolink (1.0.6)
+      rails (~> 3.1)
+    railties (3.2.3)
+      actionpack (= 3.2.3)
+      activesupport (= 3.2.3)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.6)
+    rainbow (1.1.3)
     raindrops (0.7.0)
     rake (0.9.2.2)
+    rb-fsevent (0.9.1)
     rdoc (3.12)
       json (~> 1.4)
     require (0.2.7)
     rmagick (2.13.1)
+    rspec (2.9.0)
+      rspec-core (~> 2.9.0)
+      rspec-expectations (~> 2.9.0)
+      rspec-mocks (~> 2.9.0)
+    rspec-core (2.9.0)
+    rspec-expectations (2.9.1)
+      diff-lcs (~> 1.1.3)
+    rspec-mocks (2.9.0)
+    ruby-prof (0.10.8)
     rubyzip (0.9.4)
     ruport (1.6.3)
       fastercsv
@@ -217,27 +244,21 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.1.14)
-    sass-rails (3.1.5)
-      actionpack (~> 3.1.0)
-      railties (~> 3.1.0)
-      sass (~> 3.1.10)
-      tilt (~> 1.3.2)
+    sass-rails (3.2.5)
+      railties (~> 3.2.0)
+      sass (>= 3.1.10)
+      tilt (~> 1.3)
     selenium-webdriver (2.13.0)
       childprocess (>= 0.2.1)
       ffi (~> 1.0.9)
       json_pure
       rubyzip
     shoulda (2.11.3)
-    sinatra (1.3.1)
-      rack (~> 1.3, >= 1.3.4)
-      rack-protection (~> 1.1, >= 1.1.2)
-      tilt (~> 1.3, >= 1.3.3)
-    sprockets (2.0.3)
+    sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-jquery-tmpl (0.1.0)
-      actionpack (~> 3.1.0)
+    sprockets-vendor_gems (0.1.1)
     therubyracer (0.9.3)
       libv8 (~> 3.3.10)
     thor (0.14.6)
@@ -262,46 +283,52 @@ GEM
       activesupport (>= 2.3.4)
     will_paginate (3.0.3)
     xml-simple (1.1.0)
-    xpath (0.1.4)
-      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   acts-as-taggable-on
-  authlogic!
+  authlogic
   aws-s3
   bluecloth
   bone_tree!
   capistrano
   coffee-filter
-  coffee-rails (~> 3.1.0)
-  compass!
+  coffee-rails (~> 3.2.1)
+  coffee-script-source (~> 1.2.0)
+  compass-rails
   corelib!
-  delayed_job (= 2.1.4)
-  evergreen
   exception_notification!
   factory_girl!
   gratr!
+  growl
+  guard-jasmine-headless-webkit!
   haml
+  haml-sprockets!
   hpricot
   html5-boilerplate
+  jasmine
+  jasmine-headless-webkit!
+  jasmine-spec-extras
+  jquery-tmpl-rails
   json
   mail
   mocha
+  oink
   paperclip
   pg
   rabl
-  rails (= 3.1.4)
+  rails (= 3.2.3)
   rails_autolink
+  rb-fsevent
   require
   rmagick
+  ruby-prof
   ruport
   sanitize
-  sass-rails (~> 3.1.4)
+  sass-rails (~> 3.2.3)
   shoulda
-  sprockets-jquery-tmpl
   therubyracer
   turn
   uglifier

@@ -7,8 +7,8 @@
 #= require ../actions
 #= require ../command
 
-#= require tmpls/editors/animation/editor
-#= require tmpls/editors/animation/help_tips
+#= require templates/editors/animation/editor
+#= require templates/editors/animation/help_tips
 
 #= require pixie/editor/base
 #= require pixie/view
@@ -31,7 +31,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       @framesCollection = new Models.FramesCollection
       @tilesCollection = new Models.TilesCollection
 
-      helpDialog = $.tmpl 'editors/animation/help_tips'
+      helpDialog = $(JST['templates/editors/animation/help_tips']())
       @el.append helpDialog
 
       contentEl = @$('.content')

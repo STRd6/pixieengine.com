@@ -12,7 +12,7 @@
  @ported_by Matt Diebolt http://pixieengine.com
 ###
 
-#= require tmpls/color_picker
+#= require templates/color_picker
 
 (($) ->
   $.fn.colorPicker = (options) ->
@@ -29,7 +29,7 @@
     instanceId = 0
     instance = null
 
-    colorPicker = $.tmpl "color_picker"
+    colorPicker = $(JST["templates/color_picker"]())
     slider = colorPicker.find '.hue_selector'
     overlay = colorPicker.find '.color_overlay'
     gradient = colorPicker.find '.slider'

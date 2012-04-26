@@ -4,6 +4,8 @@
 @import properties_editor
 @import editors/tile2
 
+@import ide/entity
+
 $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
@@ -85,6 +87,28 @@ $inner_margin: 14px
 
     .module
       padding: 0
+
+  .entity_editor
+    padding: 0
+
+    .left
+      +border-radius(0)
+
+      background-color: rgba(0, 0, 0, 0.3)
+      height: 100%
+      padding: 0.5em
+      position: fixed
+      margin-left: $sidebar_width + 3
+      margin-top: 71px
+      padding-bottom: 80px
+      overflow-y: auto
+
+      h2
+        margin-bottom: 0
+
+      .properties
+        td
+          padding: 0
 
 nav.top.actions .status
   color: $dark_text
@@ -364,7 +388,3 @@ ul.filetree
 
     .wrap
       height: 60px
-
-.editor.entity_editor
-  .content
-    +boxed_content(0, 0, 0, 333px)

@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/projects/project
+#= require templates/projects/project
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
@@ -12,5 +12,5 @@ class Pixie.Views.Projects.Project extends Backbone.View
 
   render: =>
     data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.params.id})
-    $(@el).html $.tmpl('projects/project', data)
+    $(@el).html $(JST['templates/projects/project'](data))
     return @

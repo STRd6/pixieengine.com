@@ -1,10 +1,6 @@
-#= require pixie/editor/animation/models/sequence
-
-#= require tmpls/editors/animation/sequences
+#= require templates/editors/animation/sequences
 
 #= require pixie/view
-
-#= require pixie/editor/animation/models/sequence
 
 namespace "Pixie.Editor.Animation.Views", (Views) ->
   class Views.Sequences extends Pixie.View

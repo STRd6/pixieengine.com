@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/search
+#= require templates/search
 
 #= require pixie/view
 
@@ -40,5 +40,5 @@ namespace "Pixie.Views", (Views) ->
         @$('button.search').attr('disabled', 'disabled')
 
     render: =>
-      @el.html $.tmpl('search')
+      @el.html $(JST['templates/search']())
       return @

@@ -31,7 +31,7 @@ $tileset_sprite_width: 60px
     border: 1px solid transparent
 
   button
-    +box-shadow(rgba(0, 0, 0, 0.07), 1px, 1px, 10px)
+    +box-shadow(rgba(0, 0, 0, 0.07) 1px 1px 10px)
 
     margin-bottom: 0
     margin-top: 0
@@ -130,8 +130,8 @@ $tileset_sprite_width: 60px
     .controls
       +bounds(100%, $action_bar_height)
       +box-sizing(border-box)
-      +linear-gradient(color-stops(#7F7F7F, #666))
       +user-select
+      +background(linear-gradient(color-stops(#7F7F7F, #666)))
 
       bottom: 0
       padding: 2px
@@ -153,7 +153,7 @@ $tileset_sprite_width: 60px
         +bounds(100%)
 
       .fps
-        +text-shadow(rgba(0, 0, 0, 0.4), 1px, 0, 0)
+        +text-shadow(rgba(0, 0, 0, 0.4) 1px 0 0)
 
         bottom: 6px
         color: white

@@ -34,9 +34,9 @@ window.createTilemapEditor = (options, file) ->
 
     editEntity: (entity) ->
       # Assume uuid is file name
-      if entityFile = tree.getFile(entity.get('uuid')).filter (file) ->
-        file.get("extension") is "entity"
-      .first()
+      entitiesDir = projectConfig.directories.entities || 'entities'
+
+      if entityFile = tree.getFile("#{entitiesDir}/#{entity.get('uuid')}.entity")
         openFile(entityFile)
 
     newEntity: ->

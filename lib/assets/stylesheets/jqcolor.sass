@@ -1,0 +1,71 @@
+@import util
+
+#user_favorite_color, .color
+  +box-shadow(none)
+
+  border: 1px solid rgba(0, 0, 0, 0.2)
+
+.color_picker
+  +border-bottom-radius(4px)
+  +bounds(284px, 259px)
+  +user-select
+
+  background-color: white
+  clear: both
+  padding: 3px
+  position: absolute
+  border: 1px solid rgba(0, 0, 0, 0.15)
+  border-top: none
+  z-index: 1000
+
+  label
+    display: inline-block
+    font-weight: normal
+    margin: 0
+
+  .hue_gradient
+    fontSize: '1px'
+    lineHeight: '0'
+
+  .color_overlay
+    +bounds(256px)
+
+    border: 1px solid black
+    position: absolute
+
+    .white_overlay
+      +bounds(256px)
+      +background(linear-gradient(left, color-stops(white, rgba(0, 0, 0, 0) 100%)))
+
+    .black_overlay
+      +bounds(256px)
+      +background(linear-gradient(color-stops(rgba(0, 0, 0, 0), black 100%)))
+
+      position: absolute
+      top: 0
+
+    .cursor_overlay
+      +bounds(256px)
+
+      background-image: url(/assets/jscolor/cross.png)
+      background: url(/assets/jscolor/cross.png) no-repeat
+      cursor: url(/assets/jscolor/cross.png) 3 4, default
+      background-repeat: no-repeat no-repeat
+      position: absolute
+      top: 0
+
+  .hue_selector
+    cursor: pointer
+    position: absolute
+    width: 29px
+    height: 258px
+    background: url(/assets/jscolor/s.gif) no-repeat
+    right: 0
+
+  .slider
+    background-color: rgba(255, 255, 255, 0.3)
+    border: 1px solid black
+    position: absolute
+    width: 17px
+    right: 3px
+

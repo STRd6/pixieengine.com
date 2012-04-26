@@ -1,4 +1,4 @@
-#= require tmpls/pixie/editor/tile/screen
+#= require templates/pixie/editor/tile/screen
 #= require ../command
 #= require ../tools
 
@@ -60,6 +60,11 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
           settings: @settings
 
       @$("ul.layers").append layerView.render().el
+
+    instanceAtCursor: () =>
+      layer = @settings.get "activeLayer"
+
+      return layer.instanceAt(@cursorPosition.x, @cursorPosition.y)
 
     execute: (command) =>
       @currentCompoundCommand.push command

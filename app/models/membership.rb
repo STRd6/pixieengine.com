@@ -7,5 +7,4 @@ class Membership < ActiveRecord::Base
   def notify_member
     Notifier.notify_member(self).deliver unless self.user.email.blank?
   end
-  handle_asynchronously :notify_member
 end

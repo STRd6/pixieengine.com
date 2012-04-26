@@ -1,0 +1,13 @@
+.editor.pixie
+  .content
+    .actions
+    .cursor_info 0, 0
+    .viewport
+      .canvas
+    .toolbar.module.left
+    .module.right
+      .color_picker_holder
+      .toolbar
+        .swatches
+      .preview
+      .opacity

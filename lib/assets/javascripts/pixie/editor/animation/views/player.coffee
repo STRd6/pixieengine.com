@@ -1,7 +1,7 @@
 #= require pixie/editor/animation/models/player
 #= require pixie/view
 
-#= require tmpls/editors/animation/player
+#= require templates/editors/animation/player
 
 EMPTY_MODEL =
   src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4//8/AwAI/AL+5gz/qwAAAABJRU5ErkJggg=='

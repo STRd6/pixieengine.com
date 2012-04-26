@@ -8,7 +8,7 @@ $user_drop_down_width: 150px
 
 .user_drop_down
   +border-bottom-radius(4px)
-  +box-shadow(#333, 0, 1px, 2px)
+  +box-shadow(#333 0 1px 2px)
 
   background-color: $header_gradient_end
   display: none
@@ -45,7 +45,7 @@ $user_drop_down_width: 150px
 
       a
         +box-sizing(border-box)
-        +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+        +text-shadow(rgba(255, 255, 255, 0.15) 1px 1px 0)
 
         color: $dark_text
         display: inline-block
@@ -55,11 +55,11 @@ $user_drop_down_width: 150px
         width: 100%
 
 footer
-  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+  +background(linear-gradient(color-stops($header_gradient_start, $header_gradient_end)))
 
 header
-  +box-shadow(#333, 0, 0, 7px, 1px)
-  +linear-gradient(color-stops($header_gradient_start, $header_gradient_end))
+  +box-shadow(#333 0 0 7px 1px)
+  +background(linear-gradient(color-stops($header_gradient_start, $header_gradient_end)))
 
   height: 40px
   position: relative
@@ -128,7 +128,7 @@ header
 
     .log_out
       +bounds($user_drop_down_width, 40px)
-      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+      +text-shadow(rgba(255, 255, 255, 0.15) 1px 1px 0)
 
       color: $dark_text
       display: inline-block
@@ -163,7 +163,7 @@ header
     span, a
       +box-sizing(border-box)
       +inline-block
-      +text-shadow(rgba(255, 255, 255, 0.15), 1px, 1px, 0)
+      +text-shadow(rgba(255, 255, 255, 0.15) 1px 1px 0)
 
       color: $dark_text
       font-size: 15px

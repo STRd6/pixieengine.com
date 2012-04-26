@@ -1,4 +1,4 @@
-require '/assets/views/paginated.js'
+# #= require views/paginated
 
 describe "Paginated View", ->
   beforeEach ->

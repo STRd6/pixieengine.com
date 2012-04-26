@@ -1,7 +1,7 @@
 #= require color_util
 #= require_tree .
 
-#= require tmpls/editors/pixel
+#= require templates/editors/pixel
 
 #= require pixie/ui
 
@@ -46,13 +46,15 @@
     I.pixelWidth = parseInt(I.pixelWidth || I.pixelSize || 16, 10)
     I.pixelHeight = parseInt(I.pixelHeight || I.pixelSize || 16, 10)
 
-    self = $.tmpl("editors/pixel")
+    self = $(JST["templates/editors/pixel"]())
 
     content = self.find(".content")
     viewport = self.find(".viewport")
     canvas = self.find(".canvas").css
       width: I.width * I.pixelWidth + 2
       height: I.height * I.pixelHeight + 2
+
+    cursorInfo = self.find(".cursor_info")
 
     actionbar = self.find(".actions")
 
@@ -141,7 +143,7 @@
     lastPixel = undefined
 
     handleEvent = (event, element) ->
-      opacity = opacityVal.text() / 100
+      opacity = self.opacity()
 
       offset = element.offset()
 
@@ -151,6 +153,8 @@
 
       row = Math.floor(local.y / I.pixelHeight)
       col = Math.floor(local.x / I.pixelWidth)
+
+      cursorInfo.text("#{col}, #{row}")
 
       pixel = self.getPixel(col, row)
       eventType = undefined
@@ -393,6 +397,14 @@
       getPixel: (x, y) ->
         return pixels[y][x] if (0 <= y < I.height) && (0 <= x < I.width)
         return undefined
+
+      opacity: (newVal) ->
+        if newVal?
+          v = (newVal * 100).round().clamp(0, 100)
+          opacitySlider.slider value: v
+          opacityVal.text(v)
+        else
+          opacityVal.text() / 100
 
       preview: ->
         tileCount = if tilePreview then 4 else 1

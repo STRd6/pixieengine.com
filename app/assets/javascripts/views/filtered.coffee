@@ -1,4 +1,8 @@
-#= require tmpls/filters
+#= require underscore
+#= require backbone
+#= require corelib
+
+#= require templates/filters
 
 namespace "Pixie.Views", (Views) ->
   class Views.Filtered extends Backbone.View
@@ -23,7 +27,7 @@ namespace "Pixie.Views", (Views) ->
       @collection.filterPages(@filter)
 
     render: =>
-      $(@el).append($.tmpl('filters', { filters: @filters, activeFilter: @activeFilter }))
+      $(@el).append($(JST['templates/filters']({ filters: @filters, activeFilter: @activeFilter })))
 
       return @
 

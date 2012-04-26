@@ -1,9 +1,9 @@
-require '/assets/models/people_collection.js'
-
-beforeEach ->
-  @collection = new Pixie.Models.PeopleCollection
+#= require models/people_collection
 
 describe "People collection", ->
+  beforeEach ->
+    @collection = new Pixie.Models.PeopleCollection
+
   it "should have correct url", ->
     expect(@collection.url()).toEqual("/people")
 

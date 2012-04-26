@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/people/person
+#= require templates/people/person
 
 namespace "Pixie.Views.People", (People) ->
   class People.Person extends Backbone.View
@@ -9,6 +9,6 @@ namespace "Pixie.Views.People", (People) ->
 
     render: =>
       data = _.extend(@model.toJSON(), {current_user_id: @model.collection.current_user_id, owner_id: @model.collection.owner_id})
-      $(@el).html $.tmpl('people/person', data)
+      $(@el).html $(JST['templates/people/person'](data))
       return @
 

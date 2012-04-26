@@ -1,7 +1,7 @@
 #= require underscore
 #= require backbone
 
-#= require tmpls/sprites/sprite
+#= require templates/sprites/sprite
 
 window.Pixie ||= {}
 Pixie.Views ||= {}
@@ -11,6 +11,6 @@ class Pixie.Views.Sprites.Sprite extends Backbone.View
   className: 'sprite_container'
 
   render: =>
-    $(@el).html $.tmpl('sprites/sprite', @model.toJSON())
+    $(@el).html $(JST['templates/sprites/sprite'](@model.toJSON()))
     return @
 

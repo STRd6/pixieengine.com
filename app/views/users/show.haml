@@ -3,201 +3,10 @@
 
 %style
   :sass
-    @import util
-
     body > .content
       padding: 0.5em 2em
 
-    .static-thumb_up, .static-add
-      display: inline-block
-
-    .hover_actions a
-      display: block
-
-      & div
-        display: inline-block
-
-    .tasks
-      float: right
-      margin-left: 2em
-      padding: 1em
-      width: 315px
-
-    .task
-      font-size: 1.1em
-      margin-bottom: 0.5em
-      position: relative
-      img
-        vertical-align: top
-      .value
-        left: 200px
-        position: absolute
-        top: 0
-
-    .profile
-      min-height: 284px
-      margin-bottom: 1em
-      overflow: auto
-      padding-top: 1em
-      width: 100%
-
-      .favorite_color
-        +border-radius
-        +inline-block
-
-        border: 1px solid rgba(255, 255, 255, 0.3)
-        height: 50px
-        width: 50px
-
-      h1
-        overflow: hidden
-        text-overflow: ellipsis
-
-        a
-          float: right
-          font-size: 12px
-          letter-spacing: 0
-          margin: 1em 0 0 1em
-
-      label
-        margin-bottom: 1em
-
-      p
-        margin-bottom: 0.5em
-
-      .avatar
-        float: left
-        margin: 0 1em 1em 0
-
-    h2
-      border-bottom: 1px solid rgba(8, 66, 103, 0.25)
-
-    .reset
-      display: none
-
-    .sprites, .projects, .comments
-      h2
-        border: none
-        display: inline-block
-        margin: 0
-
-    .projects, .sprites, .comments
-      margin-bottom: 1em
-      position: relative
-
-      .header
-        border-bottom: 1px solid rgba(8, 66, 103, 0.25)
-        margin-bottom: 1em
-        position: relative
-
-        a.button
-          margin: 0
-          margin-bottom: 0.75em
-          margin-left: 1em
-
-      .spinner_container
-        +border-radius
-
-        display: none
-        background-color: rgba(255, 255, 255, 0.85)
-        width: 100px
-        height: 20px
-        position: absolute
-        top: -10px
-        left: -700px
-        right: 0
-        margin: auto
-        text-align: center
-        padding-bottom: 7px
-        padding-top: 10px
-        z-index: 10
-        border: 1px solid rgba(0, 0, 0, 0.2)
-
-        .spinner
-          vertical-align: middle
-          margin-right: 1em
-          padding-bottom: 5px
-
-      .actions
-        float: right
-
-      .pagination
-        position: absolute
-        right: 0
-        top: 6px
-        overflow: visible
-
-    .membership
-      left: 3px
-      position: absolute
-      top: 3px
-
-    .project
-      overflow: auto
-      position: relative
-      width: 100%
-
-      .thumb
-        +border-radius
-        +inline-block
-
-        float: left
-        margin-bottom: 1em
-        margin-right: 1em
-
-    .sprite_container
-      +border-radius
-      +bounds(48px)
-      +box-shadow(transparentize($light_box_shadow, 0.5), 1px, 1px, 3px)
-
-      background-color: white
-      cursor: pointer
-      display: inline-block
-      margin-right: 6px
-      margin-bottom: 3px
-
-      &:hover
-        background-color: $hover
-
-      a
-        +bounds(100%)
-        +contents-centered
-
-        display: block
-
-    .comment
-      overflow: auto
-      width: 100%
-
-      .commentable
-        float: left
-
-        img
-          margin-right: 1em
-
-      .attribution
-        float: right
-        margin-left: 2em
-        text-align: right
-
-        .name
-          img
-            margin-left: 1em
-
-        .timeago
-          color: gray
-
-    .projects
-      .spinner_container
-        position: absolute
-
-      .pagination
-        float: right
-        margin-top: -45px
-        position: relative
-        top: 0
-
-.feature
+.feature.user_profile
   .profile
     = render :partial => "tasks", :user => user
 
@@ -226,23 +35,24 @@
 
   :coffeescript
     $ ->
-      #{ActiveRecord::Base.include_root_in_json = false}
-
-      sprite_gallery = new window.Pixie.Views.Sprites.Gallery
+      sprite_gallery = new Pixie.Views.Sprites.Gallery
         profile: true
 
       sprite_gallery.collection.url = ->
-        "/#{user.display_name}/sprites"
-      sprite_gallery.collection.reset(sprite_gallery.collection.parse(#{@user_sprites_data.to_json}))
+        #{user_sprites_path(user).to_json}
+      sprite_gallery.collection.per_page = 51
+      sprite_gallery.collection.fetch()
 
-      project_gallery = new window.Pixie.Views.Projects.Gallery
+      project_gallery = new Pixie.Views.Projects.Gallery
+      project_gallery.collection.per_page = 6
       project_gallery.collection.url = ->
-        "/#{user.display_name}/projects"
-      project_gallery.collection.reset(project_gallery.collection.parse(#{@user_projects_data.to_json}))
+        #{user_projects_path(user).to_json}
+      project_gallery.collection.fetch()
 
-      comments_gallery = new window.Pixie.Views.Comments.Gallery
+      comments_gallery = new Pixie.Views.Comments.Gallery
+      comments_gallery.collection.per_page = 10
       comments_gallery.collection.url = ->
-        "/#{user.display_name}/comments"
+        #{user_comments_path(user).to_json}
       comments_gallery.collection.fetch()
 
       $('.project .delete').live 'click', (e) ->

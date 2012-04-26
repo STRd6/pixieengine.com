@@ -1,5 +1,5 @@
-#= require tmpls/chat/recent
-#= require tmpls/chat/active_user
+#= require templates/chat/recent
+#= require templates/chat/active_user
 
 namespace "Pixie.Chat", (Chat) ->
   Chat.create = (current_user) ->
@@ -21,7 +21,8 @@ namespace "Pixie.Chat", (Chat) ->
       , 100
 
     appendChat = (chat, prevChatUser) ->
-      chatData = $.tmpl('chat/recent', chat)
+      chat.id = "" unless chat.id?
+      chatData = $(JST['templates/chat/recent'](chat))
 
       if chat.name == prevChatUser
         $(chatData).find('hr, .name, .time').remove()
@@ -34,7 +35,7 @@ namespace "Pixie.Chat", (Chat) ->
     initialize = ->
       $.get '/chats/active_users.json', (activeUsers) ->
         for user in activeUsers
-          $.tmpl('chat/active_user', user).appendTo $('#active_users')
+          $(JST['templates/chat/active_user'](user)).appendTo $('#active_users')
 
       $.get '/chats/recent.json', (chats) ->
         prevChatUser = null
@@ -56,7 +57,7 @@ namespace "Pixie.Chat", (Chat) ->
             $('#active_users li[data-id=' + id + ']').remove()
         for user in activeUsers
           if $.inArray(user.id, lastOnline) < 0
-            $.tmpl('chat/active_user', user).appendTo $('#active_users')
+            $(JST['templates/chat/active_user'](user)).appendTo $('#active_users')
 
       $.get '/chats/recent.json', (chats) ->
         $('#chats li:not([data-id])').remove()

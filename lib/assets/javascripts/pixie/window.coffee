@@ -1,11 +1,9 @@
-
-#= require tmpls/pixie/window
+#= require templates/pixie/window
 
 window.Pixie ||= {}
 
 Pixie.Window = (I={}) ->
-
-  self = $.tmpl("pixie/window", I)
+  self = $(JST["templates/pixie/window"](I))
 
   self.draggable(
     handle: "h3"

@@ -1,5 +1,7 @@
 #= require pixie/editor/tile/views/editor
+#= require pixie/console
+#= require pixie/window
 
 #= require_tree .
 
-#= require tmpls/ide/qunit
+#= require templates/ide/qunit

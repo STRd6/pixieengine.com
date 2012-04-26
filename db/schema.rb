@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120224222313) do
+ActiveRecord::Schema.define(:version => 20120408222315) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -139,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20120224222313) do
     t.boolean  "arcade"
     t.datetime "deleted_at"
     t.integer  "memberships_count"
+    t.datetime "saved_at"
   end
 
   create_table "archived_sounds", :id => false, :force => true do |t|
@@ -394,25 +395,26 @@ ActiveRecord::Schema.define(:version => 20120224222313) do
   end
 
   create_table "projects", :force => true do |t|
-    t.integer  "user_id",                               :null => false
+    t.integer  "user_id",                                               :null => false
     t.string   "remote_origin"
-    t.string   "title",                                 :null => false
+    t.string   "title",                                                 :null => false
     t.text     "description"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
     t.string   "url"
-    t.boolean  "demo",               :default => false, :null => false
+    t.boolean  "demo",               :default => false,                 :null => false
     t.string   "image_file_name"
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
     t.integer  "parent_id"
-    t.integer  "comments_count",     :default => 0,     :null => false
-    t.integer  "views_count",        :default => 0,     :null => false
-    t.boolean  "tutorial",           :default => false, :null => false
-    t.boolean  "featured",           :default => false, :null => false
-    t.boolean  "arcade",             :default => false, :null => false
-    t.integer  "memberships_count",  :default => 0,     :null => false
+    t.integer  "comments_count",     :default => 0,                     :null => false
+    t.integer  "views_count",        :default => 0,                     :null => false
+    t.boolean  "tutorial",           :default => false,                 :null => false
+    t.boolean  "featured",           :default => false,                 :null => false
+    t.boolean  "arcade",             :default => false,                 :null => false
+    t.integer  "memberships_count",  :default => 0,                     :null => false
+    t.datetime "saved_at",           :default => '2012-04-08 07:00:00', :null => false
   end
 
   add_index "projects", ["url"], :name => "index_projects_on_url"

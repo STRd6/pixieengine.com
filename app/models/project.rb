@@ -1,6 +1,10 @@
+require "pstore"
+
 class Project < ActiveRecord::Base
   include Commentable
   include Memberships
+
+  COMPILED_FILE_NAME = "game.js"
 
   acts_as_archive
 
@@ -45,7 +49,7 @@ class Project < ActiveRecord::Base
   scope :featured, where(:featured => true)
   scope :tutorials, where(:tutorial => true).order('id ASC')
   scope :arcade, where(:arcade => true)
-  scope :recently_edited, order('updated_at DESC').limit(20)
+  scope :recently_edited, order('saved_at DESC').limit(20)
 
   scope :none
 
@@ -91,7 +95,7 @@ class Project < ActiveRecord::Base
       FROM projects
       WHERE projects.user_id = #{user.id}
       )
-      ORDER BY updated_at DESC
+      ORDER BY saved_at DESC
       eos
   end
 
@@ -172,7 +176,6 @@ class Project < ActiveRecord::Base
 
     make_group_writable
   end
-  handle_asynchronously :update_libs
 
   def git_util(*args)
     system 'script/git_util', path, *args
@@ -193,7 +196,6 @@ class Project < ActiveRecord::Base
       git_util 'push', '--tags'
     end
   end
-  handle_asynchronously :tag_version
 
   def clone_repo
     # Cloning repos in tests is way too scary
@@ -230,7 +232,6 @@ class Project < ActiveRecord::Base
     git_util "pull"
     make_group_writable
   end
-  handle_asynchronously :git_pull
 
   def git_commit_and_push(authoring_user_id, message)
     message ||= "Modified in browser at pixie.strd6.com"
@@ -248,13 +249,12 @@ class Project < ActiveRecord::Base
       git_util "push", '-u', "origin", BRANCH_NAME
     end
   end
-  handle_asynchronously :git_commit_and_push
 
   def save_file(path, contents, authoring_user, message=nil)
     #TODO: Verify path is not sketch
     return if path.index ".."
 
-    touch
+    touch :saved_at
     file_path = File.join self.path, path
 
     dir_path = file_path.split("/")[0...-1].join("/")
@@ -264,9 +264,8 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    git_commit_and_push_without_delay(authoring_user.id, message) if Rails.env.production?
+    git_commit_and_push(authoring_user.id, message) if Rails.env.production?
   end
-  handle_asynchronously :save_file if Rails.env.production?
 
   def remove_file(path, authoring_user, message=nil)
     #TODO: Verify path is not sketch
@@ -334,7 +333,7 @@ class Project < ActiveRecord::Base
       name = filename.sub(/\.[^\.]*$/, '')
       lang = lang_for(ext)
 
-      if path == "#{config[:name]}.js" || file_path == "#{title}.js"
+      if path == COMPILED_FILE_NAME
         # This is a 'compiled' JavaScript file for the project
         type = "binary"
       else
@@ -428,7 +427,7 @@ class Project < ActiveRecord::Base
       jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
       doc_dir = File.join path, "docs"
 
-      FileUtils.cp File.join(path, "#{config[:name] || title}.js"), dir
+      FileUtils.cp File.join(path, COMPILED_FILE_NAME), dir
 
       FileUtils.mkdir_p(doc_dir)
 
@@ -436,7 +435,6 @@ class Project < ActiveRecord::Base
       system(cmd)
     end
   end
-  handle_asynchronously :generate_docs
 
   def config
     @config ||=
@@ -504,7 +502,7 @@ class Project < ActiveRecord::Base
         <body class="contents_centered">
           <canvas width="#{config[:width]}" height="#{config[:height]}"></canvas>
           <script>BASE_URL = "../"; MTIME = "#{Time.now.to_i}";</script>
-          <script src="/#{config[:name]}.js"></script>
+          <script src="/#{COMPILED_FILE_NAME}"></script>
         </body>
         </html>
       eof
@@ -548,6 +546,23 @@ class Project < ActiveRecord::Base
 
     File.open(manifest_path, 'wb') do |file|
       file.write(JSON.pretty_generate(manifest_json))
+    end
+  end
+
+  def update_old_compiled_js_file
+    old_name = config[:name] || title
+
+    old_path = File.join path, "#{old_name}.js"
+    new_path = File.join path, COMPILED_FILE_NAME
+
+    if File.exist? old_path
+      FileUtils.mv old_path, new_path
+    end
+  end
+
+  def self.update_old_compiled_js_files
+    Project.find_each do |project|
+      project.update_old_compiled_js_file
     end
   end
 end

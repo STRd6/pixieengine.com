@@ -1,9 +1,9 @@
-require '/assets/models/sprites_collection.js'
-
-beforeEach ->
-  @collection = new Pixie.Models.SpritesCollection
+#= require models/sprites_collection
 
 describe "Sprites collection", ->
+  beforeEach ->
+    @collection = new Pixie.Models.SpritesCollection
+
   it "should have correct default url", ->
     expect(@collection.url()).toEqual("/sprites")
 

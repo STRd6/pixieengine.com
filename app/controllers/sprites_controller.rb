@@ -103,6 +103,7 @@ class SpritesController < ApplicationController
     current_page = @sprites.current_page
     total = @sprites.total_pages
     current_user_id = current_user ? current_user.id : nil
+    tags = Sprite.with_ids(@sprites).tag_counts
 
     @sprites_data = {
       :tagged => params[:tagged] || "",
@@ -110,7 +111,8 @@ class SpritesController < ApplicationController
       :page => current_page,
       :per_page => per_page,
       :total => total,
-      :models => @sprites
+      :models => @sprites,
+      :tags => tags,
     }
   end
 
@@ -161,6 +163,12 @@ class SpritesController < ApplicationController
     else
       Sprite.order("id DESC").search(params[:search]).paginate(:page => params[:page], :per_page => per_page)
     end
+
+    if params[:user_id].present?
+      @collection = @collection.for_user(User.find_by_display_name!(params[:user_id]))
+    end
+
+    return @collection
   end
 
   def per_page
