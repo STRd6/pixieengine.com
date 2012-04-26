@@ -143,7 +143,7 @@
     lastPixel = undefined
 
     handleEvent = (event, element) ->
-      opacity = opacityVal.text() / 100
+      opacity = self.opacity()
 
       offset = element.offset()
 
@@ -397,6 +397,14 @@
       getPixel: (x, y) ->
         return pixels[y][x] if (0 <= y < I.height) && (0 <= x < I.width)
         return undefined
+
+      opacity: (newVal) ->
+        if newVal?
+          v = (newVal * 100).round().clamp(0, 100)
+          opacitySlider.slider value: v
+          opacityVal.text(v)
+        else
+          opacityVal.text() / 100
 
       preview: ->
         tileCount = if tilePreview then 4 else 1
