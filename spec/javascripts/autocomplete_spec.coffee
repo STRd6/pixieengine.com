@@ -1,32 +1,20 @@
-Pixie ||= {}
-
-require '/assets/javascripts/models/autocomplete.js'
-
 describe "Autocomplete model", ->
   beforeEach ->
-    @autocomplete = new Pixie.Models.Autocompleter
+    @autocomplete = new Pixie.Models.Autocomplete
 
-  it "should initialize filteredSuggestions to match suggestions", ->
-    {filteredSuggestions, suggestions} = @autocomplete.attributes
+  it "should generate suggestions based on the object's code", ->
+    @autocomplete = new Pixie.Models.Autocomplete
+      text: """
+        Player = (I={}) ->
+          Object.reverseMerge I,
+            x: 50
+            y: 36
 
-    expect(filteredSuggestions).toEqual(suggestions)
+          self = GameObject(I)
 
-  it "should filter the suggestions list based on currentToken input", ->
-    @autocomplete.set
-      suggestsions: [
-        "TAU",
-        "timer"
-        "times"
-        "toColorPart"
-        "toString"
-      ]
+          return self
+      """
 
-    currentToken = "to"
-
-    @autocomplete.filterSuggestions(currentToken)
-
-    expect(@autocomplete.get('filteredSuggetions')).toEqual([
-      "toColorPart"
-      "toString"
-    ])
+    expect(@autocomplete.get('suggestions').self.length).toExist()
+    expect(@autocomplete.get('suggestions').I.length).toExist()
 
