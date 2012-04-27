@@ -55,7 +55,6 @@ end
 
 group :development, :test do
   gem 'growl'
-  #gem 'guard-jasmine-headless-webkit', :git => 'git://github.com/johnbintz/guard-jasmine-headless-webkit.git'
   gem "jasmine"
   gem 'jasmine-headless-webkit'
   gem 'jasmine-spec-extras'

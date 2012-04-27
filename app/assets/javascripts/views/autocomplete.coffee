@@ -26,10 +26,16 @@ namespace "Pixie.Views", (Views) ->
       @_insertSuggestion(autocompleteValue)
 
     hide: =>
-      $(@el).hide()
+      @$el.hide()
 
       @model.set
         selectedIndex: 0
+
+    _offset: (currentString) =>
+      if currentString is '.'
+        return 1
+      else
+        return 0
 
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
@@ -37,10 +43,7 @@ namespace "Pixie.Views", (Views) ->
 
       line = cursorPosition.line
 
-      if currentToken.string[0] is '.'
-        offset = 1
-      else
-        offset = 0
+      offset = @_offset(currentToken.string[0])
 
       if currentToken.string.replace(/[^\w]/g, '') is suggestion
         selectionEnd = currentToken.end
@@ -76,16 +79,18 @@ namespace "Pixie.Views", (Views) ->
 
         for suggestion in filteredSuggestions
           if suggestion.indexOf(currentString) is 0 and currentString isnt ''
-            $(@el).append "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
+            suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
           else
-            $(@el).append "<li>#{suggestion}</li>"
+            suggestionEl = "<li>#{suggestion}</li>"
+
+          @$el.append suggestionEl
 
         @$('li').eq(selectedIndex).takeClass('selected')
 
         if (selected = @$('li.selected')).length
           selected.get(0).scrollIntoView(false)
 
-        $(@el).css
+        @$el.css
           left: @currentPosition.x
           top: @currentPosition.yBot
 
@@ -95,13 +100,13 @@ namespace "Pixie.Views", (Views) ->
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(@editor.getCursor())
 
-      if currentToken.string[0] is '.'
-        offset = 1
-      else
-        offset = 0
+      offset = @_offset(currentToken.string[0])
 
       @currentPosition = @editor.charCoords({line: cursorPosition.line, ch: currentToken.start + offset})
 
-      if @$('li').length
-        $(@el).show()
+      @$el.css
+        left: @currentPosition.x
+        top: @currentPosition.yBot
+
+      @$el.show() if @$('li').length
 

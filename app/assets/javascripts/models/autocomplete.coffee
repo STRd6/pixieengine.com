@@ -15,9 +15,11 @@ namespace "Pixie.Models", (Models) ->
     # 3. I.
 
     initialize: ->
-      {text} = @attributes
+      try
+        {text} = @attributes
 
-      if (nodes = try CoffeeScript.nodes(text))
+        nodes = CoffeeScript.nodes(text)
+
         @set
           suggestions: {
             self: @generateInstanceMethods(nodes)
@@ -74,11 +76,19 @@ namespace "Pixie.Models", (Models) ->
 
       cursorPosition = editor.getCursor()
       currentToken = editor.getTokenAt(cursorPosition)
+
+      previousPosition = {ch: cursorPosition.ch - 1, line: cursorPosition.line}
+      previousToken = editor.getTokenAt(previousPosition)
+
       line = cursorPosition.line
 
       currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/[^\w]/g, '')
+      previousString = previousToken.string
 
-      if currentString is ''
+      if previousString is 'self'
+        @set
+          filteredSuggestions: suggestions['self'].copy().sort()
+      else if currentString is ''
         @set
           filteredSuggestions: suggestions['I'].copy().sort()
 

@@ -5,6 +5,9 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   autocomplete = new Pixie.Views.Autocomplete
     model: autocompleteModel
 
+  @autocompleteModel = autocompleteModel
+  @autocompleteView = autocomplete
+
   if $('.code_autocomplete').length
     $('.code_autocomplete').remove()
 
