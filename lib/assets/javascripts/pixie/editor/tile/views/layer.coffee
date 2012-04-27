@@ -16,7 +16,7 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
     render: =>
       @el.html "<div class='name'>#{@model.get 'name'}</div> <eye />"
-        
+
       if @model == @options.settings.get "activeLayer"
         @el.addClass "active"
 
@@ -27,8 +27,10 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
 
       return this
 
-    activate: ->
-      @options.settings.set 
+    activate: (e) ->
+      return if $(e.target).is('eye')
+
+      @options.settings.set
         activeLayer: @model
 
     toggleVisible: ->
