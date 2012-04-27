@@ -26,7 +26,7 @@ Pixie.Editor.Pixel.actions = (($) ->
         canvas.preview()
       undoable: false
     opacify:
-      hotkeys: ["+"]
+      hotkeys: ["+", "="]
       menu: false
       perform: (canvas) ->
         canvas.opacity(canvas.opacity() + 0.1)
