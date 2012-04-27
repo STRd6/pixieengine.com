@@ -32,6 +32,7 @@ gem 'html5-boilerplate'
 gem 'json'
 gem 'mail'
 gem "mocha"
+gem 'multi_json', '1.2.0'
 gem "oink"
 gem 'paperclip'
 gem "pg"
@@ -54,9 +55,9 @@ end
 
 group :development, :test do
   gem 'growl'
-  gem 'guard-jasmine-headless-webkit', :git => 'git://github.com/johnbintz/guard-jasmine-headless-webkit.git'
+  #gem 'guard-jasmine-headless-webkit', :git => 'git://github.com/johnbintz/guard-jasmine-headless-webkit.git'
   gem "jasmine"
-  gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git', :ref => '724541a2cb3ee7d730dac4eb186b451a510bf11e'
+  gem 'jasmine-headless-webkit'
   gem 'jasmine-spec-extras'
   gem 'rb-fsevent'
 end
