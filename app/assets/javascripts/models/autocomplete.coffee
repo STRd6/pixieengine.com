@@ -85,24 +85,24 @@ namespace "Pixie.Models", (Models) ->
       currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/[^\w]/g, '')
       previousString = previousToken.string
 
-      if previousString is 'self'
+      debugger
+
+      if previousString is 'self' or currentString is 'self'
         @set
           filteredSuggestions: suggestions['self'].copy().sort()
-      else if currentString is ''
+      else if previousString is 'I' or currentString is 'I'
         @set
           filteredSuggestions: suggestions['I'].copy().sort()
+      else
+        @set
+          filteredSuggestions: []
 
-        return currentString
-
-      matches = suggestions['I'].map (suggestion) ->
+      matches = @get('filteredSuggestions').map (suggestion) ->
         suggestion if suggestion.indexOf(currentString) is 0
 
       if matches.compact().length
         @set
           filteredSuggestions: matches.compact().sort()
-      else
-        @set
-          filteredSuggestions: suggestions['I'].copy().sort()
 
       return currentString
 
