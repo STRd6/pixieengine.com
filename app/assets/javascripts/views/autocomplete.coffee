@@ -75,7 +75,7 @@ namespace "Pixie.Views", (Views) ->
         line = cursorPosition.line
 
         currentToken = editor.getTokenAt(cursorPosition)
-        currentString = editor.getRange({line: line, ch: currentToken.ch}, {line: line, ch: cursorPosition.ch})
+        currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/\./g, '')
 
         for suggestion in filteredSuggestions
           if suggestion.indexOf(currentString) is 0 and currentString isnt ''

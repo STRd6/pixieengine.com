@@ -5,9 +5,6 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   autocomplete = new Pixie.Views.Autocomplete
     model: autocompleteModel
 
-  @autocompleteModel = autocompleteModel
-  @autocompleteView = autocomplete
-
   if $('.code_autocomplete').length
     $('.code_autocomplete').remove()
 
@@ -79,6 +76,9 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   autocomplete.editor = editor
   autocompleteModel.set
     editor: editor
+
+  editor.autocompleteModel = autocompleteModel
+  editor.autocompleteView = autocomplete
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->

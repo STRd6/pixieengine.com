@@ -71,38 +71,38 @@ namespace "Pixie.Models", (Models) ->
     decrementSelected: =>
       @_shiftSelected(-1)
 
-    filterSuggestions: =>
-      {editor, suggestions} = @attributes
+    setFilterType: (context, currentString) =>
+      {suggestions} = @attributes
 
-      cursorPosition = editor.getCursor()
-      currentToken = editor.getTokenAt(cursorPosition)
-
-      previousPosition = {ch: cursorPosition.ch - 1, line: cursorPosition.line}
-      previousToken = editor.getTokenAt(previousPosition)
-
-      line = cursorPosition.line
-
-      currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/[^\w]/g, '')
-      previousString = previousToken.string
-
-      debugger
-
-      if previousString is 'self' or currentString is 'self'
+      if context is 'self.'
         @set
           filteredSuggestions: suggestions['self'].copy().sort()
-      else if previousString is 'I' or currentString is 'I'
+      else if context is 'I.'
         @set
           filteredSuggestions: suggestions['I'].copy().sort()
-      else
-        @set
-          filteredSuggestions: []
 
+      @matchSuggestions(currentString)
+
+    matchSuggestions: (currentString) =>
       matches = @get('filteredSuggestions').map (suggestion) ->
+        debugger
         suggestion if suggestion.indexOf(currentString) is 0
 
       if matches.compact().length
         @set
           filteredSuggestions: matches.compact().sort()
+
+    filterSuggestions: =>
+      {editor, suggestions} = @attributes
+
+      cursorPosition = editor.getCursor()
+
+      currentString = @getCurrentToken()
+
+      currentLine = editor.lineInfo(cursorPosition.line).text
+      context = currentLine.split(' ').last()
+
+      @setFilterType(context, currentString)
 
       return currentString
 
