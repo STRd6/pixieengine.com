@@ -34,11 +34,17 @@
   :coffeescript
     window.tree = new BoneTree.Views.Tree
 
-    tree.addFromJSON JSON.parse($('#code_content').val()), '', (fileName, fileData) ->
+    fileTreeData = JSON.parse($('#code_content').val())
+
+    tree.addFromJSON fileTreeData, '', (fileName, fileData) ->
       return false if fileData?.type is 'binary' or fileData?.contents?.substr(0, 8) is 'var App;'
       return true
 
     tree.closeDirectories()
+
+    tree.createOrUpdate "Documentation.documentation",
+      type: "documentation"
+      path: "Documentation.documentation"
 
     tree.bind 'openFile', (file) ->
       openFile(file)
