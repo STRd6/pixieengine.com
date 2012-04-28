@@ -1,5 +1,6 @@
 namespace "Pixie.Models", (Models) ->
-  DEFAULT_METHODS = ['bounds']
+  DEFAULT_METHODS = 'bind bounds clamp clampToBounds extend flicker include meter position tween unbind'.split(" ")
+  DEFAULT_PROPERTIES = "acceleration alpha duration x y width height radius color rotation rotationalVelocity hflip vflip velocity zIndex".split(" ")
 
   class Models.Autocomplete extends Backbone.Model
     defaults:
@@ -25,7 +26,7 @@ namespace "Pixie.Models", (Models) ->
         @set
           suggestions: {
             self: _(@generateInstanceMethods(nodes).concat(DEFAULT_METHODS)).unique()
-            I: @generateInstanceProperties(nodes)
+            I: _(@generateInstanceProperties(nodes).concat(DEFAULT_PROPERTIES)).unique()
           }
 
     generateInstanceMethods: (nodes) ->
