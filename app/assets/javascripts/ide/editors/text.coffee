@@ -18,6 +18,9 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
         cursorPosition = editor.getCursor()
         line = cursorPosition.line
 
+        if e.keyCode is 32
+          autocomplete.hide()
+
         if e.ctrlKey and e.keyCode is 32
           currentSuggestions = autocomplete.currentSuggestions()
 

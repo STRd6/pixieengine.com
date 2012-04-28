@@ -100,6 +100,8 @@ namespace "Pixie.Views", (Views) ->
 
         if (selected = @$('li.selected')).length
           selected.get(0).scrollIntoView(false)
+        else
+          @$el.hide()
 
         @$el.css
           left: @currentPosition.x
