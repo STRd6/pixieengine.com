@@ -37,11 +37,6 @@ namespace "Pixie.Views", (Views) ->
       else
         return 0
 
-    _insertOnlySuggestion: =>
-      suggestions = @model.filterSuggestions(context, currentString)
-
-      @_insertSuggestion(suggestions.first())
-
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(cursorPosition)
@@ -70,20 +65,30 @@ namespace "Pixie.Views", (Views) ->
 
       @_insertSuggestion(autocompleteValue)
 
+    lineTokens: =>
+      {editor} = @model.attributes
+
+      cursorPosition = editor.getCursor()
+
+      currentLine = editor.lineInfo(cursorPosition.line).text
+      lastToken = currentLine.split(' ').last()
+
+      lastToken.split('.')
+
+    currentSuggestions: =>
+      [unusedTokens..., context, currentString] = @lineTokens()
+
+      @model.filterSuggestions(context, currentString)
+
     render: =>
       if @editor
         @$('li').remove()
 
-        {editor, selectedIndex} = @model.attributes
+        {selectedIndex} = @model.attributes
 
-        cursorPosition = editor.getCursor()
+        currentString = @lineTokens().last()
 
-        currentLine = editor.lineInfo(cursorPosition.line).text
-        lastToken = currentLine.split(' ').last()
-
-        [unusedTokens..., context, currentString] = lastToken.split('.')
-
-        for suggestion in @model.filterSuggestions(context, currentString)
+        for suggestion in @currentSuggestions()
           if suggestion.indexOf(currentString) is 0 and currentString isnt ''
             suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
           else

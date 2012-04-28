@@ -5,9 +5,6 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   autocomplete = new Pixie.Views.Autocomplete
     model: autocompleteModel
 
-  if $('.code_autocomplete').length
-    $('.code_autocomplete').remove()
-
   $(autocomplete.render().el).appendTo $('body')
 
   editor = CodeMirror panel.get(0),
@@ -22,10 +19,10 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
         line = cursorPosition.line
 
         if e.ctrlKey and e.keyCode is 32
-          filteredSuggestions = autocompleteModel.filterSuggestions()
+          currentSuggestions = autocomplete.currentSuggestions()
 
-          if filteredSuggestions.length is 1
-            autocomplete._insertOnlySuggestion()
+          if currentSuggestions.length is 1 and autocomplete.lineTokens().last()?.length >= 1
+            autocomplete._insertSuggestion(currentSuggestions.first())
           else
             autocomplete.render()
             autocomplete.show()

@@ -1,4 +1,6 @@
 namespace "Pixie.Models", (Models) ->
+  DEFAULT_METHODS = ['bounds']
+
   class Models.Autocomplete extends Backbone.Model
     defaults:
       suggestions: {
@@ -22,7 +24,7 @@ namespace "Pixie.Models", (Models) ->
 
         @set
           suggestions: {
-            self: @generateInstanceMethods(nodes)
+            self: _(@generateInstanceMethods(nodes).concat(DEFAULT_METHODS)).unique()
             I: @generateInstanceProperties(nodes)
           }
 
