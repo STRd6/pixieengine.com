@@ -22,10 +22,10 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
         line = cursorPosition.line
 
         if e.ctrlKey and e.keyCode is 32
-          filteredSuggestions = autocompleteModel.get('filteredSuggestions')
+          filteredSuggestions = autocompleteModel.filterSuggestions()
 
           if filteredSuggestions.length is 1
-            autocomplete._insertSuggestion(filteredSuggestions.first())
+            autocomplete._insertOnlySuggestion()
           else
             autocomplete.render()
             autocomplete.show()
@@ -63,7 +63,6 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
         return false
 
       if e.type is "keyup"
-        autocompleteModel.filterSuggestions()
         autocomplete.render()
 
         if e.keyCode is 190

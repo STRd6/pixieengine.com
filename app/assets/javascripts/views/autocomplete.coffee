@@ -37,6 +37,11 @@ namespace "Pixie.Views", (Views) ->
       else
         return 0
 
+    _insertOnlySuggestion: =>
+      suggestions = @model.filterSuggestions(context, currentString)
+
+      @_insertSuggestion(suggestions.first())
+
     _insertSuggestion: (suggestion) =>
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(cursorPosition)
@@ -69,15 +74,16 @@ namespace "Pixie.Views", (Views) ->
       if @editor
         @$('li').remove()
 
-        {editor, filteredSuggestions, selectedIndex} = @model.attributes
+        {editor, selectedIndex} = @model.attributes
 
         cursorPosition = editor.getCursor()
-        line = cursorPosition.line
 
-        currentToken = editor.getTokenAt(cursorPosition)
-        currentString = editor.getRange({line: line, ch: currentToken.start}, {line: line, ch: cursorPosition.ch}).replace(/\./g, '')
+        currentLine = editor.lineInfo(cursorPosition.line).text
+        lastToken = currentLine.split(' ').last()
 
-        for suggestion in filteredSuggestions
+        [unusedTokens..., context, currentString] = lastToken.split('.')
+
+        for suggestion in @model.filterSuggestions(context, currentString)
           if suggestion.indexOf(currentString) is 0 and currentString isnt ''
             suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
           else

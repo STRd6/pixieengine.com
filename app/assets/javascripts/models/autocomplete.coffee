@@ -6,8 +6,8 @@ namespace "Pixie.Models", (Models) ->
         I: []
         global: []
       }
-      filteredSuggestions: []
       selectedIndex: 0
+      filterLength: 0
 
     # TODO have a hash table for different method contexts.
     # 1. global
@@ -58,64 +58,48 @@ namespace "Pixie.Models", (Models) ->
 
       return returnValue
 
-    getCurrentToken: =>
-      {editor} = @attributes
-
-      cursorPosition = editor.getCursor()
-
-      return editor.getTokenAt(cursorPosition).string.replace(/[^\w]/g, '')
-
-    currentSuggestion: =>
-      @get('filteredSuggestions')[@get('selectedIndex')]
-
     decrementSelected: =>
       @_shiftSelected(-1)
 
-    setFilterType: (context, currentString) =>
+    suggestions: (context) =>
       {suggestions} = @attributes
 
-      if context is 'self.'
-        @set
-          filteredSuggestions: suggestions['self'].copy().sort()
-      else if context is 'I.'
-        @set
-          filteredSuggestions: suggestions['I'].copy().sort()
+      if context is 'self'
+        suggestions['self'].copy().sort()
+      else if context is 'I'
+        suggestions['I'].copy().sort()
+      else
+        []
 
-      @matchSuggestions(currentString)
-
-    matchSuggestions: (currentString) =>
-      matches = @get('filteredSuggestions').map (suggestion) ->
-        debugger
-        suggestion if suggestion.indexOf(currentString) is 0
-
-      if matches.compact().length
-        @set
-          filteredSuggestions: matches.compact().sort()
-
-    filterSuggestions: =>
+    filterSuggestions: (context, currentString) =>
       {editor, suggestions} = @attributes
 
       cursorPosition = editor.getCursor()
 
-      currentString = @getCurrentToken()
-
       currentLine = editor.lineInfo(cursorPosition.line).text
-      context = currentLine.split(' ').last()
+      lastToken = currentLine.split(' ').last()
 
-      @setFilterType(context, currentString)
+      [unusedTokens..., context, currentString] = lastToken.split('.')
 
-      return currentString
+      output = (@suggestions(context).map (suggestion) ->
+        suggestion if suggestion.indexOf(currentString) is 0
+      ).compact()
+
+      @set
+        filterLength: output.length
+
+      return output
 
     incrementSelected: =>
       @_shiftSelected(+1)
 
     _shiftSelected: (value) =>
-      {editor, filteredSuggestions, selectedIndex} = @attributes
+      {editor, filterLength, selectedIndex} = @attributes
 
       cursorPosition = editor.getCursor()
 
       currentToken = editor.getTokenAt(editor.coordsChar(cursorPosition)).string
 
       @set
-        selectedIndex: (selectedIndex + value).mod(filteredSuggestions.length)
+        selectedIndex: (selectedIndex + value).mod(filterLength)
 
