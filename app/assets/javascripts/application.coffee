@@ -36,6 +36,9 @@
 #= require views/projects/gallery
 #= require views/sprites/gallery
 
+#= require views/autocomplete
+#= require models/autocomplete
+
 #= require base64
 #= require command_stack
 #= require error_tracker

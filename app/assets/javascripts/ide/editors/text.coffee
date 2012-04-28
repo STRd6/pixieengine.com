@@ -1,4 +1,12 @@
 window.codeEditor = ({panel, code:savedCode, save}) ->
+  autocompleteModel = new Pixie.Models.Autocomplete
+    text: savedCode
+
+  autocomplete = new Pixie.Views.Autocomplete
+    model: autocompleteModel
+
+  $(autocomplete.render().el).appendTo $('body')
+
   editor = CodeMirror panel.get(0),
     autoMatchParens: true
     value: savedCode
@@ -6,10 +14,67 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
     tabMode: "shift"
     textWrapping: false
     onKeyEvent: (editor, e) ->
-      if e.type == "keyup"
+      if e.type is "keydown"
+        cursorPosition = editor.getCursor()
+        line = cursorPosition.line
+
+        if e.ctrlKey and e.keyCode is 32
+          currentSuggestions = autocomplete.currentSuggestions()
+
+          if currentSuggestions.length is 1 and autocomplete.lineTokens().last()?.length >= 1
+            autocomplete._insertSuggestion(currentSuggestions.first())
+          else
+            autocomplete.render()
+            autocomplete.show()
+
+        # hide the autocomplete dialog by pressing escape
+        if e.keyCode is 27 or e.keyCode is 37
+          e.preventDefault()
+
+          autocomplete.hide()
+
+        if $(autocomplete.el).is(':visible')
+          # update the autocomplete dialog by pressing up and down
+          if e.keyCode is 40
+            e.preventDefault()
+
+            autocompleteModel.incrementSelected()
+
+            return true
+
+          else if e.keyCode is 38
+            e.preventDefault()
+
+            autocompleteModel.decrementSelected()
+
+            return true
+
+          # enter the autocomplete value
+          if e.keyCode is 13 or e.keyCode is 9 or e.keyCode is 39
+            e.preventDefault()
+
+            autocomplete.returnSuggestion()
+
+            return true
+
+        return false
+
+      if e.type is "keyup"
+        autocomplete.render()
+
+        if e.keyCode is 190
+          autocomplete.show()
+
         processEditorChanges()
 
         return undefined
+
+  autocomplete.editor = editor
+  autocompleteModel.set
+    editor: editor
+
+  editor.autocompleteModel = autocompleteModel
+  editor.autocompleteView = autocomplete
 
   # Make sure that the editor doesn't get stuck at a small size by popping in too fast
   setTimeout ->

@@ -1,5 +1,3 @@
-#= require ./models/sequence
-
 namespace "Pixie.Editor.Animation.Command", (Command) ->
   {Models} = Pixie.Editor.Animation
 

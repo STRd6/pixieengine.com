@@ -10,6 +10,46 @@ $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
 
+.code_autocomplete
+  +border-radius(3px)
+  +border-top-left-radius(0)
+  +box-shadow(rgba(0, 0, 0, 0.1) 1px 1px 3px)
+  +box-sizing(border-box)
+
+  background-color: #f9f9f9
+  border: 1px solid rgba(0, 0, 0, 0.3)
+  color: #333
+  cursor: pointer
+  display: none
+  font-family: Monaco, monospace
+  font-size: 11px
+  max-height: 200px
+  overflow-x: hidden
+  overflow-y: auto
+  position: absolute
+
+  b
+    font-weight: bold
+
+  li
+    border-bottom: 1px solid transparent
+    border-top: 1px solid transparent
+    padding-left: 0.3em
+    padding-right: 1.5em
+
+    &.selected
+      background-color: #B9D0E4
+
+    &:hover
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2)
+      border-top: 1px solid rgba(0, 0, 0, 0.2)
+
+      &:first-child
+        border-top: 1px solid transparent
+
+      &:last-child
+        border-bottom: 1px solid transparent
+
 .static-chrome_webstore, .static-zip, .static-embed
   margin: auto
 
