@@ -48,6 +48,8 @@
       ${className} = (I={}) ->
         self = ${parentClass}(I)
 
+        Object.reverseMerge I, ${entityData}
+
       ${code}
 
         return self
