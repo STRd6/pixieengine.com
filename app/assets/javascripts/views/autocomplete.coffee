@@ -1,4 +1,40 @@
 namespace "Pixie.Views", (Views) ->
+  DOCS_LOOKUP =
+    bind:
+      object: 'Bindable'
+      method: 'bind'
+    bounds:
+      object: 'Bounded'
+      method: 'bounds'
+    clamp:
+      object: 'Clampable'
+      method: 'clamp'
+    clampToBounds:
+      object: 'Clampable'
+      method: 'clampToBounds'
+    extend:
+      object: 'Core'
+      method: 'extend'
+    flicker:
+      object: 'Flickerable'
+      method: 'flicker'
+    include:
+      object: 'Core'
+      method: 'include'
+    meter:
+      object: 'Metered'
+      method: 'meter'
+    position:
+      object: 'Bounded'
+      method: 'position'
+    tween:
+      object: 'Tween'
+      method: 'tween'
+    unbind:
+      object: 'Bindable'
+      method: 'unbind'
+
+
   class Views.Autocomplete extends Backbone.View
     className: 'code_autocomplete'
     tagName: 'ul'
@@ -89,10 +125,19 @@ namespace "Pixie.Views", (Views) ->
         currentString = @lineTokens().last()
 
         for suggestion in @currentSuggestions()
+          docObject = DOCS_LOOKUP[suggestion]?.object
+          docMethod = DOCS_LOOKUP[suggestion]?.method
+
           if suggestion.indexOf(currentString) is 0 and currentString isnt ''
-            suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
+            if docObject
+              suggestionEl = "<li><a href='#{docUrl(docObject, docMethod)}' target=_blank><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</a></li>"
+            else
+              suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
           else
-            suggestionEl = "<li>#{suggestion}</li>"
+            if docObject
+              suggestionEl = "<li><a href='#{docUrl(docObject, docMethod)}' target=_blank>#{suggestion}</a></li>"
+            else
+              suggestionEl = "<li>#{suggestion}</li>"
 
           @$el.append suggestionEl
 
