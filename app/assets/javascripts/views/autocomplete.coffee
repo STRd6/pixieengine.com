@@ -1,4 +1,45 @@
+#= require ide/doc_helpers
+
 namespace "Pixie.Views", (Views) ->
+  window.DOCS_LOOKUP =
+    bind:
+      object: 'Bindable'
+      method: 'bind'
+    bounds:
+      object: 'Bounded'
+      method: 'bounds'
+    clamp:
+      object: 'Clampable'
+      method: 'clamp'
+    clampToBounds:
+      object: 'Clampable'
+      method: 'clampToBounds'
+    extend:
+      object: 'Core'
+      method: 'extend'
+    flicker:
+      object: 'Flickerable'
+      method: 'flicker'
+    include:
+      object: 'Core'
+      method: 'include'
+    meter:
+      object: 'Metered'
+      method: 'meter'
+    position:
+      object: 'Bounded'
+      method: 'position'
+    tween:
+      object: 'Tween'
+      method: 'tween'
+    unbind:
+      object: 'Bindable'
+      method: 'unbind'
+
+  $.each DOCS_LOOKUP, (key, value) ->
+    docPage = $.get docUrl(value.object, value.method), (data) ->
+      DOCS_LOOKUP[key].summary = $(data).find("a[name='#{key}']").parent().next('.description').contents().eq(0).text().trim()
+
   class Views.Autocomplete extends Backbone.View
     className: 'code_autocomplete'
     tagName: 'ul'
@@ -38,6 +79,8 @@ namespace "Pixie.Views", (Views) ->
         return 0
 
     _insertSuggestion: (suggestion) =>
+      suggestion = suggestion.split('-').first().trim()
+
       cursorPosition = @editor.getCursor()
       currentToken = @editor.getTokenAt(cursorPosition)
 
@@ -88,11 +131,17 @@ namespace "Pixie.Views", (Views) ->
 
         currentString = @lineTokens().last()
 
-        for suggestion in @currentSuggestions()
-          if suggestion.indexOf(currentString) is 0 and currentString isnt ''
-            suggestionEl = "<li><b>#{currentString}</b>#{suggestion.substring(currentString.length)}</li>"
+        @currentSuggestions().each (suggestion) =>
+          docObject = DOCS_LOOKUP[suggestion]?.object
+          docMethod = DOCS_LOOKUP[suggestion]?.method
+          docSummary = DOCS_LOOKUP[suggestion]?.summary
+
+          inlineDocSummary = if docSummary then " - #{docSummary}" else ""
+
+          if docObject
+            suggestionEl = "<li class='doc_entry #{docMethod}'><a href='#{docUrl(docObject, docMethod)}' target=_blank>#{suggestion}</a>#{inlineDocSummary}</li>"
           else
-            suggestionEl = "<li>#{suggestion}</li>"
+            suggestionEl = "<li class='doc_entry #{docMethod}'>#{suggestion}</li>"
 
           @$el.append suggestionEl
 
