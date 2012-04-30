@@ -36,15 +36,12 @@
 
     fileTreeData = JSON.parse($('#code_content').val())
 
-    tree.addFromJSON fileTreeData, '', (fileName, fileData) ->
-      return false if fileData?.type is 'binary' or fileData?.contents?.substr(0, 8) is 'var App;'
-      return true
+    tree.addFromJSON fileTreeData, ''
 
     tree.closeDirectories()
 
-    tree.createOrUpdate "Documentation.documentation",
+    tree.file "Documentation.documentation",
       type: "documentation"
-      path: "Documentation.documentation"
 
     tree.bind 'openFile', (file) ->
       openFile(file)
@@ -223,7 +220,7 @@
     window.loadProjectConfig = ->
       DEFAULT_CONFIG = #{default_project_config.to_json}
       try
-        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
+        window.projectConfig = JSON.parse(tree.file('pixie.json').get('contents'))
       catch e
         console.warn?(e)
         window.projectConfig = {}
@@ -306,7 +303,7 @@
 
       # Hack to pre-load main file, README and tutorials
       for fileName in ['src/main.coffee', 'src/main.js', 'README', 'Tutorial.tutorial']
-        if file = tree.getFile(fileName)
+        if file = tree.file(fileName)
           tree.trigger 'openFile', file
 
       $('#update_libs, #generate_docs, #build, #tag, #export').tipsy

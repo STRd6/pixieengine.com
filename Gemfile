@@ -19,7 +19,7 @@ gem 'acts-as-taggable-on'
 gem "authlogic"
 gem "aws-s3", :require => "aws/s3"
 gem 'bluecloth'
-gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
+gem 'bone_tree'
 gem "capistrano"
 gem "coffee-filter"
 gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"

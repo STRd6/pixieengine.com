@@ -232,6 +232,8 @@ class ProjectsController < ApplicationController
   end
 
   def ide
+    @hide_feedback = true
+
     respond_with(project) do |format|
       format.html do
         @has_reg_popup = true

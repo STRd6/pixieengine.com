@@ -43,7 +43,7 @@ window.createImageEditor = (options, file) ->
             fullPath = filePath + "/" + title + ".png"
 
             # TODO remove global tree reference
-            tree.addFile fullPath,
+            tree.file fullPath,
               type: "image"
               path: fullPath
               contents: "data:image/png;base64," + base64Contents

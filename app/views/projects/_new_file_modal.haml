@@ -64,8 +64,14 @@
       inputData.path = "\#{path}/\#{name}.\#{extension}"
       docSelector = "#file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
 
+      hideFile = false
+
+      if inputData.type is 'binary' or inputData.extension is 'mp3' or inputData.contents?.substr(0, 8) is 'var App;'
+        hideFile = true
+
       data = $.extend({
         docSelector: docSelector
+        hidden: hideFile
       }, inputData)
 
       if template
@@ -75,9 +81,7 @@
       fullName = "\#{path}/\#{name}.\#{extension}"
 
       # TODO remove global file tree reference. Pass it to the function instead
-      file = tree.createOrUpdate fullName, data, autoOpen, (fileName, fileData) ->
-        return false if fileData.type is 'binary'
-        return true
+      file = tree.file fullName, data
 
       # TODO Get a JS test for this
       if forceSave

@@ -315,7 +315,6 @@ class Project < ActiveRecord::Base
         {
           :name => "Documentation",
           :extension => "documentation",
-          :path => path,
           :type => "documentation"
         }
       else
@@ -333,12 +332,7 @@ class Project < ActiveRecord::Base
       name = filename.sub(/\.[^\.]*$/, '')
       lang = lang_for(ext)
 
-      if path == COMPILED_FILE_NAME
-        # This is a 'compiled' JavaScript file for the project
-        type = "binary"
-      else
-        type = type_for(ext)
-      end
+      type = type_for(ext)
 
       if ["text", "json", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
         contents = File.read(file_path)
@@ -348,16 +342,30 @@ class Project < ActiveRecord::Base
         end
       end
 
+      if contents
+        if contents[0..7] == 'var App;'
+          gameFile = true
+        else
+          gameFile = false
+        end
+      end
+
+      if ext == 'mp3' || type == 'binary' || gameFile
+        hidden = true
+      else
+        hidden = false
+      end
+
       {
         :name => name,
         :contents => contents,
         :docSelector => doc_selector(path),
         :extension => ext,
         :language => lang,
+        :hidden => hidden,
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,
-        :path => path,
       }
     end
   end
