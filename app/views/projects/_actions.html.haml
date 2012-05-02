@@ -109,7 +109,7 @@
         # app config / entities bootstrapper
         entitiesCode = ''
       else
-        entitiesCode = CoffeeScript.compile "App.entities = \#{JSON.stringify(window.entities)}", bare: true
+        entitiesCode = "App.entities = \#{JSON.stringify(window.entities)};"
 
       if mainName = projectConfig.main
         srcDir = projectConfig.directories.source || 'src'

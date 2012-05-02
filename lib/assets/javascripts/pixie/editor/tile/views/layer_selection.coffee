@@ -29,6 +29,9 @@ namespace "Pixie.Editor.Tile.Views", (Views) ->
             debugger unless cid?
             @collection.getByCid(cid).set zIndex: i
 
+            for name, view of @_layerViews
+              view.delegateEvents()
+
       @options.settings.bind "change:activeLayer", (settings) =>
         if layer = settings.get("activeLayer")
           @$("[data-cid=#{layer.cid}]").takeClass "active"

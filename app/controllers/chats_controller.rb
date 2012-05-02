@@ -30,7 +30,7 @@ class ChatsController < ApplicationController
   end
 
   def active_users
-    @active_users = User.logged_in
+    @active_users = User.online_now
 
     respond_with @active_users
   end

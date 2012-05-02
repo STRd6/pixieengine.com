@@ -57,6 +57,7 @@ window.createEntityEditor = (options, file) ->
         className: entityData.class
         parentClass: entityData.parentClass || "GameObject"
         code: indentedCode
+        entityData: dataString
       ).text()
 
       hotSwap(entitySrc, "coffee")
