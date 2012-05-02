@@ -1,6 +1,6 @@
 class SubscriptionsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => :changed
-  before_filter :require_user, :only => [:subscribe]
+  before_filter :require_user, :only => [:subscribe, :indie]
 
   def subscribe
     if params[:id]
