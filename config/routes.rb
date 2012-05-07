@@ -1,5 +1,6 @@
 PixieStrd6Com::Application.routes.draw do
   get "subscribe" => "subscriptions#subscribe", :as => :subscribe
+  get "subscribe/indie" => "subscriptions#indie"
   get "subscriptions/:id/subscribe" => "subscriptions#subscribe"
   get "subscriptions/thanks"
   post "subscriptions/changed"

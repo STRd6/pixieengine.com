@@ -1,0 +1,14 @@
+.centered_form
+  %h1 Pixie - Indie Edition
+
+  %h3
+    An Indie Account grants you the following benefits:
+
+  %ul
+    %li Unlimited Active Projects
+    %li 100MB of Storage
+    %li Free!
+
+  %center
+    %a.button{ :href => current_user.subscribe_url(User::INDIE_PLAN_ID) }
+      Subscribe Now

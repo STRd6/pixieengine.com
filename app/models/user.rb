@@ -7,6 +7,9 @@ class User < ActiveRecord::Base
     DEFAULT_PLAN_ID = 9356
   end
 
+  STUDENT_PLAN_ID = 18694
+  INDIE_PLAN_ID = 18695
+
   validates :display_name,
     :format => { :with => /^[A-Za-z0-9_-]+$/ },
     :presence => true,
