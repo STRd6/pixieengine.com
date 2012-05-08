@@ -86,8 +86,16 @@
 
           processInputChanges()
 
+      valueInput.bind 'keydown', (e) ->
+        if e.shiftKey
+          $(this).attr('step', 10)
+        if e.altKey
+          $(this).attr('step', 0.1)
+
       valueInput.bind 'blur keyup', (e) ->
         $this = $(this)
+
+        $this.removeAttr('step')
 
         currentValue = $this.val().parse()
         previousValue = $this.data("previousValue")
