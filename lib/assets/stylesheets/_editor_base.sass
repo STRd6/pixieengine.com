@@ -54,6 +54,16 @@
   padding: 6px
   padding-top: 8px
 
+  &.json_editor
+    padding: 0
+
+    .module
+      +border-radius(0)
+
+      background-color: rgba(0, 0, 0, 0.3)
+      height: 100%
+      padding: 0.5em
+
   #fullscreen > &
     padding: 0
 
@@ -92,14 +102,27 @@
 table.nested
   +box-sizing(border-box)
 
+  margin-bottom: 0.5em
   padding-left: 1em
 
-table.properties
-  input, textarea
-    margin: 0
-
   td
-    padding: 3px 1px
+    &:first-child
+      input
+        border-right: 1px dashed rgba(0, 0, 0, 0.3)
+
+table.properties
+  td
+    &:first-child
+      input
+        border-right: 1px dashed rgba(0, 0, 0, 0.3)
+
+  input, textarea
+    +border-radius(0)
+    +box-shadow(none)
+
+    margin: 0
+    border: none
+    border-top: 1px solid rgba(0, 0, 0, 0.3)
 
     &:first-child
       vertical-align: top

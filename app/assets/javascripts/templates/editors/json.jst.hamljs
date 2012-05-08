@@ -1,2 +1,3 @@
 .editor.json_editor
-  %table
+  .module
+    %table
