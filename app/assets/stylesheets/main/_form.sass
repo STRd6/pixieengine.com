@@ -95,7 +95,7 @@ label
 input[disabled]
   background-color: #ccc
 
-input[type=text], input[type=password], input[type=file], textarea
+input[type=text], input[type=password], input[type=number], input[type=file], textarea
   +border-radius(2px)
   +box-sizing(border-box)
 
@@ -105,11 +105,12 @@ input[type=text], input[type=password], input[type=file], textarea
     border-width: 1px
     border-color: $pixie_primary
 
-input[type=text], input[type=password], textarea
+input[type=text], input[type=password], input[type=number], textarea
   +box-shadow(#888 1px 1px 1px 0px inset)
 
   border: 1px solid $light_gray
   display: block
+  outline: none
   width: 100%
 
 input[type=radio]

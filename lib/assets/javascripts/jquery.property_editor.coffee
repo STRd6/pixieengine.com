@@ -40,6 +40,9 @@
             addNestedRow(key, value)
           else if value?.match?(/^data:image\//)
             addRow(key, value).find('td:last input').modalPixelEditor(properties)
+          else if $.isNumeric(value)
+            addRow key, value,
+              inputType: 'number'
           else
             addRow(key, value)
 
@@ -113,12 +116,13 @@
         value = JSON.stringify(value)
 
       valueInputType = options.valueInputType || "input"
+      inputType = options.inputType || "text"
 
       valueInput = $("<#{valueInputType}>",
         class: "value"
         data:
           previousValue: value
-        type: "text"
+        type: inputType
         placeholder: "value"
         value: value
       ).appendTo($("<td>").appendTo(row))
