@@ -4,6 +4,8 @@
   hiddenFields = events.eachWithObject [], (event, array) ->
     array.push event, event + "Coffee"
 
+  hiddenFields.push '__CODE'
+
   shouldHide = (key, value) ->
     hiddenFields.include(key) or $.isFunction(value)
 
