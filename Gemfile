@@ -34,6 +34,8 @@ gem 'mail'
 gem "mocha"
 gem 'multi_json', '1.2.0'
 gem "oink"
+gem "omniauth"
+gem "omniauth-github"
 gem 'paperclip'
 gem "pg"
 gem 'rabl'

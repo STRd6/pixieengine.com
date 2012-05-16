@@ -38,10 +38,24 @@ class UserSessionsController < ApplicationController
     end
   end
 
+  def oauth
+    # TODO: Rename or extract this to it's own table
+    current_user.oauth_token = auth_hash["credentials"]["token"]
+    current_user.save
+
+    render :text => "<pre>"+auth_hash.to_yaml+"</pre>"
+  end
+
   def destroy
     @user_session = UserSession.find
     @user_session.destroy if @user_session
 
     redirect_to root_url, :notice => "Successfully logged out."
+  end
+
+  protected
+
+  def auth_hash
+    request.env['omniauth.auth']
   end
 end

@@ -75,6 +75,8 @@ PixieStrd6Com::Application.routes.draw do
 
   resources :comments, :invites, :js_errors, :password_resets, :user_sessions
 
+  match '/auth/:provider/callback', to: 'user_sessions#oauth'
+
   match 'begin' => "projects#info"
   match 'create-games' => "projects#info"
 
