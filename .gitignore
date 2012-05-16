@@ -4,6 +4,7 @@
 .rvmrc
 .DS_Store
 config/database.yml
+config/oauth.yml
 config/s3.yml
 config/settings.yml
 config/slurp.yml
