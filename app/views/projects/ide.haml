@@ -24,7 +24,6 @@
 
 - content_for :javascript do
   = javascript_include_tag "ide/base"
-  = javascript_include_tag "bone_tree"
 
 - project_id = params[:id]
 
@@ -32,84 +31,8 @@
 
 - content_for :javascript do
   :coffeescript
-    window.tree = new BoneTree.Views.Tree
-
-    fileTreeData = JSON.parse($('#code_content').val())
-
-    tree.addFromJSON fileTreeData, ''
-
-    tree.closeDirectories()
-
-    tree.file "Documentation.documentation",
-      type: "documentation"
-
-    tree.bind 'openFile', (file) ->
-      openFile(file)
-
-    tree.bind 'rename', (file, newName) ->
-      {docSelector, extension, language, name, nodeType, path, type} = file.attributes
-
-      openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
-
-      # Abort if unsaved
-      if openedTab.is(".unsaved")
-        notify "Save \#{file.nameWithExtension()} before renaming"
-        return
-      else
-        openedTab.find(".ui-icon-close").click()
-
-      oldExtension = file.previous('extension')
-      oldExtension = "." + oldExtension if oldExtension isnt ""
-
-      # this works because we are secretly inside a change event
-      oldName = file.previous('name') + oldExtension
-
-      # TODO: This is broken for files whose names are a subset of the prior path
-      # ex. boobaz/boo
-      newPath = path.replace(oldName, newName)
-      oldPath = path
-
-      # docSelector will be auto-updated when opening files, so I think no need to set here
-      file.set
-        path: newPath
-        _path: newPath # TODO: Find out why there is an _path
-
-      postData =
-        path: oldPath
-        new_path: newPath
-        format: 'json'
-        message: $(".actions .status .message").val()
-
-      $.post "/projects/\#{projectId}/rename_file", postData, -> # Assuming success
-      notify "Renamed \#{oldName} => \#{newName}"
-
-      # Close and reopen file if open
-      if openedTab.length
-        openFile(file)
-
-    tree.bind 'remove', (file) ->
-      notify "Removing \#{file.nameWithExtension()}..."
-
-      docSelector = file.get('docSelector')
-
-      # Close the tab if open
-      $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
-
-      path = file.get('path')
-      message = $(".actions .status .message").val()
-
-      postData =
-        path: path
-        format: 'json'
-        message: message
-
-      successCallback = (data) ->
-        notify "\#{file.nameWithExtension()} removed!"
-
-      $.post "/projects/\#{projectId}/remove_file", postData, successCallback
-
-    $('.sidebar').append(tree.render().$el)
-
+    window.MAX_FILE_SIZE = #{Project::MAX_EDITOR_FILE_SIZE}
+    window.DEFAULT_CONFIG = #{default_project_config.to_json}
     window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
     window.projectId = #{project_id.to_json}
 
@@ -120,36 +43,6 @@
         window.location = #{download_project_path(project, :chrome => 1).to_json}
 
         $.modal.close()
-
-    window.compileDirectory = (directoryPath) ->
-      findDirectory(directoryPath).map((file) ->
-        compileFileNode(file)
-      ).join(";\n")
-
-    window.compileFileNode = (file) ->
-      {contents, extension} = file.attributes
-
-      $element = $(file.get('docSelector'))
-
-      compileCode(contents, extension, $element)
-
-    window.compileCode = (src, ext, $element) ->
-      if ext is "js"
-        src
-      else if ext is "coffee"
-        try
-          compiledCode = CoffeeScript.compile src, bare: true
-        catch error
-          if $element
-            displayError
-              file: $element.data("path")
-              fileId: "#" + $element.attr("id")
-              message: error.message
-          else
-            displayError
-              message: error.message
-
-        compiledCode
 
     window.runCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
@@ -182,43 +75,11 @@
     window.log = (message) ->
       console.log message
 
-    window.openFile = (file) ->
-      trackEvent("IDE", "open file", file)
-
-      {name, nodeType, type, path, size} = file.attributes
-      selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
-
-      # TODO: Have docSelector be a generated attribute or method on files
-      # In the meantime reset it every time we open to keep it correct.
-      # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
-      docSelector = file.attributes.docSelector = '#' + nodeType + '_' + selector
-
-      return alert "Can't edit binary data... maybe there is a source file that can be edited." if type is "binary"
-      return alert "This file is too large for our editor!" if size > #{Project::MAX_EDITOR_FILE_SIZE}
-
-      # focus the tab if it already exists
-      if (tab = $('#tabs ul li a[href="' + docSelector + '"]')).length
-        tab.click()
-      else
-        unless fileName = name
-          if match = path.match /\/([^\/]*)$/
-            fileName = match[1]
-          else
-            fileName = path
-
-        window.currentFile = file
-
-        $("#tabs").tabs 'add', docSelector, fileName, 0
-
-        # Focus Newly Created Tab
-        $('#tabs ul li a[href="' + docSelector + '"]').click()
-
     window.onbeforeunload = ->
       if $("li.unsaved").length
         "You have some unsaved changes, if you leave now you will lose your work."
 
     window.loadProjectConfig = ->
-      DEFAULT_CONFIG = #{default_project_config.to_json}
       try
         window.projectConfig = JSON.parse(tree.file('pixie.json').get('contents'))
       catch e
