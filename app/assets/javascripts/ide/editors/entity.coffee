@@ -46,7 +46,14 @@ window.createEntityEditor = (options, file) ->
     else
       entities.add entityData
 
-    dataString = JSON.stringify(entityData)
+    dataString = JSON.stringify(entityData, null, 2)
+
+    indentedData = dataString.split("\n").map (line, i) ->
+      if i > 0
+        "  " + line
+      else
+        line
+    .join("\n")
 
     indentedCode = entityCode.split("\n").map (line, i) ->
       "  " + line
@@ -57,7 +64,7 @@ window.createEntityEditor = (options, file) ->
         className: entityData.class
         parentClass: entityData.parentClass || "GameObject"
         code: indentedCode
-        entityData: dataString
+        entityData: indentedData
       ).text()
 
       hotSwap(entitySrc, "coffee")
