@@ -44,6 +44,7 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
+gem 'spacedocs', :git => 'git://github.com/mdiebolt/spacedocs.git'
 gem 'therubyracer'
 gem "will_paginate", '3.0.3'
 gem "whenever"

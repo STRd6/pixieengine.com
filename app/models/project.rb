@@ -431,17 +431,7 @@ class Project < ActiveRecord::Base
   end
 
   def generate_docs
-    Dir.mktmpdir do |dir|
-      jsdoc_toolkit_dir = JSDoc::TOOLKIT_DIR
-      doc_dir = File.join path, "docs"
-
-      FileUtils.cp File.join(path, COMPILED_FILE_NAME), dir
-
-      FileUtils.mkdir_p(doc_dir)
-
-      cmd = "java -jar #{jsdoc_toolkit_dir}jsrun.jar #{jsdoc_toolkit_dir}app/run.js #{dir} -c=config/jsdoc.conf -d=#{doc_dir} -n -s"
-      system(cmd)
-    end
+    Spacedocs.doc(path, COMPILED_FILE_NAME)
   end
 
   def config

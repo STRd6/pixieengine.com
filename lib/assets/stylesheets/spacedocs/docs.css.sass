@@ -1,0 +1,156 @@
+@import compass/css3
+
+$width: 600px
+
+html
+  color: #222
+  height: 100%
+
+body
+  +background-image(linear-gradient(135deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0.05) 75%, transparent 75%, transparent))
+  -webkit-background-size: 4px 4px
+
+  font-family: 'Lucida Grande', Arial, sans-serif
+  font-size: 13px
+  height: 100%
+  margin: 0
+
+.method_list
+  +border-radius(5px)
+  +box-shadow(rgba(0,0,0,0.15) 0 0 15px)
+
+  position: fixed
+  top: 20px
+  right: 20px
+  background-color: white
+  border: 1px solid rgba(0, 0, 0, 0.3)
+  max-width: 350px
+  text-align: center
+  margin: 0
+  padding: 0.25em 0.5em
+
+  h3
+    text-align: center
+    margin: 0
+    margin-top: 0.5em
+
+  a
+    color: #222
+    display: inline-block
+    padding: 0.4em 0.5em
+    text-decoration: none
+
+nav
+  +background-image(linear-gradient(45deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0.05) 75%, transparent 75%, transparent))
+  +box-shadow(rgba(0, 0, 0, 0.15) -1px 0 4px inset)
+  -webkit-background-size: 12px 12px
+  display: inline-block
+  width: 130px
+  height: 100%
+  border-right: 1px solid rgba(0, 0, 0, 0.2)
+  background-color: rgba(0, 0, 0, 0.15)
+  padding: 0.5em 0
+  position: fixed
+  left: 0
+  overflow: auto
+  top: 0
+
+  a
+    +box-sizing(border-box)
+
+    border: 1px solid transparent
+    color: #222
+    display: block
+    text-decoration: none
+    padding: 0.5em 0 0.5em 1em
+
+    &.active
+      +border-left-radius(5px)
+      +box-shadow(rgba(0, 0, 0, 0.2) 0 0 4px)
+
+      background-image: -webkit-linear-gradient(135deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0.05) 75%, transparent 75%, transparent)
+      background-color: white
+      background-size: 4px 4px
+      padding: 0.5em 0 0.5em 0.5em
+      margin-left: 0.5em
+      border-right: 1px white
+      border: 1px solid rgba(0, 0, 0, 0.3)
+      border-right: 1px solid rgba(0, 0, 0, 0.15)
+
+.documentation
+  display: inline-block
+  max-width: $width
+  padding-left: 145px
+  vertical-align: top
+
+  a, a:active, a:visited, a:hover
+    color: #307EB6
+
+  h1, h2, h3, h4, h5
+    display: inline-block
+    margin: 0
+
+  h1
+    font-size: 1.5em
+
+  p
+    margin: 0.5em 0
+
+  ul
+    margin: 0
+    padding-left: 1em
+    list-style: none
+
+    li
+      padding-top: 0.5em
+
+  .returns
+    p
+      margin-left: 1em
+
+  section
+    margin-bottom: 0.75em
+
+  .source pre
+    display: none
+
+  .toggle_source
+    cursor: pointer
+
+  pre
+    margin: 0.5em 0
+    white-space: pre-line
+
+  .param_name
+    font-style: italic
+
+  .description
+    margin-left: 1em
+
+    p code
+      +border-radius(4px)
+      +box-shadow(rgba(0, 0, 0, 0.15) 0 0 4px inset)
+
+      background-color: #EEE
+      border: 1px solid rgba(0, 0, 0, 0.2)
+      padding: 0 0.3em
+
+  .description, .source
+    pre
+      +border-radius(4px)
+      +box-shadow(rgba(0, 0, 0, 0.15) 0 0 4px inset)
+      +box-sizing(border-box)
+
+      border: 1px solid rgba(0, 0, 0, 0.2)
+      background-color: #EEE
+      max-width: $width
+      padding: 0.5em 1em
+
+  hr
+    margin-left: 1px
+    margin-top: 1em
+    margin-bottom: 1em
+    max-width: $width
+
+    &:last-child
+      display: none
