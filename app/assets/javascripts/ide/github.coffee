@@ -31,17 +31,62 @@ namespace "Github", (Github) ->
         callback = data
         data = {}
 
+      url = "#{API_ROOT}#{path}"
+
+      console.log "GITHUB POST: ", url, data
+
       $.ajax
         contentType: 'application/json'
         data: JSON.stringify(data)
         dataType: 'json'
-        success: callback
+        success: (data) ->
+          console.log "GITHUB RESPONSE: ", data
+          callback(data)
         error: (data) ->
           console.log(data)
-
         processData: false
         type: 'POST'
-        url: "#{API_ROOT}#{path}?access_token=#{token}"
+        url: "#{url}?access_token=#{token}"
+
+    createRepo: (data, callback) ->
+      @post("/user/repos", data, callback)
+
+    forkRepo: (user, repo, callback) ->
+      @post "/repos/#{user}/#{repo}/forks", callback
+
+    commit: () ->
+
+    initialCommit: () ->
+      # Not possible through API right now
+      # One option is to use the collaborators API
+      # to add a collaborator then hit our server to
+      # have it set up the initial commit.
+
+    # TODO: Move this to a member of a Repo object
+    createBlob: (file, callback, user="STRd6", repo="Testie") ->
+      @post("/repos/#{user}/#{repo}/git/blobs")
+
+    # Make sure all files are blobs is the repo
+    ingestFiles: (files) ->
+      for file in files
+        @createBlob file, (data) ->
+          # TODO: Verify SHA
+
+          # Update SHA
+          file.set data
+
+    postTree: (tree, callback, user="STRd6", repo="Testie") ->
+      files = tree.files().map (file) ->
+        {path, contents} = file.attributes
+
+        path: path
+        mode: "100644"
+        type: "blob"
+        content: contents
+
+      @post "/repos/#{user}/#{repo}/git/trees",
+        tree: files
+      , callback
 
     fileContents: (url, callback) ->
       sha = url.split('/').last()
