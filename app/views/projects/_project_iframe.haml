@@ -1,5 +1,8 @@
 - config = project.config
-%iframe#app.no_border{ :width => config[:width], :height => config[:height], :src => widget_project_url(project, :host => "games.pixieengine.com")}
+-if Rails.env.development?
+  %iframe#app.no_border{ :width => config[:width], :height => config[:height], :src => widget_project_url(project, :host => "127.0.0.1", :port => '3000')}
+-else
+  %iframe#app.no_border{ :width => config[:width], :height => config[:height], :src => widget_project_url(project, :host => "games.pixieengine.com")}
 
 - content_for :javascript do
   :javascript
