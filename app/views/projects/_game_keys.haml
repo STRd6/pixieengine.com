@@ -1,3 +1,5 @@
+- origin = Rails.env.development? ? 'http://127.0.0.1:3000' : 'http://games.pixieengine.com'
+
 #game_key_template.template
   %dl.keyboard_mappings
     .left_col
@@ -17,16 +19,26 @@
 
 - content_for :javascript do
   :coffeescript
-    window.showGameKeys = ->
-      controls = $("#game_keys_modal .game_controls").empty()
+    $ ->
+      window.addEventListener 'message', (event) ->
+        return unless event.origin is #{origin.to_json}
+        controls = $("#game_keys_modal .game_controls").empty()
 
-      if window.gameControlData
-        for action, keys of window.gameControlData
-          $("#game_key_template")
-            .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
-            .appendTo(controls)
-      else
-        controls.text("This game hasn't defined any controls")
+        {type, data} = event.data
+
+        switch type
+          when 'controls'
+            for action, keys of data
+              $("#game_key_template")
+              .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
+              .appendTo(controls)
+
+      , false
+
+    window.showGameKeys = ->
+      controls = $("#game_keys_modal .game_controls")
+
+      controls.text "This game hasn't defined any controls" if controls.text() is ''
 
       $('#game_keys_modal').modal
         onOpen: (dialog) ->
