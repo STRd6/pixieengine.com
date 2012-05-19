@@ -23,7 +23,7 @@ window.createJsonEditor = (options, file) ->
   jsonEditor.bind 'save', ->
     jsonData = propertyEditor.getProps()
 
-    dataString = JSON.stringify(jsonData)
+    dataString = JSON.stringify(jsonData, null, 2)
 
     file.set
       contents: dataString
