@@ -88,6 +88,15 @@ namespace "Github", (Github) ->
         tree: files
       , callback
 
+    populateTree: (tree) ->
+      self = this
+
+      tree.files().each (file) ->
+        url = file.get "url"
+        self.fileContents url, (contents) ->
+          file.set
+            contents: contents
+
     fileContents: (url, callback) ->
       sha = url.split('/').last()
 
@@ -117,14 +126,16 @@ namespace "Github", (Github) ->
 
         callback(tree)
 
-  Github.test = ->
+  Github.loadRepoInTree = (repo="PixieDemo") ->
     client = Github.Client(githubToken)
 
-    client.getRepo "STRd6", "PixieDust", (tree) ->
+    client.getRepo "STRd6", repo, (tree) ->
       $('.sidebar').empty()
       $('.sidebar').append(tree.render().$el)
 
       tree.bind 'openFile', (file) ->
         openFile(file)
+
+      client.populateTree(tree)
 
       window.tree = tree
