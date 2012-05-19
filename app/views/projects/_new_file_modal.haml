@@ -37,7 +37,7 @@
   .field.template
     %label
       ${name}
-      %input(type="text" name="options[${name}]" title="${name}" value="${value}")
+      %input(type="${inputType}" name="options[${name}]" title="${name}" value="${value}")
 
   .details{:style => "display: none;"}
     %label
@@ -106,6 +106,7 @@
       for name, value of $(this).data('fields')
         $("#new_file_modal .field.template").tmpl(
           name: name
+          inputType: if $.isNumeric(value) then 'number' else 'text'
           value: value
         ).appendTo(fields)
 
