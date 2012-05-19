@@ -126,10 +126,10 @@ namespace "Github", (Github) ->
 
         callback(tree)
 
-  Github.loadRepoInTree = (repo="PixieDemo") ->
+  Github.loadRepoInTree = (user="STRd6", repo="PixieDemo") ->
     client = Github.Client(githubToken)
 
-    client.getRepo "STRd6", repo, (tree) ->
+    client.getRepo user, repo, (tree) ->
       $('.sidebar').empty()
       $('.sidebar').append(tree.render().$el)
 
