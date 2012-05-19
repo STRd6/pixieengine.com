@@ -20,6 +20,12 @@ GIT
     corelib (0.0.1)
 
 GIT
+  remote: git://github.com/mdiebolt/spacedocs.git
+  revision: 3bf109ad92e7b9f21a3bc747890dfed4942b0e29
+  specs:
+    spacedocs (0.0.1)
+
+GIT
   remote: git://github.com/rails/exception_notification.git
   revision: 192a49a02d63d28b23ed41cebadfedd490929cf1
   specs:
@@ -305,6 +311,7 @@ DEPENDENCIES
   sanitize
   sass-rails (~> 3.2.3)
   shoulda
+  spacedocs!
   therubyracer
   turn
   uglifier
