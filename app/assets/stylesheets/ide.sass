@@ -147,6 +147,18 @@ nav.top.actions .status
 
     .project_name
       margin: 0
+      position: relative
+
+      .edit
+        display: none
+        position: absolute
+        right: 0
+        top: 0
+        font-size: 12px
+
+      &:hover
+        .edit
+          display: inline-block
 
   .relative
     +bounds(100%)
