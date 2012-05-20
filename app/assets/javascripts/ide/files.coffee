@@ -2,13 +2,21 @@
     window.openFile = (file) ->
       trackEvent("IDE", "open file", file)
 
-      {name, nodeType, type, path, size} = file.attributes
+      {extension, name, nodeType, type, path, size} = file.attributes
       selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
 
       # TODO: Have docSelector be a generated attribute or method on files
       # In the meantime reset it every time we open to keep it correct.
       # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
       docSelector = file.attributes.docSelector = '#' + nodeType + '_' + selector
+
+      if extension is 'wav' or extension is 'mp3' or extension is 'ogg'
+        $('.preview source').remove()
+        source = "<source src='/production/projects/#{projectId}/#{path}' type='audio/#{extension}'></source>"
+
+        $('.preview').append(source)
+
+        return $('.preview').get(0).play()
 
       return alert "Can't edit binary data... maybe there is a source file that can be edited." if type is "binary"
       return alert "This file is too large for our editor!" if size > MAX_FILE_SIZE

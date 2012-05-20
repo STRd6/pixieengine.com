@@ -28,6 +28,7 @@
 - project_id = params[:id]
 
 %textarea#code_content(style="display:none;")= project.file_info.to_json
+%audio.preview
 
 - content_for :javascript do
   :coffeescript

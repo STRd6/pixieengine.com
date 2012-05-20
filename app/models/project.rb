@@ -350,7 +350,7 @@ class Project < ActiveRecord::Base
         end
       end
 
-      if ext == 'mp3' || type == 'binary' || gameFile
+      if type == 'binary' || gameFile
         hidden = true
       else
         hidden = false
@@ -391,8 +391,6 @@ class Project < ActiveRecord::Base
       "image"
     when "sfs"
       "sound"
-    when "wav", "mp3"
-      "binary"
     when "tilemap"
       "tilemap"
     when "entity"
