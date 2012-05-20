@@ -7,7 +7,7 @@ set :application, "pixie.strd6.com"
 set :use_sudo, false
 
 set :scm, "git"
-set :repository, "git://github.com/STRd6/#{application}.git"
+set :repository, "git://github.com/PixieEngine/pixieengine.com.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
 set :user, :rails
