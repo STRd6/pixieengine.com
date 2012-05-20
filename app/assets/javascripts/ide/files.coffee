@@ -10,13 +10,16 @@
       # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
       docSelector = file.attributes.docSelector = '#' + nodeType + '_' + selector
 
-      if extension is 'wav' or extension is 'mp3' or extension is 'ogg'
+      if ['wav', 'mp3', 'ogg'].include(extension)
         $('.preview source').remove()
         source = "<source src='/production/projects/#{projectId}/#{path}' type='audio/#{extension}'></source>"
 
         $('.preview').append(source)
 
         return $('.preview').get(0).play()
+
+      if file.nameWithExtension() is 'game.js'
+        return $('#run').click()
 
       return alert "Can't edit binary data... maybe there is a source file that can be edited." if type is "binary"
       return alert "This file is too large for our editor!" if size > MAX_FILE_SIZE

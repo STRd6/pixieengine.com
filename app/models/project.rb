@@ -342,15 +342,7 @@ class Project < ActiveRecord::Base
         end
       end
 
-      if contents
-        if contents[0..7] == 'var App;'
-          gameFile = true
-        else
-          gameFile = false
-        end
-      end
-
-      if type == 'binary' || gameFile
+      if type == 'binary'
         hidden = true
       else
         hidden = false
