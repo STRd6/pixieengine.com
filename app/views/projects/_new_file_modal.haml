@@ -66,7 +66,7 @@
 
       hideFile = false
 
-      if inputData.type is 'binary' or inputData.extension is 'mp3' or inputData.contents?.substr(0, 8) is 'var App;'
+      if inputData.type is 'binary' or inputData.contents?.substr(0, 8) is 'var App;'
         hideFile = true
 
       data = $.extend({
