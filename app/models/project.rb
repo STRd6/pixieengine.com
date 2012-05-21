@@ -298,12 +298,6 @@ class Project < ActiveRecord::Base
     file_node_data(path, path)
   end
 
-  def doc_selector(path)
-    selector = path.gsub(/[^A-Za-z0-9_-]/, "_")
-
-    '#file_' + selector
-  end
-
   def file_node_data(file_path, project_root_path)
     filename = File.basename file_path
     filename = "" if filename == id.to_s
@@ -342,19 +336,11 @@ class Project < ActiveRecord::Base
         end
       end
 
-      if type == 'binary'
-        hidden = true
-      else
-        hidden = false
-      end
-
       {
         :name => name,
         :contents => contents,
-        :docSelector => doc_selector(path),
         :extension => ext,
         :language => lang,
-        :hidden => hidden,
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,

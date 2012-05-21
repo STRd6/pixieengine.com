@@ -54,43 +54,6 @@
   :coffeescript
     params = null
 
-    window.newFileNode = (inputData) ->
-      {extension, forceSave, autoOpen, language, name, options, path, template, type} = inputData
-
-      unless name
-        alert "You need to enter a name!"
-        return
-
-      inputData.path = "\#{path}/\#{name}.\#{extension}"
-      docSelector = "#file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
-
-      hideFile = false
-
-      if inputData.type is 'binary' or inputData.extension is 'mp3' or inputData.contents?.substr(0, 8) is 'var App;'
-        hideFile = true
-
-      data = $.extend({
-        docSelector: docSelector
-        hidden: hideFile
-      }, inputData)
-
-      if template
-        data.className = name.capitalize().camelize()
-        data.contents ||= $("#file_templates .\#{template}").tmpl(data).text()
-
-      fullName = "\#{path}/\#{name}.\#{extension}"
-
-      # TODO remove global file tree reference. Pass it to the function instead
-      file = tree.file fullName, data
-
-      # TODO Get a JS test for this
-      if forceSave
-        window.saveFile
-          contents: data.contents
-          path: fullName
-
-      return file
-
     $("#new_file_modal button.choice").live 'click', (event) ->
       event.preventDefault()
 
