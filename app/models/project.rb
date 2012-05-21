@@ -342,19 +342,12 @@ class Project < ActiveRecord::Base
         end
       end
 
-      if type == 'binary'
-        hidden = true
-      else
-        hidden = false
-      end
-
       {
         :name => name,
         :contents => contents,
         :docSelector => doc_selector(path),
         :extension => ext,
         :language => lang,
-        :hidden => hidden,
         :type => type,
         :size => File.size(file_path),
         :mtime => File.mtime(file_path).to_i,
