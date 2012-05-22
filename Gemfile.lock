@@ -21,7 +21,7 @@ GIT
 
 GIT
   remote: git://github.com/mdiebolt/spacedocs.git
-  revision: 3bf109ad92e7b9f21a3bc747890dfed4942b0e29
+  revision: f6fdb8800365b6a7d8b72e46e9a5755433dd2570
   specs:
     spacedocs (0.0.1)
 

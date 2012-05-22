@@ -5,7 +5,9 @@
 
   .sidebar_container
     .sidebar
-      %h3.project_name= project.display_name
+      %h3.project_name
+        .name= project.display_name
+        %button.edit Edit
 
   %section
     #tabs.module
@@ -19,8 +21,8 @@
 = render :partial => "tips"
 = render :partial => "export_modal"
 = render :partial => "new_file_modal"
-= render :partial => "file_upload"
 = render :partial => "shared/hotkeys"
+= render :partial => "edit_form"
 
 - content_for :javascript do
   = javascript_include_tag "ide/base"
@@ -29,6 +31,7 @@
 - github_token = current_user.oauth_token if current_user
 
 %textarea#code_content(style="display:none;")= project.file_info.to_json
+%audio.preview
 
 - content_for :javascript do
   :coffeescript
@@ -114,6 +117,14 @@
       for fileName in ['src/main.coffee', 'src/main.js', 'README', 'Tutorial.tutorial']
         if file = tree.file(fileName)
           tree.trigger 'openFile', file
+
+      $("#edit_project_form").bind
+        "ajax:after": ->
+          $.modal.close()
+        "ajax:before": ->
+          $(".sidebar .project_name .name").text($("#project_title").val())
+      $(".sidebar .edit").click ->
+        $("#edit_project_form").modal()
 
       $('#update_libs, #generate_docs, #build, #tag, #export').tipsy
         delayIn: 500

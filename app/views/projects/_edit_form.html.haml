@@ -1,0 +1,9 @@
+= form_for project, :remote => true, :html => {:id => "edit_project_form", :style => "display: none;"} do |form|
+  = form.error_messages
+  %h2 Edit Project
+
+  %label
+    %h3 Title
+    = form.text_field :title
+
+  %button.full Update

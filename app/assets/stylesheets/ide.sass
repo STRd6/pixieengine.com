@@ -78,6 +78,9 @@ $inner_margin: 14px
     padding-top: 0.25em
     position: relative
 
+    #file_Documentation_documentation
+      overflow: hidden
+
   .ui-corner-all
     +border-bottom-radius(0)
     +border-top-right-radius(0)
@@ -144,6 +147,18 @@ nav.top.actions .status
 
     .project_name
       margin: 0
+      position: relative
+
+      .edit
+        display: none
+        position: absolute
+        right: 0
+        top: 0
+        font-size: 12px
+
+      &:hover
+        .edit
+          display: inline-block
 
   .relative
     +bounds(100%)

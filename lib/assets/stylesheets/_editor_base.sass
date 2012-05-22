@@ -99,17 +99,6 @@
 .module
   +module
 
-table.nested
-  +box-sizing(border-box)
-
-  margin-bottom: 0.5em
-  padding-left: 1em
-
-  td
-    &:first-child
-      input
-        border-right: 1px dashed rgba(0, 0, 0, 0.3)
-
 table.properties
   td
     img
@@ -137,3 +126,17 @@ table.properties
 
   label
     margin: 0
+
+table.nested
+  +box-sizing(border-box)
+
+  margin-bottom: 0.5em
+  padding-left: 1em
+
+  td
+    &:first-child
+      input
+        border-right: 1px dashed rgba(0, 0, 0, 0.3)
+    &:last-child
+      input
+        border-right: none
