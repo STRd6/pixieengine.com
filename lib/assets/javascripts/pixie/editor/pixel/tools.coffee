@@ -47,6 +47,44 @@ Pixie.Editor.Pixel.tools = (($) ->
 
     return
 
+  # gross code courtesy of http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+  circle = (canvas, color, center, endPoint) ->
+    {x:x0, y:y0} = center
+    {x:x1, y:y1} = endPoint
+
+    radius = endPoint.subtract(center).magnitude().floor()
+
+    f = 1 - radius
+    ddFx = 1
+    ddFy = -2 * radius
+
+    x = 0
+    y = radius
+
+    canvas.getPixel(x0, y0 + radius)?.color(color)
+    canvas.getPixel(x0, y0 - radius)?.color(color)
+    canvas.getPixel(x0 + radius, y0)?.color(color)
+    canvas.getPixel(x0 - radius, y0)?.color(color)
+
+    while x < y
+      if f > 0
+        y--
+        ddFy += 2
+        f += ddFy
+
+      x++
+      ddFx += 2
+      f += ddFx
+
+      canvas.getPixel(x0 + x, y0 + y)?.color(color)
+      canvas.getPixel(x0 - x, y0 + y)?.color(color)
+      canvas.getPixel(x0 + x, y0 - y)?.color(color)
+      canvas.getPixel(x0 - x, y0 - y)?.color(color)
+      canvas.getPixel(x0 + y, y0 + x)?.color(color)
+      canvas.getPixel(x0 - y, y0 + x)?.color(color)
+      canvas.getPixel(x0 + y, y0 - x)?.color(color)
+      canvas.getPixel(x0 - y, y0 - x)?.color(color)
+
   line = (canvas, color, p0, p1) ->
     {x:x0, y:y0} = p0
     {x:x1, y:y1} = p1
@@ -71,6 +109,7 @@ Pixie.Editor.Pixel.tools = (($) ->
       canvas.getPixel(x0, y0).color(color)
 
   pencilTool = ( ->
+    center = Point(0, 0)
     lastPosition = Point(0, 0)
 
     cursor: "url(" + IMAGE_DIR + "pencil.png) 4 14, default"
@@ -80,8 +119,11 @@ Pixie.Editor.Pixel.tools = (($) ->
 
       if e.shiftKey
         line(@canvas, color, lastPosition, currentPosition)
+      else if e.altKey
+        circle(@canvas, color, center, currentPosition)
       else
         @color(color)
+        center = Point(@x, @y)
 
       lastPosition = currentPosition
     mouseenter: (e, color) ->
