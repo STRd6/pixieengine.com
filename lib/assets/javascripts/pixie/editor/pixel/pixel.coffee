@@ -27,4 +27,3 @@ Pixel = (I={}) ->
 
 # Export to pixel editor namespace
 Pixie.Editor.Pixel.Pixel = Pixel
-

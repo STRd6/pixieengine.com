@@ -7,6 +7,12 @@ Pixie.Editor.Pixel ||= {}
 
 Pixie.Editor.Pixel.actions = (($) ->
   return actions =
+    guides:
+      hotkeys: ['g']
+      menu: false
+      perform: (canvas) ->
+        canvas.toggleGuides()
+      undoable: false
     undo:
       hotkeys: ['ctrl+z', 'meta+z']
       perform: (canvas) ->
