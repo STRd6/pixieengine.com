@@ -57,8 +57,6 @@ Pixie.Editor.Pixel.tools = (($) ->
     sy = (y1 - y0).sign()
     err = dx - dy
 
-    canvas.getPixel(x0, y0).color(color)
-
     while !(x0 == x1 and y0 == y1)
       e2 = 2 * err
 
@@ -88,6 +86,7 @@ Pixie.Editor.Pixel.tools = (($) ->
       lastPosition = currentPosition
     mouseenter: (e, color) ->
       currentPosition = Point(@x, @y)
+
       line(@canvas, color, lastPosition, currentPosition)
       lastPosition = currentPosition
   )()
@@ -97,7 +96,7 @@ Pixie.Editor.Pixel.tools = (($) ->
 
     mirror_pencil:
       cursor: "url(" + IMAGE_DIR + "mirror_pencil.png) 8 14, default"
-      hotkeys: ['m']
+      hotkeys: ['m', '2']
       mousedown: (e, color) ->
         mirrorCoordinate = @canvas.width() - @x - 1
         @color(color)
@@ -108,27 +107,27 @@ Pixie.Editor.Pixel.tools = (($) ->
         @canvas.getPixel(mirrorCoordinate, @y).color(color)
     brush:
       cursor: "url(" + IMAGE_DIR + "brush.png) 4 14, default"
-      hotkeys: ['b', '2']
+      hotkeys: ['b', '3']
       mousedown: (e, color) ->
         colorNeighbors.call(this, color)
       mouseenter: (e, color) ->
         colorNeighbors.call(this, color)
     dropper:
       cursor: "url(" + IMAGE_DIR + "dropper.png) 13 13, default"
-      hotkeys: ['i', '3']
+      hotkeys: ['i', '4']
       mousedown: (e) ->
         @canvas.color(@color())
         @canvas.setTool(tools.pencil) unless e.shiftKey
     eraser:
       cursor: "url(" + IMAGE_DIR + "eraser.png) 4 11, default"
-      hotkeys: ['e', '4']
+      hotkeys: ['e', '5']
       mousedown: (e, color, pixel) ->
         erase(pixel, color.a)
       mouseenter: (e, color, pixel) ->
         erase(pixel, color.a)
     fill:
       cursor: "url(" + IMAGE_DIR + "fill.png) 12 13, default"
-      hotkeys: ['f', '5']
+      hotkeys: ['f', '6']
       mousedown: floodFill
       mouseenter: floodFill
 )(jQuery)
