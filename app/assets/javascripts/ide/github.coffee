@@ -10,10 +10,11 @@ namespace "Github", (Github) ->
         callback = data
         data = {}
 
-      # Attach our access token
-      data = $.extend
-        access_token: token
-      , data
+      if token
+        # Attach our access token
+        data = $.extend
+          access_token: token
+        , data
 
       console.log "GITHUB GET: ", url, data
 
@@ -122,7 +123,7 @@ namespace "Github", (Github) ->
         # Add each file
         for file in data.tree
           continue if file.type is "tree"
-          tree.file(file.path, $.extend({}, file))
+          tree.add(file.path, file)
 
         callback(tree)
 

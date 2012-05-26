@@ -4,12 +4,12 @@ window.tree = new BoneTree.Views.Tree
 
 fileTreeData = JSON.parse($('#code_content').val())
 
-tree.addFromJSON fileTreeData, ''
+fileTreeData.each (file) ->
+  tree.add file.path, file
 
-tree.closeDirectories()
-
-tree.file "Documentation.documentation",
+tree.add "Documentation.documentation",
   type: "documentation"
+  path: "docs"
 
 tree.bind 'openFile', (file) ->
   openFile(file)

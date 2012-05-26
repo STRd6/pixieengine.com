@@ -295,89 +295,20 @@ class Project < ActiveRecord::Base
   end
 
   def file_info
-    file_node_data(path, path)
-  end
+    project_root_path = self.path
 
-  def file_node_data(file_path, project_root_path)
-    filename = File.basename file_path
-    filename = "" if filename == id.to_s
+    Dir["#{project_root_path}/**/*"].map do |file_path|
+      path = file_path.sub(project_root_path + File::SEPARATOR, '')
 
-    path = file_path.sub(project_root_path + File::SEPARATOR, '')
-
-    if File.directory? file_path
-      if filename == "docs"
+      if File.file? file_path
         {
-          :name => "Documentation",
-          :extension => "documentation",
-          :type => "documentation"
-        }
-      else
-        {
-          :name => filename,
-          :files => Dir.new(file_path).map do |filename|
-            next if filename[0...1] == "."
-
-            file_node_data(File.join(file_path, filename), project_root_path)
-          end.compact
+          :path => path,
+          :type => "blob",
+          :size => File.size(file_path),
+          :mtime => File.mtime(file_path).to_i,
         }
       end
-    elsif File.file? file_path
-      ext = (File.extname(filename)[1..-1] || "").downcase
-      name = filename.sub(/\.[^\.]*$/, '')
-      lang = lang_for(ext)
-
-      type = type_for(ext)
-
-      if ["text", "json", "tilemap", "animation", "entity", "tutorial", "link", "macro"].include? type
-        contents = File.read(file_path)
-      elsif ext == "sfs"
-        contents = open(file_path, "rb") do |file|
-          Base64.encode64(file.read())
-        end
-      end
-
-      {
-        :name => name,
-        :contents => contents,
-        :extension => ext,
-        :language => lang,
-        :type => type,
-        :size => File.size(file_path),
-        :mtime => File.mtime(file_path).to_i,
-      }
-    end
-  end
-
-  def lang_for(extension)
-    case extension
-    when "js", "json"
-      "javascript"
-    when "coffee"
-      "coffeescript"
-    when "html", "css"
-      extension
-    end
-  end
-
-  def type_for(extension)
-    case extension
-    when "", "js", "coffee", "html", "css", "lua", "cfg", "md", "markdown"
-      "text"
-    when "json"
-      "json"
-    when "png", "jpg", "jpeg", "gif", "bmp"
-      "image"
-    when "sfs"
-      "sound"
-    when "tilemap"
-      "tilemap"
-    when "entity"
-      "entity"
-    when "animation"
-      "animation"
-    when "tutorial"
-      "tutorial"
-    end
+    end.compact
   end
 
   def push_enabled?

@@ -3,7 +3,6 @@ $tabs = $('#tabs').tabs
     {contents, docSelector, type} = currentFile.attributes
 
     if type is 'documentation'
-      #{doc_id = admin? ? project.id : Project::DOCS_ID}
       $(ui.panel).append "<iframe class='no_border' src='/production/projects/#{doc_id}/docs/index.html' width='100%' height='100%'></iframe>"
       $(ui.tab).parent().find('span.lang').addClass(type)
     else if type is 'tutorial'
