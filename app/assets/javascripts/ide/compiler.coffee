@@ -2,7 +2,7 @@ window.compileDirectory = (directoryPath) ->
   if directory = tree.getDirectory(directoryPath)
     directory.files().map((file) ->
       compileFileNode(file)
-    ).join(";\n")
+    ).join("\n")
   else
     ""
 
@@ -59,7 +59,7 @@ window.buildProjectCode = ->
     return if file.get('name') is projectConfig.main
 
     compileFileNode(file)
-  ).join(";\n")
+  ).join("\n")
 
   libCode = compileDirectory(projectConfig.directories.lib)
 
@@ -83,7 +83,7 @@ window.buildProjectCode = ->
   else
     mainCode = ""
 
-  crammedCode = [appConfigCode(), libCode, compiledCode, entitiesCode, mainCode].join(";\n")
+  crammedCode = [appConfigCode(), libCode, compiledCode, entitiesCode, mainCode].join("\n")
 
 appConfigCode = ->
   if projectConfig.library
@@ -107,7 +107,7 @@ window.runApp = ->
   }
 
   #TODO Detect and halt on compile time errors
-  crammedCode = [environmentVariables(), buildProjectCode()].join(";\n")
+  crammedCode = [environmentVariables(), buildProjectCode()].join("\n")
 
   runCodeInWindow(crammedCode, runningAppWindow)
 
@@ -121,14 +121,14 @@ window.testApp = ->
     return if file.get('name') is projectConfig.main
 
     compileFileNode(file)
-  ).join(";\n")
+  ).join("\n")
 
   libCode = compileDirectory(projectConfig.directories.lib)
   testLibCode = compileDirectory(projectConfig.directories.test_lib)
   testCode = compileDirectory(projectConfig.directories.test)
 
-  crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join(";\n")
-  crammedCode += "; var App; App || (App={}); $(function(){ #{testCode} });"
+  crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join("\n")
+  crammedCode += "var App; App || (App={}); $(function(){ #{testCode} });"
 
   $("#unit_test_frame").remove()
 
