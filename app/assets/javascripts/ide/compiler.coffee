@@ -1,7 +1,10 @@
 window.compileDirectory = (directoryPath) ->
-  tree.getDirectory(directoryPath).files().map((file) ->
-    compileFileNode(file)
-  ).join(";\n")
+  if directory = tree.getDirectory(directoryPath)
+    directory.files().map((file) ->
+      compileFileNode(file)
+    ).join(";\n")
+  else
+    ""
 
 window.compileFileNode = (file) ->
   {name, contents} = file.attributes
@@ -115,7 +118,7 @@ window.testApp = ->
 
   compiledCode = srcFiles.map((file) ->
     # Skip main
-    return if file is srcFiles[0] and file.get('name') is projectConfig.main
+    return if file.get('name') is projectConfig.main
 
     compileFileNode(file)
   ).join(";\n")
@@ -125,7 +128,7 @@ window.testApp = ->
   testCode = compileDirectory(projectConfig.directories.test)
 
   crammedCode = [environmentVariables(), appConfigCode(), libCode, testLibCode, compiledCode].join(";\n")
-  crammedCode += "; var App; App || (App={}); $(function(){ \#{testCode} });"
+  crammedCode += "; var App; App || (App={}); $(function(){ #{testCode} });"
 
   $("#unit_test_frame").remove()
 
