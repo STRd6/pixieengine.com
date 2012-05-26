@@ -1,17 +1,17 @@
 $tabs = $('#tabs').tabs
   add: (event, ui) ->
-    {contents, docSelector, type} = currentFile.attributes
+    {name, contents, docSelector, type} = currentFile.attributes
+    extension = name.extension()
+
+    iconCss = "#{type} #{extension}"
 
     if type is 'documentation'
       $(ui.panel).append "<iframe class='no_border' src='/production/projects/#{doc_id}/docs/index.html' width='100%' height='100%'></iframe>"
-      $(ui.tab).parent().find('span.lang').addClass(type)
-    else if type is 'tutorial'
-      $(ui.panel).append "<iframe class='no_border' src='\#{contents}' width='100%' height='100%'></iframe>"
-      $(ui.tab).parent().find('span.lang').addClass(type)
+      $(ui.tab).parent().find('span.lang').addClass(iconCss)
     else if fileData = createEditor(ui)
       $(ui.tab).data('updateSaved', fileData.updateSaved)
       $(ui.tab).data('doSave', fileData.doSave)
-      $(ui.tab).parent().find('span.lang').addClass(fileData.cssClass)
+      $(ui.tab).parent().find('span.lang').addClass(iconCss)
 
     window.currentPanel = ui.panel
     $tabs.tabs('select', docSelector)

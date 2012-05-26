@@ -69,7 +69,7 @@ class Project < ActiveRecord::Base
     :width => 480,
     :height => 320,
     :library => false,
-    :main => "main",
+    :main => "main.coffee",
     :wrapMain => true,
     :hotSwap => true,
   }
@@ -296,14 +296,20 @@ class Project < ActiveRecord::Base
 
   def file_info
     project_root_path = self.path
+    content_extensions = %w[.js .coffee .json .tilemap .entity] + [""]
 
     Dir["#{project_root_path}/**/*"].map do |file_path|
       path = file_path.sub(project_root_path + File::SEPARATOR, '')
 
       if File.file? file_path
+        if content_extensions.include? File.extname(file_path)
+          contents = File.read(file_path)
+        end
+
         {
           :path => path,
           :type => "blob",
+          :contents => contents,
           :size => File.size(file_path),
           :mtime => File.mtime(file_path).to_i,
         }

@@ -9,6 +9,19 @@ window.openFile = (file) ->
   # In the meantime reset it every time we open to keep it correct.
   # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
   docSelector = file.attributes.docSelector = "#file_#{selector}"
+  extension = name.extension()
+
+  # Set types based on extension and names, etc.
+  switch extension
+    when "tilemap", "entity", "json"
+      file.set type: extension
+    when "png"
+      file.set type: "image"
+
+  if name is "README"
+    file.set type: "text"
+
+  #TODO load contents from remote data as needed
 
   if ['wav', 'mp3', 'ogg'].include(extension)
     $('.preview source').remove()
@@ -79,3 +92,57 @@ window.newFileNode = (inputData) ->
       path: fullName
 
   return file
+
+# on keyup check to see if a file with the same name exists
+$('#new_file_modal input[name="name"]').keyup (e) ->
+  target = $(e.currentTarget)
+  value = target.val()
+
+  directory = $('#new_file_modal button.active').data('params')['directory']
+
+  aliasedDirectory = projectConfig.directories[directory]
+
+  directory = tree.getDirectory(aliasedDirectory).first()
+
+  removeWarnings target
+  $('#new_file_modal .create').removeAttr 'disabled'
+
+  if directory
+    matchingFiles = directory.collection.select (file) ->
+      # make sure the file names are really different, they
+      # shouldn't be considered different if they only differ
+      # in capitalization, non alphanumeric characters, or whitespace
+      return normalizeFileName(file.get('name')) is normalizeFileName(value)
+    if matchingFiles.length
+      addWarnings target
+      $('#new_file_modal .create').attr 'disabled', 'disabled'
+
+window.newFileModal = ->
+  $("#new_file_modal").modal
+    onClose: ->
+      $('#new_file_modal input[name="name"]').tipsy 'hide'
+      $.modal.close()
+    onShow: (modal) ->
+      $(modal.container).css
+        height: 'auto'
+        width: '425px'
+
+window.saveFile = (data) ->
+  requireLogin ->
+    message = $(".actions .status .message").val()
+
+    postData = $.extend(
+      format: 'json'
+      message: message
+    , data)
+
+    delete postData.success
+    delete postData.error
+
+    {success:successMethod, error:errorMethod} = data
+
+    $.post("/projects/#{projectId}/save_file", postData)
+      .success ->
+        successMethod?()
+      .error ->
+        errorMethod?()

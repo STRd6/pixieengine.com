@@ -4,9 +4,12 @@ window.createEditor = (ui) ->
   data = panel.data()
   data.panel = panel
 
-  {language, type} = window.currentFile.attributes
+  file = window.currentFile
+  {name, language} = file.attributes
 
-  editor = ("create#{type.capitalize()}Editor".constantize())(data, window.currentFile)
+  type = file.get "type"
+
+  editor = ("create#{type.capitalize()}Editor".constantize())(data, file)
 
   panel.data editor: editor
   window.currentComponent = editor
@@ -31,6 +34,5 @@ window.createEditor = (ui) ->
     editor.bind 'dirty', ->
       tabParent.addClass("unsaved")
 
-    cssClass: "#{language} #{type}"
-    doSave: () ->
+    doSave: ->
       editor.trigger('save')

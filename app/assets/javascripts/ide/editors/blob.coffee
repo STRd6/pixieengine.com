@@ -3,10 +3,12 @@
 # probably just a temporary solution to github returning all files as type blob.
 
 window.createBlobEditor = (options, file) ->
-  {extension, contents, url} = file.attributes
+  {name, contents, url} = file.attributes
+
+  extension = name.extension()
 
   editor = switch extension
-    when "coffee", "js"
+    when "coffee", "js", ""
       if contents?
         createTextEditor(options, file)
       else
@@ -20,5 +22,11 @@ window.createBlobEditor = (options, file) ->
           openFile(file)
 
         null
+    else
+      alert("No editor for #{extension}")
+
+      # TODO: Find out how to cancel adding tabs better
+      $("#tabs").tabs 'remove', file.get("docSelector")
+      null
 
   return editor

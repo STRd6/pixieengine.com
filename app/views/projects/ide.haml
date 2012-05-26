@@ -41,6 +41,7 @@
     window.DEFAULT_CONFIG = #{default_project_config.to_json}
     window.sessionFlashVars = "authenticity_token=#{u form_authenticity_token}&#{session_key_name}=#{u cookies[session_key_name]}"
     window.projectId = #{project_id.to_json}
+    window.projectBaseUrl = #{project.base_url.to_json}
     window.doc_id = #{admin? ? project.id : Project::DOCS_ID}
 
     $("#content .sidebar_container .bottom").click ->
@@ -114,9 +115,9 @@
     , 5000
 
     $ ->
-      # Hack to pre-load main file, README and tutorials
-      for fileName in ['src/main.coffee', 'src/main.js', 'README', 'Tutorial.tutorial']
-        if file = tree.file(fileName)
+      # Hack to pre-load main file and README
+      tree.toArray().each (file) ->
+        if ['src/main.coffee', 'README'].include(file.get('path'))
           tree.trigger 'openFile', file
 
       $("#edit_project_form").bind

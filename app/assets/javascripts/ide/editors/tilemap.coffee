@@ -1,23 +1,3 @@
-$ ->
-  window.entities = new Pixie.Editor.Tile.Models.EntityList()
-
-  # Populate initial entities
-  tree.flatten().each (file) ->
-    return unless file.get("extension") is "entity"
-
-    entityData = file.get("contents").parse()
-
-    # TODO: Make sure entities get created with uuids to prevent
-    # collisions from multiple people making the same file name
-    # and importing/merging projects
-    #
-    # In the meantime just treat the file name as the uuid
-    # because within a single project the file name must be
-    # unique
-    entityData.uuid ||= file.get("name")
-
-    window.entities.add entityData
-
 window.createTilemapEditor = (options, file) ->
   {path, contents, options:editorOptions} = file.attributes
   panel = options.panel

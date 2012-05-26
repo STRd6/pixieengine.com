@@ -1,5 +1,27 @@
 #= require templates/editors/entity
 
+$ ->
+  window.entities = new Pixie.Editor.Tile.Models.EntityList()
+
+  # Populate initial entities
+  tree.getDirectory(projectConfig.directories.entities).files().each (file) ->
+    {name, contents} = file.attributes
+
+    return unless name.extension() is "entity"
+
+    entityData = contents.parse()
+
+    # TODO: Make sure entities get created with uuids to prevent
+    # collisions from multiple people making the same file name
+    # and importing/merging projects
+    #
+    # In the meantime just treat the file name as the uuid
+    # because within a single project the file name must be
+    # unique
+    entityData.uuid ||= file.get("name")
+
+    window.entities.add entityData
+
 window.createEntityEditor = (options, file) ->
   {panel} = options
   {uuid, path, contents, name} = file.attributes
