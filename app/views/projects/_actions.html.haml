@@ -34,9 +34,6 @@
 
 - content_for :javascript do
   :coffeescript
-    normalizeFileName = (name) ->
-      return name.toLowerCase().replace(/\s/g, '').replace(/[^A-Za-z0-9\s]/g, '')
-
     # Commands
     window.save = ->
       unsavedTabs = $("#tabs ul li.unsaved")

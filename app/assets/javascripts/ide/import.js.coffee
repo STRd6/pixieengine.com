@@ -49,11 +49,8 @@ $("html").dropImageReader
         contents = Base64.decode(contentsBase64) if type is "text"
 
         newFileNode
-          name: name
           type: type
-          extension: extension
-          language: language
-          path: path
+          path: "#{path}/#{name}.#{extension}"
           contents: contents
           autoOpen: autoOpen
 

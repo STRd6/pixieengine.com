@@ -61,9 +61,8 @@ window.createTilemapEditor = (options, file) ->
         dataString = JSON.stringify(tileEditor)
 
         newFileNode
-          name: title
+          name: "#{title}.#{extension}"
           type: "tilemap"
-          extension: extension
           path: filePath
           contents: dataString
 

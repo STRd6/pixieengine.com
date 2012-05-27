@@ -93,13 +93,9 @@ window.createEntityEditor = (options, file) ->
 
       # TODO Handle file move when renaming entity
       newFileNode
-        name: "_#{name}"
-        type: "text"
-        extension: "coffee"
-        language: "coffeescript"
-        path: projectConfig.directories.source
+        type: "entity"
+        path: "#{projectConfig.directories.source}/_#{name}.coffee"
         contents: entitySrc
-        autoOpen: false
         forceSave: true
 
     entityEditor.trigger "clean"

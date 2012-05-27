@@ -57,41 +57,31 @@ window.openFile = (file) ->
 
 
 window.newFileNode = (inputData) ->
-  {extension, forceSave, autoOpen, language, name, options, path, template, type} = inputData
-
-  unless name
-    alert "You need to enter a name!"
-    return
-
-  inputData.path = "#{path}/#{name}.#{extension}"
-  docSelector = "#file_" + inputData.path.replace(/[^A-Za-z0-9_-]/g, "_")
-
-  hideFile = false
-
-  if inputData.type is 'binary' or inputData.contents?.substr(0, 8) is 'var App;'
-    hideFile = true
-
-  data = $.extend({
-    docSelector: docSelector
-    hidden: hideFile
-  }, inputData)
+  {forceSave, autoOpen, path, template} = inputData
+  name = path.split('/').last()
 
   if template
-    data.className = name.capitalize().camelize()
-    data.contents ||= $("#file_templates .#{template}").tmpl(data).text()
-
-  fullName = "#{path}/#{name}.#{extension}"
+    inputData.className = name.withoutExtension().capitalize().camelize()
+    inputData.contents ||= $("#file_templates .#{template}").tmpl(inputData).text()
 
   # TODO remove global file tree reference. Pass it to the function instead
-  file = tree.file fullName, data
+  file = tree.add inputData.path, inputData
 
   # TODO Get a JS test for this
   if forceSave
     window.saveFile
-      contents: data.contents
-      path: fullName
+      contents: inputData.contents
+      path: inputData.path
 
   return file
+
+normalizeFileName = (name) ->
+  return name.toLowerCase().replace(/\s/g, '').replace(/[^A-Za-z0-9\s]/g, '')
+
+removeWarnings = (element) ->
+  element.tipsy 'hide'
+  element.css
+    border: '1px solid rgb(170, 170, 170)'
 
 # on keyup check to see if a file with the same name exists
 $('#new_file_modal input[name="name"]').keyup (e) ->
@@ -102,7 +92,7 @@ $('#new_file_modal input[name="name"]').keyup (e) ->
 
   aliasedDirectory = projectConfig.directories[directory]
 
-  directory = tree.getDirectory(aliasedDirectory).first()
+  directory = tree.getDirectory(aliasedDirectory)
 
   removeWarnings target
   $('#new_file_modal .create').removeAttr 'disabled'
@@ -146,3 +136,52 @@ window.saveFile = (data) ->
         successMethod?()
       .error ->
         errorMethod?()
+
+params = null
+
+$("#new_file_modal button.choice").click (event) ->
+  event.preventDefault()
+
+  $(this).takeClass("active")
+
+  $("#new_file_modal .details").show()
+
+  params = $(this).data('params')
+  params.path = projectConfig.directories[params.directory]
+
+  fields = $("#new_file_modal .fields").empty()
+
+  for name, value of $(this).data('fields')
+    $("#new_file_modal .field.template").tmpl(
+      name: name
+      inputType: if $.isNumeric(value) then 'number' else 'text'
+      value: value
+    ).appendTo(fields)
+
+  $("#new_file_modal .details input[name='name']").focus()
+
+  # Trigger a fake window resize event to re-center the modal
+  $(window).resize()
+
+$("#new_file_modal button.create").click (event) ->
+  event.preventDefault()
+
+  formData = $("#new_file_modal").serializeObject()
+
+  # Special case to make entities use UUIDs
+  if params.type is "entity"
+    formData.uuid = Math.uuid(32, 16)
+
+  data = $.extend(formData, params)
+  data.path = "#{data.path}/#{data.name}.#{data.extension}"
+
+  file = newFileNode data
+
+  # Don't close the modal unless we've created a file.
+  # Fixes bug where the modal closes with a blank name.
+  if file
+    $.modal.close()
+
+$("#new_file_modal input").keydown (event) ->
+  if event.which is 13
+    $("#new_file_modal button.create").click()

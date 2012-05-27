@@ -44,11 +44,6 @@ addWarnings = (element) ->
   element.css
     border: '1px solid red'
 
-removeWarnings = (element) ->
-  element.tipsy 'hide'
-  element.css
-    border: '1px solid rgb(170, 170, 170)'
-
 window.buildProjectCode = ->
   clearErrorMessages()
 
