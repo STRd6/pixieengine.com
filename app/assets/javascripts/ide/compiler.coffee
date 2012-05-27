@@ -7,7 +7,8 @@ window.compileDirectory = (directoryPath) ->
     ""
 
 window.compileFileNode = (file) ->
-  {name, contents} = file.attributes
+  contents = file.get("contents")
+  name = file.name()
   extension = name.extension()
 
   $element = $(file.get('docSelector'))

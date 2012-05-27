@@ -17,48 +17,37 @@ tree.bind 'openFile', (file) ->
   openFile(file)
 
 tree.bind 'rename', (file, newName) ->
-  {docSelector, extension, language, name, nodeType, path, type} = file.attributes
+  {docSelector, path} = file.attributes
+  name = file.name()
 
   openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
 
   # Abort if unsaved
   if openedTab.is(".unsaved")
-    notify "Save #{file.nameWithExtension()} before renaming"
+    notify "Save #{name} before renaming"
     return
   else
     openedTab.find(".ui-icon-close").click()
 
-  oldExtension = file.previous('extension')
-  oldExtension = "." + oldExtension if oldExtension isnt ""
-
   # this works because we are secretly inside a change event
-  oldName = file.previous('name') + oldExtension
-
-  # TODO: This is broken for files whose names are a subset of the prior path
-  # ex. boobaz/boo
-  newPath = path.replace(oldName, newName)
-  oldPath = path
-
-  # docSelector will be auto-updated when opening files, so I think no need to set here
-  file.set
-    path: newPath
-    _path: newPath # TODO: Find out why there is an _path
+  oldPath = file.previous('path')
 
   postData =
     path: oldPath
-    new_path: newPath
+    new_path: path
     format: 'json'
     message: $(".actions .status .message").val()
 
   $.post "/projects/#{projectId}/rename_file", postData, -> # Assuming success
-  notify "Renamed #{oldName} => #{newName}"
+  notify "Renamed #{oldPath} => #{path}"
 
   # Close and reopen file if open
   if openedTab.length
     openFile(file)
 
 tree.bind 'remove', (file) ->
-  {name, docSelector, path} = file.attributes
+  {docSelector, path} = file.attributes
+  name = file.name()
   notify "Removing #{name}..."
 
   # Close the tab if open

@@ -1,7 +1,8 @@
 window.openFile = (file) ->
   trackEvent("IDE", "open file", file)
 
-  {name, nodeType, type, path, size} = file.attributes
+  {path, size} = file.attributes
+  name = file.name()
   extension = name.extension()
   selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
 
@@ -9,7 +10,6 @@ window.openFile = (file) ->
   # In the meantime reset it every time we open to keep it correct.
   # TOOD: Dump jQueryUI Tabs and get rid of doc selector entirely
   docSelector = file.attributes.docSelector = "#file_#{selector}"
-  extension = name.extension()
 
   # Set types based on extension and names, etc.
   switch extension
@@ -35,7 +35,6 @@ window.openFile = (file) ->
 
     return
 
-  return alert "Can't edit binary data... maybe there is a source file that can be edited." if type is "binary"
   return alert "This file is too large for our editor!" if size > MAX_FILE_SIZE
 
   # focus the tab if it already exists

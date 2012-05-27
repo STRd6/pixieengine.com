@@ -5,7 +5,8 @@ $ ->
 
   # Populate initial entities
   tree.getDirectory(projectConfig.directories.entities).files().each (file) ->
-    {name, contents} = file.attributes
+    {contents} = file.attributes
+    name = file.name()
 
     return unless name.extension() is "entity"
 
@@ -18,13 +19,14 @@ $ ->
     # In the meantime just treat the file name as the uuid
     # because within a single project the file name must be
     # unique
-    entityData.uuid ||= file.get("name")
+    entityData.uuid ||= name
 
     window.entities.add entityData
 
 window.createEntityEditor = (options, file) ->
   {panel} = options
-  {uuid, path, contents, name} = file.attributes
+  {uuid, path, contents} = file.attributes
+  name = file.name().withoutExtension()
 
   panel.find('.editor').remove()
 

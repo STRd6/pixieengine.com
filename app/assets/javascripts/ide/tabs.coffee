@@ -1,6 +1,9 @@
 $tabs = $('#tabs').tabs
   add: (event, ui) ->
-    {name, contents, docSelector, type} = currentFile.attributes
+    file = window.currentFile # TODO: No Global
+
+    {contents, docSelector, type} = file.attributes
+    name = file.name()
     extension = name.extension()
 
     iconCss = "#{type} #{extension}"
