@@ -58,14 +58,12 @@ tree.bind 'rename', (file, newName) ->
     openFile(file)
 
 tree.bind 'remove', (file) ->
-  notify "Removing #{file.nameWithExtension()}..."
-
-  docSelector = file.get('docSelector')
+  {name, docSelector, path} = file.attributes
+  notify "Removing #{name}..."
 
   # Close the tab if open
   $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
 
-  path = file.get('path')
   message = $(".actions .status .message").val()
 
   postData =
@@ -74,7 +72,7 @@ tree.bind 'remove', (file) ->
     message: message
 
   successCallback = (data) ->
-    notify "#{file.nameWithExtension()} removed!"
+    notify "#{name} removed!"
 
   $.post "/projects/#{projectId}/remove_file", postData, successCallback
 
