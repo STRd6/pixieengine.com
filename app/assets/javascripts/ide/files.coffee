@@ -42,11 +42,7 @@ window.openFile = (file) ->
   if (tab = $('#tabs ul li a[href="' + docSelector + '"]')).length
     tab.click()
   else
-    unless fileName = name
-      if match = path.match /\/([^\/]*)$/
-        fileName = match[1]
-      else
-        fileName = path
+    fileName = name.withoutExtension()
 
     window.currentFile = file
 
