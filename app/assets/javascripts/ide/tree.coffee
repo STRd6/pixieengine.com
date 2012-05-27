@@ -7,6 +7,8 @@ fileTreeData = JSON.parse($('#code_content').val())
 fileTreeData.each (file) ->
   tree.add file.path, file
 
+# Use special docs link
+tree.remove "docs"
 tree.add "Documentation.documentation",
   type: "documentation"
   path: "docs"
