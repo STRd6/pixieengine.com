@@ -1,4 +1,5 @@
 #= require sha1
+#= require base64
 
 namespace "Github", (Github) ->
   API_ROOT = "https://api.github.com"
@@ -67,7 +68,7 @@ namespace "Github", (Github) ->
     createBlob: (file, callback, user="STRd6", repo="Testie") ->
       @post("/repos/#{user}/#{repo}/git/blobs")
 
-    # Make sure all files are blobs is the repo
+    # Make sure all files are blobs in the repo
     ingestFiles: (files) ->
       for file in files
         @createBlob file, (data) ->
@@ -77,7 +78,9 @@ namespace "Github", (Github) ->
           file.set data
 
     postTree: (tree, callback, user="STRd6", repo="Testie") ->
-      files = tree.files().map (file) ->
+      files = tree.toArray().select (node) ->
+        node.isFile()
+      .map (file) ->
         {path, contents} = file.attributes
 
         path: path
@@ -92,7 +95,9 @@ namespace "Github", (Github) ->
     populateTree: (tree) ->
       self = this
 
-      tree.files().each (file) ->
+      tree.toArray().select (node) ->
+        node.isFile()
+      .each (file) ->
         url = file.get "url"
         self.fileContents url, (contents) ->
           file.set
