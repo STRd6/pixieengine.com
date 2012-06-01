@@ -15,9 +15,12 @@ GIT
 
 GIT
   remote: git://github.com/mdiebolt/bone_tree.git
-  revision: 6409aaff6d65bac28cf1fe40bdd53b51cf75f20d
+  revision: 5e01d1b2806cbe3c8f86aaf3c85432f616abe7b8
   specs:
-    bone_tree (0.9)
+    bone_tree (0.9.1)
+      cornerstone-source
+      jquery-source
+      underscore-source
 
 GIT
   remote: git://github.com/mdiebolt/corelib.git
@@ -86,6 +89,7 @@ GEM
       builder
       mime-types
       xml-simple
+    backbone-source (0.0.3)
     bluecloth (2.1.0)
     builder (3.0.0)
     capistrano (2.8.0)
@@ -115,6 +119,7 @@ GEM
       sass (~> 3.1)
     compass-rails (1.0.1)
       compass (~> 0.12.0)
+    cornerstone-source (0.1.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
     execjs (1.3.1)
@@ -151,6 +156,7 @@ GEM
       sprockets (~> 2)
     jasmine-spec-extras (0.0.2)
     journey (1.0.3)
+    jquery-source (0.0.1)
     jquery-tmpl-rails (1.1.0)
       rails (>= 3.1.0)
     json (1.6.6)
@@ -279,6 +285,7 @@ GEM
     uglifier (1.0.1)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
+    underscore-source (0.0.2)
     unicorn (4.0.1)
       kgio (~> 2.4)
       rack
@@ -296,6 +303,7 @@ DEPENDENCIES
   acts-as-taggable-on
   authlogic
   aws-s3
+  backbone-source
   bluecloth
   bone_tree!
   capistrano
@@ -304,6 +312,7 @@ DEPENDENCIES
   coffee-script-source (~> 1.2.0)
   compass-rails
   corelib!
+  cornerstone-source
   exception_notification!
   factory_girl!
   gratr!
@@ -340,6 +349,7 @@ DEPENDENCIES
   therubyracer
   turn
   uglifier
+  underscore-source
   unicorn
   whenever
   will_paginate (= 3.0.3)

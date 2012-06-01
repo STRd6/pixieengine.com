@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source :rubygems
 
 gem 'rails', '3.2.3'
 
@@ -8,6 +8,7 @@ group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'coffee-script-source', '~> 1.2.0'
+  gem 'cornerstone-source'
   gem 'uglifier'
 end
 
@@ -18,6 +19,7 @@ end
 gem 'acts-as-taggable-on'
 gem "authlogic"
 gem "aws-s3", :require => "aws/s3"
+gem 'backbone-source'
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem "capistrano"
@@ -46,6 +48,7 @@ gem "ruport"
 gem "sanitize"
 gem 'spacedocs', :git => 'git://github.com/mdiebolt/spacedocs.git'
 gem 'therubyracer'
+gem 'underscore-source'
 gem "will_paginate", '3.0.3'
 gem "whenever"
 
