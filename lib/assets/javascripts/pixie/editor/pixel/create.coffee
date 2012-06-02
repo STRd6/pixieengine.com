@@ -95,6 +95,7 @@
     noUndo = false
     replaying = false
     tilePreview = true
+    guides = false
     initialStateData = undefined
 
     # These are the changed observers, move back into main editor
@@ -405,6 +406,23 @@
           opacityVal.text(v)
         else
           opacityVal.text() / 100
+
+      toggleGuides: ->
+        guides = not guides
+
+        guideCanvas = guideLayer.context
+
+        guideCanvas.clearRect(0, 0, I.width * I.pixelWidth, I.height * I.pixelHeight)
+
+        if guides
+          @eachPixel (pixel) ->
+            guideCanvas.fillStyle = 'rgba(0, 0, 0, 0.25)'
+
+            xPos = pixel.x * I.pixelWidth
+            yPos = pixel.y * I.pixelHeight
+
+            guideCanvas.fillRect(xPos, yPos, I.pixelWidth, 1) unless yPos is 0
+            guideCanvas.fillRect(xPos, yPos, 1, I.pixelHeight) unless xPos is 0
 
       preview: ->
         tileCount = if tilePreview then 4 else 1

@@ -31,10 +31,8 @@ window.createEntityEditor = (options, file) ->
   panel.find('.editor').remove()
 
   defaults =
-    color: '#0000FF'
-    height: 32
-    width: 32
     class: name.capitalize().camelize()
+    parentClass: "GameObject"
 
   try
     data = JSON.parse(contents) or defaults
