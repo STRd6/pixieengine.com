@@ -2,9 +2,6 @@ source :rubygems
 
 gem 'rails', '3.2.3'
 
-gem 'cornerstone-source', :require => "cornerstone"
-gem 'underscore-source'
-
 group :assets do
   gem 'compass-rails'
   gem 'jquery-tmpl-rails'
@@ -27,13 +24,14 @@ gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem "capistrano"
 gem "coffee-filter"
-gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"
+gem 'cornerstone-source', :require => "cornerstone"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem "haml-sprockets", :git => "git://github.com/dharanasoft/haml-sprockets.git", :ref => '636a8bcf7aaae64481ae198b7981764592310786'
 gem 'hpricot'
 gem 'html5-boilerplate'
+gem 'jquery-image_reader'
 gem 'json'
 gem 'mail'
 gem "mocha"

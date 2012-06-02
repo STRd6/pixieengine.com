@@ -545,7 +545,7 @@ Pixie.Editor.Tile.create = (options) ->
 
   tileEditor.find(tileTray).sortable()
 
-  tileEditor.dropImageReader (file, event) ->
+  tileEditor.dropImageReader ({file, event}) ->
     if event.target.readyState == FileReader.DONE
       uuid = generateUuid()
       src = event.target.result
