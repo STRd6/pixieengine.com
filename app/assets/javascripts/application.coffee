@@ -1,5 +1,5 @@
 #= require rails
-#= require corelib
+#= require cornerstone
 #= require haml
 #= require site
 

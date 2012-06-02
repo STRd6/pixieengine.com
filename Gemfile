@@ -2,6 +2,9 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.3'
 
+gem 'cornerstone-source', :require => "cornerstone"
+gem 'underscore-source'
+
 group :assets do
   gem 'compass-rails'
   gem 'jquery-tmpl-rails'
