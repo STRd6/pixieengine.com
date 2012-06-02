@@ -59,16 +59,16 @@ window.createTilemapEditor = (options, file) ->
 
         extension = "tilemap"
         dataString = JSON.stringify(tileEditor)
+        fullPath = "#{filePath}/#{title}.#{extension}"
 
         newFileNode
-          name: "#{title}.#{extension}"
           type: "tilemap"
-          path: filePath
+          path: fullPath
           contents: dataString
 
         saveFile
           contents: dataString
-          path: filePath + "/" + title + "." + extension
+          path: fullPath
           success: ->
             ;# TODO: Maybe close this one and open the saved as one
 
