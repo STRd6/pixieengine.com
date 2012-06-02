@@ -25,6 +25,7 @@ gem "aws-s3", :require => "aws/s3"
 gem 'backbone-source'
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
+gem 'boner'
 gem "capistrano"
 gem "coffee-filter"
 gem "corelib", :git => "git://github.com/mdiebolt/corelib.git"

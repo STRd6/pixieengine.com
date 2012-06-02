@@ -29,6 +29,8 @@
 #= require underscore
 #= require backbone
 
+#= require boner
+
 #= require pixie/editor/pixel/create
 #= require pixie/editor/tile/create
 
