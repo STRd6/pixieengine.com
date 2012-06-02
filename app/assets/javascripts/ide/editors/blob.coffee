@@ -3,8 +3,9 @@
 # probably just a temporary solution to github returning all files as type blob.
 
 window.createBlobEditor = (options, file) ->
-  {name, contents, url} = file.attributes
+  {contents, url} = file.attributes
 
+  name = file.name()
   extension = name.extension()
 
   editor = switch extension

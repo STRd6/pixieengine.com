@@ -5,7 +5,7 @@ window.createEditor = (ui) ->
   data.panel = panel
 
   file = window.currentFile
-  {name, language} = file.attributes
+  name = file.name()
 
   type = file.get "type"
 

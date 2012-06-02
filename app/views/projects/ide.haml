@@ -26,6 +26,7 @@
 
 - content_for :javascript do
   = javascript_include_tag "ide/base"
+  = javascript_include_tag "ide/github"
 
 - project_id = params[:id]
 - github_token = current_user.oauth_token if current_user
