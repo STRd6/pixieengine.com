@@ -97,7 +97,7 @@ $('#new_file_modal input[name="name"]').keyup (e) ->
       # make sure the file names are really different, they
       # shouldn't be considered different if they only differ
       # in capitalization, non alphanumeric characters, or whitespace
-      return normalizeFileName(file.get('name')) is normalizeFileName(value)
+      return normalizeFileName(file.name()) is normalizeFileName(value)
     if matchingFiles.length
       addWarnings target
       $('#new_file_modal .create').attr 'disabled', 'disabled'

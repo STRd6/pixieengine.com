@@ -90,7 +90,7 @@
 
     window.loadProjectConfig = ->
       try
-        window.projectConfig = JSON.parse(tree.file('pixie.json').get('contents'))
+        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
       catch e
         console.warn?(e)
         window.projectConfig = {}

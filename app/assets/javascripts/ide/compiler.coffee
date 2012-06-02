@@ -52,7 +52,7 @@ window.buildProjectCode = ->
 
   compiledCode = srcFiles.map((file) ->
     # Save main for last
-    return if file.get('name') is projectConfig.main
+    return if file.name() is projectConfig.main
 
     compileFileNode(file)
   ).join("\n")
@@ -114,7 +114,7 @@ window.testApp = ->
 
   compiledCode = srcFiles.map((file) ->
     # Skip main
-    return if file.get('name') is projectConfig.main
+    return if file.name() is projectConfig.main
 
     compileFileNode(file)
   ).join("\n")

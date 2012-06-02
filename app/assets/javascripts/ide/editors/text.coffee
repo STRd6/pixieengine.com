@@ -115,7 +115,7 @@ window.createTextEditor = (options, file) ->
     save: (savedCode) ->
       #TODO: Local storage
 
-      hotSwap(savedCode, file.get("extension"))
+      hotSwap(savedCode, file.name().extension())
 
       file.set
         contents: savedCode
