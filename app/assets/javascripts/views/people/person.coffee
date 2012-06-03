@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require templates/people/person
 
 namespace "Pixie.Views.People", (People) ->

@@ -1,7 +1,3 @@
-#= require underscore
-#= require backbone
-#= require corelib
-
 #= require templates/filters
 
 namespace "Pixie.Views", (Views) ->
