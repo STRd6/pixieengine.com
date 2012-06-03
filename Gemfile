@@ -8,7 +8,6 @@ group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'coffee-script-source', '~> 1.2.0'
-  gem 'cornerstone-source'
   gem 'uglifier'
 end
 
@@ -24,7 +23,7 @@ gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem "capistrano"
 gem "coffee-filter"
-gem 'cornerstone-source', :require => "cornerstone"
+gem 'cornerstone-source'
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
