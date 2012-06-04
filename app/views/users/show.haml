@@ -14,7 +14,8 @@
       = user.display_name
       - if current_user?
         = link_to "Edit profile", [:edit, user], :class => "button complement"
-        = link_to "Connect Github", "/auth/github", :class => "button complement"
+        - unless current_user.oauth_token
+          = link_to "Connect Github", "/auth/github", :class => "button complement"
         - if current_user.spreedly_token
           = link_to "Edit Subscription", user.edit_subscription_url, :class => "button complement"
 

@@ -43,7 +43,10 @@ class UserSessionsController < ApplicationController
     current_user.oauth_token = auth_hash["credentials"]["token"]
     current_user.save
 
-    render :text => "<pre>"+auth_hash.to_yaml+"</pre>"
+    # render :text => "<pre>"+auth_hash.to_yaml+"</pre>"
+
+    flash[:notice] = "Github Authorized"
+    redirect_to root_path
   end
 
   def destroy
