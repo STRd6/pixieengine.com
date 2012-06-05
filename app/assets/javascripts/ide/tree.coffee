@@ -13,8 +13,11 @@ tree.add "Documentation.documentation",
   type: "documentation"
   path: "docs"
 
-tree.bind 'openFile', (file) ->
-  openFile(file)
+tree.bind 'openFile', (e, file) ->
+  if e.which is 1
+    openFile(file)
+  else if e.which is 3
+    renameFile(file, file.get('path'))
 
 tree.bind 'rename', (file, newName) ->
   {docSelector, path} = file.attributes

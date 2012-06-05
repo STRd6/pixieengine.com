@@ -1,5 +1,37 @@
-window.renameFile = ->
-  ;
+window.renameFile = (file, oldPath) ->
+  {docSelector, path} = file.attributes
+  name = file.name()
+
+  openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
+
+  # Abort if unsaved
+  if openedTab.is(".unsaved")
+    notify "Save #{name} before renaming"
+    return
+  else
+    openedTab.find(".ui-icon-close").click()
+
+  newName = prompt "Rename #{name} to:"
+
+  return unless newName
+
+  file.set
+    path: oldPath.replace(file.name(), newName)
+
+  path = file.get('path')
+
+  postData =
+    path: oldPath
+    new_path: path
+    format: 'json'
+    message: $(".actions .status .message").val()
+
+  $.post "/projects/#{projectId}/rename_file", postData, -> # Assuming success
+  notify "Renamed #{oldPath} => #{path}"
+
+  # Close and reopen file if open
+  if openedTab.length
+    openFile(file)
 
 window.deleteFile = ->
   ;
@@ -194,12 +226,12 @@ $ ->
     e.preventDefault()
     e.stopPropagation()
 
-    console.log 'opening'
-
     menu = new Boner.Views.Menu
       items:
-        delete: -> console.log('deleting')
-        rename: -> console.log('renaming')
+        rename: ->
+          window.renameFile
+        delete: ->
+          window.deleteFile
       event: e
 
     $('body').append(menu.render().el)
