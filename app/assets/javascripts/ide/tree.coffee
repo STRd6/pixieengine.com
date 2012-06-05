@@ -28,3 +28,8 @@ tree.bind 'openFile', (e, file) ->
     $('body').append(menu.render().el)
 
 $('.sidebar').append(tree.render().$el)
+
+# ideally we should only prevent the
+# context menu on the particular element
+$(document).on 'contextmenu', (e) ->
+  false

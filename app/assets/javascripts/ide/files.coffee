@@ -11,12 +11,14 @@ window.renameFile = (file, oldPath) ->
   else
     openedTab.find(".ui-icon-close").click()
 
-  newName = prompt "Rename #{name} to:"
+  newName = prompt "Rename #{name} to:", name
 
   return unless newName
 
   file.set
     path: oldPath.replace(file.name(), newName)
+
+  debugger
 
   path = file.get('path')
 
@@ -237,7 +239,3 @@ $("#new_file_modal button.create").click (event) ->
 $("#new_file_modal input").keydown (event) ->
   if event.which is 13
     $("#new_file_modal button.create").click()
-
-$ ->
-  $(document).on 'contextmenu', (e) ->
-    return false
