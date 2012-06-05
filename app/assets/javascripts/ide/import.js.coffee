@@ -3,7 +3,7 @@ extractBase64Data = (dataUrl) ->
 
 $("html").dropImageReader
   matchType: /.*/
-  callback: (file, event) ->
+  callback: ({file, event}) ->
     if event.target.readyState is FileReader.DONE
       if file.type.match(/javascript/i)
         path = projectConfig.directories.lib

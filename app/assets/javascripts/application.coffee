@@ -16,7 +16,6 @@
 #= require jquery.paste_image_reader
 #= require jquery.pnotify.min
 #= require jquery.property_editor
-#= require jquery.power_canvas
 #= require jquery.serialize_object
 #= require jquery.tagbox
 #= require jquery.take_class
