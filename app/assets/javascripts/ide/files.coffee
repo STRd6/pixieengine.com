@@ -1,3 +1,9 @@
+window.renameFile = ->
+  ;
+
+window.deleteFile = ->
+  ;
+
 window.openFile = (file) ->
   trackEvent("IDE", "open file", file)
 
@@ -180,3 +186,20 @@ $("#new_file_modal button.create").click (event) ->
 $("#new_file_modal input").keydown (event) ->
   if event.which is 13
     $("#new_file_modal button.create").click()
+
+$ ->
+  $('.sidebar').on 'contextmenu', '.file', (e) ->
+    return unless e.which is 3
+
+    e.preventDefault()
+    e.stopPropagation()
+
+    console.log 'opening'
+
+    menu = new Boner.Views.Menu
+      items:
+        delete: -> console.log('deleting')
+        rename: -> console.log('renaming')
+      event: e
+
+    $('body').append(menu.render().el)
