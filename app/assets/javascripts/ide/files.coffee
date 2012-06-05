@@ -1,5 +1,5 @@
 window.renameFile = (file, oldPath) ->
-  {docSelector, path} = file.attributes
+  docSelector = file.get('docSelector')
   name = file.name()
 
   openedTab = $('#tabs ul li a[href="' + docSelector + '"]').parent()
@@ -218,20 +218,3 @@ $("#new_file_modal button.create").click (event) ->
 $("#new_file_modal input").keydown (event) ->
   if event.which is 13
     $("#new_file_modal button.create").click()
-
-$ ->
-  $('.sidebar').on 'contextmenu', '.file', (e) ->
-    return unless e.which is 3
-
-    e.preventDefault()
-    e.stopPropagation()
-
-    menu = new Boner.Views.Menu
-      items:
-        rename: ->
-          window.renameFile
-        delete: ->
-          window.deleteFile
-      event: e
-
-    $('body').append(menu.render().el)
