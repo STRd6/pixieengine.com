@@ -5,27 +5,28 @@ window.updateLibs = (callback) ->
   libCount = 0
 
   for fileName, url of projectConfig.libs
-    libCount += 1
+    do (fileName, url) ->
+      libCount += 1
 
-    if libData = parseGithubUrl(url)
-      Object.extend libData,
-        callback: (contents) ->
-          path = "#{projectConfig.directories.lib}/#{fileName}"
-          tree.add path,
-            size: contents.length
-            type: "blob"
+      if libData = parseGithubUrl(url)
+        Object.extend libData,
+          callback: (contents) ->
+            path = "#{projectConfig.directories.lib}/#{fileName}"
+            tree.add path,
+              size: contents.length
+              type: "blob"
 
-          saveFile
-            contents: contents
-            path: path
+            saveFile
+              contents: contents
+              path: path
 
-          n += 1
-          if n is libCount
-            callback?()
+            n += 1
+            if n is libCount
+              callback?()
 
-      githubClient.getFile libData
-    else
-      nonGithub.push [{fileName, url}]
+        githubClient.getFile libData
+      else
+        nonGithub.push [{fileName, url}]
 
   if nonGithub.length
     log nonGithub
