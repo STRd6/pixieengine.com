@@ -13,6 +13,7 @@ window.updateLibs = (callback) ->
           callback: (contents) ->
             path = "#{projectConfig.directories.lib}/#{fileName}"
             tree.add path,
+              contents: contents
               size: contents.length
               type: "blob"
 
