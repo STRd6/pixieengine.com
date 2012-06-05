@@ -33,8 +33,25 @@ window.renameFile = (file, oldPath) ->
   if openedTab.length
     openFile(file)
 
-window.deleteFile = ->
-  ;
+window.deleteFile = (file) ->
+  {docSelector, path} = file.attributes
+  name = file.name()
+  notify "Removing #{name}..."
+
+  # Close the tab if open
+  $('#tabs ul li a[href="' + docSelector + '"]').parent().find(".ui-icon-close").click()
+
+  message = $(".actions .status .message").val()
+
+  postData =
+    path: path
+    format: 'json'
+    message: message
+
+  successCallback = (data) ->
+    notify "#{name} removed!"
+
+  $.post "/projects/#{projectId}/remove_file", postData, successCallback
 
 window.openFile = (file) ->
   trackEvent("IDE", "open file", file)
