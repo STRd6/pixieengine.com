@@ -18,8 +18,6 @@ window.renameFile = (file, oldPath) ->
   file.set
     path: oldPath.replace(file.name(), newName)
 
-  debugger
-
   path = file.get('path')
 
   postData =
