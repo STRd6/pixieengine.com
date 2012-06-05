@@ -43,6 +43,8 @@ window.deleteFile = (file) ->
 
   message = $(".actions .status .message").val()
 
+  tree.remove(path)
+
   postData =
     path: path
     format: 'json'
