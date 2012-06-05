@@ -113,7 +113,7 @@ namespace "Pixie.Chat", (Chat) ->
 
       $('#chat_body').val("")
 
-    $("#chat_zone").dropImageReader (file, event) ->
+    $("#chat_zone").dropImageReader ({file, event}) ->
       if event.target.readyState == FileReader.DONE
         wrapper = $("<div />")
         img = $ "<img/>",

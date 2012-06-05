@@ -65,7 +65,7 @@ namespace "Pixie.Editor.Animation.Views", (Views) ->
       image.src = src
 
     bindDropImageReader: (editorEl) =>
-      editorEl.dropImageReader (file, event) =>
+      editorEl.dropImageReader ({file, event}) =>
         if event.target.readyState == FileReader.DONE
           src = event.target.result
           name = file.fileName

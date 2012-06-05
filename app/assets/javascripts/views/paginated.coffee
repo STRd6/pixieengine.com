@@ -1,5 +1,3 @@
-#= require underscore
-#= require backbone
 #= require templates/pagination
 
 #= require pixie/view

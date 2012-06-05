@@ -111,7 +111,7 @@
       height: height
 
     $("body").dropImageReader
-      callback: (file, event) ->
+      callback: ({file, event}) ->
         loadSprite(event.target.result)
 
     loadSprite = (url) ->

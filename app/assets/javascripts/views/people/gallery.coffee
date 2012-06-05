@@ -1,5 +1,3 @@
-#= require underscore
-#= require backbone
 #= require views/paginated
 #= require views/filtered
 #= require views/searchable

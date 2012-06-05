@@ -4,7 +4,7 @@ $ ->
   window.entities = new Pixie.Editor.Tile.Models.EntityList()
 
   # Populate initial entities
-  tree.getDirectory(projectConfig.directories.entities).files().each (file) ->
+  tree.getDirectory(projectConfig.directories.entities)?.files().each (file) ->
     {contents} = file.attributes
     name = file.name()
 

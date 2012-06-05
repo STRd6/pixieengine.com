@@ -113,10 +113,23 @@ namespace "Github", (Github) ->
 
         # Verify
         if sha == CryptoJS.SHA1("blob #{content.length}\0#{content}").toString()
-          console.log("SHA1 VERIFIED")
+          log("SHA1 VERIFIED")
           callback(content)
         else
-          console.log("SHA1 FAILED VERIFICATION")
+          log("SHA1 FAILED VERIFICATION")
+
+    getFile: ({user, repo, sha, path, callback}) ->
+      @get "/repos/#{user}/#{repo}/git/trees/#{sha}",
+        recursive: 1
+      , (data) =>
+        fileInfo = data.tree.select (fileData) ->
+          fileData.path is path
+        .first()
+
+        if fileInfo
+          @fileContents(fileInfo.url, callback)
+
+        # TODO: Error handling?
 
     # TODO: Clean these up to integrate with BoneTree better
     getRepo: (user, repo, callback, sha="pixie") ->

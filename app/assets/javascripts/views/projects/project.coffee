@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-
 #= require templates/projects/project
 
 window.Pixie ||= {}
