@@ -18,6 +18,12 @@ window.renameFile = (file, oldPath) ->
   file.set
     path: oldPath.replace(file.name(), newName)
 
+  # not the nicest way to reorder the tree
+  tree.root.directories().each (dir) ->
+    dir.collection.sort()
+
+  tree.render()
+
   path = file.get('path')
 
   postData =
