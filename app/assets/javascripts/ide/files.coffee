@@ -237,3 +237,7 @@ $("#new_file_modal button.create").click (event) ->
 $("#new_file_modal input").keydown (event) ->
   if event.which is 13
     $("#new_file_modal button.create").click()
+
+$ ->
+  $(document).on 'contextmenu', (e) ->
+    return false

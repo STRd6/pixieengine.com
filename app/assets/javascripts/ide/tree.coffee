@@ -17,9 +17,6 @@ tree.bind 'openFile', (e, file) ->
   if e.which is 1
     openFile(file)
   else if e.which is 3
-    e.preventDefault()
-    e.stopPropagation()
-
     menu = new Boner.Views.Menu
       items:
         rename: ->

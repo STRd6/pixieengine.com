@@ -15,9 +15,9 @@ GIT
 
 GIT
   remote: git://github.com/mdiebolt/bone_tree.git
-  revision: a5297aa4a51726bf049c36bb41eab6b7d7fbed3b
+  revision: 4a16934d939b0070157149734e7414754f10f9d9
   specs:
-    bone_tree (0.9.3)
+    bone_tree (0.9.4)
       cornerstone-source
       jquery-source
       underscore-source
