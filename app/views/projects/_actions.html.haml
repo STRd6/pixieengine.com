@@ -111,10 +111,10 @@
         )
 
     $("#update_libs").click ->
-      notify("Scheduling library update...")
+      notify("Updating Libraries")
 
-      $.post #{update_libs_project_path(project).to_json}, ->
-        notify("Library update scheduled", 4000)
+      updateLibs ->
+        notify("Libraries Updated")
 
     $(".actions .status .message").click ->
       $(this).select()
