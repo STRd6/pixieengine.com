@@ -110,8 +110,6 @@ PixieStrd6Com::Application.routes.draw do
 
   match 'users/remove_favorite/:id' => 'users#remove_favorite'
 
-  match 'people' => 'users#index', :as => :people_gallery
-
   # the people resource needs to go near the bottom because the
   # vanity urls will crush a bunch of other normal routes, such as login
   resources :people, :controller => :users, :as => :users, :except => :index, :path => '/' do
