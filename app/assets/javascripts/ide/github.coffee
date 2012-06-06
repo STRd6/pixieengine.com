@@ -4,8 +4,6 @@
 namespace "Github", (Github) ->
   API_ROOT = "https://api.github.com"
 
-
-
   Client = (token) ->
     self =
       apiCall: (path, data, callback, type="POST") ->
@@ -17,41 +15,22 @@ namespace "Github", (Github) ->
 
         console.log "GITHUB #{type}: ", url, data
 
+        data = JSON.stringify(data) unless type is "GET"
+
         $.ajax
           contentType: 'application/json'
-          data: JSON.stringify(data)
+          data: data
           dataType: 'json'
           success: (data) ->
             console.log "GITHUB RESPONSE: ", data
             callback(data)
           error: (data) ->
             console.log(data)
-          processData: false
           type: type
           url: "#{url}?access_token=#{token}"
 
-      # TODO: move this into apiCall
-      callAPI: (url, data, callback)->
-        if typeof data is "function"
-          callback = data
-          data = {}
-
-        if token
-          # Attach our access token
-          data = $.extend
-            access_token: token
-          , data
-
-        console.log "GITHUB GET: ", url, data
-
-        # Add the jsonp callback to the url
-        $.getJSON "#{url}?callback=?", data, (data) ->
-            console.log "GITHUB RESPONSE: ", data
-            # Ignoring metadata for now, just returning the main data
-            callback(data.data)
-
       get: (path, data, callback) ->
-        self.callAPI("#{API_ROOT}#{path}", data, callback)
+        self.apiCall(path, data, callback, "GET")
 
       patch: (path, data, callback) ->
         self.apiCall(path, data, callback, "PATCH")
@@ -59,24 +38,11 @@ namespace "Github", (Github) ->
       post: (path, data, callback) ->
         self.apiCall(path, data, callback)
 
-      fileContents: (url, callback) ->
-        sha = url.split('/').last()
-
-        self.callAPI url, ({content, encoding}) ->
-
-          if encoding is "base64"
-            content = Base64.decode(content)
-
-          # Verify
-          if sha == CryptoJS.SHA1("blob #{content.length}\0#{content}").toString()
-            log("SHA1 VERIFIED")
-            callback(content)
-          else
-            log("SHA1 FAILED VERIFICATION")
-
     return self
 
   Repo = (client, user, repo) ->
+    urlBase = "/repos/#{user}/#{repo}"
+
     self =
       tree: (sha="master", callback) ->
         url = "/repos/#{user}/#{repo}/git/trees/#{sha}"
@@ -93,17 +59,35 @@ namespace "Github", (Github) ->
           .first()
 
           if fileInfo
-            client.fileContents(fileInfo.url, callback)
+            sha = fileInfo.sha
+
+            self.getBlob sha, ({content, encoding}) ->
+              if encoding is "base64"
+                content = Base64.decode(content)
+
+              # Verify
+              if sha == CryptoJS.SHA1("blob #{content.length}\0#{content}").toString()
+                log("SHA1 VERIFIED")
+                callback(content)
+              else
+                log("SHA1 FAILED VERIFICATION")
+
           else
             log "FILE #{path} NOT FOUND AT #{url}"
 
+      getBlob: (sha, callback) ->
+        client.get "#{urlBase}/git/blobs/#{sha}", callback
+
+      createBlob: (data, callback) ->
+        client.post "#{urlBase}/git/blobs", data, callback
+
       createTree: (data, callback) ->
-        url = "/repos/#{user}/#{repo}/git/trees"
+        url = "#{urlBase}/git/trees"
 
         client.post url, data, callback
 
       getCommit: (sha, callback) ->
-        url = "/repos/#{user}/#{repo}/git/commits/#{sha}"
+        url = "#{urlBase}/git/commits/#{sha}"
 
         client.get url, callback
 
@@ -112,19 +96,19 @@ namespace "Github", (Github) ->
           self.getCommit object.sha, callback
 
       getReference: (ref, callback) ->
-        url = "/repos/#{user}/#{repo}/git/refs/heads/#{ref}"
+        url = "#{urlBase}/git/refs/heads/#{ref}"
 
         client.get url, callback
 
       updateReference: (ref, sha, callback) ->
-        url = "/repos/#{user}/#{repo}/git/refs/heads/#{ref}"
+        url = "#{urlBase}/git/refs/heads/#{ref}"
 
         client.patch url,
           sha: sha
         , callback
 
       createCommit: (data, callback) ->
-        url = "/repos/#{user}/#{repo}/git/commits"
+        url = "#{urlBase}/git/commits"
 
         client.post url, data, callback
 
@@ -135,9 +119,6 @@ namespace "Github", (Github) ->
         # One option is to use the collaborators API
         # to add a collaborator then hit our server to
         # have it set up the initial commit.
-
-      createBlob: (data, callback) ->
-        client.post "/repos/#{user}/#{repo}/git/blobs", data, callback
 
       # Make sure all files are blobs in the repo
       ingestFiles: (files) ->
