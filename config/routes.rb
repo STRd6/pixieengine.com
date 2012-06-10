@@ -9,6 +9,8 @@ PixieStrd6Com::Application.routes.draw do
 
   get "testie" => "tilemaps#new"
 
+  get "leads/create" => "leads#create"
+
   resources :projects do
     member do
       get :debug
