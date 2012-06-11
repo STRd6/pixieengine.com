@@ -36,7 +36,7 @@
           if shouldHide(key, value)
             # Skip
           else if key.match(/color/i)
-            addRow(key, value).find('td:last input').colorPicker
+            addRow(key, Color(value).toHex()).find('td:last input').colorPicker
               leadingHash: true
           else if Object.isObject(value)
             addNestedRow(key, value)
