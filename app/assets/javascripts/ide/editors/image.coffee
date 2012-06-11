@@ -38,18 +38,24 @@ window.createImageEditor = (options, file) ->
         perform: (canvas) ->
           base64Contents = _canvas.toBase64()
 
+          oldFile = tree.getFile(path)
+
           if title = prompt("Title")
             filePath = projectConfig.directories["images"]
             fullPath = filePath + "/" + title + ".png"
 
             # TODO remove global tree reference
-            tree.file fullPath,
+            file = tree.add fullPath,
               type: "image"
               contents: "data:image/png;base64," + base64Contents
+
+            openFile file
 
             saveFile
               contents_base64: base64Contents
               path: fullPath
+
+            closeFile(oldFile)
 
         undoable: false
 

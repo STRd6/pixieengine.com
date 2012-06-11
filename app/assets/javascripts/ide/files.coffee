@@ -61,6 +61,17 @@ window.deleteFile = (file) ->
 
   $.post "/projects/#{projectId}/remove_file", postData, successCallback
 
+window.closeFile = (file) ->
+  {path} = file.attributes
+
+  selector = path.replace(/[^A-Za-z0-9_-]/g, "_")
+
+  docSelector = file.attributes.docSelector = "#file_#{selector}"
+
+  # focus the tab if it already exists
+  if (tab = $('#tabs ul li a[href="' + docSelector + '"]')).length
+    tab.parent().find('.ui-icon-close').click()
+
 window.openFile = (file) ->
   trackEvent("IDE", "open file", file)
 
@@ -124,6 +135,7 @@ window.newFileNode = (inputData) ->
 
   # TODO remove global file tree reference. Pass it to the function instead
   file = tree.add inputData.path, inputData
+  openFile file
 
   # TODO Get a JS test for this
   if forceSave
@@ -234,6 +246,7 @@ $("#new_file_modal button.create").click (event) ->
   data.path = "#{data.path}/#{data.name}.#{data.extension}"
 
   file = newFileNode data
+  openFile file
 
   # Don't close the modal unless we've created a file.
   # Fixes bug where the modal closes with a blank name.

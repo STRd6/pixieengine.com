@@ -54,6 +54,8 @@ window.createTilemapEditor = (options, file) ->
     perform: ->
       title = prompt("Title")
 
+      oldFile = tree.getFile(path)
+
       if title
         filePath = projectConfig.directories.tilemaps
 
@@ -66,11 +68,13 @@ window.createTilemapEditor = (options, file) ->
           path: fullPath
           contents: dataString
 
+        closeFile oldFile
+
         saveFile
           contents: dataString
           path: fullPath
           success: ->
-            ;# TODO: Maybe close this one and open the saved as one
+            ;
 
   tileEditor.el.appendTo(panel)
 
