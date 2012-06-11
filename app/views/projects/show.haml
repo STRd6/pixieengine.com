@@ -125,7 +125,7 @@
         if $('.project_members').length == 0
           project_members_el = $ "<div class='project_members'><h3>Current project members</h3></div>"
           $('form').before(project_members_el)
-        user_element = $ "<p><a href='/people/\#{member_id}'>\#{member_name}</a></p>"
+        user_element = $ "<p><a href='/\#{member_name}'>\#{member_name}</a></p>"
         button_element = $ "<button action='/projects/#{project.id}/remove_member?user_id=\#{member_id}' class='remove_member'><span alt='Remove member' class='static-delete'></span>Remove</button>"
         user_element.append(button_element)
         $('.project_members').append(user_element)
