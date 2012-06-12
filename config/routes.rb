@@ -19,6 +19,7 @@ PixieStrd6Com::Application.routes.draw do
       get :widget
 
       post :fork
+      post :save_file
     end
 
     collection do
