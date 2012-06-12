@@ -26,7 +26,7 @@
       requireLogin ->
         notify("Exporting .zip ...")
 
-        window.location = #{download_project_path(project).to_json}
+        window.location = #{download_project_path(project.id).to_json}
 
         $.modal.close()
 
