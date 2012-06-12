@@ -252,7 +252,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def save_file(path, contents, authoring_user, message=nil)
+  def save_file(path, contents, authoring_user, message=nil, doc=false)
     #TODO: Verify path is not sketch
     return if path.index ".."
 
@@ -266,7 +266,7 @@ class Project < ActiveRecord::Base
       file.write(contents)
     end
 
-    if params[:generate_docs]
+    if doc
       generate_docs
     end
 

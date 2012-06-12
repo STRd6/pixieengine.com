@@ -305,8 +305,9 @@ class ProjectsController < ApplicationController
     end
 
     message = params[:message].presence
+    doc = params[:generate_docs].presence
 
-    project.save_file(params[:path], contents, current_user, message)
+    project.save_file(params[:path], contents, current_user, message, doc)
 
     project.touch if params[:touch]
 
