@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '3.2.3'
+gem 'rails', '3.2.5'
 
 group :assets do
   gem 'compass-rails'
@@ -48,7 +48,7 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
-gem 'spacedocs', :git => 'git://github.com/mdiebolt/spacedocs.git'
+gem 'spacedocs'
 gem 'therubyracer'
 gem 'underscore-source'
 gem "will_paginate", '3.0.3'
