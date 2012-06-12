@@ -130,6 +130,8 @@
   = render :partial => "collections/form"
 
 - content_for :javascript do
+  - set_avatar_url = set_avatar_user_path(current_user) if current_user
+
   :coffeescript
     $ ->
       ajaxifyForm = (selector) ->
@@ -182,7 +184,7 @@
 
         return false
 
-      $(".menu li").live "click", (event) ->
+      $(".menu li").on "click", (event) ->
         collectionId = $(this).attr("data-collection_id")
         checkbox = $(this).children("input")
         boxClick = false
@@ -197,9 +199,9 @@
           else
             $.post "/collections/\#{collectionId}/remove", sprite_id: spriteId, "json"
 
-      $(".avatar a").live "click", (event) ->
-        notify "Saving..."
-        spriteId = $(this).attr("data-sprite_id")
-        $.post "#{set_avatar_user_path(current_user)}", sprite_id: spriteId, (data) ->
-          notify "Avatar successfully changed."
-
+      $(".avatar a").on "click", (event) ->
+        if setAvatarUrl = #{set_avatar_url.to_json}
+          notify "Saving..."
+          spriteId = $(this).attr("data-sprite_id")
+          $.post setAvatarUrl, sprite_id: spriteId, (data) ->
+            notify "Avatar successfully changed."
