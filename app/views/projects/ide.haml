@@ -49,7 +49,7 @@
       requireSubscription ->
         notify("Exporting Chrome Web Store Package ...")
 
-        window.location = #{download_project_path(project, :chrome => 1).to_json}
+        window.location = #{download_user_project_path(project.user, project, :chrome => 1).to_json}
 
         $.modal.close()
 

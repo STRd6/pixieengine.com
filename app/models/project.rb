@@ -117,7 +117,7 @@ class Project < ActiveRecord::Base
   end
 
   def base_url
-    "/production/projects/#{id}/"
+    "/#{Rails.env}/projects/#{id}/"
   end
 
   def to_param
@@ -129,7 +129,7 @@ class Project < ActiveRecord::Base
   end
 
   def base_path
-    Rails.root.join 'public', 'production', 'projects'
+    Rails.root.join 'public', Rails.env, 'projects'
   end
 
   def path
@@ -346,7 +346,7 @@ class Project < ActiveRecord::Base
   end
 
   def zip_for_export
-    system 'ruby', 'script/zip_lib.rb', id.to_s, self.class.table_name
+    system 'ruby', 'script/zip_lib.rb', id.to_s, Rails.env
   end
 
   def generate_docs

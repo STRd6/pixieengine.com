@@ -78,6 +78,8 @@ class ProjectsControllerTest < ActionController::TestCase
     context "with a project" do
       setup do
         @project = Factory :project, :user => @user
+
+        @project.save_file("test", "test", @project.user)
       end
 
       should "be able to edit own project" do
@@ -85,10 +87,23 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
       end
 
+      should "be able to download" do
+        get :download, :user_id => @project.user, :id => @project
+      end
+
       should "have the option to save your own project" do
         get :ide, :id => @project.id
         assert_response :success
         assert_select '#save'
+      end
+
+      should "be able save the damn thing" do
+        post :save_file, :id => @project.id,
+          :format => "json",
+          :contents => "Testie = (I={}) ->",
+          :path => "testie",
+          :message => "test"
+        assert_response :success
       end
     end
   end
