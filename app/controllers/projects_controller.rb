@@ -102,7 +102,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        flash[:notice] = "Project has been archived"
+        flash[:notice] = "Project has been deleted"
         redirect_to project_owner
       end
       format.json do

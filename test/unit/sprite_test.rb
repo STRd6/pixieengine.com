@@ -37,20 +37,4 @@ class SpriteTest < ActiveSupport::TestCase
       end
     end
   end
-
-  context "archiving" do
-    should "be archiveable and restoreable" do
-      assert_difference "Sprite::Archive.count", +1 do
-        assert_difference "Sprite.count", -1 do
-          @sprite.destroy
-        end
-      end
-
-      assert_difference "Sprite::Archive.count", -1 do
-        assert_difference "Sprite.count", +1 do
-          Sprite.restore_all([ 'id = ?', @sprite.id ])
-        end
-      end
-    end
-  end
 end

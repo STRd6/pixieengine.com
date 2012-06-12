@@ -11,26 +11,6 @@ class ProjectTest < ActiveSupport::TestCase
     end
   end
 
-  context "archiving" do
-    setup do
-      @project = Factory :project
-    end
-
-    should "be archiveable and restoreable" do
-      assert_difference "Project::Archive.count", +1 do
-        assert_difference "Project.count", -1 do
-          @project.destroy
-        end
-      end
-
-      assert_difference "Project::Archive.count", -1 do
-        assert_difference "Project.count", +1 do
-          Project.restore_all([ 'id = ?', @project.id ])
-        end
-      end
-    end
-  end
-
   context "memberships" do
     setup do
       @project = Factory :project
