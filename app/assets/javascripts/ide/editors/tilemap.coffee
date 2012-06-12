@@ -52,9 +52,11 @@ window.createTilemapEditor = (options, file) ->
   tileEditor.addAction
     name: "Save As"
     perform: ->
-      title = prompt("Title")
-
       oldFile = tree.getFile(path)
+
+      [fileNames..., extension] = oldFile.name().split('.')
+
+      title = prompt("Title", fileNames.join('.'))
 
       if title
         filePath = projectConfig.directories.tilemaps
@@ -64,6 +66,7 @@ window.createTilemapEditor = (options, file) ->
         fullPath = "#{filePath}/#{title}.#{extension}"
 
         newFileNode
+          autoOpen: true
           type: "tilemap"
           path: fullPath
           contents: dataString

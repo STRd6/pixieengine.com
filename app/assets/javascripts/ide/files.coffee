@@ -135,7 +135,9 @@ window.newFileNode = (inputData) ->
 
   # TODO remove global file tree reference. Pass it to the function instead
   file = tree.add inputData.path, inputData
-  openFile file
+
+  if autoOpen
+    openFile file
 
   # TODO Get a JS test for this
   if forceSave

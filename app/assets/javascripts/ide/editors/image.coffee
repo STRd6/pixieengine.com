@@ -40,7 +40,9 @@ window.createImageEditor = (options, file) ->
 
           oldFile = tree.getFile(path)
 
-          if title = prompt("Title")
+          [fileNames..., extension] = oldFile.name().split('.')
+
+          if title = prompt("Title", fileNames.join('.'))
             filePath = projectConfig.directories["images"]
             fullPath = filePath + "/" + title + ".png"
 
