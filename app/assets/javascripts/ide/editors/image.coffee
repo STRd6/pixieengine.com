@@ -4,7 +4,7 @@ window.createImageEditor = (options, file) ->
 
   mtime ||= +new Date()
 
-  dataUrl = "/production/projects/#{projectId}/#{path}?#{mtime}"
+  dataUrl = "/#{railsEnv}/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null
 
   editorOptions = $.extend editorOptions,

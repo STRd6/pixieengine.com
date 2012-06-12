@@ -44,6 +44,7 @@
     window.projectId = #{project_id.to_json}
     window.projectBaseUrl = #{project.base_url.to_json}
     window.doc_id = #{admin? ? project.id : Project::DOCS_ID}
+    window.railsEnv = #{Rails.env.to_json}
 
     $("#content .sidebar_container .bottom").click ->
       requireSubscription ->

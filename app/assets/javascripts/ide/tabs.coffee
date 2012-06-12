@@ -9,7 +9,7 @@ $tabs = $('#tabs').tabs
     iconCss = "#{type} #{extension}"
 
     if type is 'documentation'
-      $(ui.panel).append "<iframe class='no_border' src='/production/projects/#{doc_id}/docs/index.html' width='100%' height='100%'></iframe>"
+      $(ui.panel).append "<iframe class='no_border' src='/#{railsEnv}/projects/#{doc_id}/docs/index.html' width='100%' height='100%'></iframe>"
       $(ui.tab).parent().find('span.lang').addClass(iconCss)
     else if fileData = createEditor(ui)
       $(ui.tab).data('updateSaved', fileData.updateSaved)

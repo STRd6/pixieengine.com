@@ -1,2 +1,2 @@
 window.docUrl = (object, method) ->
-  "/production/projects/34/docs/symbols/#{object}.html##{method}"
+  "/#{railsEnv}/projects/34/docs/symbols/#{object}.html##{method}"
