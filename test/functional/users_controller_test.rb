@@ -41,7 +41,7 @@ class UsersControllerTest < ActionController::TestCase
     should "be able to edit own profile" do
       get :edit, :id => @user
 
-      assert_response :success
+      assert_routing({ :path => "/#{@user.display_name}/edit"}, { :controller => "users", :action => "edit", :id => @user.display_name})
     end
 
     should "be redirected when visiting register_subscribe" do

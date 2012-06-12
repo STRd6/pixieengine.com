@@ -106,6 +106,10 @@ PixieStrd6Com::Application.routes.draw do
     resources :comments, :sprites
 
     member do
+      get :edit
+
+      put :update
+
       post :add_to_collection
       post :set_avatar
     end
@@ -114,6 +118,7 @@ PixieStrd6Com::Application.routes.draw do
       get :progress
       get :unsubscribe
 
+      post :create
       post :install_plugin
       post :uninstall_plugin
       post :do_unsubscribe
