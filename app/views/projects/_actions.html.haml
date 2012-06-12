@@ -92,11 +92,9 @@
       saveFile
         contents: projectCode
         path: #{Project::COMPILED_FILE_NAME.to_json}
-        touch: true
+        generate_docs: true
         success: ->
           notify("Published!")
-
-      $.post #{generate_docs_project_path(project).to_json}
 
     $("#fork").click ->
       requireLogin ->

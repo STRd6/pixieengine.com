@@ -257,18 +257,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def generate_docs
-    project.generate_docs
-
-    respond_to do |format|
-      format.json do
-        render :json => {
-          :status => "ok"
-        }
-      end
-    end
-  end
-
   def update_libs
     project.update_libs
 
@@ -383,6 +371,12 @@ class ProjectsController < ApplicationController
 
   private
   def object
+    return @object if defined?(@object)
+
+    if params[:user_id].present?
+      return @project = @object = User.find_by_display_name!(params[:user_id]).projects.find_by_title!(params[:id])
+    end
+
     @project ||= if demo?
       if current_user
         # Use the source demo project if this one is likely to be too new

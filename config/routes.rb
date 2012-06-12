@@ -13,29 +13,15 @@ PixieStrd6Com::Application.routes.draw do
 
   resources :projects do
     member do
-      get :debug
       get :download
-      get :find_member_users
       get :fullscreen
       get :ide
       get :widget
 
-      post :add_to_arcade
-      post :add_member
-      post :add_to_tutorial
-      post :feature
       post :fork
-      post :generate_docs
-      post :remove_file
-      post :remove_member
-      post :rename_file
-      post :save_file
-      post :tag_version
-      post :update_libs
     end
 
     collection do
-      get :github_integration
       post :hook
       get :info
     end
@@ -115,7 +101,7 @@ PixieStrd6Com::Application.routes.draw do
   # the people resource needs to go near the bottom because the
   # vanity urls will crush a bunch of other normal routes, such as login
   resources :people, :controller => :users, :as => :users, :except => :index, :path => '/' do
-    resources :comments, :projects, :sprites
+    resources :comments, :sprites
 
     member do
       post :add_to_collection
@@ -129,6 +115,37 @@ PixieStrd6Com::Application.routes.draw do
       post :install_plugin
       post :uninstall_plugin
       post :do_unsubscribe
+    end
+
+    # at the bottom so it doesn't crush the comments and sprites nested routes
+    resources :projects, :except => :index, :path => '/' do
+      member do
+        get :debug
+        get :download
+        get :find_member_users
+        get :fullscreen
+        get :ide
+        get :widget
+
+        post :add_to_arcade
+        post :add_member
+        post :add_to_tutorial
+        post :feature
+        post :fork
+        post :generate_docs
+        post :remove_file
+        post :remove_member
+        post :rename_file
+        post :save_file
+        post :tag_version
+        post :update_libs
+      end
+
+      collection do
+        get :github_integration
+        post :hook
+        get :info
+      end
     end
   end
 

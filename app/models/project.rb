@@ -122,6 +122,10 @@ class Project < ActiveRecord::Base
     "/production/projects/#{id}/"
   end
 
+  def to_param
+    display_name
+  end
+
   def demo_path
     File.join base_path, DEMO_ID.to_s
   end
@@ -262,6 +266,10 @@ class Project < ActiveRecord::Base
 
     File.open(file_path, 'wb') do |file|
       file.write(contents)
+    end
+
+    if params[:generate_docs]
+      generate_docs
     end
 
     git_commit_and_push(authoring_user.id, message) if Rails.env.production?
