@@ -36,11 +36,6 @@ namespace "Pixie.Views", (Views) ->
       object: 'Bindable'
       method: 'unbind'
 
-  $ ->
-    $.each DOCS_LOOKUP, (key, value) ->
-      docPage = $.get docUrl(value.object, value.method), (data) ->
-        DOCS_LOOKUP[key].summary = $(data).find("a[name='#{key}']").parent().next('.description').contents().eq(0).text().trim()
-
   class Views.Autocomplete extends Backbone.View
     className: 'code_autocomplete'
     tagName: 'ul'
@@ -172,3 +167,8 @@ namespace "Pixie.Views", (Views) ->
         top: @currentPosition.yBot
 
       @$el.show() if @$('li').length
+
+  Views.Autocomplete.lookupDocs = ->
+    $.each DOCS_LOOKUP, (key, value) ->
+      docPage = $.get docUrl(value.object, value.method), (data) ->
+        DOCS_LOOKUP[key].summary = $(data).find("a[name='#{key}']").parent().next('.description').contents().eq(0).text().trim()
