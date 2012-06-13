@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '3.2.5'
+gem 'rails', '3.2.6'
 
 group :assets do
   gem 'compass-rails'
