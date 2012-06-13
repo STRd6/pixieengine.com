@@ -119,7 +119,7 @@
       # Hack to pre-load main file and README
       tree.toArray().each (file) ->
         if ['src/main.coffee', 'README'].include(file.get('path'))
-          tree.trigger 'openFile', file
+          tree.trigger 'openFile', null, file
 
       $("#edit_project_form").bind
         "ajax:after": ->

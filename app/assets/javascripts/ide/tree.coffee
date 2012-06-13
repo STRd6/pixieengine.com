@@ -14,9 +14,7 @@ tree.add "Documentation.documentation",
   path: "docs"
 
 tree.bind 'openFile', (e, file) ->
-  if e.which is 1
-    openFile(file)
-  else if e.which is 3
+  if e?.which is 3
     menu = new Boner.Views.Menu
       items:
         rename: ->
@@ -26,6 +24,8 @@ tree.bind 'openFile', (e, file) ->
       event: e
 
     $('body').append(menu.render().el)
+  else
+    openFile(file)
 
 $('.sidebar').append(tree.render().$el)
 
