@@ -204,7 +204,7 @@ class ProjectsController < ApplicationController
     else
       track_event('create_project_error')
 
-      respond_with @project
+      respond_with @project.user, @project
     end
   end
 
