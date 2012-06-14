@@ -72,7 +72,7 @@ class Project < ActiveRecord::Base
     :hotSwap => true,
   }
   BRANCH_NAME = "pixie"
-  DEMO_ORIGIN = "git://github.com/STRd6/PixieDemo.git"
+  DEMO_ORIGIN = "git://github.com/PixieEngine/PixieDemo.git"
   DOCS_ID = 34
   DEMO_ID = 176
   JUMP_DEMO_ID = 218
