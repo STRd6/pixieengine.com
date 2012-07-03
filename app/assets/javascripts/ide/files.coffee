@@ -203,8 +203,6 @@ window.saveFile = (data) ->
 
     {success:successMethod, error:errorMethod} = data
 
-    debugger
-
     $.post("/projects/#{projectId}/save_file", postData)
       .success ->
         successMethod?()
