@@ -20,6 +20,7 @@ PixieStrd6Com::Application.routes.draw do
 
       post :fork
       post :save_file
+      post :rename_file
       post :remove_file
     end
 
