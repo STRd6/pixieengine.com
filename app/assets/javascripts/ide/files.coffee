@@ -1,6 +1,4 @@
 window.renameFile = (file, oldPath) ->
-  debugger
-
   docSelector = file.get('docSelector')
   name = file.name()
 
@@ -18,7 +16,7 @@ window.renameFile = (file, oldPath) ->
   return unless newName
 
   file.set
-    path: oldPath.replace(file.name(), newName)
+    path: oldPath.replace(file.name().withoutExtension(), newName)
 
   # not the nicest way to reorder the tree
   tree.root.directories().each (dir) ->
@@ -204,6 +202,8 @@ window.saveFile = (data) ->
     delete postData.error
 
     {success:successMethod, error:errorMethod} = data
+
+    debugger
 
     $.post("/projects/#{projectId}/save_file", postData)
       .success ->
