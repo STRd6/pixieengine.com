@@ -23,6 +23,7 @@ public/stylesheets/pixie/*.css
 public/stylesheets/editors/*.css
 public/test
 public/production
+public/development
 public/system
 projects.zip
 dev_email.yml
