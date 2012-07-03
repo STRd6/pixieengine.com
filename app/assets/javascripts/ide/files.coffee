@@ -1,4 +1,6 @@
 window.renameFile = (file, oldPath) ->
+  debugger
+
   docSelector = file.get('docSelector')
   name = file.name()
 
