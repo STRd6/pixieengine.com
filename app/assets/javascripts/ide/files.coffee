@@ -11,7 +11,7 @@ window.renameFile = (file, oldPath) ->
   else
     openedTab.find(".ui-icon-close").click()
 
-  newName = prompt "Rename #{name} to:", name
+  newName = prompt "Rename #{name.withoutExtension()} to:", name.withoutExtension()
 
   return unless newName
 
