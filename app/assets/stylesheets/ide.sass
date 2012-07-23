@@ -116,7 +116,7 @@ $inner_margin: 14px
           padding: 0
 
 nav.top.actions .status
-  color: $dark_text
+  color: #eee
 
   input
     background-color: #fff
@@ -262,6 +262,9 @@ nav.top.actions .status
 
   .status
     +inline-block
+    vertical-align: top
+    margin-left: 2em
+    margin-top: 11px
 
     .message
       width: 200px
@@ -341,3 +344,17 @@ nav.top.actions .status
 
     .wrap
       height: 60px
+
+.dropdown-menu
+  li
+    text-align: left
+
+    .hotkey
+      float: right
+      font-style: italic
+
+    a
+      color: #333
+
+.btn.dropdown-toggle
+  color: #333

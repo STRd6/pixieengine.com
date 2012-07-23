@@ -13,11 +13,13 @@ button, a.button
   color: $button_font
   text-align: center
 
-  &:hover
-    +background(linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%))))
 
-    color: $button_font
-    text-decoration: none
+  &:not(.btn)
+    &:hover
+      +background(linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%))))
+
+      color: $button_font
+      text-decoration: none
 
   &:visited
     color: $button_font
@@ -36,6 +38,11 @@ button, a.button
 
     background: $button_background_active
     color: white
+
+    &.btn
+      +text-shadow(none)
+
+      color #333
 
   &[disabled]
     +text-shadow(none)

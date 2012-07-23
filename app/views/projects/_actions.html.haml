@@ -1,29 +1,74 @@
-%nav.top.actions
+%nav.top.actions.btn-toolbar(style='margin-top:-3px')
   - if demo? || has_access?
-    %button#save Save
-    .button_group
-      %button#new> New
-      %button#export(title="Download your project files")> Export
+    .btn-group
+      %button.btn#save(style='margin-right:0') Save
+      %button.btn.dropdown-toggle(data-toggle='dropdown')
+        %span.caret
+      %ul.dropdown-menu
+        %li
+          %a#save(href='#')
+            Save
+            %span.hotkey ctrl+s
+        %li.divider
+        %li
+          %a#build Publish
+        %li
+          %a#export(href='#') Export
 
-  %button#fork Clone
+    .btn-group
+      %a.btn.dropdown-toggle(data-toggle='dropdown' href='#')
+        New
+        %span.caret
+      %ul.dropdown-menu
+        %li
+          %a.script(href='#') Script
+        %li
+          %a.test(href='#') Test
+        %li
+          %a.image(href='#') Image
+        %li
+          %a.sound(href='#') Sound
+        %li
+          %a.entity(href='#') Entity
+        %li
+          %a.tilemap(href='#') Tilemap
 
-  .button_group
-    %button#run> Run
-    %button#test> Test
-    %button#console> Console
-  - if demo? || has_access?
-    .button_group
-      %button#build(title="Publish the current version of your game")> Publish
-      %button#update_libs(title="Update to the latest version of libraries defined in pixie.json")> Update Libs
+  .btn-group
+    %button.btn(style='margin-right:0') Run
+    %button.btn.dropdown-toggle(data-toggle='dropdown')>
+      %span.caret
+    %ul.dropdown-menu
+      %li
+        %a#run(href='#')
+          Run
+          %span.hotkey f5
+      %li
+        %a#test(href='#')
+          Test
+          %span.hotkey f6
+      %li.divider
+      %li
+        %a#console(href='#') Console
+
+  .btn-group
+    %a.btn.dropdown-toggle(data-toggle='dropdown' href='#')
+      Actions
+      %span.caret
+    %ul.dropdown-menu
+      %li
+        %a#fork Clone this project
+      - if demo? || has_access?
+        %li
+          %a#update_libs Update game libraries
 
   - if current_user
     - if !current_user.help_tips
     - else
-      %button#help>
+      %button.btn#help>
         %span.static-help(alt="Help")
         Help
   - else
-    %button#help>
+    %button.btn#help>
       %span.static-help(alt="Help")
       Help
 

@@ -3,17 +3,19 @@
 
 /* TODO: Move these global styles out and include pixie.sass in screen.sass
 body#fullscreen
-  padding: 2.5em 1em 0
+  padding: 0
+  padding-top: 2.5em
 
   & > .content
     +box-sizing(border-box)
 
     background: none
     border: none
-    padding: 1em 0 0 0
+    padding: 10px 0 0 0
 
 .editor.pixie
   background-image: url(/assets/editor_textured_background.png)
+  padding: 0
 
 html
   background-image: url(/assets/editor_textured_background.png)
@@ -44,16 +46,19 @@ html
       position: absolute
 
   .module.left
+    +border-radius(0)
     +bounds($sidebar_left, 100%)
+
+    background-color: rgba(0, 0, 0, 0.3)
+    border: none
     padding: 0
 
     .tool
-      +border-radius
+      +border-radius(3px)
       +bounds(40px)
       +box-sizing(border-box)
       +box-shadow(rgba(255, 255, 255, 0.5) 0 1px 0 inset)
 
-      background-color: #99D8FF
       border: 1px solid rgba(0, 0, 0, 0.2)
       cursor: pointer
       margin: 5px auto 0
@@ -61,21 +66,29 @@ html
       text-align: center
 
       &:hover
-        background-color: $hover
+        background-color: rgba(255, 255, 255, 0.1)
 
       &.active
-        +border-radius
-        +box-shadow(rgba(0, 0, 0, 0.15) 1px 1px 0 inset)
+        +border-radius(3px)
+        +box-shadow(rgba(0, 0, 0, 0.5) 0 0 3px inset)
 
-        background-color: #1084CE
+        background-color: rgba(255, 255, 255, 0.3)
+        border: 1px solid rgba(0, 0, 0, 0.4)
 
       img
         border: none
 
   .module.right
+    +border-radius(0)
     +bounds($sidebar_right, 100%)
 
+    background-color: rgba(0, 0, 0, 0.3)
+    border: none
     padding: 1em
+
+    hr
+      +box-shadow(rgba(0, 0, 0, 0.2) 0 1px inset)
+      border-top: 1px solid rgba(255, 255, 255, 0.4)
 
     .preview
       +bounds(150px)

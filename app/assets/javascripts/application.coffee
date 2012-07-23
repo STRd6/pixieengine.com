@@ -6,6 +6,8 @@
 #= require codemirror2/codemirror
 #= require codemirror2/coffeescript
 
+#= require twitter/bootstrap
+
 #= require jquery.simplemodal-1.3.5.min
 #= require jquery.form
 #= require jquery.scrollTo-min

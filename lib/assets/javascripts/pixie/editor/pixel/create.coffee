@@ -251,7 +251,7 @@
             src: action.icon || IMAGE_DIR + name + '.png'
 
           actionButton = Button
-            class: 'tool'
+            class: 'tool btn'
             text: name.capitalize()
             title: titleText
           .prepend(iconImg)

@@ -9,5 +9,6 @@
       .color_picker_holder
       .toolbar
         .swatches
+      %hr
       .preview
       .opacity
