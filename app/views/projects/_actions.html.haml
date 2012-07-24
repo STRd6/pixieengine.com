@@ -1,7 +1,7 @@
 %nav.top.actions.btn-toolbar(style='margin-top:-3px')
   - if demo? || has_access?
     .btn-group
-      %button.btn#save(style='margin-right:0') Save
+      %button.btn.save(style='margin-right:0') Save
       %button.btn.dropdown-toggle(data-toggle='dropdown')
         %span.caret
       %ul.dropdown-menu
@@ -16,25 +16,10 @@
           %a#export(href='#') Export
 
     .btn-group
-      %a.btn.dropdown-toggle(data-toggle='dropdown' href='#')
-        New
-        %span.caret
-      %ul.dropdown-menu
-        %li
-          %a.script(href='#') Script
-        %li
-          %a.test(href='#') Test
-        %li
-          %a.image(href='#') Image
-        %li
-          %a.sound(href='#') Sound
-        %li
-          %a.entity(href='#') Entity
-        %li
-          %a.tilemap(href='#') Tilemap
+      %button.btn#new New
 
   .btn-group
-    %button.btn(style='margin-right:0') Run
+    %button.btn.run(style='margin-right:0') Run
     %button.btn.dropdown-toggle(data-toggle='dropdown')>
       %span.caret
     %ul.dropdown-menu
@@ -146,7 +131,7 @@
         notify("Hardcore Forking Action...")
 
         $.post(
-          #{fork_project_path(project).to_json},
+          "/projects/#{project.id}/fork",
           format: 'json',
           (data) ->
             notify("<a href='/projects/\#{data.id}/ide'>Your carriage awaits!</a>")
@@ -164,9 +149,9 @@
 
     $("#test").click ->
       testApp()
-    $("#run").click ->
+    $(".btn.run, #run").click ->
       runApp()
     $("#new").click ->
       newFileModal()
-    $('#save').click ->
+    $('.btn.save, #save').click ->
       save()

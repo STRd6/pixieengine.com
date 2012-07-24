@@ -1,7 +1,7 @@
 :each filter in filters
   :if filter == activeFilter
-    %a.filter.button.btn.active(href='#')>= filter
+    %button.filter.button.btn.active= filter
   :if filter != activeFilter
-    %a.filter.button.btn(href='#')>= filter
+    %button.filter.button.btn= filter
 
 

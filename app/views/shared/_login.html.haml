@@ -21,7 +21,7 @@
         - user_links.each do |text, url|
           %li= link_to(text, url)
   - else
-    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in", :class => "button complement" }
+    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in", :class => "btn button complement" }
 
 - content_for :javascript do
   :coffeescript

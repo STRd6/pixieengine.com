@@ -3,7 +3,7 @@
     :if current_user_id && current_user_id == owner_id
       My
     Projects
-  %a.button.complement(href='/projects/new') New Project
-  %a.button.complement(href='/projects?filter=tutorials') Tutorials
+  %a.button.btn.complement(href='/projects/new') New Project
+  %a.button.btn.complement(href='/projects?filter=tutorials') Tutorials
 
 
