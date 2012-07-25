@@ -5,7 +5,7 @@
       %nav.top.actions.btn-toolbar(style='margin-top:0')
         - if demo? || has_access?
           .btn-group
-            %button.btn.save(style='margin-right:0') Save
+            %button.btn.save(style='margin-right:-1px') Save
             %button.btn.dropdown-toggle(data-toggle='dropdown')
               %span.caret
             %ul.dropdown-menu
@@ -23,7 +23,7 @@
             %button.btn#new New
 
         .btn-group
-          %button.btn.run(style='margin-right:0') Run
+          %button.btn.run(style='margin-right:-1px') Run
           %button.btn.dropdown-toggle(data-toggle='dropdown')>
             %span.caret
           %ul.dropdown-menu

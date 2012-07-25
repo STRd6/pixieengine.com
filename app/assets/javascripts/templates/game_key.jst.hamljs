@@ -1,0 +1,5 @@
+#game_key_template.template
+  %dl.keyboard_mappings
+    .left_col
+      %dt!= keys
+    %dd= action

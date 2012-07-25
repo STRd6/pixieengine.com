@@ -10,7 +10,6 @@
   a.button
     +bounds(250px, 75px)
     +box-sizing(border-box)
-    +background(linear-gradient(color-stops(#fefeff, #f5fcff 33%, #D2EEFF)))
 
     font-size: 200%
     padding-top: 0.8em
@@ -72,8 +71,6 @@ form
 
 label, input, textarea
   font-family: $normal_font
-  font-size: 12px
-  letter-spacing: 0.5px
 
 label
   display: block
@@ -92,33 +89,8 @@ label
     h1, h2, h3, h4, h5, h6, input
       display: inline
 
-input[disabled]
-  background-color: #ccc
-
-input[type=text], input[type=password], input[type=number], input[type=file], textarea
-  +border-radius(2px)
-  +box-sizing(border-box)
-
-  padding: 5px
-
-  &:focus
-    border-width: 1px
-    border-color: $pixie_primary
-
 input[type=text], input[type=password], input[type=number], textarea
-  +box-shadow(#888 1px 1px 1px 0px inset)
-
-  border: 1px solid $light_gray
-  display: block
   width: 100%
-
-input[type=radio]
-  margin-right: 0.5em
-
-input[type=file]
-  color: $light_text
-  margin-top: 0.5em
-  padding: 0
 
 textarea
   height: 150px

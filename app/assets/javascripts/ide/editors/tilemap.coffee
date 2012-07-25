@@ -4,10 +4,13 @@ window.createTilemapEditor = (options, file) ->
 
   panel.find('.tile_editor, .pixie').remove()
 
+  data = {}
+
   try
-    data = JSON.parse(contents)
+    data = JSON.parse(contents) if contents
   catch e
-    ;
+    console?.warn? e
+    console?.warn? "Occurred in #{contents}"
 
   editorOptions = $.extend editorOptions,
     data: data

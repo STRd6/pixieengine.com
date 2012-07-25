@@ -83,6 +83,7 @@ GEM
       backbone-source
       jquery-source
       underscore-source
+    bootstrap-sass (2.0.4.0)
     builder (3.0.0)
     capistrano (2.8.0)
       highline
@@ -152,8 +153,6 @@ GEM
     jquery-image_reader (0.1.1)
       jquery-source
     jquery-source (1.7.1)
-    jquery-tmpl-rails (1.1.0)
-      rails (>= 3.1.0)
     json (1.7.3)
     json_pure (1.6.6)
     kgio (2.6.0)
@@ -303,6 +302,7 @@ DEPENDENCIES
   bluecloth
   bone_tree!
   boner
+  bootstrap-sass (~> 2.0.4.0)
   capistrano
   coffee-filter
   coffee-rails (~> 3.2.1)
@@ -322,7 +322,6 @@ DEPENDENCIES
   jasmine-headless-webkit
   jasmine-spec-extras
   jquery-image_reader
-  jquery-tmpl-rails
   json
   mail
   mocha

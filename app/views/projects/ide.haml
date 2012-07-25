@@ -19,7 +19,6 @@
 = render :partial => "tips"
 = render :partial => "export_modal"
 = render :partial => "new_file_modal"
-= render :partial => "shared/hotkeys"
 = render :partial => "edit_form"
 
 - content_for :javascript do
@@ -87,14 +86,22 @@
         "You have some unsaved changes, if you leave now you will lose your work."
 
     window.loadProjectConfig = ->
+      window.projectConfig = {}
+
+      contents = tree.getFile('pixie.json')?.get('contents')
+
       try
-        window.projectConfig = JSON.parse(tree.getFile('pixie.json').get('contents'))
+        if contents
+          window.projectConfig = JSON.parse(contents)
+        else
+          console?.warn? "No 'pixie.json' configuration file detected"
       catch e
-        console.warn?(e)
-        window.projectConfig = {}
+        console?.warn? e
+        console?.warn? "Occurred in \#{contents}"
       finally
         # Merge in default configs
         window.projectConfig = $.extend(true, {}, DEFAULT_CONFIG, window.projectConfig)
+
     loadProjectConfig()
 
     # Autosave hack

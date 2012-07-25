@@ -17,7 +17,7 @@
 %script#song_template.template(type="text/x-jQuery-tmpl")
   %li.song(data-id="${id}" title="${title}")
     .title ${title}
-    .duration ${durationFormat(duration)}
+    .duration ${durationformat(duration)}
 
 - content_for :javascript do
   :coffeescript
@@ -73,7 +73,7 @@
 
         entries = processSearchResults(result.feed.entry)
 
-        $("#song_template").tmpl(entries).appendTo($("#search_results .songs").empty())
+        $(JST["templates/jukebox"](entries)).appendTo($("#search_results .songs").empty())
 
         if !player || player.state == -1
           nextSong()

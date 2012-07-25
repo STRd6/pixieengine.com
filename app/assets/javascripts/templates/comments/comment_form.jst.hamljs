@@ -1,0 +1,12 @@
+.comment
+  :if current_user
+    = avatar_link
+  :if !current_user
+    %img(src='avatars/thumb/missing.png')
+  %p!= text
+  %p.attribution
+    :if current_user
+      %span.name= user_link
+    :if !current_user
+      %span.name You
+    %span.time Just moments ago

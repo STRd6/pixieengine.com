@@ -1,3 +1,50 @@
+#= require_tree ../templates/files
+
+# Hack to enable us to remove jQuery.tmpl. hamljs was having trouble
+# dealing with template whitespace preservation
+
+scriptTemplate = (locals) ->
+  """
+    #{locals.className} = (I={}) ->
+      # Set some default properties
+      Object.reverseMerge I,
+        color: "blue"
+        height: 32
+        width: 32
+        # sprite: "block" # Use the name of a sprite in the images folder
+
+      # Inherit from game object
+      self = GameObject(I)
+
+      # Add events and methods here
+      self.bind "update", ->
+        # Add update method behavior
+
+      # We must always return self as the last line
+      return self
+  """
+
+testTemplate = (locals) ->
+  """
+    module '#{locals.className}'
+
+    test "testing for equality", ->
+      one = 1
+
+      # Test for equality of two objects
+      equals one, 1
+
+    test "testing boolean values", ->
+      someFunction = ->
+        return true
+
+      # Test if someFunction returns true
+      ok someFunction()
+
+    # Clear out the module
+    module()
+  """
+
 window.renameFile = (file, oldPath) ->
   docSelector = file.get('docSelector')
   name = file.name()
@@ -131,7 +178,11 @@ window.newFileNode = (inputData) ->
 
   if template
     inputData.className = name.withoutExtension().capitalize().camelize()
-    inputData.contents ||= $("#file_templates .#{template}").tmpl(inputData).text()
+
+    if template is 'script'
+      inputData.contents ||= scriptTemplate(inputData)
+    else if template is 'test'
+      inputData.contents ||= testTemplate(inputData)
 
   # TODO remove global file tree reference. Pass it to the function instead
   file = tree.add inputData.path, inputData
@@ -224,7 +275,7 @@ $("#new_file_modal button.choice").click (event) ->
   fields = $("#new_file_modal .fields").empty()
 
   for name, value of $(this).data('fields')
-    $("#new_file_modal .field.template").tmpl(
+    $(JST["templates/files/field"]
       name: name
       inputType: if $.isNumeric(value) then 'number' else 'text'
       value: value

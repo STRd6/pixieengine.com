@@ -12,7 +12,6 @@
 #= require jquery.form
 #= require jquery.scrollTo-min
 #= require jquery.hotkeys
-#= require jquery.tmpl.min
 #= require jquery.live_edit
 #= require jquery.drop_image_reader
 #= require jquery.paste_image_reader
@@ -44,7 +43,6 @@
 #= require base64
 #= require command_stack
 #= require grid_gen
-#= require hotkeys
 #= require uuid
 #= require jqcolor
 #= require color
@@ -52,3 +50,5 @@
 #= require coffee-script
 
 #= require chat
+
+#= require templates/comments/comment_form

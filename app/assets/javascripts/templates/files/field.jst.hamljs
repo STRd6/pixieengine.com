@@ -1,0 +1,4 @@
+.field
+  %label
+    = name
+    %input(type="#{inputType}" name="options[#{name}]" title="#{name}" value="#{value}")

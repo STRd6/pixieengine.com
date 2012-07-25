@@ -1,5 +1,21 @@
 #= require templates/editors/entity
 
+entityClassTemplate = (locals) ->
+  """
+    # HEY LISTEN!
+    # This file is auto-generated, so editing it directly is a bad idea.
+    # Modify the entity that generated it instead!
+    #{locals.className} = (I={}) ->
+      Object.reverseMerge I, #{locals.entityData}
+
+      self = #{locals.parentClass}(I)
+
+    #{locals.code}
+
+      return self
+  """
+
+
 $ ->
   window.entities = new Pixie.Editor.Tile.Models.EntityList()
 
@@ -38,6 +54,7 @@ window.createEntityEditor = (options, file) ->
     data = JSON.parse(contents) or defaults
   catch e
     console?.warn? e
+    console?.warn? "Occurred in #{contents}"
     data = defaults
 
   entityEditor = $(JST["templates/editors/entity"]()).appendTo(panel)
@@ -82,23 +99,23 @@ window.createEntityEditor = (options, file) ->
     .join("\n")
 
     if entityData.class
-      entitySrc = $("#file_templates .entity_class.template").tmpl(
+      entitySrc = entityClassTemplate
         className: entityData.class
         parentClass: entityData.parentClass || "GameObject"
         code: indentedCode
         entityData: indentedData
-      ).text()
 
       hotSwap(entitySrc, "coffee")
 
       # TODO Handle file move when renaming entity
       newFileNode
-        type: "entity"
         path: "#{projectConfig.directories.source}/_#{name}.coffee"
         contents: entitySrc
         forceSave: true
 
     entityEditor.trigger "clean"
+
+    debugger
 
     file.set
       contents: dataString

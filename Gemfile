@@ -4,7 +4,6 @@ gem 'rails', '3.2.6'
 
 group :assets do
   gem 'compass-rails'
-  gem 'jquery-tmpl-rails'
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'coffee-script-source', '~> 1.2.0'
@@ -22,6 +21,7 @@ gem 'backbone-source'
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem 'boner'
+gem 'bootstrap-sass', '~> 2.0.4.0'
 gem "capistrano"
 gem "coffee-filter"
 gem 'cornerstone-source'

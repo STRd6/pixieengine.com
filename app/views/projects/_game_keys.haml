@@ -1,11 +1,5 @@
 - origin = Rails.env.development? ? 'http://127.0.0.1:3000' : 'http://games.pixieengine.com'
 
-#game_key_template.template
-  %dl.keyboard_mappings
-    .left_col
-      %dt {{html keys}}
-    %dd ${action}
-
 #game_keys_modal.modal
   %h2 Controls
   .game_controls
@@ -29,9 +23,8 @@
         switch type
           when 'controls'
             for action, keys of data
-              $("#game_key_template")
-              .tmpl(action: action, keys: [].concat(keys).join(" <em>or</em>"))
-              .appendTo(controls)
+              $(JST["templates/game_key"](action: action, keys: [].concat(keys).join(" <em>or</em>"))
+              ).appendTo(controls)
 
       , false
 

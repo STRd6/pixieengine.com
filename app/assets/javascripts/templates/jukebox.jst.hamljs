@@ -1,0 +1,3 @@
+%li.song(data-id="#{id}" title="#{title}")
+  .title= title
+  .duration= duration

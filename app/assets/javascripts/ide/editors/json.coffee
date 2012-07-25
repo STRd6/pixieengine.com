@@ -10,11 +10,13 @@ window.createJsonEditor = (options, file) ->
   panel.find('form').hide()
   panel.find('.editor').remove()
 
+  data = {}
+
   try
-    data = JSON.parse(contents) || {}
+    data = JSON.parse(contents) if contents
   catch e
     console?.warn? e
-    data = {}
+    console?.warn? "Occurred in #{contents}"
 
   jsonEditor = $(JST["templates/editors/json"]()).appendTo(panel)
 
