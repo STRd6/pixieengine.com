@@ -3,16 +3,11 @@
 
 /* TODO: Move these global styles out and include pixie.sass in screen.sass
 body#fullscreen
-  margin-top: 0
-  padding: 0
-  padding-top: 2.5em
-
   & > .content
     +box-sizing(border-box)
 
     background: none
     border: none
-    padding: 10px 0 0 0
 
 .editor.pixie
   background-image: url(/assets/editor_textured_background.png)
@@ -34,8 +29,8 @@ html
 
     height: 100%
 
-    padding-left: $sidebar_left + $margin
-    padding-right: $sidebar_right + $margin
+    padding-left: $sidebar_left
+    padding-right: $sidebar_right
     padding-top: 34px
 
     position: relative
@@ -217,6 +212,3 @@ html
 
   input[type="button"]
     margin-top: 10px
-
-footer
-  display: none
