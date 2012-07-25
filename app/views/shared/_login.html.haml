@@ -1,16 +1,12 @@
-.login_link
+%ul.nav.pull-right
   - if current_user
-    %a.static-application_add.new_project(href="#{main_app.new_project_path}" eventLabel="new project icon" title="New Project")
-    %span.vertical_rule
-    %span.log_out
-      = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
-      %span.user_name
-        = current_user.display_name
-
-      %span.login_arrow
-
-    .user_drop_down
-      %ul
+    %li.divider-vertical
+    %li.dropdown
+      %a.dropdown-toggle(href="#" data-toggle='dropdown')
+        /= image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
+        =current_user.display_name
+        %b.caret
+      %ul.dropdown-menu
         :ruby
           user_links = [
             ['My Projects', main_app.projects_path(:filter => 'own')],
@@ -20,8 +16,9 @@
           ]
         - user_links.each do |text, url|
           %li= link_to(text, url)
+
   - else
-    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in", :class => "btn button complement" }
+    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
 
 - content_for :javascript do
   :coffeescript

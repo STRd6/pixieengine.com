@@ -1,26 +1,29 @@
-%header(eventCategory="Header")
+%header.navbar.navbar-fixed-top(eventCategory="Header")
   #flashes
     - flash.each do |key, msg|
       %div{ :class => key }= msg
 
-  .content
-    = link_to '', main_app.root_path, :class => "logo", :eventLabel => "logo"
-
-    %nav.top_bar
+  .navbar-inner
+    .container
+      / TODO get logo back
+      = link_to 'Pixie', root_path, :class => 'brand', :eventLabel => 'logo'
       :ruby
         nav_links = [
           ['Pixel Editor', new_sprite_path],
           ['Gallery', sprites_path],
           ['Projects', projects_path],
         ]
-      - nav_links.each do |text, url|
-        = link_to_unless_current(text, url) do |link|
-          %span.active #{link}
+      %ul.nav
+        - nav_links.each do |text, url|
+          %li
+            = link_to_unless_current(text, url) do |link|
+              %li.active
+                %a(href='#')= link
+
+      = render :partial => "/shared/login"
 
     %h2.blurb
       The online game development toolkit
-
-    = render :partial => "/shared/login"
 
 - if @show_bulb
   .bulb-sprite

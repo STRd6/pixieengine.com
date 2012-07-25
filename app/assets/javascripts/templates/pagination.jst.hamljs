@@ -2,22 +2,29 @@
   %img.spinner(src='/assets/ajax-loader.gif')
   Loading...
 :if total > 1
-  :if prev
-    %a.prev(href='#') « Previous
-  :if !prev
-    %span.disabled.previous_page « Previous
+  %ul
+    :if prev
+      %li
+        %a.prev(href='#') « Previous
+    :if !prev
+      %li.disabled
+        %a.previous_page(href='#') « Previous
 
-  :each value in range
-    :if page == value
-      %em.current= page
-    :if page != value
-      :if value == '...'
-        %span.gap ...
-      :if value != '...'
-        %a.page(href='#' data-page="#{value}")= value
+    :each value in range
+      :if page == value
+        %li.active
+          %a(href='#')= page
+      :if page != value
+        :if value == '...'
+          %li.disabled
+            %a(href='#') ...
+        :if value != '...'
+          %li
+            %a.page(href='#' data-page="#{value}")= value
 
-  :if next
-    %a.next(href='#') Next »
-  :if !next
-    %span.disabled.next_page Next »
-
+    :if next
+      %li
+        %a.next(href='#') Next »
+    :if !next
+      %li.disabled
+        %a.next_page(href='#') Next »

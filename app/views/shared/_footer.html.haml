@@ -1,24 +1,26 @@
-%footer
-  .content
-    &copy; 2011 STRd6
+%footer.navbar.navbar-fixed-bottom
+  .navbar-inner
+    .container
+      %ul.nav
+        %li
+          %a(href='#') &copy; 2011 STRd6
+        %li.vertical-divider
+        %li= link_to "Contact Us", main_app.contact_us_path
+        %li= link_to "Products and Services", main_app.products_and_services_path
+        %li= link_to "Privacy Policy", main_app.privacy_policy_path
 
-    %ul.inline
-      %li= link_to "Contact Us", main_app.contact_us_path
-      %li= link_to "Products and Services", main_app.products_and_services_path
-      %li= link_to "Privacy Policy", main_app.privacy_policy_path
+    - if @has_reg_popup
+      = render :partial => 'shared/register_modal'
+    = render :partial => "/shared/feedback"
+    = render :partial => "/shared/chat"
+    = render :partial => "/shared/hotkeys"
 
-  - if @has_reg_popup
-    = render :partial => 'shared/register_modal'
-  = render :partial => "/shared/feedback"
-  = render :partial => "/shared/chat"
-  = render :partial => "/shared/hotkeys"
+  = render :partial => "/shared/javascripts"
 
-= render :partial => "/shared/javascripts"
-
-- if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
-  = render :partial => "/shared/conversion"
-  - content_for :javascript do
-    :javascript
-      $(function() {
-        trackPageview("/event/registered");
-      });
+  - if @registered || (flash[:notice] == UsersController::REGISTERED_FLASH)
+    = render :partial => "/shared/conversion"
+    - content_for :javascript do
+      :javascript
+        $(function() {
+          trackPageview("/event/registered");
+        });

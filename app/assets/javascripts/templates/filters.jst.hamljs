@@ -1,7 +1,7 @@
-:each filter in filters
-  :if filter == activeFilter
-    %button.filter.button.btn.active= filter
-  :if filter != activeFilter
-    %button.filter.button.btn= filter
-
-
+:if filters.length
+  .btn-group
+    :each filter in filters
+      :if filter == activeFilter
+        %button.filter.button.btn.active= filter
+      :if filter != activeFilter
+        %button.filter.button.btn= filter

@@ -12,7 +12,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
   {Models, Views} = Pixie
 
   class Sprites.Gallery extends Pixie.View
-    el: '.sprites'
+    el: '.sprites_gallery'
 
     initialize: ->
       super
@@ -28,12 +28,12 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       searchable = new Views.Searchable
         collection: @collection
 
-      @el.append($(JST['templates/sprites/header'](@collection.pageInfo())))
-      @el.append(pages.render().el)
+      @$('.sprites').before($(JST['templates/sprites/header'](@collection.pageInfo())))
+      @$('.sprites').before(pages.render().el)
 
       unless @options.profile
         $('.header h2').remove()
-        @el.append(searchable.render().el)
+        @$('.sprites').before(searchable.render().el)
 
       @collection.bind 'reset', (collection) =>
         if @options.profile
@@ -46,5 +46,6 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
     addSprite: (sprite) =>
       spriteView = new Sprites.Sprite({ model: sprite })
-      @el.append(spriteView.render().el)
+      @$('.sprites').append(spriteView.render().el)
+
 
