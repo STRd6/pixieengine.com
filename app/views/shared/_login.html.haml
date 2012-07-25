@@ -16,12 +16,19 @@
           ]
         - user_links.each do |text, url|
           %li= link_to(text, url)
+    %li.divider-vertical
+    %li
+      %button.btn.btn-primary.new_project(title='Create a new project')
+        %i.icon-plus-sign.icon-white
 
   - else
     = link_to "Log in or sign up", sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
 
 - content_for :javascript do
   :coffeescript
+    $('.new_project').on 'click', ->
+      window.location = '/projects/new'
+
     $('.new_project').tipsy
       gravity: 'n'
       opacity: 1

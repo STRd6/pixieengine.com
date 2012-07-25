@@ -32,10 +32,18 @@ body#fullscreen
     position: relative
 
     .cursor_info
+      +border-radius(4px)
+      +box-shadow(rgba(0, 0, 0, 0.05) 0 1px 1px inset)
+
       bottom: 0
       font-size: 12px
       left: $sidebar_left + $margin
       position: absolute
+      padding: 4px
+      margin-bottom: 10px
+      background-color: whiteSmoke
+      border: 1px solid #EEE
+      border: 1px solid rgba(0, 0, 0, 0.1)
 
   .module.left
     +border-radius(0)

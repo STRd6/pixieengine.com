@@ -155,7 +155,7 @@
       row = Math.floor(local.y / I.pixelHeight)
       col = Math.floor(local.x / I.pixelWidth)
 
-      cursorInfo.text("#{col}, #{row}")
+      cursorInfo.text("x: #{col}, y: #{row}")
 
       pixel = self.getPixel(col, row)
       eventType = undefined

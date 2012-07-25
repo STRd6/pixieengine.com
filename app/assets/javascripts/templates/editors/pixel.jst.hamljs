@@ -1,7 +1,7 @@
 .editor.pixie
   .content
     .actions
-    .cursor_info 0, 0
+    .cursor_info x: 0, y: 0
     .viewport
       .canvas
     .toolbar.module.left
