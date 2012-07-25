@@ -19,7 +19,6 @@
 #= require jquery.pnotify.min
 #= require jquery.property_editor
 #= require jquery.serialize_object
-#= require jquery.tagbox
 #= require jquery.take_class
 #= require jquery.tipsy
 #= require jquery.vector_picker

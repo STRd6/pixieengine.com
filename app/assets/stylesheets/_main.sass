@@ -1,14 +1,11 @@
 /* Copyright STRd6 2011
 
-@import main/footer
 @import main/form
 @import main/header
 @import main/heading
 @import main/link
-@import main/list
 
 html
-  background-color: $light_background
   background-image: url(/assets/editor_textured_background.png)
   color: $light_text
   height: 100%
@@ -94,7 +91,6 @@ pre, code
 
 nav.top
   position: absolute
-  top: 0
   left: 100px
 
 .inline
@@ -107,9 +103,13 @@ nav.top
       a, a:hover
         background-color: whiteSmoke
 
-
     a
       background-color: white
       text-decoration: none
 
+footer.navbar
+  margin-bottom: 0
+
+ul
+  list-style: none
 

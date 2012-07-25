@@ -1,7 +1,6 @@
 @import util
 @import partials/base
 @import sprite_sheets
-@import properties_editor
 @import editors/tile2
 @import boner
 
@@ -55,7 +54,7 @@ $inner_margin: 14px
 .static-chrome_webstore, .static-zip, .static-embed
   margin: auto
 
-.static-help, .static-joystick
+.static-help
   +bounds(15px)
 
   display: inline-block
@@ -121,9 +120,6 @@ nav.top.actions .status
     color: #000
     padding-left: 5px
 
-.featured_action
-  text-align: center
-
 .sidebar_container
   +box-sizing(border-box)
 
@@ -180,13 +176,6 @@ nav.top.actions .status
 
       &:hover
         background-color: $hover
-
-
-.treeview ul
-  background-color: transparent
-
-.treeview .hover
-  color: $pixie_primary
 
 #tabs
   +bounds(100%)

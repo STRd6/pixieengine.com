@@ -29,7 +29,7 @@ $tooltip_text: #2E7DB2
   position: absolute
   z-index: 1000
 
-  .static-arrow_right, .static-joystick
+  .static-arrow_right
     display: inline-block
     vertical-align: top
 
@@ -46,9 +46,6 @@ $tooltip_text: #2E7DB2
   .avatar
     display: inline-block
     vertical-align: middle
-
-  i
-    font-style: italic
 
   pre
     +border-radius(4px)
@@ -86,22 +83,6 @@ $tooltip_text: #2E7DB2
     position: absolute
     right: -27px
 
-  .next_arrow
-    +bounds(40px, 50px)
-
-    -webkit-transition: -webkit-transform 0.5s ease-in-out
-
-    @extend .static-next_arrow
-
-    bottom: -35px
-    cursor: pointer
-    display: inline-block
-    position: absolute
-    right: -27px
-
-    &:hover
-      -webkit-transform: translateX(5%)
-
   .close_tip.x
     +bounds(24px, 29px)
 
@@ -114,17 +95,6 @@ $tooltip_text: #2E7DB2
     top: -8px
     z-index: 1001
 
-#logo
-  +bounds(68px, 34px)
-
-  @extend .static-pixie
-
-  margin-left: 4px
-  margin-top: 4px
-  position: absolute
-  top: 0
-  left: 0
-
 #content
   +bounds(100%)
   +box-sizing(border-box)
@@ -132,6 +102,3 @@ $tooltip_text: #2E7DB2
   border: none
   margin: 0
   padding: 0
-
-  .subnav
-    display: none
