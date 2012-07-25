@@ -85,8 +85,6 @@ class UsersController < ApplicationController
     end
 
     @object = User.new
-
-    @hide_dock = true
   end
 
   def create

@@ -1,67 +1,71 @@
-%nav.top.actions.btn-toolbar(style='margin-top:-3px')
-  - if demo? || has_access?
-    .btn-group
-      %button.btn.save(style='margin-right:0') Save
-      %button.btn.dropdown-toggle(data-toggle='dropdown')
-        %span.caret
-      %ul.dropdown-menu
-        %li
-          %a#save(href='#')
-            Save
-            %span.hotkey ctrl+s
-        %li.divider
-        %li
-          %a#build Publish
-        %li
-          %a#export(href='#') Export
+%header.navbar.navbar-fixed-top(eventCategory="Header")
+  .navbar-inner
+    .container
+      = link_to 'Pixie', root_path, :class => 'brand', :eventLabel => 'logo'
+      %nav.top.actions.btn-toolbar(style='margin-top:0')
+        - if demo? || has_access?
+          .btn-group
+            %button.btn.save(style='margin-right:0') Save
+            %button.btn.dropdown-toggle(data-toggle='dropdown')
+              %span.caret
+            %ul.dropdown-menu
+              %li
+                %a#save(href='#')
+                  Save
+                  %span.hotkey ctrl+s
+              %li.divider
+              %li
+                %a#build Publish
+              %li
+                %a#export(href='#') Export
 
-    .btn-group
-      %button.btn#new New
+          .btn-group
+            %button.btn#new New
 
-  .btn-group
-    %button.btn.run(style='margin-right:0') Run
-    %button.btn.dropdown-toggle(data-toggle='dropdown')>
-      %span.caret
-    %ul.dropdown-menu
-      %li
-        %a#run(href='#')
-          Run
-          %span.hotkey f5
-      %li
-        %a#test(href='#')
-          Test
-          %span.hotkey f6
-      %li.divider
-      %li
-        %a#console(href='#') Console
+        .btn-group
+          %button.btn.run(style='margin-right:0') Run
+          %button.btn.dropdown-toggle(data-toggle='dropdown')>
+            %span.caret
+          %ul.dropdown-menu
+            %li
+              %a#run(href='#')
+                Run
+                %span.hotkey f5
+            %li
+              %a#test(href='#')
+                Test
+                %span.hotkey f6
+            %li.divider
+            %li
+              %a#console(href='#') Console
 
-  .btn-group
-    %a.btn.dropdown-toggle(data-toggle='dropdown' href='#')
-      Actions
-      %span.caret
-    %ul.dropdown-menu
-      %li
-        %a#fork Clone this project
-      - if demo? || has_access?
-        %li
-          %a#update_libs Update game libraries
+        .btn-group
+          %a.btn.dropdown-toggle(data-toggle='dropdown' href='#')
+            Actions
+            %span.caret
+          %ul.dropdown-menu
+            %li
+              %a#fork Clone this project
+            - if demo? || has_access?
+              %li
+                %a#update_libs Update game libraries
 
-  - if current_user
-    - if current_user.help_tips
-      .btn-group
-        %button.btn#help>
-          %span.static-help(alt="Help")
-          Help
-  - else
-    .btn-group
-      %button.btn#help>
-        %span.static-help(alt="Help")
-        Help
+        - if current_user
+          - if current_user.help_tips
+            .btn-group
+              %button.btn#help>
+                %span.static-help(alt="Help")
+                Help
+        - else
+          .btn-group
+            %button.btn#help>
+              %span.static-help(alt="Help")
+              Help
 
-  .status
-    %label.inline
-      %h4 What are you working on?
-      %input.message(placeholder="message" type="text")
+        .status
+          %label.inline
+            %h4 What are you working on?
+            %input.message(placeholder="message" type="text")
 
 - content_for :javascript do
   :coffeescript
