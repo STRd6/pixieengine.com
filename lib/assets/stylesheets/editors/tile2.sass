@@ -6,10 +6,6 @@ $top_bar_height: 21px
 $bottom_bar_height: 0px
 $module_margin: 12px
 
-$button_font: #333
-$button_gradient_start: #fefeff
-$button_gradient_end: desaturate(#a0d5f8, 70%)
-
 // this is used to prevent the bug where you can't scroll
 // to the top when the editor gets too tall or the screen
 // is too small
@@ -28,34 +24,12 @@ $button_gradient_end: desaturate(#a0d5f8, 70%)
 
     border-top: 1px solid rgba(255, 255, 255, 0.4)
 
+  .tile_actions
+    .btn
+      margin-right: 0
+
   .entities
     margin-top: 1em
-
-  button, a.button
-    +background(linear-gradient(color-stops($button_gradient_start, $button_gradient_end)))
-
-    border: 1px solid #ccc
-    color: #333
-
-    &:hover
-      +background(linear-gradient(color-stops($button_gradient_start, darken($button_gradient_end, 5%))))
-
-      color: $button_font
-      text-decoration: none
-
-    &:active, &.active
-      +text-shadow(rgba(0, 0, 0, 0.25) 0 1px 0)
-
-      background: #999
-      color: white
-
-    &[disabled]
-      +text-shadow(none)
-
-      background: #CCEBFF
-      border-color: #DBF1FF
-      color: #75C1F0
-      cursor: default
 
   .content
     padding-bottom: $bottom_bar_height
@@ -91,7 +65,6 @@ $button_gradient_end: desaturate(#a0d5f8, 70%)
       left: 10px
       position: absolute
       top: 10px
-
 
       button
         margin: 1px

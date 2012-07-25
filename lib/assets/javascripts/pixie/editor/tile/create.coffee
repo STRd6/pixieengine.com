@@ -757,6 +757,7 @@ Pixie.Editor.Tile.create = (options) ->
   $.extend tileEditor,
     addAction: (action) ->
       actionButton = $ "<button/>",
+        class: 'btn'
         text: action.name
         click: action.perform
 

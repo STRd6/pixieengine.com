@@ -12,12 +12,12 @@
     .module.right
       .component
         %h3 Layers
-        %button.new New Layer
+        %button.btn.new New Layer
         .layer_select
       .component(style='display:none;')
         %h3 Properties
         %table.prop_editor
-        %button.prop_save Save Properties
+        %button.btn.prop_save Save Properties
       .component
         %h3 Saved Selections
         .saved_selections
@@ -25,10 +25,9 @@
         %h3
           Entities
         .tile_actions
-          %button.new_tile
-            New
-          %button.delete_tile
-            Delete
+          .btn-group
+            %button.btn.new_tile New
+            %button.btn.delete_tile Delete
         .tiles
 
     .tools.module.left

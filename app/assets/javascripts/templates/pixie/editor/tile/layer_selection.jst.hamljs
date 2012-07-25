@@ -1,4 +1,4 @@
 %h3 Layers
-%button.new New Layer
+%button.btn.new New Layer
 %ul.layers
 %hr
