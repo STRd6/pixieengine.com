@@ -72,6 +72,29 @@
       display: inline-block
       margin: 0
 
+  .spinner_container
+    +border-radius
+
+    display: none
+    background-color: rgba(255, 255, 255, 0.85)
+    width: 100px
+    height: 20px
+    position: absolute
+    top: -10px
+    left: -700px
+    right: 0
+    margin: auto
+    text-align: center
+    padding-bottom: 7px
+    padding-top: 10px
+    z-index: 10
+    border: 1px solid rgba(0, 0, 0, 0.2)
+
+    .spinner
+      vertical-align: middle
+      margin-right: 1em
+      padding-bottom: 5px
+
   .projects, .sprites, .comments
     margin-bottom: 1em
     position: relative
@@ -85,29 +108,6 @@
         margin: 0
         margin-bottom: 0.75em
         margin-left: 1em
-
-    .spinner_container
-      +border-radius
-
-      display: none
-      background-color: rgba(255, 255, 255, 0.85)
-      width: 100px
-      height: 20px
-      position: absolute
-      top: -10px
-      left: -700px
-      right: 0
-      margin: auto
-      text-align: center
-      padding-bottom: 7px
-      padding-top: 10px
-      z-index: 10
-      border: 1px solid rgba(0, 0, 0, 0.2)
-
-      .spinner
-        vertical-align: middle
-        margin-right: 1em
-        padding-bottom: 5px
 
     .actions
       float: right

@@ -9,18 +9,18 @@ $user_drop_down_width: 150px
 footer
   +background(linear-gradient(color-stops($header_gradient_start, $header_gradient_end)))
 
-header
+header.navbar
   .logo
     +bounds(61px, 32px)
     +inline-block
 
-    @extend .static-shadow_logo_small
-
+    background-image: $pixie_logo
     background-repeat: no-repeat
     float: left
     margin: 0
     margin-top: 3px
-    margin-right: 50px
+    margin-right: 20px
+    padding: 0
     position: static
 
     #fullscreen &
