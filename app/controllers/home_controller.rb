@@ -9,7 +9,6 @@ class HomeController < ApplicationController
   end
 
   def survey
-    @hide_dock = true
   end
 
   def jukebox

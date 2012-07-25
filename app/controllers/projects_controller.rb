@@ -9,8 +9,6 @@ class ProjectsController < ApplicationController
 
   before_filter :count_view, :only => [:fullscreen]
 
-  before_filter :hide_dock, :only => [:github_integration, :info, :fullscreen]
-
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
