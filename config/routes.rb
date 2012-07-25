@@ -7,8 +7,6 @@ PixieStrd6Com::Application.routes.draw do
 
   get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
 
-  get "testie" => "tilemaps#new"
-
   get "leads/create" => "leads#create"
 
   resources :projects do
@@ -55,12 +53,6 @@ PixieStrd6Com::Application.routes.draw do
     collection do
       get :active_users
       get :recent
-    end
-  end
-
-  resources :animations do
-    collection do
-      post :download
     end
   end
 
