@@ -9,16 +9,16 @@
       %ul.dropdown-menu
         :ruby
           user_links = [
-            ['My Projects', main_app.projects_path(:filter => 'own')],
-            ['My Profile', main_app.user_path(current_user)],
-            ['Account Settings', main_app.edit_user_path(current_user)],
-            ['Log out', main_app.sign_out_path],
+            ['My Projects', projects_path(:filter => 'own')],
+            ['My Profile', user_path(current_user)],
+            ['Account Settings', edit_user_path(current_user)],
+            ['Log out', sign_out_path],
           ]
         - user_links.each do |text, url|
           %li= link_to(text, url)
 
   - else
-    = link_to "Log in or sign up",  main_app.sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
+    = link_to "Log in or sign up", sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
 
 - content_for :javascript do
   :coffeescript

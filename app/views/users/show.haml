@@ -28,7 +28,7 @@
     .favorite_color(style="background: #{user.favorite_color};")
 
   .projects
-  .sprites
+  .sprites_gallery
 
   - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
     .comments

@@ -32,7 +32,7 @@
     ]
 
   - choices.each do |choice, params, fields|
-    %button.choice{ 'data-params' => params.to_json, 'data-fields' => fields.to_json }= choice
+    %button.btn.choice{ 'data-params' => params.to_json, 'data-fields' => fields.to_json }= choice
 
   .field.template
     %label
@@ -46,6 +46,6 @@
 
     .fields
 
-    %button.create(disabled='disabled') Create
+    %button.btn.create(disabled='disabled') Create
 
 = render :partial => "file_template"

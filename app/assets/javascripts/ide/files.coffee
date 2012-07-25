@@ -187,7 +187,7 @@ window.newFileModal = ->
     onShow: (modal) ->
       $(modal.container).css
         height: 'auto'
-        width: '425px'
+        width: '440px'
 
 window.saveFile = (data) ->
   requireLogin ->
