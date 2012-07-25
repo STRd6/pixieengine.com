@@ -154,10 +154,6 @@ class ApplicationController < ActionController::Base
     @hide_feedback = true
   end
 
-  def hide_dock
-    @hide_dock = true
-  end
-
   def per_page
     40
   end
