@@ -115,8 +115,6 @@ window.createEntityEditor = (options, file) ->
 
     entityEditor.trigger "clean"
 
-    debugger
-
     file.set
       contents: dataString
 

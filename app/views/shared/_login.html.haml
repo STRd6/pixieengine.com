@@ -1,21 +1,32 @@
 %ul.nav.pull-right
   - if current_user
+    /%form.navbar-search(action='')
+    /  %input.search-query(placeholder='Search')
     %li.divider-vertical
     %li.dropdown
       %a.dropdown-toggle(href="#" data-toggle='dropdown')
-        /= image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
         =current_user.display_name
         %b.caret
       %ul.dropdown-menu
         :ruby
           user_links = [
-            ['My Projects', projects_path(:filter => 'own')],
             ['My Profile', user_path(current_user)],
+            ['My Projects', projects_path(:filter => 'own')],
             ['Account Settings', edit_user_path(current_user)],
             ['Log out', sign_out_path],
           ]
         - user_links.each do |text, url|
-          %li= link_to(text, url)
+          -if text == 'My Profile'
+            %li
+              %a(href="#{url}")
+                = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
+                = text
+            %li.divider
+          -elsif text == 'Account Settings'
+            %li= link_to(text, url)
+            %li.divider
+          -else
+            %li= link_to(text, url)
     %li.divider-vertical
     %li
       %button.btn.btn-primary.new_project(title='Create a new project')
