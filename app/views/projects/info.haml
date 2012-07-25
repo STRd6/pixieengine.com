@@ -1,10 +1,13 @@
 %style
   :sass
+    .nav.pull-right
+      margin-top: 12px
+
     strong
       font-weight: bold
 
-    body > .content
-      padding-top: 2em
+    body
+      padding-top: 0
 
     header
       height: 90px
@@ -14,11 +17,12 @@
         display: none
 
       .blurb
-        color: #B0D6EE
-        display: inline-block
-        margin-left: 7em
-        margin-top: -25px
-        vertical-align: middle
+        position: absolute
+        text-align: center
+        left: 0
+        right: 0
+        color: white
+        margin-top: 15px
 
       .content
         height: 100%

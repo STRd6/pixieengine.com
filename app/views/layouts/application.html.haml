@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 %html
-  - experiment "test"
-
   = render :partial => "shared/head"
 
   - body_id = @fullscreen ? "fullscreen" : nil
   %body(id=body_id eventCategory="Page")
-    = render :partial => "shared/header"
+    - if controller.controller_name == 'projects' && controller.action_name == 'info'
+      = render :partial => "landing_header"
+    - else
+      = render :partial => "shared/header"
 
     - event_category = "#{controller.controller_name} #{controller.action_name}"
     .content(eventCategory=event_category)
       = yield
 
-    = render :partial => "shared/footer"
+      = render :partial => "shared/footer"

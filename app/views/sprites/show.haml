@@ -81,16 +81,16 @@
 
 %ul.actions
   %li
-    %a.button(href="#{load_sprite_path(sprite)}")
+    %a.button.btn(href="#{load_sprite_path(sprite)}")
       .static-picture_edit
       Load in Editor
   - if current_user
     %li.avatar
-      %a.button(href="#" data-sprite_id="#{sprite.id}")
+      %a.button.btn(href="#" data-sprite_id="#{sprite.id}")
         .static-status_online
         Set as Avatar
     %li.listMenu.menu.collection
-      %a.button(href="#" data-sprite_id="#{sprite.id}")
+      %a.button.btn(href="#" data-sprite_id="#{sprite.id}")
         .static-photo_add
         Add to Collection
       %ul.round{:style => "display:none;"}
@@ -101,11 +101,11 @@
         %li{ "data-collection_id" => "new" } New Collection
   - if owner_or_admin?
     %li
-      %a.button(href="#{edit_sprite_path(sprite)}")
+      %a.button.btn(href="#{edit_sprite_path(sprite)}")
         .static-table_edit
         Edit Details
     %li
-      %a.button(href="#{sprite_path(sprite)}" data-method="delete")
+      %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")
         .static-cross
         Delete
 
