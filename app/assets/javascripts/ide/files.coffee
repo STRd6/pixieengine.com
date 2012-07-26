@@ -147,7 +147,7 @@ window.openFile = (file) ->
   if ['wav', 'mp3', 'ogg'].include(extension)
     $('.preview source').remove()
     source = "<source src='/#{railsEnv}/projects/#{projectId}/#{path}' type='audio/#{extension}'></source>"
-    $('.preview').append(source).get(0).play()
+    $('audio.preview').append(source).get(0).play()
 
     return
 
