@@ -16,6 +16,7 @@ PixieStrd6Com::Application.routes.draw do
       get :ide
       get :widget
 
+      post :add_member
       post :fork
       post :save_file
       post :rename_file

@@ -1,7 +1,10 @@
-%form#new_file_modal.modal
-  %h3.header New File
+%form#new_file_modal.modal.hide.fade
+  .modal-header
+    %button.close(type='button' data-dismiss="modal") x
+    %h3 New File
 
-  = label_tag "Choose Type"
+  .modal-body
+    = label_tag "Choose Type"
 
   :ruby
     choices = [
@@ -31,14 +34,15 @@
       ],
     ]
 
-  - choices.each do |choice, params, fields|
-    %button.btn.choice{ 'data-params' => params.to_json, 'data-fields' => fields.to_json }= choice
+  .modal-footer
+    - choices.each do |choice, params, fields|
+      %button.btn.choice{ 'data-params' => params.to_json, 'data-fields' => fields.to_json }= choice
 
-  .details{:style => "display: none;"}
-    %label
-      Name
-      = text_field_tag :name, "", {:title => 'Name', :id => nil, :"tip" => 'There is already a file with this name. Files in the same directory must have different names.'}
+    .details{:style => "display: none;"}
+      %label
+        Name
+        = text_field_tag :name, "", {:title => 'Name', :id => nil, :"tip" => 'There is already a file with this name. Files in the same directory must have different names.'}
 
-    .fields
+      .fields
 
-    %button.btn.create(disabled='disabled') Create
+      %button.btn.btn-primary.create(disabled='disabled') Create

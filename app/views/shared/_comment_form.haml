@@ -34,9 +34,18 @@
             type: 'POST'
             dataType: "json"
 
+          currentUser = #{!!current_user}
+
+          if currentUser
+            avatarLink = "<a href='/#{current_user}'><img alt='#{current_user}' class='avatar' src='http://images.pixie.strd6.com/avatars/#{current_user ? current_user.id : -1}/thumb.png'></a>"
+            userLink = "<a href='/#{current_user}'>#{current_user} </a>"
+          else
+            avatarLink = '<img src="avatars/thumb/missing.png"/>'
+            userLink = '<span>Anonymous</span>'
+
           newComment = $(JST['templates/comments/comment_form']
-            avatar_link: "#{avatar_link(current_user)}"
-            user_link: "#{link_to current_user.display_name, current_user}"
+            avatar_link: avatarLink
+            user_link: userLink
             text: commentForm.find('#comment_copy_html').val()
           )
 

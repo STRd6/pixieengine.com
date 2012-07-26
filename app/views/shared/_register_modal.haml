@@ -27,7 +27,6 @@
     function requireLogin(callback) {
       if(!loggedIn) {
         logInCallback = callback;
-        $.modal.close();
         $("#registerModal").modal({
           containerCss: {
             height: 440,
@@ -48,7 +47,6 @@
           dataType: 'json',
           success: function(data) {
             if(data.status == "ok") {
-              $.modal.close();
               loggedIn = true;
               if(registration) {
                 trackPageview("/event/registered");

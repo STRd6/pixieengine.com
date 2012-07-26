@@ -81,8 +81,6 @@ $(".tag .remove").live "click", ->
     tag: tag
 
 $ ->
-  $.modal.defaults.overlayClose = true
-
   makeTag = (tag, spriteId) ->
     tagElem = $("<div class='tag' />")
     tagElem.attr "data-sprite_id", spriteId

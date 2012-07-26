@@ -1,26 +1,28 @@
-#export_modal.modal
-  %h2.header Choose an Export Method
+#export_modal.modal.hide.fade
+  .modal-header
+    %button.close(type='button' data-dismiss="modal") x
+    %h3 Choose an Export Method
 
-  .choice.zip
-    .wrap
-      %h3 Zip File
-    .static-zip
+  .modal-body
+    .choice.zip
+      .wrap
+        %h3 Zip File
+      .static-zip
 
-  .choice.chrome
-    .wrap
-      %h3 Packaged for Chrome Web Store
-    .static-chrome_webstore
+    .choice.chrome
+      .wrap
+        %h3 Packaged for Chrome Web Store
+      .static-chrome_webstore
 
-  .choice.embed
-    .wrap
-      %h3 Embed Code
-    .static-embed
+    .choice.embed
+      .wrap
+        %h3 Embed Code
+      .static-embed
 
 - content_for :javascript do
   :coffeescript
     $("#export").click ->
-      $("#export_modal").modal
-        maxWidth: "auto"
+      $("#export_modal").modal()
 
     $("#export_modal .choice.zip").click ->
       requireLogin ->
@@ -28,7 +30,7 @@
 
         window.location = #{download_project_path(project.id).to_json}
 
-        $.modal.close()
+        $('#export_modal').modal('hide')
 
     $("#export_modal .choice.chrome").click ->
       requireSubscription ->
@@ -36,10 +38,10 @@
 
         window.location = #{download_project_path(project, :chrome => 1).to_json}
 
-        $.modal.close()
+        $('#export_modal').modal('hide')
 
     $("#export_modal .choice.embed").click ->
-      $.modal.close()
+      $('#export_modal').modal('hide')
 
       $("<textarea>",
         val: #{@project.embed_code.to_json}
@@ -47,4 +49,5 @@
           $(this).focus().select()
       ).modal
         onShow: ->
+          # use the bootstrap modal callback here
           $(this.d.container).find("textarea").select()

@@ -62,7 +62,6 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-
   context "a logged in user" do
     setup do
       @user = log_in
@@ -80,6 +79,11 @@ class ProjectsControllerTest < ActionController::TestCase
         @project = Factory :project, :user => @user
 
         @project.save_file("test", "test", @project.user)
+      end
+
+      should "be able to view the project" do
+        get :show, :id => @project.id
+        assert_response :success
       end
 
       should "be able to edit own project" do
