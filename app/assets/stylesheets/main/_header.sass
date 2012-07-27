@@ -2,13 +2,16 @@
   display: inline-block
 
 .project_icon
-  +bounds(22px)
+  +bounds(24px, 18px)
   +inline-block
 
   background-image: $new_project
   background-repeat: no-repeat
 
 header.navbar
+  .new_project
+    margin-bottom: 0
+
   .user_info
     vertical-align: bottom
 
