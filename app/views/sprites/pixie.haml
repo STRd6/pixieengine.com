@@ -18,15 +18,22 @@
 
 #optionsModal{ :style => 'display: none' }
 
-#newCanvasModal{ :style => 'display: none' }
-  %p
-    = label_tag :resize_width, "width"
-    = text_field_tag :resize_width, width, {:title => 'width'}
-  %p
-    = label_tag :resize_height, "height"
-    = text_field_tag :resize_height, height, {:title => 'height'}
+#newCanvasModal.modal.fade
+  .modal-header
+    %button.close(type='button' data-dismiss="modal") &times;
+    %h3 New Image
 
-  = button_to_function "New Canvas", "newCanvas()"
+  .modal-body
+    %label
+      width
+      = text_field_tag :resize_width, width, {:title => 'width'}
+
+    %label
+      height
+      = text_field_tag :resize_height, height, {:title => 'height'}
+
+  .modal-footer
+    = button_to_function "New Canvas", "newCanvas()", :class => 'btn btn-primary'
 
 - content_for :javascript do
   :coffeescript

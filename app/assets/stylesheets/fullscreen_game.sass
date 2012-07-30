@@ -2,15 +2,13 @@
   $action_bar_height: 28px
 
   &.dark
-    background-color: #00010D
-    background-image: none
+    body
+      background-color: #00010D
+      background-image: none
 
     // Hide dealies when lights are out
     #feedback, footer, ul.actions_bar, header
       display: none
-
-    body > .content
-      background-color: #00010D
 
   &.light body > .content
     background-color: transparent
@@ -22,12 +20,14 @@
   body
     overflow: hidden
 
-  footer
-    .content
+    footer
       display: none
 
-  .bulb
-    z-index: 25
+  .bulb, .static-on, .static-off
+    position: absolute
+    right: 5px
+    top: 5px
+    z-index: 5000
 
   ul.actions_bar
     +background(linear-gradient(color-stops(#7F7F7F, #666)))

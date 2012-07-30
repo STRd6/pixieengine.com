@@ -1,13 +1,11 @@
 @import partials/base
 @import util
 
-/* TODO: Move these global styles out and include pixie.sass in screen.sass
-body#fullscreen
-  & > .content
-    +box-sizing(border-box)
-
-    background: none
-    border: none
+header.navbar-fixed-top
+  .navbar-inner
+    .container
+      width: auto
+      margin: 0 10px
 
 .editor.pixie
   padding: 0
@@ -212,8 +210,4 @@ body#fullscreen
       bottom: -20px
 
 #newCanvasModal
-  #resize_width, #resize_height
-    float: right
-
-  input[type="button"]
-    margin-top: 10px
+  width: 400px
