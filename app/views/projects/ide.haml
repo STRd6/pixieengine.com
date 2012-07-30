@@ -48,7 +48,7 @@
 
         window.location = #{download_user_project_path(project.user, project, :chrome => 1).to_json}
 
-        $.modal.close()
+        $('.modal').modal('hide')
 
     window.runCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
@@ -128,7 +128,7 @@
 
       $("#edit_project_form").bind
         "ajax:after": ->
-          $.modal.close()
+          $('.modal').modal('hide')
         "ajax:before": ->
           $(".sidebar .project_name .name").text($("#project_title").val())
       $(".sidebar .edit").click ->

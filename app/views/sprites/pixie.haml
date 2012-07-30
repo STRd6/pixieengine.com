@@ -53,7 +53,7 @@
             width: 200
           ,
           onClose: ->
-            $.modal.close()
+            $('.modal').modal('hide')
             $("#newCanvasModal").attr("style", "display: none")
 
       window.newCanvas = ->

@@ -234,7 +234,7 @@ window.newFileModal = ->
   $("#new_file_modal").modal
     onClose: ->
       $('#new_file_modal input[name="name"]').tipsy 'hide'
-      $.modal.close()
+      $('.modal').modal('hide')
     onShow: (modal) ->
       $(modal.container).css
         height: 'auto'
@@ -304,7 +304,7 @@ $("#new_file_modal button.create").click (event) ->
   # Don't close the modal unless we've created a file.
   # Fixes bug where the modal closes with a blank name.
   if file
-    $.modal.close()
+    $('.modal').modal('hide')
 
 $("#new_file_modal input").keydown (event) ->
   if event.which is 13

@@ -106,7 +106,7 @@ $.fn.modalPixelEditor = (options) ->
           input.val(imageData).trigger('blur')
           previewImage.attr("src", imageData)
 
-          $.modal.close()
+          $('.modal').modal('hide')
 
           #TODO select props editor
           window.currentComponent = null

@@ -136,7 +136,7 @@
             $form.find("input[name=sprite_id]").val spriteId
           success: (data) ->
             if data.status == "ok"
-              $.modal.close()
+              $('.modal').modal('hide')
               newCollectionCallback data.title, data.id
             else
               errorExplanation = form.find(".errorExplanation")
