@@ -8,49 +8,46 @@
 #= require templates/projects/filtered_header
 #= require templates/pagination
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Projects ||= {}
+namespace "Pixie.Views.Projects", (Projects) ->
+  class Pixie.Views.Projects.FilteredGallery extends Backbone.View
+    el: ".gallery"
 
-class Pixie.Views.Projects.FilteredGallery extends Backbone.View
-  el: ".gallery"
+    initialize: ->
+      @collection = new Pixie.Models.ProjectsCollection
 
-  initialize: ->
-    @collection = new Pixie.Models.ProjectsCollection
+      pages = new Pixie.Views.Paginated
+        collection: @collection
 
-    pages = new Pixie.Views.Paginated
-      collection: @collection
+      filters = new Pixie.Views.Filtered
+        collection: @collection
+        filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
+        activeFilter: 'Featured'
 
-    filters = new Pixie.Views.Filtered
-      collection: @collection
-      filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
-      activeFilter: 'Featured'
+      searchable = new Pixie.Views.Searchable
+        collection: @collection
 
-    searchable = new Pixie.Views.Searchable
-      collection: @collection
+      $(@el).append $ '<ul class="thumbnails items"></ul>'
+      @$('.items').before(filters.render().el)
 
-    $(@el).append $ '<div class="items"></div>'
-    $(@el).find('.items').before(filters.render().el)
+      @$('.items').before(searchable.render().el)
 
-    $(@el).find('.items').before(searchable.render().el)
+      @collection.bind 'reset', (projects) =>
+        @$('.items').empty()
+        @$('.items').before(pages.render().el)
 
-    @collection.bind 'reset', (projects) =>
-      $(@el).find('.items').empty()
-      $(@el).find('.items').before(pages.render().el)
+        @$('.filter').filter( ->
+          $(this).text().toLowerCase() == @filter
+        ).takeClass('active')
 
-      $(@el).find('.filter').filter( ->
-        $(this).text().toLowerCase() == @filter
-      ).takeClass('active')
+        projects.each(@addProject)
 
-      projects.each(@addProject)
+        @$('.filter').filter( ->
+          return $(this).text().toLowerCase() == 'my projects'
+        ).hide() unless projects.pageInfo().current_user_id
 
-      $(@el).find('.filter').filter( ->
-        return $(this).text().toLowerCase() == 'my projects'
-      ).hide() unless projects.pageInfo().current_user_id
+        projects.trigger 'afterReset'
 
-      projects.trigger 'afterReset'
-
-  addProject: (project) =>
-    projects = new Pixie.Views.Projects.FilteredProject({ model: project, collection: @collection })
-    $(@el).find('.items').append(projects.render().el)
+    addProject: (project) =>
+      projects = new Pixie.Views.Projects.FilteredProject({ model: project, collection: @collection })
+      @$('.items').append(projects.render().el)
 

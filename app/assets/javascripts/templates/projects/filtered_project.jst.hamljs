@@ -1,9 +1,7 @@
-%h2.title
-  %a(href="/projects/#{id}/ide")= title
-.gloss
-.thumb.fancy
-  %a(href="/projects/#{id}/fullscreen")
-    %img.show(alt="#{title}" src="#{img}" title="#{title}")
-%p.description= description
-
-
+%h3.ellipsis= title
+.thumbnail
+  %img.show(alt="#{title}" src="#{img}" title="#{title}")
+  %p.description.ellipsis= description
+  .actions
+    %a.btn.btn-primary(href="/projects/#{id}/fullscreen") Play
+    %a.btn(href="/projects/#{id}/ide") View Code

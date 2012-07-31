@@ -58,38 +58,18 @@
       float: left
 
   .project
-    +bounds(235px, 172px)
-    +module
-    +inline-block
-
-    margin-bottom: 0.5em
-    margin-right: 0.5em
-    overflow: hidden
-    padding: 1em
+    margin: 6px 12px
     position: relative
 
-    &:nth-child(4n)
-      margin-right: 0
+    .description
+      height: 15px
 
-    .gloss
-      +gloss
+    .actions
+      text-align: right
 
-      display: inline-block
-      position: absolute
-      left: 1em
+    .thumbnail
+      img
+        +bounds(210px, 158px)
 
-    .thumb
-      float: left
-      margin-bottom: 1em
-      margin-right: 1em
-
-      &.fancy
-        img
-          +border-radius(17px)
-          +box-shadow(#8c8c8c 0 4px 6px)
-
-    .title
-      a
-        color: $light_text
-        text-decoration: none
-        white-space: nowrap
+      .btn-primary
+        margin-right: 7px

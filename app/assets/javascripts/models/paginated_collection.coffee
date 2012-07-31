@@ -1,4 +1,3 @@
-
 namespace "Pixie.Models", (Models) ->
   calculateRange = (page, total) ->
     outerWindow = Models.PaginatedCollection.OUTER_WINDOW
