@@ -1,5 +1,3 @@
-# #= require views/paginated
-
 describe "Paginated View", ->
   beforeEach ->
     @collection = new Backbone.Collection()
@@ -22,5 +20,5 @@ describe "Paginated View", ->
       expect(@view.el).toHaveClass('pagination')
 
     it "should have the correct number of page links", ->
-      # +3 because prev, next, and spinner elements
-      expect(@view.render().el.children().length).toEqual(@collection.pageInfo().range.length + 3)
+      # +2 because prev, next, and spinner elements
+      expect(@view.render().el.find('a').length).toEqual(@collection.pageInfo().range.length + 2)
