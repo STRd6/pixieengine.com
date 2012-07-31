@@ -5,10 +5,10 @@
   %ul
     :if prev
       %li
-        %a.prev(href='#') « Previous
+        %a.previous(href='#') « Previous
     :if !prev
       %li.disabled
-        %a.previous_page(href='#') « Previous
+        %a.previous(href='#') « Previous
 
     :each value in range
       :if page == value
