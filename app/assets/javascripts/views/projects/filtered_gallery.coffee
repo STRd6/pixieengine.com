@@ -32,15 +32,17 @@ namespace "Pixie.Views.Projects", (Projects) ->
       @$('.items').before(filters.render().el, searchable.render().el)
 
       @collection.bind 'reset', (projects) =>
-        @$('.items').empty().before(pages.render().el)
+        paginationEl = $(pages.render().el)
+
+        @$('.items').empty().before(paginationEl)
+
+        paginationEl.toggle(!!paginationEl.find('ul').length)
 
         projects.each(@addProject)
 
         @$('.filter').filter( ->
           return $(this).text().toLowerCase() is 'my projects'
         ).hide() unless projects.pageInfo().current_user_id
-
-        projects.trigger 'afterReset'
 
     addProject: (project) =>
       projects = new Projects.FilteredProject({ model: project, collection: @collection })
