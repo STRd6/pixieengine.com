@@ -1,5 +1,3 @@
-#= require coffee-script.js
-
 describe "Autocomplete model", ->
   beforeEach ->
     @autocomplete = new Pixie.Models.Autocomplete

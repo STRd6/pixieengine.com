@@ -1,6 +1,6 @@
 %h3.ellipsis= title
 .thumbnail
-  %img.show(alt="#{title}" src="#{img}" title="#{title}")
+  %img(alt="#{title}" src="#{img}" title="#{title}")
   %p.description.ellipsis= description
   .actions
     %a.btn.btn-primary(href="/projects/#{id}/fullscreen") Play

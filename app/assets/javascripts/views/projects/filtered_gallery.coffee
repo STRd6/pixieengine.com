@@ -9,45 +9,44 @@
 #= require templates/pagination
 
 namespace "Pixie.Views.Projects", (Projects) ->
-  class Pixie.Views.Projects.FilteredGallery extends Backbone.View
+  {Models, Views} = Pixie
+
+  class Projects.FilteredGallery extends Backbone.View
     el: ".gallery"
 
     initialize: ->
-      @collection = new Pixie.Models.ProjectsCollection
+      @collection = new Models.ProjectsCollection
 
-      pages = new Pixie.Views.Paginated
+      pages = new Views.Paginated
         collection: @collection
 
-      filters = new Pixie.Views.Filtered
+      filters = new Views.Filtered
         collection: @collection
         filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
         activeFilter: 'Featured'
 
-      searchable = new Pixie.Views.Searchable
+      searchable = new Views.Searchable
         collection: @collection
 
       $(@el).append $ '<ul class="thumbnails items"></ul>'
-      @$('.items').before(filters.render().el)
-
-      @$('.items').before(searchable.render().el)
+      @$('.items').before(filters.render().el, searchable.render().el)
 
       @collection.bind 'reset', (projects) =>
-        @$('.items').empty()
-        @$('.items').before(pages.render().el)
+        @$('.items').empty().before(pages.render().el)
 
         @$('.filter').filter( ->
-          $(this).text().toLowerCase() == @filter
+          $(this).text().toLowerCase() is @filter
         ).takeClass('active')
 
         projects.each(@addProject)
 
         @$('.filter').filter( ->
-          return $(this).text().toLowerCase() == 'my projects'
+          return $(this).text().toLowerCase() is 'my projects'
         ).hide() unless projects.pageInfo().current_user_id
 
         projects.trigger 'afterReset'
 
     addProject: (project) =>
-      projects = new Pixie.Views.Projects.FilteredProject({ model: project, collection: @collection })
+      projects = new Projects.FilteredProject({ model: project, collection: @collection })
       @$('.items').append(projects.render().el)
 

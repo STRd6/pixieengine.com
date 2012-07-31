@@ -1,6 +1,3 @@
-#= require underscore
-#= require backbone
-#= require corelib
 #= require models/paginated_collection
 #= require models/person
 

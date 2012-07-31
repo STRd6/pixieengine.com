@@ -5,8 +5,8 @@ namespace "Pixie.Models", (Models) ->
   class Models.ProjectsCollection extends Models.PaginatedCollection
     filterPages: (filter) =>
       # gross
-      filter = 'none' if filter == 'all'
-      filter = 'own' if filter == 'my projects'
+      filter = 'none' if filter is 'all'
+      filter = 'own' if filter is 'my projects'
 
       @page = 1
       @params.page = @page
