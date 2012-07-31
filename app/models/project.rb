@@ -104,7 +104,7 @@ class Project < ActiveRecord::Base
       :title => title,
       :user_id => user_id,
       :owner_name => user.display_name,
-      :img => image.url(:thumb)
+      :img => image.url(:original)
     }
   end
 
