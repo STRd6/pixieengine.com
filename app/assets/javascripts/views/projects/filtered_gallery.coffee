@@ -2,10 +2,10 @@
 #= require views/projects/filtered_project
 #= require views/filtered
 #= require views/searchable
+
 #= require models/projects_collection
 #= require models/paginated_collection
 
-#= require templates/projects/filtered_header
 #= require templates/pagination
 
 namespace "Pixie.Views.Projects", (Projects) ->
@@ -33,10 +33,6 @@ namespace "Pixie.Views.Projects", (Projects) ->
 
       @collection.bind 'reset', (projects) =>
         @$('.items').empty().before(pages.render().el)
-
-        @$('.filter').filter( ->
-          $(this).text().toLowerCase() is @filter
-        ).takeClass('active')
 
         projects.each(@addProject)
 
