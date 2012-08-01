@@ -2,6 +2,6 @@
   .btn-group
     :each filter in filters
       :if filter == activeFilter
-        %button.filter.button.btn.active= filter
+        %button.filter.btn.active= filter
       :if filter != activeFilter
-        %button.filter.button.btn= filter
+        %button.filter.btn= filter

@@ -1,38 +1,58 @@
 #= require views/paginated
 #= require views/projects/project
+#= require views/filtered
+#= require views/searchable
+
 #= require models/projects_collection
 #= require models/paginated_collection
 
-#= require templates/projects/header
 #= require templates/pagination
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Projects ||= {}
+namespace "Pixie.Views.Projects", (Projects) ->
+  {Models, Views} = Pixie
 
-class Pixie.Views.Projects.Gallery extends Backbone.View
-  el: ".projects"
+  class Projects.Gallery extends Backbone.View
+    className: "gallery"
 
-  initialize: ->
-    @collection = new Pixie.Models.ProjectsCollection
+    events:
+      'click .clear_search': 'clearSearch'
 
-    pages = new Pixie.Views.Paginated({ collection: @collection })
+    initialize: (options) ->
+      pages = new Views.Paginated
+        collection: @collection
 
-    @collection.bind 'reset', (collection) =>
-      $(@el).find('.header').remove()
-      $(@el).append $(JST["templates/projects/header"](@collection.pageInfo()))
+      filters = new Views.Filtered
+        collection: @collection
+        filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
+        activeFilter: 'Featured'
 
-      $(@el).find('.project').remove()
-      collection.each(@addProject)
+      @searchable = new Views.Searchable
+        collection: @collection
 
-      $(@el).find('.project:first').before(pages.render().el)
+      $(@el).append $ '<ul class="thumbnails items"></ul>'
+      @$('.items').before(filters.render().el, @searchable.render().el)
 
-      collection.trigger 'afterReset'
+      @collection.bind 'reset', (projects) =>
+        paginationEl = $(pages.render().el)
 
-  addProject: (project) =>
-    view = new Pixie.Views.Projects.Project({ model: project, collection: @collection })
-    $(@el).append(view.render().el)
+        @$('.items').empty().before(paginationEl)
 
-  updatePagination: =>
-    $(@el).find('.pagination').html $(JST['templates/pagination'](@collection.pageInfo()))
+        paginationEl.toggle(!!paginationEl.find('ul').length)
+
+        if projects.length is 0
+          @$('.items').append("<p>No matching projects. Try <a href='#' class='clear_search'>clearing</a> your search.</p>")
+        else
+          projects.each(@addProject)
+
+        @$('.filter').filter( ->
+          return $(this).text().toLowerCase() is 'my projects'
+        ).hide() unless projects.pageInfo().current_user_id
+
+    addProject: (project) =>
+      projects = new Projects.Project({ model: project, collection: @collection })
+      @$('.items').append(projects.render().el)
+
+    clearSearch: =>
+      @searchable.resetSearch()
+
 

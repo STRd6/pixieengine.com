@@ -7,6 +7,11 @@ namespace "Pixie.Views", (Views) ->
     className: 'pagination'
     tagName: 'nav'
 
+    events:
+      'click a.previous': 'previous'
+      'click a.next': 'next'
+      'click a.page': 'toPage'
+
     initialize: ->
       super
 
@@ -15,11 +20,6 @@ namespace "Pixie.Views", (Views) ->
 
       @collection.bind 'afterReset', =>
         @$('.spinner_container').fadeOut(150)
-
-    events:
-      'click a.previous': 'previous'
-      'click a.next': 'next'
-      'click a.page': 'toPage'
 
     toPage: (e) =>
       e.preventDefault()
@@ -46,4 +46,3 @@ namespace "Pixie.Views", (Views) ->
       @el.empty().html $(JST['templates/pagination'](@collection.pageInfo()))
 
       return @
-

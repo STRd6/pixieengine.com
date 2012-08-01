@@ -12,7 +12,7 @@ namespace "Pixie.Views", (Views) ->
     events:
       'click button.search': 'search'
       'keyup .search_field': 'searchOnEnter'
-      'click button.clear': 'resetSearch'
+      'click button.clear_search': 'resetSearch'
       'blur .search_field': 'searchOnEnter'
 
     resetSearch: (e) =>

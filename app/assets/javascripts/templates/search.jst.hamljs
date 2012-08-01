@@ -1,3 +1,5 @@
-%input.search_field(placeholder="Search..." type="text")
-  %button.btn.search(disabled='disabled')> Search
-  %button.btn.clear> Clear Search
+.btn-toolbar
+  %input.search_field(placeholder="Search..." type="text")
+  .btn-group
+    %button.btn.search(disabled='disabled')> Search
+    %button.btn.clear_search Clear

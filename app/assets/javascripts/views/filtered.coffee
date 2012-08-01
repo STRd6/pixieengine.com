@@ -18,7 +18,7 @@ namespace "Pixie.Views", (Views) ->
       self = @
 
       $(self.el).find('.filter').filter( ->
-        $(this).text().toLowerCase() == self.filter
+        $(this).text().toLowerCase() is self.filter
       ).takeClass('active')
 
     render: =>

@@ -12,7 +12,7 @@ namespace "Pixie.Models", (Models) ->
       @params.page = @page
       @params.filter = filter
 
-      @fetch()
+      @trigger 'navigate', @params
 
     model: Models.Project
 

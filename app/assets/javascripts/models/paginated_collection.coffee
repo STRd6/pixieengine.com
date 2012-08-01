@@ -51,7 +51,7 @@ namespace "Pixie.Models", (Models) ->
 
       options.success = (resp) =>
         @trigger "fetched"
-        success(self, resp) if success
+        success?(self, resp)
 
       super(options)
 
@@ -79,31 +79,37 @@ namespace "Pixie.Models", (Models) ->
     toPage: (pageNumber) =>
       if 1 <= pageNumber <= @total
         @page = pageNumber
+        @params.page = pageNumber
 
-        @fetch()
+        @trigger 'navigate', @params
 
     nextPage: =>
       unless @page == @total
         @page += 1
+        @params.page += 1
 
-        @fetch()
+        @trigger 'navigate', @params
 
     previousPage: =>
       unless @page == 1
         @page -= 1
+        @params.page -= 1
 
-        @fetch()
+        @trigger 'navigate', @params
 
     resetSearch: =>
       @page = 1
+      @params.page = 1
       delete @params.search
-      delete @params.tagged
-      @fetch()
+
+      @trigger 'navigate', @params
 
     search: (query) =>
       @page = 1
+      @params.page = 1
       @params.search = query.trim()
-      @fetch()
+
+      @trigger 'navigate', @params
 
   Models.PaginatedCollection.INNER_WINDOW = 4
   Models.PaginatedCollection.OUTER_WINDOW = 1

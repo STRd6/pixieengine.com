@@ -27,12 +27,9 @@
 - @title = "Project Gallery"
 
 - content_for :javascript do
-  = javascript_include_tag "views/projects/filtered_gallery"
+  = javascript_include_tag "routers/projects_gallery"
 
   :coffeescript
-    $ ->
-      #{ActiveRecord::Base.include_root_in_json = false}
-      projects_gallery = new Pixie.Views.Projects.FilteredGallery
-      projects_gallery.collection.reset(projects_gallery.collection.parse(#{@projects_data.to_json}))
+    Pixie.Routers.Projects.App = new Pixie.Routers.Projects.App
 
 .gallery

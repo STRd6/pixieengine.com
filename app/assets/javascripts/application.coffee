@@ -2,6 +2,7 @@
 #= require cornerstone
 #= require haml
 #= require site
+#= require params
 
 #= require codemirror2/codemirror
 #= require codemirror2/coffeescript

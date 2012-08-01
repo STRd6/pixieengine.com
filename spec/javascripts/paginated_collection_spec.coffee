@@ -8,11 +8,13 @@ describe "Paginated collection", ->
 
   describe "page navigation", ->
     it "should move to the next page", ->
-      fetchSpy = sinon.spy(@collection, 'fetch')
+      triggerSpy = sinon.spy(@collection, 'trigger')
 
       @collection.nextPage()
 
-      expect(fetchSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledWith('navigate')
+
       expect(@collection.pageInfo().page).toEqual(2)
 
     it "should not move past the last page", ->
@@ -28,13 +30,15 @@ describe "Paginated collection", ->
     it "should move to the previous page", ->
       @collection.page = 2
 
-      fetchSpy = sinon.spy(@collection, 'fetch')
+      triggerSpy = sinon.spy(@collection, 'trigger')
 
       expect(@collection.pageInfo().page).toEqual(2)
 
       @collection.previousPage()
 
-      expect(fetchSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledWith('navigate')
+
       expect(@collection.pageInfo().page).toEqual(1)
 
     it "should not move before the first page", ->
@@ -45,11 +49,13 @@ describe "Paginated collection", ->
     it "should go to the selected page", ->
       @collection.total = 5
 
-      fetchSpy = sinon.spy(@collection, 'fetch')
+      triggerSpy = sinon.spy(@collection, 'trigger')
 
       @collection.toPage(3)
 
-      expect(fetchSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledOnce()
+      expect(triggerSpy).toHaveBeenCalledWith('navigate')
+
       expect(@collection.pageInfo().page).toEqual(3)
 
     it "should not go to an out of range page", ->

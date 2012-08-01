@@ -1,9 +1,0 @@
-.header
-  %h2
-    :if current_user_id && current_user_id == owner_id
-      My
-    Projects
-  %a.button.btn.btn-primary(href='/projects/new') New Project
-  %a.button.btn.btn-primary(href='/projects?filter=tutorials') Tutorials
-
-
