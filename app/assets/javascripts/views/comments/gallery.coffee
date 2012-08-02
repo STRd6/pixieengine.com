@@ -12,7 +12,18 @@ namespace "Pixie.Views.Comments", (Comments) ->
     el: '.comments'
 
     initialize: ->
+      attrs = Pixie.params()
+
+      for k, v of attrs
+        attrs[k] = unescape(v) if _.isString v
+        attrs[k] = parseInt(v) unless _.isNaN parseInt(v)
+
+      attrs
+
+      @queryString = new Models.QueryString(attrs)
+
       @collection = new Models.CommentsCollection
+        params: @queryString
 
       pages = new Views.Paginated({ collection: @collection })
 
