@@ -4,29 +4,17 @@
 namespace "Pixie.Models", (Models) ->
   class Models.ProjectsCollection extends Models.PaginatedCollection
     filterPages: (filter) =>
-      # gross
-      filter = 'none' if filter is 'all'
-      filter = 'own' if filter is 'my projects'
-
-      @page = 1
-      @params.page = @page
-      @params.filter = filter
-
-      @trigger 'navigate', @params
+      @params.set
+        page: 1
+        filter: filter
 
     model: Models.Project
 
     pageInfo: =>
-      info = super()
-      _.extend(info, {owner_id: @params.id})
+      _.extend(super(), {owner_id: @params.get('owner_id')})
 
-      return info
-
-    parse: (data) =>
-      @params.id = data.owner_id || false
-
+    parse: (data) ->
       super(data)
 
     url: ->
       '/projects'
-

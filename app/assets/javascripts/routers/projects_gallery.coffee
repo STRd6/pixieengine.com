@@ -1,3 +1,5 @@
+#= require_tree ../models
+
 #= require_tree ../views/projects
 
 namespace "Pixie.Routers.Projects", (Projects) ->
@@ -8,36 +10,41 @@ namespace "Pixie.Routers.Projects", (Projects) ->
       'projects*args': 'query'
 
     initialize: (options) ->
+      attrs = _.extend {filter: 'featured'}, @_formatParams()
+
+      $(window).on 'popstate', =>
+        @queryString.unset 'search', {silent: true}
+        @queryString.set @_formatParams(), {silent: true}
+
+        projects_gallery.filters.activateFilter(@queryString.get('filter'))
+
+      @queryString = new Models.QueryString(attrs)
+
+      @queryString.on 'change', (model) =>
+        @userChanged = true
+
+        @navigate("projects#{@queryString.queryString()}", {trigger: true})
+
+        projects_gallery.filters.activateFilter(@queryString.get('filter'))
+
       @collection = new Models.ProjectsCollection
+        params: @queryString
 
       projects_gallery = new Views.Projects.Gallery
         collection: @collection
-
-      @collection.bind 'navigate', (params) =>
-        queryString = "?"
-
-        queryString += "page=#{params.page}"
-        queryString += "&filter=#{params.filter}" if params.filter?
-        queryString += "&search=#{params.search}" if params.search?
-
-        @navigate "projects#{queryString}", {trigger: true}
 
       $('.gallery').replaceWith(projects_gallery.render().el)
 
       Backbone.history.start(pushState: true)
 
-      @collection.trigger 'navigate', Pixie.params
+    _formatParams: ->
+      obj = Pixie.params()
+
+      for k, v of obj
+        obj[k] = unescape(v) if _.isString v
+        obj[k] = parseInt(v) unless _.isNaN parseInt(v)
+
+      obj
 
     query: =>
-      unless @collection.page
-        params = Pixie.params
-
-        @collection.page = params.page || 1
-        @collection.filter = params.filter || 'arcade'
-        @collection.activeFilter = params.filter || 'arcade'
-
-        @collection.params.page = @collection.page
-        @collection.params.filter = @collection.filter
-        @collection.params.search = params.search if params.search?
-
       @collection.fetch()

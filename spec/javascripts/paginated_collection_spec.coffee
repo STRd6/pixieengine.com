@@ -3,79 +3,94 @@
 describe "Paginated collection", ->
   beforeEach ->
     @collection = new Pixie.Models.PaginatedCollection
+      params: new Backbone.Model
+        page: 1
+
     @collection.url = '/tests'
-    expect(@collection.pageInfo().page).toEqual(1)
+
+  describe "initialization", ->
+    it "should have a params model", ->
+      expect(@collection.params instanceof Backbone.Model).toBeTruthy()
 
   describe "page navigation", ->
     it "should move to the next page", ->
-      triggerSpy = sinon.spy(@collection, 'trigger')
+      changeSpy = sinon.spy()
+
+      @collection.params.on 'change', changeSpy
 
       @collection.nextPage()
 
-      expect(triggerSpy).toHaveBeenCalledOnce()
-      expect(triggerSpy).toHaveBeenCalledWith('navigate')
-
-      expect(@collection.pageInfo().page).toEqual(2)
+      expect(changeSpy).toHaveBeenCalledOnce()
+      expect(@collection.params.get('page')).toEqual(2)
 
     it "should not move past the last page", ->
-      @collection.total = 5
-      @collection.page = 5
+      @collection.params.set
+        page: 5
 
-      expect(@collection.pageInfo().page).toEqual(5)
+      @collection.total = 5
+
+      changeSpy = sinon.spy()
+
+      @collection.params.on 'change', changeSpy
 
       @collection.nextPage()
 
-      expect(@collection.pageInfo().page).toEqual(5)
+      expect(changeSpy).not.toHaveBeenCalledOnce()
 
     it "should move to the previous page", ->
-      @collection.page = 2
+      @collection.params.set
+        page: 2
 
-      triggerSpy = sinon.spy(@collection, 'trigger')
+      changeSpy = sinon.spy()
 
-      expect(@collection.pageInfo().page).toEqual(2)
+      @collection.params.on 'change', changeSpy
 
       @collection.previousPage()
 
-      expect(triggerSpy).toHaveBeenCalledOnce()
-      expect(triggerSpy).toHaveBeenCalledWith('navigate')
-
-      expect(@collection.pageInfo().page).toEqual(1)
+      expect(changeSpy).toHaveBeenCalledOnce()
+      expect(@collection.params.get('page')).toEqual(1)
 
     it "should not move before the first page", ->
+      changeSpy = sinon.spy()
+
+      @collection.params.on 'change', changeSpy
+
       @collection.previousPage()
 
-      expect(@collection.pageInfo().page).toEqual(1)
+      expect(changeSpy).not.toHaveBeenCalledOnce()
 
     it "should go to the selected page", ->
       @collection.total = 5
 
-      triggerSpy = sinon.spy(@collection, 'trigger')
+      changeSpy = sinon.spy()
+
+      @collection.params.on 'change', changeSpy
 
       @collection.toPage(3)
 
-      expect(triggerSpy).toHaveBeenCalledOnce()
-      expect(triggerSpy).toHaveBeenCalledWith('navigate')
-
-      expect(@collection.pageInfo().page).toEqual(3)
+      expect(changeSpy).toHaveBeenCalledOnce()
+      expect(@collection.params.get('page')).toEqual(3)
 
     it "should not go to an out of range page", ->
       @collection.total = 5
 
-      fetchSpy = sinon.spy(@collection, 'fetch')
+      changeSpy = sinon.spy()
+
+      @collection.params.on 'change', changeSpy
 
       @collection.toPage(6)
 
-      expect(fetchSpy.called).toBeFalsy()
-      expect(@collection.pageInfo().page).toEqual(1)
+      expect(changeSpy).not.toHaveBeenCalled()
 
       @collection.toPage(0)
 
-      expect(fetchSpy.called).toBeFalsy()
-      expect(@collection.pageInfo().page).toEqual(1)
+      expect(changeSpy).not.toHaveBeenCalled()
 
     it "should have the correct page range when current page is at the beginning", ->
+      @collection.params.set
+        page: 2
+
       @collection.total = 25
-      @collection.page = 2
 
       range = @collection.pageInfo().range
       rangeLength = @collection.pageInfo().range.length
@@ -89,8 +104,10 @@ describe "Paginated collection", ->
       expect(range[rangeLength - 3]).toEqual('...')
 
     it "should have the correct page range when current page is in the middle", ->
+      @collection.params.set
+        page: 13
+
       @collection.total = 25
-      @collection.page = 13
 
       range = @collection.pageInfo().range
       rangeLength = @collection.pageInfo().range.length
@@ -107,8 +124,10 @@ describe "Paginated collection", ->
       expect(range[rangeLength - 3]).toEqual('...')
 
     it "should have the correct page range when current page is at the end", ->
+      @collection.params.set
+        page: 24
+
       @collection.total = 25
-      @collection.page = 24
 
       range = @collection.pageInfo().range
       rangeLength = @collection.pageInfo().range.length
@@ -147,14 +166,14 @@ describe "Paginated collection", ->
 
       expect(@collection.length).toEqual(@fixture.models.length)
 
-      expect(@collection.page).toEqual(@fixture.page)
-      expect(@collection.per_page).toEqual(@fixture.per_page)
+      expect(@collection.params.get('page')).toEqual(@fixture.page)
       expect(@collection.total).toEqual(@fixture.total)
       expect(@collection.current_user_id).toEqual(@fixture.current_user_id)
 
     it "should make requests to the server based on params passed in", ->
-      @collection.params.testing = "true"
+      @collection.params.set
+        testing: "true"
 
       @collection.fetch()
 
-      expect(@server.requests[0].url).toEqual("/tests?testing=true&page=1")
+      expect(@server.requests[0].url).toEqual("/tests?page=1&testing=true")

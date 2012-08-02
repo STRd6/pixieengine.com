@@ -21,16 +21,15 @@ namespace "Pixie.Views.Projects", (Projects) ->
       pages = new Views.Paginated
         collection: @collection
 
-      filters = new Views.Filtered
+      @filters = new Views.Filtered
         collection: @collection
         filters: ['Arcade', 'Featured', 'Tutorials', 'Recently Edited', 'All', 'My Projects']
-        activeFilter: 'Featured'
 
       @searchable = new Views.Searchable
         collection: @collection
 
       $(@el).append $ '<ul class="thumbnails items"></ul>'
-      @$('.items').before(filters.render().el, @searchable.render().el)
+      @$('.items').before(@filters.render().el, @searchable.render().el)
 
       @collection.bind 'reset', (projects) =>
         paginationEl = $(pages.render().el)

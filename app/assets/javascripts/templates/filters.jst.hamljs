@@ -1,7 +1,7 @@
 :if filters.length
   .btn-group
     :each filter in filters
-      :if filter == activeFilter
+      :if filter.toLowerCase() == activeFilter
         %button.filter.btn.active= filter
-      :if filter != activeFilter
+      :if filter.toLowerCase() != activeFilter
         %button.filter.btn= filter

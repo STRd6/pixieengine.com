@@ -2,7 +2,9 @@
 #= require views/searchable
 #= require views/tags/tags
 #= require views/sprites/sprite
+
 #= require models/sprites_collection
+#= require models/query_string
 
 #= require templates/sprites/header
 
@@ -17,7 +19,18 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
     initialize: ->
       super
 
+      attrs = Pixie.params()
+
+      for k, v of attrs
+        attrs[k] = unescape(v) if _.isString v
+        attrs[k] = parseInt(v) unless _.isNaN parseInt(v)
+
+      attrs
+
+      @queryString = new Models.QueryString(attrs)
+
       @collection = new Models.SpritesCollection
+        params: @queryString
 
       pages = new Views.Paginated
         collection: @collection

@@ -50,6 +50,7 @@ class Project < ActiveRecord::Base
   scope :recently_edited, order('saved_at DESC').limit(20)
 
   scope :none
+  scope :all
 
   DEFAULT_CONFIG = {
     :directories => {

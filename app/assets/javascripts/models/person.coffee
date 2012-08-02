@@ -1,7 +1,0 @@
-#= require underscore
-#= require backbone
-
-window.Pixie ||= {}
-Pixie.Models ||= {}
-
-class Pixie.Models.Person extends Backbone.Model

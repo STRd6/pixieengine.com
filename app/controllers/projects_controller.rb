@@ -339,7 +339,7 @@ class ProjectsController < ApplicationController
   end
 
   def filters
-    ["featured", "own", "none", "for_user", "recently_edited", "tutorials", "arcade"]
+    ["featured", "own", "all", "my_projects", "none", "for_user", "recently_edited", "tutorials", "arcade"]
   end
 
   def gallery_filters
@@ -348,7 +348,7 @@ class ProjectsController < ApplicationController
       ["Featured", :featured],
       ["Tutorials", :tutorials],
       ["Recently Edited", :recently_edited],
-      ["All", :none]
+      ["All", :all]
     ]
 
     filters.push ["My Projects", :own] if current_user

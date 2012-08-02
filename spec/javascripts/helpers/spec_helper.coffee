@@ -13,8 +13,11 @@ beforeEach ->
         per_page: 5
         total: 20
         models: [
-          { id: 1, title: "Quest for Meaning" },
+          { id: 1, title: "Quest for Meaning" }
           { id: 2, title: "Pixteroids" }
+          { id: 3, title: "Richter's Party" }
+          { id: 4, title: "Mine Keeper" }
+          { id: 5, title: "Red Ice" }
         ]
     SpriteCollection:
       valid:

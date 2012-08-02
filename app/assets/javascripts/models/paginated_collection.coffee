@@ -35,17 +35,13 @@ namespace "Pixie.Models", (Models) ->
     return left.concat(middle).concat(right)
 
   class Models.PaginatedCollection extends Backbone.Collection
-    initialize: ->
-      @page = 1
-      @params ||= {}
+    initialize: (options) ->
+      @params = options.params
 
-    fetch: (options={}) ->
+    fetch: (options={}) =>
       @trigger "fetching"
 
-      @params.page = @page
-      @params.per_page = @per_page
-
-      options.data = @params
+      options.data = @params.attributes
 
       success = options.success
 
@@ -56,60 +52,51 @@ namespace "Pixie.Models", (Models) ->
       super(options)
 
     parse: (resp) =>
-      {@page, @per_page, @total, @current_user_id} = resp
+      {@total, @current_user_id} = resp
 
       return resp.models
 
     pageInfo: =>
+      page = @params.get('page')
+
       info =
         current_user_id: @current_user_id
         total: @total
-        page: @page
-        perPage: @per_page
+        page: page
         prev: false
         next: false
 
-      info.prev = @page - 1 if @page > 1
-      info.next = @page + 1 if @page < info.total
+      info.prev = page - 1 if page > 1
+      info.next = page + 1 if page < @total
 
-      info.range = calculateRange(@page, @total)
+      info.range = calculateRange(page, @total)
 
-      return info
+      info
 
     toPage: (pageNumber) =>
       if 1 <= pageNumber <= @total
-        @page = pageNumber
-        @params.page = pageNumber
-
-        @trigger 'navigate', @params
+        @params.set
+          page: pageNumber
 
     nextPage: =>
-      unless @page == @total
-        @page += 1
-        @params.page += 1
-
-        @trigger 'navigate', @params
+      unless @params.get('page') is @total
+        @params.set
+          page: @params.get('page') + 1
 
     previousPage: =>
-      unless @page == 1
-        @page -= 1
-        @params.page -= 1
-
-        @trigger 'navigate', @params
+      unless @params.get('page') is 1
+        @params.set
+          page: @params.get('page') - 1
 
     resetSearch: =>
-      @page = 1
-      @params.page = 1
-      delete @params.search
-
-      @trigger 'navigate', @params
+      @params.unset 'search'
+      @params.set
+        page: 1
 
     search: (query) =>
-      @page = 1
-      @params.page = 1
-      @params.search = query.trim()
-
-      @trigger 'navigate', @params
+      @params.set
+        page: 1
+        search: query.trim()
 
   Models.PaginatedCollection.INNER_WINDOW = 4
   Models.PaginatedCollection.OUTER_WINDOW = 1

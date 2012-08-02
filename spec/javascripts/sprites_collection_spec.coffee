@@ -3,6 +3,7 @@
 describe "Sprites collection", ->
   beforeEach ->
     @collection = new Pixie.Models.SpritesCollection
+      params: new Backbone.Model
 
   it "should have correct default url", ->
     expect(@collection.url()).toEqual("/sprites")
