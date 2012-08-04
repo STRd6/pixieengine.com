@@ -37,6 +37,13 @@ namespace "Pixie.Models", (Models) ->
   class Models.PaginatedCollection extends Backbone.Collection
     initialize: (options) ->
       @params = options.params
+      @router = options.router
+
+      @params.on 'change', (model) =>
+        if @router
+          @router.navigate("projects#{@params.queryString()}", {trigger: true})
+        else
+          @fetch()
 
     fetch: (options={}) =>
       @trigger "fetching"

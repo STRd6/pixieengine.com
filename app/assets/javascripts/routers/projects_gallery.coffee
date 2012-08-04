@@ -20,15 +20,9 @@ namespace "Pixie.Routers.Projects", (Projects) ->
 
       @queryString = new Models.QueryString(attrs)
 
-      @queryString.on 'change', (model) =>
-        @userChanged = true
-
-        @navigate("projects#{@queryString.queryString()}", {trigger: true})
-
-        projects_gallery.filters.activateFilter(@queryString.get('filter'))
-
       @collection = new Models.ProjectsCollection
         params: @queryString
+        router: @
 
       projects_gallery = new Views.Projects.Gallery
         collection: @collection
