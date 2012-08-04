@@ -1,5 +1,3 @@
-#= require underscore
-#= require backbone
 #= require models/paginated_collection
 #= require models/sprite
 
@@ -8,23 +6,12 @@ namespace "Pixie.Models", (Models) ->
     model: Models.Sprite
 
     pageInfo: =>
-      info = super()
-      _.extend(info, {owner_id: @params.id})
-
-      return info
-
-    parse: (data) =>
-      @params.id = data.owner_id || false
-
-      super(data)
+      _.extend(super(), {owner_id: @params.get('owner_id')})
 
     filterTagged: (tag) =>
-      @page = 1
-
-      @params.tagged = tag
-
-      @fetch()
+      @params.set
+        page: 1
+        tagged: tag
 
     url: ->
       '/sprites'
-

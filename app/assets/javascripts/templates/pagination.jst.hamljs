@@ -27,4 +27,4 @@
         %a.next(href='#') Next »
     :if !next
       %li.disabled
-        %a.next_page(href='#') Next »
+        %a.next(href='#') Next »

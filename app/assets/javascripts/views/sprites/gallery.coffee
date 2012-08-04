@@ -41,14 +41,15 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
       searchable = new Views.Searchable
         collection: @collection
 
-      @$('.sprites').before($(JST['templates/sprites/header'](@collection.pageInfo())))
-      @$('.sprites').before(pages.render().el)
+      @$('.sprites').before($(JST['templates/sprites/header'](@collection.pageInfo())), pages.render().el)
 
       unless @options.profile
         $('.header h2').remove()
         @$('.sprites').before(searchable.render().el)
 
       @collection.bind 'reset', (collection) =>
+        @$('.sprites').before pages.render().el
+
         if @options.profile
           @$('.header').replaceWith $(JST['templates/sprites/header'](@collection.pageInfo()))
 
