@@ -1,9 +1,13 @@
-= form_for project, :remote => true, :html => {:id => "edit_project_form", :style => "display: none;"} do |form|
+= form_for project, :remote => true, :html => {:id => "edit_project_form", :class => 'modal hide fade', :style => "display: none;"} do |form|
   = form.error_messages
-  %h2 Edit Project
+  .modal-header
+    %button.close(type='button' data-dismiss='modal') &times;
+    %h2 Edit Project
 
-  %label
-    %h3 Title
-    = form.text_field :title
+  .modal-body
+    %label
+      %h3 Title
+      = form.text_field :title
 
-  %button.btn.full Update
+  .modal-footer
+    %button.btn.full Update
