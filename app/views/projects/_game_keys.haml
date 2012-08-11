@@ -1,8 +1,12 @@
 - origin = Rails.env.development? ? 'http://127.0.0.1:3000' : 'http://games.pixieengine.com'
 
-#game_keys_modal.modal
-  %h2 Controls
-  .game_controls
+#game_keys_modal.modal.hide.fade
+  .modal-header
+    %button.close(type='button' data-dismiss='modal') &times;
+    %h2 Controls
+
+  .modal-body
+    .game_controls
 
 %style
   :sass
