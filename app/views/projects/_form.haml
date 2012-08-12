@@ -1,8 +1,6 @@
-- @title = project.new_record? ? "Create a New Project" : "Edit your Project"
-
 = form_for project, :html => {:class => "module", :multipart => true} do |form|
   = form.error_messages
-  %h2= @title
+  %h2= project.new_record? ? "Create a New Project" : "Edit your Project"
 
   %label
     %h3 Title

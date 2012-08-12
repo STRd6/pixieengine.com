@@ -121,10 +121,6 @@ class Project < ActiveRecord::Base
     "/#{Rails.env}/projects/#{id}/"
   end
 
-  def to_param
-    display_name
-  end
-
   def demo_path
     File.join base_path, DEMO_ID.to_s
   end
@@ -482,5 +478,9 @@ class Project < ActiveRecord::Base
     Project.find_each do |project|
       project.update_old_compiled_js_file
     end
+  end
+
+  def self.find(input)
+    input.to_i == 0 ? find_by_title(input) : super
   end
 end

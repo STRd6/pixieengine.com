@@ -91,8 +91,12 @@ class ProjectsControllerTest < ActionController::TestCase
         assert_response :success
       end
 
+      should "be able to download from a nested user route" do
+        get :download, :user_id => @project.user, :id => @project.display_name
+      end
+
       should "be able to download" do
-        get :download, :user_id => @project.user, :id => @project
+        get :download, :id => @project
       end
 
       should "have the option to save your own project" do

@@ -1,6 +1,22 @@
 require 'test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
+  context "vanity projects" do
+    setup do
+      @project = Factory :project
+    end
+
+    should "be findable via a numberic id or a title" do
+      project = Project.find(@project.id)
+
+      assert_not_nil project
+
+      project = Project.find(@project.title)
+
+      assert_not_nil project
+    end
+  end
+
   context "project with remote origin" do
     setup do
       @project = Factory :project, :remote_origin => "git@github.com:STRd6/cardprinter.git"
