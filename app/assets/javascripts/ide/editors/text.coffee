@@ -3,6 +3,8 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   editor.setValue savedCode
   editor.setTheme("ace/theme/twilight")
   editor.getSession().setMode("ace/mode/coffee")
+  editor.setDisplayIndentGuides(true)
+  editor.clearSelection()
 
   $editor = $(editor)
 

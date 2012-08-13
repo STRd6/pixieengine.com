@@ -64,6 +64,7 @@ $inner_margin: 14px
   vertical-align: bottom
 
 #fullscreen.ide
+  overflow: hidden
   padding: 0
   padding-top: 40px
 
@@ -94,6 +95,9 @@ $inner_margin: 14px
 
   .entity_editor
     padding: 0
+
+    .ace_scroller
+      margin-left: 320px
 
     .left
       +border-radius(0)
@@ -196,9 +200,7 @@ nav.top.actions
     +border-radius(0)
 
     border: none
-    left: 0
-    position: absolute
-    top: 0
+    position: relative
     width: 100%
     z-index: 11
 
@@ -241,9 +243,8 @@ nav.top.actions
     .ui-tabs-panel
       +box-sizing(border-box)
       height: 100%
-      overflow: auto
+      overflow: hidden
       padding: 0
-      padding-top: 24px
       position: relative
 
   form
