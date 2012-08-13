@@ -1,10 +1,23 @@
 window.codeEditor = ({panel, code:savedCode, save}) ->
-  editor = ace.edit(panel.get(0))
+  # disable the worker stuff until ace fixes it
+  require("ace/edit_session").EditSession.prototype.$startWorker = ->
+
+  window.editor = ace.edit(panel.get(0))
+
   editor.setValue savedCode
-  editor.setTheme("ace/theme/twilight")
-  editor.getSession().setMode("ace/mode/coffee")
-  editor.setDisplayIndentGuides(true)
+  editor.setTheme "ace/theme/twilight"
+
+  Mode = require("ace/mode/coffee").Mode
+
+  editor.getSession().setMode(new Mode())
+
   editor.clearSelection()
+
+  editor.setDisplayIndentGuides true
+  editor.renderer.setShowPrintMargin false
+  editor.getSession().setTabSize 2
+  editor.getSession().setUseSoftTabs true
+  editor.getSession().setUseWrapMode true
 
   $editor = $(editor)
 
