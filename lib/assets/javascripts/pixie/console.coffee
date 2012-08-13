@@ -91,7 +91,12 @@ window.Pixie ||= {}
 
     # HACK: Don't init the editor until it's been added to DOM :(
     setTimeout ->
-      editor = ace.edit input.parent().get(0)
+      editor = new CodeMirror.fromTextArea input.get(0),
+        autoMatchParens: true
+        lineNumbers: true
+        tabMode: "shift"
+        textWrapping: false
+        extraKeys: keyBindings
     , 10
 
     output = self.find(".output")
