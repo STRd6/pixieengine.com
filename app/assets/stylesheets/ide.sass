@@ -10,6 +10,9 @@ $sidebar_width: 220px
 $lower_sidebar_height: 210px
 $inner_margin: 14px
 
+.ace_sb
+  background: #141414
+
 .navbar-fixed-top .container
   margin-left: 2em
 
@@ -107,7 +110,7 @@ $inner_margin: 14px
       padding: 0.5em
       position: fixed
       margin-left: $sidebar_width
-      margin-top: 66px
+      margin-top: 64px
       padding-bottom: 80px
       overflow-y: auto
 
@@ -199,10 +202,26 @@ nav.top.actions
     +box-sizing(border-box)
     +border-radius(0)
 
+    background: #333
     border: none
     position: relative
     width: 100%
     z-index: 11
+
+    .ui-state-default
+      +border-radius(0)
+
+      background: #444
+      border: none
+
+      a
+        color: #eee
+
+    .ui-state-active
+      background: #555
+
+    .ui-tabs-selected
+      padding-bottom: 0
 
     li
       .ui-icon-close
