@@ -91,12 +91,7 @@ window.Pixie ||= {}
 
     # HACK: Don't init the editor until it's been added to DOM :(
     setTimeout ->
-      editor = new CodeMirror.fromTextArea input.get(0),
-        autoMatchParens: true
-        lineNumbers: true
-        tabMode: "shift"
-        textWrapping: false
-        extraKeys: keyBindings
+      editor = ace.edit input.parent().get(0)
     , 10
 
     output = self.find(".output")
@@ -119,6 +114,7 @@ window.Pixie ||= {}
           action.perform(self)
 
         actionElement = $ "<button />",
+          class: 'btn'
           text: titleText
           title: titleText
         .bind "mousedown touchstart", (e) ->

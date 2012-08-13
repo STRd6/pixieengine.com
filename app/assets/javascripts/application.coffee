@@ -7,6 +7,10 @@
 #= require codemirror2/codemirror
 #= require codemirror2/coffeescript
 
+#= require ace/ace
+#= require ace/mode-coffee
+#= require ace/theme-twilight
+
 #= require bootstrap
 
 #= require jquery.form
