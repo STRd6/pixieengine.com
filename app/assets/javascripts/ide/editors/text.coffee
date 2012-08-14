@@ -1,8 +1,8 @@
 window.codeEditor = ({panel, code:savedCode, save}) ->
   # disable the worker stuff until ace fixes it
-  require("ace/edit_session").EditSession.prototype.$startWorker = ->
+  require("ace/edit_session").EditSession.prototype.$startWorker = -> ;
 
-  window.editor = ace.edit(panel.get(0))
+  editor = ace.edit(panel.get(0))
 
   editor.setValue savedCode
   editor.setTheme "ace/theme/twilight"
@@ -18,6 +18,10 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
   editor.getSession().setTabSize 2
   editor.getSession().setUseSoftTabs true
   editor.getSession().setUseWrapMode true
+
+  # fixes bug where newly opened editor is blank
+  editor.addEventListener 'focus', ->
+    editor.resize()
 
   $editor = $(editor)
 

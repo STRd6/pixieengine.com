@@ -27,10 +27,7 @@ $tabs = $('#tabs').tabs
       window.currentComponent = editor
 
     textEditor = $(ui.panel).data("textEditor")
-
-    setTimeout ->
-      textEditor.focus() if textEditor
-    , 0
+    textEditor?.focus()
 
   tabTemplate: '<li><span class="ui-icon ui-icon-close"></span><span class="ui-icon lang"></span><a href="#' + '{href}">#' + '{label}</a></li>'
 
