@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/PixieEngine/pixie_sass
+  revision: 9c4f7df796b02fde788f8e484d2b079f60e957b8
+  specs:
+    pixie_sass (0.0.1)
+      compass
+
+GIT
   remote: git://github.com/dharanasoft/haml-sprockets.git
   revision: 636a8bcf7aaae64481ae198b7981764592310786
   ref: 636a8bcf7aaae64481ae198b7981764592310786
@@ -331,6 +338,7 @@ DEPENDENCIES
   omniauth-github
   paperclip
   pg
+  pixie_sass!
   rabl
   rails (= 3.2.6)
   rails_autolink

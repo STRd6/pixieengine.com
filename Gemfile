@@ -42,6 +42,7 @@ gem "omniauth"
 gem "omniauth-github"
 gem 'paperclip'
 gem "pg"
+gem "pixie_sass", :git => "git://github.com/PixieEngine/pixie_sass"
 gem 'rabl'
 gem 'rails_autolink'
 gem "require"
