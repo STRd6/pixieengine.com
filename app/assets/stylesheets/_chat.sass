@@ -13,7 +13,7 @@ $chat_header_background: $pixie_primary
   +bounds(170px, 18px)
   +box-shadow(transparentize($light_box_shadow, 0.5) 1px 1px 3px)
   +transition(border-radius)
-  +user-select
+  +user-select(none)
 
   background-color: $chat_header_background
   bottom: 0
@@ -55,7 +55,7 @@ $chat_header_background: $pixie_primary
 
   .header
     +border-top-radius
-    +user-select
+    +user-select(none)
 
     background-color: $chat_header_background
     color: white
@@ -154,7 +154,7 @@ $chat_header_background: $pixie_primary
       bottom: 6px
 
 .users_wrapper
-  +user-select
+  +user-select(none)
 
   display: inline-block
   max-height: 275px
