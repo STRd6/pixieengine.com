@@ -1,4 +1,22 @@
 GIT
+  remote: git://github.com/PixieEngine/EditorBase
+  revision: b042dd49b613ee0adbf01211a6e336aba4840b11
+  specs:
+    editor_base (0.0.1)
+      backbone-source
+      coffee-filter
+      cornerstone-source
+      haml_coffee_assets
+      jquery-source
+      underscore-source
+
+GIT
+  remote: git://github.com/PixieEngine/TileEditor
+  revision: b5f259facf3ee1c70fa32e1046ca64edaf097a47
+  specs:
+    tile_editor (0.0.1)
+
+GIT
   remote: git://github.com/PixieEngine/pixie_sass
   revision: 9c4f7df796b02fde788f8e484d2b079f60e957b8
   specs:
@@ -119,7 +137,7 @@ GEM
       sass (~> 3.1)
     compass-rails (1.0.2)
       compass (>= 0.12.0, < 0.14)
-    cornerstone-source (0.1.2)
+    cornerstone-source (0.1.5)
     diff-lcs (1.1.3)
     dynamic_form (1.1.4)
     erubis (2.7.0)
@@ -131,7 +149,11 @@ GEM
     ffi (1.0.11)
     fssm (0.2.9)
     growl (1.0.3)
-    haml (3.1.4)
+    haml (3.1.7)
+    haml_coffee_assets (1.4.7)
+      coffee-script (>= 1.0.0)
+      sprockets (>= 2.0.3)
+      tilt (>= 1.3.3)
     hashie (1.2.0)
     highline (1.6.2)
     hike (1.2.1)
@@ -317,6 +339,7 @@ DEPENDENCIES
   compass-rails
   cornerstone-source
   dynamic_form
+  editor_base!
   exception_notification!
   factory_girl!
   gratr!
@@ -352,6 +375,7 @@ DEPENDENCIES
   shoulda
   spacedocs
   therubyracer
+  tile_editor!
   turn
   uglifier
   underscore-source
