@@ -1,6 +1,7 @@
 #= require rails
 #= require cornerstone
 #= require haml
+#= require hamlcoffee
 #= require site
 #= require params
 
@@ -35,7 +36,7 @@
 #= require boner
 
 #= require pixie/editor/pixel/create
-#= require pixie/editor/tile/create
+#= require pixie/editor/tile/views/editor
 
 #= require views/comments/gallery
 #= require views/projects/gallery

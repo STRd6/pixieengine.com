@@ -12,7 +12,7 @@ GIT
 
 GIT
   remote: git://github.com/PixieEngine/TileEditor
-  revision: b5f259facf3ee1c70fa32e1046ca64edaf097a47
+  revision: 6be888ae4995bf1ae546317b78139018ca0c6ca5
   specs:
     tile_editor (0.0.1)
 
@@ -346,6 +346,7 @@ DEPENDENCIES
   growl
   haml
   haml-sprockets!
+  haml_coffee_assets
   hpricot
   html5-boilerplate
   jasmine
