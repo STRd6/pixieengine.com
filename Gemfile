@@ -29,6 +29,7 @@ gem 'dynamic_form'
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
+gem 'haml_coffee_assets'
 gem "haml-sprockets", :git => "git://github.com/dharanasoft/haml-sprockets.git", :ref => '636a8bcf7aaae64481ae198b7981764592310786'
 gem 'hpricot'
 gem 'html5-boilerplate'
@@ -42,6 +43,7 @@ gem "omniauth"
 gem "omniauth-github"
 gem 'paperclip'
 gem "pg"
+gem 'pixel_editor', :git => 'git://github.com/PixieEngine/PixelEditor.git'
 gem 'rabl'
 gem 'rails_autolink'
 gem "require"

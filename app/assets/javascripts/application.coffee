@@ -1,6 +1,7 @@
 #= require rails
 #= require cornerstone
 #= require haml
+#= require hamlcoffee
 #= require site
 #= require params
 
