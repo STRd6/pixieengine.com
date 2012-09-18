@@ -53,7 +53,7 @@ gem "ruport"
 gem "sanitize"
 gem 'spacedocs'
 gem 'therubyracer'
-gem 'tile_editor', :git => "git://github.com/PixieEngine/TileEditor"
+gem 'tile_editor', :path => '~/TileEditor' #:git => "git://github.com/PixieEngine/TileEditor"
 gem 'underscore-source'
 gem "will_paginate", '3.0.3'
 gem "whenever"
