@@ -11,12 +11,6 @@ GIT
       underscore-source
 
 GIT
-  remote: git://github.com/PixieEngine/TileEditor
-  revision: 6be888ae4995bf1ae546317b78139018ca0c6ca5
-  specs:
-    tile_editor (0.0.1)
-
-GIT
   remote: git://github.com/PixieEngine/pixie_sass
   revision: 9c4f7df796b02fde788f8e484d2b079f60e957b8
   specs:
@@ -59,6 +53,11 @@ GIT
   specs:
     factory_girl (2.3.2)
       activesupport
+
+PATH
+  remote: ~/TileEditor
+  specs:
+    tile_editor (0.0.1)
 
 GEM
   remote: http://rubygems.org/
