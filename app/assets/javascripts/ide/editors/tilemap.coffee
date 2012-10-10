@@ -5,6 +5,10 @@ window.createTilemapEditor = (options, file) ->
   panel.find('.tile_editor, .pixie').remove()
 
   data =
+    tileWidth: 32
+    tileHeight: 32
+    tilesWide: 20
+    tilesTall: 15
     layers: [
       name: "Background"
     ]

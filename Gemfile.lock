@@ -18,7 +18,7 @@ GIT
 
 GIT
   remote: git://github.com/PixieEngine/TileEditor.git
-  revision: 2acfa875a8a88ed849d531197048e687ace25c20
+  revision: dda50a6e154ffb672e1b0fd3db22128c9944f1a5
   specs:
     tile_editor (0.0.1)
 

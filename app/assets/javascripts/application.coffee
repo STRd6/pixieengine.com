@@ -45,7 +45,6 @@
 #= require models/autocomplete
 
 #= require base64
-#= require command_stack
 #= require grid_gen
 #= require uuid
 #= require jqcolor
