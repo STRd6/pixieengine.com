@@ -4,7 +4,10 @@ window.createTilemapEditor = (options, file) ->
 
   panel.find('.tile_editor, .pixie').remove()
 
-  data = {}
+  data =
+    layers: [
+      name: "Background"
+    ]
 
   try
     data = JSON.parse(contents) if contents

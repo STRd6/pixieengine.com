@@ -26,6 +26,7 @@ gem "capistrano"
 gem "coffee-filter"
 gem 'cornerstone-source'
 gem 'dynamic_form'
+gem 'editor_base', :git => "git://github.com/PixieEngine/EditorBase.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
@@ -53,6 +54,7 @@ gem "ruport"
 gem "sanitize"
 gem 'spacedocs'
 gem 'therubyracer'
+gem 'tile_editor', :git => "git://github.com/PixieEngine/TileEditor.git"
 gem 'underscore-source'
 gem "will_paginate", '3.0.3'
 gem "whenever"

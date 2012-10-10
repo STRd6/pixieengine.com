@@ -36,7 +36,6 @@
 #= require boner
 
 #= require pixie/editor/pixel/create
-#= require pixie/editor/tile/create
 
 #= require views/comments/gallery
 #= require views/projects/gallery
