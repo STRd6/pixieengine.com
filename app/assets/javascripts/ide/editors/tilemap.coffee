@@ -12,7 +12,7 @@ window.createTilemapEditor = (options, file) ->
     console?.warn? e
     console?.warn? "Occurred in #{contents}"
 
-  editorOptions = $.extend editorOptions,
+  editorOptions = Object.extend editorOptions,
     data: data
 
     editEntity: (entity) ->
