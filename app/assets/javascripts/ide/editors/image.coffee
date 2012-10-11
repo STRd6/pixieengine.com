@@ -7,7 +7,7 @@ window.createImageEditor = (options, file) ->
   dataUrl = "/#{railsEnv}/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null
 
-  editorOptions = $.extend editorOptions,
+  editorOptions = Object.extend editorOptions,
     frames: 1
     initializer: (canvas) ->
       _canvas = canvas
@@ -90,7 +90,7 @@ $.fn.modalPixelEditor = (options) ->
 
   input.after(previewImage).hide().data('modalPixelEditor', true)
 
-  options = $.extend {}, options,
+  options = Object.extend {}, options,
     initializer: (canvas) ->
       _canvas = canvas
 

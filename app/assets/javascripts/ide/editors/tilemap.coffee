@@ -4,14 +4,7 @@ window.createTilemapEditor = (options, file) ->
 
   panel.find('.tile_editor, .pixie').remove()
 
-  data =
-    tileWidth: 32
-    tileHeight: 32
-    tilesWide: 20
-    tilesTall: 15
-    layers: [
-      name: "Background"
-    ]
+  data = null
 
   try
     data = JSON.parse(contents) if contents
@@ -19,7 +12,7 @@ window.createTilemapEditor = (options, file) ->
     console?.warn? e
     console?.warn? "Occurred in #{contents}"
 
-  editorOptions = $.extend editorOptions,
+  editorOptions = Object.extend editorOptions,
     data: data
 
     editEntity: (entity) ->

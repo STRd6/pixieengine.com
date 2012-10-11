@@ -199,6 +199,7 @@ nav.top.actions
   +border-radius(0)
 
   border: none
+  padding-top: 22px
 
   .ui-tabs-nav
     +box-sizing(border-box)
@@ -206,14 +207,15 @@ nav.top.actions
 
     background: #333
     border: none
-    position: relative
+    position: absolute
+    top: 0px
     width: 100%
     z-index: 11
 
     .ui-state-default
       +border-radius(0)
 
-      background: #444
+      background: #666
       border: none
       margin-right: 1px
 
@@ -221,7 +223,7 @@ nav.top.actions
         color: #eee
 
     .ui-state-active
-      background: #666
+      background: #444
 
     .ui-tabs-selected
       padding-bottom: 0
