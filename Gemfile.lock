@@ -116,7 +116,7 @@ GEM
       backbone-source
       jquery-source
       underscore-source
-    bootstrap-sass (2.0.4.0)
+    bootstrap-sass (2.0.4.2)
     builder (3.0.0)
     capistrano (2.8.0)
       highline
@@ -126,7 +126,7 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
-    chunky_png (1.2.5)
+    chunky_png (1.2.6)
     cocaine (0.2.0)
     coffee-filter (0.1.1)
       coffee-script (>= 2.2.0)
@@ -139,7 +139,7 @@ GEM
       execjs
     coffee-script-source (1.2.0)
     color (1.4.1)
-    compass (0.12.1)
+    compass (0.12.2)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
       sass (~> 3.1)
@@ -287,7 +287,7 @@ GEM
       pdf-writer (= 1.1.8)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
-    sass (3.1.19)
+    sass (3.2.1)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
