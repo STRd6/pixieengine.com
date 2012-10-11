@@ -1,10 +1,12 @@
 GIT
   remote: git://github.com/PixieEngine/EditorBase.git
-  revision: 6613dba7a5d23cdf8f2bcc5491c10ce01e834b3d
+  revision: b045358bf093d64a39b9391e2c6978ae76815359
   specs:
     editor_base (0.0.1)
       backbone-source
+      bootstrap-sass
       coffee-filter
+      compass
       cornerstone-source
       haml_coffee_assets
       jquery-source
