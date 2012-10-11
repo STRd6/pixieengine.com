@@ -2,6 +2,7 @@
 .project
 .redcar
 .rvmrc
+.rbenv-version
 .DS_Store
 config/database.yml
 config/oauth.yml
