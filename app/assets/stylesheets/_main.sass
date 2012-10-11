@@ -19,10 +19,17 @@ body
   font-family: $normal_font
   font-size: 12px
   padding-top: 40px
-  min-height: 100%
+  height: 100%
   line-height: 1.5
   padding-bottom: 3em
   position: relative
+
+  > .content
+    background-color: $light_background
+    border-left: 1px solid rgba(0, 0, 0, 0.05)
+    border-right: 1px solid rgba(0, 0, 0, 0.05)
+    min-height: 100%
+    padding: 3.5em 2em
 
 #fullscreen
   /* It's strange this doesn't work exactly right when put in body
