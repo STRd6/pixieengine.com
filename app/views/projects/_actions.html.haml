@@ -50,18 +50,6 @@
               %li
                 %a#update_libs Update game libraries
 
-        - if current_user
-          - if current_user.help_tips
-            .btn-group
-              %button.btn#help>
-                %span.static-help(alt="Help")
-                Help
-        - else
-          .btn-group
-            %button.btn#help>
-              %span.static-help(alt="Help")
-              Help
-
         .status
           %label.inline
             %h4 What are you working on?

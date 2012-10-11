@@ -53,7 +53,12 @@ gem 'rmagick', :require => 'RMagick'
 gem "ruport"
 gem "sanitize"
 gem 'spacedocs'
-gem 'therubyracer'
+
+gem 'therubyracer', '~> 0.11.0beta'
+
+# Had to drop this libv8 dependency in here so that therubyracer beta could install.
+gem 'libv8', '~> 3.11.8'
+
 gem 'tile_editor', :git => "git://github.com/PixieEngine/TileEditor.git"
 gem 'underscore-source'
 gem "will_paginate", '3.0.3'
