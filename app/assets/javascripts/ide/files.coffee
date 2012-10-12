@@ -171,7 +171,6 @@ window.openFile = (file) ->
     # Focus Newly Created Tab
     $('#tabs ul li a[href="' + docSelector + '"]').click()
 
-
 window.newFileNode = (inputData) ->
   {forceSave, autoOpen, path, template} = inputData
   name = path.split('/').last()

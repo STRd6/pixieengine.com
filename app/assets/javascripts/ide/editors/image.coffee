@@ -7,7 +7,7 @@ window.createImageEditor = (options, file) ->
   dataUrl = "/#{railsEnv}/projects/#{projectId}/#{path}?#{mtime}"
   _canvas = null
 
-  editorOptions = Object.extend editorOptions,
+  editorOptions = Object.extend (editorOptions || {}),
     frames: 1
     initializer: (canvas) ->
       _canvas = canvas

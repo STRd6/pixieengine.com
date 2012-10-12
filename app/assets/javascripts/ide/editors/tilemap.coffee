@@ -1,5 +1,6 @@
 window.createTilemapEditor = (options, file) ->
   {path, contents, options:editorOptions} = file.attributes
+
   panel = options.panel
 
   panel.find('.tile_editor, .pixie').remove()
@@ -12,7 +13,8 @@ window.createTilemapEditor = (options, file) ->
     console?.warn? e
     console?.warn? "Occurred in #{contents}"
 
-  editorOptions = Object.extend editorOptions,
+  # make sure editor options are not undefined
+  editorOptions = Object.extend (editorOptions || {}),
     data: data
 
     editEntity: (entity) ->
