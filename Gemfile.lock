@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/PixieEngine/EditorBase.git
-  revision: b045358bf093d64a39b9391e2c6978ae76815359
+  revision: 769429b0dbab12259f9e230d88e18d6e4ceda3cd
   specs:
     editor_base (0.0.1)
       backbone-source
@@ -14,13 +14,13 @@ GIT
 
 GIT
   remote: git://github.com/PixieEngine/PixelEditor.git
-  revision: ee12a54fe5b53b2194ab6ee15dfb35ed8353836b
+  revision: 12b1a7a9b8165e27f27ed7037ba48d05326e2e14
   specs:
     pixel_editor (0.0.1)
 
 GIT
   remote: git://github.com/PixieEngine/TileEditor.git
-  revision: dda50a6e154ffb672e1b0fd3db22128c9944f1a5
+  revision: 5ea2bf1ce5ac77bd7c02e61a7a2cb842ecd39779
   specs:
     tile_editor (0.0.1)
 
