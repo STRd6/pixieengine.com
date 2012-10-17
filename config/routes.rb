@@ -16,6 +16,7 @@ PixieStrd6Com::Application.routes.draw do
     end
 
     collection do
+      get :github_integration
       post :hook
       get :info
     end
