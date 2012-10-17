@@ -249,12 +249,6 @@ class User < ActiveRecord::Base
     else
       update_attribute(:paying, false)
     end
-
-    if paying
-      #track_event('subscribe')
-    else
-      #track_event('unsubscribe')
-    end
   end
 
   def send_welcome_email

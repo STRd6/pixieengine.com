@@ -86,7 +86,7 @@
 
   /[if IE]
     :coffeescript
-      $(".feature a").attr("href", #{register_subscribe_path.to_json})
+      $(".feature a").attr("href", #{ide_project_path("demo").to_json})
 
 - if params[:new_game]
   = render :partial => 'new_game_landing_page'

@@ -17,12 +17,6 @@ class UsersControllerTest < ActionController::TestCase
 
       assert_response :success
     end
-
-    should "be able to get to register_subscribe" do
-      get :register_subscribe
-
-      assert_response :success
-    end
   end
 
   context "a logged in user" do
@@ -42,14 +36,6 @@ class UsersControllerTest < ActionController::TestCase
       get :edit, :id => @user
 
       assert_routing({ :path => "/#{@user.display_name}/edit"}, { :controller => "users", :action => "edit", :id => @user.display_name})
-    end
-
-    should "be redirected when visiting register_subscribe" do
-      @user.paying = true
-
-      get :register_subscribe
-
-      assert_redirected_to user_path(@user)
     end
 
     should "be vain" do

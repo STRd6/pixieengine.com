@@ -73,23 +73,7 @@ class UsersController < ApplicationController
     }
   end
 
-  def register_subscribe
-    @hide_chat = true
-
-    if current_user
-      if current_user.paying
-        redirect_back_or_default current_user
-      else
-        redirect_to current_user.subscribe_url
-      end
-    end
-
-    @object = User.new
-  end
-
   def create
-    subscribe = params[:subscribe]
-
     new_game_bonus = params[:new_game]
     new_game_plan_id = 16362
 
@@ -107,12 +91,7 @@ class UsersController < ApplicationController
       respond_to do |format|
         format.html do
           @registered = true
-          if subscribe
-            plan_id = new_game_plan_id if new_game_bonus
-            redirect_to user.subscribe_url(plan_id)
-          else
-            redirect_to user, :notice => REGISTERED_FLASH
-          end
+          redirect_to user, :notice => REGISTERED_FLASH
         end
         format.json { render :json => {:status => "ok"} }
       end
@@ -121,12 +100,7 @@ class UsersController < ApplicationController
 
       respond_to do |format|
         format.html do
-          if subscribe
-            render :action => :register_subscribe
-          else
-            render :action => :new
-          end
-
+          render :action => :new
         end
         format.json do
           render :json => {
