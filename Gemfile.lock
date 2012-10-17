@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: git://github.com/PixieEngine/PixelEditor.git
-  revision: 12b1a7a9b8165e27f27ed7037ba48d05326e2e14
+  revision: 1a89b3b9fe55cb31f2a492973b2e57ed62e03726
   specs:
     pixel_editor (0.0.1)
 
