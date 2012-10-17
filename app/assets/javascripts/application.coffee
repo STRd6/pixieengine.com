@@ -1,3 +1,5 @@
+#= depend_on pixie/editor/pixel/create
+
 #= require rails
 #= require cornerstone
 #= require haml
