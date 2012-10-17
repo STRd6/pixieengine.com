@@ -12,8 +12,7 @@
                 %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
                   On Pixie you'll create amazing games from anywhere with an internet connection and be able to instantly share them with the world.
                 %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
-                  How about giving it a try right now? Follow along with the #{link_to "demo", ide_project_url("demo", @link_tracking)}
-                  tooltips, they'll help point you in the right direction. If you want to learn more, we have an entire section of #{link_to "tutorials", projects_url(@link_tracking.merge({:filter => 'tutorial'}))}. There's even a showcase of #{link_to "complete games", projects_url(@link_tracking.merge({:filter => 'featured'}))} you can play, explore, and learn from.
+                  How about giving it a try right now? We have an entire section of #{link_to "tutorials", projects_url(@link_tracking.merge({:filter => 'tutorials'}))}. There's even a showcase of #{link_to "complete games", projects_url(@link_tracking.merge({:filter => 'featured'}))} you can play, explore, and learn from.
                 %div(style="font-size:11px;font-weight:normal;color:#{@text_color};font-family:arial;margin-bottom:1em;overflow:auto;width:100%;")
                   You can also dig in to our vast #{link_to "gallery", sprites_url(@link_tracking)} of pixel art,
                   as well as #{link_to "create your own", new_sprite_url(@link_tracking)}.

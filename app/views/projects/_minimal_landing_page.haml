@@ -21,9 +21,9 @@
         Share finished games instantly by embedding them on web pages or exporting them to marketplaces like the Google Chrome Webstore.
 
       %p
-        Play 'Pixteroids' now to get a taste of what you can accomplish easily with Pixie. When you're done, sign up for our 30 day, no obligation trial of Pixie Premium.
+        Play 'Pixteroids' now to get a taste of what you can accomplish easily with Pixie. When you're done, sign up. It's free!
 
-      = link_to "Try Now for Free", register_subscribe_path, :class => "button btn btn-primary full", :id => "try_now"
+      = link_to "Try Now for Free", ide_project_path("demo"), :class => "button btn btn-primary full", :id => "try_now"
 
     .video
       <iframe width="640" height="480" src="#{widget_project_url(Project::ASTEROIDS_DEMO_ID)}" ></iframe>

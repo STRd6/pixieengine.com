@@ -1,12 +1,4 @@
 PixieStrd6Com::Application.routes.draw do
-  get "subscribe" => "subscriptions#subscribe", :as => :subscribe
-  get "subscribe/indie" => "subscriptions#indie"
-  get "subscriptions/:id/subscribe" => "subscriptions#subscribe"
-  get "subscriptions/thanks"
-  post "subscriptions/changed"
-
-  get "register_subscribe" => "users#register_subscribe", :as => :register_subscribe
-
   get "leads/create" => "leads#create"
 
   resources :projects do
@@ -81,7 +73,6 @@ PixieStrd6Com::Application.routes.draw do
   match 'jukebox' => "home#jukebox"
   match 'frost' => "home#frost", :as => :frost
   match 'privacy_policy' => "home#privacy_policy", :as => :privacy_policy
-  match 'products_and_services' => "home#products", :as => :products_and_services
   match 'reports' => "home#reports"
   match 'sitemap' => "home#sitemap"
   match 'survey' => "home#survey", :as => :survey

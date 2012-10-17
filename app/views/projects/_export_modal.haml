@@ -33,12 +33,11 @@
         $('#export_modal').modal('hide')
 
     $("#export_modal .choice.chrome").click ->
-      requireSubscription ->
-        notify("Exporting Chrome Web Store Package ...")
+      notify("Exporting Chrome Web Store Package ...")
 
-        window.location = #{download_project_path(project, :chrome => 1).to_json}
+      window.location = #{download_project_path(project, :chrome => 1).to_json}
 
-        $('#export_modal').modal('hide')
+      $('#export_modal').modal('hide')
 
     $("#export_modal .choice.embed").click ->
       $('#export_modal').modal('hide')

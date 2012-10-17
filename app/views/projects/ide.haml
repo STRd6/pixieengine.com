@@ -41,14 +41,6 @@
     window.projectBaseUrl = #{project.base_url.to_json}
     window.doc_id = #{admin? ? project.id : Project::DOCS_ID}
 
-    $("#content .sidebar_container .bottom").click ->
-      requireSubscription ->
-        notify("Exporting Chrome Web Store Package ...")
-
-        window.location = #{download_user_project_path(project.user, project, :chrome => 1).to_json}
-
-        $('.modal').modal('hide')
-
     window.runCodeInWindow = (code, contentWindow) ->
       sandbox = contentWindow.document
       sandbox.open()
