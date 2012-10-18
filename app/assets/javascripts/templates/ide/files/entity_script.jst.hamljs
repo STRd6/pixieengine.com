@@ -1,5 +1,5 @@
 #{className} = (I={}) ->
-  Object.reverseMerge I, #{defaultProperties}
+  Object.defaults I, #{defaultProperties}
 
   self = #{parentClass}(I)
 
@@ -7,7 +7,7 @@
     self.include include
 
   #{events}.each (event) ->
-    self.bind event.name, eval(event.method)
+    self.on event.name, eval(event.method)
 
   return self
 

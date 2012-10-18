@@ -7,7 +7,7 @@ scriptTemplate = (locals) ->
   """
     #{locals.className} = (I={}) ->
       # Set some default properties
-      Object.reverseMerge I,
+      Object.defaults I,
         color: "blue"
         height: 32
         width: 32
@@ -17,7 +17,7 @@ scriptTemplate = (locals) ->
       self = GameObject(I)
 
       # Add events and methods here
-      self.bind "update", ->
+      self.on "update", ->
         # Add update method behavior
 
       # We must always return self as the last line
