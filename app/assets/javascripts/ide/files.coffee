@@ -156,8 +156,6 @@ window.openFile = (file) ->
 
     return
 
-  return alert "This file is too large for our editor!" if size > MAX_FILE_SIZE
-
   # focus the tab if it already exists
   if (tab = $('#tabs ul li a[href="' + docSelector + '"]')).length
     tab.click()
