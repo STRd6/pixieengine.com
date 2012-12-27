@@ -88,8 +88,7 @@ namespace :deploy do
   end
 
   task :restart, :roles => :app, :except => { :no_release => true } do
-    stop
-    start
+    reload
   end
 end
 
