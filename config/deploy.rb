@@ -10,6 +10,7 @@ set :scm, "git"
 set :repository, "git://github.com/PixieEngine/pixieengine.com.git"
 set :branch, "master"
 set :deploy_via, :remote_cache
+set :copy_exclude, [ '.git' ]
 set :user, :rails
 
 set :unicorn_config, "#{current_path}/config/unicorn.rb"
