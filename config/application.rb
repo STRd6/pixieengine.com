@@ -51,6 +51,7 @@ module PixieStrd6Com
     end
 
     config.assets.enabled = true
+    config.assets.initialize_on_precompile = false
     config.generators.stylesheet_engine = :sass
 
     # Configure the default encoding used in templates for Ruby 1.9.
