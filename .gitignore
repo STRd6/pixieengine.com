@@ -18,6 +18,7 @@ tmp/**/*
 nbproject
 Pixie.tmproj
 public/apps
+public/assets
 public/stylesheets/*.css
 public/stylesheets/codemirror/*.css
 public/stylesheets/pixie/*.css
