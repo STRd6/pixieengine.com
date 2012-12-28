@@ -7,7 +7,6 @@ group :assets do
   gem 'coffee-script-source', '~> 1.2.0'
   gem 'compass-rails'
   gem 'sass-rails'
-  gem 'turbo-sprockets-rails3'
   gem 'uglifier'
 end
 

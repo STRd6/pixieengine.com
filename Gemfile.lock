@@ -293,9 +293,6 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
-    turbo-sprockets-rails3 (0.3.4)
-      railties (> 3.2.8, < 4.0.0)
-      sprockets (>= 2.0.0)
     turn (0.9.6)
       ansi
     tzinfo (0.3.35)
@@ -371,7 +368,6 @@ DEPENDENCIES
   spacedocs
   therubyracer (~> 0.11.0beta)
   tile_editor!
-  turbo-sprockets-rails3
   turn
   uglifier
   underscore-source
