@@ -1,4 +1,4 @@
 .window
   %span.ui-icon.ui-icon-close
-  %h3.ui-widget-header= title
+  %h3.ui-widget-header= @title
   .content
