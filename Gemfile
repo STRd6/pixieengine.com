@@ -3,10 +3,10 @@ source :rubygems
 gem 'rails', '3.2.9'
 
 group :assets do
-  gem 'compass-rails'
-  gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'coffee-script-source', '~> 1.2.0'
+  gem 'compass-rails'
+  gem 'sass-rails'
   gem 'turbo-sprockets-rails3'
   gem 'uglifier'
 end
