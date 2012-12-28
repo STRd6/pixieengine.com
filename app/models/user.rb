@@ -284,6 +284,32 @@ class User < ActiveRecord::Base
     )
   end
 
+  def init_display_name
+    if display_name.nil?
+      if email
+        if name = email.split('@').first
+          name.gsub!(/[^A-Za-z0-9_-]/, '')
+        end
+
+        if name.blank?
+          name = "Pixie-#{id}"
+        end
+
+        self.display_name = name
+        save
+
+        # Try some more names
+        20.times do |i|
+          if invalid?
+            self.display_name = "#{name}-#{i + 2}"
+          end
+
+          save
+        end
+      end
+    end
+  end
+
   private
 
   def no_connected_sites?
