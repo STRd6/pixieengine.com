@@ -1,6 +1,6 @@
 .comment
-  != avatar_link
-  %p!= text
+  != @avatar_link
+  %p!= @text
   %p.attribution
-    %span.name!= user_link
+    %span.name!= @user_link
     %span.time Just moments ago

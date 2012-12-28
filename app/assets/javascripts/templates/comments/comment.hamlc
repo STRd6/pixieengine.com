@@ -1,12 +1,12 @@
-:if commentable_id > 0
-  .comment(data-commentable_id="#{commentable_id}")
+- if @commentable_id > 0
+  .comment(data-commentable_id="#{@commentable_id}")
     .attribution
       .name
-        %a(href="/#{commenter_name}")
-          = commenter_name
-          %img(alt="Thumb" src="#{avatar_src}")
-      %time.timeago(datetime="#{time}")= time
+        %a(href="/#{@commenter_name}")
+          = @commenter_name
+          %img(alt="Thumb" src="#{@avatar_src}")
+      %time.timeago(datetime="#{@time}")= @time
     .commentable
-      %a(href="/#{commentable_type}/#{commentable_id}")
-        %img(alt="#{commentable_name}" src="#{commentable_img_src}")
-    != body
+      %a(href="/#{@commentable_type}/#{@commentable_id}")
+        %img(alt="#{@commentable_name}" src="#{@commentable_img_src}")
+    != @body
