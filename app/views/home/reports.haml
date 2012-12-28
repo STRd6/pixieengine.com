@@ -1,76 +1,7 @@
 %style
   :sass
-    td, th
-      padding: 0.25em 1em
-    td:first-child
-      font-weight: bold
-      text-align: right
-    th
-      font-weight: bold
-      text-align: center
-
     .chart
       height: 400px
-
-:ruby
-  funnel = ["land", "register", "return"]
-
-- Experiment.all.each do |experiment|
-  :ruby
-    results = {}
-
-    funnel.each do |event|
-      results[event] = Hash.new(0)
-    end
-
-    Event.find_by_sql(<<-eos
-      SELECT events.name, treatments.control, COUNT(DISTINCT(events.session_id)) as count
-      FROM events
-        INNER JOIN treatments
-          ON events.session_id = treatments.session_id
-        INNER JOIN experiments
-          ON treatments.experiment_id = experiments.id
-      WHERE events.name IN ('#{funnel.join("','")}')
-        AND events.user_id IS NULL
-        AND experiments.id = #{experiment.id}
-      GROUP BY treatments.control, events.name
-    eos
-    ).each do |result|
-      results[result.name] ||= Hash.new(0)
-      results[result.name][result.control] = result.count
-    end
-
-  :ruby
-    if results[funnel.last]['t'].to_i > results[funnel.last]['f'].to_i
-      control_color = 'rgba(0, 255, 0, 0.3)'
-      experiment_color = 'rgba(255, 0, 0, 0.3)'
-    else
-      control_color = 'rgba(255, 0, 0, 0.3)'
-      experiment_color = 'rgba(0, 255, 0, 0.3)'
-    end
-
-  %h3= experiment.name
-  %table
-    %thead
-      %tr
-        %th
-        - funnel.each do |name|
-          %th= name
-    %tbody
-      - ["t", "f"].each do |control|
-        %tr(style="background-color:#{control == "t" ? control_color : experiment_color};")
-          - funnel.each_with_index do |name, i|
-            - if i == 0
-              %td= control == "t" ? "control" : "experiment"
-              - prev_total = results[funnel[i]][control].to_f
-            - else
-              - prev_total = results[funnel[i-1]][control].to_f
-
-            - current_total = results[name][control].to_f
-            %td
-              = "%1.2f%" % (current_total / prev_total * 100)
-              %br
-              = current_total.to_i
 
 %h2 Registrations
 
@@ -127,10 +58,7 @@
       colorData.each (color) ->
         try
           color = Color(color)
-        catch error
-          console.warn(error)
 
-        if color
           angle = color.hue() * Math.TAU / 360
           saturation = color.saturation()
 
@@ -141,3 +69,5 @@
             radius: 4
             color: color
 
+        catch error
+          console.warn(error)
