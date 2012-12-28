@@ -22,7 +22,7 @@ namespace "Pixie.Chat", (Chat) ->
 
     appendChat = (chat, prevChatUser) ->
       chat.id = "" unless chat.id?
-      chatData = $(JST['templates/chat/recent'](chat))
+      chatData = $(JST['chat/recent'](chat))
 
       if chat.name == prevChatUser
         $(chatData).find('hr, .name, .time').remove()
@@ -35,7 +35,7 @@ namespace "Pixie.Chat", (Chat) ->
     initialize = ->
       $.get '/chats/active_users.json', (activeUsers) ->
         for user in activeUsers
-          $(JST['templates/chat/active_user'](user)).appendTo $('#active_users')
+          $(JST['chat/active_user'](user)).appendTo $('#active_users')
 
       $.get '/chats/recent.json', (chats) ->
         prevChatUser = null
@@ -57,7 +57,7 @@ namespace "Pixie.Chat", (Chat) ->
             $('#active_users li[data-id=' + id + ']').remove()
         for user in activeUsers
           if $.inArray(user.id, lastOnline) < 0
-            $(JST['templates/chat/active_user'](user)).appendTo $('#active_users')
+            $(JST['chat/active_user'](user)).appendTo $('#active_users')
 
       $.get '/chats/recent.json', (chats) ->
         $('#chats li:not([data-id])').remove()

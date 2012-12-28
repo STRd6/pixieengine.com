@@ -28,7 +28,7 @@ namespace "Pixie.Views", (Views) ->
 
     render: =>
       @$el.append(
-        $ JST['templates/filters']
+        $ JST['filters']
           filters: @filters
           activeFilter: @collection.params.get('filter')
       )

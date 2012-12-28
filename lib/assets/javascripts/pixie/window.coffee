@@ -3,7 +3,7 @@
 window.Pixie ||= {}
 
 Pixie.Window = (I={}) ->
-  self = $(JST["templates/pixie/window"](I))
+  self = $(JST["pixie/window"](I))
 
   self.draggable(
     handle: "h3"

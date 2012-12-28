@@ -272,7 +272,7 @@ $("#new_file_modal button.choice").click (event) ->
   fields = $("#new_file_modal .fields").empty()
 
   for name, value of $(this).data('fields')
-    $(JST["templates/files/field"]
+    $(JST["files/field"]
       name: name
       inputType: if $.isNumeric(value) then 'number' else 'text'
       value: value

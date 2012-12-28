@@ -1,6 +1,5 @@
-%li(data-id="#{id}")
+%li(data-id="#{@id}")
   %hr
-  %span.name= name
-  %span.time= time
-  %span.message!= message
-
+  %span.name= @name
+  %span.time= @time
+  %span.message!= @message

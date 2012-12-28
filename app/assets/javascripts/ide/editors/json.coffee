@@ -18,7 +18,7 @@ window.createJsonEditor = (options, file) ->
     console?.warn? e
     console?.warn? "Occurred in #{contents}"
 
-  jsonEditor = $(JST["templates/editors/json"]()).appendTo(panel)
+  jsonEditor = $(JST["editors/json"]()).appendTo(panel)
 
   propertyEditor = jsonEditor.find('table').propertyEditor(data)
 

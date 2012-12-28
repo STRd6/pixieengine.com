@@ -1,30 +1,30 @@
 .spinner_container
   %img.spinner(src='/assets/ajax-loader.gif')
   Loading...
-:if total > 1
+- if @total > 1
   %ul
-    :if prev
+    - if @prev
       %li
         %a.previous(href='#') « Previous
-    :if !prev
+    - else
       %li.disabled
         %a.previous(href='#') « Previous
 
-    :each value in range
-      :if page == value
+    - for value in @range
+      - if @page is value
         %li.active
-          %a(href='#')= page
-      :if page != value
-        :if value == '...'
+          %a(href='#')= @page
+      - if @page != value
+        - if value == '...'
           %li.disabled
             %a(href='#') ...
-        :if value != '...'
+        - if value != '...'
           %li
             %a.page(href='#' data-page="#{value}")= value
 
-    :if next
+    - if @next
       %li
         %a.next(href='#') Next »
-    :if !next
+    - else
       %li.disabled
         %a.next(href='#') Next »

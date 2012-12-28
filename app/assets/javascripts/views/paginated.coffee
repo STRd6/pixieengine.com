@@ -43,6 +43,6 @@ namespace "Pixie.Views", (Views) ->
       @collection.nextPage()
 
     render: =>
-      @el.empty().html $(JST['templates/pagination'](@collection.pageInfo()))
+      @el.empty().html $(JST['pagination'](@collection.pageInfo()))
 
       return @

@@ -16,7 +16,7 @@ window.testModel = new TestModel()
 
 class TestView extends Backbone.View
   initialize: ->
-    @el.html $(JST["templates/color_slider", [{
+    @el.html $(JST["color_slider", [{
       name: "red"
     }, {
       name: "green"
@@ -58,7 +58,7 @@ class TestModelView extends Backbone.View
   tagName: "li"
 
   render: ->
-    $(@el).html($(JST["templates/test_item"](@model.toJSON())))
+    $(@el).html($(JST["test_item"](@model.toJSON())))
 
     return @
 

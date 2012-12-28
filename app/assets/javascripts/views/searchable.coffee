@@ -37,5 +37,5 @@ namespace "Pixie.Views", (Views) ->
         @$('button.search').attr('disabled', 'disabled')
 
     render: =>
-      @el.html $(JST['templates/search']())
+      @el.html $(JST['search']())
       return @

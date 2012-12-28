@@ -57,7 +57,7 @@ window.createEntityEditor = (options, file) ->
     console?.warn? "Occurred in #{contents}"
     data = defaults
 
-  entityEditor = $(JST["templates/editors/entity"]()).appendTo(panel)
+  entityEditor = $(JST["editors/entity"]()).appendTo(panel)
 
   propertyEditor = entityEditor.find('table').propertyEditor(data)
 

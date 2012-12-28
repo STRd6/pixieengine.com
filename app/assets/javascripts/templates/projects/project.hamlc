@@ -1,7 +1,7 @@
-%h3.ellipsis= title
+%h3.ellipsis= @title
 .thumbnail
-  %img(alt="#{title}" src="#{img}" title="#{title}")
-  %p.description.ellipsis= description
+  %img(alt="#{@title}" src="#{@img}" title="#{@title}")
+  %p.description.ellipsis= @description
   .actions
-    %a.btn.btn-primary(href="/projects/#{id}/fullscreen") Play
-    %a.btn(href="/projects/#{id}/ide") View Code
+    %a.btn.btn-primary(href="/projects/#{@id}/fullscreen") Play
+    %a.btn(href="/projects/#{@id}/ide") View Code

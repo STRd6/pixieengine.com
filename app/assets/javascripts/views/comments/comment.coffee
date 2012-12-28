@@ -11,6 +11,6 @@ namespace "Pixie.Views.Comments", (Comments) ->
 
       data.commentable_name = "" unless data.commentable_name
 
-      $(@el).html $(JST['templates/comments/comment'](data))
+      $(@el).html $(JST['comments/comment'](data))
 
       return this
