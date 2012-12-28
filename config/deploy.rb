@@ -40,7 +40,7 @@ after :deploy, "deploy:migrate"
 after :deploy, "deploy:cleanup"
 
 # Whenever task
-after "deploy:symlink", "deploy:update_crontab"
+after "deploy:create_symlink", "deploy:update_crontab"
 
 namespace :deploy do
   desc "Update the crontab file"
