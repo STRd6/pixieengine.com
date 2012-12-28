@@ -268,7 +268,13 @@ class User < ActiveRecord::Base
   end
 
   def self.registrations_per_day
-    self.select("COUNT(*) AS count, date_trunc('day', created_at) as date").group("date").order("date ASC").where("created_at > ?", 3.months.ago)
+    ActiveRecord::Base.connection.execute(self
+      .select("COUNT(*) AS count, date_trunc('day', created_at) as date")
+      .group("date")
+      .order("date ASC")
+      .where("created_at > ?", 3.months.ago)
+      .to_sql
+    )
   end
 
   def sanitize_profile
