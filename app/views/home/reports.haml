@@ -18,7 +18,7 @@
     registrations_per_day = #{User.registrations_per_day.to_json}
 
     data = registrations_per_day.map (datum) ->
-      [new Date(datum.user.date).getTime(), parseInt(datum.user.count)]
+      [new Date(datum.date).getTime(), parseInt(datum.count)]
 
     new Highcharts.Chart
       chart:
