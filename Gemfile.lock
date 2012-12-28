@@ -186,6 +186,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.19)
+    minitest (2.12.1)
     mocha (0.9.12)
     multi_json (1.2.0)
     multipart-post (1.1.5)
@@ -344,6 +345,7 @@ DEPENDENCIES
   json
   libv8 (~> 3.11.8)
   mail
+  minitest
   mocha
   multi_json (= 1.2.0)
   oink
