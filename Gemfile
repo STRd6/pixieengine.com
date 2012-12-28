@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.9'
 
 group :assets do
   gem 'compass-rails'
@@ -31,7 +31,6 @@ gem "exception_notification", :git => "git://github.com/rails/exception_notifica
 gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem 'haml'
 gem 'haml_coffee_assets'
-gem "haml-sprockets", :git => "git://github.com/dharanasoft/haml-sprockets.git", :ref => '636a8bcf7aaae64481ae198b7981764592310786'
 gem 'hpricot'
 gem 'html5-boilerplate'
 gem 'jquery-image_reader'
@@ -50,7 +49,6 @@ gem 'rabl'
 gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
-gem "ruport"
 gem "sanitize"
 gem 'spacedocs'
 
