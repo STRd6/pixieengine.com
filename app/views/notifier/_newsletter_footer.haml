@@ -2,7 +2,7 @@
   %td(style="background-color:#{@content_bg};border-top:10px solid #{@content_bg};padding-top:0;" valign="top")
     %span(style="font-size:10px;color:#{@text_color};line-height:100%;font-family:verdana;")
       %center(style="margin-bottom:2px;")
-        = link_to "Unsubscribe", { :controller => "/users", :action => "unsubscribe", :token => @user.perishable_token, :only_path => false }, @link_tracking
+        = link_to "Unsubscribe", { :controller => "/users", :action => "unsubscribe", :token => @user.perishable_token, :only_path => false }.merge(@link_tracking)
         %br
         %br
         Copyright (C) #{Time.now.year} STRd6 All rights reserved.

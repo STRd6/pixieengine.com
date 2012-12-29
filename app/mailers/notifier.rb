@@ -67,9 +67,26 @@ class Notifier < ActionMailer::Base
     @content_bg = "#FFFFFF"
     @text_color = "#555555"
 
+    @title = "This week in Pixie: #{delivery_date}"
+
     mail :subject => "Pixie Newsletter", :to => user.email do |format|
       format.html { render newsletter }
     end
+  end
+
+  def missed_you(user, delivery_date)
+    @user = user
+    @delivery_date = delivery_date
+    @link_tracking = { :utm_source => 'missed_you', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    @title = "Pixie Misses You!"
+
+    mail :subject => @title,
+      :to => user.email
   end
 
   def forgot_password(user)
