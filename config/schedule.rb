@@ -34,6 +34,10 @@ every '30 * * * *' do
   runner "User.contact_people_we_miss"
 end
 
+every "15 */8 * * *" do
+  runner "User.gather_surveys"
+end
+
 #TODO: This is a little scary
 every 2.hours do
   # Restart all unicorn processes to combat memory bloat

@@ -93,6 +93,22 @@ class Notifier < ActionMailer::Base
       :to => user.email
   end
 
+  def survey(user)
+    @user = user
+    @link_tracking = { }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    @title = "Pixie Survey - Your Opinion Matters!"
+
+    @user.touch :last_surveyed
+
+    mail :subject => @title,
+      :to => user.email
+  end
+
   def forgot_password(user)
     @user = user
     mail :to => user.email

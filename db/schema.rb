@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121229012346) do
+ActiveRecord::Schema.define(:version => 20121229023055) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -588,6 +588,7 @@ ActiveRecord::Schema.define(:version => 20121229012346) do
     t.boolean  "help_tips",           :default => true,                  :null => false
     t.string   "spreedly_token"
     t.datetime "last_contacted",      :default => '2011-12-29 01:37:27', :null => false
+    t.datetime "last_surveyed",       :default => '2009-12-29 02:38:45', :null => false
   end
 
   add_index "users", ["display_name"], :name => "index_users_on_display_name", :unique => true

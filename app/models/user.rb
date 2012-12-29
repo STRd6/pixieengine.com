@@ -61,6 +61,14 @@ class User < ActiveRecord::Base
     where("lower(display_name) like ? OR lower(email) like ?", like, like)
   }
 
+  scope :recently_active, lambda {
+    where("last_request_at >= ?", Time.zone.now - 1.day)
+  }
+
+  scope :not_recently_surveyed, lambda {
+    where("last_surveyed <= ?", Time.zone.now - 1.month)
+  }
+
   # People who haven't been on recently (within a month)
   scope :inactive, lambda {
     where("last_request_at <= ?", Time.zone.now - 1.month)
@@ -294,6 +302,14 @@ class User < ActiveRecord::Base
 
     people_we_miss.each do |person|
       Notifier.missed_you(person, date).deliver
+    end
+  end
+
+  def self.gather_surveys
+    people_to_survey = User.recently_active.not_recently_surveyed
+
+    people_to_survey.each do |person|
+      Notifier.survey(person).deliver
     end
   end
 
