@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   }
 
   scope :not_recently_surveyed, lambda {
-    where("last_surveyed <= ?", Time.zone.now - 1.month)
+    where("last_surveyed <= ?", Time.zone.now - 3.months)
   }
 
   # People who haven't been on recently (within a month)
