@@ -29,6 +29,11 @@ every 24.hours do
   rake "projects:update_libs"
 end
 
+# Every hour on the half hour send out emails to peeps who we miss
+every '30 * * * *' do
+  runner "User.contact_people_we_miss"
+end
+
 #TODO: This is a little scary
 every 2.hours do
   # Restart all unicorn processes to combat memory bloat
