@@ -61,6 +61,8 @@ class User < ActiveRecord::Base
     where("lower(display_name) like ? OR lower(email) like ?", like, like)
   }
 
+  scope :subscribed, where(:subscribed => true)
+
   scope :recently_active, lambda {
     where("last_request_at >= ?", Time.zone.now - 1.day)
   }
@@ -118,9 +120,7 @@ class User < ActiveRecord::Base
     failed_user_ids = []
     delivery_date = Time.now.strftime("%b %d %Y")
 
-    #Notifier.post_newsletter_to_forum(delivery_date)
-
-    User.order('id').all(:conditions => {:subscribed => true}).each do |user|
+    User.order('id').subscribed.each do |user|
       begin
         Notifier.send_newsletter(user, newsletter, delivery_date).deliver unless user.email.blank?
       rescue
@@ -296,7 +296,7 @@ class User < ActiveRecord::Base
   end
 
   def self.contact_people_we_miss
-    people_we_miss = User.inactive.not_recently_contacted.limit(100)
+    people_we_miss = User.subscribed.inactive.not_recently_contacted.limit(100)
 
     date = Time.now.strftime("%b %d %Y")
 
@@ -306,7 +306,7 @@ class User < ActiveRecord::Base
   end
 
   def self.gather_surveys
-    people_to_survey = User.recently_active.not_recently_surveyed
+    people_to_survey = User.subscribed.recently_active.not_recently_surveyed
 
     people_to_survey.each do |person|
       Notifier.survey(person).deliver
