@@ -61,6 +61,16 @@ class User < ActiveRecord::Base
     where("lower(display_name) like ? OR lower(email) like ?", like, like)
   }
 
+  # People who haven't been on recently (within a month)
+  scope :inactive, lambda {
+    where("last_request_at <= ?", Time.zone.now - 1.month)
+  }
+
+  # People we haven't emailed recently
+  scope :not_recently_contacted, lambda {
+    where("last_contacted <= ?", Time.zone.now - 1.month)
+  }
+
   scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
 
   scope :none
@@ -275,6 +285,16 @@ class User < ActiveRecord::Base
       .where("created_at > ?", 3.months.ago)
       .to_sql
     )
+  end
+
+  def self.contact_people_we_miss
+    people_we_miss = User.inactive.not_recently_contacted.limit(100)
+
+    date = Time.now.strftime("%b %d %Y")
+
+    people_we_miss.each do |person|
+      Notifier.missed_you(person, date).deliver
+    end
   end
 
   def sanitize_profile

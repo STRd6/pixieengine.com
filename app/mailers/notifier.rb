@@ -69,6 +69,8 @@ class Notifier < ActionMailer::Base
 
     @title = "This week in Pixie: #{delivery_date}"
 
+    @user.touch :last_contacted
+
     mail :subject => "Pixie Newsletter", :to => user.email do |format|
       format.html { render newsletter }
     end
@@ -84,6 +86,8 @@ class Notifier < ActionMailer::Base
     @text_color = "#555555"
 
     @title = "Pixie Misses You!"
+
+    @user.touch :last_contacted
 
     mail :subject => @title,
       :to => user.email

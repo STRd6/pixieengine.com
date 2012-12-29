@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120608222315) do
+ActiveRecord::Schema.define(:version => 20121229012346) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -555,38 +555,39 @@ ActiveRecord::Schema.define(:version => 20120608222315) do
     t.string   "email"
     t.string   "crypted_password"
     t.string   "password_salt"
-    t.string   "persistence_token",                      :null => false
-    t.string   "single_access_token",                    :null => false
-    t.string   "perishable_token",                       :null => false
-    t.integer  "login_count",         :default => 0,     :null => false
-    t.integer  "failed_login_count",  :default => 0,     :null => false
+    t.string   "persistence_token",                                      :null => false
+    t.string   "single_access_token",                                    :null => false
+    t.string   "perishable_token",                                       :null => false
+    t.integer  "login_count",         :default => 0,                     :null => false
+    t.integer  "failed_login_count",  :default => 0,                     :null => false
     t.datetime "last_request_at"
     t.datetime "current_login_at"
     t.datetime "last_login_at"
     t.string   "current_login_ip"
     t.string   "last_login_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                                             :null => false
+    t.datetime "updated_at",                                             :null => false
     t.string   "display_name"
     t.integer  "referrer_id"
     t.string   "oauth_token"
     t.string   "oauth_secret"
     t.integer  "active_token_id"
-    t.boolean  "admin",               :default => false, :null => false
-    t.integer  "comments_count",      :default => 0,     :null => false
+    t.boolean  "admin",               :default => false,                 :null => false
+    t.integer  "comments_count",      :default => 0,                     :null => false
     t.text     "profile"
     t.string   "avatar_file_name"
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.boolean  "subscribed",          :default => true,  :null => false
+    t.boolean  "subscribed",          :default => true,                  :null => false
     t.string   "favorite_color"
-    t.boolean  "paying",              :default => false, :null => false
-    t.boolean  "forem_admin",         :default => false, :null => false
-    t.boolean  "forum_notifications", :default => true,  :null => false
-    t.boolean  "site_notifications",  :default => true,  :null => false
-    t.boolean  "help_tips",           :default => true,  :null => false
+    t.boolean  "paying",              :default => false,                 :null => false
+    t.boolean  "forem_admin",         :default => false,                 :null => false
+    t.boolean  "forum_notifications", :default => true,                  :null => false
+    t.boolean  "site_notifications",  :default => true,                  :null => false
+    t.boolean  "help_tips",           :default => true,                  :null => false
     t.string   "spreedly_token"
+    t.datetime "last_contacted",      :default => '2011-12-29 01:37:27', :null => false
   end
 
   add_index "users", ["display_name"], :name => "index_users_on_display_name", :unique => true

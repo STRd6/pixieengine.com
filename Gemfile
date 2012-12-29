@@ -49,6 +49,7 @@ gem 'rabl'
 gem 'rails_autolink'
 gem "require"
 gem 'rmagick', :require => 'RMagick'
+gem "squeel"
 gem "sanitize"
 gem 'spacedocs'
 
