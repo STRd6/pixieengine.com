@@ -303,7 +303,7 @@ class User < ActiveRecord::Base
         DATE_TRUNC('month', users.created_at) AS first_action,
         DATE_TRUNC('month', MAX(visits.created_at)) AS last_action") \
       .group("users.id, first_action") \
-      .where("users.created_at >= date_trunc('month', CAST(? AS timestamp))", 12.months.ago)
+      .where("users.created_at >= DATE_TRUNC('month', CAST(? AS timestamp))", 12.months.ago)
 
     ActiveRecord::Base.connection.execute("
       SELECT

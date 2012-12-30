@@ -30,13 +30,19 @@
         - total = datum.inject(0) {|memo, cell| entries[Date.parse(cell["last_action"])] = cell; memo + cell["count"].to_i}
         - remainder = 0
         %th= start_date
-        %th= total
         - range.each do |i|
-          - cell = entries[(start_date >> i)]
-          %td
-            - total_remaining = total - remainder # TODO sum this and all remaining month counts
-            - remainder += cell["count"].to_i if cell
-            = number_to_percentage(100 * total_remaining / total, :precision => 1) # TODO percentage format
+          - date = start_date >> i
+          - cell = entries[date]
+          - total_remaining = total - remainder
+          - remainder += cell["count"].to_i if cell
+          - if i == 0
+            %th= total_remaining
+          - else
+            %td
+              - if date.future?
+                \-
+              - else
+                = number_to_percentage(100 * total_remaining / total, :precision => 1)
 
 %h2 Registrations
 
