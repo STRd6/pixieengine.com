@@ -2,6 +2,41 @@
   :sass
     .chart
       height: 400px
+    td, th
+      padding: 0.25em 1em
+    td:first-child
+      font-weight: bold
+      text-align: right
+    th
+      font-weight: bold
+      text-align: center
+
+%h2 Cohort Analysis
+
+:ruby
+  data = User.cohort_analysis.group_by {|i| i["first_action"] }
+  range = (0..12)
+
+%table
+  %thead
+    %th
+    - range.each do |n|
+      %th= n
+  %tbody
+    - data.each do |key, datum|
+      %tr
+        - start_date = Date.parse(key)
+        - entries = {} # Side effects, o0 wut!
+        - total = datum.inject(0) {|memo, cell| entries[Date.parse(cell["last_action"])]; memo + cell["count"].to_i}
+        - remainder = 0
+        %th= start_date
+        %th= total
+        - range.each do |i|
+          - cell = entries[start_date >> i]
+          %td
+            - total_remaining = total - remainder # TODO sum this and all remaining month counts
+            - remainder += cell["count"].to_i if cell
+            = number_to_percentage(100 * total_remaining / total, :precision => 1) # TODO percentage format
 
 %h2 Registrations
 
@@ -15,9 +50,9 @@
   = javascript_include_tag "highcharts"
 
   :coffeescript
-    registrations_per_day = #{User.registrations_per_day.to_json}
+    registrations_per_week = #{User.registrations_per_week.to_json}
 
-    data = registrations_per_day.map (datum) ->
+    data = registrations_per_week.map (datum) ->
       [new Date(datum.date).getTime(), parseInt(datum.count)]
 
     new Highcharts.Chart
@@ -34,7 +69,7 @@
         name: "Registrations"
       ]
       title:
-        text: "Registrations Per Day"
+        text: "Registrations Per Week"
       xAxis:
         type: 'datetime'
         dateTimeLabelFormats:
@@ -43,7 +78,7 @@
           month: '%b'
           year: '%Y'
         title:
-          text: "Day"
+          text: "Week"
       yAxis:
         title:
           text: "Registrations"

@@ -41,6 +41,8 @@ class User < ActiveRecord::Base
   has_many :projects,
     :order => "id DESC"
 
+  has_many :visits
+
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
   has_many :authored_plugins, :class_name => "Plugin"
   has_many :memberships
@@ -285,14 +287,33 @@ class User < ActiveRecord::Base
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
   end
 
-  def self.registrations_per_day
+  def self.registrations_per_week
     ActiveRecord::Base.connection.execute(self
-      .select("COUNT(*) AS count, date_trunc('day', created_at) as date")
+      .select("COUNT(*) AS count, date_trunc('week', created_at) as date")
       .group("date")
       .order("date ASC")
-      .where("created_at > ?", 3.months.ago)
+      .where("created_at > ?", 6.months.ago)
       .to_sql
     )
+  end
+
+  def self.cohort_analysis
+    subquery = User.joins(:visits) \
+      .select("users.id AS id,
+        DATE_TRUNC('month', users.created_at) AS first_action,
+        DATE_TRUNC('month', MAX(visits.created_at)) AS last_action") \
+      .group("users.id, first_action") \
+      .where("users.created_at >= date_trunc('month', CAST(? AS timestamp))", 12.months.ago)
+
+    ActiveRecord::Base.connection.execute("
+      SELECT
+        COUNT(*) AS count,
+        first_action,
+        last_action
+      FROM (#{subquery.to_sql}) AS temp
+      GROUP BY first_action, last_action
+      ORDER BY first_action ASC, last_action ASC
+    ")
   end
 
   def self.contact_people_we_miss
