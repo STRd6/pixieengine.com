@@ -35,7 +35,8 @@ window.codeEditor = ({panel, code:savedCode, save}) ->
       $editor.trigger('dirty')
 
   $editor.bind "save", ->
-    savedCode = editor.getValue()
+    codeToSave = editor.getValue()
+    savedCode = codeToSave.replace(/[ ]+(\n+)/g, "$1").replace(/[ ]+$/, '')
 
     $editor.trigger "clean"
 
