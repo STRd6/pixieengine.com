@@ -1,6 +1,3 @@
-#= require codemirror2/codemirror
-#= require codemirror2/coffeescript
-
 #= require templates/pixie/console
 
 window.Pixie ||= {}
@@ -91,12 +88,8 @@ window.Pixie ||= {}
 
     # HACK: Don't init the editor until it's been added to DOM :(
     setTimeout ->
-      editor = new CodeMirror.fromTextArea input.get(0),
-        autoMatchParens: true
-        lineNumbers: true
-        tabMode: "shift"
-        textWrapping: false
-        extraKeys: keyBindings
+      #TODO: extraKeys: keyBindings
+      editor = ace.edit input.get(0)
     , 10
 
     output = self.find(".output")

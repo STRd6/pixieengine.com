@@ -163,19 +163,20 @@ window.hotSwap = (src, ext) ->
     catch error
       warn? error.message
 
-$ ->
-  window.gameConsoleWindow = Pixie.Window
-    title: "Game Console"
-  .hide()
-  .appendTo("body")
-  .css
-    position: "absolute"
-    top: "125px"
-    left: "250px"
+# TODO: Fix console and renable
+# $ ->
+#   window.gameConsoleWindow = Pixie.Window
+#     title: "Game Console"
+#   .hide()
+#   .appendTo("body")
+#   .css
+#     position: "absolute"
+#     top: "125px"
+#     left: "250px"
 
-  console = Pixie.Console(
-    evalContext: (code) ->
-      runningAppWindow?.eval(code)
-  )
+#   console = Pixie.Console(
+#     evalContext: (code) ->
+#       runningAppWindow?.eval(code)
+#   )
 
-  gameConsoleWindow.find(".content").append(console)
+#   gameConsoleWindow.find(".content").append(console)
