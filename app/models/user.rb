@@ -83,6 +83,10 @@ class User < ActiveRecord::Base
     where("last_contacted <= ?", Time.zone.now - 1.month)
   }
 
+  scope :recent_sprites, lambda {
+    where("sprites.created_at >= ?", Time.zone.now - 1.week).joins(:sprites)
+  }
+
   scope :featured, where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
 
   scope :none
@@ -323,6 +327,16 @@ class User < ActiveRecord::Base
 
     people_we_miss.each do |person|
       Notifier.missed_you(person, date).deliver
+    end
+  end
+
+  def self.contact_awesome_people
+    awesome_people = User.subscribed.recent_sprites.group("users.id").count
+
+    date = Time.now.strftime("%b %d %Y")
+
+    awesome_people.each do |user_id, sprite_count|
+      Notifier.you_are_awesome(user_id, sprite_count, date).deliver
     end
   end
 

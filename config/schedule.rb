@@ -44,6 +44,10 @@ every 2.hours do
   command "pkill -QUIT -f 'unicorn worker'"
 end
 
+every :sunday, :at => "10:45pm" do
+  runner "User.contact_awesome_people"
+end
+
 every :saturday, :at => '11pm' do
   rake "report:send"
 end

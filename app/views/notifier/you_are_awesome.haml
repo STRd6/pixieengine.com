@@ -1,0 +1,13 @@
+:ruby
+  @paragraphs = [
+    """Hey #{@user.display_name},
+    <br><br>
+
+    You made #{pluralize(@sprite_count, "sprite")} this week. That's great! We just wanted to stop by and say how much you rule!
+    <br><br>
+
+    #{sprites_html(@sprites)}
+    """,
+  ]
+
+= render :partial => "newsletter"

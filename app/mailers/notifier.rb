@@ -93,6 +93,26 @@ class Notifier < ActionMailer::Base
       :to => user.email
   end
 
+  def you_are_awesome(user_id, sprite_count, delivery_date)
+    @user = User.find user_id
+    @sprites = @user.sprites.limit(sprite_count)
+    @sprite_count = sprite_count
+    @delivery_date = delivery_date
+
+    @link_tracking = { :utm_source => 'awesome', :utm_medium => 'email', :utm_campaign => @delivery_date }
+
+    @pixie_blue = "#1084CE"
+    @content_bg = "#FFFFFF"
+    @text_color = "#555555"
+
+    @title = "You Are Awesome!"
+
+    @user.touch :last_contacted
+
+    mail :subject => @title,
+      :to => @user.email
+  end
+
   def survey(user)
     @user = user
     @link_tracking = { }
