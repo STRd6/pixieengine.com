@@ -1,3 +1,6 @@
 github:
   key: "not a real key"
   secret: "not a real key"
+google:
+  key: "not a real key"
+  secret: "not a real key"
