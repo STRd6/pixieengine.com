@@ -41,6 +41,7 @@ gem 'multi_json', '1.2.0'
 gem "oink"
 gem "omniauth"
 gem "omniauth-github"
+gem "omniauth-google-oauth2"
 gem 'paperclip'
 gem "pg"
 gem 'pixel_editor', :git => 'git://github.com/PixieEngine/PixelEditor.git'

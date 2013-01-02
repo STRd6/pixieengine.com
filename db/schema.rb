@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121229023055) do
+ActiveRecord::Schema.define(:version => 20130102041503) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -390,6 +390,16 @@ ActiveRecord::Schema.define(:version => 20121229023055) do
   add_index "memberships", ["group_id", "group_type"], :name => "index_memberships_on_group_id_and_group_type"
   add_index "memberships", ["user_id"], :name => "index_memberships_on_user_id"
 
+  create_table "oauth_tokens", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "provider",   :null => false
+    t.string   "token",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "oauth_tokens", ["user_id"], :name => "index_oauth_tokens_on_user_id"
+
   create_table "plugins", :force => true do |t|
     t.integer  "user_id"
     t.boolean  "approved",    :default => false, :null => false
@@ -569,7 +579,6 @@ ActiveRecord::Schema.define(:version => 20121229023055) do
     t.datetime "updated_at",                                             :null => false
     t.string   "display_name"
     t.integer  "referrer_id"
-    t.string   "oauth_token"
     t.string   "oauth_secret"
     t.integer  "active_token_id"
     t.boolean  "admin",               :default => false,                 :null => false
@@ -592,7 +601,6 @@ ActiveRecord::Schema.define(:version => 20121229023055) do
   end
 
   add_index "users", ["display_name"], :name => "index_users_on_display_name", :unique => true
-  add_index "users", ["oauth_token"], :name => "index_users_on_oauth_token"
 
   create_table "versions", :force => true do |t|
     t.integer  "versioned_id"

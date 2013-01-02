@@ -211,6 +211,9 @@ GEM
     omniauth-github (1.0.1)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
+    omniauth-google-oauth2 (0.1.13)
+      omniauth (~> 1.0)
+      omniauth-oauth2
     omniauth-oauth2 (1.0.2)
       oauth2 (~> 0.6.0)
       omniauth (~> 1.0)
@@ -357,6 +360,7 @@ DEPENDENCIES
   oink
   omniauth
   omniauth-github
+  omniauth-google-oauth2
   paperclip
   pg
   pixel_editor!

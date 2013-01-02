@@ -31,6 +31,7 @@ class User < ActiveRecord::Base
   )
 
   include Commentable
+  include Oauthable
 
   has_many :libraries
   has_many :collections

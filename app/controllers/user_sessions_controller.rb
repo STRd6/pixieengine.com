@@ -39,13 +39,14 @@ class UserSessionsController < ApplicationController
   end
 
   def oauth
-    # TODO: Rename or extract this to it's own table
-    current_user.oauth_token = auth_hash["credentials"]["token"]
-    current_user.save
+    provider = params[:provider]
+    token = auth_hash["credentials"]["token"]
+
+    current_user.update_oauth(provider, token)
 
     # render :text => "<pre>"+auth_hash.to_yaml+"</pre>"
 
-    flash[:notice] = "Github Authorized"
+    flash[:notice] = "#{provider} Authorized"
     redirect_to root_path
   end
 

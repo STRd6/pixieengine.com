@@ -41,6 +41,14 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  context "oauth" do
+    should "be able to update oauth token" do
+      assert_difference "@user.oauth_tokens.size", +1 do
+        @user.update_oauth("test", "test_token")
+      end
+    end
+  end
+
   context "plugins" do
     setup do
       @installed_plugin = Factory :plugin
