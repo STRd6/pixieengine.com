@@ -5,7 +5,19 @@ class Comment < ActiveRecord::Base
   belongs_to :commentee, :class_name => "User"
   belongs_to :commentable, :polymorphic => true, :counter_cache => true
 
+  belongs_to :root, :class_name => "Comment"
+
+  # Comments can be in reply to specific comments
+  belongs_to :in_reply_to, :class_name => "Comment", :inverse_of => :replies
+  has_many :replies, :class_name => "Comment", :inverse_of => :in_reply_to, :foreign_key => "in_reply_to_id"
+
   before_validation(:on => :create) do
+    if in_reply_to
+      self.root = in_reply_to.root
+    else
+      self.root = self
+    end
+
     self.commentee ||= commentable.user
   end
 

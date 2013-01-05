@@ -9,4 +9,48 @@ class CommentTest < ActiveSupport::TestCase
       comment.as_json
     end
   end
+
+  context "without replies" do
+    setup do
+      @comment = Factory :comment
+    end
+
+    should "not be in reply to anything by default" do
+      assert_equal @comment.in_reply_to, nil
+    end
+
+    should "not have any replies by default" do
+      assert_equal @comment.replies.size, 0
+    end
+  end
+
+  context "with replies" do
+    setup do
+      @comment = Factory :comment
+
+      @reply = Factory :comment, :in_reply_to => @comment
+    end
+
+    should "have replies" do
+      assert_equal @comment.replies.first, @reply
+    end
+
+    should "know what it is in reply to" do
+      assert_equal @reply.in_reply_to, @comment
+    end
+
+    should "have the same root" do
+      assert_equal @comment.root, @reply.root
+    end
+  end
+
+  context "root" do
+    setup do
+      @comment = Factory :comment
+    end
+
+    should "be its own root" do
+      assert_equal @comment, @comment.root
+    end
+  end
 end
