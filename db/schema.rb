@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130102041503) do
+ActiveRecord::Schema.define(:version => 20130105202818) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -246,6 +246,17 @@ ActiveRecord::Schema.define(:version => 20130102041503) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "emails", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "email",                            :null => false
+    t.boolean  "undeliverable", :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "emails", ["email"], :name => "index_emails_on_email"
+  add_index "emails", ["user_id"], :name => "index_emails_on_user_id"
 
   create_table "events", :force => true do |t|
     t.string   "name",                     :null => false
