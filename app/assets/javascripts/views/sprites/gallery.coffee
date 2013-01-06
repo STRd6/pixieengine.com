@@ -58,7 +58,7 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
         collection.trigger 'afterReset'
 
-        $(@el)
+        @$(".sprites")
           .isotope('reloadItems')
           .isotope
             itemSelector : '.sprite_container'
