@@ -412,14 +412,16 @@ class Sprite < ActiveRecord::Base
     "rgba(#{match_data.join(',')},#{int_opacity})"
   end
 
-  def self.update_s3_metadata
-    find_each do |sprite|
-      tries = 3
-      begin
-        sprite.update_s3_metadata
-      rescue
-        tries -= 1
-        retry if tries > 0
+  def self.update_s3_metadata(starting_from=0)
+    find_in_batches(:start => starting_from) do |group|
+      group.each do |sprite|
+        tries = 3
+        begin
+          sprite.update_s3_metadata
+        rescue
+          tries -= 1
+          retry if tries > 0
+        end
       end
     end
   end
