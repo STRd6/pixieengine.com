@@ -1,2 +1,2 @@
 %a(href="/sprites/#{@id}")
-  %img(alt="#{@title}" data-name="#{@title}" draggable='true' src="#{@url}" title="#{@title}")
+  %img(alt="#{@title}" data-name="#{@title}" width=@width height=@height draggable='true' src="#{@url}" title="#{@title}")

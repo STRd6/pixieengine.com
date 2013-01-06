@@ -1,13 +1,10 @@
 #= require templates/sprites/sprite
 
-window.Pixie ||= {}
-Pixie.Views ||= {}
-Pixie.Views.Sprites ||= {}
+namespace "Pixie.Views.Sprites", (Sprites) ->
 
-class Pixie.Views.Sprites.Sprite extends Backbone.View
-  className: 'sprite_container'
+  class Sprites.Sprite extends Backbone.View
+    className: 'sprite_container'
 
-  render: =>
-    $(@el).html $(JST['sprites/sprite'](@model.toJSON()))
-    return @
-
+    render: =>
+      $(@el).html $(JST['sprites/sprite'](@model.toJSON()))
+      return @

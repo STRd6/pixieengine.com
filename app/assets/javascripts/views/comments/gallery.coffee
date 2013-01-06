@@ -1,4 +1,3 @@
-#= require jquery.timeago
 #= require views/paginated
 #= require views/comments/comment
 #= require models/comment
@@ -37,7 +36,7 @@ namespace "Pixie.Views.Comments", (Comments) ->
 
         collection.each(@addComment)
 
-        $('.timeago').timeago()
+        @$('.timeago').timeago()
 
         collection.trigger 'afterReset'
 

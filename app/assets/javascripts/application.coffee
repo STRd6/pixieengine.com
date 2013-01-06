@@ -25,6 +25,7 @@
 #= require jquery.tipsy
 #= require jquery.vector_picker
 #= require jquery.timeago
+#= require jquery.isotope.min
 
 #= require wmd.combined.min
 

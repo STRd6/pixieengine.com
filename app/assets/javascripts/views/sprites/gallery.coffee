@@ -58,6 +58,12 @@ namespace "Pixie.Views.Sprites", (Sprites) ->
 
         collection.trigger 'afterReset'
 
+        $(@el)
+          .isotope('reloadItems')
+          .isotope
+            itemSelector : '.sprite_container'
+            layoutMode : 'masonry'
+
     addSprite: (sprite) =>
       spriteView = new Sprites.Sprite({ model: sprite })
       @$('.sprites').append(spriteView.render().el)
