@@ -1,7 +1,23 @@
 module Commentable
-  def self.included(model)
-    model.class_eval do
-      has_many :comments, :as => :commentable, :order => "id DESC"
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :comments, :as => :commentable, :order => "id DESC"
+  end
+
+  def remove_duplicate_comments!
+    comments.group_by do |comment|
+      [comment.commenter_id, comment.commentable_id, comment.body]
+    end.each do |key, comments|
+      comments.shift
+
+      comments.each &:destroy
+    end
+  end
+
+  module ClassMethods
+    def remove_duplicate_comments!
+      where{comments_count > 1}.each &:remove_duplicate_comments!
     end
   end
 end

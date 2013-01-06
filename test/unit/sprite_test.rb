@@ -37,4 +37,25 @@ class SpriteTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "removing duplicate comments" do
+    setup do
+      @sprite = Factory :sprite
+      @commenter = Factory :user
+
+      3.times do
+        comment = Factory.build :comment, :commentable => @sprite, :commenter => @commenter, :body => "test duplicate"
+        comment.save(:validate => false)
+      end
+
+      @sprite.reload
+    end
+
+    should "have duplicate comments removed" do
+      assert_difference "@sprite.comments_count", -2 do
+        @sprite.remove_duplicate_comments!
+        @sprite.reload
+      end
+    end
+  end
 end

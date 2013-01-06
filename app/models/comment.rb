@@ -24,6 +24,8 @@ class Comment < ActiveRecord::Base
   after_create :notify_commentee
 
   validates :commenter, :commentable, :body, :presence => true
+  # Don't allow exact duplicate comments by same person on same item
+  validates :body, :uniqueness => {:scope => [:commentable_id, :commenter_id]}
 
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
