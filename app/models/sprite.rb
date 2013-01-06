@@ -4,6 +4,7 @@ class Sprite < ActiveRecord::Base
   MAX_REPLAY_SIZE = 1000 * 50 # 50kb
 
   has_attached_file :image, S3_OPTS.merge(
+    :use_timestamp => false,
     :path => "sprites/:id/:style.:extension",
     :styles => {
       :thumb => ["32x32#", :png]
