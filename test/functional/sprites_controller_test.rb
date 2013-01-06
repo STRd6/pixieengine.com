@@ -31,5 +31,14 @@ class SpritesControllerTest < ActionController::TestCase
       assert_equal 'Sprite has been deleted.', flash[:notice]
       assert_response :redirect
     end
+
+    should "be able to save a sprite from the pixel editor" do
+      post :create,
+        sprite: {
+          width: "4",
+          height: "4",
+          file_base64_encoded: "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAE0lEQVQIW2N8zc73nwEJMJIuAAA/1wgBxJxmOgAAAABJRU5ErkJggg=="
+        }
+    end
   end
 end

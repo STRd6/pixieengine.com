@@ -22,9 +22,9 @@ class Sprite < ActiveRecord::Base
   # Limit sizes to small pixel art for now
   validates_numericality_of :width, :height, :only_integer => true, :less_than_or_equal_to => MAX_LENGTH, :greater_than => 0, :message => "is too large"
 
-  before_validation :gather_metadata, :convert_to_io, :set_dimensions
+  before_validation :gather_metadata, :set_dimensions
 
-  after_create :update_dimension_tags!, :save_replay_data, :associate_app
+  after_create :update_dimension_tags!, :save_replay_data, :associate_app, :convert_to_io
 
   cattr_reader :per_page
   @@per_page = 40
@@ -336,6 +336,8 @@ class Sprite < ActiveRecord::Base
 
   def save_replay_data
     if replay_data
+      FileUtils.mkdir_p File.dirname(replay_path)
+
       File.open(replay_path, 'wb') do |file|
         file << replay_data
       end
@@ -353,10 +355,10 @@ class Sprite < ActiveRecord::Base
       img_data = Base64.decode64(file_base64_encoded)
 
       io = StringIO.new(img_data)
-      io.original_filename = "image.png"
-      io.content_type = "image/png"
 
       self.image = io
+
+      save # TODO: I know that we're saving twice, optimize later
     end
   end
 
