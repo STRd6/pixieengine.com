@@ -354,9 +354,11 @@ class Sprite < ActiveRecord::Base
     if file_base64_encoded
       img_data = Base64.decode64(file_base64_encoded)
 
-      io = StringIO.new(img_data)
+      file = Tempfile.new ["image", ".png"], :encoding => 'ascii-8bit'
+      file.write img_data
+      file.rewind
 
-      self.image = io
+      self.image = file
 
       save # TODO: I know that we're saving twice, optimize later
     end
