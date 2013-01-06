@@ -16,7 +16,7 @@ end
 
 gem 'acts-as-taggable-on'
 gem "authlogic"
-gem "aws-s3", :require => "aws/s3"
+gem "aws-sdk"
 gem 'backbone-source'
 gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"

@@ -6,8 +6,6 @@ class Sprite < ActiveRecord::Base
   has_attached_file :image, S3_OPTS.merge(
     :path => "sprites/:id/:style.:extension",
     :styles => {
-      :large => ["128x128#", :png],
-      :medium => ["64x64>", :png],
       :thumb => ["32x32#", :png]
     }
   )
@@ -317,6 +315,19 @@ class Sprite < ActiveRecord::Base
     puts update_count
   end
 
+  def update_s3_metadata
+    (image.styles.keys + [:original]).each do |type|
+      s3_object = image.s3_object(type)
+
+      s3_object.copy_from s3_object.key, {
+        :acl => :public_read,
+        :cache_control => "max-age=315576000",
+        # :expires => 20.years.from_now.httpdate, # TODO: This doesn't seem to set...
+        :metadata => nil
+      }
+    end
+  end
+
   private
 
   def base_path
@@ -395,5 +406,17 @@ class Sprite < ActiveRecord::Base
     match_data = /^#([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})([A-Fa-f0-9]{2})/.match(color)[1..3].map(&:hex)
 
     "rgba(#{match_data.join(',')},#{int_opacity})"
+  end
+
+  def self.update_s3_metadata
+    find_each do |sprite|
+      tries = 3
+      begin
+        sprite.update_s3_metadata
+      rescue
+        tries -= 1
+        retry if tries > 0
+      end
+    end
   end
 end

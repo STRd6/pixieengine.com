@@ -1,6 +1,10 @@
 S3_OPTS = {
   :storage => :s3,
   :s3_credentials => "#{Rails.root}/config/s3.yml",
+  :s3_headers => {
+    'Cache-Control' => 'max-age=315576000',
+    'Expires' => 20.years.from_now.httpdate
+  },
   :url => ':s3_alias_url'
 }
 
