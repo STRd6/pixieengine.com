@@ -292,16 +292,6 @@ class User < ActiveRecord::Base
     User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
   end
 
-  def self.registrations_per_week
-    ActiveRecord::Base.connection.execute(self
-      .select("COUNT(*) AS count, date_trunc('week', created_at) as date")
-      .group("date")
-      .order("date ASC")
-      .where("created_at > ?", 6.months.ago)
-      .to_sql
-    )
-  end
-
   def self.cohort_analysis
     subquery = User.joins(:visits) \
       .select("users.id AS id,
