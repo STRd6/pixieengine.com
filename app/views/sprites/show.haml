@@ -31,7 +31,7 @@
       textarea
         height: 75px
 
-    .sprite_container
+    .sprite_block
       display: inline-block
       margin-right: 5em
       vertical-align: top
@@ -47,23 +47,26 @@
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
 
-.sprite_container
+.sprite_block
   %h1= sprite.display_name
 
-  = link_to image_tag(sprite.image.url, :alt => sprite.display_name), load_sprite_path(sprite)
+  .sprite_container
+    = link_to image_tag(sprite.image.url, :alt => sprite.display_name, :width => sprite.width, :height => sprite.height), load_sprite_path(sprite)
 
   %p= sprite.description
 
   .clear
   %p= author_link(sprite)
 
-.sprite_container
-  -if sprite.parent
+
+-if sprite.parent
+  .sprite_block
     %h1
       Remixed from
       = sprite.parent.display_name
 
-    = link_to image_tag(sprite.parent.image.url, :alt => sprite.parent.display_name), load_sprite_path(sprite.parent)
+    .sprite_container
+      = link_to image_tag(sprite.parent.image.url, :alt => sprite.parent.display_name, :width => sprite.parent.width, :height => sprite.parent.height), load_sprite_path(sprite.parent)
 
     %p= sprite.parent.description
 
