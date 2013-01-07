@@ -80,22 +80,10 @@
       Load in Editor
   - if current_user
     .btn-group
-      %a.button.btn(href="#" data-sprite_id="#{sprite.id}")
+      %a.button.btn(href="javascript:void(0)" rel="setAvatar")
         .static-status_online
         Set as Avatar
 
-    .btn-group
-      %a.button.btn.dropdown-toggle(data-toggle="dropdown" href="#" data-sprite_id="#{sprite.id}")
-        .static-photo_add
-        Add to Collection
-      %ul.dropdown-menu
-        - current_user.collections.each do |collection|
-          %li{ "data-collection_id" => collection.id }
-            %a(href='#')
-              = check_box_tag "collection", "1", collection.sprites.include?(sprite), :id => nil, :name => nil
-              = collection.title
-        %li{ "data-collection_id" => "new" }
-          %a(href='#') New Collection
   - if owner_or_admin?
     .btn-group
       %a.button.btn(href="#{edit_sprite_path(sprite)}")
@@ -131,74 +119,13 @@
 
   :coffeescript
     $ ->
-      ajaxifyForm = (selector) ->
-        form = $(selector)
-        form.ajaxForm
-          dataType: "json"
-          beforeSerialize: ($form) ->
-            $form.find("input[name=sprite_id]").val spriteId
-          success: (data) ->
-            if data.status == "ok"
-              $('.modal').modal('hide')
-              newCollectionCallback data.title, data.id
-            else
-              errorExplanation = form.find(".errorExplanation")
-              errorExplanation = $("<div class='errorExplanation' />") if errorExplanation.length == 0
-              errorList = $("<ul />")
-              $.each data.errors, (i, error) ->
-                errorList.append $("<li />").text(error)
-
-              errorExplanation.html ""
-              errorExplanation.append errorList
-              form.prepend errorExplanation
-
-      newCollectionCallback = (title, id) ->
-        $(".listMenu ul li:last-child").each ->
-          parentSpriteId = $(this).parent().prev().attr("data-sprite_id")
-          newElem = $("<li />").attr("data-collection_id", id)
-          newElem.text title
-
-          if parentSpriteId == spriteId
-            newElem.prepend "<input type='checkbox', value='1' checked='checked' />"
-          else
-            newElem.prepend "<input type='checkbox', value='1' />"
-
-          $(this).before newElem
-
-      ajaxifyForm "#new_collection"
-
-      displayedMenu = null
       spriteId = null
 
-      $(".listMenu .button").click ->
-        spriteId = $(this).attr("data-sprite_id")
-        displayedMenu = $(this).next("ul")
-        displayedMenu.show()
-        setTimeout ->
-          $(document).one "click", ->
-            displayedMenu.fadeOut()
-        , 0
+      $("a[rel=setAvatar]").on "click", (event) ->
+        event.preventDefault()
 
-        return false
-
-      $(".menu li").on "click", (event) ->
-        collectionId = $(this).attr("data-collection_id")
-        checkbox = $(this).children("input")
-        boxClick = false
-        boxClick = true  if $(event.target).is("input")
-        if collectionId == "new"
-          $("#newCollectionModal").modal()
-        else
-          checked = not (checkbox.attr("checked") ^ boxClick)
-          checkbox.attr "checked", checked
-          if checked
-            $.post "/collections/\#{collectionId}/add", sprite_id: spriteId, "json"
-          else
-            $.post "/collections/\#{collectionId}/remove", sprite_id: spriteId, "json"
-
-      $(".avatar a").on "click", (event) ->
         if setAvatarUrl = #{set_avatar_url.to_json}
           notify "Saving..."
-          spriteId = $(this).attr("data-sprite_id")
+          spriteId = #{sprite.id}
           $.post setAvatarUrl, sprite_id: spriteId, (data) ->
             notify "Avatar successfully changed."
