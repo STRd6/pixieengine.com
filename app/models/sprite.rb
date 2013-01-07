@@ -15,7 +15,13 @@ class Sprite < ActiveRecord::Base
   acts_as_taggable_on :dimension, :source
 
   belongs_to :user
-  belongs_to :parent, :class_name => "Sprite"
+  belongs_to :parent,
+    :class_name => "Sprite",
+    :inverse_of => :children
+  has_many :children,
+    :class_name => "Sprite",
+    :inverse_of => :parent,
+    :foreign_key => "parent_id"
 
   attr_accessor :broadcast, :file_base64_encoded, :frame_data, :replay_data, :app_id, :app_sprite_id
 

@@ -1,14 +1,2 @@
-.sprite
-  - if current_user
-    .favorites{:class => (current_user.favorite?(sprite) ? 'star' : 'no-star'), 'data-id' => sprite.id}
-
-  %span.title= link_to(sprite.display_name, sprite)
-
-  = image_link sprite
-
-  .user
-    By
-    - if sprite.user
-      = link_to sprite.user, sprite.user
-    - else
-      Anonymous
+.sprite_container
+  = link_to image_tag(sprite.image.url, :alt => sprite.display_name, :width => sprite.width, :height => sprite.height), sprite_path(sprite)
