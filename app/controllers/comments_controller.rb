@@ -30,10 +30,6 @@ class CommentsController < ApplicationController
   def index
     @comments = Comment
 
-    if params[:user_id].present?
-      @comments = @comments.for_user(User.find_by_display_name!(params[:user_id]))
-    end
-
     @comments = @comments.order("id DESC").paginate(
       :page => page,
       :per_page => per_page

@@ -165,6 +165,10 @@ class UsersController < ApplicationController
     redirect_to root_path, :notice => "You have been unsubscribed"
   end
 
+  def recent_comments
+    respond_with Comment.recent_by_item_for_user(user).map(&:commentable).map(&:recent_comments_json)
+  end
+
   private
 
   def collection

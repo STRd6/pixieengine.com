@@ -1,15 +1,16 @@
-.comment(data-commentable_id=@commentable.id)
-  .attribution
-    .name
-      %a(href="/#{@commenter_name}")
-        = @commenter_name
-        %img(alt="Thumb" src=@avatar_src)
-    %time.timeago(datetime=@time)= @time
+- if @image
+  - cssClass = "#{@commentable.type}_container"
+  .commentable(class=cssClass)
+    %a(href=@commentable.url)
+      %img(alt=@commentable.name src=@image.src width=@image.width height=@image.height)
 
-  - if @image
-    - cssClass = "#{@commentable.type}_container"
-    .commentable(class=cssClass)
-      %a(href=@commentable.url)
-        %img(alt=@commentable.name src=@image.src width=@image.width height=@image.height)
+- @comments.each (comment) ->
+  - {body, commenter, time} = comment
+  .comment
+    .attribution
+      %a(href=commenter.url)
+        %img(alt="Thumb" src=commenter.avatar_src)
+        %span= commenter.name
+      %time.timeago(datetime=time)= time
 
-  != @body
+    != body

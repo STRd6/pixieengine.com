@@ -1,8 +1,5 @@
 class Comment < ActiveRecord::Base
   include Sanitization
-  include Rails.application.routes.url_helpers
-
-  self.default_url_options = { :host => nil }
 
   belongs_to :commenter, :class_name => "User"
   belongs_to :commentee, :class_name => "User"
@@ -32,40 +29,21 @@ class Comment < ActiveRecord::Base
 
   scope :for_user, lambda {|user| where(:commentee_id => user)}
 
+  scope :recent_by_item_for_user, lambda {|user|
+    select([:commentable_id, :commentable_type])
+    .where{(commenter_id != user.id) & (commentee_id == user.id)}
+    .group(:commentable_id, :commentable_type)
+    .order("MAX(id) DESC")
+    .limit(10)
+  }
+
   def as_json(options={})
     data = {
-      :commenter_id => commenter_id,
-      :commenter_name => commenter.display_name,
+      :commenter => commenter.comment_json,
       :id => id,
-      :avatar_src => commenter.avatar.url(:thumb),
       :body => sanitize(BlueCloth.new(body).to_html),
       :time => created_at.getutc.iso8601
     }
-
-    if commentable
-      type = commentable_type.downcase
-
-      data[:commentable] = {
-        id: commentable.id,
-        name: commentable.display_name,
-        url: send("#{type}_path", commentable),
-        type: type
-      }
-
-      if commentable.is_a? Sprite
-        data[:image] = {
-          :src => commentable.image.url,
-          :width => commentable.width,
-          :height => commentable.height
-        }
-      else
-        data[:image] = {
-          :src => commentable.image.url(:thumb),
-          :width => 96,
-          :height => 96
-        }
-      end
-    end
 
     return data
   end

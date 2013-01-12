@@ -105,6 +105,14 @@ class User < ActiveRecord::Base
     }
   end
 
+  def comment_json
+    {
+      :name => display_name,
+      :url => user_path(self),
+      :avatar_src => avatar.url(:thumb),
+    }
+  end
+
   def to_s
     display_name
   end
