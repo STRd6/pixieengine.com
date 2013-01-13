@@ -166,7 +166,13 @@ class UsersController < ApplicationController
   end
 
   def recent_comments
-    respond_with Comment.recent_by_item_for_user(user).map(&:commentable).map(&:recent_comments_json)
+    per_page = 10 # TODO: Figure out per action per page, or just pass in from client js
+
+    @models = Comment.recent_by_item_for_user(user).paginate(
+      :page => page,
+      :per_page => per_page
+    )
+
   end
 
   private

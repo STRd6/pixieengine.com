@@ -1,16 +1,17 @@
-- if @image
-  - cssClass = "#{@commentable.type}_container"
+- if image = @image
+  - cssClass = "#{@type}_container"
   .commentable(class=cssClass)
-    %a(href=@commentable.url)
-      %img(alt=@commentable.name src=@image.src width=@image.width height=@image.height)
+    %a(href=@url)
+      %img(alt=@name src=image.src width=image.width height=image.height)
 
-- @comments.each (comment) ->
-  - {body, commenter, time} = comment
-  .comment
-    .attribution
-      %a(href=commenter.url)
-        %img(alt="Thumb" src=commenter.avatar_src)
-        %span= commenter.name
-      %time.timeago(datetime=time)= time
+.comments
+  - @comments.each (comment) ->
+    - {body, commenter, time} = comment
+    .comment
+      .attribution
+        %a(href=commenter.url)
+          %img(alt="Thumb" src=commenter.avatar_src)
+          %span= commenter.name
+        %time.timeago(datetime=time)= time
 
-    != body
+      .body!= body

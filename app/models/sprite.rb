@@ -263,6 +263,20 @@ class Sprite < ActiveRecord::Base
     }
   end
 
+  def commentable_json
+    {
+      id: id,
+      name: display_name,
+      url: url_for(self),
+      type: self.class.name.downcase,
+      image: {
+        :src => image.url,
+        :width => width,
+        :height => height,
+      },
+    }
+  end
+
   def file_path
     if frames > 1
       "#{base_path}images/#{id}.gif"

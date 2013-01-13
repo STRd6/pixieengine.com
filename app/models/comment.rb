@@ -41,11 +41,19 @@ class Comment < ActiveRecord::Base
     data = {
       :commenter => commenter.comment_json,
       :id => id,
-      :body => sanitize(BlueCloth.new(body).to_html),
-      :time => created_at.getutc.iso8601
+      :body => html,
+      :time => time,
     }
 
     return data
+  end
+
+  def time
+    created_at.getutc.iso8601
+  end
+
+  def html
+    sanitize(BlueCloth.new(body).to_html)
   end
 
   def notify_commentee

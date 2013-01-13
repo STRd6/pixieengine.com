@@ -9,8 +9,6 @@ namespace "Pixie.Views.Comments", (Comments) ->
         current_user_id: @model.collection.current_user_id
         owner_id: @model.collection.owner_id
 
-      data.commentable_name = "" unless data.commentable_name
-
       $(@el).html $(JST['comments/comment'](data))
 
       return this

@@ -54,7 +54,7 @@
       comments_gallery = new Pixie.Views.Comments.Gallery
       comments_gallery.collection.per_page = 10
       comments_gallery.collection.url = ->
-        #{user_comments_path(user).to_json}
+        #{recent_comments_user_path(user).to_json}
       comments_gallery.collection.fetch()
 
       $('.membership').tipsy
