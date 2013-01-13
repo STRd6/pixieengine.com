@@ -5,7 +5,7 @@ module Commentable
     include Rails.application.routes.url_helpers
     default_url_options = {:only_path => true}
 
-    has_many :comments, :as => :commentable, :order => "id DESC"
+    has_many :comments, :as => :commentable, :order => "id DESC", :dependent => :destroy
     has_many :recent_comments, :as => :commentable, :order => "id DESC", :limit => 5, :class_name => "Comment"
   end
 
