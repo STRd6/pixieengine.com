@@ -16,9 +16,9 @@
     = form.radio_button :login, "yes"
     Yes, I have a password
 
-  %label.relative
+  %label
     = form.password_field :password
-    %a.static-help.tipsy.hint#forgot_password_link(href="#{new_password_reset_path}" alt="Forgot your password?" title="Forgot your password?")
+    %a(href=new_password_reset_path alt="Forgot your password?" title="Forgot your password?") Forgot your password?
 
   %button.btn.full#user_session_submit Log In
 
