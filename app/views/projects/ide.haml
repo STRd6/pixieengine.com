@@ -25,7 +25,7 @@
   = javascript_include_tag "ide/github"
 
 - project_id = params[:id]
-- github_token = current_user.oauth_tokens.find_by_provider("github") if current_user
+- github_token = current_user.token_for("github") if current_user
 
 %textarea#code_content(style="display:none;")= project.file_info.to_json
 %audio.preview

@@ -3,6 +3,7 @@ class Collection < ActiveRecord::Base
 
   belongs_to :user
   has_many :collection_items
+  has_many :sprites, :through => :collection_items, :source => :item, :source_type => 'Sprite'
 
   def title
     name
