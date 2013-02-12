@@ -183,7 +183,7 @@ GEM
     jquery-image_reader (0.1.1)
       jquery-source
     jquery-source (1.7.1)
-    json (1.7.6)
+    json (1.7.7)
     json_pure (1.6.6)
     kgio (2.6.0)
     libv8 (3.11.8.3)
