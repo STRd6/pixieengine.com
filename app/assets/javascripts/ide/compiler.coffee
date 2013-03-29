@@ -17,7 +17,7 @@ window.compileFileNode = (file) ->
 
 window.compileCode = (src, ext, $element) ->
   if ext is "js"
-    src
+    return src
   else if ext is "coffee"
     try
       compiledCode = CoffeeScript.compile src, bare: true
@@ -31,9 +31,11 @@ window.compileCode = (src, ext, $element) ->
         displayError
           message: error.message
 
-    compiledCode
+    return compiledCode
   else
-    throw "Cannot compile unknown extension: #{ext}"
+    warn "Cannot compile unknown extension: #{ext}"
+
+    return
 
 addWarnings = (element) ->
   element.tipsy
