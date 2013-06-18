@@ -71,7 +71,6 @@ group :test do
   gem "minitest"
   gem "shoulda"
   gem "turn", :require => false
-  gem "ruby-prof"
 end
 
 group :development, :test do
