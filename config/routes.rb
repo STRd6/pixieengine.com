@@ -33,6 +33,9 @@ PixieStrd6Com::Application.routes.draw do
     member do
       get :load
 
+      post :add_favorite
+      post :remove_favorite
+
       post :add_tag
       post :remove_tag
     end

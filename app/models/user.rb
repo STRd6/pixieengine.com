@@ -164,6 +164,10 @@ class User < ActiveRecord::Base
     remove_from_collection(sprite)
   end
 
+  def add_favorite(sprite)
+    add_to_collection(sprite)
+  end
+
   def set_avatar(sprite)
     self.avatar = sprite.image
     self.save

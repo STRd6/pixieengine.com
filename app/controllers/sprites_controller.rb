@@ -2,7 +2,7 @@ class SpritesController < ApplicationController
   respond_to :html, :json
 
   before_filter :require_owner_or_admin, :only => [:destroy, :edit, :update]
-  before_filter :require_user, :only => [:add_tag, :remove_tag]
+  before_filter :require_user, :only => [:add_tag, :remove_tag, :add_favorite, :remove_favorite]
 
   def create
     @sprite = Sprite.create params[:sprite].merge(:user => current_user)
@@ -149,6 +149,22 @@ class SpritesController < ApplicationController
 
   def remove_tag
     sprite.remove_tag(params[:tag])
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+    end
+  end
+
+  def add_favorite
+    current_user.add_favorite(sprite)
+
+    respond_to do |format|
+      format.json { render :json => {:status => "ok"} }
+    end
+  end
+
+  def remove_favorite
+    current_user.remove_favorite(sprite)
 
     respond_to do |format|
       format.json { render :json => {:status => "ok"} }

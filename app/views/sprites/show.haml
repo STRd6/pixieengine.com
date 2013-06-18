@@ -36,7 +36,7 @@
       margin-right: 5em
       vertical-align: top
 
-    .static-picture_edit, .static-status_online, .static-photo_add, .static-table_edit, .static-cross
+    .static-picture_edit, .static-arrow_undo, .static-status_online, .static-photo_add, .static-table_edit, .static-cross
       display: inline-block
       vertical-align: bottom
 
@@ -89,6 +89,18 @@
         .static-status_online
         Set as Avatar
 
+    - if current_user.favorite?(sprite)
+      .btn-group
+        %a.button.btn(href="javascript:void(0)" rel="removeFavorite")
+          .static-arrow_undo
+          Remove Favorite
+
+    - else
+      .btn-group
+        %a.button.btn(href="javascript:void(0)" rel="addFavorite")
+          .static-photo_add
+          Add Favorite
+
   - if owner_or_admin?
     .btn-group
       %a.button.btn(href="#{edit_sprite_path(sprite)}")
@@ -134,3 +146,21 @@
           spriteId = #{sprite.id}
           $.post setAvatarUrl, sprite_id: spriteId, (data) ->
             notify "Avatar successfully changed."
+
+      $("a[rel=addFavorite]").on "click", (event) ->
+        event.preventDefault()
+
+        if url = #{add_favorite_sprite_path(sprite).to_json}
+          notify "Adding favorite..."
+          spriteId = #{sprite.id}
+          $.post url, (data) ->
+            notify "Added to favorites."
+
+      $("a[rel=removeFavorite]").on "click", (event) ->
+        event.preventDefault()
+
+        if url = #{remove_favorite_sprite_path(sprite).to_json}
+          notify "Removing..."
+          spriteId = #{sprite.id}
+          $.post url, (data) ->
+            notify "Removed from favorites."
