@@ -60,7 +60,7 @@ GIT
       activesupport
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     aaronh-chronic (0.3.9)
     actionmailer (3.2.11)
