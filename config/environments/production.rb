@@ -44,9 +44,10 @@ PixieStrd6Com::Application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address => "localhost",
-    :port => "25",
-    :domain => "strd6.com"
+    :address => "smtp.mandrillapp.com",
+    :port => "587",
+    :user_name => "yahivin@gmail.com",
+    :domain => "pixieengine.com"
   }
 
   # Enable threaded mode
