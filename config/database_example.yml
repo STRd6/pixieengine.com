@@ -1,7 +1,7 @@
 shared: &shared
   adapter: postgresql
   encoding: utf8
-  username: postgres
+  username: <%= ENV["USER"] || "postgres" %>
 
 development:
   <<: *shared
