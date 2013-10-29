@@ -1,4 +1,5 @@
 .bundle
+.env
 .project
 .redcar
 .rvmrc

@@ -51,6 +51,7 @@ gem 'rabl'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rails_autolink'
 gem "require"
+# TODO: Delegate image processing to external service
 gem 'rmagick', :require => 'RMagick'
 gem "squeel"
 gem "sanitize"
@@ -69,14 +70,15 @@ gem "whenever"
 group :test do
   gem "factory_girl", :git => "git://github.com/thoughtbot/factory_girl.git"
   gem "minitest"
+  gem "pry"
   gem "shoulda"
   gem "turn", :require => false
 end
 
 group :development, :test do
   gem 'growl'
-  gem "jasmine"
-  gem 'jasmine-headless-webkit'
-  gem 'jasmine-spec-extras'
+  #gem "jasmine"
+  #gem 'jasmine-headless-webkit'
+  #gem 'jasmine-spec-extras'
   gem 'rb-fsevent'
 end
