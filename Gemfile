@@ -39,7 +39,6 @@ gem 'json'
 gem 'mail'
 gem "mocha"
 gem 'multi_json', '1.2.0'
-gem "oink"
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-google-oauth2"
@@ -57,10 +56,7 @@ gem "squeel"
 gem "sanitize"
 gem 'spacedocs'
 
-gem 'therubyracer', '~> 0.11.0beta'
-
-# Had to drop this libv8 dependency in here so that therubyracer beta could install.
-gem 'libv8', '~> 3.11.8'
+gem "execjs"
 
 gem 'tile_editor', :git => "git://github.com/PixieEngine/TileEditor.git"
 gem 'underscore-source'
