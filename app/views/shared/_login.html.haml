@@ -11,7 +11,6 @@
         :ruby
           user_links = [
             ['My Profile', user_path(current_user)],
-            ['My Projects', projects_path(:filter => 'own')],
             ['Account Settings', edit_user_path(current_user)],
             ['Log out', sign_out_path],
           ]
@@ -27,10 +26,6 @@
             %li.divider
           -else
             %li= link_to(text, url)
-    %li.divider-vertical
-    %li
-      %button.btn.btn-primary.new_project(title='Create a new project')
-        %i.project_icon
 
   - else
     = link_to "Log in or sign up", sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
