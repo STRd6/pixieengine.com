@@ -22,7 +22,6 @@ gem 'bluecloth'
 gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
 gem 'boner'
 gem 'bootstrap-sass', '~> 2.0.4.0'
-gem "capistrano"
 gem "coffee-filter"
 gem 'cornerstone-source'
 gem 'dynamic_form'
@@ -69,6 +68,17 @@ group :test do
   gem "pry"
   gem "shoulda"
   gem "turn", :require => false
+end
+
+group :development do
+  gem "capistrano",
+    require: false
+  gem 'capistrano-rails',
+    require: false
+  gem 'capistrano-bundler',
+    require: false
+  gem 'capistrano-rvm',
+    require: false
 end
 
 group :development, :test do

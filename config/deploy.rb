@@ -1,103 +1,97 @@
-require "bundler/capistrano"
+# config valid only for Capistrano 3.1
+lock '3.1.0'
 
-default_run_options[:pty] = true
+set :ssh_options, {
+  user: :rails,
+  port: 2112
+}
 
-set :application, "pixie.strd6.com"
-
-set :use_sudo, false
-
+set :application, "pixieengine.com"
 set :scm, "git"
-set :repository, "git://github.com/PixieEngine/pixieengine.com.git"
+set :repo_url, 'git://github.com/PixieEngine/pixieengine.com.git'
 set :branch, "master"
 set :deploy_via, :remote_cache
 set :copy_exclude, [ '.git' ]
-set :user, :rails
+# set :user, :rails
 
-set :unicorn_config, "#{current_path}/config/unicorn.rb"
-set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
+# Default deploy_to directory is /var/www/my_app
+# set :deploy_to, '/var/www/my_app'
 
-# We only have a production environment right now
-set :rails_env, 'production'
+# Default value for :format is :pretty
+# set :format, :pretty
 
-# If you aren't deploying to /u/apps/#{application} on the target
-# servers (which is the default), you can specify the actual location
-# via the :deploy_to variable:
-# set :deploy_to, "/var/www/#{application}"
+# Default value for :log_level is :debug
+# set :log_level, :debug
 
-ssh_options[:port] = 2112
+# Default value for :pty is false
+# set :pty, true
 
-app_ip = "173.255.220.219"
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
 
-role :app, app_ip
-role :web, app_ip
-role :db,  app_ip, :primary => true
+# Default value for linked_dirs is []
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-after :deploy do
-  run "chmod -R g+w #{release_path}/tmp"
-  run "chmod -R g+w #{release_path}/.bundle"
-end
-after :deploy, "deploy:migrate"
-after :deploy, "deploy:cleanup"
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-# Whenever task
-after "deploy:create_symlink", "deploy:update_crontab"
+# Default value for keep_releases is 5
+# set :keep_releases, 5
 
 namespace :deploy do
-  desc "Update the crontab file"
-  task :update_crontab, :roles => :db do
-    run "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
-  end
-end
 
-after "deploy:setup" do
-  run "mkdir -p #{shared_path}/production"
-  run "mkdir -p #{shared_path}/production/images"
-  run "mkdir -p #{shared_path}/production/replays"
-  run "mkdir -p #{shared_path}/local"
-  run "mkdir -p #{shared_path}/sockets"
-  run "touch #{shared_path}/log/nginx.log"
-  run "touch #{shared_path}/log/nginx.error.log"
-end
-
-after "deploy:update_code" do
-  run "ln -nfs #{shared_path}/production #{release_path}/public/production"
-  run "ln -nfs #{shared_path}/local/s3.yml #{release_path}/config/s3.yml"
-  run "ln -nfs #{shared_path}/local/oauth.yml #{release_path}/config/oauth.yml"
-  run "ln -nfs #{shared_path}/local/database.yml #{release_path}/config/database.yml"
-  run "ln -nfs #{shared_path}/local/settings.yml #{release_path}/config/settings.yml"
-end
-load 'deploy/assets' # This is loaded down here to have the above update code callback run first
-
-# Unicorn start Tasks
-namespace :deploy do
-  task :start, :roles => :app, :except => { :no_release => true } do
-    run "cd #{current_path} && bundle exec unicorn -c #{unicorn_config} -E #{rails_env} -D"
-  end
-
-  task :stop, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} kill `cat #{unicorn_pid}`"
-  end
-
-  task :graceful_stop, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} kill -s QUIT `cat #{unicorn_pid}`"
-  end
-
-  task :reload, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`"
-  end
-
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    stop
-    start
-  end
-end
-
-namespace :tail do
-  desc "tail Rails log files"
-  task :logs, :roles => :app do
-    run "tail -fn50 #{shared_path}/log/production.log" do |channel, stream, data|
-      puts data
-      break if stream == :err
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      # execute :touch, release_path.join('tmp/restart.txt')
     end
   end
+
+  after :publishing, :restart
+
+  after :restart, :clear_cache do
+    on roles(:web), in: :groups, limit: 3, wait: 10 do
+      # Here we can do anything such as:
+      # within release_path do
+      #   execute :rake, 'cache:clear'
+      # end
+    end
+  end
+
+  desc "Update the crontab file"
+  task :update_crontab do
+    on roles(:db) do
+      execute "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
+    end
+  end
+
+  before 'assets:precompile', :migrate
+
+  task :create_symlinks do
+    on roles(:web) do
+      execute "ln -nfs #{shared_path}/production #{release_path}/public/production"
+      execute "ln -nfs #{shared_path}/local/s3.yml #{release_path}/config/s3.yml"
+      execute "ln -nfs #{shared_path}/local/oauth.yml #{release_path}/config/oauth.yml"
+      execute "ln -nfs #{shared_path}/local/database.yml #{release_path}/config/database.yml"
+      execute "ln -nfs #{shared_path}/local/settings.yml #{release_path}/config/settings.yml"
+    end
+  end
+
+  before :migrate, :create_symlinks
 end
+
+task :setup_shared_paths do
+  on roles(:web) do
+    execute "mkdir -p #{shared_path}/production"
+    execute "mkdir -p #{shared_path}/production/images"
+    execute "mkdir -p #{shared_path}/production/replays"
+    execute "mkdir -p #{shared_path}/local"
+    execute "mkdir -p #{shared_path}/sockets"
+    execute "mkdir -p #{shared_path}/log"
+    execute "touch #{shared_path}/log/nginx.log"
+    execute "touch #{shared_path}/log/nginx.error.log"
+  end
+end
+
+before :deploy, :setup_shared_paths
