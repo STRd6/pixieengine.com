@@ -267,27 +267,6 @@ class User < ActiveRecord::Base
     ]
   end
 
-  def subscribe_url(plan_id=nil)
-    "https://spreedly.com/#{SITE}/subscribers/#{id}/subscribe/#{plan_id || DEFAULT_PLAN_ID}/#{display_name.gsub(' ', '_')}?email=#{email}"
-  end
-
-  def edit_subscription_url
-    "https://spreedly.com/#{SITE}/subscriber_accounts/#{spreedly_token}"
-  end
-
-  def refresh_from_spreedly
-    subscriber = Subscriber.find(id)
-
-    if subscriber
-      self.paying = subscriber.active
-      self.spreedly_token = subscriber.token
-      # Subscription changes are not the time to deal with busted models
-      save(:validate => false)
-    else
-      update_attribute(:paying, false)
-    end
-  end
-
   def send_welcome_email
     Notifier.welcome_email(self).deliver unless email.blank?
   end
