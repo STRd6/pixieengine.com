@@ -1,19 +1,21 @@
 namespace :db do
   DATABASE = "pixie_development"
   FILE_NAME = 'dump.sql.gz'
+  S3_ENV = "production"
+  # TODO: Get latest backup somehow
+  BACKUP_FILE = 'pixie_production_2014-03-01T12:00:20-05:00.sql.gz'
 
   task :download_from_s3 do
     require 'aws/s3'
-    include AWS::S3
 
-    config = HashWithIndifferentAccess.new(YAML.load_file("#{Rails.root}/config/slurp.yml")).symbolize_keys
-    Base.establish_connection!(config)
+    config = YAML.load_file("#{Rails.root}/config/s3.yml")[S3_ENV]
+    s3 = AWS::S3.new config
 
-    bucket = Bucket.find 'pixie.strd6.com'
-    most_recent_backup = bucket.reverse_each.first
+    bucket = s3.buckets['pixie.strd6.com']
+    most_recent_backup = bucket.objects[BACKUP_FILE]
 
     File.open FILE_NAME, "wb" do |file|
-      file.write most_recent_backup.value
+      file.write most_recent_backup.read
     end
   end
 
