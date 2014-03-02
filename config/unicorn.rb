@@ -11,7 +11,7 @@
 rails_env = ENV['RAILS_ENV'] || 'production'
 
 if rails_env == 'production'
-  base_path = "/u/apps/pixie.strd6.com/"
+  base_path = "/var/www/pixieengine.com/"
   app_path = "#{base_path}current"
   shared_path = "#{base_path}shared/"
   tmp_path = shared_path
