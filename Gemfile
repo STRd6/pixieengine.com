@@ -79,6 +79,8 @@ group :development do
     require: false
   gem 'capistrano-rvm',
     require: false
+  gem 'sepastian-capistrano3-unicorn',
+    require: false
 end
 
 group :development, :test do

@@ -263,6 +263,8 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    sepastian-capistrano3-unicorn (0.4.0)
+      capistrano (~> 3.0)
     shoulda (2.11.3)
     slop (3.4.5)
     spacedocs (0.0.2)
@@ -360,6 +362,7 @@ DEPENDENCIES
   rmagick
   sanitize
   sass-rails
+  sepastian-capistrano3-unicorn
   shoulda
   spacedocs
   squeel
