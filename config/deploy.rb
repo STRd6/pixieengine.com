@@ -65,12 +65,13 @@ end
 
 task :setup_shared_paths do
   on roles(:web) do
+    execute "mkdir -p #{shared_path}/local"
+    execute "mkdir -p #{shared_path}/log"
+    execute "mkdir -p #{shared_path}/pids"
     execute "mkdir -p #{shared_path}/production"
     execute "mkdir -p #{shared_path}/production/images"
     execute "mkdir -p #{shared_path}/production/replays"
-    execute "mkdir -p #{shared_path}/local"
     execute "mkdir -p #{shared_path}/sockets"
-    execute "mkdir -p #{shared_path}/log"
     execute "touch #{shared_path}/log/nginx.log"
     execute "touch #{shared_path}/log/nginx.error.log"
   end
