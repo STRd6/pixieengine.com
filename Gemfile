@@ -8,6 +8,7 @@ group :assets do
   gem 'compass-rails'
   gem 'sass-rails'
   gem 'uglifier'
+  gem 'turbo-sprockets-rails3'
 end
 
 group :production do
