@@ -1,5 +1,5 @@
 namespace :db do
-  DATABASE = "pixie_development"
+  DATABASE = "pixie_#{Rails.env}"
   FILE_NAME = 'dump.sql.gz'
   S3_ENV = "production"
   # TODO: Get latest backup somehow
