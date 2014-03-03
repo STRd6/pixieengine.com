@@ -39,7 +39,25 @@ set :deploy_to, '/var/www/pixieengine.com'
 # set :keep_releases, 5
 
 namespace :deploy do
-  after :publishing, 'unicorn:restart'
+  task :start do
+    on roles(:app) do
+      sudo "start pixieengine.com"
+    end
+  end
+
+  task :stop do
+    on roles(:app) do
+      sudo "stop pixieengine.com"
+    end
+  end
+
+  task :restart do
+    on roles(:app) do
+      sudo "restart pixieengine.com"
+    end
+  end
+
+  after :finished, :restart
 
   desc "Update the crontab file"
   task :update_crontab do

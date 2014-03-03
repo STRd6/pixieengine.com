@@ -80,9 +80,6 @@ group :development do
     require: false
   gem 'capistrano-rvm',
     require: false
-  gem 'sepastian-capistrano3-unicorn',
-    git: "git@github.com:bobbrez/capistrano-unicorn.git",
-    require: false
 end
 
 group :development, :test do

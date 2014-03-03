@@ -59,13 +59,6 @@ GIT
     factory_girl (2.3.2)
       activesupport
 
-GIT
-  remote: git@github.com:bobbrez/capistrano-unicorn.git
-  revision: df011d4acd2b2825a4cfe725a1a0728b52803bbe
-  specs:
-    sepastian-capistrano3-unicorn (0.4.0)
-      capistrano (~> 3.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -370,7 +363,6 @@ DEPENDENCIES
   rmagick
   sanitize
   sass-rails
-  sepastian-capistrano3-unicorn!
   shoulda
   spacedocs
   squeel
