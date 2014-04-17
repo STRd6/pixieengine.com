@@ -126,7 +126,7 @@
     = text_field_tag :tag, nil, :placeholder => "Tag name"
     %button.btn.add(type='submit') Add
 
-= display_comments sprite
+= render :partial => "shared/disqus"
 
 #newCollectionModal.modal
   = render :partial => "collections/form"
