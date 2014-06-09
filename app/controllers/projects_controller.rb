@@ -217,6 +217,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    render layout: "bare"
   end
 
   def ide

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+%html
+  = render :partial => "shared/head"
+
+  %body#fullscreen
+    .content
+      = yield
+
+    = render :partial => "/shared/javascripts"
