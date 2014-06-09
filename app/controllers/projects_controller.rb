@@ -7,8 +7,6 @@ class ProjectsController < ApplicationController
   before_filter :require_owner_or_admin, :only => [:destroy, :add_member, :remove_member]
   before_filter :require_admin, :only => [:feature, :add_to_arcade, :add_to_tutorial]
 
-  before_filter :count_view, :only => [:fullscreen]
-
   before_filter :redirect_to_user_page_if_logged_in, :only => :info
 
   def new
@@ -219,7 +217,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    respond_with project
   end
 
   def ide

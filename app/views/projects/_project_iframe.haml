@@ -1,10 +1,14 @@
-- config = project.config
--if Rails.env.development?
-  %iframe#app.no_border{ :width => config[:width], :height => config[:height], :src => widget_project_url(project.id, :host => "127.0.0.1", :port => '3000')}
--else
-  %iframe#app.no_border{ :width => config[:width], :height => config[:height], :src => widget_project_url(project.id, :host => "games.pixieengine.com")}
+- url = "http://projects.pixieengine.com/#{params[:id].to_i}/"
+
+%iframe#app.no_border(width=480 height=320 src=url)
 
 - content_for :javascript do
-  :javascript
-    // Set focus
-    $("#app")[0].contentWindow.focus();
+  :coffeescript
+    iframe = $("#app")[0]
+    # Set focus
+    iframe.contentWindow.focus()
+    # Resize
+    $.getJSON #{"#{url}pixie.json?pixieengine.com".to_json}, ({name, width, height}) ->
+      iframe.width = width
+      iframe.heiht = height
+      document.title = name
