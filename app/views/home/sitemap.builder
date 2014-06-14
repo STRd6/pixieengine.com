@@ -33,13 +33,4 @@ xml.urlset "xmlns" => "http://www.google.com/schemas/sitemap/0.84" do
       xml.priority    0.6
     end
   end
-
-  @projects.each do |project|
-    xml.url do
-      xml.loc         url_for(:only_path => false, :controller => 'projects', :action => 'fullscreen', :id => project.id)
-      xml.lastmod     w3c_date(project.updated_at)
-      xml.changefreq  "weekly"
-      xml.priority    0.8
-    end
-  end
 end
