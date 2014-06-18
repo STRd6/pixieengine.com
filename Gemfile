@@ -46,6 +46,7 @@ gem 'paperclip'
 gem "pg"
 gem 'pixel_editor', :git => 'git://github.com/PixieEngine/PixelEditor.git'
 gem "pixie_sass", :git => "git://github.com/PixieEngine/pixie_sass"
+gem "public_activity"
 gem 'rabl'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rails_autolink'
