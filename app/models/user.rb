@@ -369,6 +369,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def follow(user)
+    Follow.create :follower => self, :followee => user
+  end
+
   private
 
   def no_connected_sites?

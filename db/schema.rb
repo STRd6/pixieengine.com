@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140618145157) do
+ActiveRecord::Schema.define(:version => 20140618153703) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -305,6 +305,17 @@ ActiveRecord::Schema.define(:version => 20140618145157) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  create_table "follows", :id => false, :force => true do |t|
+    t.integer  "follower_id", :null => false
+    t.integer  "followee_id", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "follows", ["followee_id"], :name => "index_follows_on_followee_id"
+  add_index "follows", ["follower_id", "followee_id"], :name => "index_follows_on_follower_id_and_followee_id", :unique => true
+  add_index "follows", ["follower_id"], :name => "index_follows_on_follower_id"
 
   create_table "forem_forums", :force => true do |t|
     t.string "title"
@@ -628,6 +639,8 @@ ActiveRecord::Schema.define(:version => 20140618145157) do
     t.string   "spreedly_token"
     t.datetime "last_contacted",      :default => '2011-12-29 01:37:27', :null => false
     t.datetime "last_surveyed",       :default => '2009-12-29 02:38:45', :null => false
+    t.integer  "followers_count",     :default => 0,                     :null => false
+    t.integer  "following_count",     :default => 0,                     :null => false
   end
 
   add_index "users", ["display_name"], :name => "index_users_on_display_name", :unique => true

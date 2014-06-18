@@ -68,4 +68,35 @@ class UserTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "following" do
+    setup do
+      @user = Factory :user
+      @other_user = Factory :user
+    end
+
+    should "be able to follow someone" do
+      assert_difference "@user.following_count", +1 do
+        assert_difference "@other_user.followers_count", +1 do
+          @user.follow @other_user
+
+          @user.reload
+          @other_user.reload
+        end
+      end
+    end
+
+    should "not be able to follow the same user twice" do
+      assert_difference "@user.following_count", +1 do
+        assert_difference "@other_user.followers_count", +1 do
+          2.times do
+            @user.follow @other_user
+          end
+
+          @user.reload
+          @other_user.reload
+        end
+      end
+    end
+  end
 end
