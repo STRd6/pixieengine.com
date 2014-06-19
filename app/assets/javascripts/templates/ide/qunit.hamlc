@@ -1,4 +1,0 @@
-%div
-  %h2#qunit-banner
-  %ol#qunit-tests
-  #qunit-fixture
