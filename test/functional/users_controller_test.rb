@@ -32,6 +32,25 @@ class UsersControllerTest < ActionController::TestCase
       assert_redirected_to user_path(assigns(:object))
     end
 
+    should "be able to view own profile" do
+      get :show, :id => @user
+    end
+
+    context "with a comment on a sprite that has been deleted" do
+      setup do
+        comment = Factory :comment, :commentee => @user
+        comment.commentable.destroy()
+
+        @user.reload
+        assert_equal 1, @user.activity_updates.size
+      end
+
+      should "be able to view own profile" do
+
+        get :show, :id => @user
+      end
+    end
+
     should "be able to edit own profile" do
       get :edit, :id => @user
 
