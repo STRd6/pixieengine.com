@@ -63,10 +63,7 @@ class User < ActiveRecord::Base
   has_many :visits
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
-  has_many :authored_plugins, :class_name => "Plugin"
   has_many :memberships
-  has_many :user_plugins
-  has_many :installed_plugins, :through => :user_plugins, :class_name => "Plugin", :source => :plugin
 
   attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications, :help_tips
 
@@ -214,18 +211,6 @@ class User < ActiveRecord::Base
 
   def to_param
     display_name
-  end
-
-  def install_plugin(plugin)
-    installed_plugins << plugin
-  end
-
-  def uninstall_plugin(plugin)
-    user_plugins.find_by_plugin_id(plugin).destroy
-  end
-
-  def plugin_installed?(plugin)
-    installed_plugins.include? plugin
   end
 
   def invite(options)
