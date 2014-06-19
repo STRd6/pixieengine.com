@@ -19,12 +19,6 @@ GIT
     pixel_editor (0.0.1)
 
 GIT
-  remote: git://github.com/PixieEngine/TileEditor.git
-  revision: 5ea2bf1ce5ac77bd7c02e61a7a2cb842ecd39779
-  specs:
-    tile_editor (0.0.1)
-
-GIT
   remote: git://github.com/PixieEngine/pixie_sass
   revision: 9c4f7df796b02fde788f8e484d2b079f60e957b8
   specs:
@@ -372,7 +366,6 @@ DEPENDENCIES
   shoulda
   spacedocs
   squeel
-  tile_editor!
   turbo-sprockets-rails3
   turn
   uglifier
