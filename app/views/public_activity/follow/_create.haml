@@ -1,7 +1,13 @@
 - owner = activity.owner
+- recipient = activity.recipient
 
 .follow
   = avatar_link owner
+  %span.name= link_to owner.display_name, owner
+  followed
+  - if recipient == @current_user #HACK for public_activity views not supporting current_user method correctly
+    you!
+  - else
+    = link_to recipient.display_name, recipient
   %p.attribution
-    %span.name= link_to owner.display_name, owner
     %span.time= "#{time_ago_in_words(activity.created_at)} ago"

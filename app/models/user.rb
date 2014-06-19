@@ -396,6 +396,23 @@ class User < ActiveRecord::Base
     Follow.where(:follower_id => id, :followee_id => user.id).exists?
   end
 
+  def activity_updates
+    id = self.id # For squeel
+
+    PublicActivity::Activity
+      .order("created_at DESC")
+      .limit(30)
+      .where(recipient_id: id)
+      .where{owner_id != id}
+  end
+
+  def friends_activity
+    PublicActivity::Activity
+      .order("created_at DESC")
+      .limit(30)
+      .where(owner_id: friend_ids)
+  end
+
   private
 
   def no_connected_sites?
