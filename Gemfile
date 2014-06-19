@@ -59,7 +59,6 @@ gem 'spacedocs'
 
 gem "execjs"
 
-gem 'tile_editor', :git => "git://github.com/PixieEngine/TileEditor.git"
 gem 'underscore-source'
 gem "will_paginate", '3.0.3'
 gem "whenever"

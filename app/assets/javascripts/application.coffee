@@ -6,10 +6,6 @@
 #= require site
 #= require params
 
-#= require ace/ace
-#= require ace/mode-coffee
-#= require ace/theme-twilight
-
 #= require bootstrap
 
 #= require jquery.form
@@ -19,7 +15,6 @@
 #= require jquery.drop_image_reader
 #= require jquery.paste_image_reader
 #= require jquery.pnotify.min
-#= require jquery.property_editor
 #= require jquery.serialize_object
 #= require jquery.take_class
 #= require jquery.tipsy
