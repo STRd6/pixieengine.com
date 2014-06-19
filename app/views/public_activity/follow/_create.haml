@@ -10,4 +10,4 @@
   - else
     = link_to recipient.display_name, recipient
   %p.attribution
-    %span.time= "#{time_ago_in_words(activity.created_at)} ago"
+    %span.time= link_to "#{time_ago_in_words(activity.created_at)} ago", owner

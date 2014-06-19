@@ -2,7 +2,16 @@
 
 .comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
   = avatar_link comment.commenter
-  %p= BlueCloth.new(comment.body).to_html.html_safe
-  %p.attribution
-    %span.name= link_to comment.commenter.display_name, comment.commenter
-    %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
+
+  - if commentable = comment.commentable
+    - if commentable.is_a? Sprite
+      - sprite = commentable
+      .sprite_container.left
+        = link_to image_tag(sprite.image.url, :alt => sprite.display_name, :width => sprite.width, :height => sprite.height), sprite_path(sprite)
+
+  .left
+    %p= BlueCloth.new(comment.body).to_html.html_safe
+
+    %p.attribution
+      %span.name= link_to comment.commenter.display_name, comment.commenter
+      %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable

@@ -13,7 +13,8 @@
 
 .feature.user_profile
   .profile
-    = render :partial => "tasks", :user => user
+    - if current_user?
+      = render :partial => "tasks", :user => user
 
     %h1
       = user.display_name
@@ -38,12 +39,28 @@
     %h3.inline Favorite Color
     .favorite_color(style="background: #{user.favorite_color};")
 
-  .projects
+  - if current_user?
+    .activity
+      %h2 Updates
+      - updates = user.activity_updates
+      - if updates.size > 0
+        .activities
+          - updates.each do |activity|
+            = render_activity activity
+      - else
+        No recent activity
+
+      %h2 Friends Activity
+
+      - if (friends_activity = user.friends_activity).size > 0
+        .activities
+          - friends_activity.each do |activity|
+            = render_activity activity
+      - else
+        No recent activity
+
   .sprites_gallery
     .sprites
-
-  - if (messages = Comment.for_user(user).order("id DESC").limit(20)).size > 0
-    .comments
 
 - content_for :javascript do
 
