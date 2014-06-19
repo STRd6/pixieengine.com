@@ -1,70 +1,10 @@
 = form_for Comment.new(:commentable => commentable) do |form|
-  %h3 Comments
+  %h2 Comments
   %label
     #comment_button_bar
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
     = form.text_area :body, :placeholder => "type your comment here"
     %input(id="comment_copy_html" type="hidden")
-  #comment_preview
 
   %button.btn.full Post Comment
-
-= stylesheet_link_tag "wmd.css"
-
-- content_for :javascript do
-  = javascript_include_tag "wmd.combined.min"
-
-  :coffeescript
-    $ ->
-      setup_wmd
-        input: "comment_body"
-        button_bar: "comment_button_bar"
-        preview: "comment_preview"
-        output: "comment_copy_html"
-        helpLink: "http://daringfireball.net/projects/markdown/syntax"
-
-      commentForm = $("#new_comment")
-
-      postComment = ->
-        text = commentForm.find("textarea").val()
-
-        if text.length
-          commentForm.ajaxSubmit
-            type: 'POST'
-            dataType: "json"
-
-          currentUser = #{!!current_user}
-
-          if currentUser
-            avatarLink = "<a href='/#{current_user}'><img alt='#{current_user}' class='avatar' src='http://images.pixie.strd6.com/avatars/#{current_user ? current_user.id : -1}/thumb.png'></a>"
-            userLink = "<a href='/#{current_user}'>#{current_user} </a>"
-          else
-            avatarLink = '<img src="avatars/thumb/missing.png"/>'
-            userLink = '<span>Anonymous</span>'
-
-          newComment = $(JST['comments/comment_form']
-            avatar_link: avatarLink
-            user_link: userLink
-            text: commentForm.find('#comment_copy_html').val()
-          )
-
-          commentForm.siblings(".comments").prepend(newComment)
-
-          commentForm.find("textarea").val("")
-          commentForm.find("#comment_preview").html("")
-        else
-          alert("Please enter a comment first")
-
-      commentForm.submit (e) ->
-        e.preventDefault()
-
-        if loggedIn
-          postComment()
-
-          return false
-        else
-          requireLogin ->
-            postComment()
-
-          return false

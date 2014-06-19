@@ -27,8 +27,6 @@
 #= require jquery.timeago
 #= require jquery.isotope.min
 
-#= require wmd.combined.min
-
 #= require underscore
 #= require backbone
 
