@@ -1,0 +1,17 @@
+%h1 Updates
+
+- if @activities.size > 0
+  .activities
+    - @activities.each do |activity|
+      = render_activity activity
+- else
+  No recent activity
+
+%h2 Friends Activity
+
+- if @friends_activity.size > 0
+  .activities
+    - @friends_activity.each do |activity|
+      = render_activity activity
+- else
+  No recent activity
