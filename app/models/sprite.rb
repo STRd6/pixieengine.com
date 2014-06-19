@@ -2,7 +2,7 @@ class Sprite < ActiveRecord::Base
   include Commentable
 
   include PublicActivity::Model
-  tracked owner: :user
+  tracked only: :create, owner: :user
 
   MAX_REPLAY_SIZE = 1000 * 50 # 50kb
 

@@ -1,6 +1,6 @@
 class CreateFollows < ActiveRecord::Migration
   def change
-    create_table :follows, :id => false do |t|
+    create_table :follows do |t|
       t.references :follower, :null => false
       t.references :followee, :null => false
 

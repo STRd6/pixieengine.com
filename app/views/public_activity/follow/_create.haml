@@ -1,0 +1,7 @@
+- owner = activity.owner
+
+.follow
+  = avatar_link owner
+  %p.attribution
+    %span.name= link_to owner.display_name, owner
+    %span.time= "#{time_ago_in_words(activity.created_at)} ago"

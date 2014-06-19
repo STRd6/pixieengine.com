@@ -31,6 +31,12 @@ module ApplicationHelper
     render :partial => "shared/gallery", :locals => {:collection => collection, :filters => filters}
   end
 
+  def following?(user)
+    if current_user
+      current_user.following?(user)
+    end
+  end
+
   private
   def oauth_button(name, options = {})
     "<input type='submit' value='#{options[:value]}' name='#{name}' id='user_submit' class='#{options[:class]}'/>".html_safe

@@ -53,7 +53,7 @@ PixieStrd6Com::Application.routes.draw do
     end
   end
 
-  resources :comments, :invites, :js_errors, :password_resets, :user_sessions
+  resources :activities, :comments, :follows, :invites, :js_errors, :password_resets, :user_sessions
 
   match '/auth/:provider/callback', to: 'user_sessions#oauth'
 

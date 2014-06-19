@@ -42,6 +42,24 @@ class User < ActiveRecord::Base
   has_many :projects,
     :order => "id DESC"
 
+  has_many :followings,
+    :class_name => "Follow",
+    :foreign_key => "follower_id"
+
+  has_many :friends,
+    :through => :followings,
+    :class_name => "User",
+    :source => :followee
+
+  has_many :follows,
+    :class_name => "Follow",
+    :foreign_key => "followee_id"
+
+  has_many :followers,
+    :through => :follows,
+    :class_name => "User",
+    :source => :follower
+
   has_many :visits
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
@@ -370,7 +388,12 @@ class User < ActiveRecord::Base
   end
 
   def follow(user)
-    Follow.create :follower => self, :followee => user
+    friends << user
+  rescue ActiveRecord::RecordInvalid
+  end
+
+  def following?(user)
+    Follow.where(:follower_id => id, :followee_id => user.id).exists?
   end
 
   private
