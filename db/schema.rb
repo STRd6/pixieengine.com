@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140619180815) do
+ActiveRecord::Schema.define(:version => 20140619225843) do
 
   create_table "access_tokens", :force => true do |t|
     t.integer  "user_id"
@@ -42,148 +42,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
   add_index "activities", ["owner_id", "owner_type"], :name => "index_activities_on_owner_id_and_owner_type"
   add_index "activities", ["recipient_id", "recipient_type"], :name => "index_activities_on_recipient_id_and_recipient_type"
   add_index "activities", ["trackable_id", "trackable_type"], :name => "index_activities_on_trackable_id_and_trackable_type"
-
-  create_table "animations", :force => true do |t|
-    t.integer  "user_id",           :null => false
-    t.string   "name",              :null => false
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-    t.integer  "states"
-    t.string   "data_file_name"
-    t.string   "data_content_type"
-    t.integer  "data_file_size"
-    t.datetime "data_updated_at"
-  end
-
-  create_table "app_data", :force => true do |t|
-    t.integer  "app_id",     :null => false
-    t.string   "name",       :null => false
-    t.text     "json",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "app_libraries", :force => true do |t|
-    t.integer  "app_id",     :null => false
-    t.integer  "library_id", :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "app_libraries", ["app_id", "library_id"], :name => "index_app_libraries_on_app_id_and_library_id", :unique => true
-  add_index "app_libraries", ["app_id"], :name => "index_app_libraries_on_app_id"
-  add_index "app_libraries", ["library_id"], :name => "index_app_libraries_on_library_id"
-
-  create_table "app_members", :force => true do |t|
-    t.integer  "app_id",     :null => false
-    t.integer  "user_id",    :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "app_members", ["app_id", "user_id"], :name => "index_app_members_on_app_id_and_user_id", :unique => true
-  add_index "app_members", ["app_id"], :name => "index_app_members_on_app_id"
-  add_index "app_members", ["user_id"], :name => "index_app_members_on_user_id"
-
-  create_table "app_sounds", :force => true do |t|
-    t.integer  "app_id",     :null => false
-    t.integer  "sound_id",   :null => false
-    t.string   "name",       :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "app_sounds", ["app_id", "name"], :name => "index_app_sounds_on_app_id_and_name", :unique => true
-  add_index "app_sounds", ["app_id", "sound_id"], :name => "index_app_sounds_on_app_id_and_sound_id", :unique => true
-  add_index "app_sounds", ["app_id"], :name => "index_app_sounds_on_app_id"
-  add_index "app_sounds", ["sound_id"], :name => "index_app_sounds_on_sound_id"
-
-  create_table "app_sprites", :force => true do |t|
-    t.integer  "app_id",     :null => false
-    t.integer  "sprite_id",  :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-    t.string   "name",       :null => false
-  end
-
-  add_index "app_sprites", ["app_id", "name"], :name => "index_app_sprites_on_app_id_and_name", :unique => true
-  add_index "app_sprites", ["app_id", "sprite_id"], :name => "index_app_sprites_on_app_id_and_sprite_id", :unique => true
-  add_index "app_sprites", ["app_id"], :name => "index_app_sprites_on_app_id"
-  add_index "app_sprites", ["sprite_id"], :name => "index_app_sprites_on_sprite_id"
-
-  create_table "apps", :force => true do |t|
-    t.integer  "user_id",                                        :null => false
-    t.string   "title",                                          :null => false
-    t.text     "description"
-    t.text     "html"
-    t.text     "code"
-    t.text     "test"
-    t.integer  "parent_id"
-    t.datetime "created_at",                                     :null => false
-    t.datetime "updated_at",                                     :null => false
-    t.integer  "width",              :default => 480
-    t.integer  "height",             :default => 300
-    t.text     "src"
-    t.string   "lang",               :default => "coffeescript"
-    t.boolean  "featured"
-    t.string   "image_file_name"
-    t.string   "image_content_type"
-    t.integer  "image_file_size"
-    t.datetime "image_updated_at"
-    t.integer  "comments_count",     :default => 0,              :null => false
-    t.integer  "views_count",        :default => 0,              :null => false
-  end
-
-  create_table "archived_projects", :id => false, :force => true do |t|
-    t.integer  "id"
-    t.integer  "user_id"
-    t.string   "remote_origin"
-    t.string   "title"
-    t.text     "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "url"
-    t.boolean  "demo"
-    t.string   "image_file_name"
-    t.string   "image_content_type"
-    t.integer  "image_file_size"
-    t.datetime "image_updated_at"
-    t.integer  "parent_id"
-    t.integer  "comments_count"
-    t.integer  "views_count"
-    t.boolean  "tutorial"
-    t.boolean  "featured"
-    t.boolean  "arcade"
-    t.datetime "deleted_at"
-    t.integer  "memberships_count"
-    t.datetime "saved_at"
-  end
-
-  create_table "archived_sounds", :id => false, :force => true do |t|
-    t.integer  "id"
-    t.string   "title"
-    t.text     "description"
-    t.integer  "user_id"
-    t.string   "wav_file_name"
-    t.string   "wav_content_type"
-    t.integer  "wav_file_size"
-    t.datetime "wav_uploaded_at"
-    t.string   "sfs_file_name"
-    t.string   "sfs_content_type"
-    t.integer  "sfs_file_size"
-    t.datetime "sfs_uploaded_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "deleted_at"
-    t.string   "mp3_file_name"
-    t.string   "mp3_content_type"
-    t.integer  "mp3_file_size"
-    t.datetime "mp3_updated_at"
-    t.string   "image_file_name"
-    t.string   "image_content_type"
-    t.integer  "image_file_size"
-    t.datetime "image_updated_at"
-  end
 
   create_table "archived_sprites", :id => false, :force => true do |t|
     t.integer  "id"
@@ -317,39 +175,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
   add_index "follows", ["follower_id", "followee_id"], :name => "index_follows_on_follower_id_and_followee_id", :unique => true
   add_index "follows", ["follower_id"], :name => "index_follows_on_follower_id"
 
-  create_table "forem_forums", :force => true do |t|
-    t.string "title"
-    t.text   "description"
-  end
-
-  create_table "forem_posts", :force => true do |t|
-    t.integer  "topic_id"
-    t.text     "text"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "reply_to_id"
-  end
-
-  create_table "forem_topics", :force => true do |t|
-    t.integer  "forum_id"
-    t.integer  "user_id"
-    t.string   "subject"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "locked"
-    t.boolean  "pinned",     :default => false
-    t.boolean  "hidden",     :default => false
-  end
-
-  create_table "forem_views", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "topic_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "count",      :default => 0
-  end
-
   create_table "invites", :force => true do |t|
     t.integer  "user_id",    :null => false
     t.string   "email",      :null => false
@@ -377,25 +202,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
-
-  create_table "libraries", :force => true do |t|
-    t.integer  "user_id",     :null => false
-    t.string   "title",       :null => false
-    t.text     "description"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-  end
-
-  create_table "library_components", :force => true do |t|
-    t.integer  "library_id",           :null => false
-    t.integer  "component_library_id", :null => false
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
-  end
-
-  add_index "library_components", ["component_library_id"], :name => "index_library_components_on_component_library_id"
-  add_index "library_components", ["library_id", "component_library_id"], :name => "index_library_components_on_library_id_and_component_library_id", :unique => true
-  add_index "library_components", ["library_id"], :name => "index_library_components_on_library_id"
 
   create_table "library_scripts", :force => true do |t|
     t.integer  "library_id", :null => false
@@ -489,22 +295,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
   add_index "script_members", ["script_id"], :name => "index_script_members_on_script_id"
   add_index "script_members", ["user_id"], :name => "index_script_members_on_user_id"
 
-  create_table "scripts", :force => true do |t|
-    t.integer  "user_id"
-    t.boolean  "approved",    :default => false,          :null => false
-    t.string   "script_type",                             :null => false
-    t.string   "title",                                   :null => false
-    t.text     "description"
-    t.text     "code",                                    :null => false
-    t.text     "test"
-    t.integer  "parent_id"
-    t.datetime "created_at",                              :null => false
-    t.datetime "updated_at",                              :null => false
-    t.text     "src"
-    t.string   "lang",        :default => "coffeescript"
-    t.text     "test_src"
-  end
-
   create_table "sounds", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -564,22 +354,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
     t.string "name", :null => false
   end
 
-  create_table "tilemaps", :force => true do |t|
-    t.string   "title",                             :null => false
-    t.integer  "parent_id"
-    t.integer  "width",                             :null => false
-    t.integer  "height",                            :null => false
-    t.integer  "tile_width",        :default => 32, :null => false
-    t.integer  "tile_height",       :default => 32, :null => false
-    t.string   "data_file_name"
-    t.string   "data_content_type"
-    t.integer  "data_file_size"
-    t.datetime "data_updated_at"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.integer  "user_id"
-  end
-
   create_table "treatments", :force => true do |t|
     t.integer  "experiment_id",               :null => false
     t.integer  "user_id"
@@ -591,16 +365,6 @@ ActiveRecord::Schema.define(:version => 20140619180815) do
 
   add_index "treatments", ["experiment_id", "session_id"], :name => "index_treatments_on_experiment_id_and_session_id", :unique => true
   add_index "treatments", ["experiment_id", "user_id"], :name => "index_treatments_on_experiment_id_and_user_id", :unique => true
-
-  create_table "user_plugins", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.integer  "plugin_id",  :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "user_plugins", ["user_id", "plugin_id"], :name => "index_user_plugins_on_user_id_and_plugin_id", :unique => true
-  add_index "user_plugins", ["user_id"], :name => "index_user_plugins_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "email"
