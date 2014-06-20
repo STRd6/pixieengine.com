@@ -38,8 +38,10 @@ set :deploy_to, '/var/www/pixieengine.com'
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+set :whenever_environment, defer { stage }
+set :whenever_identifier, defer { "#{application}_#{stage}" }
 set :whenever_command, "bundle exec whenever"
+set :whenever_variables, defer { "'environment=#{rails_env}&current_path=#{current_path}'" }
 
 namespace :deploy do
   task :start do
