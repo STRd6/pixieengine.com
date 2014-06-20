@@ -38,6 +38,9 @@ set :deploy_to, '/var/www/pixieengine.com'
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+set :whenever_command, "bundle exec whenever"
+
 namespace :deploy do
   task :start do
     on roles(:app) do
@@ -58,13 +61,6 @@ namespace :deploy do
   end
 
   after :finished, :restart
-
-  desc "Update the crontab file"
-  task :update_crontab do
-    on roles(:db) do
-      execute "cd #{release_path} && bundle exec whenever --update-crontab #{application}"
-    end
-  end
 
   before 'assets:precompile', :migrate
 

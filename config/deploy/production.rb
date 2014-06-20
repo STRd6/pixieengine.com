@@ -11,6 +11,8 @@ role :app, deploy
 role :web, deploy
 role :db, deploy
 
+set :whenever_environment, 'production'
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server
