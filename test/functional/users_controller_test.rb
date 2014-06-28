@@ -46,7 +46,21 @@ class UsersControllerTest < ActionController::TestCase
       end
 
       should "be able to view own profile" do
+        get :show, :id => @user
+      end
+    end
 
+    context "with a sprite that has been deleted" do
+      setup do
+        sprite = Factory :sprite
+        sprite.destroy()
+        @user.follow sprite.user
+
+        @user.reload
+        assert_equal 1, @user.friends_activity.size
+      end
+
+      should "be able to view own profile" do
         get :show, :id => @user
       end
     end
