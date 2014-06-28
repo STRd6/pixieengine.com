@@ -398,6 +398,14 @@ class User < ActiveRecord::Base
       .where(owner_id: friend_ids)
   end
 
+  def chat_data
+    Base64.encode64({
+      name: display_name,
+      avatar: avatar(:thumb),
+      color: favorite_color,
+    }.to_json)
+  end
+
   private
 
   def no_connected_sites?

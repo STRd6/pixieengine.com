@@ -5,31 +5,24 @@
   #chat_zone
     %h4.header
       Pixie Chat
-      %label#notification_label.right
-        Chat Notifications
-        %input#notification_toggle(type="checkbox" checked="checked")
-    .left_content
-      %ul#chats
-      %div#chat_buttons(style="display:none")
-      %textarea#chat_body(placeholder="chat with your friends here")
-      %input#chat_copy_html(type="hidden")
 
-    .users_wrapper
-      %ul#active_users
+    .wrap(style="height: 100%")
+      - if current_user
+        - data = current_user.chat_data
+      - else
+        - data = ""
+      %iframe(src="http://pixi-chat.meteor.com##{data}")
 
   - content_for :javascript do
     :coffeescript
       $ ->
-        setup_wmd
-          input: "chat_body"
-          button_bar: "chat_buttons"
-          preview: "chat_buttons"
-          output: "chat_copy_html"
-          helpLink: "http://daringfireball.net/projects/markdown/syntax"
+        $('#open_chat, #chat_zone .header').mousedown ->
+          $('#open_chat').toggleClass('straight')
+          $('#chat_zone').toggleClass('visible')
 
-        user =
-          name: "#{current_user ? current_user.display_name : 'Anonymous'}"
-          id: #{current_user ? current_user.id : 0}
-          admin: #{current_user ? current_user.admin : false}
+        $("#chat_zone").bind "show", ->
+          $('#open_chat').addClass('straight')
+          $('#chat_zone').addClass('visible')
 
-        Pixie.Chat.create(user)
+        $('#open_chat, #chat_zone').mousedown (e) ->
+          $('#chat_zone .header, #open_chat').css('backgroundColor', '#1084CE')

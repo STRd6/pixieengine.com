@@ -150,61 +150,12 @@
 
             canvas.addAction
               name: "Post to Chat"
-              icon: "/assets/icons/picture_go.png"
+              icon: "/assets/icons/picture_go.png" # TODO: Get image back
               perform: (canvas) ->
-                wrapper = $ "<div />"
-                img = $ "<img />"
-                img.attr('src', canvas.toDataURL())
-
-                img.appendTo(wrapper)
-
-                $.post '/chats', { body: wrapper.html() }, ->
-                  $('body').scrollTo
-                    left: '0%'
-                    top: '100%'
-
-                commenter = "#{ current_user ? current_user.display_name : 'Anonymous' }"
-                commenter_id = #{ current_user ? current_user.id : -1 }
-                prev_commenter = $('#chats li span.name:last').text().replace(': ', '')
-
-                li = $ "<li />"
-                hr = $ "<hr />"
-                if commenter_id > 0
-                  a = $("<a href='/people/\#{commenter_id}' target='_blank'>\#{commenter}</a>")
-
-                if a
-                  name = $ '<span />',
-                    class: "name"
-
-                  name.append(a)
-                else
-                  name = $ '<span />',
-                    class: "name"
-                    text: commenter
-
-                time = $ '<span />',
-                  class: "time"
-                  text: "#{Time.zone.now.strftime('%I:%M%p')} "
-
-                message = $ '<span />',
-                  class: "message"
-
-                message.append(img)
-
-                if commenter != prev_commenter
-                  li.append(hr, name, time)
-
-                li.append(message)
-
-                $('#chats').append(li)
-
-                $("#chat_zone").trigger('show')
-
-                setTimeout ->
-                  $('#chats').scrollTo
-                    left: '0%'
-                    top: '100%'
-                , 100
+                $("#chat_zone iframe").get(0).contentWindow.postMessage
+                  method: "post"
+                  params: [canvas.toDataURL()]
+                , "*"
 
           ((frameData) ->
             canvas.setInitialState(frameData)

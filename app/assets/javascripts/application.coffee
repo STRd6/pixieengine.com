@@ -44,6 +44,4 @@
 #= require pixie_canvas
 #= require coffee-script
 
-#= require chat
-
 #= require templates/comments/comment_form
