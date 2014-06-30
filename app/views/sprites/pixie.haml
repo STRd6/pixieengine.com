@@ -152,6 +152,8 @@
               name: "Post to Chat"
               icon: "/assets/icons/picture_go.png" # TODO: Get image back
               perform: (canvas) ->
+                $('#chat_zone').addClass('visible')
+
                 $("#chat_zone iframe").get(0).contentWindow.postMessage
                   method: "post"
                   params: [canvas.toDataURL()]
