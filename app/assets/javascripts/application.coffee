@@ -25,8 +25,6 @@
 #= require underscore
 #= require backbone
 
-#= require boner
-
 #= require pixie/editor/pixel/create
 
 #= require views/comments/gallery

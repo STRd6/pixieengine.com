@@ -20,8 +20,6 @@ gem "authlogic"
 gem "aws-sdk"
 gem 'backbone-source'
 gem 'bluecloth'
-gem 'bone_tree', :git => "git://github.com/mdiebolt/bone_tree.git"
-gem 'boner'
 gem 'bootstrap-sass', '~> 2.0.4.0'
 gem "coffee-filter"
 gem 'cornerstone-source'
@@ -32,7 +30,6 @@ gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
 gem "gmail_xoauth"
 gem 'haml'
 gem 'haml_coffee_assets'
-gem 'hpricot'
 gem 'html5-boilerplate'
 gem 'jquery-image_reader'
 gem 'json'
@@ -55,7 +52,6 @@ gem "require"
 gem 'rmagick', :require => 'RMagick'
 gem "squeel"
 gem "sanitize"
-gem 'spacedocs'
 
 gem "execjs"
 
