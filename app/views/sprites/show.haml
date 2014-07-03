@@ -75,10 +75,6 @@
 
 
 .btn-toolbar
-  .btn-group
-    %a.button.btn(href="#{load_sprite_path(sprite)}")
-      .static-picture_edit
-      Load in Editor
   - if current_user
     .btn-group
       %a.button.btn(href="javascript:void(0)" rel="setAvatar")
@@ -98,6 +94,10 @@
           Add Favorite
 
   - if owner_or_admin?
+    .btn-group
+      %a.button.btn(href="#{load_sprite_path(sprite)}")
+        .static-picture_edit
+        Load in Editor
     .btn-group
       %a.button.btn(href="#{edit_sprite_path(sprite)}")
         .static-table_edit
