@@ -26,20 +26,13 @@ gem 'cornerstone-source'
 gem 'dynamic_form'
 gem 'editor_base', :git => "git://github.com/PixieEngine/EditorBase.git"
 gem "exception_notification", :git => "git://github.com/rails/exception_notification.git", :require => 'exception_notifier'
-gem 'gratr', :git => "git://github.com/jdleesmiller/gratr.git"
-gem "gmail_xoauth"
 gem 'haml'
 gem 'haml_coffee_assets'
 gem 'html5-boilerplate'
 gem 'jquery-image_reader'
-gem 'json'
 gem 'mail'
 gem "mocha"
-gem 'multi_json', '1.2.0'
-gem "omniauth"
-gem "omniauth-github"
-gem "omniauth-google-oauth2"
-gem 'paperclip'
+gem 'paperclip', '~> 3.4.0'
 gem "pg"
 gem 'pixel_editor', :git => 'git://github.com/PixieEngine/PixelEditor.git'
 gem "pixie_sass", :git => "git://github.com/PixieEngine/pixie_sass"
