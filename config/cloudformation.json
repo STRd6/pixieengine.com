@@ -1,0 +1,257 @@
+  {
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Parameters" : {
+      "PublicDomain" : {
+        "Type" : "String",
+        "Default" : "pixieengine.com",
+        "Description" : "Root domain."
+      }
+    },
+    "Resources" : {
+      "LogBucket": {
+        "Type" : "AWS::S3::Bucket",
+        "Properties" : {
+          "AccessControl" : "LogDeliveryWrite"
+        },
+        "DeletionPolicy" : "Retain"
+      },
+      "IncomingBucket": {
+        "Type" : "AWS::S3::Bucket",
+        "Properties" : {
+          "CorsConfiguration": {
+            "CorsRules" : [
+              {
+                "AllowedHeaders": ["Content-*"],
+                "AllowedMethods": ["GET", "HEAD", "POST"],
+                "AllowedOrigins": ["*"],
+                "MaxAge": 3000
+              }
+            ]
+          },
+          "LoggingConfiguration" : {
+            "DestinationBucketName" : { "Ref" : "LogBucket"},
+            "LogFilePrefix" : "incoming/"
+          }
+        },
+        "DeletionPolicy" : "Retain"
+      },
+      "S3Bucket" : {
+        "Type" : "AWS::S3::Bucket",
+        "Properties" : {
+          "AccessControl" : "PublicRead",
+          "CorsConfiguration": {
+            "CorsRules" : [
+              {
+                "AllowedHeaders": ["Content-*"],
+                "AllowedMethods": ["GET", "HEAD", "POST"],
+                "AllowedOrigins": ["*"],
+                "MaxAge": 3000
+              }
+            ]
+          },
+          "LoggingConfiguration" : {
+            "DestinationBucketName" : { "Ref" : "LogBucket"},
+            "LogFilePrefix" : "data/"
+          }
+        },
+        "DeletionPolicy" : "Retain"
+      },
+      "PublicBucketPolicy" : {
+        "Type" : "AWS::S3::BucketPolicy",
+        "Properties" : {
+          "Bucket" : {"Ref" : "S3Bucket"},
+          "PolicyDocument": {
+            "Statement":[{
+              "Action":["s3:GetObject"],
+              "Effect":"Allow",
+              "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" } , "/*" ]]},
+              "Principal":"*"
+            }]
+          }
+        }
+      },
+      "UploadUser" : {
+        "Type": "AWS::IAM::User",
+        "Properties": {
+          "Policies": [{
+            "PolicyName": "FullIncomingBucketAccess",
+            "PolicyDocument" : {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": "s3:*",
+                  "Resource": [
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } , "/" ]]},
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } , "/*" ]]}
+                  ]
+                }
+              ]
+            }
+          }]
+        }
+      },
+      "UploadUserAccessKey": {
+        "Type": "AWS::IAM::AccessKey",
+        "Properties": {
+            "Status": "Active",
+            "UserName": { "Ref" : "UploadUser" }
+        }
+      },
+      "LambdaInvocationRole": {
+        "Type": "AWS::IAM::Role",
+        "Properties": {
+          "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+              "Sid": "",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "s3.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringLike": {
+                  "sts:ExternalId": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" } ]]}
+                }
+              }
+            }]
+          },
+          "Path": "/",
+          "Policies": [{
+            "PolicyName": "LambdaInvocation",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": "*",
+                  "Action": [ "lambda:InvokeFunction" ]
+                }
+              ]
+            }
+          }]
+        }
+      },
+      "LambdaExecutionRole": {
+        "Type": "AWS::IAM::Role",
+        "Properties": {
+          "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "",
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": "lambda.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+              }
+            ]
+          },
+          "Path": "/",
+          "Policies": [{
+            "PolicyName": "LambdaExecution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:*"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:DeleteObject",
+                    "s3:GetObject"
+                  ],
+                  "Resource": [
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "IncomingBucket" }, "/*" ]]}
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:PutObject"
+                  ],
+                  "Resource": [
+                    { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "S3Bucket" }, "/*" ]]}
+                  ]
+                }
+              ]
+            }
+          }]
+        }
+      },
+      "CloudFrontDistribution" : {
+          "Type" : "AWS::CloudFront::Distribution",
+          "Properties" : {
+              "DistributionConfig" : {
+                  "Origins" : [ {
+                      "DomainName": { "Fn::GetAtt" : [ "S3Bucket", "DomainName" ] },
+                      "Id" : "S3Origin",
+                      "S3OriginConfig" : {}
+                  }],
+                  "Enabled" : "true",
+                  "Comment" : "Testing CloudFormation",
+                  "Logging" : {
+                      "IncludeCookies" : "false",
+                      "Bucket" : { "Fn::GetAtt" : [ "LogBucket", "DomainName" ] },
+                      "Prefix" : "cloudfront/"
+                  },
+                  "Aliases" : [ { "Fn::Join" : [".", [ "data", { "Ref" : "PublicDomain" } ] ] } ],
+                  "DefaultCacheBehavior" : {
+                      "AllowedMethods" : [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ],
+                      "TargetOriginId" : "S3Origin",
+                      "ForwardedValues" : {
+                          "QueryString" : "false",
+                          "Headers" : ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"],
+                          "Cookies" : { "Forward" : "none" }
+                      },
+                      "ViewerProtocolPolicy" : "allow-all"
+                  },
+                 "PriceClass" : "PriceClass_200",
+                 "ViewerCertificate" : { "CloudFrontDefaultCertificate" : "true" }
+              }
+          }
+      },
+      "DNS" : {
+        "Type" : "AWS::Route53::RecordSetGroup",
+        "Properties" : {
+          "HostedZoneName": { "Ref" : "PublicDomain" },
+          "RecordSets" : [
+            {
+              "Name" : { "Fn::Join" : [".", [ "data", { "Ref" : "PublicDomain" } ] ] },
+              "Type" : "A",
+              "AliasTarget" : {
+                "HostedZoneId" : "Z2FDTNDATAQYW2",
+                "DNSName" : { "Fn::GetAtt" : ["CloudFrontDistribution", "DomainName"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "Outputs" : {
+      "IncomingBucketSecureURL" : {
+        "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "IncomingBucket", "DomainName" ] } ] ] },
+        "Description" : "Name of incoming bucket for uploads"
+      },
+      "S3BucketSecureURL" : {
+        "Value" : { "Fn::Join" : [ "", [ "https://", { "Fn::GetAtt" : [ "S3Bucket", "DomainName" ] } ] ] },
+        "Description" : "Name of S3 bucket to hold website content"
+      },
+      "AccessKey": {
+        "Value": { "Ref" : "UploadUserAccessKey" },
+        "Description" : "Heroku app needs this key"
+      },
+      "SecretKey": {
+        "Value": { "Fn::GetAtt" : [ "UploadUserAccessKey", "SecretAccessKey" ] },
+        "Description" : "Heroku app needs this key"
+      }
+    }
+  }
