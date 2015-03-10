@@ -222,7 +222,7 @@
       "DNS" : {
         "Type" : "AWS::Route53::RecordSetGroup",
         "Properties" : {
-          "HostedZoneName": { "Ref" : "PublicDomain" },
+          "HostedZoneName": { "Fn::Join" : ["", [ { "Ref" : "PublicDomain" }, "." ] ] },
           "RecordSets" : [
             {
               "Name" : { "Fn::Join" : [".", [ "data", { "Ref" : "PublicDomain" } ] ] },
