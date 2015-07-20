@@ -74,14 +74,13 @@ GEM
     arel (3.0.2)
     authlogic (3.1.0)
       activerecord (>= 3.0.7)
-      activerecord (>= 3.0.7)
     aws-sdk (1.8.0)
       httparty (~> 0.7)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
     backbone-source (0.0.3)
-    bluecloth (2.1.0)
+    bluecloth (2.2.0)
     bootstrap-sass (2.0.4.2)
     builder (3.0.4)
     capistrano (3.1.0)
@@ -140,8 +139,8 @@ GEM
     jquery-image_reader (0.1.1)
       jquery-source
     jquery-source (1.7.1)
-    json (1.7.7)
-    kgio (2.6.0)
+    json (1.8.3)
+    kgio (2.9.3)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -155,17 +154,18 @@ GEM
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.8.0)
-    nokogiri (1.5.0)
+    nokogiri (1.5.11)
     paperclip (3.4.0)
       activemodel (>= 3.0.0)
       activerecord (>= 3.0.0)
       activesupport (>= 3.0.0)
       cocaine (~> 0.4.0)
       mime-types
-    pg (0.11.0)
+    pg (0.18.2)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.3)
+    power_assert (0.2.2)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -204,13 +204,13 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
-    raindrops (0.7.0)
+    raindrops (0.14.0)
     rake (10.1.1)
     rb-fsevent (0.9.1)
     rdoc (3.12)
       json (~> 1.4)
     require (0.2.7)
-    rmagick (2.13.1)
+    rmagick (2.15.2)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.4)
@@ -235,6 +235,8 @@ GEM
       term-ansicolor
     term-ansicolor (1.3.0)
       tins (~> 1.0)
+    test-unit (3.0.8)
+      power_assert
     thor (0.16.0)
     tilt (1.3.3)
     tins (1.0.0)
@@ -310,6 +312,7 @@ DEPENDENCIES
   sass-rails
   shoulda
   squeel
+  test-unit
   turbo-sprockets-rails3
   turn
   uglifier
@@ -317,3 +320,6 @@ DEPENDENCIES
   unicorn
   whenever
   will_paginate (= 3.0.3)
+
+BUNDLED WITH
+   1.10.5

@@ -57,6 +57,7 @@ group :test do
   gem "minitest"
   gem "pry"
   gem "shoulda"
+  gem "test-unit"
   gem "turn", :require => false
 end
 
