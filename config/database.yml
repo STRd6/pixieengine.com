@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  username: <%= ENV["USER"] || "postgres" %>
+
+development:
+  <<: *default
+  database: pixie_api_development
+
+test:
+  <<: *default
+  database: pixie_api_test
+  min_messages: WARNING
+
+production:
+  <<: *default
+  database: pixie_api_production
