@@ -46,6 +46,18 @@ class UsersControllerTest < ActionController::TestCase
       get :show, params: { :id => @user }
     end
 
+    should "be able to update profile" do
+      put :update, params: {
+        id: @user.display_name,
+        user: {
+          profile: "hello"
+        }
+      }
+
+      @user.reload
+      assert_equal "hello", @user.profile
+    end
+
     context "with a comment on a sprite that has been deleted" do
       setup do
         comment = create :comment, :commentee => @user
