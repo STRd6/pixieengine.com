@@ -177,7 +177,7 @@ class SpritesController < ApplicationController
 
     items = items
       .order(order)
-      .where{created_at > recency}
+      .where(["created_at > '%s'", recency])
       .search(params[:search])
       .page(params[:page])
       .per_page(per_page)
