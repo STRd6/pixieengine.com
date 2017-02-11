@@ -10,22 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160331021406) do
+ActiveRecord::Schema.define(version: 20170211173445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "access_tokens", force: :cascade do |t|
-    t.integer  "user_id"
-    t.string   "type",       limit: 30
-    t.string   "key",        limit: 255
-    t.string   "token",      limit: 1024
-    t.string   "secret",     limit: 255
-    t.boolean  "active"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["key"], name: "index_access_tokens_on_key", unique: true, using: :btree
-  end
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id"
@@ -107,14 +95,6 @@ ActiveRecord::Schema.define(version: 20160331021406) do
     t.index ["user_id"], name: "index_emails_on_user_id", using: :btree
   end
 
-  create_table "feedbacks", force: :cascade do |t|
-    t.integer  "user_id"
-    t.text     "body",                      null: false
-    t.string   "email_address", limit: 255
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-  end
-
   create_table "follows", force: :cascade do |t|
     t.integer  "follower_id", null: false
     t.integer  "followee_id", null: false
@@ -132,17 +112,6 @@ ActiveRecord::Schema.define(version: 20160331021406) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "to",         limit: 255, null: false
-  end
-
-  create_table "js_errors", force: :cascade do |t|
-    t.string   "url",         limit: 255, null: false
-    t.integer  "line_number",             null: false
-    t.text     "message",                 null: false
-    t.text     "user_agent",              null: false
-    t.integer  "user_id"
-    t.string   "session_id",  limit: 32
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
   end
 
   create_table "sprites", force: :cascade do |t|
@@ -186,17 +155,6 @@ ActiveRecord::Schema.define(version: 20160331021406) do
   create_table "tags", force: :cascade do |t|
     t.string  "name",           limit: 255,             null: false
     t.integer "taggings_count",             default: 0
-  end
-
-  create_table "treatments", force: :cascade do |t|
-    t.integer  "experiment_id",            null: false
-    t.integer  "user_id"
-    t.string   "session_id",    limit: 32
-    t.boolean  "control",                  null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.index ["experiment_id", "session_id"], name: "index_treatments_on_experiment_id_and_session_id", unique: true, using: :btree
-    t.index ["experiment_id", "user_id"], name: "index_treatments_on_experiment_id_and_user_id", unique: true, using: :btree
   end
 
   create_table "users", force: :cascade do |t|
