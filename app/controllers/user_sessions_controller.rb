@@ -5,7 +5,7 @@ class UserSessionsController < ApplicationController
   def create
     if params[:user_session][:login] == "yes"
       # Default to remember me
-      @user_session = UserSession.new((params[:user_session] || {}).merge(:remember_me => true))
+      @user_session = UserSession.new(user_session_params.merge(:remember_me => true))
       @user_session.save do |result|
         if result
           new_user = @user_session.user.login_count == 1
@@ -61,5 +61,9 @@ class UserSessionsController < ApplicationController
 
   def auth_hash
     request.env['omniauth.auth']
+  end
+
+  def user_session_params
+    params.require(:user_session).permit(:email, :password, :login)
   end
 end
