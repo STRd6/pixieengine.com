@@ -11,7 +11,3 @@ test:
   <<: *default
   database: pixie_api_test
   min_messages: WARNING
-
-production:
-  <<: *default
-  database: pixie_api_production
