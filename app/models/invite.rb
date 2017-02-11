@@ -1,6 +1,6 @@
 class Invite < ActiveRecord::Base
   include Rails.application.routes.url_helpers
-  self.default_url_options = { :host => "pixie.strd6.com" }
+  self.default_url_options = { :host => "pixieengine.com" }
 
   belongs_to :user
 

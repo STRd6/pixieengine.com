@@ -378,6 +378,10 @@ class User < ActiveRecord::Base
     }.to_json)
   end
 
+  def should_receive_email?
+    site_notifications && !Email.where(undeliverable: true).find_by_email(email)
+  end
+
   private
 
   def no_connected_sites?

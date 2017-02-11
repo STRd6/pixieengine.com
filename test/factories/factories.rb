@@ -1,4 +1,8 @@
 FactoryGirl.define do
+  sequence(:email) do |n|
+    "test_#{n}@example.com"
+  end
+
   factory :collection do
     user
     name "TEST"
@@ -9,10 +13,13 @@ FactoryGirl.define do
     association :item, :factory => :sprite
   end
 
+  factory :undeliverable_email, class: Email do
+    email
+    undeliverable true
+  end
+
   factory :user do
-    sequence(:email) do |n|
-      "test_#{n}@example.com"
-    end
+    email
     sequence(:display_name) do |n|
       "teSt-user_#{n}"
     end
@@ -24,6 +31,12 @@ FactoryGirl.define do
     height 16
     title "CommentableSprite"
     user
+  end
+
+  factory :invite do
+    user
+    email
+    to "Dr Duder"
   end
 
   factory :link do

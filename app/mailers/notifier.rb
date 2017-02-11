@@ -4,11 +4,6 @@ class Notifier < ApplicationMailer
   #
   #   en.actionmailer.notifier.received_feedback.subject
   #
-  def received_feedback(feedback)
-    @feedback = feedback
-
-    mail :to => "yahivin@gmail.com", :reply_to => feedback.email_address || (feedback.user ? feedback.user.email : nil)
-  end
 
   def welcome_email(user)
     @delivery_date = Time.now.strftime("%b %d %Y")
@@ -42,36 +37,6 @@ class Notifier < ApplicationMailer
     mail :subject => "You're invited to join Pixie!",
       :to => invite.email,
       :from => "#{user.display_name} <#{user.email}>"
-  end
-
-  def newsletter9(user, delivery_date)
-    @user = user
-    @delivery_date = delivery_date
-    @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
-
-    @pixie_blue = "#1084CE"
-    @content_bg = "#FFFFFF"
-    @text_color = "#555555"
-
-    mail :subject => "Pixie Newsletter", :to => user.email
-  end
-
-  def send_newsletter(user, newsletter, delivery_date)
-    @user = user
-    @delivery_date = delivery_date
-    @link_tracking = { :utm_source => 'newsletter', :utm_medium => 'email', :utm_campaign => @delivery_date }
-
-    @pixie_blue = "#1084CE"
-    @content_bg = "#FFFFFF"
-    @text_color = "#555555"
-
-    @title = "This week in Pixie: #{delivery_date}"
-
-    @user.touch :last_contacted
-
-    mail :subject => "Pixie Newsletter", :to => user.email do |format|
-      format.html { render newsletter }
-    end
   end
 
   def missed_you(user, delivery_date)

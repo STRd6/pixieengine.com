@@ -53,4 +53,56 @@ class CommentTest < ActiveSupport::TestCase
       assert_equal @comment, @comment.root
     end
   end
+
+  context "comment emails"
+    should "sent to someone who receives a comment" do
+      user = create :user,
+        site_notifications: true
+      sprite = create :sprite,
+        user: user
+      commenter = create :user
+
+      # Create comment and verify one email was sent
+      assert_difference 'ActionMailer::Base.deliveries.size', 1 do
+        create :comment,
+          commenter: commenter,
+          commentee: user,
+          commentable: sprite
+      end
+    end
+
+    should "not send to someone who has opted out of receiving email" do
+      user = create :user,
+        site_notifications: false
+      sprite = create :sprite,
+        user: user
+      commenter = create :user
+
+      # Create comment and verify no email was sent
+      assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+        create :comment,
+          commenter: commenter,
+          commentee: user,
+          commentable: sprite
+      end
+
+    end
+
+    should "not send to someone who's email is undeliverable" do
+      user = create :user
+      undeliverable = create :undeliverable_email,
+        email: user.email
+      sprite = create :sprite,
+        user: user
+      commenter = create :user
+
+      # Create comment and verify that no email was sent
+      assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+        create :comment,
+          commenter: commenter,
+          commentee: user,
+          commentable: sprite
+      end
+
+    end
 end

@@ -12,6 +12,11 @@ module Pixie3
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.action_mailer.default_url_options = {
+      host: ENV["HTTP_HOST"],
+      protocol: ENV["HTTP_PROTOCOL"]
+    }
+
     config.assets.precompile += %w[screen.css postmaster.js]
 
     config.middleware.use ExceptionNotification::Rack,
