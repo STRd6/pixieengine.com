@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
     config.validate_email_field :no_connected_sites?
     config.validate_password_field :no_connected_sites?
     config.require_password_confirmation = false
+    config.validates_length_of_password_field_options :minimum => 4
 
     config.transition_from_crypto_providers = [Authlogic::CryptoProviders::Sha512]
     config.crypto_provider = Authlogic::CryptoProviders::SCrypt
@@ -361,13 +362,12 @@ class User < ActiveRecord::Base
   end
 
   def activity_updates
-    id = self.id # For squeel
-    friend_ids = self.friend_ids
+    id = self.id
+    friend_ids = self.friend_ids + [-1] # Add a 'fake' id because there's no 'empty list' syntax
 
     PublicActivity::Activity
       .order("created_at DESC")
-      .where{(recipient_id == id) | (owner_id >> friend_ids)}
-      .where{owner_id != id}
+      .where([ "((recipient_id = %s) OR (owner_id IN (%s))) AND (owner_id != %s)", id, friend_ids.join(','), id ])
   end
 
   def chat_data

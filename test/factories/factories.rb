@@ -16,7 +16,7 @@ FactoryGirl.define do
     sequence(:display_name) do |n|
       "teSt-user_#{n}"
     end
-    password "TEST1234"
+    password "TEST123"
   end
 
   factory :sprite do
