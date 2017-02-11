@@ -1,0 +1,11 @@
+- unless @hide_feedback
+  #feedback
+    = link_to "", "/survey", :target => "_blank", :eventLabel => "feedback"
+
+  - content_for :javascript do
+    :coffeescript
+      $ ->
+        $("#feedback").mouseover(->
+          $(this).animate({left: -7}, "fast")
+        ).mouseout ->
+          $(this).animate({left: -15})

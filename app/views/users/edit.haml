@@ -1,0 +1,35 @@
+:sass
+  h3.check_box
+    display: inline-block
+    font-size: 120%
+
+  #user_forum_notifications, #user_site_notifications, #user_help_tips
+    margin-right: 5px
+
+= form_for user, :html => { :class => "module", :multipart => true } do |form|
+  = form.error_messages
+
+  %h2 Edit Profile
+
+  %label
+    %h3 Favorite Color
+    = form.text_field :favorite_color, :class => "color", :style => "border:none;"
+
+  %label
+    %h3 Profile
+    = form.text_area :profile
+
+  %label
+    %h3 Avatar
+    = form.file_field :avatar
+
+  %label
+    = form.check_box :site_notifications
+    %h3.check_box Receive Notifications About Your Art?
+
+  %button.btn.full Update Information
+
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $(".color").colorPicker()

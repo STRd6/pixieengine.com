@@ -1,0 +1,7 @@
+%footer.navbar.navbar-fixed-bottom
+  - if @has_reg_popup
+    = render :partial => "shared/register_modal"
+  = render :partial => "/shared/feedback"
+  = render :partial => "/shared/chat"
+
+  = render :partial => "/shared/javascripts"

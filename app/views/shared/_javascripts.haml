@@ -1,0 +1,25 @@
+= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"
+-# fall back to local jQuery if necessary
+:javascript
+  if(!window.jQuery) {
+    document.write(unescape('%3Cscript src="/assets/jquery/jquery.min.js"%3E%3C/script%3E'));
+  }
+
+= javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"
+:javascript
+  if(!window.jQuery.ui) {
+    document.write(unescape('%3Cscript src="/assets/jquery/jquery-ui.min.js"%3E%3C/script%3E'));
+  }
+
+/[if lt IE 9]
+  = javascript_include_tag "excanvas.compiled"
+
+:coffeescript
+  window.railsEnv = #{Rails.env.to_json}
+
+= javascript_include_tag 'application'
+= javascript_include_tag 'postmaster'
+
+= yield :javascript
+
+= render :partial => "/shared/analytics"

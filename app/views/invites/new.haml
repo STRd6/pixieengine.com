@@ -1,0 +1,30 @@
+%style
+  :sass
+    .centered_content
+      margin-left: auto
+      margin-right: auto
+      margin-top: 2em
+      width: 620px
+
+= form_for @invite, :html => { :class => "module" } do |form|
+  = form.error_messages
+
+  %h2 Invite a Friend
+
+  %label
+    %h3 Friend's name
+    = form.text_field :to
+
+  %label
+    %h3 Friend's email
+    = form.text_field :email
+
+  %button.btn.full(eventLabel="Invite Submit") Invite friend
+
+.centered_content
+  %h3
+    When you invite a friend they will receive an email similar to the sample
+    below:
+
+  %pre
+    = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})

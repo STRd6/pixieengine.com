@@ -1,0 +1,9 @@
+:ruby
+  @paragraphs = [
+    """We've missed you!
+    There have been many great changes recently so come
+    #{link_to "drop by and take a look", { :controller => "sprites", :action => "new", :only_path => false }.merge(@link_tracking)}.
+    """,
+  ]
+
+= render :partial => "newsletter"

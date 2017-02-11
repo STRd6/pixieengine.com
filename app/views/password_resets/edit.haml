@@ -1,0 +1,10 @@
+= form_for @user, :html => { :class => "module" }, :url => password_reset_path, :method => :put do |form|
+  = form.error_messages
+
+  %h1 Change Password
+
+  %label
+    %h3 New Password
+    = form.password_field :password
+
+  %button.full Update my Password

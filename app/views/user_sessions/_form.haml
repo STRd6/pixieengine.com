@@ -1,0 +1,30 @@
+= form_for @user_session || UserSession.new, :url => authenticate_path do |form|
+
+  = form.error_messages
+
+  = form.hidden_field :login, :value => "yes"
+  %label
+    %h3 Email Address
+    = form.text_field :email
+
+  %label
+    %h3 Password
+    = form.password_field :password
+
+    %a(href=new_password_reset_path alt="Forgot your password?" title="Forgot your password?") Forgot your password?
+
+  %button.btn.full Log In
+
+%style
+  :sass
+    #new_user_session
+      .relative
+        position: relative
+
+        a
+          img
+            bottom: 0
+            margin: auto
+            position: absolute
+            right: 7px
+            top: 0

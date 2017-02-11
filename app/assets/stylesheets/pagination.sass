@@ -1,0 +1,30 @@
+.pagination
+  & > *
+    background: white
+    float: left
+    font-weight: bold
+    padding: 0 14px
+    line-height: 34px
+    text-decoration: none
+    border: 1px solid #ddd
+    border-left-width: 0
+
+    &:first-child
+      border-top-left-radius: 3px
+      border-bottom-left-radius: 3px
+      border-left-width: 1px
+
+    &:last-child
+      border-top-right-radius: 3px
+      border-bottom-right-radius: 3px
+
+    &.disabled
+      background: #f5f5f5
+      color: #999
+
+    &.current
+      color: white
+      background: #1084ce
+
+  & > ul
+    padding: 0

@@ -1,0 +1,14 @@
+= form_for sprite, :html => {:class => "module"} do |form|
+  = form.error_messages
+
+  %h2 Edit Sprite
+
+  %p
+    = form.label :title
+    = form.text_field :title
+
+  %p
+    = form.label :description
+    = form.text_area :description
+
+  %button.btn.full Update Sprite

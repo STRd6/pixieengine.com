@@ -1,0 +1,118 @@
+- @title = "Pixel Editor"
+- @fullscreen = true
+
+- width = @width || 64
+- height = @height || 64
+
+%iframe#editor(src="https://danielx.net/pixel-editor/pixie/" sandbox="allow-scripts allow-modals")
+
+:sass
+  html
+    overflow: hidden
+
+  body#fullscreen > .content
+    padding-top: 40px
+
+  #editor
+    width: 100%
+    height: 100%
+
+  #feedback
+    top: 600px
+
+  #open_chat, #chat_zone
+    right: 80px
+
+- content_for :javascript do
+  :coffeescript
+    window.addEventListener "message", (event) ->
+      {data, source} = event
+      return unless source is document.getElementById('editor').contentWindow
+
+      method = data.method ? data.status
+
+      switch method
+        when "ready"
+          source.postMessage
+            method: "eval"
+            params: ["""
+              self.postToChat = function() {
+                self.outputCanvas().toBlob(function(blob) {
+                  (opener || parent).postMessage({
+                    method: "postToChat",
+                    image: blob
+                  }, "*");
+                });
+              };
+            """]
+          , "*"
+
+          source.postMessage
+            method: "addAction"
+            params: [{
+              name: "Post to Chat"
+              insertAt: -1
+              method: "postToChat"
+              icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC/klEQVQ4T42TW2hcVRSGvz2TZCYx5UzSpLSZJuQiKT311lbBVl9EWrzkglUiIvRmMVAUYsE3ERFBKY5PvglWCx0kpmLwpTU1SUNsbMl0ak1q2qQdcm2SadIznWky55x99pE5ommqiAvWy1rsj3+v9S9xrPNixHXF60uWCpqSf4a7upSfB4ECjrW+tP2dXEd82Rmfa3yqsjwYDAoh/P9CWCllFTjS5uRPY8bhV7aVeIDP22PG3uc3acd7b5NlgbQYoWb9PIX5KaSrWEwVMjymUeRuJo8y3m2p4ZtTI6m3W7aGPMBn0ZjxZrOuHe+5heEboqJ8lEBgnLSZRjoSIQKkUxtI3KglVLCdtj3VtP94H+BQs65Fzy5w0+1mUzhBypzElFksKZGuS0Bs4NdLYapCTbzVXMm3HmDbioKDzbrW3rfIlN1FTXgMY3mcZTuLpSSOgkJRwe+/VVJXtofWhjAdXVdXAw406drJ/tvMW3GKtctI/ygp0/AU5PsLcdLVLM5soaJkJ4eeq6DjzH0K9jfq2vcDBhl7nulMDC14Cf8DSzhKkjGKmJutJxjqwJQZ3m/sobMnsaIgEo0Z+xt07YcLKZRySWfnmIpHCBXPIBwHM1uOr+4Ik1YbG9fWcmX6IjtLv7rT9uoOzdtCDrDvRV2LnGrBUcrL+uEkw3oQV1neHEwpCZfW80jl01xIdHN56jz2HbWm94NkRnx6YtA40LBFG0oO/O0Y/7JBNP4Jux7ah+PmoA4Kl1ljipLidQxcP0Nsok+5PrNURE4Mel8YSv6yyoVf9x3hhUffYPzWKLaSSGVjOzY+XwHr1myk/8Zpzid+dnJOHH9t14NVeXkFIAR/Wt/lcHQrTY+1IpWDdBxPyc3UBKXF64lPnqNr5HTSVuwWX3wXO6pc3w7LcR927zmc7oWXtayVm4FFVtrUlW3mydrdDE6co//6wFLayjwx+zFXxH9ezz1N/UNx9/GqZ4p6r3VPS8mzM0e56m3h/wKq3+Ouo/xFls+pnfuIxF/v/gCAPIRNmsDabAAAAABJRU5ErkJggg=="
+            }]
+          , "*"
+
+          params = [
+            #{@replay_url.to_json}
+            #{@parent_url.to_json}
+            #{@source_url.to_json}
+          ]
+
+          anyParams = params.some (x) -> x
+          if anyParams
+            source.postMessage
+              method: "loadReplayFromURL"
+              params: params
+            , "*"
+
+        when "postToChat"
+          reader = new FileReader()
+          reader.onload = (e) ->
+            dataURL = e.target.result
+            $("#chat_zone iframe").get(0).contentWindow.postMessage
+              method: "post"
+              params: [dataURL]
+            , "*"
+
+            $("#chat_zone").trigger "show"
+          reader.readAsDataURL(data.image)
+
+        when "save"
+          title = prompt "Title"
+          notify "Saving, please wait..."
+
+          formData = new FormData()
+          uploadData =
+            'sprite[width]': data.width
+            'sprite[height]': data.height
+            'sprite[parent_id]': #{@parent_id.to_json}
+            'sprite[title]': title
+            'sprite[image]': data.image
+            'sprite[editor]': "pixie2"
+            'sprite[replay]': new Blob([data.state], type: "application/json")
+
+          Object.keys(uploadData).forEach (key) ->
+            formData.append key, uploadData[key]
+
+          $.ajax
+            url: '/sprites',
+            data: formData
+            headers:
+              Accept: "application/json; charset=utf-8"
+            processData: false
+            contentType: false
+            type: 'POST'
+            success: (data) ->
+              if data.redirect
+                window.location = data.redirect
+              else
+                notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
+
+              trackPageview "/event/save_drawing"
+            error: ->
+              alert "Error when saving!"

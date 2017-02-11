@@ -1,0 +1,60 @@
+- @title = "Pixel Editor"
+- @fullscreen = true
+
+
+%iframe#editor(src="https://danielx.net/collage/" sandbox="allow-scripts allow-modals")
+
+:sass
+  html
+    overflow: hidden
+
+  body#fullscreen > .content
+    padding-top: 40px
+
+  #editor
+    width: 100%
+    height: 100%
+
+  #feedback
+    top: 600px
+
+  #open_chat, #chat_zone
+    right: 146px
+
+- content_for :javascript do
+  :coffeescript
+    Postmaster
+      childLoaded: ->
+      remoteTarget: -> document.getElementById("editor").contentWindow
+      save: (data) ->
+        title = prompt "Title"
+        notify "Saving, please wait..."
+
+        formData = new FormData()
+        uploadData =
+          'sprite[width]': data.width
+          'sprite[height]': data.height
+          'sprite[title]': title
+          'sprite[image]': data.image
+          'sprite[editor]': "collage"
+
+        Object.keys(uploadData).forEach (key) ->
+          formData.append key, uploadData[key]
+
+        $.ajax
+          url: '/sprites',
+          data: formData
+          headers:
+            Accept: "application/json; charset=utf-8"
+          processData: false
+          contentType: false
+          type: 'POST'
+          success: (data) ->
+            if data.redirect
+              window.location = data.redirect
+            else
+              notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
+
+            trackPageview "/event/save_drawing"
+          error: ->
+            alert "Error when saving!"

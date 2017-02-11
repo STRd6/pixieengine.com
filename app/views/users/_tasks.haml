@@ -1,0 +1,14 @@
+- progress = user.tasks.inject(0) {|total, task| task[:complete?] ? task[:value] + total : total}
+
+.tasks.module
+  %h3 Progress meter: #{progress}% Complete!
+  - user.tasks.each do |task|
+    .task{:class => ("incomplete" unless task[:complete])}
+      - if task[:complete?]
+        .static-thumb_up
+        = task[:description]
+      - else
+        .static-add
+        = link_to task[:description], task[:link]
+      .value
+        +#{task[:value]}%
