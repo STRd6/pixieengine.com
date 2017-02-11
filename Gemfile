@@ -9,7 +9,7 @@ gem 'rails', '~> 5.0.1'
 
 gem 'acts-as-taggable-on'
 gem 'authlogic'
-gem 'aws-sdk', '< 2.0'
+gem 'aws-sdk'
 gem 'coffee-rails', '~> 4.2'
 gem 'dynamic_form'
 gem 'exception_notification'
@@ -26,16 +26,21 @@ gem 'responders'
 gem 'rmagick'
 gem 'sanitize'
 gem 'sass-rails', '~> 5.0'
-gem 'baby_squeel'
 gem 'uglifier', '>= 1.3.0'
 gem 'unicorn'
 gem 'whenever'
 gem 'will_paginate'
 
+group :test do
+  gem 'factory_girl_rails'
+  gem 'mocha', require: false
+  gem 'shoulda'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+  gem 'dotenv-rails'
 end
 
 group :development do
