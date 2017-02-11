@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_filter :require_user,
+  before_action :require_user,
     :only => :create
 
   def create

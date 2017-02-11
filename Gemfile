@@ -34,6 +34,7 @@ gem 'will_paginate'
 group :test do
   gem 'factory_girl_rails'
   gem 'mocha', require: false
+  gem 'rails-controller-testing'
   gem 'shoulda'
 end
 

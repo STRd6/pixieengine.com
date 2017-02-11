@@ -21,7 +21,7 @@ module Pixie3
         :exception_recipients => %w[yahivin@gmail.com]
       }
 
-    config.middleware.insert_before 0, "Rack::Cors" do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
         resource '/sprites.json', :headers => :any, :methods => [:get, :options]

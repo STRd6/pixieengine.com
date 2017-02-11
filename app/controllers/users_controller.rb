@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_user, :only => [:install_plugin]
-  before_filter :require_current_user, :only => [:edit, :update, :add_to_collection]
-  before_filter :prep_display_name, :only => :new
+  before_action :require_user, :only => [:install_plugin]
+  before_action :require_current_user, :only => [:edit, :update, :add_to_collection]
+  before_action :prep_display_name, :only => :new
 
   REGISTERED_FLASH = "Account registered!"
 

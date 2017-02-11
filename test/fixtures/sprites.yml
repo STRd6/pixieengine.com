@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  width: 1
+  height: 1
+  user_id:
+  parent_id:
+  title: MyString
+  description: MyText
+
+two:
+  width: 1
+  height: 1
+  user_id:
+  parent_id:
+  title: MyString
+  description: MyText

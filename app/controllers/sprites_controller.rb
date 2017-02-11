@@ -1,12 +1,12 @@
 class SpritesController < ApplicationController
   respond_to :html, :json
 
-  before_filter :require_owner_or_admin, :only => [
+  before_action :require_owner_or_admin, :only => [
     :destroy,
     :edit,
     :update
   ]
-  before_filter :require_user, :only => [
+  before_action :require_user, :only => [
     :add_tag,
     :remove_tag,
     :add_favorite,

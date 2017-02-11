@@ -1,5 +1,5 @@
 class InvitesController < ApplicationController
-  before_filter :require_user, :only => [:new, :create]
+  before_action :require_user, :only => [:new, :create]
 
   def new
     @invite = Invite.new
