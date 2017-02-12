@@ -28,10 +28,10 @@ class AdminController < ApplicationController
     digest = OpenSSL::Digest::SHA256.new
     data = [timestamp, token].join
 
-    signature == OpenSSL::HMAC.hexdigest(digest, api_key, data)
+    valid_signature = signature == OpenSSL::HMAC.hexdigest(digest, api_key, data)
 
-    logger.info "Mailgun signature match: #{signature}"
-
-    return signature
+    unless valid_signature
+      render nothing: true, status: :unauthorized
+    end
   end
 end
