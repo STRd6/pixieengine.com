@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get 'creation(/:dummy(/:dummy))' => "sprites#new"
 
   post 'admin/undeliverable' => "admin#undeliverable"
+  post 'admin/bounced' => "admin#bounced"
 
   resources :comments, :follows, :invites, :password_resets
 
