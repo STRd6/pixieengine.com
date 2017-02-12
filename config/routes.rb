@@ -23,6 +23,8 @@ Rails.application.routes.draw do
   # Catch old urls
   get 'creation(/:dummy(/:dummy))' => "sprites#new"
 
+  post 'admin/undeliverable' => "admin#undeliverable"
+
   resources :comments, :follows, :invites, :password_resets
 
   resources :sprites do
