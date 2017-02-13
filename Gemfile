@@ -27,6 +27,7 @@ gem 'responders'
 gem 'rmagick'
 gem 'sanitize'
 gem 'sass-rails', '~> 5.0'
+gem 'sidekiq'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever'
 gem 'will_paginate'
@@ -45,6 +46,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'foreman'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.0.5'

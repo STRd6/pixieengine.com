@@ -6,7 +6,7 @@ class Invite < ActiveRecord::Base
   validates_format_of :email, :with => Authlogic::Regex.email
   validates_format_of :to, :with => /\A[A-Za-z0-9 ]*\Z/, :message => "should have a more personalized name"
 
-  after_create do
+  after_commit on: :create do
     Notifier.invitation(self).deliver_later
   end
 

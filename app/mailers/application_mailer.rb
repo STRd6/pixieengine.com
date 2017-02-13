@@ -12,13 +12,21 @@ private
     return unless mail.perform_deliveries
 
     recipient = mail.to[0]
-    mail.perform_deliveries = !Email.where(unsubscribed: true).find_by_email(recipient)
+    should_perform = !Email.where(unsubscribed: true).find_by_email(recipient)
+    unless should_perform
+      logger.info "Skip sending email to #{recipient} because they are unsubscribed"
+    end
+    mail.perform_deliveries = should_perform
   end
 
   def check_undeliverables
     return unless mail.perform_deliveries
 
     recipient = mail.to[0]
-    mail.perform_deliveries = !Email.where(undeliverable: true).find_by_email(recipient)
+    should_perform = !Email.where(unsubscribed: true).find_by_email(recipient)
+    unless should_perform
+      logger.info "Skip sending email to #{recipient} because they are unsubscribed"
+    end
+    mail.perform_deliveries = should_perform
   end
 end

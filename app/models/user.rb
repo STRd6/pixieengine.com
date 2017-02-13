@@ -100,7 +100,7 @@ class User < ActiveRecord::Base
     where("avatar_file_size IS NOT NULL AND profile IS NOT NULL")
   }
 
-  after_create :send_welcome_email
+  after_commit :send_welcome_email, on: :create
 
   before_validation :sanitize_profile
 

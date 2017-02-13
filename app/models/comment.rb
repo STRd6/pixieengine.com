@@ -24,7 +24,7 @@ class Comment < ActiveRecord::Base
     self.commentee ||= commentable.user
   end
 
-  after_create :notify_commentee
+  after_commit :notify_commentee, on: :create
 
   validates :commenter, :commentable, :body, :presence => true
   # Don't allow exact duplicate comments by same person on same item
