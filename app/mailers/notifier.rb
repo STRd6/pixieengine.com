@@ -101,8 +101,16 @@ class Notifier < ApplicationMailer
     @comment = comment
     commentee = comment.commentee
 
-    mail :subject => "#{commentee.display_name}, #{comment.commenter.display_name} has commented on your Pixie item.",
-      :to => commentee.email
+    @commenter = comment.commenter.display_name
+    @commentable = comment.commentable
+    @display_name = commentee.display_name
+    @type = comment.commentable_type
+    @body = comment.body
+
+    mail(
+      subject: "Hey #{@display_name}, #{@commenter} commented on your #{@type}",
+      to: commentee.email
+    )
   end
 
   def analytics(user)

@@ -27,7 +27,7 @@
                 Questions, comments, suggestions, concerns? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdf6XoPRD9rY5PqlA2edPg7GS5qDFFU2xhtMpdHdXparEIrXA/viewform" style="color: white;">Please send us feedback!</a>
                 <br>
                 <br>
-                This email was sent to <%= @_message.to[0] %>
+                This email was sent to <%= mail_to @_message.to[0], nil, style: "color: white; text-decoration: none;" %>
                 <br>
                 If you no longer wish to receive emails like this, you can <a href="<%= unsubscribe_url_for(@_message.to[0]) %>" style="color: white;">click here to unsubscribe</a>.
               </td>

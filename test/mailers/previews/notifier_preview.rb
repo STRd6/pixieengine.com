@@ -7,4 +7,8 @@ class NotifierPreview < ActionMailer::Preview
   def invite
     Notifier.invitation(Invite.first)
   end
+
+  def comment
+    Notifier.comment(Comment.last)
+  end
 end
