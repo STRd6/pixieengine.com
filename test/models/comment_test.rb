@@ -71,6 +71,21 @@ class CommentTest < ActiveSupport::TestCase
       end
     end
 
+    should "not send to someone commenting on their own item" do
+      user = create :user,
+        site_notifications: true
+      sprite = create :sprite,
+        user: user
+
+      # Create comment and verify one email was sent
+      assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+        create :comment,
+          commenter: user,
+          commentee: user,
+          commentable: sprite
+      end
+    end
+
     should "not send to someone who has opted out of receiving email" do
       user = create :user,
         site_notifications: false

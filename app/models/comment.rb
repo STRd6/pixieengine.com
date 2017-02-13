@@ -48,7 +48,7 @@ class Comment < ActiveRecord::Base
   end
 
   def notify_commentee
-    if commentee && commentee.site_notifications
+    if commentee && commentee.site_notifications && commentee != commenter
       Notifier.comment(self).deliver_later
     end
   end
