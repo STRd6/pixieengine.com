@@ -3,4 +3,8 @@ class NotifierPreview < ActionMailer::Preview
   def welcome
     Notifier.welcome_email(User.first)
   end
+
+  def invite
+    Notifier.invitation(Invite.first)
+  end
 end

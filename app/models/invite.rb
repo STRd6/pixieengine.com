@@ -1,7 +1,4 @@
 class Invite < ActiveRecord::Base
-  include Rails.application.routes.url_helpers
-  self.default_url_options = { :host => "pixieengine.com" }
-
   belongs_to :user
 
   validates_presence_of :user, :token, :email, :to
@@ -15,9 +12,5 @@ class Invite < ActiveRecord::Base
 
   before_validation :on => :create do
     self.token = SecureRandom.hex(8)
-  end
-
-  def url
-    return invite_token_url(token)
   end
 end
