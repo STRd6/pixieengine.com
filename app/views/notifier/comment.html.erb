@@ -1,0 +1,16 @@
+Hello <%= @display_name %>,
+<br><br>
+<%= @commenter %> left a comment on your <%= @type %>! They said:
+<blockquote>
+<%= markdown @body %>
+</blockquote>
+<table cellpadding="0" cellspacing="0" width="100%">
+  <tr>
+    <td align="center" style="padding: 48px 0 48px 0;">
+      <%= link_to "See for yourself!", @commentable, style: cta_style %>
+    </td>
+  </tr>
+</table>
+
+Yours Always,<br>
+Pixie
