@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
   get 'survey' => "home#survey", :as => :survey
   get 'sitemap' => "home#sitemap"
+  get 'unsubscribe/:signature' => "home#unsubscribe", :as => :unsubscribe
 
   get 'i/:token' => "invites#track", :as => :invite_token
 

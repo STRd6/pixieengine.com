@@ -10,4 +10,10 @@ class Email < ActiveRecord::Base
       email.undeliverable = true
     end
   end
+
+  def self.mark_unsubscribed(address)
+    Email.find_or_create_by(email: address) do |email|
+      email.unsubscribed = true
+    end
+  end
 end

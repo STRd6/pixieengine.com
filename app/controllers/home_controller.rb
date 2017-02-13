@@ -12,6 +12,15 @@ class HomeController < ApplicationController
   def survey
   end
 
+  def unsubscribe
+    verifier = ActiveSupport::MessageVerifier.new(Rails.application.secrets.secret_key_base)
+    address = verifier.verify(params[:signature])
+    Rails.logger.info "Verified: #{address}"
+
+    @address = address
+    Email.mark_unsubscribed(address)
+  end
+
   private
   def hide_feedback
     @hide_feedback = true

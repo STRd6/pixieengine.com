@@ -18,6 +18,11 @@ FactoryGirl.define do
     undeliverable true
   end
 
+  factory :unsubscribed_email, class: Email do
+    email
+    unsubscribed true
+  end
+
   factory :user do
     email
     sequence(:display_name) do |n|

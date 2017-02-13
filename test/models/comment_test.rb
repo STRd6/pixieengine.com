@@ -85,7 +85,23 @@ class CommentTest < ActiveSupport::TestCase
           commentee: user,
           commentable: sprite
       end
+    end
 
+    should "not send to someone who has unsubscribed" do
+      user = create :user
+      unsubscribed = create :unsubscribed_email,
+        email: user.email
+      sprite = create :sprite,
+        user: user
+      commenter = create :user
+
+      # Create comment and verify no email was sent
+      assert_difference 'ActionMailer::Base.deliveries.size', 0 do
+        create :comment,
+          commenter: commenter,
+          commentee: user,
+          commentable: sprite
+      end
     end
 
     should "not send to someone who's email is undeliverable" do
