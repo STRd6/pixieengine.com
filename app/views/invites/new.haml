@@ -27,4 +27,4 @@
     below:
 
   %pre
-    = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :url => root_url})
+    = render(:partial => "notifier/invitation", :locals => {:to => "[Friend's Name]", :from => current_user.display_name, :token => "test"})
