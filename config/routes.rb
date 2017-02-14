@@ -21,6 +21,8 @@ Rails.application.routes.draw do
 
   get 'chatframe' => 'static#chatframe'
 
+  get 'chat' => 'chat#index', :as => :chat
+
   # Catch old urls
   get 'creation(/:dummy(/:dummy))' => "sprites#new"
 
