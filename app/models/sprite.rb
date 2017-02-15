@@ -242,7 +242,8 @@ class Sprite < ActiveRecord::Base
 
   def self.update_score
     self.find_each do |sprite|
-      sprite.update_score.save
+      sprite.update_score
+      sprite.save
     end
   end
 end
