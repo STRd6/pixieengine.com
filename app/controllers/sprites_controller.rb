@@ -172,7 +172,7 @@ class SpritesController < ApplicationController
       recency = 50.years.ago
     else
       order = "favorites_count DESC, id DESC"
-      recency = 3.months.ago
+      recency = 5.years.ago
     end
 
     items = items
