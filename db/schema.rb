@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170212224934) do
+ActiveRecord::Schema.define(version: 20170215002657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -139,6 +139,11 @@ ActiveRecord::Schema.define(version: 20170212224934) do
     t.string   "editor"
     t.string   "image_url"
     t.string   "replay_url"
+    t.integer  "suppression",                     default: 0,     null: false
+    t.integer  "score",                           default: 0,     null: false
+    t.index ["created_at"], name: "index_sprites_on_created_at", using: :btree
+    t.index ["score"], name: "index_sprites_on_score", using: :btree
+    t.index ["user_id"], name: "index_sprites_on_user_id", using: :btree
   end
 
   create_table "taggings", force: :cascade do |t|

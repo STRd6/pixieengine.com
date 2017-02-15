@@ -13,6 +13,8 @@ class SpritesController < ApplicationController
     :remove_favorite
   ]
 
+  before_action :require_admin, only: [ :suppress ]
+
   def create
     @sprite = Sprite.create! sprite_params
 
@@ -66,6 +68,11 @@ class SpritesController < ApplicationController
   end
 
   def collage
+  end
+
+  def suppress
+   sprite.suppress!
+   redirect_back fallback_location: sprites_path
   end
 
   def index
@@ -171,7 +178,7 @@ class SpritesController < ApplicationController
       order = "id DESC"
       recency = 50.years.ago
     else
-      order = "favorites_count DESC, id DESC"
+      order = "score DESC, id DESC"
       recency = 5.years.ago
     end
 

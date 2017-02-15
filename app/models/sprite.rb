@@ -212,6 +212,16 @@ class Sprite < ActiveRecord::Base
     self.dimension_list = tags.join(',')
   end
 
+  def suppress!
+    self.suppression += 1000
+    self.update_score
+    self.save!
+  end
+
+  def update_score
+    self.score = (comments_count + favorites_count) - suppression
+  end
+
   def create_link
     Link.create(:user => user, :target => self)
   end
@@ -227,6 +237,12 @@ class Sprite < ActiveRecord::Base
           retry if tries > 0
         end
       end
+    end
+  end
+
+  def self.update_score
+    self.find_each do |sprite|
+      sprite.update_score.save
     end
   end
 end

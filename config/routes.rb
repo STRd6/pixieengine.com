@@ -40,6 +40,8 @@ Rails.application.routes.draw do
 
       post :add_tag
       post :remove_tag
+
+      patch :suppress
     end
 
     collection do
