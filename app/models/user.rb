@@ -26,14 +26,10 @@ class User < ActiveRecord::Base
   validates_attachment_content_type :avatar, :content_type => ["image/jpg", "image/jpeg", "image/png", "image/gif"]
 
   include Commentable
-  include Oauthable
 
-  has_many :libraries
   has_many :collections
   has_many :sprites, -> { order("id DESC") }
   has_many :invites
-
-  has_many :projects, -> { order("id DESC") }
 
   has_many :followings,
     :class_name => "Follow",
@@ -53,10 +49,7 @@ class User < ActiveRecord::Base
     :class_name => "User",
     :source => :follower
 
-  has_many :visits
-
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
-  has_many :memberships
 
   # attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications, :help_tips
 
@@ -123,16 +116,6 @@ class User < ActiveRecord::Base
 
   def to_s
     display_name
-  end
-
-  def demo_project
-    project = projects.where(:demo => true).first
-
-    unless project
-      project = projects.create! :demo => true, :title => "Demo", :description => "A demo project to help you get started"
-    end
-
-    return project
   end
 
   def send_forgot_password_email
@@ -252,37 +235,6 @@ class User < ActiveRecord::Base
 
   def send_welcome_email
     Notifier.welcome_email(self).deliver_later unless email.blank?
-  end
-
-  def self.visit_report
-    esac = "
-      CASE
-        WHEN login_count BETWEEN 0 AND 1 THEN 0
-        WHEN login_count BETWEEN 2 AND 5 THEN 1
-        WHEN login_count BETWEEN 6 AND 12 THEN 2
-        ELSE 3
-      END
-    "
-    User.select("COUNT(*) AS count, #{esac} AS segment").group(esac)
-  end
-
-  def self.cohort_analysis
-    subquery = User.joins(:visits) \
-      .select("users.id AS id,
-        DATE_TRUNC('month', users.created_at) AS first_action,
-        DATE_TRUNC('month', MAX(visits.created_at)) AS last_action") \
-      .group("users.id, first_action") \
-      .where("users.created_at >= DATE_TRUNC('month', CAST(? AS timestamp))", 12.months.ago)
-
-    ActiveRecord::Base.connection.execute("
-      SELECT
-        COUNT(*) AS count,
-        first_action,
-        last_action
-      FROM (#{subquery.to_sql}) AS temp
-      GROUP BY first_action, last_action
-      ORDER BY first_action ASC, last_action ASC
-    ")
   end
 
   def self.contact_people_we_miss

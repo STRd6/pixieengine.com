@@ -25,6 +25,12 @@ class Comment < ActiveRecord::Base
   end
 
   after_commit :notify_commentee, on: :create
+  after_create do
+    if commentable.instance_of? Sprite
+      commentable.update_score
+      commentable.save
+    end
+  end
 
   validates :commenter, :commentable, :body, :presence => true
   # Don't allow exact duplicate comments by same person on same item
