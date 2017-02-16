@@ -54,7 +54,7 @@ class CommentTest < ActiveSupport::TestCase
     end
   end
 
-  context "comment emails"
+  context "comment emails" do
     should "sent to someone who receives a comment" do
       user = create :user,
         site_notifications: true
@@ -134,6 +134,6 @@ class CommentTest < ActiveSupport::TestCase
           commentee: user,
           commentable: sprite
       end
-
     end
+  end
 end
