@@ -7,6 +7,8 @@ RailsAdmin.config do |config|
   end
   config.current_user_method(&:current_user)
 
+  config.label_methods << :display_name
+
   ## == Cancan ==
   # config.authorize_with :cancan
 
@@ -37,4 +39,15 @@ RailsAdmin.config do |config|
     # history_index
     # history_show
   end
+
+  config.model 'User' do
+    list do
+      exclude_fields :crypted_password,
+        :password_salt,
+        :persistence_token,
+        :single_access_token,
+        :perishable_token
+    end
+  end
+
 end
