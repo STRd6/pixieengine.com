@@ -41,7 +41,7 @@ class TunesController < ApplicationController
           }
         else
           session[:saved_tunes] ||= {}
-          session[:saved_tunes][sprite.id] = 0
+          session[:saved_tunes][tune.id] = 0
 
           render :json => { :redirect => sign_in_path }
         end
