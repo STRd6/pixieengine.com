@@ -110,7 +110,7 @@ class Tune < ApplicationRecord
   def self.import_all_gist_ids
     gist_ids = File.read("gist_ids.txt").split("\n")
 
-    gist_ids[0...10].each do |gist_id|
+    gist_ids.each do |gist_id|
       self.import_from_gist(gist_id).save
     end
   end
