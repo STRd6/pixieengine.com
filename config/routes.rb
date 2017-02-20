@@ -32,6 +32,20 @@ Rails.application.routes.draw do
 
   resources :comments, :follows, :invites, :password_resets
 
+  resources :tunes do
+    member do
+      get :editor
+
+      post :add_favorite
+      post :remove_favorite
+
+      post :add_tag
+      post :remove_tag
+
+      patch :suppress
+    end
+  end
+
   resources :sprites do
     member do
       get :load

@@ -1,0 +1,99 @@
+:sass
+  html
+    overflow: hidden
+
+  body#fullscreen > .content
+    padding-top: 40px
+
+  #editor
+    width: 100%
+    height: 100%
+
+  #feedback
+    top: 100%
+
+- @fullscreen = true
+
+%iframe#editor(src="https://danielx.net/composer/pixie/" sandbox="allow-scripts  allow-forms")
+
+- content_for :javascript do
+  :coffeescript
+    editor = document.getElementById('editor')
+
+    send = (data) ->
+      editor.contentWindow.postMessage data, "*"
+
+    invokeRemote = (method, params...) ->
+      send
+        type: "message"
+        method: method
+        params: params
+
+    ack = ({id}) ->
+      send
+        type: "ack"
+        id: id
+
+    respond = (id, result) ->
+      send
+        type: "response"
+        result: result
+        id: id
+
+    respondWithError = (id, error) ->
+      send
+        type: "error"
+        error: error
+        id: id
+
+    window.addEventListener "message", (event) ->
+      console.log event.data
+      {data, source} = event
+      return unless source is editor.contentWindow
+
+      msgId = data.id
+      ack(data)
+
+      method = data.method ? data.status
+
+      switch method
+        when "ready"
+          editor.focus()
+
+          unless #{tune.new_record?.to_json}
+            console.log #{tune.content_url.to_json}
+            invokeRemote "loadFromURL", #{tune.content_url.to_json}
+
+        when "save"
+          {title, description, content} = data.params[0]
+
+          formData = new FormData()
+          uploadData =
+            'tune[parent_id]': #{@parent_id.to_json}
+            'tune[title]': title
+            'tune[description]': description
+            'tune[editor]': "composer"
+            'tune[content]': content
+
+          Object.keys(uploadData).forEach (key) ->
+            formData.append key, uploadData[key]
+
+          $.ajax
+            url: #{tunes_path.to_json},
+            data: formData
+            headers:
+              Accept: "application/json; charset=utf-8"
+            processData: false
+            contentType: false
+            type: 'POST'
+            success: (data) ->
+              respond(msgId, true)
+              if data.redirect
+                window.location = data.redirect
+              else
+                notify "Saved as <a href='/tunes/" + data.tune.id + "'>" + (data.tune.title || ('Tune ' + data.tune.id)) + "</a>"
+
+              trackPageview "/event/save_tune"
+            error: ->
+              respondWithError msgId,
+                message: "Error when saving!"

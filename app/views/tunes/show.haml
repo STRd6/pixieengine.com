@@ -1,0 +1,64 @@
+- @title = "Paint Composer"
+
+%tunes.show(style="margin-top: 4em;")
+  = render tune
+  - if tune.parent
+    = render tune.parent
+
+.btn-toolbar
+  - if current_user
+    - if current_user.favorite?(tune)
+      .btn-group
+        %a.button.btn(rel="removeFavorite")
+          .static-arrow_undo
+          Remove Favorite
+
+    - else
+      .btn-group
+        %a.button.btn(rel="addFavorite")
+          .static-photo_add
+          Add Favorite
+
+  - if owner_or_admin?
+    .btn-group
+      %a.button.btn(href="#{editor_tune_path(tune)}")
+        .static-picture_edit
+        Load in Editor
+    .btn-group
+      %a.button.btn(href="#{edit_tune_path(tune)}")
+        .static-table_edit
+        Edit Details
+    .btn-group
+      %a.button.btn(href="#{tune_path(tune)}" data-method="delete")
+        .static-cross
+        Delete
+
+= markdown tune.description
+
+- if tune.children.any?
+  %h2
+    Remixes
+
+  %tunes
+    = render :partial => tune.children.limit(20)
+
+= display_comments tune
+
+- content_for :javascript do
+  :coffeescript
+    $ ->
+      $("a[rel=addFavorite]").on "click", (event) ->
+        event.preventDefault()
+
+        if url = #{add_favorite_tune_path(tune).to_json}
+          notify "Adding favorite..."
+          $.post url, (data) ->
+            notify "Added to favorites."
+
+      $("a[rel=removeFavorite]").on "click", (event) ->
+        event.preventDefault()
+
+        if url = #{remove_favorite_tune_path(tune).to_json}
+          notify "Removing..."
+          $.post url, (data) ->
+            notify "Removed from favorites."

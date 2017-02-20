@@ -9,6 +9,7 @@
 = will_paginate @sprites
 
 = form_tag sprites_path, :method => 'get' do
+  = hidden_field_tag 'order', params[:order]
   %input(type="text" placeholder="Search for..." name="search")
 
 .sprites

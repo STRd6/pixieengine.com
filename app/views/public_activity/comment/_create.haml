@@ -6,6 +6,9 @@
     - if commentable = comment.commentable
       - if commentable.is_a? Sprite
         = render commentable
+      - elsif commentable.is_a? Tune
+        %tunes.inline
+          = render commentable
 
     .left
       = markdown(comment.body)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215002657) do
+ActiveRecord::Schema.define(version: 20170218165816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,6 +163,25 @@ ActiveRecord::Schema.define(version: 20170215002657) do
     t.integer "taggings_count",             default: 0
   end
 
+  create_table "tunes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "title",           default: "Untitled", null: false
+    t.text     "description",     default: "",         null: false
+    t.integer  "parent_id"
+    t.string   "content_sha256",                       null: false
+    t.json     "meta",            default: {},         null: false
+    t.integer  "comments_count",  default: 0,          null: false
+    t.integer  "favorites_count", default: 0,          null: false
+    t.integer  "score",           default: 0,          null: false
+    t.integer  "suppression",     default: 0,          null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["created_at"], name: "index_tunes_on_created_at", using: :btree
+    t.index ["parent_id"], name: "index_tunes_on_parent_id", using: :btree
+    t.index ["score"], name: "index_tunes_on_score", using: :btree
+    t.index ["user_id"], name: "index_tunes_on_user_id", using: :btree
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "email",               limit: 255
     t.string   "crypted_password",    limit: 255
@@ -205,4 +224,5 @@ ActiveRecord::Schema.define(version: 20170215002657) do
     t.index ["display_name"], name: "index_users_on_display_name", unique: true, using: :btree
   end
 
+  add_foreign_key "tunes", "users"
 end
