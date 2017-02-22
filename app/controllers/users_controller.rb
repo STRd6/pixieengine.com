@@ -142,18 +142,6 @@ class UsersController < ApplicationController
     render :nothing => true
   end
 
-  def install_plugin
-    current_user.install_plugin(Plugin.find(params[:plugin_id]))
-
-    redirect_to :back, :notice => "Plugin installed"
-  end
-
-  def uninstall_plugin
-    current_user.uninstall_plugin(Plugin.find(params[:plugin_id]))
-
-    redirect_to :back, :notice => "Plugin uninstalled"
-  end
-
   def do_unsubscribe
     if params[:id]
       user = User.find(params[:id])

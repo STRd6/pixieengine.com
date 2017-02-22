@@ -18,11 +18,8 @@
     %h1
       = user.display_name
       - if current_user?
-        = link_to "Edit profile", [:edit, user], :class => "button btn btn-primary"
-        -# unless current_user.oauth_tokens.find_by_provider("google_oauth2")
-          = link_to "Connect Google", "/auth/google_oauth2", :class => "button btn btn-primary"
-        -# unless current_user.oauth_tokens.find_by_provider("github")
-          = link_to "Connect Github", "/auth/github", :class => "button btn btn-primary"
+        = link_to "Edit Profile", [:edit, user], :class => "button btn btn-primary"
+        = link_to "Invite Friends", new_invite_path, :class => "button btn btn-primary"
 
       - else
         - if following?(user)

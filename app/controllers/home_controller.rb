@@ -1,6 +1,15 @@
 class HomeController < ApplicationController
   before_action :hide_feedback
 
+  def root
+    if current_user
+      redirect_to current_user
+    else
+      @sprite = Sprite.new
+      render "sprites/pixie"
+    end
+  end
+
   def sitemap
     @sprite_pages_count = Sprite.count / Sprite.per_page
     @users = User.select("id, display_name, updated_at")
