@@ -1,23 +1,15 @@
-%header.navbar.navbar-fixed-top(eventCategory="Header")
-  #flashes
-    - flash.each do |key, msg|
-      %div{ :class => key }= msg
+%header(eventCategory="Header")><
+  = link_to root_path, :eventLabel => 'logo' do
+    = image_tag "https://2.pixiecdn.com/sprites/29814/original.png", size: "50", alt: "Pixie Engine Logo"
+  :ruby
+    nav_links = [
+      ['Pixel Editor', pixel_editor_path],
+      ['Gallery', sprites_path],
+      ['Tune Composer', new_tune_path],
+      ['Tunes', tunes_path],
+    ]
+  - nav_links.each do |text, url|
+    - current_class = current_page?(url) ? 'current' : ''
+    = link_to(text, url, class: current_class)
 
-  .navbar-inner
-    .container
-      = link_to '', root_path, :class => 'brand logo', :eventLabel => 'logo'
-      :ruby
-        nav_links = [
-          ['Pixel Editor', pixel_editor_path],
-          ['Gallery', sprites_path],
-          ['Tune Composer', new_tune_path],
-          ['Tunes', tunes_path],
-        ]
-      %ul.nav
-        - nav_links.each do |text, url|
-          %li
-            = link_to_unless_current(text, url) do |link|
-              %li.active
-                %a(href='#')= link
-
-      = render :partial => "/shared/login"
+  -# = render :partial => "/shared/login"

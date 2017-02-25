@@ -1,0 +1,24 @@
+body > header
+  background-color: $primary-color
+  display: flex
+  height: 54px
+
+  > a
+    align-items: center
+    color: white
+    display: flex
+    flex: none
+
+    &:hover
+      background-color: $highlight-color
+      color: $primary-color
+
+    &.current
+      background-color: white
+      color: $primary-color
+
+    &:first-child
+      padding-right: 8px
+
+    &:nth-child(n + 2)
+      padding: 0 8px

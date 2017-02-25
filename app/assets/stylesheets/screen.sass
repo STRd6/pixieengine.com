@@ -1,26 +1,10 @@
-*
-  box-sizing: border-box
+@import variables
+@import base
 
-@import old
-
-.static-picture_edit, .static-arrow_undo, .static-status_online, .static-photo_add, .static-table_edit, .static-cross
-  display: inline-block
-  vertical-align: bottom
-
-.pixie
-  .content
-    padding-top: 50px
-  .viewport
-    display: block
-    margin: 0
-
-.dropdown-menu
-  padding: 0
-  a
-    padding: 11px 15px
-
+@import header
 @import pagination
 @import form
+@import tunes
 
 .sprite_container
   border-radius: 3px
@@ -38,12 +22,6 @@
     width: auto
     height: auto
 
-.pixie .opacity
-  box-sizing: content-box
-
-.pixie .module.right .color_picker_holder
-  margin-bottom: 2.5em
-
 .sprite_container > form
   position: absolute
   top: -10px
@@ -53,57 +31,3 @@
     color: red
     background-color: white
 
-tunes
-  display: block
-
-  > tune
-    background-color: white
-    border: 2px solid #673ab7
-    border-radius: 4px
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5)
-    display: inline-block
-    height: 60px
-    margin-right: 33px
-    margin-bottom: 33px
-    vertical-align: bottom
-    width: 200px
-
-    &:nth-child(4n)
-      margin-right: 0
-
-    > a
-      color: #673ab7
-      display: block
-      height: 100%
-      padding: 0.5em 1em
-      position: relative
-      text-decoration: none
-
-      &:hover
-        background-color: lightyellow
-        color: #673ab7
-        text-decoration: none
-
-      > img
-        background-color: white
-        border-radius: 4px
-        bottom: -8px
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)
-        position: absolute
-        right: -8px
-        width: 32px
-        height: 32px
-
-      > .title
-        display: block
-        font-size: 12px
-        overflow: hidden
-        text-overflow: ellipsis
-        white-space: nowrap
-
-      > .attribution
-        bottom: 0.5em
-        font-size: 12px
-        font-weight: normal
-        position: absolute
-        right: 32px
