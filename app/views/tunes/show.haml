@@ -1,7 +1,11 @@
 - @title = "Paint Composer"
 
 %tunes.show(style="margin-top: 4em;")
-  = render tune
+  %tune
+    = link_to action: :editor do
+      %span.title= tune.display_title
+      %span.attribution= tune.creator_name
+      %img(src="#{tune.creator_thumb_url}")
   - if tune.parent
     = render tune.parent
 
