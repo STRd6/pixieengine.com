@@ -1,5 +1,5 @@
 - link_path ||= sprite_path(sprite)
-.sprite_container
+%sprite
   - if admin?
     = form_for sprite, url: { id: sprite.id, controller: :sprites, action: :suppress } do |form|
       = form.button "🔨"

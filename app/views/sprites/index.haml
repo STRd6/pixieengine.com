@@ -12,7 +12,7 @@
   = hidden_field_tag 'order', params[:order]
   %input(type="text" placeholder="Search for..." name="search")
 
-.sprites
+%sprites
   - if @sprites.size > 0
     = render @sprites
   - else
@@ -23,6 +23,9 @@
 
 - content_for :javascript do
   :coffeescript
-    $(".sprites").isotope
-      itemSelector : '.sprite_container'
+    $("sprites").isotope
+      itemSelector : 'sprite'
       layoutMode : 'masonry'
+      containerStyle:
+        overflow: 'visible'
+        position: 'relative'
