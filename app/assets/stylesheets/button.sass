@@ -2,17 +2,26 @@ button, .button
   background-color: white
   border-radius: 4px
   border: 1px solid $primary-color
+  box-shadow: $item-shadow
   color: $primary-color
   cursor: pointer
   font-size: inherit
   line-height: 1em
   padding: 9px 16px
 
+  h1 > &
+    margin-left: 1em
+
   &:hover
     background-color: $highlight-color
 
   &:active
     background-color: $primary-color
+    color: white
+
+  &.cta
+    background-color: $accent-color
+    border-color: $accent-color
     color: white
 
 actions
@@ -25,3 +34,4 @@ actions
 
     &:last-child
       margin-right: 0
+

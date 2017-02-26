@@ -18,14 +18,14 @@
     %h1
       = user.display_name
       - if current_user?
-        = link_to "Edit Profile", [:edit, user], :class => "button btn btn-primary"
-        = link_to "Invite Friends", new_invite_path, :class => "button btn btn-primary"
+        = link_to "Edit Profile", [:edit, user], :class => "button"
+        = link_to "Invite Friends", new_invite_path, :class => "button cta"
 
       - else
         - if following?(user)
-          = button_to "Unfollow", follow_path(user.id), :class => "button btn btn-primary", :method => :delete
+          = button_to "Unfollow", follow_path(user.id), :class => "button cta", :method => :delete
         - else
-          = button_to "Follow", follows_path(id: user.id), :class => "button btn btn-primary"
+          = button_to "Follow", follows_path(id: user.id), :class => "button cta"
 
     .info
       = image_tag user.avatar.url(:large), :class => :avatar
@@ -47,11 +47,14 @@
 
   %h2 Sprites
   = will_paginate @sprites
-  .sprites
+  %sprites
     = render @sprites
 
 - content_for :javascript do
   :coffeescript
-    $(".sprites").isotope
-      itemSelector : '.sprite_container'
+    $("sprites").isotope
+      itemSelector : 'sprite'
       layoutMode : 'masonry'
+      containerStyle:
+        overflow: 'visible'
+        position: 'relative'
