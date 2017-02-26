@@ -12,22 +12,22 @@ body
   margin: 0
   overflow: hidden
 
+  > header
+    height: 54px
+
+  > content
+    display: block
+    height: calc(100vh - 54px)
+    overflow: auto
+    padding: 0 1em
+
+    #fullscreen > &
+      overflow: hidden
+      padding: 0
+
 a
   color: $primary-color
   text-decoration: none
-
-content
-  display: block
-  height: calc(100vh - 54px)
-  overflow: auto
-  padding: 0 1em
-
-  #fullscreen > &
-    overflow: hidden
-    padding: 0
-
-header
-  height: 54px
 
 h1, h2, h3
   font-size: 1em

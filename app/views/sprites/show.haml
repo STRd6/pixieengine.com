@@ -1,40 +1,3 @@
-%style
-  :sass
-    button.add
-      margin-bottom: 0.7em
-
-    strong
-      font-weight: bold
-
-    em
-      font-style: italic
-
-    .comments_area
-      width: 450px
-
-      h3
-        margin: 0
-
-      #comment_preview
-        background-color: white
-        font-weight: normal
-        margin: 15px 0
-        padding: 0 5px
-
-      label
-        margin-top: 0
-
-      textarea
-        height: 75px
-
-    .sprite_block
-      display: inline-block
-      margin-right: 5em
-      vertical-align: top
-
-    #tag
-      width: 200px
-
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
@@ -89,21 +52,6 @@
       Edit Details
     %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")><
       Delete
-
-%h3 Tags
-.tags
-  - sprite.tag_list.each do |tag|
-    = sprite_tag_link(sprite, tag)
-
-  - sprite.source_list.each do |source|
-    = sprite_tag_link(sprite, source)
-
-  - sprite.dimension_list.each do |dimension|
-    = sprite_tag_link(sprite, dimension)
-
-  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id, "class" => "form-inline"} do
-    = text_field_tag :tag, nil, :placeholder => "Tag name"
-    %button.btn.add(type='submit') Add
 
 = display_comments sprite
 
