@@ -1,0 +1,3 @@
+#!/bin/bash
+
+aws s3 sync s3://images.pixie.strd6.com s3://dev.pixie.strd6.com
