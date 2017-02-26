@@ -31,4 +31,11 @@ module ApplicationHelper
       current_user.following?(user)
     end
   end
+
+  def pagination_for(collection)
+    will_paginate collection, {
+      inner_window: 2,
+      outer_window: 0,
+    }
+  end
 end

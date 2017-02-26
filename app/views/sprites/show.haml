@@ -39,14 +39,13 @@
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
 
-.sprite_block
-  %h1= sprite.display_name
+.sprite_block><
+  %h1><= sprite.display_name
 
   = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
   = markdown sprite.description
 
-  .clear
   %p= author_link(sprite)
 
 

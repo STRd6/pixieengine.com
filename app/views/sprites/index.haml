@@ -1,16 +1,5 @@
 
-.pagination
-  - [["Favorites", nil], ["Recent", "recent"], ].each do |name, param|
-    - if params[:order] == param
-      %em.current= name
-    - else
-      = link_to name, sprites_path(order: param)
-
-= will_paginate @sprites
-
-= form_tag sprites_path, :method => 'get' do
-  = hidden_field_tag 'order', params[:order]
-  %input(type="text" placeholder="Search for..." name="search")
+= render partial: "shared/navigation", locals: {collection: @sprites}
 
 %sprites
   - if @sprites.size > 0
@@ -19,7 +8,7 @@
     %h2 No results
     %a(href="#{sprites_path}") Back to Gallery
 
-= will_paginate @sprites
+= render partial: "shared/navigation", locals: {collection: @sprites}
 
 - content_for :javascript do
   :coffeescript
