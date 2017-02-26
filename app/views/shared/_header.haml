@@ -10,6 +10,8 @@
     ]
   - nav_links.each do |text, url|
     - current_class = current_page?(url) ? 'current' : ''
+    - if text == nav_links.last[0]
+      - current_class += " break"
     = link_to(text, url, class: current_class)
 
-  -# = render :partial => "/shared/login"
+  = render :partial => "/shared/login"

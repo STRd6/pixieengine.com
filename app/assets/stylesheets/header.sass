@@ -7,8 +7,10 @@ body > header
     color: white
     display: flex
     flex: none
+    transition-duration: 0.25s
+    transition-property: color, background-color, border-color
 
-    &:hover
+    &:hover, &:focus
       background-color: $highlight-color
       color: $primary-color
 
@@ -21,3 +23,11 @@ body > header
 
     &:nth-child(n + 2)
       padding: 0 8px
+
+    &.break
+      margin-right: auto
+
+    &.button
+      align-self: center
+      margin-right: 1em
+      padding: 9px 16px

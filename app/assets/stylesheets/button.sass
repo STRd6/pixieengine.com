@@ -8,11 +8,13 @@ button, .button
   font-size: inherit
   line-height: 1em
   padding: 9px 16px
+  transition-duration: 0.25s
+  transition-property: color, background-color, border-color
 
   h1 > &
     margin-left: 1em
 
-  &:hover
+  &:hover, &:focus
     background-color: $highlight-color
 
   &:active
@@ -23,6 +25,11 @@ button, .button
     background-color: $accent-color
     border-color: $accent-color
     color: white
+
+    &:hover, &:focus
+      background-color: $highlight-color
+      border-color: $highlight-color
+      color: $accent-color
 
 actions
   display: flex
