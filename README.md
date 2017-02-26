@@ -39,3 +39,9 @@ If you're on OSX Sierra, you'll need to force an older version of ImageMagick
 - `brew link --force imagemagick@6`
 
 Install all the project's dependencies with `bundle install`
+
+## First time configuration
+
+Create your development database
+
+`bundle exec rake db:setup`
