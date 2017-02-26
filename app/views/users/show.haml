@@ -10,8 +10,8 @@
     .header
       padding-top: 0
 
-.profile
-  %h1
+%section.profile><
+  %h1><
     = user.display_name
     - if current_user?
       = link_to "Edit Profile", [:edit, user], :class => "button"
@@ -22,14 +22,15 @@
         = button_to "Unfollow", follow_path(user.id), :class => "button cta", :method => :delete
       - else
         = button_to "Follow", follows_path(id: user.id), :class => "button cta"
+  %avatar><
+    = image_tag user.avatar.url(:large), class: "avatar pixelated", onload: "if(this.height > this.width) {this.style.height = '256px'} else {this.style.width = '256px'}"
+  - if user.profile
+    %p= user.profile.html_safe
 
-  .info
-    = image_tag user.avatar.url(:large), :class => :avatar
-    - if user.profile
-      %p= user.profile.html_safe
-
-  %h3.inline Favorite Color
-  .favorite_color(style="background: #{user.favorite_color};")
+  - if user.favorite_color
+    %label><
+      Favorite Color:
+      %favorite-color(style="background: #{user.favorite_color};")
 
 - if current_user?
   = render :partial => "tasks", :user => user
