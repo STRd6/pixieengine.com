@@ -1,25 +1,26 @@
 comments
   display: block
 
-  > comment
-    align-items: flex-start
-    display: flex
-    margin-bottom: 1em
+comment
+  align-items: flex-start
+  display: flex
+  margin-bottom: 1em
 
-    > section
-      > :first-child
-        margin-top: 0
-
-      > footer
-        > a[rel="author"]
-          color: $accent-color
-        > a.time
-          color: $hint-text
+  > section
+    > :first-child
+      margin-top: 0
 
     > header
-      > a
-        display: block
-        flex: none
-        height: 32px
-        margin-right: 1em
-        width: 32px
+      > a[rel="author"]
+        color: $accent-color
+      > a.time
+        color: $hint-text
+        font-size: 0.8em
+
+  > header
+    > a
+      display: inline-block
+      flex: none
+      height: 32px
+      margin-right: 1em
+      width: 32px
