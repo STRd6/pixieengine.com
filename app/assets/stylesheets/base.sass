@@ -5,6 +5,7 @@ html, body
   height: 100%
 
 body
+  color: $primary-color
   font-family: "Helvetica Neue",Arial,Helvetica,sans-serif
   font-size: 16px
   line-height: 1.5em
@@ -19,12 +20,24 @@ content
   display: block
   height: calc(100vh - 54px)
   overflow: auto
+  padding: 1em
+
+  > :first-child
+    margin-top: 0
+
+  > :last-child
+    margin-bottom: 0
 
   #fullscreen > &
     overflow: hidden
+    padding: 0
 
 header
   height: 54px
+
+h2
+  color: $primary-color
+  font-size: 1em
 
 iframe
   border: none

@@ -1,6 +1,6 @@
 - @title = "Paint Composer"
 
-%tunes.show(style="margin-top: 4em;")
+%tunes.show
   %tune
     = link_to action: :editor do
       %span.title= tune.display_title
@@ -9,33 +9,24 @@
   - if tune.parent
     = render tune.parent
 
-.btn-toolbar
+%actions><
   - if current_user
     - if current_user.favorite?(tune)
-      .btn-group
-        %a.button.btn(rel="removeFavorite")
-          .static-arrow_undo
-          Remove Favorite
+      %a.button(rel="removeFavorite")><
+        💔 Remove Favorite
 
     - else
-      .btn-group
-        %a.button.btn(rel="addFavorite")
-          .static-photo_add
-          Add Favorite
+      %a.button(rel="addFavorite")><
+        💝 Add Favorite
 
   - if owner_or_admin?
-    .btn-group
-      %a.button.btn(href="#{editor_tune_path(tune)}")
-        .static-picture_edit
-        Load in Editor
-    .btn-group
-      %a.button.btn(href="#{edit_tune_path(tune)}")
-        .static-table_edit
-        Edit Details
-    .btn-group
-      %a.button.btn(href="#{tune_path(tune)}" data-method="delete")
-        .static-cross
-        Delete
+    %a.button(href="#{editor_tune_path(tune)}")><
+      .static-picture_edit
+      Load in Editor
+    %a.button(href="#{edit_tune_path(tune)}")><
+      Edit Details
+    %a.button(href="#{tune_path(tune)}" data-method="delete")><
+      Delete
 
 = markdown tune.description
 
