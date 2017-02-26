@@ -1,7 +1,7 @@
 comments
   display: block
 
-comment
+comment, follow, created-sprite
   align-items: flex-start
   display: flex
   margin-bottom: 1em
@@ -11,16 +11,21 @@ comment
       margin-top: 0
 
     > header
-      > a[rel="author"]
-        color: $accent-color
       > a.time
         color: $hint-text
         font-size: 0.8em
 
   > header
+    display: flex
+
+    > *
+      margin-right: 0.5em
+
     > a
       display: inline-block
       flex: none
       height: 32px
-      margin-right: 1em
       width: 32px
+
+follow, created-sprite
+  margin-bottom: 2em

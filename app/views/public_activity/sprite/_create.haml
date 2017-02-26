@@ -1,9 +1,11 @@
-- owner = activity.owner
 - if sprite = activity.trackable
-  .sprite_activity
-    = avatar_link owner
-    Created a new sprite
-    = render sprite
-    %p.attribution
-      %span.name= link_to owner.display_name, owner
-      %span.time= link_to "#{time_ago_in_words(activity.created_at)} ago", sprite
+  - creator = activity.owner
+  %created-sprite
+    %header
+      = render sprite
+      = avatar_link creator
+    %section
+      %header
+        = link_to creator.display_name, creator, rel: "author"
+        created a new sprite
+        = link_to "#{time_ago_in_words(activity.created_at)} ago", sprite, class: "time"

@@ -1,7 +1,7 @@
 *
   box-sizing: border-box
 
-html, body
+html
   height: 100%
 
 body
@@ -10,24 +10,29 @@ body
   font-size: 16px
   line-height: 1.5em
   margin: 0
-  overflow: hidden
+  min-height: 100%
 
   > header
     height: 54px
 
   > content
     display: block
-    height: calc(100vh - 54px)
-    overflow: auto
     padding: 0 1em
 
-    #fullscreen > &
+  &#fullscreen
+    overflow: hidden
+
+    > content
+      height: calc(100vh - 54px)
       overflow: hidden
       padding: 0
 
 a
   color: $primary-color
   text-decoration: none
+
+  &[rel="author"], &[rel="follower"], &[rel="receiver"]
+    color: $accent-color
 
 h1, h2, h3
   font-size: 1em
@@ -39,8 +44,3 @@ iframe
   &#editor
     height: 100%
     width: 100%
-
-ul
-  list-style-type: none
-  margin: 0
-  padding: 0

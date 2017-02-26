@@ -1,5 +1,5 @@
 -#TODO Should make activity dependent destroy to avoid this
-- if (comment = activity.trackable) && comment.commentee && comment.commenter
+- if (comment = activity.trackable) && (commentee = comment.commentee) && (commenter = comment.commenter)
   %comment
     %header
       - if commentable = comment.commentable
@@ -8,14 +8,17 @@
         - elsif commentable.is_a? Tune
           %tunes.inline
             = render commentable
-      = avatar_link comment.commentee
-      = avatar_link comment.commenter
+      = avatar_link commentee
+      = avatar_link commenter
     %section
-      %header><
-        = link_to comment.commenter.display_name, comment.commenter, rel: "author"
-        &nbsp; commented on&nbsp;
-        = link_to comment.commentee.display_name, comment.commentee, rel: "receiver"
-        &#39;s #{comment.commentable_type}&nbsp;
+      %header
+        = link_to commenter.display_name, commenter, rel: "author"
+        commented on
+        - if commenter == commentee
+          their own #{comment.commentable_type}
+        - else
+          = link_to commentee.display_name, commentee, rel: "receiver"
+          &#39;s #{comment.commentable_type}
         = link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable, class: "time"
 
         = markdown(comment.body)
