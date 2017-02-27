@@ -12,9 +12,10 @@
 
 - content_for :javascript do
   :coffeescript
-    $("sprites").isotope
-      itemSelector : 'sprite'
-      layoutMode : 'masonry'
-      containerStyle:
-        overflow: 'visible'
-        position: 'relative'
+    $(window).load ->
+      $("sprites").isotope
+        itemSelector : 'sprite'
+        layoutMode : 'masonry'
+        containerStyle:
+          overflow: 'visible'
+          position: 'relative'
