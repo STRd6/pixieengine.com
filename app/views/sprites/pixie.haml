@@ -43,56 +43,58 @@
 
       save: (data) ->
         # TODO: Title + Description Modal form
-        title = prompt "Title"
+        Modal.prompt "Title"
+        .then (title) ->
 
-        return unless title
+          return unless title
 
-        formData = new FormData()
-        uploadData =
-          'sprite[width]': data.width
-          'sprite[height]': data.height
-          'sprite[parent_id]': parentId
-          'sprite[title]': title
-          'sprite[image]': data.image
-          'sprite[editor]': "pixie2"
-          'sprite[replay]': new Blob([data.state], type: "application/json")
+          formData = new FormData()
+          uploadData =
+            'sprite[width]': data.width
+            'sprite[height]': data.height
+            'sprite[parent_id]': parentId
+            'sprite[title]': title
+            'sprite[image]': data.image
+            'sprite[editor]': "pixie2"
+            'sprite[replay]': new Blob([data.state], type: "application/json")
 
-        Object.keys(uploadData).forEach (key) ->
-          formData.append key, uploadData[key]
+          Object.keys(uploadData).forEach (key) ->
+            formData.append key, uploadData[key]
 
-        # Progress modal
-        progressView = Progress
-          value: 0
-          max: 1
-          message: "Saving..."
+          # Progress modal
+          progressView = Progress
+            value: 0
+            max: 1
+            message: "Saving..."
 
-        Modal.show progressView.element
+          Modal.show progressView.element,
+            cancellable: false
 
-        ajax
-          url: '/sprites',
-          data: formData
-          headers:
-            Accept: "application/json; charset=utf-8"
-          method: 'POST'
-          responseType: "json"
-        .progress ({lengthComputable, loaded, total}) ->
-          if lengthComputable
-            progressView.value(loaded / total)
-        .then (data) ->
-          if data.redirect
-            window.location = data.redirect
-          else
-            # Update parent id
-            parentId = data.sprite.id
-            # Clear modal
-            Modal.alert("Saved!")
-            # TODO: Display link to item
-            # notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
+          ajax
+            url: '/sprites',
+            data: formData
+            headers:
+              Accept: "application/json; charset=utf-8"
+            method: 'POST'
+            responseType: "json"
+          .progress ({lengthComputable, loaded, total}) ->
+            if lengthComputable
+              progressView.value(loaded / total)
+          .then (data) ->
+            if data.redirect
+              window.location = data.redirect
+            else
+              # Update parent id
+              parentId = data.sprite.id
+              # Clear modal
+              Modal.alert("Saved!")
+              # TODO: Display link to item
+              # notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
 
-          trackPageview "/event/save_drawing"
-        .catch (e) ->
-          console.warn e
-          if e.message
-            Modal.alert "Error: \#{e.message}"
-          else
-            Modal.alert "Error \#{e.status} - \#{e.statusText}"
+            trackPageview "/event/save_drawing"
+          .catch (e) ->
+            console.warn e
+            if e.message
+              Modal.alert "Error: \#{e.message}"
+            else
+              Modal.alert "Error \#{e.status} - \#{e.statusText}"
