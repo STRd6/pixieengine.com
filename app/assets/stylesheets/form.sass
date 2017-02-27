@@ -20,7 +20,7 @@ form
     display: block
     margin-bottom: 1em
 
-    > input
+    > input[type="text"]
       width: 100%
 
     > textarea
@@ -30,3 +30,28 @@ form
 h1 > form
   display: inline
   margin: 1em
+
+form.primary
+  margin-left: calc(58px - 0.5em)
+
+  > h1
+    color: $primary-color
+    font-size: 2em
+
+label > h3
+  display: inline
+
+input
+  &[type="color"]
+    background-color: transparent
+    -webkit-appearance: none
+    border: none
+    width: 32px
+    height: 32px
+
+    &::-webkit-color-swatch-wrapper
+      padding: 0
+
+    &::-webkit-color-swatch
+      border: none
+      padding: 0

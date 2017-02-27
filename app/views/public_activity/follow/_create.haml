@@ -11,6 +11,6 @@
       - if recipient == @current_user #HACK for public_activity views not supporting current_user method correctly
         you!
       - else
-        = link_to recipient.display_name, recipient
+        = link_to recipient.display_name, recipient, rel: "receiver"
 
       = link_to "#{time_ago_in_words(activity.created_at)} ago", follower, class: "time"

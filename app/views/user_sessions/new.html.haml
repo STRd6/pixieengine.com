@@ -1,4 +1,4 @@
-= form_for @user_session || UserSession.new, :html => { :class => 'module' }, :url => authenticate_path do |form|
+= form_for @user_session || UserSession.new, html: { class: 'primary' }, url: authenticate_path do |form|
   = form.error_messages
   %h1 Log in or register
 
@@ -6,7 +6,7 @@
     %h3 What is your email address?
     = form.text_field :email
 
-  %h3 Do you have a Pixie password?
+  %h3 Do you have a Pixie Engine password?
 
   %label
     = form.radio_button :login, "no"
@@ -18,9 +18,9 @@
 
   %label
     = form.password_field :password
-    %a(href=new_password_reset_path alt="Forgot your password?" title="Forgot your password?") Forgot your password?
+    %a.forgot-password(href=new_password_reset_path alt="Forgot your password?" title="Forgot your password?") Forgot your password?
 
-  %button.btn.full#user_session_submit Log In
+  %button.cta Log In
 
 - content_for :javascript do
   :coffeescript
