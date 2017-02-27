@@ -4,7 +4,7 @@
 - width = @width || 64
 - height = @height || 64
 
-%iframe#editor(src="https://danielx.net/pixel-editor/pixie/" sandbox="allow-scripts allow-modals")
+%iframe#editor(src="https://danielx.net/pixel-editor/pixie3/" sandbox="allow-scripts allow-modals")
 
 :sass
   html
@@ -22,58 +22,77 @@
 
 - content_for :javascript do
   :coffeescript
-    window.addEventListener "message", (event) ->
-      {data, source} = event
-      return unless source is document.getElementById('editor').contentWindow
+    ajax = Ajax()
+    {Modal, Progress} = UI
+    parentId = #{@parent_id.to_json}
 
-      method = data.method ? data.status
+    postmaster = Postmaster
+      remoteTarget: ->
+        document.getElementById('editor').contentWindow
 
-      switch method
-        when "ready"
-          params = [
-            #{@replay_url.to_json}
-            #{@parent_url.to_json}
-            #{@source_url.to_json}
-          ]
+      childLoaded: (params) ->
+        params = [
+          #{@replay_url.to_json}
+          #{@parent_url.to_json}
+          #{@source_url.to_json}
+        ]
 
-          anyParams = params.some (x) -> x
-          if anyParams
-            source.postMessage
-              method: "loadReplayFromURL"
-              params: params
-            , "*"
+        anyParams = params.some (x) -> x
+        if anyParams
+          postmaster.invokeRemote "loadReplayFromURL", params...
 
-        when "save"
-          title = prompt "Title"
-          notify "Saving, please wait..."
+      save: (data) ->
+        # TODO: Title + Description Modal form
+        title = prompt "Title"
 
-          formData = new FormData()
-          uploadData =
-            'sprite[width]': data.width
-            'sprite[height]': data.height
-            'sprite[parent_id]': #{@parent_id.to_json}
-            'sprite[title]': title
-            'sprite[image]': data.image
-            'sprite[editor]': "pixie2"
-            'sprite[replay]': new Blob([data.state], type: "application/json")
+        return unless title
 
-          Object.keys(uploadData).forEach (key) ->
-            formData.append key, uploadData[key]
+        formData = new FormData()
+        uploadData =
+          'sprite[width]': data.width
+          'sprite[height]': data.height
+          'sprite[parent_id]': parentId
+          'sprite[title]': title
+          'sprite[image]': data.image
+          'sprite[editor]': "pixie2"
+          'sprite[replay]': new Blob([data.state], type: "application/json")
 
-          $.ajax
-            url: '/sprites',
-            data: formData
-            headers:
-              Accept: "application/json; charset=utf-8"
-            processData: false
-            contentType: false
-            type: 'POST'
-            success: (data) ->
-              if data.redirect
-                window.location = data.redirect
-              else
-                notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
+        Object.keys(uploadData).forEach (key) ->
+          formData.append key, uploadData[key]
 
-              trackPageview "/event/save_drawing"
-            error: ->
-              alert "Error when saving!"
+        # Progress modal
+        progressView = Progress
+          value: 0
+          max: 1
+          message: "Saving..."
+
+        Modal.show progressView.element
+
+        ajax
+          url: '/sprites',
+          data: formData
+          headers:
+            Accept: "application/json; charset=utf-8"
+          method: 'POST'
+          responseType: "json"
+        .progress ({lengthComputable, loaded, total}) ->
+          if lengthComputable
+            progressView.value(loaded / total)
+        .then (data) ->
+          if data.redirect
+            window.location = data.redirect
+          else
+            # Update parent id
+            parentId = data.sprite.id
+            # Clear modal
+            Modal.alert("Saved!")
+            # TODO: Display link to item
+            # notify "Saved as <a href='/sprites/" + data.sprite.id + "'>" + (data.sprite.title || ('Sprite ' + data.sprite.id)) + "</a>"
+
+          trackPageview "/event/save_drawing"
+        .catch (e) ->
+          console.warn e
+          if e.message
+            Modal.alert "Error: \#{e.message}"
+          else
+            Modal.alert "Error \#{e.status} - \#{e.statusText}"
