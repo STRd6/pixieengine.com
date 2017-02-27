@@ -2,35 +2,24 @@
 - @meta_desc = sprite.meta_desc
 - @has_reg_popup = true
 
-.sprite_block><
-  %h1><= sprite.display_name
+%h1
+  = sprite.display_name
+  = author_link(sprite)
 
-  = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+= render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
-  = markdown sprite.description
+%tags
+  - sprite.tag_list.each do |tag|
+    = sprite_tag_link(sprite, tag)
+  - sprite.source_list.each do |source|
+    = sprite_tag_link(sprite, source)
+  - sprite.dimension_list.each do |dimension|
+    = sprite_tag_link(sprite, dimension)
+  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
+    = text_field_tag :tag, nil, :placeholder => "Tag name"
+    %button.btn.add(type='submit') Add Tag
 
-  %p= author_link(sprite)
-
-
-- if sprite.parent
-  .sprite_block
-    %h2
-      Remixed from
-      = sprite.parent.display_name
-
-    = render :partial => sprite.parent
-
-    = markdown sprite.parent.description
-
-    .clear
-    %p= author_link(sprite.parent)
-
-- if sprite.children.any?
-  %h2
-    Remixes
-
-  = render :partial => sprite.children.limit(20)
-
+= markdown sprite.description
 
 %actions><
   - if current_user
@@ -52,6 +41,23 @@
       Edit Details
     %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")><
       Delete
+
+
+- if sprite.parent
+  %h2
+    Remixed from
+    = sprite.parent.display_name
+    = author_link(sprite.parent)
+
+  = render :partial => sprite.parent
+
+  = markdown sprite.parent.description
+
+- if sprite.children.any?
+  %h2
+    Remixes
+
+  = render :partial => sprite.children.limit(20)
 
 = display_comments sprite
 

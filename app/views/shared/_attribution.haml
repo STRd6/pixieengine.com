@@ -1,0 +1,6 @@
+%span.attribution
+  by
+  - if creator
+    = link_to creator.display_name, creator, rel: "author"
+  - else
+    = anonym

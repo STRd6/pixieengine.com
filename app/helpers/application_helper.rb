@@ -1,8 +1,9 @@
 module ApplicationHelper
   def author_link(item)
-    user = item.user
-
-    "By #{user ? link_to(user, user) : 'Anonymous'}".html_safe
+    render partial: "shared/attribution", locals: {
+      creator: item.user,
+      anonym: "Anonymous",
+    }
   end
 
   def avatar_link(user)
