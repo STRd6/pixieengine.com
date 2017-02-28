@@ -1,0 +1,36 @@
+body > header
+  background-color: $primary-color
+  display: flex
+
+  > a
+    align-items: center
+    color: white
+    display: flex
+    flex: none
+    transition-duration: 0.25s
+    transition-property: color, background-color, border-color
+
+    &:hover, &:focus
+      background-color: $highlight-color
+      color: $primary-color
+
+    &.current
+      background-color: white
+      color: $primary-color
+
+    &:first-child
+      padding-right: 8px
+
+    &:nth-child(n + 2)
+      padding: 0 8px
+
+    &.break
+      margin-right: auto
+
+    &.button
+      align-self: center
+      margin-right: 1em
+      padding: 9px 16px
+
+    & > img
+      margin-left: 0.5em

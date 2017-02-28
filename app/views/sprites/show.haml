@@ -1,122 +1,62 @@
-%style
-  :sass
-    button.add
-      margin-bottom: 0.7em
-
-    strong
-      font-weight: bold
-
-    em
-      font-style: italic
-
-    .comments_area
-      width: 450px
-
-      h3
-        margin: 0
-
-      #comment_preview
-        background-color: white
-        font-weight: normal
-        margin: 15px 0
-        padding: 0 5px
-
-      label
-        margin-top: 0
-
-      textarea
-        height: 75px
-
-    .sprite_block
-      display: inline-block
-      margin-right: 5em
-      vertical-align: top
-
-    #tag
-      width: 200px
-
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
-- @has_reg_popup = true
 
-.sprite_block
-  %h1= sprite.display_name
+%h1
+  = sprite.display_name
+  = author_link(sprite)
 
-  = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+= render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
-  = markdown sprite.description
+%tags
+  - sprite.tag_list.each do |tag|
+    = sprite_tag_link(sprite, tag)
+  - sprite.source_list.each do |source|
+    = sprite_tag_link(sprite, source)
+  - sprite.dimension_list.each do |dimension|
+    = sprite_tag_link(sprite, dimension)
+  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
+    = text_field_tag :tag, nil, :placeholder => "Tag name"
+    %button.btn.add(type='submit') Add Tag
 
-  .clear
-  %p= author_link(sprite)
+= markdown sprite.description
+
+%actions><
+  - if current_user
+    %a.button(href="javascript:void(0)" rel="setAvatar")><
+      Set as Avatar
+
+    - if current_user.favorite?(sprite)
+      %a.button(href="javascript:void(0)" rel="removeFavorite")><
+        Remove Favorite
+
+    - else
+      %a.button.btn(href="javascript:void(0)" rel="addFavorite")><
+        Add Favorite
+
+  - if owner_or_admin?
+    %a.button(href="#{load_sprite_path(sprite)}")><
+      Load in Editor
+    %a.button(href="#{edit_sprite_path(sprite)}")><
+      Edit Details
+    %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")><
+      Delete
 
 
 - if sprite.parent
-  .sprite_block
-    %h2
-      Remixed from
-      = sprite.parent.display_name
+  %h2
+    Remixed from
+    = sprite.parent.display_name
+    = author_link(sprite.parent)
 
-    = render :partial => sprite.parent
+  = render :partial => sprite.parent
 
-    = markdown sprite.parent.description
-
-    .clear
-    %p= author_link(sprite.parent)
+  = markdown sprite.parent.description
 
 - if sprite.children.any?
   %h2
     Remixes
 
   = render :partial => sprite.children.limit(20)
-
-
-.btn-toolbar
-  - if current_user
-    .btn-group
-      %a.button.btn(href="javascript:void(0)" rel="setAvatar")
-        .static-status_online
-        Set as Avatar
-
-    - if current_user.favorite?(sprite)
-      .btn-group
-        %a.button.btn(href="javascript:void(0)" rel="removeFavorite")
-          .static-arrow_undo
-          Remove Favorite
-
-    - else
-      .btn-group
-        %a.button.btn(href="javascript:void(0)" rel="addFavorite")
-          .static-photo_add
-          Add Favorite
-
-  - if owner_or_admin?
-    .btn-group
-      %a.button.btn(href="#{load_sprite_path(sprite)}")
-        .static-picture_edit
-        Load in Editor
-    .btn-group
-      %a.button.btn(href="#{edit_sprite_path(sprite)}")
-        .static-table_edit
-        Edit Details
-    .btn-group
-      %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")
-        .static-cross
-        Delete
-
-%h3 Tags
-.tags
-  - sprite.tag_list.each do |tag|
-    = sprite_tag_link(sprite, tag)
-
-  - sprite.source_list.each do |source|
-    = sprite_tag_link(sprite, source)
-
-  - sprite.dimension_list.each do |dimension|
-    = sprite_tag_link(sprite, dimension)
-
-  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id, "class" => "form-inline"} do
-    = text_field_tag :tag, nil, :placeholder => "Tag name"
-    %button.btn.add(type='submit') Add
 
 = display_comments sprite
 

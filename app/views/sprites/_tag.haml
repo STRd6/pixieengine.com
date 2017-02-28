@@ -1,4 +1,2 @@
-.tag{"data-sprite_id" => sprite.id}
+%tag{"data-sprite_id" => sprite.id}
   = link_to tag, sprites_path(:tagged => tag.to_s)
-  - if current_user
-    .remove X

@@ -1,10 +1,7 @@
 = form_for Comment.new(:commentable => commentable) do |form|
-  %h2 Comments
   %label
-    #comment_button_bar
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
     = form.text_area :body, :placeholder => "type your comment here"
-    %input(id="comment_copy_html" type="hidden")
 
-  %button.btn.full Post Comment
+  %button Post Comment

@@ -1,18 +1,24 @@
 -#TODO Should make activity dependent destroy to avoid this
-- if comment = activity.trackable
-  .comment
-    = avatar_link comment.commenter
-
-    - if commentable = comment.commentable
-      - if commentable.is_a? Sprite
-        = render commentable
-      - elsif commentable.is_a? Tune
-        %tunes.inline
+- if (comment = activity.trackable) && (commentee = comment.commentee) && (commenter = comment.commenter)
+  %comment
+    %header
+      - if commentable = comment.commentable
+        - if commentable.is_a? Sprite
           = render commentable
+        - elsif commentable.is_a? Tune
+          %tunes.inline
+            = render commentable
+      = avatar_link commentee
+      = avatar_link commenter
+    %section
+      %header
+        = link_to commenter.display_name, commenter, rel: "author"
+        commented on
+        - if commenter == commentee
+          their own #{comment.commentable_type}
+        - else
+          = link_to commentee.display_name, commentee, rel: "receiver"
+          &#39;s #{comment.commentable_type}
+        = link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable, class: "time"
 
-    .left
-      = markdown(comment.body)
-
-      %p.attribution
-        %span.name= link_to comment.commenter.display_name, comment.commenter
-        %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
+        = markdown(comment.body)

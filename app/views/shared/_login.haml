@@ -1,20 +1,11 @@
-%ul.nav.pull-right
-  - if current_user
-    %li.divider-vertical
-    %li.dropdown
-      %a.dropdown-toggle(href="#" data-toggle='dropdown')
-        =current_user.display_name
-        %b.caret
-      %ul.dropdown-menu
-        %li
-          %a(href="#{user_path(current_user)}")
-            = image_tag(current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name, :class => 'user_info', :size => "20x20")
-            My Profile
-        %li= link_to("Account Settings", edit_user_path(current_user))
-        %li= link_to("Log out", sign_out_path)
+- if current_user
+  = link_to "Log out", sign_out_path
+  = link_to current_user do
+    My Profile
+    = image_tag current_user.avatar.url(:thumb), :alt => current_user.display_name, :title => current_user.display_name
 
-  - else
-    = link_to "Log in or sign up", sign_in_path,  { :title => "Log in", :class => "btn button btn-primary" }
+- else
+  = link_to "Log in or sign up", sign_in_path,  { :title => "Log in", :class => "button cta" }
 
 - content_for :javascript do
   :coffeescript

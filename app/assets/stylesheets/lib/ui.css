@@ -1,0 +1,333 @@
+input,
+textarea,
+keygen,
+select,
+button {
+  font-size: inherit;
+  font-family: inherit;
+}
+
+loader {
+  display: block;
+  padding: 1em;
+}
+loader > p:empty {
+  margin: 0;
+}
+loader > progress {
+  display: block;
+}
+
+menu {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  background-color: #d3d3d3;
+  border-bottom: 1px solid rgba(0,0,0,0.5);
+  margin: 0;
+  z-index: 1;
+}
+menu:focus {
+  outline: none;
+}
+menu.context {
+  z-index: 2000;
+}
+menu-item {
+  display: block;
+  list-style-type: none;
+}
+menu-item.active {
+  background-color: #000080;
+  color: #fff;
+}
+menu-item > label {
+  display: flex;
+  padding: 0 0.25em;
+  white-space: nowrap;
+}
+menu-item > label > * {
+  flex: 1 1 auto;
+}
+menu-item > label > span.hotkey {
+  margin-left: 1em;
+}
+menu-item > label > span.hotkey:empty {
+  margin-left: 0;
+}
+menu-item > label > .decoration {
+  flex: 0 1 auto;
+  line-height: 1em;
+  text-align: right;
+  margin-left: 0.5em;
+}
+menu-item > label > .decoration:empty {
+  margin-left: 0;
+}
+menu-item[disabled] {
+  color: #808080;
+}
+menu-item[disabled].active {
+  background-color: rgba(0,0,0,0.125);
+}
+menu.options {
+  border-top: 1px solid rgba(255,255,255,0.5);
+  border-left: 1px solid rgba(255,255,255,0.5);
+  border-right: 1px solid rgba(0,0,0,0.5);
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.5);
+  display: none;
+  padding: 2px;
+  padding-bottom: 3px;
+  position: absolute;
+}
+menu.options.active {
+  display: block;
+}
+menu.options > menu-item.menu {
+  position: relative;
+}
+menu.options > menu-item.menu > menu {
+  position: absolute;
+  left: 100%;
+  top: -3px;
+  margin-left: 1px;
+}
+menu-item.menu.active > menu {
+  background-color: #d3d3d3;
+  color: #000;
+  display: block;
+}
+menu.bar {
+  display: block;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  position: initial;
+  white-space: nowrap;
+  overflow: hidden;
+}
+menu.bar > menu-item {
+  display: inline-block;
+}
+menu.bar > menu-item > label > .decoration {
+  display: none;
+}
+menu.bar.accelerator-active span.accelerator {
+  text-decoration: underline;
+}
+
+#modal {
+  align-items: center;
+  background-color: rgba(0,0,0,0.25);
+  display: none;
+  justify-content: center;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+#modal.active {
+  display: flex;
+}
+#modal > * {
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.5);
+  box-shadow: 2px 2px 6px #000;
+  max-width: 90%;
+  max-height: 90%;
+}
+#modal > form {
+  display: block;
+  padding: 1em;
+}
+#modal > form > h1 {
+  font-size: 1.5em;
+  margin: 0;
+}
+#modal > form > input,
+#modal > form textarea {
+  display: block;
+  margin-bottom: 1em;
+  width: 100%;
+}
+#modal > form > button {
+  margin-right: 1em;
+}
+#modal > form > button:last-child {
+  margin-right: 0;
+}
+
+container {
+  display: block;
+  height: 100%;
+  overflow: auto;
+  width: 100%;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th {
+  text-align: left;
+}
+thead {
+  border-bottom: 1px solid #000;
+}
+td > input {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+tr:nth-child(even) {
+  background-color: #eee;
+}
+
+desktop {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  display: block;
+  flex: 1 0 auto;
+}
+window {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  background-color: #d3d3d3;
+  border: 4px double #000;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+}
+window > header {
+  border-bottom: 1px solid #000;
+  cursor: default;
+  display: flex;
+  flex: 0 0 auto;
+}
+window > header > close,
+window > header > control {
+  color: #fff;
+  display: inline-block;
+  flex: 0 0 auto;
+  font-family: monospace;
+  width: 18px;
+  text-shadow: 1px 0px 0px #000, -1px 0px 0px #000, 0px -1px 0px #000, 0px 1px 0px #000, 1px 1px 0px #808080;
+  text-align: center;
+}
+window > header > title-bar {
+  background-color: #000080;
+  border-color: #000;
+  border-style: solid;
+  border-width: 0 1px;
+  color: #fff;
+  display: inline-block;
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding: 0 2px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+window > viewport {
+  background-color: #fff;
+  display: flex;
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  z-index: 0;
+}
+window > viewport > * {
+  margin: auto;
+}
+window > viewport > textarea {
+  font-family: monospace;
+  height: 100%;
+  resize: none;
+  width: 100%;
+}
+window > viewport > iframe {
+  border: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+window > resize {
+  display: block;
+  position: absolute;
+}
+window > resize.e,
+window > resize.w {
+  cursor: ew-resize;
+}
+window > resize.n,
+window > resize.s {
+  cursor: ns-resize;
+}
+window > resize.h {
+  height: 4px;
+  width: 100%;
+}
+window > resize.v {
+  height: 100%;
+  width: 4px;
+}
+window > resize.w {
+  left: -4px;
+}
+window > resize.e {
+  right: -4px;
+}
+window > resize.n {
+  top: -4px;
+}
+window > resize.s {
+  bottom: -4px;
+}
+window > resize.n.w {
+  cursor: nw-resize;
+}
+window > resize.n.e {
+  cursor: ne-resize;
+}
+window > resize.s.e {
+  cursor: se-resize;
+}
+window > resize.s.w {
+  cursor: sw-resize;
+}
+window > resize.n.v {
+  height: 23px;
+  border-bottom: 1px solid #000;
+}
+window > resize.s.v {
+  height: 23px;
+  border-top: 1px solid #000;
+}
+window > resize.e.h {
+  border-left: 1px solid #000;
+  width: 23px;
+}
+window > resize.w.h {
+  border-right: 1px solid #000;
+  width: 23px;
+}
+frame-guard {
+  display: block;
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 100000;
+}
+frame-guard.active {
+  pointer-events: auto;
+}

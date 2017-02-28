@@ -1,0 +1,35 @@
+tags
+  align-items: center
+  display: flex
+  flex-wrap: wrap
+  margin-bottom: 1em
+
+  > tag
+    align-items: center
+    display: flex
+
+    > a
+      background-color: $secondary-accent-color
+      border-radius: 4px
+      color: $light-text-color
+      font-size: 0.8em
+      font-weight: bold
+      padding: 1px 7px
+
+  > *
+    margin: 0 0.25em 0.25em 0
+
+  > form
+    display: flex
+
+    > button
+      border-bottom-left-radius: 0
+      border-left: none
+      border-top-left-radius: 0
+      padding: 4px 16px
+
+    > input[type="text"]
+      border-bottom-left-radius: 4px
+      border-top-left-radius: 4px
+      border: 1px solid $secondary-text
+      box-shadow: $item-shadow

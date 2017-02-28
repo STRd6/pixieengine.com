@@ -1,0 +1,50 @@
+*
+  box-sizing: border-box
+
+html
+  height: 100%
+
+body
+  color: $text-color
+  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif
+  font-size: 16px
+  line-height: 1.5em
+  margin: 0
+  min-height: 100%
+
+  > header
+    height: 54px
+
+  > content
+    display: block
+    padding: 0 1em
+
+  &#fullscreen
+    overflow: hidden
+
+    > content
+      height: calc(100vh - 54px)
+      overflow: hidden
+      padding: 0
+
+a
+  color: $primary-color
+  text-decoration: none
+
+  &[rel="author"], &[rel="follower"], &[rel="receiver"]
+    color: $accent-color
+
+  &.forgot-password
+    font-size: 0.8em
+    color: $accent-color
+
+h1, h2, h3
+  font-size: 1em
+  margin: 1em 0
+
+iframe
+  border: none
+
+  &#editor
+    height: 100%
+    width: 100%

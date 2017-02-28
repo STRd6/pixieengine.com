@@ -1,6 +1,9 @@
-.comment{ 'data-commentable_id' => "#{comment.commentable_id}" }
-  = avatar_link comment.commenter
-  = markdown(comment.body)
-  %p.attribution
-    %span.name= link_to comment.commenter.display_name, comment.commenter
-    %span.time= link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable
+%comment{ 'data-commentable_id' => "#{comment.commentable_id}" }><
+  %header
+    = avatar_link comment.commenter
+  %section
+    %header
+      = link_to comment.commenter.display_name, comment.commenter, rel: "author"
+      &nbsp;
+      = link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable, class: "time"
+    = markdown(comment.body)

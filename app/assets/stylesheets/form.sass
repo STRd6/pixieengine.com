@@ -1,2 +1,72 @@
-select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input
-  height: 26px
+input, textarea
+  color: inherit
+  padding: 3px 4px
+
+textarea
+  width: 100%
+
+form
+  border-radius: 4px
+  margin: 1em 0
+  max-width: 400px
+
+  > h2
+    margin: 0 0 0.5em 0
+
+  > label
+    display: block
+    margin-bottom: 1em
+
+    > input[type="text"]
+      width: 100%
+
+    > textarea
+      resize: none
+      height: 180px
+
+label.input-button
+  display: flex
+  margin-bottom: 0
+
+  > input[type="text"]
+    border-bottom-left-radius: 4px
+    border-top-left-radius: 4px
+    border: 1px solid $hint-text
+    border-right: none
+    box-shadow: $item-shadow
+    width: auto
+  > button
+    border-bottom-left-radius: 0
+    border-left: none
+    border-top-left-radius: 0
+    box-shadow: $item-shadow
+    padding-top: 7px
+
+h1 > form
+  display: inline
+  margin: 1em
+
+form.primary
+  margin-left: calc(58px - 0.5em)
+
+  > h1
+    color: $primary-color
+    font-size: 2em
+
+label > h3
+  display: inline
+
+input
+  &[type="color"]
+    background-color: transparent
+    -webkit-appearance: none
+    border: none
+    width: 32px
+    height: 32px
+
+    &::-webkit-color-swatch-wrapper
+      padding: 0
+
+    &::-webkit-color-swatch
+      border: none
+      padding: 0

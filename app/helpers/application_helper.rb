@@ -1,12 +1,13 @@
 module ApplicationHelper
   def author_link(item)
-    user = item.user
-
-    "By #{user ? link_to(user, user) : 'Anonymous'}".html_safe
+    render partial: "shared/attribution", locals: {
+      creator: item.user,
+      anonym: "Anonymous",
+    }
   end
 
   def avatar_link(user)
-    link_to image_tag(user.avatar.url(:thumb), :alt => user.display_name, :class => :avatar), user
+    link_to image_tag(user.avatar.url(:thumb), alt: user.display_name), user, class: :avatar
   end
 
   def markdown(text)
@@ -30,5 +31,12 @@ module ApplicationHelper
     if current_user
       current_user.following?(user)
     end
+  end
+
+  def pagination_for(collection)
+    will_paginate collection, {
+      inner_window: 2,
+      outer_window: 0,
+    }
   end
 end
