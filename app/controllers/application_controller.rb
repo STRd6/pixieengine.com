@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
 
   include ActionController::MimeResponds
 
-  private
   def redirect_back_or_root
     redirect_back fallback_location: root_path
   end
