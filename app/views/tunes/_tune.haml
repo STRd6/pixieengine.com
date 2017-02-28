@@ -1,5 +1,18 @@
-%tune
-  = link_to tune do
-    %span.title= tune.display_title
-    %span.attribution= tune.creator_name
-    %img(src="#{tune.creator_thumb_url}")
+- link_path ||= tune_path(tune)
+
+%card
+  .outline
+    .details
+      .title= tune.display_title
+      .description= markdown tune.description
+      .actions
+        %a(href="#{link_path}")
+          = pluralize(tune.score, "Reax")
+          👍
+        %a(href="#{link_path}")
+          = pluralize(tune.comments_count, "Comment")
+          💬
+  %creator
+    = link_to user_path(tune.user) do
+      = image_tag(tune.creator_thumb_url, :alt => tune.creator_name)
+      = tune.creator_name

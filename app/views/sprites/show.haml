@@ -1,10 +1,6 @@
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 
-%h1
-  = sprite.display_name
-  = author_link(sprite)
-
 = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
 %tags
@@ -17,8 +13,6 @@
   = form_tag add_tag_sprite_path do
     = text_field_tag :tag, nil, :placeholder => "Tag name"
     %button(type='submit') Add Tag
-
-= markdown sprite.description
 
 %actions><
   - if current_user
