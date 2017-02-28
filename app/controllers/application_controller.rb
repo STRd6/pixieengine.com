@@ -3,6 +3,11 @@ class ApplicationController < ActionController::Base
 
   include ActionController::MimeResponds
 
+  private
+  def redirect_back_or_root
+    redirect_back fallback_location: root_path
+  end
+
   def current_user_session
     return @current_user_session if defined?(@current_user_session)
     @current_user_session = UserSession.find

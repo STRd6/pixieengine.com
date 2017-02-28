@@ -24,6 +24,24 @@ form
       resize: none
       height: 180px
 
+label.input-button
+  display: flex
+  margin-bottom: 0
+
+  > input[type="text"]
+    border-bottom-left-radius: 4px
+    border-top-left-radius: 4px
+    border: 1px solid $hint-text
+    border-right: none
+    box-shadow: $item-shadow
+    width: auto
+  > button
+    border-bottom-left-radius: 0
+    border-left: none
+    border-top-left-radius: 0
+    box-shadow: $item-shadow
+    padding-top: 7px
+
 h1 > form
   display: inline
   margin: 1em

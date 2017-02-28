@@ -132,18 +132,22 @@ class SpritesController < ApplicationController
   end
 
   def add_tag
-    sprite.add_tag(params[:tag])
+    sprite.tag_list.add(params[:tag])
+    sprite.save!
 
     respond_to do |format|
       format.json { render :json => {:status => "ok"} }
+      format.html { redirect_back_or_root }
     end
   end
 
   def remove_tag
-    sprite.remove_tag(params[:tag])
+    sprite.tag_list.remove(params[:tag])
+    sprite.save!
 
     respond_to do |format|
       format.json { render :json => {:status => "ok"} }
+      format.html { redirect_back_or_root }
     end
   end
 
