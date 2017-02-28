@@ -1,6 +1,10 @@
 
 = render partial: "shared/navigation", locals: {collection: @sprites}
 
+%tags
+  - @tag_counts.each do |tag|
+    = tag_link tag.name
+
 %sprites
   - if @sprites.size > 0
     = render @sprites

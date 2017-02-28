@@ -186,12 +186,23 @@ class SpritesController < ApplicationController
       recency = 5.years.ago
     end
 
+    if params[:tagged]
+      items = items.tagged_with(params[:tagged])
+    end
+
     items = items
       .order(order)
-      .where(["created_at > '%s'", recency])
+      .where(["sprites.created_at > '%s'", recency])
+      .includes(:taggings)
       .search(params[:search])
       .page(params[:page])
       .per_page(per_page)
+
+    @tag_counts = items.tag_counts_on(:tags).select do |t|
+      t.taggings_count >= 5
+    end
+
+    logger.info @tag_counts
 
     @collection = items
 

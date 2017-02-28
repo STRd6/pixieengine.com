@@ -9,14 +9,14 @@
 
 %tags
   - sprite.tag_list.each do |tag|
-    = sprite_tag_link(sprite, tag)
+    = tag_link(tag)
   - sprite.source_list.each do |source|
-    = sprite_tag_link(sprite, source)
+    = tag_link(source)
   - sprite.dimension_list.each do |dimension|
-    = sprite_tag_link(sprite, dimension)
-  = form_tag add_tag_sprite_path, {"data-sprite_id" => sprite.id} do
+    = tag_link(dimension)
+  = form_tag add_tag_sprite_path do
     = text_field_tag :tag, nil, :placeholder => "Tag name"
-    %button.btn.add(type='submit') Add Tag
+    %button(type='submit') Add Tag
 
 = markdown sprite.description
 

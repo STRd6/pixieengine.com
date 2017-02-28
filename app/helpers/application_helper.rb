@@ -19,8 +19,8 @@ module ApplicationHelper
     markdown.render(text).html_safe
   end
 
-  def sprite_tag_link(sprite, tag)
-    render :partial => "sprites/tag", :object => tag, :locals => {:sprite => sprite}
+  def tag_link(tag)
+    render :partial => "sprites/tag", :object => tag
   end
 
   def display_comments(commentable)
