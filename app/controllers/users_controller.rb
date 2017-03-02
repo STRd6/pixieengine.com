@@ -43,13 +43,21 @@ class UsersController < ApplicationController
   def remove_favorite
     sprite = Sprite.find(params[:id])
     current_user.remove_favorite(sprite)
-    render :nothing => true
+
+    respond_to do |format|
+      format.html { redirect_back_or_root }
+      format.json { render :nothing => true }
+    end
   end
 
   def set_avatar
     sprite = Sprite.find(params[:sprite_id])
     current_user.set_avatar(sprite)
-    render :nothing => true
+
+    respond_to do |format|
+      format.html { redirect_back_or_root }
+      format.json { render :nothing => true }
+    end
   end
 
   def load_people

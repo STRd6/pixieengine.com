@@ -4,6 +4,8 @@ class Tune < ApplicationRecord
   include PgSearch
   pg_search_scope :search, against: %i[title description]
 
+  acts_as_taggable
+
   include PublicActivity::Model
   tracked only: :create, owner: :creator
 
@@ -21,6 +23,21 @@ class Tune < ApplicationRecord
   before_create :upload_content_to_s3, :set_editor_metadata
 
   attr_accessor :content, :editor
+
+  def add_tag(tag)
+    unless tag.blank?
+      Rails.logger.info "#{tag_list}, #{tag}"
+      self.update!(
+        tag_list: (tag_list + [tag]).join(",")
+      )
+      reload
+    end
+  end
+
+  def remove_tag(tag)
+    self.tag_list = self.tag_list.remove(tag)
+    save
+  end
 
   def set_editor_metadata
     self.meta["editor"] = editor

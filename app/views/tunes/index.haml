@@ -1,6 +1,10 @@
 
 = render partial: "shared/navigation", locals: {collection: @tunes}
 
+%tags
+  - @tag_counts.each do |tag|
+    = tag_link tag.name
+
 %tunes
   - if @tunes.size > 0
     = render @tunes

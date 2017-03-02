@@ -9,24 +9,29 @@
   - if tune.parent
     = render tune.parent
 
-%actions><
+%tags
+  - tune.tag_list.each do |tag|
+    = tag_link(tag)
+  = form_tag add_tag_tune_path do
+    = text_field_tag :tag, nil, :placeholder => "Tag name"
+    %button(type='submit') Add Tag
+
+%actions
   - if current_user
     - if current_user.favorite?(tune)
-      %a.button(rel="removeFavorite")><
+      = button_to remove_favorite_tune_path(tune) do
         💔 Remove Favorite
-
     - else
-      %a.button(rel="addFavorite")><
+      = button_to add_favorite_tune_path(tune) do
         💝 Add Favorite
 
   - if owner_or_admin?
-    %a.button(href="#{editor_tune_path(tune)}")><
-      .static-picture_edit
-      Load in Editor
-    %a.button(href="#{edit_tune_path(tune)}")><
-      Edit Details
-    %a.button(href="#{tune_path(tune)}" data-method="delete")><
-      Delete
+    %a.button(href="#{editor_tune_path(tune)}")
+      ⬆️️ Load in Editor
+    %a.button(href="#{edit_tune_path(tune)}")
+      📝 Edit Details
+    %a.button(href="#{tune_path(tune)}" data-method="delete")
+      🗑️ Delete
 
 = markdown tune.description
 
@@ -38,22 +43,3 @@
     = render :partial => tune.children.limit(20)
 
 = display_comments tune
-
-- content_for :javascript do
-  :coffeescript
-    $ ->
-      $("a[rel=addFavorite]").on "click", (event) ->
-        event.preventDefault()
-
-        if url = #{add_favorite_tune_path(tune).to_json}
-          notify "Adding favorite..."
-          $.post url, (data) ->
-            notify "Added to favorites."
-
-      $("a[rel=removeFavorite]").on "click", (event) ->
-        event.preventDefault()
-
-        if url = #{remove_favorite_tune_path(tune).to_json}
-          notify "Removing..."
-          $.post url, (data) ->
-            notify "Removed from favorites."
