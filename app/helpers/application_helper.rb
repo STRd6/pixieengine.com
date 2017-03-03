@@ -6,6 +6,12 @@ module ApplicationHelper
     }
   end
 
+  def card_attribution(item)
+    render partial: "shared/card_attribution", locals: {
+      creator: item.user,
+    }
+  end
+
   def avatar_link(user)
     link_to image_tag(user.avatar.url(:thumb), alt: user.display_name), user, class: :avatar
   end

@@ -13,10 +13,4 @@
         %a(href="#{link_path}")
           = pluralize(sprite.comments_count, "Comment")
           💬
-  %creator
-    - if sprite.user
-      = link_to user_path(sprite.user) do
-        = image_tag(sprite.user.avatar.url(:thumb), :alt => sprite.user.display_name)
-        = sprite.user.display_name
-    - else
-      %strong Anonymous
+  = card_attribution(sprite)

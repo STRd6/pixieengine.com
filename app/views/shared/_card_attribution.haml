@@ -1,0 +1,7 @@
+%creator
+  - if creator
+    = link_to user_path(creator) do
+      = image_tag(creator.avatar.url(:thumb), :alt => creator.display_name)
+      = creator.display_name
+  - else
+    %strong Anonymous

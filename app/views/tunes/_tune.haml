@@ -12,7 +12,4 @@
         %a(href="#{link_path}")
           = pluralize(tune.comments_count, "Comment")
           💬
-  %creator
-    = link_to user_path(tune.user) do
-      = image_tag(tune.creator_thumb_url, :alt => tune.creator_name)
-      = tune.creator_name
+  = card_attribution tune
