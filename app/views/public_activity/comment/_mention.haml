@@ -4,7 +4,7 @@
     %header
       - if commentable = comment.commentable
         - if commentable.is_a? Sprite
-          = render commentable
+          = render partial: "sprites/activity_sprite", object: commentable
         - elsif commentable.is_a? Tune
           %tunes.inline
             = render commentable
