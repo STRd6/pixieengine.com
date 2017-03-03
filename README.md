@@ -59,3 +59,10 @@ Install all the project's dependencies with `bundle install`
 Create your development database
 
 `bundle exec rake db:setup`
+
+## Syncing your local db with prod
+
+1. Install the Heroku CLI
+2. Log in to the CLI
+3. Make sure you have added the heroku remote for this project
+4. Run script/sync-db-with-prod

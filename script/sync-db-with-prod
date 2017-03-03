@@ -1,0 +1,5 @@
+#!/bin/bash
+
+heroku pg:backups:download
+pg_restore --clean --no-owner --dbname pixie_api_development < latest.dump
+rm latest.dump
