@@ -24,15 +24,23 @@ card
     > .details
       > .title,
       > .description
-        color: #444
+        color: $text-color
         word-break: break-word
+
+      > .description
+        a
+          display: inline-block
+          max-width: 100%
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
 
       > .title
         font-size: 1.5em
         margin-bottom: 0.25em
 
         > a
-          color: #444
+          color: $text-color
 
       > .actions
         > a
