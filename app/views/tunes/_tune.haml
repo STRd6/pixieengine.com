@@ -4,7 +4,7 @@
 %card(class="#{class_variation}")
   .outline
     .details
-      .title= tune.display_title
+      .title= link_to tune.display_title, link_path
       .description= markdown tune.description
       .actions
         %a(href="#{link_path}")
