@@ -49,6 +49,7 @@
   %h2
     Remixes
 
-  = render :partial => sprite.children.limit(20)
+  %sprites
+    = render :partial => sprite.children.limit(20)
 
 = display_comments sprite
