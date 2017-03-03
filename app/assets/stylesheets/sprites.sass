@@ -26,3 +26,20 @@ sprite
       color: red
       background-color: white
       padding: 2px
+
+section.derivation
+  display: flex
+
+  > sprites
+    display: flex
+    > card
+      position: relative
+
+      &:before
+        content: ""
+        border-right: 1rem solid $hint-text
+        border-top: 1rem solid transparent
+        border-bottom: 1rem solid transparent
+        position: absolute
+        top: 30%
+        right: calc(100% + 0.5rem)

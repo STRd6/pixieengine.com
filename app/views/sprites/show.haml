@@ -1,7 +1,12 @@
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 
-= render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+%section.derivation
+  = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+
+  %sprites
+    - sprite.parents.each do |parent|
+      = render partial: parent
 
 %tags
   - sprite.tag_list.each do |tag|
@@ -33,17 +38,6 @@
       📝 Edit Details
     %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")
       🗑️ Delete
-
-
-- if sprite.parent
-  %h2
-    Remixed from
-    = sprite.parent.display_name
-    = author_link(sprite.parent)
-
-  = render :partial => sprite.parent
-
-  = markdown sprite.parent.description
 
 - if sprite.children.any?
   %h2
