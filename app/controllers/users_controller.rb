@@ -124,7 +124,7 @@ class UsersController < ApplicationController
         .per_page(20)
     end
 
-    @sprites = Sprite.for_user(user).order("id DESC").page(params[:page]).per_page(250)
+    @sprites = Sprite.for_user(user).order("id DESC").page(params[:page]).per_page(32)
   end
 
   def edit
