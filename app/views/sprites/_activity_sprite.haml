@@ -1,0 +1,3 @@
+- link_path ||= sprite_path(activity_sprite)
+%sprite
+  = link_to image_tag(activity_sprite.image_url, :alt => activity_sprite.display_name, :width => activity_sprite.width, :height => activity_sprite.height), link_path

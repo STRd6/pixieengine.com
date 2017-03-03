@@ -1,11 +1,7 @@
 - @title = "Paint Composer"
 
 %tunes.show
-  %tune
-    = link_to action: :editor do
-      %span.title= tune.display_title
-      %span.attribution= tune.creator_name
-      %img(src="#{tune.creator_thumb_url}")
+  = render :partial => tune
   - if tune.parent
     = render tune.parent
 
@@ -32,8 +28,6 @@
       📝 Edit Details
     %a.button(href="#{tune_path(tune)}" data-method="delete")
       🗑️ Delete
-
-= markdown tune.description
 
 - if tune.children.any?
   %h2

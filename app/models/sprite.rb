@@ -1,4 +1,6 @@
 class Sprite < ActiveRecord::Base
+  extend Memoist
+
   include Commentable
 
   include PublicActivity::Model
@@ -70,6 +72,15 @@ class Sprite < ActiveRecord::Base
       reload
     end
   end
+
+  def parents
+    if parent
+      [parent] + parent.parents
+    else
+      []
+    end
+  end
+  memoize :parents
 
   def remove_tag(tag)
     self.tag_list = self.tag_list.remove(tag)

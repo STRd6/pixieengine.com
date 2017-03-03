@@ -1,6 +1,16 @@
 - link_path ||= sprite_path(sprite)
-%sprite
-  - if admin?
-    = form_for sprite, url: { id: sprite.id, controller: :sprites, action: :suppress } do |form|
-      = form.button "🔨"
-  = link_to image_tag(sprite.image_url, :alt => sprite.display_name, :width => sprite.width, :height => sprite.height), link_path
+
+%card
+  .outline
+    = link_to image_tag(sprite.image_url, :alt => sprite.display_name), link_path
+    .details
+      .title= link_to sprite.display_name, link_path
+      .description= markdown sprite.description
+      .actions
+        - if admin?
+          = form_for sprite, url: { id: sprite.id, controller: :sprites, action: :suppress } do |form|
+            = form.button "🔨"
+        %a(href="#{link_path}")
+          = pluralize(sprite.comments_count, "Comment")
+          💬
+  = card_attribution(sprite)

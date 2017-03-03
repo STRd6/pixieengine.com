@@ -1,0 +1,48 @@
+card
+  min-width: 256px
+  display: inline-block
+  margin: 1em
+  vertical-align: top
+
+  sprites > &
+    width: 256px
+
+  > .outline
+    box-shadow: $item-shadow
+    border-radius: 4px
+    overflow: hidden
+
+    > a > img
+      display: block
+      width: 100%
+      height: auto
+      image-rendering: pixelated
+
+    > .details
+      padding: 1em
+
+    > .details
+      > .title,
+      > .description
+        color: $text-color
+        word-break: break-word
+
+      > .description
+        a
+          display: inline-block
+          max-width: 100%
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
+
+      > .title
+        font-size: 1.5em
+        margin-bottom: 0.25em
+
+        > a
+          color: $text-color
+
+      > .actions
+        > a
+          color: $primary-color
+          font-weight: bold

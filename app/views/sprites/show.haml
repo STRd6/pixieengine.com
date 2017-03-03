@@ -1,11 +1,12 @@
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 
-%h1
-  = sprite.display_name
-  = author_link(sprite)
+%section.derivation
+  = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
-= render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+  %sprites
+    - sprite.parents.each do |parent|
+      = render partial: parent
 
 %tags
   - sprite.tag_list.each do |tag|
@@ -17,8 +18,6 @@
   = form_tag add_tag_sprite_path do
     = text_field_tag :tag, nil, :placeholder => "Tag name"
     %button(type='submit') Add Tag
-
-= markdown sprite.description
 
 %actions
   - if current_user
@@ -40,21 +39,11 @@
     %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")
       🗑️ Delete
 
-
-- if sprite.parent
-  %h2
-    Remixed from
-    = sprite.parent.display_name
-    = author_link(sprite.parent)
-
-  = render :partial => sprite.parent
-
-  = markdown sprite.parent.description
-
 - if sprite.children.any?
   %h2
     Remixes
 
-  = render :partial => sprite.children.limit(20)
+  %sprites
+    = render :partial => sprite.children.limit(20)
 
 = display_comments sprite

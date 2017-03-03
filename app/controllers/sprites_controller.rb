@@ -213,9 +213,9 @@ class SpritesController < ApplicationController
 
   def per_page
     if params[:per_page].blank?
-      187
+      64
     else
-      params[:per_page].to_i
+      params[:per_page].to_i.clamp(1, 100)
     end
   end
 

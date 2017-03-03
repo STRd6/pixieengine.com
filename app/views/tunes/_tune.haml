@@ -1,5 +1,16 @@
-%tune
-  = link_to tune do
-    %span.title= tune.display_title
-    %span.attribution= tune.creator_name
-    %img(src="#{tune.creator_thumb_url}")
+- link_path ||= tune_path(tune)
+- class_variation = defined?(variation) ? "grid": ""
+
+%card(class="#{class_variation}")
+  .outline
+    .details
+      .title= link_to tune.display_title, link_path
+      .description= markdown tune.description
+      .actions
+        %a(href="#{link_path}")
+          = pluralize(tune.score, "Reax")
+          👍
+        %a(href="#{link_path}")
+          = pluralize(tune.comments_count, "Comment")
+          💬
+  = card_attribution tune
