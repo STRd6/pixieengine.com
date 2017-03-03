@@ -8,9 +8,6 @@
       .description= markdown tune.description
       .actions
         %a(href="#{link_path}")
-          = pluralize(tune.score, "Reax")
-          👍
-        %a(href="#{link_path}")
           = pluralize(tune.comments_count, "Comment")
           💬
   = card_attribution tune
