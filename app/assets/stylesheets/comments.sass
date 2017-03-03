@@ -5,7 +5,7 @@ comments
 comment, follow, created-sprite
   align-items: flex-start
   display: flex
-  margin-bottom: 1em
+  margin-bottom: 1.5rem
 
   > section
     > :first-child
@@ -16,11 +16,23 @@ comment, follow, created-sprite
         color: $hint-text
         font-size: 0.8em
 
+    > content
+      display: block
+
+      > :first-child
+        margin-top: 0
+
+      > :last-child
+        margin-bottom: 0
+
   > header
     display: flex
 
     > *
-      margin-right: 0.5em
+      margin-right: 0.5rem
+
+      &:last-child
+        margin-right: 1rem
 
     > a
       display: inline-block
