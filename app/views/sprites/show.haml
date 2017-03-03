@@ -1,6 +1,10 @@
 - @title = sprite.display_name
 - @meta_desc = sprite.meta_desc
 
+%h1
+  = sprite.display_name
+  = author_link(sprite)
+
 = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
 
 %tags
@@ -14,26 +18,27 @@
     = text_field_tag :tag, nil, :placeholder => "Tag name"
     %button(type='submit') Add Tag
 
-%actions><
+= markdown sprite.description
+
+%actions
   - if current_user
-    %a.button(href="javascript:void(0)" rel="setAvatar")><
-      Set as Avatar
+    = button_to set_avatar_user_path(current_user, sprite_id: sprite.id) do
+      👤 Set as Avatar
 
     - if current_user.favorite?(sprite)
-      %a.button(href="javascript:void(0)" rel="removeFavorite")><
-        Remove Favorite
-
+      = button_to remove_favorite_sprite_path(sprite) do
+        💔 Remove Favorite
     - else
-      %a.button.btn(href="javascript:void(0)" rel="addFavorite")><
-        Add Favorite
+      = button_to add_favorite_sprite_path(sprite) do
+        💝 Add Favorite
 
   - if owner_or_admin?
-    %a.button(href="#{load_sprite_path(sprite)}")><
-      Load in Editor
-    %a.button(href="#{edit_sprite_path(sprite)}")><
-      Edit Details
-    %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")><
-      Delete
+    %a.button(href="#{load_sprite_path(sprite)}")
+      ⬆️️ Load in Editor
+    %a.button(href="#{edit_sprite_path(sprite)}")
+      📝 Edit Details
+    %a.button.btn(href="#{sprite_path(sprite)}" data-method="delete")
+      🗑️ Delete
 
 
 - if sprite.parent
@@ -53,37 +58,3 @@
   = render :partial => sprite.children.limit(20)
 
 = display_comments sprite
-
-- content_for :javascript do
-  - set_avatar_url = set_avatar_user_path(current_user) if current_user
-
-  :coffeescript
-    $ ->
-      spriteId = null
-
-      $("a[rel=setAvatar]").on "click", (event) ->
-        event.preventDefault()
-
-        if setAvatarUrl = #{set_avatar_url.to_json}
-          notify "Saving..."
-          spriteId = #{sprite.id}
-          $.post setAvatarUrl, sprite_id: spriteId, (data) ->
-            notify "Avatar successfully changed."
-
-      $("a[rel=addFavorite]").on "click", (event) ->
-        event.preventDefault()
-
-        if url = #{add_favorite_sprite_path(sprite).to_json}
-          notify "Adding favorite..."
-          spriteId = #{sprite.id}
-          $.post url, (data) ->
-            notify "Added to favorites."
-
-      $("a[rel=removeFavorite]").on "click", (event) ->
-        event.preventDefault()
-
-        if url = #{remove_favorite_sprite_path(sprite).to_json}
-          notify "Removing..."
-          spriteId = #{sprite.id}
-          $.post url, (data) ->
-            notify "Removed from favorites."

@@ -3,6 +3,9 @@ input, textarea
   padding: 3px 4px
 
 textarea
+  border-color: $hint-text
+  border-radius: 4px
+  box-shadow: $control-shadow
   width: 100%
 
 form
@@ -33,18 +36,62 @@ label.input-button
     border-top-left-radius: 4px
     border: 1px solid $hint-text
     border-right: none
-    box-shadow: $item-shadow
+    box-shadow: $control-shadow
     width: auto
   > button
     border-bottom-left-radius: 0
     border-left: none
     border-top-left-radius: 0
-    box-shadow: $item-shadow
+    box-shadow: $control-shadow
     padding-top: 7px
 
 h1 > form
   display: inline
   margin: 1em
+
+form.comment
+  display: flex
+  flex-direction: column
+  padding-left: calc(32px + 1rem)
+  margin-bottom: 1.5rem
+
+  > label
+    display: flex
+    margin-left: calc(-32px - 1rem)
+
+    > textarea
+      border-top-left-radius: 0px
+      padding: 1rem
+      &:focus
+        outline: none
+
+    > comment-speaker
+      display: block
+      flex: none
+      height: 32px
+      margin-right: 1rem
+      position: relative
+      width: 32px
+
+      > img
+        display: block
+
+      > triangle
+        display: block
+        position: absolute
+        left: 100%
+        border-left: 1em solid transparent
+        border-top: 1em solid $hint-text
+        top: 0
+
+        &:after
+          border-left: 1em solid transparent
+          border-top: 1em solid white
+          content: ""
+          left: calc(-1em + 2px)
+          position: absolute
+          top: calc(-1em + 1px)
+          width: 0
 
 form.primary
   margin-left: calc(58px - 0.5em)

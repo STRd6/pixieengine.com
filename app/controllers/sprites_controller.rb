@@ -155,6 +155,7 @@ class SpritesController < ApplicationController
     current_user.add_favorite(sprite)
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end
@@ -163,6 +164,7 @@ class SpritesController < ApplicationController
     current_user.remove_favorite(sprite)
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end

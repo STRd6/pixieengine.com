@@ -4,82 +4,56 @@
 
 - content_for :javascript do
   :coffeescript
-    editor = document.getElementById('editor')
+    ajax = Ajax()
+    {Modal, Progress} = UI
+    parentId = #{@parent_id.to_json}
 
-    send = (data) ->
-      editor.contentWindow.postMessage data, "*"
+    postmaster = Postmaster
+      remoteTarget: ->
+        document.getElementById('editor').contentWindow
 
-    invokeRemote = (method, params...) ->
-      send
-        type: "message"
-        method: method
-        params: params
+      ready: ->
+        editor.focus()
 
-    ack = ({id}) ->
-      send
-        type: "ack"
-        id: id
+        unless #{tune.new_record?.to_json}
+          console.log #{tune.content_url.to_json}
+          postmaster.invokeRemote "loadFromURL", #{tune.content_url.to_json}
 
-    respond = (id, result) ->
-      send
-        type: "response"
-        result: result
-        id: id
+      save: (data) ->
+        {title, description, content} = data
 
-    respondWithError = (id, error) ->
-      send
-        type: "error"
-        error: error
-        id: id
+        formData = new FormData()
+        uploadData =
+          'tune[parent_id]': parentId
+          'tune[title]': title
+          'tune[description]': description
+          'tune[editor]': "composer"
+          'tune[content]': content
 
-    window.addEventListener "message", (event) ->
-      console.log event.data
-      {data, source} = event
-      return unless source is editor.contentWindow
+        Object.keys(uploadData).forEach (key) ->
+          formData.append key, uploadData[key]
 
-      msgId = data.id
-      ack(data)
+        ajax
+          url: #{tunes_path.to_json},
+          data: formData
+          headers:
+            Accept: "application/json; charset=utf-8"
+          method: 'POST'
+          responseType: "json"
+        .then (data) ->
+          trackPageview "/event/save_tune"
 
-      method = data.method ? data.status
+          if data.redirect
+            window.location = data.redirect
+          else
+            parentId = data.tune.id
 
-      switch method
-        when "ready"
-          editor.focus()
+          return
+        .catch (e) ->
+          console.warn e
+          if e.message
+            Modal.alert "Error: \#{e.message}"
+          else
+            Modal.alert "Error \#{e.status} - \#{e.statusText}"
 
-          unless #{tune.new_record?.to_json}
-            console.log #{tune.content_url.to_json}
-            invokeRemote "loadFromURL", #{tune.content_url.to_json}
-
-        when "save"
-          {title, description, content} = data.params[0]
-
-          formData = new FormData()
-          uploadData =
-            'tune[parent_id]': #{@parent_id.to_json}
-            'tune[title]': title
-            'tune[description]': description
-            'tune[editor]': "composer"
-            'tune[content]': content
-
-          Object.keys(uploadData).forEach (key) ->
-            formData.append key, uploadData[key]
-
-          $.ajax
-            url: #{tunes_path.to_json},
-            data: formData
-            headers:
-              Accept: "application/json; charset=utf-8"
-            processData: false
-            contentType: false
-            type: 'POST'
-            success: (data) ->
-              respond(msgId, true)
-              if data.redirect
-                window.location = data.redirect
-              else
-                notify "Saved as <a href='/tunes/" + data.tune.id + "'>" + (data.tune.title || ('Tune ' + data.tune.id)) + "</a>"
-
-              trackPageview "/event/save_tune"
-            error: ->
-              respondWithError msgId,
-                message: "Error when saving!"
+          return

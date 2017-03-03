@@ -2,7 +2,7 @@ button, .button
   background-color: white
   border-radius: 4px
   border: 1px solid $primary-color
-  box-shadow: $item-shadow
+  box-shadow: $control-shadow
   color: $primary-color
   cursor: pointer
   font-size: inherit
@@ -35,10 +35,9 @@ actions
   display: flex
   flex-wrap: wrap
 
-  > button, .button
+  > button, .button, form
     flex: none
-    margin-right: 1em
-    margin-bottom: 1em
+    margin: 0 1em 1em 0
 
     &:last-child
       margin-right: 0

@@ -91,16 +91,20 @@ class TunesController < ApplicationController
 
   def add_tag
     tune.add_tag(params[:tag])
+    tune.save!
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end
 
   def remove_tag
     tune.remove_tag(params[:tag])
+    tune.save!
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end
@@ -109,6 +113,7 @@ class TunesController < ApplicationController
     current_user.add_favorite(tune)
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end
@@ -117,6 +122,7 @@ class TunesController < ApplicationController
     current_user.remove_favorite(tune)
 
     respond_to do |format|
+      format.html { redirect_back_or_root }
       format.json { render :json => {:status => "ok"} }
     end
   end
@@ -147,15 +153,24 @@ class TunesController < ApplicationController
       recency = 5.years.ago
     end
 
-    unless params[:search].blank?
+    if params[:search]
       items = items.search(params[:search])
+    end
+
+    if params[:tagged]
+      items = items.tagged_with(params[:tagged])
     end
 
     items = items
       .order(order)
-      .where(["created_at > '%s'", recency])
+      .where(["tunes.created_at > '%s'", recency])
+      .includes(:taggings)
       .page(params[:page])
       .per_page(per_page)
+
+    @tag_counts = items.tag_counts_on(:tags).select do |t|
+      t.taggings_count >= 1
+    end
 
     @tunes = items
 

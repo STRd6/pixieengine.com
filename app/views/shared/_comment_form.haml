@@ -1,7 +1,11 @@
-= form_for Comment.new(:commentable => commentable) do |form|
+= form_for Comment.new(:commentable => commentable), html: { class: :comment }  do |form|
   %label
+    %comment-speaker
+      = image_tag(current_user.avatar.url(:thumb))
+      %triangle
     = form.hidden_field :commentable_type
     = form.hidden_field :commentable_id
+    = form.hidden_field :in_reply_to_id
     = form.text_area :body, :placeholder => "type your comment here"
 
   %button Post Comment

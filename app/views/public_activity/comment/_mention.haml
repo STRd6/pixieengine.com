@@ -1,7 +1,5 @@
 -#TODO Should make activity dependent destroy to avoid this
 - if (comment = activity.trackable) && (commentee = comment.commentee) && (commenter = comment.commenter)
-  -# Skip comments if we were mentioned
-  - return if comment.mentioned_users.include?(@current_user)
   %comment
     %header
       - if commentable = comment.commentable
@@ -15,7 +13,7 @@
     %section
       %header
         = link_to commenter.display_name, commenter, rel: "author"
-        commented on
+        mentioned you in their comment on
         - if commenter == commentee
           their own #{comment.commentable_type}
         - else

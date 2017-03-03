@@ -161,7 +161,7 @@ class User < ActiveRecord::Base
 
   def set_avatar(sprite)
     self.avatar = sprite.image
-    self.save
+    self.save!
   end
 
   def favorite?(sprite)

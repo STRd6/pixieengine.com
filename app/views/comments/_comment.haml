@@ -6,4 +6,5 @@
       = link_to comment.commenter.display_name, comment.commenter, rel: "author"
       &nbsp;
       = link_to "#{time_ago_in_words(comment.created_at)} ago", comment.commentable, class: "time"
-    = markdown(comment.body)
+    %content
+      = markdown(comment.body)
