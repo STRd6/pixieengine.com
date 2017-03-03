@@ -7,7 +7,7 @@
 
 %sprites
   - if @sprites.size > 0
-    = render @sprites
+    = render @sprites, variation: "grid"
   - else
     %h2 No results
     %a(href="#{sprites_path}") Back to Gallery

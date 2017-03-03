@@ -7,9 +7,19 @@
 
 %tunes
   - if @tunes.size > 0
-    = render @tunes
+    = render @tunes, variation: "grid"
   - else
     %h2 No results
     %a(href="#{tunes_path}") Back to Tunes
 
 = render partial: "shared/navigation", locals: {collection: @tunes}
+
+- content_for :javascript do
+  :coffeescript
+    $(window).load ->
+      $("tunes").isotope
+        itemSelector : 'card'
+        layoutMode : 'masonry'
+        containerStyle:
+          overflow: 'visible'
+          position: 'relative'

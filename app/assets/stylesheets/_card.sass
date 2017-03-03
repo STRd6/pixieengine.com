@@ -1,8 +1,11 @@
 card
-  width: 256px
+  min-width: 256px
   display: inline-block
   margin: 1em
   vertical-align: top
+
+  &.grid
+    width: 256px
 
   > .outline
     box-shadow: $item-shadow
@@ -22,8 +25,6 @@ card
       > .title,
       > .description
         color: #444
-
-      > .description
         word-break: break-word
 
       > .title

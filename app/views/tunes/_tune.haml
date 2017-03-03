@@ -1,6 +1,7 @@
 - link_path ||= tune_path(tune)
+- class_variation = defined?(variation) ? "grid": ""
 
-%card
+%card(class="#{class_variation}")
   .outline
     .details
       .title= tune.display_title

@@ -1,10 +1,11 @@
 - link_path ||= sprite_path(sprite)
+- class_variation = defined?(variation) ? "grid": ""
 
-%card
+%card(class="#{class_variation}")
   .outline
     = link_to image_tag(sprite.image_url, :alt => sprite.display_name), link_path
     .details
-      .title= link_to sprite.title, link_path
+      .title= link_to sprite.display_name, link_path
       .description= markdown sprite.description
       .actions
         - if admin?

@@ -1,59 +1,6 @@
 tunes
-  display: flex
-  flex-wrap: wrap
-  justify-content: space-between
-
-  > tune
-    background-color: white
-    border: 2px solid $primary-color
-    border-radius: 4px
-    box-shadow: $item-shadow
-    display: inline-block
-    height: 60px
-    margin-bottom: 33px
-    margin-right: 12px
-    vertical-align: bottom
-    width: calc(1/6*100% - (1 - 1/6)*33px)
-
-    > a
-      color: #673ab7
-      display: block
-      height: 100%
-      padding: 0.5em 1em
-      position: relative
-      text-decoration: none
-
-      &:hover
-        background-color: lightyellow
-        color: #673ab7
-        text-decoration: none
-
-      > img
-        background-color: white
-        border-radius: 3px
-        bottom: -12px
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)
-        padding: 2px
-        position: absolute
-        right: -12px
-
-      > .title
-        display: block
-        font-size: 12px
-        overflow: hidden
-        text-overflow: ellipsis
-        white-space: nowrap
-
-      > .attribution
-        bottom: 0.5em
-        font-size: 12px
-        font-weight: normal
-        position: absolute
-        right: 32px
+  display: block
+  min-height: 100px
 
   &.show
-    display: block
     margin: 1em 0
-
-    > tune
-      margin-right: 33px
