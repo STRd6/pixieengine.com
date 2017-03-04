@@ -20,7 +20,7 @@ form
     display: block
     margin-bottom: 1em
 
-    > input[type="text"]
+    > input[type="text"], > input[type="password"]
       width: 100%
 
     > textarea
@@ -99,6 +99,13 @@ form.primary
   > h1
     color: $primary-color
     font-size: 2em
+
+  @include small
+    margin-left: 0
+    width: 100%
+
+    > button.cta
+      width: 100%
 
 label > h3
   display: inline

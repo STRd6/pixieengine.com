@@ -31,9 +31,9 @@
         unless newVal is val
           $this.val(newVal)
 
-= form_for user, :html => { :class => "module" } do |form|
+= form_for user, html: { class: "primary" } do |form|
   = form.error_messages
-  %h2 Sign up for Pixie!
+  %h1 Sign up for Pixie!
 
   %label
     %h3 Display Name
@@ -45,4 +45,4 @@
     %h3 Password
     = form.password_field :password
 
-  %button.btn.full Sign Up
+  %button.cta Sign Up
