@@ -10,11 +10,12 @@
     border: 1px solid $primary-color
     border-left-width: 0
     color: $primary-color
-    flex: none
+    flex: 0 1 auto
     font-weight: bold
     line-height: 34px
     padding: 0 14px
     text-decoration: none
+    white-space: nowrap
 
     &:first-child
       border-bottom-left-radius: 3px
@@ -33,5 +34,14 @@
       color: white
       background: $primary-color
 
+    @include small
+      display: none
+
+      &:first-child, &:last-child
+        display: block
+
   & > ul
     padding: 0
+
+  @include small
+    margin: 1em 0 0

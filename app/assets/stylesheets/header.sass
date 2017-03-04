@@ -34,3 +34,20 @@ body > header
 
     & > img
       margin-left: 0.5em
+
+  @include small
+    flex-direction: column
+    height: auto
+    width: 100%
+
+    > a
+      width: 100%
+
+      &:nth-child(n + 2)
+        padding: 0.5em 2em
+
+      &:nth-child(1),
+      &:nth-child(2),
+      &:nth-child(4),
+      &:nth-child(6)
+        display: none
