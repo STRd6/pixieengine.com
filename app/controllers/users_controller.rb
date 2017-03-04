@@ -114,7 +114,9 @@ class UsersController < ApplicationController
   end
 
   def show
-    @title = "#{user.display_name} - PixieEngine Game Creation Toolset"
+    @title = "#{user.display_name} - Pixie Engine"
+    @meta_author = user.display_name
+    @meta_description = user.profile
 
     if user == current_user
       @activity_updates = user.activity_updates
@@ -125,6 +127,8 @@ class UsersController < ApplicationController
     end
 
     @sprites = Sprite.for_user(user).order("id DESC").page(params[:page]).per_page(32)
+
+    @meta_keywords = @sprites.tag_counts.join(",")
   end
 
   def edit

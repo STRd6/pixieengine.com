@@ -4,7 +4,9 @@
       = @title
     Pixie Engine - Create!
   %meta{ 'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8' }
-  %meta{ :name => "description", :content => (@meta_desc || "This free online pixel editor is amazingly simple. Build on the work of others and share your creations, or start fresh and create something new.") }
+  %meta{ :name => "description", :content => (@meta_description || "This free online pixel editor is amazingly simple. Build on the work of others and share your creations, or start fresh and create something new.") }
+  %meta{ :name => "keywords", :content => (@meta_keywords || "online, pixel, editor, sprite, free, games") }
+  %meta{ :name => "author", :content => (@meta_author || "Daniel X. Moore") }
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   = csrf_meta_tag

@@ -58,6 +58,14 @@ class Sprite < ActiveRecord::Base
     end
   }
 
+  def creator_name
+    if user
+      user.display_name
+    else
+      "Anonymous"
+    end
+  end
+
   def display_name
     if title.blank?
       "Sprite #{id}"
@@ -125,10 +133,6 @@ class Sprite < ActiveRecord::Base
 
   def replay_path
     "#{base_path}replays/#{id}.json"
-  end
-
-  def meta_desc
-    "#{tag_list.join(' ')} #{title} #{dimension_list.join(' ')} #{description}"
   end
 
   def migrate_image_attachment

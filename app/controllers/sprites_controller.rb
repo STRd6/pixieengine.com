@@ -84,6 +84,10 @@ class SpritesController < ApplicationController
   end
 
   def show
+    @meta_description = sprite.description
+    @meta_keywords = sprite.tag_list.join(",")
+    @meta_author = sprite.creator_name
+
     respond_with(sprite) do |format|
       format.json { render :json }
     end
@@ -204,7 +208,9 @@ class SpritesController < ApplicationController
       t.taggings_count >= 5
     end
 
-    logger.info @tag_counts
+    @meta_keywords = @tag_counts.join(",")
+    @meta_author = "Various"
+    @meta_description = items.map(&:title).compact.join(" ")
 
     @collection = items
 
