@@ -114,7 +114,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    @title = "#{user.display_name} - Pixie Engine"
+    @title = user.display_name
     @meta_author = user.display_name
     @meta_description = user.profile
 

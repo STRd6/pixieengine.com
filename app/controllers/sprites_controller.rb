@@ -84,6 +84,7 @@ class SpritesController < ApplicationController
   end
 
   def show
+    @title = sprite.display_name
     @meta_description = sprite.description
     @meta_keywords = sprite.tag_list.join(",")
     @meta_author = sprite.creator_name
