@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170218165816) do
+ActiveRecord::Schema.define(version: 20170305171646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "citext"
 
   create_table "activities", force: :cascade do |t|
     t.integer  "trackable_id"
@@ -183,7 +184,7 @@ ActiveRecord::Schema.define(version: 20170218165816) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",               limit: 255
+    t.citext   "email",                                                           null: false
     t.string   "crypted_password",    limit: 255
     t.string   "password_salt",       limit: 255
     t.string   "persistence_token",   limit: 255,                                 null: false
@@ -198,7 +199,7 @@ ActiveRecord::Schema.define(version: 20170218165816) do
     t.string   "last_login_ip",       limit: 255
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
-    t.string   "display_name",        limit: 255
+    t.citext   "display_name",                                                    null: false
     t.integer  "referrer_id"
     t.string   "oauth_secret",        limit: 255
     t.integer  "active_token_id"
@@ -211,17 +212,14 @@ ActiveRecord::Schema.define(version: 20170218165816) do
     t.datetime "avatar_updated_at"
     t.boolean  "subscribed",                      default: true,                  null: false
     t.string   "favorite_color",      limit: 255
-    t.boolean  "paying",                          default: false,                 null: false
-    t.boolean  "forem_admin",                     default: false,                 null: false
-    t.boolean  "forum_notifications",             default: true,                  null: false
     t.boolean  "site_notifications",              default: true,                  null: false
-    t.boolean  "help_tips",                       default: true,                  null: false
-    t.string   "spreedly_token",      limit: 255
     t.datetime "last_contacted",                  default: '2011-12-29 01:37:27', null: false
     t.datetime "last_surveyed",                   default: '2009-12-29 02:38:45', null: false
     t.integer  "followers_count",                 default: 0,                     null: false
     t.integer  "following_count",                 default: 0,                     null: false
     t.index ["display_name"], name: "index_users_on_display_name", unique: true, using: :btree
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["perishable_token"], name: "index_users_on_perishable_token", unique: true, using: :btree
   end
 
   add_foreign_key "tunes", "users"

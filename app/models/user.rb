@@ -1,8 +1,12 @@
 class User < ActiveRecord::Base
   validates :display_name,
-    :format => { :with => /\A[A-Za-z0-9_-]+\Z/ },
-    :presence => true,
-    :uniqueness => true
+    format: { :with => /\A[A-Za-z0-9_-]+\Z/ },
+    presence: true,
+    uniqueness: { case_sensitive: false },
+    length: { maximum: 45 }
+
+  validates :email,
+    length: { maximum: 254 }
 
   acts_as_authentic do |config|
     config.validate_email_field :no_connected_sites?
@@ -23,7 +27,7 @@ class User < ActiveRecord::Base
     }
   )
 
-  validates_attachment_content_type :avatar, :content_type => ["image/jpg", "image/jpeg", "image/png", "image/gif"]
+  validates_attachment_content_type :avatar, :content_type => [/\Aimage\/.*\Z/]
 
   include Commentable
 
@@ -50,8 +54,6 @@ class User < ActiveRecord::Base
     :source => :follower
 
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "commenter_id"
-
-  # attr_accessible :avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications, :help_tips
 
   scope :online_now, lambda {
     where("last_request_at >= ?", Time.zone.now - 15.minutes)

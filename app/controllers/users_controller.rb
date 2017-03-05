@@ -171,7 +171,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params[:user].permit([:avatar, :display_name, :email, :password, :profile, :favorite_color, :forum_notifications, :site_notifications, :help_tips])
+    params[:user].permit([:avatar, :display_name, :email, :password, :profile, :favorite_color, :site_notifications])
   end
 
   def collection

@@ -11,4 +11,8 @@ class NotifierPreview < ActionMailer::Preview
   def comment
     Notifier.comment(Comment.last)
   end
+
+  def forgot
+    Notifier.forgot_password(User.first)
+  end
 end
