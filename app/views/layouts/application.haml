@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 %html
-  = render :partial => "shared/head"
+  = render partial: "shared/head"
 
   - body_id = @fullscreen ? "fullscreen" : nil
   %body(id=body_id eventCategory="Body")><
-    = render :partial => "shared/header"
+    = render partial: "shared/header"
 
     - event_category = "#{controller.controller_name} #{controller.action_name}"
     %content(eventCategory=event_category)><
       = yield
 
-      = render :partial => "shared/footer"
+      = render partial: "shared/flash"
+    = render partial: "shared/footer"

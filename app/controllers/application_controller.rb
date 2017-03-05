@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   def require_user
     unless current_user
       store_location
-      redirect_to sign_in_path, :notice => "You must be logged in to access this page"
+      redirect_to sign_in_path, :notice => "You must log in to access this page"
       return false
     end
   end
@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   def require_no_user
     if current_user
       store_location
-      redirect_to root_url, :notice => "You must be logged out to access this page"
+      redirect_to root_url, :notice => "You must log out to access this page"
     end
   end
 
@@ -95,7 +95,11 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    session[:return_to] = request.fullpath
+    if request.method == "GET"
+      session[:return_to] = request.fullpath
+    else
+      session[:return_to]= request.referer
+    end
   end
 
   def redirect_back_or_default(default)
