@@ -26,7 +26,7 @@ module ApplicationHelper
   end
 
   def tag_link(tag)
-    render :partial => "sprites/tag", :object => tag
+    link_to tag, action: :index, tagged: tag
   end
 
   def display_comments(commentable)
