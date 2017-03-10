@@ -1,5 +1,4 @@
 %comments
-  %h2 Comments
   - if current_user
     = render :partial => "shared/comment_form", :locals => {:commentable => commentable}
   - commentable.comments.each do |comment|

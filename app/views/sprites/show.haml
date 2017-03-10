@@ -1,20 +1,28 @@
-%section.derivation
-  = render :partial => sprite, :locals => {link_path: load_sprite_path(sprite)}
+%header
+  %h1= sprite.title
 
-  %sprites
-    - sprite.parents.each do |parent|
-      = render partial: parent
+%section.row
+  .column
+    %section
+      %card
+        .outline
+          = link_to image_tag(sprite.image_url, :alt => sprite.display_name), load_sprite_path(sprite)
 
-%tags
-  - sprite.tag_list.each do |tag|
-    = tag_link(tag)
-  - sprite.source_list.each do |source|
-    = tag_link(source)
-  - sprite.dimension_list.each do |dimension|
-    = tag_link(dimension)
-  = form_tag add_tag_sprite_path do
-    = text_field_tag :tag, nil, :placeholder => "Tag name"
-    %button(type='submit') Add Tag
+      .description= markdown sprite.description
+
+      %tags
+        - sprite.tag_list.each do |tag|
+          = tag_link(tag)
+        - sprite.source_list.each do |source|
+          = tag_link(source)
+        - sprite.dimension_list.each do |dimension|
+          = tag_link(dimension)
+        = form_tag add_tag_sprite_path do
+          = text_field_tag :tag, nil, :placeholder => "Tag name"
+          %button(type='submit') Add Tag
+
+  .column
+    = display_comments sprite
 
 %actions
   - if current_user
@@ -43,4 +51,3 @@
   %sprites
     = render :partial => sprite.children.limit(20)
 
-= display_comments sprite
