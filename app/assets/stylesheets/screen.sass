@@ -30,9 +30,13 @@
 .modal
   display: none
 
+// TODO: Move this to it's right place after finished prototyping
 .row
   display: flex
   margin: 0 -0.5rem
+
+  @include small
+    flex-direction: column
 
   > .column
     flex: 1 1 auto
