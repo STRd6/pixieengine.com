@@ -13,6 +13,9 @@
     %button(type='submit') Add Tag
 
 %actions
+  %a.button(href="#{editor_tune_path(tune)}")
+    ⬆️️ Load in Editor
+
   - if current_user
     - if current_user.favorite?(tune)
       = button_to remove_favorite_tune_path(tune) do
@@ -22,8 +25,6 @@
         💝 Add Favorite
 
   - if owner_or_admin?
-    %a.button(href="#{editor_tune_path(tune)}")
-      ⬆️️ Load in Editor
     %a.button(href="#{edit_tune_path(tune)}")
       📝 Edit Details
     %a.button(href="#{tune_path(tune)}" data-method="delete")
