@@ -200,6 +200,7 @@ class SpritesController < ApplicationController
     items = items
       .order(order)
       .where(["sprites.created_at > '%s'", recency])
+      .where.not(user_id: nil)
       .includes(:taggings)
       .search(params[:search])
       .page(params[:page])
