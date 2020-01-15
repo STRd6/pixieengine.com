@@ -10,7 +10,7 @@ gem 'rails', '~> 5.0.1'
 
 gem 'acts-as-taggable-on'
 gem 'authlogic'
-gem 'aws-sdk'
+gem 'aws-sdk-s3'
 gem 'coffee-rails', '~> 4.2'
 gem 'dynamic_form'
 gem 'exception_notification'
