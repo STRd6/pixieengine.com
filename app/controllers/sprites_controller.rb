@@ -201,7 +201,7 @@ class SpritesController < ApplicationController
       .order(order)
       .where(["sprites.created_at > '%s'", recency])
       .where.not(user_id: nil)
-      .includes(:taggings)
+      .includes(:taggings, :user)
       .search(params[:search])
       .page(params[:page])
       .per_page(per_page)
