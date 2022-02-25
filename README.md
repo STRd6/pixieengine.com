@@ -7,7 +7,7 @@ Things you may want to cover:
 
 * Ruby version
 
-  * 2.4.0
+  * 2.4.9
 
 * System dependencies
 
@@ -35,20 +35,6 @@ Things you may want to cover:
 
 * Deployment instructions
 
-## Setup
-
-```bash
-sudo apt-get install -y imagemagick libmagickwand-dev postgresql libpq-dev
-```
-
-```bash
-sudo service postgresql start
-```
-
-```bash
-rake db:setup
-```
-
 ## OSX Dev setup
 
 Install Homebrew if you don't already have it
@@ -67,6 +53,16 @@ If you're on OSX Sierra, you'll need to force an older version of ImageMagick
 - `brew link --force imagemagick@6`
 
 Install all the project's dependencies with `bundle install`
+
+## Ubuntu Setup
+
+```bash
+sudo apt-get install -y imagemagick libmagickwand-dev postgresql libpq-dev
+```
+
+```bash
+sudo service postgresql start
+```
 
 ## First time configuration
 
