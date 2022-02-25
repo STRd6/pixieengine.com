@@ -187,7 +187,7 @@ GEM
       railties (>= 3.0.0)
     puma (4.3.11)
       nio4r (~> 2.0)
-    rack (2.1.1)
+    rack (2.2.3)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-pjax (1.1.0)
