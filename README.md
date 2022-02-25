@@ -35,6 +35,20 @@ Things you may want to cover:
 
 * Deployment instructions
 
+## Setup
+
+```bash
+sudo apt-get install -y imagemagick libmagickwand-dev postgresql libpq-dev
+```
+
+```bash
+sudo service postgresql start
+```
+
+```bash
+rake db:setup
+```
+
 ## OSX Dev setup
 
 Install Homebrew if you don't already have it
