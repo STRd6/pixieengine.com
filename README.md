@@ -57,7 +57,7 @@ Install all the project's dependencies with `bundle install`
 ## Ubuntu Setup
 
 ```bash
-sudo apt-get install -y imagemagick libmagickwand-dev postgresql libpq-dev
+sudo apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev imagemagick libmagickwand-dev postgresql libpq-dev
 ```
 
 ```bash

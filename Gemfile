@@ -1,4 +1,4 @@
-ruby '2.7.7'
+ruby '3.1.3'
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
@@ -6,12 +6,12 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 5.0.1'
+gem 'rails', '~> 6.1'
 
 gem 'acts-as-taggable-on'
 gem 'authlogic'
 gem 'aws-sdk-s3'
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails'
 gem 'dynamic_form'
 gem 'exception_notification'
 gem 'exception_notification-rake'
@@ -23,16 +23,17 @@ gem 'paperclip'
 gem 'pg'
 gem 'pg_search'
 gem 'public_activity'
-gem 'puma', '~> 4.3'
+gem 'puma'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'rails_admin'
 gem 'redcarpet'
 gem 'responders'
 gem 'rmagick'
 gem 'sanitize'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails'
 gem 'sidekiq'
 gem 'uglifier', '>= 1.3.0'
+gem "webrick", "~> 1.7"
 gem 'whenever'
 gem 'will_paginate'
 
