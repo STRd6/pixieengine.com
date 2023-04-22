@@ -6,13 +6,13 @@ class User < ActiveRecord::Base
     length: { maximum: 45 }
 
   validates :email,
-    length: { maximum: 254 }
+    length: { maximum: 254 },
+    format: { with: URI::MailTo::EMAIL_REGEXP }
 
   acts_as_authentic do |config|
-    config.validate_email_field :no_connected_sites?
-    config.validate_password_field :no_connected_sites?
+    # config.validate_password_field :no_connected_sites?
     config.require_password_confirmation = false
-    config.validates_length_of_password_field_options :minimum => 4, :if => :require_password?
+    # config.validates_length_of_password_field_options :minimum => 4, :if => :require_password?
 
     config.transition_from_crypto_providers = [Authlogic::CryptoProviders::Sha512]
     config.crypto_provider = Authlogic::CryptoProviders::SCrypt

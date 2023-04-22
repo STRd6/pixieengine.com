@@ -31,6 +31,7 @@ gem 'responders'
 gem 'rmagick'
 gem 'sanitize'
 gem 'sass-rails'
+gem 'scrypt'
 gem 'sidekiq'
 gem 'uglifier', '>= 1.3.0'
 gem "webrick", "~> 1.7"

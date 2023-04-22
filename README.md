@@ -62,6 +62,9 @@ sudo apt-get install -y build-essential patch ruby-dev zlib1g-dev liblzma-dev im
 
 ```bash
 sudo service postgresql start
+sudo su - postgres
+createuser --interactive --createdb $USER
+exit
 ```
 
 ## First time configuration

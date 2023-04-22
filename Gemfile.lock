@@ -122,6 +122,9 @@ GEM
       factory_girl (~> 4.9.0)
       railties (>= 3.0.0)
     ffi (1.15.5)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
     foreman (0.87.2)
     globalid (1.0.0)
       activesupport (>= 5.0)
@@ -277,6 +280,8 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    scrypt (3.0.7)
+      ffi-compiler (>= 1.0, < 2.0)
     shoulda (3.6.0)
       shoulda-context (~> 1.0, >= 1.0.1)
       shoulda-matchers (~> 3.0)
@@ -361,6 +366,7 @@ DEPENDENCIES
   rmagick
   sanitize
   sass-rails
+  scrypt
   shoulda
   sidekiq
   spring
