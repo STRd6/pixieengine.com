@@ -28,6 +28,7 @@ end
 
 
 RailsAdmin.config do |config|
+  config.asset_source = :sprockets
 
   config.parent_controller = "::ApplicationController"
 

@@ -366,6 +366,7 @@ DEPENDENCIES
   rmagick
   sanitize
   sass-rails
+  sassc-rails
   scrypt
   shoulda
   sidekiq
