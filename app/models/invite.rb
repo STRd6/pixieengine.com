@@ -3,7 +3,7 @@ class Invite < ActiveRecord::Base
 
   validates_presence_of :user, :token, :email, :to
 
-  validates_format_of :email, :with => Authlogic::Regex.email
+  validates_format_of :email, :with => URI::MailTo::EMAIL_REGEXP
   validates_format_of :to, :with => /\A[A-Za-z0-9 ]*\Z/, :message => "should have a more personalized name"
 
   after_commit on: :create do

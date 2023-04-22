@@ -1,5 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
-  add_template_helper(ApplicationHelper)
+  helper ApplicationHelper
+
+  default_url_options[:host] = ENV["HTTP_HOST"]
 
   default from: 'Pixie <notifications@pixieengine.com>'
   layout 'mailer'
