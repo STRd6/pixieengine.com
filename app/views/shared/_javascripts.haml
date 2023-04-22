@@ -11,9 +11,6 @@
     document.write(unescape('%3Cscript src="/assets/jquery/jquery-ui.min.js"%3E%3C/script%3E'));
   }
 
-/[if lt IE 9]
-  = javascript_include_tag "excanvas.compiled"
-
 :coffeescript
   window.railsEnv = #{Rails.env.to_json}
 
