@@ -107,7 +107,7 @@ class SpritesController < ApplicationController
   def update
     @sprite = Sprite.find(params[:id])
 
-    @sprite.update_attributes(sprite_params)
+    @sprite.update(sprite_params)
 
     respond_with(@sprite)
   end
@@ -128,7 +128,7 @@ class SpritesController < ApplicationController
     @sprite = Sprite.new
 
     @sprite.user = current_user
-    if @sprite.update_attributes(params[:sprite])
+    if @sprite.update(params[:sprite])
       redirect_to @sprite
     else
       # Errors

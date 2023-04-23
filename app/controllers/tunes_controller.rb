@@ -84,7 +84,7 @@ class TunesController < ApplicationController
   def update
     @tune = Tune.find(params[:id])
 
-    @tune.update_attributes(tune_params)
+    @tune.update(tune_params)
 
     respond_with(@tune)
   end

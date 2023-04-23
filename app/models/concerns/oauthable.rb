@@ -14,6 +14,6 @@ module Oauthable
   def update_oauth(provider, token)
     oauth_tokens
       .find_or_initialize_by_provider(provider)
-      .update_attributes(token: token)
+      .update(token: token)
   end
 end
