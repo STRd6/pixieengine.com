@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:payrollhero/dynamic_form.git
+  remote: https://github.com/payrollhero/dynamic_form.git
   revision: 7f904005f6001a0b908dd879c34547b0e87a34e7
   ref: 7f90400
   specs:
