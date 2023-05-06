@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:payrollhero/dynamic_form.git
+  revision: 7f904005f6001a0b908dd879c34547b0e87a34e7
+  ref: 7f90400
+  specs:
+    dynamic_form (1.1.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -107,7 +114,6 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
-    dynamic_form (1.1.4)
     erubi (1.11.0)
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
@@ -137,7 +143,7 @@ GEM
       activesupport (>= 5.1)
       haml (>= 4.0.6)
       railties (>= 5.1)
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
     jmespath (1.6.1)
     kaminari (1.2.2)
@@ -337,7 +343,7 @@ DEPENDENCIES
   byebug
   coffee-rails
   dotenv-rails
-  dynamic_form
+  dynamic_form!
   exception_notification
   exception_notification-rake
   factory_girl_rails
